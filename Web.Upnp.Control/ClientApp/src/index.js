@@ -11,7 +11,7 @@ import { UpnpDevices } from './components/UpnpDevices';
 import { Settings } from './components/Settings';
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
-const container = document.getElementById('container');
+const container = document.getElementById('root-view');
 
 ReactDOM.render(
     <BrowserRouter basename={baseUrl}>

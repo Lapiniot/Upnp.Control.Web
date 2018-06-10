@@ -1,4 +1,4 @@
-﻿/// <binding BeforeBuild='sass' />
+/// <binding BeforeBuild='SASS' />
 var gulp = require("gulp"),
     fs = require("fs"),
     sass = require("gulp-sass");
@@ -9,10 +9,12 @@ var gulp = require("gulp"),
 //        .pipe(gulp.dest('wwwroot/css'));
 //});
 
-gulp.task("sass", function () {
-    return gulp.src([
-        './ClientApp/src/styles/bootstrap.scss',
-        './ClientApp/src/styles/index.scss'])
-        .pipe(sass())
-        .pipe(gulp.dest('./ClientApp/src/css'));
-});
+const sources = [
+    './ClientApp/src/styles/bootstrap.scss',
+    './ClientApp/src/styles/font-awesome.scss',
+    './ClientApp/src/styles/index.scss'
+];
+
+const destination = './ClientApp/src/css';
+
+gulp.task("SASS", () => gulp.src(sources).pipe(sass()).pipe(gulp.dest(destination)));

@@ -1,9 +1,22 @@
 ﻿$max-width: 767px;
 $padding-body: 50px;
 
-@media (max-width: $max-width) {
-    /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
+/*@media (max-width: $max-width) {
+    // On small screens, the nav menu spans the full width of the screen. Leave a space for it.
     body {
         padding-top: $padding-body;
     }
+}*/
+
+.navbar {
+    margin-left: -15px;
+    min-height: 100vh;
+}
+
+.navbar .navbar-brand {
+    background-color: blueviolet;
+}
+
+.navbar .navbar-nav {
+    background-color: aquamarine;
 }

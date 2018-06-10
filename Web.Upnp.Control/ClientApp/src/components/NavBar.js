@@ -6,9 +6,9 @@ export class NavBar extends Component {
 
     render() {
         return (
-            <nav class="navbar navbar-dark flex-sm-column bg-dark navbar-inverse navbar-fixed-top">
-                <span class="navbar-brand">UPnP Controller</span>
-                <ul class="navbar-nav mr-auto">
+            <nav class="navbar navbar-dark bg-dark flex-column p-0 align-items-start">
+                <div class="navbar-brand">UPnP Controller</div>
+                <ul class="navbar-nav">
                     <li class="nav-item"><Link to={'/'} class="nav-link">Home</Link></li>
                     <li class="nav-item"><Link to={'/umi'} class="nav-link">Network Speakers</Link></li>
                     <li class="nav-item"><Link to={'/upnp'} class="nav-link">UPnP devices</Link></li>
