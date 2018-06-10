@@ -6,11 +6,14 @@ export class NavBar extends Component {
 
     render() {
         return (
-            <nav class="nav nav-pills flex-column flex-sm-row">
-                <li class="nav-item"><Link to={'/'} class="flex-sm-fill nav-link">Home</Link></li>
-                <li class="nav-item"><Link to={'/umi'} class="flex-sm-fill nav-link">Network Speakers</Link></li>
-                <li class="nav-item"><Link to={'/upnp'} class="flex-sm-fill nav-link">UPnP devices</Link></li>
-                <li class="nav-item"><Link to={'/settings'} class="flex-sm-fill nav-link">Settings</Link></li>
+            <nav class="navbar navbar-dark flex-sm-column bg-dark navbar-inverse navbar-fixed-top">
+                <span class="navbar-brand">UPnP Controller</span>
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><Link to={'/'} class="nav-link">Home</Link></li>
+                    <li class="nav-item"><Link to={'/umi'} class="nav-link">Network Speakers</Link></li>
+                    <li class="nav-item"><Link to={'/upnp'} class="nav-link">UPnP devices</Link></li>
+                    <li class="nav-item"><Link to={'/settings'} class="nav-link">Settings</Link></li>
+                </ul>
             </nav>
         );
     }

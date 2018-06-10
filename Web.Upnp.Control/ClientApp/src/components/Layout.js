@@ -8,10 +8,10 @@ export class Layout extends Component {
         return (
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-1">
+                    <div class="col-sm-3">
                         <NavBar/>
                     </div>
-                    <div class="col-lg-11">
+                    <div class="col-sm-9">
                         {this.props.children}
                     </div>
                 </div>
