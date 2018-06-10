@@ -1,5 +1,6 @@
 ﻿import './css/bootstrap.css';
 import './css/index.css';
+import './css/font-awesome.css';
 import React from 'react';
 import { Route } from 'react-router';
 import ReactDOM from 'react-dom';

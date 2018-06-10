@@ -6,12 +6,12 @@ export class Layout extends Component {
 
     render() {
         return (
-            <div class="container-fluid no-gutters">
+            <div class="container-fluid">
                 <div class="row">
-                    <div class="col-sm-3">
+                    <div class="col-auto">
                         <NavBar/>
                     </div>
-                    <div class="col-sm-9">
+                    <div class="col">
                         {this.props.children}
                     </div>
                 </div>
