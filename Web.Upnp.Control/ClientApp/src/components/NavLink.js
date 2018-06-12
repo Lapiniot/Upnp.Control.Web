@@ -1,30 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { Icon } from './Icon';
 
-export class NavLink extends Component {
-
-    renderIcon(icon) {
-        return icon && <i class={"fa fa-fw fa-" + icon} />;
-    }
-
-    renderLink(props) {
-        const { to, icon, className, title, children, ...other } = props;
-        return <a href={to} class={"nav-link" + (className ? " " + className : "")} {...other}>{this.renderIcon(icon)}{title || children}</a>
-    }
-
+class LinkTemplate extends React.Component {
     render() {
-        return <li class="nav-item">{this.renderLink(this.props)}</li>;
+        const { type, class: _class, className, active, disabled, glyph, title, children, ...other } = this.props;
+        const LinkElement = type;
+        const finalClass = ['nav-link', _class, className, active && 'active', disabled && 'disabled'].filter(v => !!v).join(' ');
+        return <li className="nav-item"><LinkElement className={finalClass} {...other}><Icon glyph={glyph} />{title}{children}</LinkElement></li>;
     }
 }
 
-export class RouteLink extends NavLink {
+export class NavLink extends React.Component {
 
-    renderLink(props) {
-        const { to, icon, active, disabled, className, title, children, ...other } = props;
-        let c = "nav-link";
-        c += disabled && " disabled" || "";
-        c += active && " active" || "";
-        c += className && " " + className || "";
-        return <Link to={to} class={c} {...other}>{this.renderIcon(icon)}{title || children}</Link>
+    render() {
+        const { to, ...other } = this.props;
+        return <LinkTemplate type={'a'} href={to} {...other} />
+    }
+}
+
+export class RouteLink extends React.Component {
+
+    render() {
+        return <LinkTemplate type={Link} {...this.props} />
     }
 }
