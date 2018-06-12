@@ -1,18 +1,18 @@
 ﻿import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink, RouteLink } from './NavLink';
 
 export class NavBar extends Component {
     displayName = NavBar.name;
 
     render() {
         return (
-            <nav class="navbar navbar-dark bg-dark flex-column justify-content-start align-items-stretch">
-                <div class="navbar-brand">UPnP Controller</div>
-                <ul class="navbar-nav">
-                    <li class="nav-item"><i class="fa fa-home" /><Link to={'/'} class="nav-link">Home</Link></li>
-                    <li class="nav-item"><i class="fa fa-music" /><Link to={'/umi'} class="nav-link">Network Speakers</Link></li>
-                    <li class="nav-item"><i class="fa fa-server" /><Link to={'/upnp'} class="nav-link">UPnP devices</Link></li>
-                    <li class="nav-item"><i class="fa fa-cogs" /><Link to={'/settings'} class="nav-link">Settings</Link></li>
+            <nav class="navbar navbar-light bg-light flex-column align-items-start justify-content-start">
+                <a class="navbar-brand" href="/">UPnP Controller</a>
+                <ul class="navbar-nav mr-auto">
+                    <RouteLink to={'/'} exact icon="home" active>Home</RouteLink>
+                    <RouteLink to={'/umi'} icon="music">Network Speakers</RouteLink>
+                    <RouteLink to={'/upnp'} icon="server">UPnP devices</RouteLink>
+                    <RouteLink to={'/settings'} icon="cogs" disabled>Settings</RouteLink>
                 </ul>
             </nav>
         );

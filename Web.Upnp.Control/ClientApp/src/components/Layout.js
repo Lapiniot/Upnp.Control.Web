@@ -7,13 +7,13 @@ export class Layout extends Component {
     render() {
         return (
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-auto">
+                <div class="row no-gutters">
+                    <div class="col-auto mr-auto">
                         <NavBar/>
                     </div>
-                    <div class="col">
+                    <main class="col">
                         {this.props.children}
-                    </div>
+                    </main>
                 </div>
             </div>
         );
