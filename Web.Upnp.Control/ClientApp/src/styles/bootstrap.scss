@@ -1,6 +1,3 @@
-﻿@import "../../node_modules/bootstrap/scss/bootstrap";
+﻿$enable-gradients: true;
 
-$enable-grid-classes: true;
-
-$enable-gradients : true;
-
+@import "../../node_modules/bootstrap/scss/bootstrap";

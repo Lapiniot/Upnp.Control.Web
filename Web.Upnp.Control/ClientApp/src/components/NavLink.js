@@ -4,9 +4,9 @@ import { Icon } from './Icon';
 
 class LinkTemplate extends React.Component {
     render() {
-        const { type, class: _class, className, active, disabled, glyph, title, children, ...other } = this.props;
-        const LinkElement = type;
-        const finalClass = ['nav-link', _class, className, active && 'active', disabled && 'disabled'].filter(v => !!v).join(' ');
+        const { type: LinkElement, class: classAttr, className, active, disabled, glyph, title, children, ...other } = this.props;
+        const finalClass = ['nav-link', classAttr, className, active && 'active', disabled && 'disabled'].
+            filter(v => !!v).join(' ');
         return <li className="nav-item"><LinkElement className={finalClass} {...other}><Icon glyph={glyph} />{title}{children}</LinkElement></li>;
     }
 }
@@ -19,7 +19,7 @@ export class NavLink extends React.Component {
     }
 }
 
-export class RouteLink extends React.Component {
+export default class RouteLink extends React.Component {
 
     render() {
         return <LinkTemplate type={Link} {...this.props} />

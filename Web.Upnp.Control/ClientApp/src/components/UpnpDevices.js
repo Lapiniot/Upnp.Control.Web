@@ -1,6 +1,6 @@
-﻿import React, { Component } from 'react';
+﻿import React from 'react';
 
-export class UpnpDevices extends Component {
+export class UpnpDevices extends React.Component {
     displayName = UpnpDevices.name;
 
     render() {

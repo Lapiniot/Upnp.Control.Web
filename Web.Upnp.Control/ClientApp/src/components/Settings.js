@@ -1,6 +1,6 @@
-﻿import React, { Component } from 'react';
+﻿import React from 'react';
 
-export class Settings extends Component {
+export class Settings extends React.Component {
     displayName = Settings.name;
 
     render() {
