@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,8 @@ namespace Web.Upnp.Control
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -24,13 +27,14 @@ namespace Web.Upnp.Control
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseMvcWithDefaultRoute();
 
             app.UseSpaStaticFiles();
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
+                if(env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer("start");
                 }

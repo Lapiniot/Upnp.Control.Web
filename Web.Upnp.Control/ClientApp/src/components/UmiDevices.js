@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 
-export class UmiDevices extends React.Component {
+export  default class UmiDevices extends React.Component {
     displayName = UmiDevices.name;
 
     render() {

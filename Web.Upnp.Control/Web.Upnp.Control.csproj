@@ -19,6 +19,12 @@
     <Content Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\IoT.Protocol\IoT.Protocol.csproj" />
+    <ProjectReference Include="..\IoT.Protocol.Upnp\IoT.Protocol.Upnp.csproj" />
+    <ProjectReference Include="..\IoT.Device.Upnp\IoT.Device.UPnP.csproj" />
+  </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->

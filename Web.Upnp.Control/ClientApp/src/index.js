@@ -4,12 +4,12 @@ import './css/font-awesome.css';
 import React from 'react';
 import { Route } from 'react-router';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import { Layout } from './components/Layout';
-import { Home } from './components/Home';
-import { UmiDevices } from './components/UmiDevices';
-import { UpnpDevices } from './components/UpnpDevices';
-import { Settings } from './components/Settings';
+import {BrowserRouter } from 'react-router-dom';
+import Layout from './components/Layout';
+import Home from './components/Home';
+import UmiDevices from './components/UmiDevices';
+import UpnpDevices from './components/UpnpDevices';
+import Settings from './components/Settings';
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const container = document.getElementById('root-view');

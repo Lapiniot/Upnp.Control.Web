@@ -1,5 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using IoT.Protocol;
+using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Mvc;
+using Web.Upnp.Control.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,9 +16,29 @@ namespace Web.Upnp.Control.Controllers
     {
         // GET: api/<controller>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<UpnpDevice>> Get()
         {
-            return new[] {"value1", "value2"};
+            List<Task<UpnpDeviceDescription>> tasks = new List<Task<UpnpDeviceDescription>>();
+
+            var enumerator = new IoT.Device.Upnp.UpnpDeviceEnumerator(UpnpServices.RootDevice);
+
+            foreach(var d in enumerator.Enumerate(TimeSpan.FromSeconds(5)))
+            {
+                tasks.Add(d.GetDescriptionAsync());
+            }
+
+            await Task.WhenAll(tasks);
+
+            return tasks.Where(t => t.IsCompletedSuccessfully).
+                Select(t => new UpnpDevice(t.Result.Udn, t.Result.Location)
+                {
+                    DeviceType = t.Result.DeviceType,
+                    Name = t.Result.FriendlyName,
+                    Manufacturer = t.Result.Manufacturer,
+                    Description = t.Result.ModelDescription,
+                    ModelName = t.Result.ModelName,
+                    ModelNumber = t.Result.ModelNumber
+                });
         }
 
         // GET api/<controller>/5
@@ -20,24 +46,6 @@ namespace Web.Upnp.Control.Controllers
         public string Get(int id)
         {
             return "value";
-        }
-
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

@@ -5,12 +5,10 @@
     }
 }*/
 .navbar {
-  margin-left: -15px;
+  
   min-height: 100vh; }
 
-/*.navbar .navbar-brand {
-    background-color: blueviolet;
-}*/
-/*.navbar .navbar-nav {
-    background-color: aquamarine;
-}*/
+.t-label {
+  /*white-space: nowrap !important;*/
+  /*overflow: hidden; */
+}

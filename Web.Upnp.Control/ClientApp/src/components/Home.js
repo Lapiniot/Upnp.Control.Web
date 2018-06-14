@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 
-export class Home extends React.Component {
+export default class Home extends React.Component {
     displayName = Home.name;
 
     render() {
