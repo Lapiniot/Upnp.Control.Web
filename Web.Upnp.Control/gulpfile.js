@@ -10,8 +10,6 @@ var gulp = require("gulp"),
 //});
 
 const sources = [
-    './ClientApp/src/styles/bootstrap.scss',
-    './ClientApp/src/styles/font-awesome.scss',
     './ClientApp/src/styles/index.scss'
 ];
 

@@ -1,4 +1,13 @@
-﻿$max-width: 767px;
+﻿$enable-gradients: true;
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+$fa-font-path: "../fonts";
+
+@import "../../node_modules/font-awesome/scss/font-awesome.scss";
+
+
+$max-width: 767px;
 $padding-body: 50px;
 
 /*@media (max-width: $max-width) {
@@ -13,7 +22,19 @@ $padding-body: 50px;
     min-height: 100vh;
 }
 
-.t-label{
-    white-space: nowrap !important;
-    overflow: hidden;
-}
+.form-table{
+    @extend .d-table;
+    & > * {
+       @extend .d-table-row;
+       & > *{
+           @extend .d-table-cell;
+           &:first-child{
+                text-align: right;
+                padding-right: 0.5rem;
+                &::after{
+                    content: ':';
+                }
+           }
+       }
+    }
+} 
