@@ -46,6 +46,12 @@ $fa-font-path: "../fonts";
 
 .grid{
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     grid-gap: 15px;
+}
+
+.upnp-dev-icon{
+    width: 48px !important;
+    height: auto;
+    margin-right: 0.5rem;
 }

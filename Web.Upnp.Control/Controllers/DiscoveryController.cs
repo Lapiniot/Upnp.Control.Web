@@ -16,7 +16,7 @@ namespace Web.Upnp.Control.Controllers
     {
         // GET: api/<controller>
         [HttpGet]
-        public async Task<IEnumerable<UpnpDevice>> Get()
+        public async Task<IEnumerable<object>> Get()
         {
             List<Task<UpnpDeviceDescription>> tasks = new List<Task<UpnpDeviceDescription>>();
 
@@ -30,14 +30,17 @@ namespace Web.Upnp.Control.Controllers
             await Task.WhenAll(tasks);
 
             return tasks.Where(t => t.IsCompletedSuccessfully).
-                Select(t => new UpnpDevice(t.Result.Udn, t.Result.Location)
+                Select(t => new
                 {
+                    Udn = t.Result.Udn,
+                    Url = t.Result.Location,
                     DeviceType = t.Result.DeviceType,
                     Name = t.Result.FriendlyName,
                     Manufacturer = t.Result.Manufacturer,
                     Description = t.Result.ModelDescription,
                     ModelName = t.Result.ModelName,
-                    ModelNumber = t.Result.ModelNumber
+                    ModelNumber = t.Result.ModelNumber,
+                    Icons = t.Result.Icons.Select(i => new { W = i.Width, H = i.Height, Url = i.Uri })
                 });
         }
 

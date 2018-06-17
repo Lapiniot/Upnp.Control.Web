@@ -9,8 +9,8 @@ export default class DeviceInfo extends React.Component {
 
         return <div className="form-table">
             <div>
-                <div>USN</div>
-                <div>{data.usn}</div>
+                <div>UDN</div>
+                <div>{data.udn}</div>
             </div>
             <div>
                 <div>Type</div>
