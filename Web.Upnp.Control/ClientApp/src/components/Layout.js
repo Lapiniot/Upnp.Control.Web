@@ -1,5 +1,5 @@
 ﻿import React from 'react'
-import NavBar from './NavBar'
+import NavBar from './navigation/NavBar'
 
 export default class Layout extends React.Component {
     displayName = Layout.name;

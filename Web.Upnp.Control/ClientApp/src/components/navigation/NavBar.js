@@ -2,6 +2,7 @@
 import {RouteLink} from './NavLink';
 
 export default class NavBar extends React.Component {
+    
     displayName = NavBar.name;
 
     render() {

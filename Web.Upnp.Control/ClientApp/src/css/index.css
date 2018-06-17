@@ -4461,7 +4461,7 @@ button.bg-dark:focus {
 .d-table-cell, .form-table > * > * {
   display: table-cell !important; }
 
-.d-flex {
+.d-flex, .d-flex-fill, .d-flex-fill-center {
   display: flex !important; }
 
 .d-inline-flex {
@@ -4643,7 +4643,7 @@ button.bg-dark:focus {
 .justify-content-end {
   justify-content: flex-end !important; }
 
-.justify-content-center {
+.justify-content-center, .d-flex-fill-center {
   justify-content: center !important; }
 
 .justify-content-between {
@@ -4658,7 +4658,7 @@ button.bg-dark:focus {
 .align-items-end {
   align-items: flex-end !important; }
 
-.align-items-center {
+.align-items-center, .d-flex-fill-center {
   align-items: center !important; }
 
 .align-items-baseline {
@@ -5098,7 +5098,7 @@ button.bg-dark:focus {
 .w-75 {
   width: 75% !important; }
 
-.w-100 {
+.w-100, .d-flex-fill, .d-flex-fill-center {
   width: 100% !important; }
 
 .w-auto {
@@ -5113,7 +5113,7 @@ button.bg-dark:focus {
 .h-75 {
   height: 75% !important; }
 
-.h-100 {
+.h-100, .d-flex-fill, .d-flex-fill-center {
   height: 100% !important; }
 
 .h-auto {

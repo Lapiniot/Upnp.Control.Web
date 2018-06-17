@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink as RNavLink } from 'react-router-dom';
-import Icon from './Icon';
+import Icon from '../Icon';
 
 class LinkTemplate extends React.Component {
     render() {
@@ -13,6 +13,8 @@ class LinkTemplate extends React.Component {
 
 export class NavLink extends React.Component {
 
+    displayName = NavLink.name;
+
     render() {
         const { to, ...other } = this.props;
         return <LinkTemplate type={'a'} href={to} {...other} />
@@ -20,6 +22,8 @@ export class NavLink extends React.Component {
 }
 
 export class RouteLink extends React.Component {
+
+    displayName = RouteLink.name;
 
     render() {
         return <LinkTemplate type={RNavLink} {...this.props} />

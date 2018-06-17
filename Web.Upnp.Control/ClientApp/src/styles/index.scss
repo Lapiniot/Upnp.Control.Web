@@ -38,3 +38,15 @@ $padding-body: 50px;
        }
     }
 } 
+
+.d-flex-fill{
+    @extend .d-flex;
+    @extend .w-100;
+    @extend .h-100;
+}
+
+.d-flex-fill-center{
+    @extend .d-flex-fill;
+    @extend .justify-content-center;
+    @extend .align-items-center;
+}
