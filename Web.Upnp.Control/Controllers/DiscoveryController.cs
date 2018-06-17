@@ -40,7 +40,8 @@ namespace Web.Upnp.Control.Controllers
                     Description = t.Result.ModelDescription,
                     ModelName = t.Result.ModelName,
                     ModelNumber = t.Result.ModelNumber,
-                    Icons = t.Result.Icons.Select(i => new { W = i.Width, H = i.Height, Url = i.Uri })
+                    Icons = t.Result.Icons.Select(i => new { W = i.Width, H = i.Height, Url = i.Uri }),
+                    Services = t.Result.Services.Select(s => new { Id = s.ServiceId, url = s.MetadataUri }).ToArray()
                 });
         }
 
