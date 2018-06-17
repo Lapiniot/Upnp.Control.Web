@@ -20,8 +20,14 @@ export default class DeviceList extends React.Component {
             return <div className="d-flex-fill-center"><Spinner>Loading...</Spinner></div>
         }
         else {
-            return (<div class="d-flex flex-row flex-wrap ">{
-                [this.state.data.map(e => <DeviceCard data={e} />)]
+            return (<div class="grid">{
+                [this.state.data.map(e => <DeviceCard data={e} class="col-sm-6" />)]
+            }
+            {
+                [this.state.data.map(e => <DeviceCard data={e} class="col-sm-6" />)]
+            }
+            {
+                [this.state.data.map(e => <DeviceCard data={e} class="col-sm-6" />)]
             }</div>);
         }
     }

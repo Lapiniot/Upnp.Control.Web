@@ -6,20 +6,13 @@ $fa-font-path: "../fonts";
 
 @import "../../node_modules/font-awesome/scss/font-awesome.scss";
 
-
-$max-width: 767px;
-$padding-body: 50px;
-
-/*@media (max-width: $max-width) {
-    // On small screens, the nav menu spans the full width of the screen. Leave a space for it.
-    body {
-        padding-top: $padding-body;
-    }
-}*/
-
-.navbar {
-    margin-left: -15px;
+.navbar-side {
+    @extend .navbar;
+    flex-direction: column;
+    justify-content: flex-start;
     min-height: 100vh;
+    position: sticky;
+    top: 0;
 }
 
 .form-table{
@@ -41,12 +34,18 @@ $padding-body: 50px;
 
 .d-flex-fill{
     @extend .d-flex;
-    @extend .w-100;
-    @extend .h-100;
+    width: 100%;
+    height: 100%;
 }
 
 .d-flex-fill-center{
     @extend .d-flex-fill;
-    @extend .justify-content-center;
-    @extend .align-items-center;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 15px;
 }
