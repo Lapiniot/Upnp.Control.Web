@@ -10,9 +10,9 @@ var gulp = require("gulp"),
 //});
 
 const sources = [
-    './ClientApp/src/styles/index.scss'
+    "./ClientApp/src/styles/index.scss"
 ];
 
-const destination = './ClientApp/src/css';
+const destination = "./ClientApp/src/css";
 
 gulp.task("SASS", () => gulp.src(sources).pipe(sass()).pipe(gulp.dest(destination)));

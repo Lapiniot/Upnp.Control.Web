@@ -6,9 +6,10 @@ namespace Web.Upnp.Control.Models
     {
         public UpnpDevice(string usn, Uri descriptionUri)
         {
-            this.DescriptionUri = descriptionUri;
+            DescriptionUri = descriptionUri;
             Usn = usn;
         }
+
         public Uri DescriptionUri { get; }
 
         public string Usn { get; }

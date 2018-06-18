@@ -21,7 +21,7 @@ export default class DeviceList extends React.Component {
                    </div>;
         } else {
             return <div className="grid">
-                       {[this.state.data.map((e, index) => <DeviceCard data={e} id={index} />)]}
+                       {[this.state.data.map((e, index) => <DeviceCard data={e} id={index}/>)]}
                    </div>;
         }
     }
