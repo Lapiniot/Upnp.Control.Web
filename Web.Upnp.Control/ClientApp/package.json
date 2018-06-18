@@ -3,6 +3,8 @@
   "name": "upnp.control.web",
   "private": true,
   "dependencies": {
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.3",
     "bootstrap": "^4.1.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",

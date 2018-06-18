@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default class DeviceInfo extends React.Component {
 
@@ -8,26 +8,26 @@ export default class DeviceInfo extends React.Component {
         const data = this.props.data;
 
         return <div className="form-table">
-            <div>
-                <div>UDN</div>
-                <div>{data.udn}</div>
-            </div>
-            <div>
-                <div>Type</div>
-                <div>{data.deviceType}</div>
-            </div>
-            <div>
-                <div>Maker</div>
-                <div>{data.manufacturer}</div>
-            </div>
-            <div>
-                <div>Model</div>
-                <div>{data.modelName}</div>
-            </div>
-            <div>
-                <div>Model #</div>
-                <div>{data.modelNumber}</div>
-            </div>
-        </div>
+                   <div>
+                       <div>UDN</div>
+                       <div>{data.udn}</div>
+                   </div>
+                   <div>
+                       <div>Type</div>
+                       <div>{data.deviceType}</div>
+                   </div>
+                   <div>
+                       <div>Maker</div>
+                       <div>{data.manufacturer}</div>
+                   </div>
+                   <div>
+                       <div>Model</div>
+                       <div>{data.modelName}</div>
+                   </div>
+                   <div>
+                       <div>Model #</div>
+                       <div>{data.modelNumber}</div>
+                   </div>
+               </div>;
     }
 }

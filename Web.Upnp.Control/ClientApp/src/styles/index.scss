@@ -15,42 +15,46 @@ $fa-font-path: "../fonts";
     top: 0;
 }
 
-.form-table{
+.form-table {
     @extend .d-table;
+
     & > * {
-       @extend .d-table-row;
-       & > *{
-           @extend .d-table-cell;
-           &:first-child{
+        @extend .d-table-row;
+
+        & > * {
+            @extend .d-table-cell;
+
+            &:first-child {
                 text-align: right;
                 padding-right: 0.5rem;
-                &::after{
+
+                &::after {
                     content: ':';
                 }
-           }
-       }
+            }
+        }
     }
-} 
+}
 
-.d-flex-fill{
+.d-flex-fill {
     @extend .d-flex;
     width: 100%;
     height: 100%;
 }
 
-.d-flex-fill-center{
+.d-flex-fill-center {
     @extend .d-flex-fill;
     justify-content: center;
     align-items: center;
 }
 
-.grid{
+.grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 15px;
 }
 
-.upnp-dev-icon{
+.upnp-dev-icon {
     width: 48px !important;
     height: auto;
     margin-right: 0.5rem;
