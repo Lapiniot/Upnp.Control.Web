@@ -23,7 +23,7 @@ export default class DeviceCard extends React.Component {
 
         const data = this.props.data;
 
-        return <div className="card bg-light">
+        return <div className="card">
                    <div className="card-header d-flex flex-row">
                        {this.renderIcon()}
                        <div>

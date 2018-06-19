@@ -1,4 +1,5 @@
 ﻿import React from "react";
+import Icon from "../Icon"
 
 export default class DeviceServiceList extends React.Component {
 
@@ -9,18 +10,18 @@ export default class DeviceServiceList extends React.Component {
         const target = `card-${this.props.id}`;
 
         return <div>
-            <a className="card-link" data-toggle="collapse" href={`#${target}`}
-                      role="button" aria-expanded="false">
-                       Services
-                   </a>
-            <div className="collapse" id={target}>
-                       <ul className="list-group list-group-flush">
+                   <button className="btn btn-block btn-light text-left" aria-expanded="false" role="button"
+                           data-toggle="collapse" data-target={`#${target}`} data-controls={target} >
+                       <Icon glyph="angle-down"/>Services
+                   </button>
+                   <div className="collapse" id={target}>
+                       <ul className="list-group list-unstyled">
                            {[
-                           this.props.data.map(s =>
-                               <li className="list-group-item">
+                               this.props.data.map(s =>
+                                   <li className="list-group-item">
                                    <a href={s.url} className="card-link">{s.id}</a>
                                </li>)
-                       ]}
+                           ]}
                        </ul>
                    </div>
                </div>;
