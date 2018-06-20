@@ -15,7 +15,7 @@ export default class DeviceServiceList extends React.Component {
                        <Icon glyph="angle-down"/>Services
                    </button>
                    <div className="collapse" id={target}>
-                       <ul className="list-group list-unstyled">
+                       <ul className="list-group">
                            {[
                                this.props.data.map(s =>
                                    <li className="list-group-item">
