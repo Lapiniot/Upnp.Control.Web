@@ -9,7 +9,7 @@ export default class UpnpDevices extends React.Component {
     render() {
         return <DataView dataUri="/api/discovery"
                          containerTemplate={"div"}
-                         containerProps={{ className: "grid" }}
+                         containerProps={{ className: "d-grid grid-c1 grid-xl-c2 grid-xxxl-c3 grid-xxxxl-c4" }}
                          itemTemplate={DeviceCard} />;
     }
 }

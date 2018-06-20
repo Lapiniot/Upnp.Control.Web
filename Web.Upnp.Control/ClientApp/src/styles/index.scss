@@ -6,6 +6,8 @@ $fa-font-path: "../fonts";
 
 @import "../../node_modules/font-awesome/scss/font-awesome.scss";
 
+@import "display-grid.scss";
+
 .navbar-side {
     @extend .navbar;
     flex-direction: column;
@@ -46,12 +48,6 @@ $fa-font-path: "../fonts";
     @extend .d-flex-fill;
     justify-content: center;
     align-items: center;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 15px;
 }
 
 .upnp-dev-icon {

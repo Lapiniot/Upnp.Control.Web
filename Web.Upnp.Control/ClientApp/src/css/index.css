@@ -6332,7 +6332,7 @@ a.text-dark:hover, a.text-dark:focus {
   font-weight: normal;
   font-style: normal; }
 
-.fa, .btn.collapsed::before {
+.fa {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;
   font-size: inherit;
@@ -6389,10 +6389,10 @@ a.text-dark:hover, a.text-dark:focus {
 .fa-pull-right {
   float: right; }
 
-.fa.fa-pull-left, .fa-pull-left.btn.collapsed::before {
+.fa.fa-pull-left {
   margin-right: .3em; }
 
-.fa.fa-pull-right, .fa-pull-right.btn.collapsed::before {
+.fa.fa-pull-right {
   margin-left: .3em; }
 
 /* Deprecated as of 4.4.0 */
@@ -6402,10 +6402,10 @@ a.text-dark:hover, a.text-dark:focus {
 .pull-left {
   float: left; }
 
-.fa.pull-left, .pull-left.btn.collapsed::before {
+.fa.pull-left {
   margin-right: .3em; }
 
-.fa.pull-right, .pull-right.btn.collapsed::before {
+.fa.pull-right {
   margin-left: .3em; }
 
 .fa-spin {
@@ -8648,6 +8648,165 @@ a.text-dark:hover, a.text-dark:focus {
   overflow: visible;
   clip: auto; }
 
+/******* Grid Layout utilities *******
+***************************************/
+.d-grid {
+  display: grid;
+  grid-gap: 15px; }
+
+.grid-no-gap {
+  grid-gap: 0 !important; }
+
+.grid-c1 {
+  grid-template-columns: repeat(1, 1fr) !important; }
+
+.grid-c2 {
+  grid-template-columns: repeat(2, 1fr) !important; }
+
+.grid-c3 {
+  grid-template-columns: repeat(3, 1fr) !important; }
+
+.grid-c4 {
+  grid-template-columns: repeat(4, 1fr) !important; }
+
+.grid-c5 {
+  grid-template-columns: repeat(5, 1fr) !important; }
+
+.grid-c6 {
+  grid-template-columns: repeat(6, 1fr) !important; }
+
+.grid-c7 {
+  grid-template-columns: repeat(7, 1fr) !important; }
+
+.grid-c8 {
+  grid-template-columns: repeat(8, 1fr) !important; }
+
+@media (min-width: 576px) {
+  .grid-sm-c1 {
+    grid-template-columns: repeat(1, 1fr) !important; }
+  .grid-sm-c2 {
+    grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-sm-c3 {
+    grid-template-columns: repeat(3, 1fr) !important; }
+  .grid-sm-c4 {
+    grid-template-columns: repeat(4, 1fr) !important; }
+  .grid-sm-c5 {
+    grid-template-columns: repeat(5, 1fr) !important; }
+  .grid-sm-c6 {
+    grid-template-columns: repeat(6, 1fr) !important; }
+  .grid-sm-c7 {
+    grid-template-columns: repeat(7, 1fr) !important; }
+  .grid-sm-c8 {
+    grid-template-columns: repeat(8, 1fr) !important; } }
+
+@media (min-width: 768px) {
+  .grid-md-c1 {
+    grid-template-columns: repeat(1, 1fr) !important; }
+  .grid-md-c2 {
+    grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-md-c3 {
+    grid-template-columns: repeat(3, 1fr) !important; }
+  .grid-md-c4 {
+    grid-template-columns: repeat(4, 1fr) !important; }
+  .grid-md-c5 {
+    grid-template-columns: repeat(5, 1fr) !important; }
+  .grid-md-c6 {
+    grid-template-columns: repeat(6, 1fr) !important; }
+  .grid-md-c7 {
+    grid-template-columns: repeat(7, 1fr) !important; }
+  .grid-md-c8 {
+    grid-template-columns: repeat(8, 1fr) !important; } }
+
+@media (min-width: 992px) {
+  .grid-lg-c1 {
+    grid-template-columns: repeat(1, 1fr) !important; }
+  .grid-lg-c2 {
+    grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-lg-c3 {
+    grid-template-columns: repeat(3, 1fr) !important; }
+  .grid-lg-c4 {
+    grid-template-columns: repeat(4, 1fr) !important; }
+  .grid-lg-c5 {
+    grid-template-columns: repeat(5, 1fr) !important; }
+  .grid-lg-c6 {
+    grid-template-columns: repeat(6, 1fr) !important; }
+  .grid-lg-c7 {
+    grid-template-columns: repeat(7, 1fr) !important; }
+  .grid-lg-c8 {
+    grid-template-columns: repeat(8, 1fr) !important; } }
+
+@media (min-width: 1200px) {
+  .grid-xl-c1 {
+    grid-template-columns: repeat(1, 1fr) !important; }
+  .grid-xl-c2 {
+    grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-xl-c3 {
+    grid-template-columns: repeat(3, 1fr) !important; }
+  .grid-xl-c4 {
+    grid-template-columns: repeat(4, 1fr) !important; }
+  .grid-xl-c5 {
+    grid-template-columns: repeat(5, 1fr) !important; }
+  .grid-xl-c6 {
+    grid-template-columns: repeat(6, 1fr) !important; }
+  .grid-xl-c7 {
+    grid-template-columns: repeat(7, 1fr) !important; }
+  .grid-xl-c8 {
+    grid-template-columns: repeat(8, 1fr) !important; } }
+
+@media (min-width: 1600px) {
+  .grid-xxl-c1 {
+    grid-template-columns: repeat(1, 1fr) !important; }
+  .grid-xxl-c2 {
+    grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-xxl-c3 {
+    grid-template-columns: repeat(3, 1fr) !important; }
+  .grid-xxl-c4 {
+    grid-template-columns: repeat(4, 1fr) !important; }
+  .grid-xxl-c5 {
+    grid-template-columns: repeat(5, 1fr) !important; }
+  .grid-xxl-c6 {
+    grid-template-columns: repeat(6, 1fr) !important; }
+  .grid-xxl-c7 {
+    grid-template-columns: repeat(7, 1fr) !important; }
+  .grid-xxl-c8 {
+    grid-template-columns: repeat(8, 1fr) !important; } }
+
+@media (min-width: 1920px) {
+  .grid-xxxl-c1 {
+    grid-template-columns: repeat(1, 1fr) !important; }
+  .grid-xxxl-c2 {
+    grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-xxxl-c3 {
+    grid-template-columns: repeat(3, 1fr) !important; }
+  .grid-xxxl-c4 {
+    grid-template-columns: repeat(4, 1fr) !important; }
+  .grid-xxxl-c5 {
+    grid-template-columns: repeat(5, 1fr) !important; }
+  .grid-xxxl-c6 {
+    grid-template-columns: repeat(6, 1fr) !important; }
+  .grid-xxxl-c7 {
+    grid-template-columns: repeat(7, 1fr) !important; }
+  .grid-xxxl-c8 {
+    grid-template-columns: repeat(8, 1fr) !important; } }
+
+@media (min-width: 2560px) {
+  .grid-xxxxl-c1 {
+    grid-template-columns: repeat(1, 1fr) !important; }
+  .grid-xxxxl-c2 {
+    grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-xxxxl-c3 {
+    grid-template-columns: repeat(3, 1fr) !important; }
+  .grid-xxxxl-c4 {
+    grid-template-columns: repeat(4, 1fr) !important; }
+  .grid-xxxxl-c5 {
+    grid-template-columns: repeat(5, 1fr) !important; }
+  .grid-xxxxl-c6 {
+    grid-template-columns: repeat(6, 1fr) !important; }
+  .grid-xxxxl-c7 {
+    grid-template-columns: repeat(7, 1fr) !important; }
+  .grid-xxxxl-c8 {
+    grid-template-columns: repeat(8, 1fr) !important; } }
+
 .navbar-side {
   flex-direction: column;
   justify-content: flex-start;
@@ -8668,11 +8827,6 @@ a.text-dark:hover, a.text-dark:focus {
 .d-flex-fill-center {
   justify-content: center;
   align-items: center; }
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-gap: 15px; }
 
 .upnp-dev-icon {
   width: 48px !important;
