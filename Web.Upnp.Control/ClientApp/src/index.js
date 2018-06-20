@@ -6,8 +6,8 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./components/Home";
-import UmiDevices from "./components/umi/DeviceList";
-import UpnpDevices from "./components/upnp/DeviceList";
+import UmiDevices from "./components/umi/UmiDevices";
+import UpnpDevices from "./components/upnp/UpnpDevices";
 import Settings from "./components/Settings";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
