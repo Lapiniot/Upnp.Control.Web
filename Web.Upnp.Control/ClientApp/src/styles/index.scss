@@ -19,20 +19,24 @@ $fa-font-path: "../fonts";
 
 .form-table {
     @extend .d-table;
-
+    overflow: hidden;
     & > * {
         @extend .d-table-row;
 
         & > * {
             @extend .d-table-cell;
 
-            &:first-child {
+            &:nth-child(1){
                 text-align: right;
                 padding-right: 0.5rem;
-
+                white-space: nowrap !important;
                 &::after {
                     content: ':';
                 }
+            };
+            &:nth-child(2){
+                @include text-truncate;
+                word-wrap: none;
             }
         }
     }
@@ -54,4 +58,20 @@ $fa-font-path: "../fonts";
     width: 48px !important;
     height: auto;
     margin-right: 0.5rem;
+}
+
+[data-toggle="collapse"]{
+    & > i{
+        @extend .fa;
+        @extend .fa-fw;
+        font-weight: bolder;
+        &::before{
+            content: "\F106";
+        }
+    };
+    &[class~="collapsed"] > i{
+        &:before{
+            content: "\F107";
+        }
+    };
 }

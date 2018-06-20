@@ -6,15 +6,15 @@ export default class Spoiler extends React.Component {
     displayName = Spoiler.name;
 
     render() {
-        return <div id={this.props.uniqueId}>
-                   <button className="btn btn-block btn-light text-left"
-                           aria-expanded="false" role="button" data-toggle="collapse"
-                           data-target={`div#${this.props.uniqueId}>div.collapse`}>
-                       <Icon glyph="angle-down" />{this.props.title}
-                   </button>
-                   <div className="collapse">
-                       {this.props.children}
-                   </div>
-               </div>;
+        return <div>
+                    <button className="btn btn-block btn-light text-left collapsed"
+                            aria-expanded="false" aria-controls={this.props.uniqueId} role="button"
+                            data-toggle="collapse" data-target={`#${this.props.uniqueId}`}>
+                        <i />{this.props.title}
+                    </button>
+                    <div className="collapse" id={this.props.uniqueId}>
+                        {this.props.children}
+                    </div>
+                </div>;
     }
-}
+}   
