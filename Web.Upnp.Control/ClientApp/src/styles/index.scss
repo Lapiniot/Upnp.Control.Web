@@ -62,17 +62,18 @@ $fa-font-path: "../fonts";
     margin-right: 0.5rem;
 }
 
-.spoiler {
 
-    @include border-radius;
-    border: $border-width solid $border-color !important;
+.spoiler {
+    @include border-radius($border-radius);
+    border: $border-width solid $border-color;
 
     & > [data-toggle="collapse"] {
         @extend .btn;
         @extend .btn-block;
         text-align: left;
-        outline: 0 !important;
         box-shadow: none !important;
+        outline: none !important;
+        @include border-bottom-radius(0);
 
         & > i {
             @extend .fa;
@@ -85,11 +86,18 @@ $fa-font-path: "../fonts";
         }
 
         &.collapsed {
+            @include border-radius(calc(#{$border-radius} - #{$border-width}));
+
             & > i {
                 &:before {
                     @extend .fa-angle-down;
                 }
             }
         }
+    }
+
+    & > .collapse {
+        @include border-top-radius(0);
+        @include border-bottom-radius(calc(#{$border-radius} - #{$border-width}));
     }
 }
