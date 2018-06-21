@@ -8,10 +8,10 @@ export default class DeviceServiceList extends React.Component {
     render() {
 
         return <Spoiler title="Supported services" uniqueId={`card-${this.props["data-id"]}-s`}>
-                   <ul className="list-group">
+            <ul className="list-group list-group-flush">
                        {[
                            this.props["data-source"].map(s =>
-                               <li className="list-group-item">
+                        <li className="list-group-item">
                                    <a href={s.url} className="card-link">{s.id}</a>
                                </li>)
                        ]}

@@ -20,23 +20,25 @@ $fa-font-path: "../fonts";
 .form-table {
     @extend .d-table;
     overflow: hidden;
+
     & > * {
         @extend .d-table-row;
 
         & > * {
             @extend .d-table-cell;
 
-            &:nth-child(1){
+            &:nth-child(1) {
                 text-align: right;
                 padding-right: 0.5rem;
                 white-space: nowrap !important;
+
                 &::after {
                     content: ':';
                 }
-            };
-            &:nth-child(2){
+            }
+
+            &:nth-child(2) {
                 @include text-truncate;
-                word-wrap: none;
             }
         }
     }
@@ -60,18 +62,34 @@ $fa-font-path: "../fonts";
     margin-right: 0.5rem;
 }
 
-[data-toggle="collapse"]{
-    & > i{
-        @extend .fa;
-        @extend .fa-fw;
-        font-weight: bolder;
-        &::before{
-            content: "\F106";
+.spoiler {
+
+    @include border-radius;
+    border: $border-width solid $border-color !important;
+
+    & > [data-toggle="collapse"] {
+        @extend .btn;
+        @extend .btn-block;
+        text-align: left;
+        outline: 0 !important;
+        box-shadow: none !important;
+
+        & > i {
+            @extend .fa;
+            @extend .fa-fw;
+            font-weight: bolder;
+
+            &:before {
+                @extend .fa-angle-up;
+            }
         }
-    };
-    &[class~="collapsed"] > i{
-        &:before{
-            content: "\F107";
+
+        &.collapsed {
+            & > i {
+                &:before {
+                    @extend .fa-angle-down;
+                }
+            }
         }
-    };
+    }
 }
