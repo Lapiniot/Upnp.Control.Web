@@ -1,8 +1,15 @@
 ﻿$grid-layout-max-columns: 8;
 $grid-layout-breakpoints: map-merge($grid-breakpoints, (xxl: 1600px, xxxl: 1920px, xxxxl: 2560px));
 
-/******* Grid Layout utilities *******
-***************************************/
+@mixin grid-template($rows, $columns) {
+    @if($columns) {
+        grid-template-columns: repeat($columns, 1fr);
+    }
+
+    @if($rows) {
+        grid-template-rows: repeat($rows, 1fr);
+    }
+}
 
 .d-grid {
     display: grid;
@@ -19,7 +26,7 @@ $grid-layout-breakpoints: map-merge($grid-breakpoints, (xxl: 1600px, xxxl: 1920p
 
         @for $i from 1 through $grid-layout-max-columns {
             .grid#{$infix}-c#{$i} {
-                grid-template-columns: repeat($i, 1fr) !important;
+                @include grid-template(null, $i);
             }
         }
     }

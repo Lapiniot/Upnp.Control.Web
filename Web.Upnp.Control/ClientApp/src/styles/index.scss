@@ -1,11 +1,27 @@
-﻿$enable-gradients: true;
+﻿/********** Bootstrap core styles **********/
 
+$enable-gradients: true;
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
-$fa-font-path: "../webfonts";
 
+/********** Font-Awesome core styles **********/
+
+$fa-font-path: "../webfonts";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/fa-solid.scss";
+
+@mixin fa-icon-wide($quarter-fraction) {
+    text-align: center;
+    width: #{1 + 0.25 * $quarter-fraction}rem;
+}
+
+@for $i from 1 through 4 {
+    .fa-w#{$i} {
+        @include fa-icon-wide($i);
+    }
+}
+
+/********** Grid Layout utilities **********/
 
 @import "display-grid.scss";
 
@@ -67,20 +83,19 @@ $fa-font-path: "../webfonts";
 .spoiler {
     @include border-radius($border-radius);
     border: $border-width solid $border-color;
+    overflow: hidden;
 
     & > [data-toggle="collapse"] {
         @extend .btn;
         @extend .btn-block;
         text-align: left;
         box-shadow: none !important;
-        outline: none !important;
-        @include border-bottom-radius(0);
+        @include border-radius(0);
 
         & > i {
             @include fa-icon;
             @extend .fas;
-            text-align: center;
-            width: 1.25em;
+            @include fa-icon-wide(1);
             font-weight: bolder;
 
             &:before {
@@ -89,7 +104,6 @@ $fa-font-path: "../webfonts";
         }
 
         &.collapsed {
-            @include border-radius(calc(#{$border-radius} - #{$border-width}));
 
             & > i {
                 &:before {
@@ -97,10 +111,5 @@ $fa-font-path: "../webfonts";
                 }
             }
         }
-    }
-
-    & > .collapse {
-        @include border-top-radius(0);
-        @include border-bottom-radius(calc(#{$border-radius} - #{$border-width}));
     }
 }

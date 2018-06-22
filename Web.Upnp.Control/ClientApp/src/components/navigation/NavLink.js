@@ -8,8 +8,8 @@ class LinkTemplate extends React.Component {
         const finalClass = ["nav-item", "nav-link", className, active && "active", disabled && "disabled"]
             .filter(v => !!v).join(" ");
         return <Tag className={finalClass} {...other}>
-                   <Icon glyph={glyph}/>{title}{children}
-               </Tag>;
+            <Icon glyph={glyph} className="fa-w3" />{title}{children}
+        </Tag>;
     }
 }
 
@@ -19,7 +19,7 @@ export class NavLink extends React.Component {
 
     render() {
         const { to, ...other } = this.props;
-        return <LinkTemplate type={"a"} href={to} {...other}/>;
+        return <LinkTemplate type={"a"} href={to} {...other} />;
     }
 }
 
@@ -28,6 +28,6 @@ export class RouteLink extends React.Component {
     displayName = RouteLink.name;
 
     render() {
-        return <LinkTemplate type={RNavLink} {...this.props}/>;
+        return <LinkTemplate type={RNavLink} {...this.props} />;
     }
 }
