@@ -8,7 +8,7 @@ export default class Spinner extends React.Component {
         const { tag, ...other } = this.props;
         const Tag = tag || "h5";
         return <Tag {...other}>
-                   <p className="fa fa-w2 fa-spinner fa-spin"/>{this.props.children}
+            <p className="fa fa-spinner fa-spin x-fa-w-4 "/>{this.props.children}
                </Tag>;
     }
 }

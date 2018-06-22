@@ -8,7 +8,7 @@ class LinkTemplate extends React.Component {
         const finalClass = ["nav-item", "nav-link", className, active && "active", disabled && "disabled"]
             .filter(v => !!v).join(" ");
         return <Tag className={finalClass} {...other}>
-            <Icon glyph={glyph} className="fa-w3" />{title}{children}
+            <Icon glyph={glyph} className="x-fa-w-2"/>{title}{children}
         </Tag>;
     }
 }

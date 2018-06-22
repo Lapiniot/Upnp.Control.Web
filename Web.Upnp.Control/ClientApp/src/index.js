@@ -1,5 +1,8 @@
 ﻿import "./css/index.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js"
+import "bootstrap/dist/js/bootstrap";
+import "@fortawesome/fontawesome-free/js/fontawesome";
+import "@fortawesome/fontawesome-free/js/solid";
+
 import React from "react";
 import { Route } from "react-router";
 import ReactDOM from "react-dom";
