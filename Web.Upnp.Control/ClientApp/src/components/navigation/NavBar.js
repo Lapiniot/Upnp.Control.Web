@@ -12,7 +12,7 @@ export default class NavBar extends React.Component {
                        <RouteLink to="/" exact glyph="home">Home</RouteLink>
                        <RouteLink to="/umi" glyph="music">Network Speakers</RouteLink>
                        <RouteLink to="/upnp" glyph="server">UPnP devices</RouteLink>
-                       <RouteLink to="/settings" glyph="cogs">Settings</RouteLink>
+                       <RouteLink to="/settings" glyph="cog">Settings</RouteLink>
                    </nav>
                </div>;
     }

@@ -1,29 +1,10 @@
-﻿/********** Bootstrap core styles **********/
+﻿@import "bootstrap";
+@import "fontawesome";
+@import "display-grid";
+@import "spoiler-component";
+@import "form-table-component";
 
-$enable-gradients: true;
-@import "../../node_modules/bootstrap/scss/bootstrap";
-
-
-/********** Font-Awesome core styles **********/
-
-$fa-font-path: "../webfonts";
-@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
-@import "../../node_modules/@fortawesome/fontawesome-free/scss/fa-solid.scss";
-
-@mixin fa-icon-wide($quarter-fraction) {
-    text-align: center;
-    width: #{1 + 0.25 * $quarter-fraction}rem;
-}
-
-@for $i from 1 through 4 {
-    .fa-w#{$i} {
-        @include fa-icon-wide($i);
-    }
-}
-
-/********** Grid Layout utilities **********/
-
-@import "display-grid.scss";
+/********** Specific site element styles **********/
 
 .navbar-side {
     @extend .navbar;
@@ -34,82 +15,8 @@ $fa-font-path: "../webfonts";
     top: 0;
 }
 
-.form-table {
-    @extend .d-table;
-    overflow: hidden;
-
-    & > * {
-        @extend .d-table-row;
-
-        & > * {
-            @extend .d-table-cell;
-
-            &:nth-child(1) {
-                text-align: right;
-                padding-right: 0.5rem;
-                white-space: nowrap !important;
-
-                &::after {
-                    content: ':';
-                }
-            }
-
-            &:nth-child(2) {
-                @include text-truncate;
-            }
-        }
-    }
-}
-
-.d-flex-fill {
-    @extend .d-flex;
-    width: 100%;
-    height: 100%;
-}
-
-.d-flex-fill-center {
-    @extend .d-flex-fill;
-    justify-content: center;
-    align-items: center;
-}
-
 .upnp-dev-icon {
     width: 48px !important;
     height: auto;
     margin-right: 0.5rem;
-}
-
-
-.spoiler {
-    @include border-radius($border-radius);
-    border: $border-width solid $border-color;
-    overflow: hidden;
-
-    & > [data-toggle="collapse"] {
-        @extend .btn;
-        @extend .btn-block;
-        text-align: left;
-        box-shadow: none !important;
-        @include border-radius(0);
-
-        & > i {
-            @include fa-icon;
-            @extend .fas;
-            @include fa-icon-wide(1);
-            font-weight: bolder;
-
-            &:before {
-                content: fa-content($fa-var-angle-up);
-            }
-        }
-
-        &.collapsed {
-
-            & > i {
-                &:before {
-                    content: fa-content($fa-var-angle-down);
-                }
-            }
-        }
-    }
 }

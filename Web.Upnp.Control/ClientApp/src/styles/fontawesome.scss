@@ -1,0 +1,49 @@
+﻿/********** Font-Awesome core styles **********/
+
+$fa-font-path: "../webfonts";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/variables";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/mixins";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/core";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/animated";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/fa-solid";
+
+@mixin fa-icon-wide($quarter-fraction) {
+    text-align: center;
+    width: #{1 + 0.25 * $quarter-fraction}rem;
+}
+
+@for $i from 1 through 4 {
+    .fa-w#{$i} {
+        @include fa-icon-wide($i);
+    }
+}
+
+/* Icons referenced by the project */
+
+.#{$fa-css-prefix}-tv:before {
+    content: fa-content($fa-var-tv);
+}
+
+.#{$fa-css-prefix}-server:before {
+    content: fa-content($fa-var-server);
+}
+
+.#{$fa-css-prefix}-home:before {
+    content: fa-content($fa-var-home);
+}
+
+.#{$fa-css-prefix}-music:before {
+    content: fa-content($fa-var-music);
+}
+
+.#{$fa-css-prefix}-cog:before {
+    content: fa-content($fa-var-cog);
+}
+
+.#{$fa-css-prefix}-cogs:before {
+    content: fa-content($fa-var-cogs);
+}
+
+.#{$fa-css-prefix}-spinner:before {
+    content: fa-content($fa-var-spinner);
+}

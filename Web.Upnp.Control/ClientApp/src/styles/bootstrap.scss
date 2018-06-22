@@ -1,0 +1,17 @@
+﻿/********** Bootstrap core styles **********/
+
+$enable-gradients: true;
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+.d-flex-fill {
+    @extend .d-flex;
+    width: 100%;
+    height: 100%;
+}
+
+.d-flex-fill-center {
+    @extend .d-flex-fill;
+    justify-content: center;
+    align-items: center;
+}
