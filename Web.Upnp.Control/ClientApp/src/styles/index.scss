@@ -2,9 +2,10 @@
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
-$fa-font-path: "../fonts";
+$fa-font-path: "../webfonts";
 
-@import "../../node_modules/font-awesome/scss/font-awesome.scss";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/fa-solid.scss";
 
 @import "display-grid.scss";
 
@@ -76,12 +77,14 @@ $fa-font-path: "../fonts";
         @include border-bottom-radius(0);
 
         & > i {
-            @extend .fa;
-            @extend .fa-fw;
+            @include fa-icon;
+            @extend .fas;
+            text-align: center;
+            width: 1.25em;
             font-weight: bolder;
 
             &:before {
-                @extend .fa-angle-up;
+                content: fa-content($fa-var-angle-up);
             }
         }
 
@@ -90,7 +93,7 @@ $fa-font-path: "../fonts";
 
             & > i {
                 &:before {
-                    @extend .fa-angle-down;
+                    content: fa-content($fa-var-angle-down);
                 }
             }
         }

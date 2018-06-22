@@ -3,14 +3,14 @@
   "name": "upnp.control.web",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.1.0",
+    "bootstrap": "^4.1.1",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.3",
-    "bootstrap": "^4.1.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^1.1.4",
-    "font-awesome": "^4.7.0",
     "rimraf": "^2.6.2"
   },
   "scripts": {

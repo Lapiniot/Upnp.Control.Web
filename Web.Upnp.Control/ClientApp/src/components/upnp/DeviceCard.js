@@ -9,7 +9,7 @@ class DeviceIcon extends React.Component {
                         alt={this.props.alt || "[device icon]"} />;
         } else {
             const iconClass = this.props.service === "urn:schemas-upnp-org:device:MediaRenderer:1" ? "tv" : "server";
-            return <i className={`fa fa-${iconClass} upnp-dev-icon align-self-center`} />;
+            return <i className={`fas fa-${iconClass} upnp-dev-icon align-self-center`} />;
         }
     }
 }
@@ -24,7 +24,7 @@ export default class DeviceCard extends React.Component {
 
         return <div className="card">
                    <div className="card-header d-flex flex-row">
-                       <DeviceIcon icon={data.icons.find(i => i.w <= 48)} alt={data.name} service={data.serviceType} />
+                       <DeviceIcon icon={data.icons.find(i => i.w <= 48)} alt={data.name} service={data.deviceType} />
                        <div>
                            <h5 className="card-title">{data.name}</h5>
                            <h6 className="card-subtitle">{data.description}</h6>
