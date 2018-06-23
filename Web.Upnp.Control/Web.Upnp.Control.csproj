@@ -24,6 +24,7 @@
     <ProjectReference Include="..\IoT.Protocol\IoT.Protocol.csproj" />
     <ProjectReference Include="..\IoT.Protocol.Upnp\IoT.Protocol.Upnp.csproj" />
     <ProjectReference Include="..\IoT.Device.Upnp\IoT.Device.UPnP.csproj" />
+    <ProjectReference Include="..\IoT.Device.Xiaomi.Umi\IoT.Device.Xiaomi.Umi.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

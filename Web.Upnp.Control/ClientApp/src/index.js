@@ -9,7 +9,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./components/Home";
-import UmiDevices from "./components/umi/UmiDevices";
+import UmiDevices from "./components/upnp/UmiDevices";
 import UpnpDevices from "./components/upnp/UpnpDevices";
 import Settings from "./components/Settings";
 

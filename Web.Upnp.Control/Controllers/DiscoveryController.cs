@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IoT.Device.Upnp;
+using IoT.Device.Xiaomi.Umi;
 using IoT.Protocol;
 using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +19,43 @@ namespace Web.Upnp.Control.Controllers
         [HttpGet]
         public async Task<IEnumerable<object>> Get()
         {
-            var tasks = new List<Task<UpnpDeviceDescription>>();
+            return await GetUpnpDevices();
+        }
+
+        // GET api/<controller>/5
+        [HttpGet("{type}")]
+        public async Task<IEnumerable<object>> Get(string type)
+        {
+            switch(type)
+            {
+                case "umi":
+                    return await GetUmiDevicesAsync();
+                case "upnp":
+                    return await GetUpnpDevices();
+                default:
+                    throw new ArgumentException("Inalid value", nameof(type));
+            }
+        }
+
+        private static Task<IEnumerable<object>> GetUpnpDevices()
+        {
 
             var enumerator = new UpnpDeviceEnumerator(UpnpServices.RootDevice);
 
-            foreach(var d in enumerator.Enumerate(TimeSpan.FromSeconds(5)))
-            {
-                tasks.Add(d.GetDescriptionAsync());
-            }
+            return GetAllMetadataAsync(enumerator.Enumerate(TimeSpan.FromSeconds(5)));
+        }
+
+        private async Task<IEnumerable<object>> GetUmiDevicesAsync()
+        {
+            var enumerator = new UmiSpeakerEnumerator();
+
+            return await GetAllMetadataAsync(enumerator.Enumerate(TimeSpan.FromSeconds(5)));
+
+        }
+
+        private static async Task<IEnumerable<object>> GetAllMetadataAsync(IEnumerable<UpnpDevice> devices)
+        {
+            var tasks = devices.Select(d => d.GetDescriptionAsync()).ToList();
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
@@ -39,16 +69,9 @@ namespace Web.Upnp.Control.Controllers
                 Description = t.Result.ModelDescription,
                 t.Result.ModelName,
                 t.Result.ModelNumber,
-                Icons = t.Result.Icons.Select(i => new {W = i.Width, H = i.Height, Url = i.Uri}),
-                Services = t.Result.Services.Select(s => new {Id = s.ServiceId, Url = s.MetadataUri}).ToArray()
+                Icons = t.Result.Icons.Select(i => new { W = i.Width, H = i.Height, Url = i.Uri }),
+                Services = t.Result.Services.Select(s => new { Id = s.ServiceId, Url = s.MetadataUri }).ToArray()
             });
-        }
-
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
         }
     }
 }
