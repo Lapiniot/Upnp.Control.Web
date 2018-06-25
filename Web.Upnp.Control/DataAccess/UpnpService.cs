@@ -1,11 +1,16 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Web.Upnp.Control.DataAccess
 {
     public class UpnpService
     {
-        public string Id { get; set; }
+        [JsonIgnore]
+        public int Id { get; set; }
 
-        public Uri Url { get; set; }
+        [JsonProperty("id")]
+        public string ServiceId { get; set; }
+
+        public string Url { get; set; }
     }
 }

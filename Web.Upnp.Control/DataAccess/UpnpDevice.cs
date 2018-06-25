@@ -31,5 +31,6 @@ namespace Web.Upnp.Control.DataAccess
         public List<UpnpDeviceIcon> Icons { get; set; }
 
         public List<UpnpService> Services { get; set; }
+        public bool IsOnline { get; set; }
     }
 }

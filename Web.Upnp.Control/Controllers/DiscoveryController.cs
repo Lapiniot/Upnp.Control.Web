@@ -7,6 +7,7 @@ using IoT.Device.Xiaomi.Umi;
 using IoT.Protocol;
 using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using UpnpDevice = IoT.Device.Upnp.UpnpDevice;
 
@@ -28,7 +29,7 @@ namespace Web.Upnp.Control.Controllers
         [HttpGet]
         public Task<IEnumerable<object>> Get()
         {
-            return GetUpnpDevices();
+            return GetUpnpDevicesAsync();
         }
 
         // GET api/<controller>/5
@@ -40,45 +41,30 @@ namespace Web.Upnp.Control.Controllers
                 case "umi":
                     return await GetUmiDevicesAsync().ConfigureAwait(false);
                 case "upnp":
-                    return await GetUpnpDevices().ConfigureAwait(false);
+                    return await GetUpnpDevicesAsync().ConfigureAwait(false);
                 default:
                     throw new ArgumentException("Inalid value", nameof(type));
             }
         }
 
-        private static Task<IEnumerable<object>> GetUpnpDevices()
+        private async Task<IEnumerable<object>> GetUpnpDevicesAsync()
         {
-            var enumerator = new UpnpDeviceEnumerator(UpnpServices.RootDevice);
-
-            return GetAllMetadataAsync(enumerator.Enumerate(TimeSpan.FromSeconds(5)));
+            return await context.UpnpDevices.
+                Include(d => d.Icons).
+                Include(d => d.Services).
+                Where(d => d.IsOnline).
+                ToArrayAsync();
         }
 
-        private Task<IEnumerable<object>> GetUmiDevicesAsync()
+        private async Task<IEnumerable<object>> GetUmiDevicesAsync()
         {
-            var enumerator = new UmiSpeakerEnumerator();
-
-            return GetAllMetadataAsync(enumerator.Enumerate(TimeSpan.FromSeconds(5)));
+            var umiDevices = await context.UpnpDevices.
+                Include(d => d.Icons).
+                Include(d => d.Services).
+                Where(d => d.IsOnline && d.Description == "The Mi WiFi SoundBox").
+                ToArrayAsync();
+            return umiDevices;
         }
 
-        private static async Task<IEnumerable<object>> GetAllMetadataAsync(IEnumerable<UpnpDevice> devices)
-        {
-            var tasks = devices.Select(d => d.GetDescriptionAsync()).ToList();
-
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-
-            return tasks.Where(t => t.IsCompletedSuccessfully).Select(t => new DataAccess.UpnpDevice
-            {
-                Udn = t.Result.Udn,
-                Location = t.Result.Location.AbsoluteUri,
-                DeviceType = t.Result.DeviceType,
-                FriendlyName = t.Result.FriendlyName,
-                Manufacturer = t.Result.Manufacturer,
-                Description = t.Result.ModelDescription,
-                ModelName = t.Result.ModelName,
-                ModelNumber = t.Result.ModelNumber,
-                Icons = t.Result.Icons.Select(i => new UpnpDeviceIcon {Width = i.Width, Height = i.Height, Url = i.Uri.AbsoluteUri}).ToList(),
-                Services = t.Result.Services.Select(s => new UpnpService {Id = s.ServiceId, Url = s.MetadataUri}).ToList()
-            });
-        }
     }
 }
