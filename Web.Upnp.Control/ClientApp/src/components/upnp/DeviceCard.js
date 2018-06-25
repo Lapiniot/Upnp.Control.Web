@@ -24,7 +24,7 @@ export default class DeviceCard extends React.Component {
 
         return <div className="card">
                    <div className="card-header d-flex flex-row">
-                       <DeviceIcon icon={data.icons.find(i => i.w <= 48)} alt={data.name} service={data.deviceType} />
+                       <DeviceIcon icon={data.icons.find(i => i.w <= 48)} alt={data.name} service={data.type} />
                        <div>
                            <h5 className="card-title">{data.name}</h5>
                            <h6 className="card-subtitle">{data.description}</h6>

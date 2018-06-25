@@ -14,15 +14,15 @@ export default class DeviceInfo extends React.Component {
                    </div>
                    <div>
                        <div>Type</div>
-                       <div>{data.deviceType}</div>
+                       <div>{data.type}</div>
                    </div>
                    <div>
                        <div>Maker</div>
-                       <div>{data.manufacturer}</div>
+                       <div>{data.maker}</div>
                    </div>
                    <div>
                        <div>Model</div>
-                       <div>{data.modelName}</div>
+                       <div>{data.model}</div>
                    </div>
                    <div>
                        <div>Model #</div>
