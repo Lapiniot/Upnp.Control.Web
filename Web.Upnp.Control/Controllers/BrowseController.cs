@@ -16,10 +16,14 @@ namespace Web.Upnp.Control.Controllers
         }
 
         // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id}/{path?}")]
+        public IEnumerable<object> Get(string id, string path)
         {
-            return "value";
+            yield return "value1";
+            yield return "value2";
+            yield return "value3";
+            yield return "value4";
+            yield return "value5";
         }
 
         // POST api/<controller>

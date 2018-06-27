@@ -58,13 +58,11 @@ namespace Web.Upnp.Control.Controllers
 
         private async Task<IEnumerable<object>> GetUmiDevicesAsync()
         {
-            var umiDevices = await context.UpnpDevices.
+            return await context.UpnpDevices.
                 Include(d => d.Icons).
                 Include(d => d.Services).
                 Where(d => d.IsOnline && d.Description == "The Mi WiFi SoundBox").
                 ToArrayAsync();
-            return umiDevices;
         }
-
     }
 }
