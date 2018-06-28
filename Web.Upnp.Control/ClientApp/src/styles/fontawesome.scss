@@ -52,3 +52,7 @@ $fa-font-path: "../webfonts";
 .#{$fa-css-prefix}-folder:before {
     content: fa-content($fa-var-folder);
 }
+
+.#{$fa-css-prefix}-file-download:before {
+    content: fa-content($fa-var-file-download);
+}

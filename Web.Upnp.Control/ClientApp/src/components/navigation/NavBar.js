@@ -9,10 +9,10 @@ export default class NavBar extends React.Component {
         return <div className="navbar-side navbar-dark bg-gradient-dark">
                    <h5 className="navbar-brand">UPnP Controller</h5>
                    <nav className="navbar-nav">
-                       <RouteLink to="/" exact glyph="home">Home</RouteLink>
-                       <RouteLink to="/umi" glyph="music">Network Speakers</RouteLink>
-                       <RouteLink to="/upnp" glyph="server">UPnP devices</RouteLink>
-                       <RouteLink to="/settings" glyph="cog">Settings</RouteLink>
+                       <RouteLink to="/" exact glyph="home" className="nav-item nav-link">Home</RouteLink>
+                       <RouteLink to="/umi" glyph="music" className="nav-item nav-link">Network Speakers</RouteLink>
+                       <RouteLink to="/upnp" glyph="server" className="nav-item nav-link">UPnP devices</RouteLink>
+                       <RouteLink to="/settings" glyph="cog" className="nav-item nav-link">Settings</RouteLink>
                    </nav>
                </div>;
     }

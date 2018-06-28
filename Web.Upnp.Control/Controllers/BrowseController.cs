@@ -1,5 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using IoT.Protocol.Soap;
+using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Web.Upnp.Control.DataAccess;
+using static IoT.Protocol.Upnp.UpnpServices;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,6 +16,13 @@ namespace Web.Upnp.Control.Controllers
     [Route("api/[controller]")]
     public class BrowseController : Controller
     {
+        private readonly UpnpDbContext context;
+
+        public BrowseController(UpnpDbContext context)
+        {
+            this.context = context;
+        }
+
         // GET: api/<controller>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -17,31 +32,21 @@ namespace Web.Upnp.Control.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}/{path?}")]
-        public IEnumerable<object> Get(string id, string path)
+        public async Task<IEnumerable<object>> GetContentAsync(string id, string path)
         {
-            yield return "value1";
-            yield return "value2";
-            yield return "value3";
-            yield return "value4";
-            yield return "value5";
-        }
+            var device = await context.UpnpDevices.Include(d => d.Services).Where(d => d.Udn == id).FirstAsync().ConfigureAwait(false);
 
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+            var cds = device.Services.First(s => s.ServiceType == ContentDirectory);
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            var endpoint = new SoapControlEndpoint(new Uri(cds.ControlUrl));
 
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            var service = new ContentDirectoryService(endpoint);
+
+            endpoint.Connect();
+
+            var content = await service.BrowseAsync("0").ConfigureAwait(false);
+
+            return null;
         }
     }
 }

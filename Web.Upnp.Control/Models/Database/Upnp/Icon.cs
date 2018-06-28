@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace Web.Upnp.Control.DataAccess
+namespace Web.Upnp.Control.Models.Database.Upnp
 {
-    public class UpnpDeviceIcon
+    public class Icon
     {
         [JsonIgnore]
         public int Id { get; set; }
@@ -14,6 +14,7 @@ namespace Web.Upnp.Control.DataAccess
         public int Height { get; set; }
 
         public string Url { get; set; }
+
         public string Mime { get; set; }
     }
 }

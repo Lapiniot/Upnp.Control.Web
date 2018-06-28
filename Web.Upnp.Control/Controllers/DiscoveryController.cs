@@ -21,20 +21,20 @@ namespace Web.Upnp.Control.Controllers
         }
 
         [HttpGet]
-        public Task<IEnumerable<object>> Get()
+        public Task<IEnumerable<object>> GetAsync()
         {
             return GetUpnpDevicesAsync();
         }
 
         [HttpGet("{type}")]
-        public async Task<IEnumerable<object>> Get(string type)
+        public Task<IEnumerable<object>> GetAsync(string type)
         {
             switch(type)
             {
                 case "umi":
-                    return await GetUmiDevicesAsync().ConfigureAwait(false);
+                    return GetUmiDevicesAsync();
                 case "upnp":
-                    return await GetUpnpDevicesAsync().ConfigureAwait(false);
+                    return GetUpnpDevicesAsync();
                 default:
                     throw new ArgumentException("Inalid value", nameof(type));
             }

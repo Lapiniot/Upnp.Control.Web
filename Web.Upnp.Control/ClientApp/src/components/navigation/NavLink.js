@@ -5,7 +5,7 @@ import Icon from "../Icon";
 class LinkTemplate extends React.Component {
     render() {
         const { type: Tag, className, active, disabled, glyph, title, children, ...other } = this.props;
-        const finalClass = ["nav-item", "nav-link", className, active && "active", disabled && "disabled"]
+        const finalClass = [className, active && "active", disabled && "disabled"]
             .filter(v => !!v).join(" ");
         return <Tag className={finalClass} {...other}>
                    <Icon glyph={glyph} className="x-fa-w-2"/>{title}{children}

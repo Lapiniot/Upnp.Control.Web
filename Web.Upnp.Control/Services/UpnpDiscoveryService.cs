@@ -8,7 +8,7 @@ using IoT.Protocol.Upnp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control.DataAccess;
-using UpnpDevice = Web.Upnp.Control.DataAccess.UpnpDevice;
+using Web.Upnp.Control.Models.Database.Upnp;
 
 namespace Web.Upnp.Control.Services
 {
@@ -45,7 +45,7 @@ namespace Web.Upnp.Control.Services
 
                     var devices = tasks.Where(task => task.IsCompletedSuccessfully).
                         Select(task => task.Result).
-                        Select(dev => new UpnpDevice
+                        Select(dev => new Device
                         {
                             Udn = dev.Udn,
                             Location = dev.Location.AbsoluteUri,
@@ -56,8 +56,22 @@ namespace Web.Upnp.Control.Services
                             ModelName = dev.ModelName,
                             ModelNumber = dev.ModelNumber,
                             IsOnline = true,
-                            Icons = dev.Icons.Select(i => new UpnpDeviceIcon {Width = i.Width, Height = i.Height, Mime = i.Mime, Url = i.Uri.AbsoluteUri}).ToList(),
-                            Services = dev.Services.Select(s => new UpnpService {ServiceId = s.ServiceId, Url = s.MetadataUri.AbsoluteUri}).ToList()
+                            Icons = dev.Icons.Select(i => new Icon
+                                {
+                                    Width = i.Width,
+                                    Height = i.Height,
+                                    Mime = i.Mime,
+                                    Url = i.Uri.AbsoluteUri
+                                }).
+                                ToList(),
+                            Services = dev.Services.Select(s => new Service
+                                {
+                                    ServiceId = s.ServiceId,
+                                    ServiceType = s.ServiceType,
+                                    MetadataUrl = s.MetadataUri.AbsoluteUri,
+                                    ControlUrl = s.ControlUri.AbsoluteUri
+                                }).
+                                ToList()
                         });
 
                     await context.AddRangeAsync(devices, cancellationToken).ConfigureAwait(false);

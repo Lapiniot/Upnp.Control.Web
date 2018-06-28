@@ -23,9 +23,7 @@ export default class UmiDevice extends React.Component {
                        <DeviceInfo data={data}/>
                    </div>
                    <div className="card-footer">
-                       <RouteLink to={`/umi/browse/${data.udn}`} glyph="folder"
-                                  className="card-link">Browse
-                       </RouteLink>
+                       <RouteLink to={`/umi/browse/${data.udn}`} glyph="folder" className="card-link">Browse</RouteLink>
                    </div>
                </div>;
     }

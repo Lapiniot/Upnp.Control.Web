@@ -2,6 +2,8 @@ import React from "react";
 import DeviceInfo from "./DeviceInfo";
 import ServicesList from "./DeviceServiceList";
 import DeviceIcon from "./DeviceIcon";
+import { RouteLink } from "../navigation/NavLink";
+import Icon from "../Icon";
 
 export default class UpnpDevice extends React.Component {
 
@@ -10,6 +12,8 @@ export default class UpnpDevice extends React.Component {
     render() {
 
         const data = this.props["data-source"];
+
+        const isMediaServer = data.services.some(s => s.type === "urn:schemas-upnp-org:service:ContentDirectory:1");
 
         return <div className="card">
                    <div className="card-header d-flex flex-row">
@@ -24,7 +28,8 @@ export default class UpnpDevice extends React.Component {
                        <ServicesList data-source={data.services} data-id={this.props["data-id"]}/>
                    </div>
                    <div className="card-footer">
-                       <a className="card-link" href={data.url}>All metadata</a>
+                       <a className="card-link d-inline-block" href={data.url}><Icon glyph="file-download" className="x-fa-w-2"/>All metadata</a>
+                       {isMediaServer && <RouteLink to={`/upnp/browse/${data.udn}`} glyph="folder" className="card-link d-inline-block">Browse</RouteLink>}
                    </div>
                </div>;
     }

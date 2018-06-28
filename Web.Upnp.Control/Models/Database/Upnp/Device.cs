@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace Web.Upnp.Control.DataAccess
+namespace Web.Upnp.Control.Models.Database.Upnp
 {
-    public class UpnpDevice
+    public class Device
     {
         [Key]
         public string Udn { get; set; }
@@ -28,9 +28,10 @@ namespace Web.Upnp.Control.DataAccess
 
         public string ModelNumber { get; set; }
 
-        public List<UpnpDeviceIcon> Icons { get; set; }
+        public List<Icon> Icons { get; set; }
 
-        public List<UpnpService> Services { get; set; }
+        public List<Service> Services { get; set; }
+
         public bool IsOnline { get; set; }
     }
 }

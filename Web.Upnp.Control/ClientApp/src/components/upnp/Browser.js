@@ -6,7 +6,6 @@ export default class Browser extends React.Component {
 
     render() {
         return <DataView dataUri={`/api/browse/${this.props.match.params.path}`}
-                         containerTemplate="div"
-                         itemTemplate="div"/>;
+                         containerTemplate="div" itemTemplate="div"/>;
     }
 }

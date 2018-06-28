@@ -21,8 +21,8 @@ export default class UmiDevices extends React.Component {
 
     render() {
         return <Switch>
-                   <Route path="/umi" exact component={UmiDeviceList}></Route>
-                   <Route path="/umi/browse/:path" component={Browser}></Route>
+                   <Route path="/umi" exact component={UmiDeviceList}/>
+                   <Route path="/umi/browse/:path" component={Browser}/>
                </Switch>;
     }
 }

@@ -1,6 +1,9 @@
 import React from "react";
 
 export default class DeviceIcon extends React.Component {
+
+    displayName = DeviceIcon.name;
+
     render() {
         if (this.props.icon) {
             return <img src={this.props.icon.url} className="upnp-dev-icon align-self-center"
