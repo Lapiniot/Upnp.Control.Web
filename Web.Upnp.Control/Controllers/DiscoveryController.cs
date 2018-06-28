@@ -20,14 +20,12 @@ namespace Web.Upnp.Control.Controllers
             this.context = context;
         }
 
-        // GET: api/<controller>
         [HttpGet]
         public Task<IEnumerable<object>> Get()
         {
             return GetUpnpDevicesAsync();
         }
 
-        // GET api/<controller>/5
         [HttpGet("{type}")]
         public async Task<IEnumerable<object>> Get(string type)
         {
@@ -44,12 +42,22 @@ namespace Web.Upnp.Control.Controllers
 
         private async Task<IEnumerable<object>> GetUpnpDevicesAsync()
         {
-            return await context.UpnpDevices.Include(d => d.Icons).Include(d => d.Services).Where(d => d.IsOnline).ToArrayAsync();
+            return await context.UpnpDevices.
+                Include(d => d.Icons).
+                Include(d => d.Services).
+                Where(d => d.IsOnline).
+                ToArrayAsync().
+                ConfigureAwait(false);
         }
 
         private async Task<IEnumerable<object>> GetUmiDevicesAsync()
         {
-            return await context.UpnpDevices.Include(d => d.Icons).Include(d => d.Services).Where(d => d.IsOnline && d.Description == "The Mi WiFi SoundBox").ToArrayAsync();
+            return await context.UpnpDevices.
+                Include(d => d.Icons).
+                Include(d => d.Services).
+                Where(d => d.IsOnline && d.Description == "The Mi WiFi SoundBox").
+                ToArrayAsync().
+                ConfigureAwait(false);
         }
     }
 }

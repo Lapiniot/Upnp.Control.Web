@@ -43,20 +43,24 @@ namespace Web.Upnp.Control.Services
 
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    await context.AddRangeAsync(tasks.Where(t => t.IsCompletedSuccessfully).Select(t => new UpnpDevice
-                    {
-                        Udn = t.Result.Udn,
-                        Location = t.Result.Location.AbsoluteUri,
-                        DeviceType = t.Result.DeviceType,
-                        FriendlyName = t.Result.FriendlyName,
-                        Manufacturer = t.Result.Manufacturer,
-                        Description = t.Result.ModelDescription,
-                        ModelName = t.Result.ModelName,
-                        ModelNumber = t.Result.ModelNumber,
-                        IsOnline = true,
-                        Icons = t.Result.Icons.Select(i => new UpnpDeviceIcon {Width = i.Width, Height = i.Height, Mime = i.Mime, Url = i.Uri.AbsoluteUri}).ToList(),
-                        Services = t.Result.Services.Select(s => new UpnpService {ServiceId = s.ServiceId, Url = s.MetadataUri.AbsoluteUri}).ToList()
-                    }));
+                    var devices = tasks.Where(task => task.IsCompletedSuccessfully).
+                        Select(task => task.Result).
+                        Select(dev => new UpnpDevice
+                        {
+                            Udn = dev.Udn,
+                            Location = dev.Location.AbsoluteUri,
+                            DeviceType = dev.DeviceType,
+                            FriendlyName = dev.FriendlyName,
+                            Manufacturer = dev.Manufacturer,
+                            Description = dev.ModelDescription,
+                            ModelName = dev.ModelName,
+                            ModelNumber = dev.ModelNumber,
+                            IsOnline = true,
+                            Icons = dev.Icons.Select(i => new UpnpDeviceIcon {Width = i.Width, Height = i.Height, Mime = i.Mime, Url = i.Uri.AbsoluteUri}).ToList(),
+                            Services = dev.Services.Select(s => new UpnpService {ServiceId = s.ServiceId, Url = s.MetadataUri.AbsoluteUri}).ToList()
+                        });
+
+                    await context.AddRangeAsync(devices, cancellationToken).ConfigureAwait(false);
 
                     await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 }
