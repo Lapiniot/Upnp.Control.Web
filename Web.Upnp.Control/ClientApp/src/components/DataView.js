@@ -31,14 +31,14 @@ export default class DataView extends React.Component {
 
         if (this.state.loading) {
             const Loader = this.props.loaderTemplate || LoaderPlaceholder;
-            return <Loader text={this.props.loaderText} />;
+            return <Loader text={this.props.loaderText}/>;
         } else {
             const Container = this.props.containerTemplate || "ul";
             const Item = this.props.itemTemplate || "li";
             return <Container {...this.props.containerProps}>
                        {[
                            this.state.data.map((e, index) =>
-                               <Item data-source={e} data-id={index} {...this.props.itemProps} />)
+                               <Item data-source={e} data-id={index} {...this.props.itemProps}/>)
                        ]}
                    </Container>;
         }

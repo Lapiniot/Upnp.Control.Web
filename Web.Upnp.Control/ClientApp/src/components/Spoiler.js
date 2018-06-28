@@ -9,7 +9,7 @@ export default class Spoiler extends React.Component {
                    <button className="btn-light collapsed"
                            aria-expanded="false" aria-controls={this.props.uniqueId} role="button"
                            data-toggle="collapse" data-target={`#${this.props.uniqueId}`}>
-                       <i />{this.props.title}
+                       <i/>{this.props.title}
                    </button>
                    <div className="collapse" id={this.props.uniqueId}>
                        {this.props.children}

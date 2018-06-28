@@ -2,14 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IoT.Device.Upnp;
-using IoT.Device.Xiaomi.Umi;
-using IoT.Protocol;
-using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
-using UpnpDevice = IoT.Device.Upnp.UpnpDevice;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -49,20 +44,12 @@ namespace Web.Upnp.Control.Controllers
 
         private async Task<IEnumerable<object>> GetUpnpDevicesAsync()
         {
-            return await context.UpnpDevices.
-                Include(d => d.Icons).
-                Include(d => d.Services).
-                Where(d => d.IsOnline).
-                ToArrayAsync();
+            return await context.UpnpDevices.Include(d => d.Icons).Include(d => d.Services).Where(d => d.IsOnline).ToArrayAsync();
         }
 
         private async Task<IEnumerable<object>> GetUmiDevicesAsync()
         {
-            return await context.UpnpDevices.
-                Include(d => d.Icons).
-                Include(d => d.Services).
-                Where(d => d.IsOnline && d.Description == "The Mi WiFi SoundBox").
-                ToArrayAsync();
+            return await context.UpnpDevices.Include(d => d.Icons).Include(d => d.Services).Where(d => d.IsOnline && d.Description == "The Mi WiFi SoundBox").ToArrayAsync();
         }
     }
 }

@@ -6,12 +6,12 @@ namespace Web.Upnp.Control.DataAccess
 {
     public class DeviceDatabaseRepository : IDeviceRepository
     {
-        public UpnpDbContext Context { get; }
-
         public DeviceDatabaseRepository(UpnpDbContext context)
         {
             Context = context;
         }
+
+        public UpnpDbContext Context { get; }
 
         #region Implementation of IDisposable
 

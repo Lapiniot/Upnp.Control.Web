@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IoT.Device.Upnp;
-using IoT.Device.Xiaomi.Umi;
 using IoT.Protocol;
 using IoT.Protocol.Upnp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control.DataAccess;
+using UpnpDevice = Web.Upnp.Control.DataAccess.UpnpDevice;
 
 namespace Web.Upnp.Control.Services
 {
@@ -29,7 +29,6 @@ namespace Web.Upnp.Control.Services
             {
                 using(var context = scoped.ServiceProvider.GetRequiredService<UpnpDbContext>())
                 {
-
                     // TODO: configure and start UPnP multicast listener in order to track device lifetime events
 
                     var upnpDevices = new UpnpDeviceEnumerator(UpnpServices.RootDevice).Enumerate(TimeSpan.FromSeconds(3), cancellationToken);
@@ -44,7 +43,7 @@ namespace Web.Upnp.Control.Services
 
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    await context.AddRangeAsync(tasks.Where(t => t.IsCompletedSuccessfully).Select(t => new DataAccess.UpnpDevice
+                    await context.AddRangeAsync(tasks.Where(t => t.IsCompletedSuccessfully).Select(t => new UpnpDevice
                     {
                         Udn = t.Result.Udn,
                         Location = t.Result.Location.AbsoluteUri,
@@ -55,8 +54,8 @@ namespace Web.Upnp.Control.Services
                         ModelName = t.Result.ModelName,
                         ModelNumber = t.Result.ModelNumber,
                         IsOnline = true,
-                        Icons = t.Result.Icons.Select(i => new UpnpDeviceIcon { Width = i.Width, Height = i.Height, Mime = i.Mime, Url = i.Uri.AbsoluteUri }).ToList(),
-                        Services = t.Result.Services.Select(s => new UpnpService { ServiceId = s.ServiceId, Url = s.MetadataUri.AbsoluteUri }).ToList()
+                        Icons = t.Result.Icons.Select(i => new UpnpDeviceIcon {Width = i.Width, Height = i.Height, Mime = i.Mime, Url = i.Uri.AbsoluteUri}).ToList(),
+                        Services = t.Result.Services.Select(s => new UpnpService {ServiceId = s.ServiceId, Url = s.MetadataUri.AbsoluteUri}).ToList()
                     }));
 
                     await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
