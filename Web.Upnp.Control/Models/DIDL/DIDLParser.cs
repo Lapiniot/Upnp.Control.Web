@@ -5,7 +5,7 @@ using static System.Xml.XmlNodeType;
 
 namespace Web.Upnp.Control.Models.DIDL
 {
-    public static class DIDLParser
+    public static partial class DIDLParser
     {
         private const string NS = "urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/";
         private const string DC = "http://purl.org/dc/elements/1.1/";
@@ -48,57 +48,6 @@ namespace Web.Upnp.Control.Models.DIDL
             reader.Skip();
 
             return null;
-        }
-
-        private static object ReadContainerNode(XmlReader r)
-        {
-            var container = new Container(r.GetAttribute("id"),
-                r.GetAttribute("parentID"),
-                ParseBoolean(r.GetAttribute("restricted")),
-                ParseBoolean(r.GetAttribute("searchable")))
-            {
-                ChildCount = ParseInt(r.GetAttribute("childCount"))
-            };
-
-            r.Read();
-
-            while(!(r.NodeType == EndElement && r.Name == "container"))
-            {
-                if(r.NodeType == Element)
-                {
-                    switch(r.NamespaceURI)
-                    {
-                        case DC:
-                            switch(r.LocalName)
-                            {
-                                case "title":
-                                    container.Title = r.ReadElementContentAsString();
-                                    continue;
-                            }
-
-                            break;
-                        case UPNP:
-                            switch(r.LocalName)
-                            {
-                                case "class":
-                                    container.Class = r.ReadElementContentAsString();
-                                    continue;
-                                case "storageUsed":
-                                    container.StorageUsed = r.ReadElementContentAsInt();
-                                    continue;
-                            }
-
-                            break;
-                        default:
-                            container.Vendor[r.Name] = r.ReadElementContentAsString();
-                            continue;
-                    }
-                }
-
-                r.Read();
-            }
-
-            return container;
         }
 
         private static int? ParseInt(string str)
