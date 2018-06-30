@@ -10,8 +10,8 @@ export default class NavBar extends React.Component {
                    <h5 className="navbar-brand">UPnP Controller</h5>
                    <nav className="navbar-nav">
                        <RouteLink to="/" exact glyph="home" className="nav-item nav-link">Home</RouteLink>
-                       <RouteLink to="/umi" glyph="music" className="nav-item nav-link">Network Speakers</RouteLink>
-                       <RouteLink to="/upnp" glyph="server" className="nav-item nav-link">UPnP devices</RouteLink>
+                       <RouteLink to="/browse/umi" glyph="music" className="nav-item nav-link">Network Speakers</RouteLink>
+                       <RouteLink to="/browse/upnp" glyph="server" className="nav-item nav-link">UPnP devices</RouteLink>
                        <RouteLink to="/settings" glyph="cog" className="nav-item nav-link">Settings</RouteLink>
                    </nav>
                </div>;

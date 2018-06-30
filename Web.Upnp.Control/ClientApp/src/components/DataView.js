@@ -4,8 +4,8 @@ import Spinner from "./Spinner";
 class LoaderPlaceholder extends React.Component {
     render() {
         return <div className="d-flex-fill-center">
-                   <Spinner>{this.props.text || "Loading data..."}</Spinner>
-               </div>;
+            <Spinner>{this.props.text || "Loading data..."}</Spinner>
+        </div>;
     }
 }
 
@@ -15,32 +15,47 @@ export default class DataView extends React.Component {
 
     constructor(props) {
         super(props);
-        const dataUri = props.dataUri || props["data-uri"];
+        const { dataUri, dataSource = [] } = props;
         if (dataUri !== "") {
             //fetch online data from dataUri
-            this.state = { loading: true, data: [] };
-            fetch(dataUri).then(response => response.json())
-                .then(json => this.setState({ loading: false, data: json }));
+            this.fetchData(dataUri, true);
         } else {
             //render offline data from dataSource
-            this.state = { loading: false, data: props.dataSource };
+            this.state = { loading: false, data: dataSource };
         }
     }
 
-    render() {
+    fetchData(dataUri, initial = false) {
+        const newState = { loading: true, data: [] };
 
+        if (initial)
+            this.state = newState;
+        else
+            this.setState(newState);
+
+        fetch(dataUri)
+            .then(response => response.json())
+            .then(json => this.setState({ loading: false, data: json }));
+    }
+
+    shouldComponentUpdate(nextProps) {
+        if(nextProps.dataUri !== this.props.dataUri)
+            this.fetchData(nextProps.dataUri);
+        return true;
+    }
+
+    render() {
         if (this.state.loading) {
-            const Loader = this.props.loaderTemplate || LoaderPlaceholder;
-            return <Loader text={this.props.loaderText}/>;
+            const { loaderTemplate: Loader = LoaderPlaceholder, loaderText } = this.props;
+            return <Loader text={loaderText} />;
         } else {
-            const Container = this.props.containerTemplate || "ul";
-            const Item = this.props.itemTemplate || "li";
-            return <Container {...this.props.containerProps}>
-                       {[
-                           this.state.data.map((e, index) =>
-                               <Item data-source={e} data-id={index} {...this.props.itemProps}/>)
-                       ]}
-                   </Container>;
+            const { dataUri, loaderTemplate, loaderText, containerTemplate: Container = "ul", itemTemplate: Item = "li", itemProps, ...other } = this.props;
+            return <Container {...other}>
+                {[
+                    this.state.data.map((e, index) =>
+                        <Item key={index} data-source={e} data-row-id={index} {...itemProps} />)
+                ]}
+            </Container>;
         }
     }
 }
