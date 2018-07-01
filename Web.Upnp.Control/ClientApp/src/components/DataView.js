@@ -35,10 +35,21 @@ export default class DataView extends React.Component {
     }
 
     shouldComponentUpdate(nextProps) {
+
         if (nextProps.dataUri !== this.props.dataUri) {
-            this.setState({ loading: true, data: [] }, () => this.fetchData(nextProps.dataUri));
+            if (!nextProps.dataUri && this.props.dataSource) {
+                this.setState({ loading: false, data: this.props.dataSource });
+            } else {
+                this.setState({ loading: true, data: [] }, () => this.fetchData(nextProps.dataUri));
+            }
             return false;
         }
+
+        if (nextProps.dataSource !== this.props.dataSource) {
+            this.setState({ loading: false, data: this.props.dataSource });
+            return false;
+        }
+
         return true;
     }
 
