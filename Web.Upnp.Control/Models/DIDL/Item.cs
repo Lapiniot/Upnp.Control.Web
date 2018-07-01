@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Xml;
 
 namespace Web.Upnp.Control.Models.DIDL
 {
@@ -19,12 +18,7 @@ namespace Web.Upnp.Control.Models.DIDL
         public string Title { get; set; }
         public Dictionary<string, string> Vendor { get; set; }
         public string Class { get; set; }
-        public int? ChildCount { get; set; }
         public int? StorageUsed { get; set; }
         public Resource Resource { get; set; }
-        public virtual bool TryReadProperty(XmlReader reader)
-        {
-            return false;
-        }
     }
 }
