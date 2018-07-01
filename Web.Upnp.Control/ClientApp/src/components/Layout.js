@@ -9,7 +9,7 @@ export default class Layout extends React.Component {
         return <div className="container-fluid p-0">
                    <div className="row no-gutters">
                        <div className="col-auto">
-                           <NavBar/>
+                           <NavBar />
                        </div>
                        <main className="col py-3 px-3">
                            {this.props.children}

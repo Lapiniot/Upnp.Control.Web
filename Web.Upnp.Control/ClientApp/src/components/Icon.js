@@ -6,6 +6,6 @@ export default class Icon extends React.Component {
 
     render() {
         const { glyph, className, ...other } = this.props;
-        return <i className={`fas fa-${glyph}${className ? ` ${className}` : ""}`} {...other}/>;
+        return <i className={`fas fa-${glyph}${className ? ` ${className}` : ""}`} {...other} />;
     }
 }
