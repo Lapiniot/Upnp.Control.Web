@@ -1,4 +1,5 @@
-﻿import React from "react";
+﻿"use strict";
+import React from "react";
 import Spinner from "./Spinner";
 
 class LoaderPlaceholder extends React.Component {
@@ -16,31 +17,28 @@ export default class DataView extends React.Component {
     constructor(props) {
         super(props);
         const { dataUri, dataSource = [] } = props;
+        this.state = { loading: true, data: [] };
+
         if (dataUri !== "") {
             //fetch online data from dataUri
-            this.fetchData(dataUri, true);
+            this.fetchData(dataUri);
         } else {
             //render offline data from dataSource
             this.state = { loading: false, data: dataSource };
         }
     }
 
-    fetchData(dataUri, initial = false) {
-        const newState = { loading: true, data: [] };
-
-        if (initial)
-            this.state = newState;
-        else
-            this.setState(newState);
-
+    fetchData(dataUri) {
         fetch(dataUri)
             .then(response => response.json())
             .then(json => this.setState({ loading: false, data: json }));
     }
 
     shouldComponentUpdate(nextProps) {
-        if (nextProps.dataUri !== this.props.dataUri)
-            this.fetchData(nextProps.dataUri);
+        if (nextProps.dataUri !== this.props.dataUri) {
+            this.setState({ loading: true, data: [] }, () => this.fetchData(nextProps.dataUri));
+            return false;
+        }
         return true;
     }
 
