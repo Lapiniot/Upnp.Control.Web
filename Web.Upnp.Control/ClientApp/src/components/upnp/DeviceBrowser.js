@@ -32,7 +32,7 @@ class DIDLItem extends React.Component {
 }
 
 function getBrowser(url) {
-    return function({ match: { params: { device, id } } = {} }) {
+    return function({ match: { params: { device, id = "" } } = {} }) {
         return <DataView dataUri={`/api/browse/${device}/${id}`}
                          containerTemplate="div"
                          itemTemplate={DIDLItem}

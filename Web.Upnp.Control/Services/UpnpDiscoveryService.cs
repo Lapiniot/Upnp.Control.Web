@@ -43,32 +43,34 @@ namespace Web.Upnp.Control.Services
 
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    var devices = tasks.Where(task => task.IsCompletedSuccessfully).Select(task => task.Result).Select(dev => new Device
-                    {
-                        Udn = dev.Udn,
-                        Location = dev.Location.AbsoluteUri,
-                        DeviceType = dev.DeviceType,
-                        FriendlyName = dev.FriendlyName,
-                        Manufacturer = dev.Manufacturer,
-                        Description = dev.ModelDescription,
-                        ModelName = dev.ModelName,
-                        ModelNumber = dev.ModelNumber,
-                        IsOnline = true,
-                        Icons = dev.Icons.Select(i => new Icon
+                    var devices = tasks.Where(task => task.IsCompletedSuccessfully)
+                        .Select(task => task.Result)
+                        .Select(dev => new Device
                         {
-                            Width = i.Width,
-                            Height = i.Height,
-                            Mime = i.Mime,
-                            Url = i.Uri.AbsoluteUri
-                        }).ToList(),
-                        Services = dev.Services.Select(s => new Service
-                        {
-                            ServiceId = s.ServiceId,
-                            ServiceType = s.ServiceType,
-                            MetadataUrl = s.MetadataUri.AbsoluteUri,
-                            ControlUrl = s.ControlUri.AbsoluteUri
-                        }).ToList()
-                    });
+                            Udn = dev.Udn,
+                            Location = dev.Location.AbsoluteUri,
+                            DeviceType = dev.DeviceType,
+                            FriendlyName = dev.FriendlyName,
+                            Manufacturer = dev.Manufacturer,
+                            Description = dev.ModelDescription,
+                            ModelName = dev.ModelName,
+                            ModelNumber = dev.ModelNumber,
+                            IsOnline = true,
+                            Icons = dev.Icons.Select(i => new Icon
+                            {
+                                Width = i.Width,
+                                Height = i.Height,
+                                Mime = i.Mime,
+                                Url = i.Uri.AbsoluteUri
+                            }).ToList(),
+                            Services = dev.Services.Select(s => new Service
+                            {
+                                ServiceId = s.ServiceId,
+                                ServiceType = s.ServiceType,
+                                MetadataUrl = s.MetadataUri.AbsoluteUri,
+                                ControlUrl = s.ControlUri.AbsoluteUri
+                            }).ToList()
+                        });
 
                     await context.AddRangeAsync(devices, cancellationToken).ConfigureAwait(false);
 
