@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using static System.Xml.XmlNodeType;
@@ -43,11 +44,68 @@ namespace Web.Upnp.Control.Models.DIDL
                 {
                     return ReadContainerNode(reader);
                 }
+                if(reader.Name == "item")
+                {
+                    return ReadItemNode(reader);
+                }
             }
 
             reader.Skip();
 
             return null;
+        }
+
+        private static MediaItem ReadItemNode(XmlReader r)
+        {
+            var item = new MediaItem(r.GetAttribute("id"), r.GetAttribute("parentID"), ParseBoolean(r.GetAttribute("restricted")));
+
+            r.Read();
+
+            while(!(r.NodeType == XmlNodeType.EndElement && r.Name == "item"))
+            {
+                if(r.NodeType == XmlNodeType.Element)
+                {
+                    switch(r.NamespaceURI)
+                    {
+                        case DC:
+                            switch(r.LocalName)
+                            {
+                                case "title":
+                                    item.Title = r.ReadElementContentAsString();
+                                    continue;
+                            }
+
+                            break;
+                        case UPNP:
+                            switch(r.LocalName)
+                            {
+                                case "class":
+                                    item.Class = r.ReadElementContentAsString();
+                                    continue;
+                                case "storageUsed":
+                                    item.StorageUsed = r.ReadElementContentAsInt();
+                                    continue;
+                            }
+
+                            break;
+                        default:
+                            if(r.LocalName == "res")
+                            {
+                                item.Resource = ReadResourceNode(r);
+                            }
+                            else
+                            {
+                                item.Vendor[r.Name] = r.ReadElementContentAsString();
+                            }
+
+                            continue;
+                    }
+                }
+
+                r.Read();
+            }
+
+            return item;
         }
 
         private static int? ParseInt(string str)
