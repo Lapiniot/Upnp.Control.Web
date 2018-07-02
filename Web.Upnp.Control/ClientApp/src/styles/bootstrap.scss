@@ -15,3 +15,85 @@ $enable-gradients: true;
     justify-content: center;
     align-items: center;
 }
+
+.d-table-caption{
+    display: table-caption;
+}
+
+.d-table-head{
+    display: table-header-group;
+}
+
+.d-table-body{
+    display: table-row-group;
+}
+
+.x-table{
+    display: table;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: $spacer;
+    background-color: $table-bg;
+    &>*{
+        display: table-row-group;
+        border-top: (2 * $table-border-width) solid $table-border-color;
+        &:first-child{
+            display: table-header-group;
+            border-bottom: (2 * $table-border-width) solid $table-border-color;
+        }
+        &>*{
+            display: table-row;
+            &>*{
+                display: table-cell;
+                padding: $table-cell-padding;
+                //vertical-align: top;
+                border-top: $table-border-width solid $table-border-color;
+            }
+        }     
+    }
+    &.x-table-sm{
+        &>*{
+            &>*{
+                &>*{
+                    padding: $table-cell-padding-sm;
+                }
+            }
+        }
+    }
+    &.x-table-striped{
+        &>:nth-of-type(2){
+            &>:nth-of-type(#{$table-striped-order}) {
+                background-color: $table-accent-bg;
+            } 
+        }
+    }
+    &.x-table-hover{
+        &>:nth-of-type(2){
+            &>:hover {
+                background-color: $table-hover-bg;
+            }
+        }
+    }
+    &.x-table-head-dark {
+        &>:nth-of-type(1){
+            &>*{
+                &>*{
+                    color: $table-dark-color;
+                    background-color: $table-dark-bg;
+                    border-color: $table-dark-border-color;
+                }
+            }
+        }
+    }
+    &.x-table-head-light {
+        &>:nth-of-type(1){
+            &>*{
+                &>*{
+                    color: $table-head-color;
+                    background-color: $table-head-bg;
+                    border-color: $table-border-color;
+                }
+            }
+        }
+    }
+}

@@ -5,6 +5,7 @@ $fa-font-path: "../webfonts";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/mixins";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/core";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/animated";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/larger";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/fixed-width";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/fa-solid";
 
@@ -55,4 +56,16 @@ $fa-font-path: "../webfonts";
 
 .#{$fa-css-prefix}-file-download:before {
     content: fa-content($fa-var-file-download);
+}
+
+.#{$fa-css-prefix}-file:before {
+    content: fa-content($fa-var-file);
+}
+
+.#{$fa-css-prefix}-file-audio:before {
+    content: fa-content($fa-var-file-audio);
+}
+
+.#{$fa-css-prefix}-file-video:before {
+    content: fa-content($fa-var-file-video);
 }
