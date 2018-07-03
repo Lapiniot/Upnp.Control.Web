@@ -11,7 +11,7 @@ export default class Layout extends React.Component {
                        <div className="col-auto">
                            <NavBar />
                        </div>
-                       <main className="col py-3 px-3">
+                       <main className="col">
                            {this.props.children}
                        </main>
                    </div>

@@ -16,11 +16,19 @@ class DIDLItem extends React.Component {
         return <div>
             <div>
                 <NavLink to={`${base}/${data.id}`} className="h-100" {...other}>
-                    <i className="fas fa-folder x-fa-w-2" />
+                    <i className={`fas x-fa-w-3 ${this.getIconClass(data.class)}`} />
                     {data.title}</NavLink>
             </div>
             <div className="text-capitalize">{getKind(data.class)}</div>
         </div>;
+    }
+
+    getIconClass(className) {
+        if (className.endsWith("musicTrack"))
+            return "fa-file-audio";
+        if(className.endsWith("videoItem"))
+            return "fa-file-video";
+        return "fa-folder";
     }
 }
 

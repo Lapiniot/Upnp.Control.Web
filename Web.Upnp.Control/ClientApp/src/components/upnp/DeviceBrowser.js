@@ -30,7 +30,7 @@ function getDeviceList(category) {
     return function () {
         return <DataView dataUri={`/api/discovery/${category}`}
             containerTemplate={"div"}
-            className="d-grid grid-c1 grid-xl-c2 grid-xxxl-c3 grid-xxxxl-c4"
+            className="d-grid grid-c1 grid-xl-c2 grid-xxxl-c3 grid-xxxxl-c4 py-3 px-3"
             itemTemplate={templates[category]} />;
     };
 }
