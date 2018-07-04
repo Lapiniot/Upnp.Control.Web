@@ -15,7 +15,7 @@ export default class DeviceBrowser extends React.Component {
         const { path, url, params: { category } } = this.props.match;
         return <Switch>
             <Route path={path} exact render={getDeviceList(category)} />
-            <Route path={`${path}/:device/:id?`} render={getBrowser(url)} />
+            <Route path={`${path}/:device/:id(.*)?`} render={getBrowser(url)} />
         </Switch>;
     }
 }

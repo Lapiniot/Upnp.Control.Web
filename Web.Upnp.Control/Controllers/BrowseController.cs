@@ -25,14 +25,44 @@ namespace Web.Upnp.Control.Controllers
             this.context = context;
         }
 
-        [HttpGet("{id}/{path?}")]
-        public async Task<IEnumerable<object>> GetContentAsync(string id, string path)
+        [HttpGet("{id}/{*path}")]
+        public async Task<object> GetContentAsync(string id, string path, [FromQuery] uint take = 50, [FromQuery] uint skip = 0)
         {
             var device = await context.UpnpDevices.Include(d => d.Services).Where(d => d.Udn == id).FirstAsync().ConfigureAwait(false);
 
             var controlUrl = GetControlUrl(device);
 
-            if(controlUrl != null) return await GetGenericUpnpContentAsync(controlUrl, path).ConfigureAwait(false);
+            if(controlUrl != null)
+            {
+                var service = GetService(controlUrl);
+
+                using(service.Target)
+                {
+                    var result = await service.BrowseAsync(path ?? "0", index: skip, count: take).ConfigureAwait(false);
+                    return new { Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"]) };
+                }
+            }
+
+            return null;
+        }
+
+        [HttpGet("metadata/{id}/{path?}")]
+        public async Task<object> GetMetadataAsync(string id, string path)
+        {
+            var device = await context.UpnpDevices.Include(d => d.Services).Where(d => d.Udn == id).FirstAsync().ConfigureAwait(false);
+
+            var controlUrl = GetControlUrl(device);
+
+            if(controlUrl != null)
+            {
+                var service = GetService(controlUrl);
+
+                using(service.Target)
+                {
+                    var result = await service.BrowseAsync(path ?? "0", flags: "BrowseMetadata").ConfigureAwait(false);
+                    return new { Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"]) };
+                }
+            }
 
             return null;
         }
@@ -44,18 +74,8 @@ namespace Web.Upnp.Control.Controllers
             return contentDirectoryService != null
                 ? new Uri(contentDirectoryService.ControlUrl)
                 : device.Services.Any(s => s.ServiceType == "urn:xiaomi-com:service:Playlist:1")
-                    ? new UriBuilder(device.Location) {Path = $"{device.Udn.Substring(5)}-MS/upnp.org-ContentDirectory-1/control"}.Uri
+                    ? new UriBuilder(device.Location) { Path = $"{device.Udn.Substring(5)}-MS/upnp.org-ContentDirectory-1/control" }.Uri
                     : null;
-        }
-
-        private static async Task<IEnumerable<object>> GetGenericUpnpContentAsync(Uri controlUrl, string path)
-        {
-            var service = GetService(controlUrl);
-
-            using(service.Target)
-            {
-                return DIDLParser.Parse(await service.BrowseAsync(path ?? "0").ConfigureAwait(false));
-            }
         }
 
         private static ContentDirectoryService GetService(Uri controlUrl)

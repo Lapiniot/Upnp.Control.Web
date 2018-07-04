@@ -5,8 +5,8 @@ import Spinner from "./Spinner";
 class LoaderPlaceholder extends React.Component {
     render() {
         return <div className="d-flex-fill-center">
-                   <Spinner>{this.props.text || "Loading data..."}</Spinner>
-               </div>;
+            <Spinner>{this.props.text || "Loading data..."}</Spinner>
+        </div>;
     }
 }
 
@@ -58,13 +58,14 @@ export default class DataView extends React.Component {
             const { loaderTemplate: Loader = LoaderPlaceholder, loaderText } = this.props;
             return <Loader text={loaderText} />;
         } else {
-            const { dataUri, loaderTemplate, loaderText, containerTemplate: Container = "ul", itemTemplate: Item = "li", itemProps, ...other } = this.props;
+            const { dataUri, selector = (d => d), loaderTemplate, loaderText,
+                containerTemplate: Container = "ul", itemTemplate: Item = "li", itemProps, ...other } = this.props;
             return <Container {...other}>
-                       {[
-                           this.state.data.map((e, index) =>
-                               <Item key={index} data-source={e} data-row-id={index} {...itemProps} />)
-                       ]}
-                   </Container>;
+                {[
+                    selector(this.state.data).map((e, index) =>
+                        <Item key={index} data-source={e} data-row-id={index} {...itemProps} />)
+                ]}
+            </Container>;
         }
     }
 }

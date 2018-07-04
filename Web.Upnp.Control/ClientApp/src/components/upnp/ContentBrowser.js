@@ -26,7 +26,7 @@ class DIDLItem extends React.Component {
     getIconClass(className) {
         if (className.endsWith("musicTrack"))
             return "fa-file-audio";
-        if(className.endsWith("videoItem"))
+        if (className.endsWith("videoItem"))
             return "fa-file-video";
         return "fa-folder";
     }
@@ -53,6 +53,7 @@ export default class ContentBrowser extends React.Component {
     render() {
         const { baseUrl, device, id } = this.props;
         return <DataView dataUri={`/api/browse/${device}/${id}`}
+            selector={(data => data.result)}
             containerTemplate={ContainerView}
             itemTemplate={DIDLItem}
             itemProps={{ base: `${baseUrl}/${device}` }} />;
