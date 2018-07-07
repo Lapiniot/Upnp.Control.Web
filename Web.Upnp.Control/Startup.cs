@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Net;
+using System.Net.Http;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Services;
+using static System.Net.DecompressionMethods;
 
 namespace Web.Upnp.Control
 {
@@ -21,12 +24,34 @@ namespace Web.Upnp.Control
 
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
 
+            services.AddResponseCaching();
+
+            services.AddResponseCompression(o=>{
+                
+            });
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddJsonOptions(options =>
                 {
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     options.SerializerSettings.Formatting = Formatting.None;
+                })
+                .AddMvcOptions(options =>
+                {
+                    options.OutputFormatters.Insert(0, new HttpResponseMessageFormatter());
+                });
+
+            services.AddHttpClient<HttpClient>("ImageLoader", c =>
+            {
+                c.DefaultRequestHeaders.ConnectionClose = false;
+                c.DefaultRequestHeaders.Add("Accept-Encoding", new [] { "gzip", "deflate" });
+            })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+                new SocketsHttpHandler()
+                {
+                    AutomaticDecompression = None,
+                    MaxConnectionsPerServer = 1
                 });
         }
 
@@ -38,10 +63,14 @@ namespace Web.Upnp.Control
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseMvcWithDefaultRoute();
+
+            app.UseResponseCaching();
+
+            app.UseResponseCompression();
 
             app.UseSpaStaticFiles();
             app.UseSpa(spa =>

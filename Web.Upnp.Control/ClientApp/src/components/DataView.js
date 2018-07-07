@@ -1,5 +1,4 @@
-﻿"use strict";
-import React from "react";
+﻿import React from "react";
 import Spinner from "./Spinner";
 
 class LoaderPlaceholder extends React.Component {

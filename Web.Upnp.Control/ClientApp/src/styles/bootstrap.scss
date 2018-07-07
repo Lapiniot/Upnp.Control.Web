@@ -47,6 +47,7 @@ $table-striped-order: even;
             display: table-row;
             &>*{
                 display: table-cell;
+                vertical-align: middle;
                 padding: $table-cell-padding;
                 //vertical-align: top;
                 border-top: $table-border-width solid $table-border-color;

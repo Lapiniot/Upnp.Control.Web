@@ -7,6 +7,25 @@ function getKind(upnpClassName) {
     return index > 0 ? upnpClassName.substring(index + 1) : upnpClassName;
 }
 
+class AlbumArtImage extends React.Component {
+
+    getIconClass(itemClass) {
+        if (itemClass.endsWith("musicTrack"))
+            return "fa-file-audio";
+        if (itemClass.endsWith("videoItem"))
+            return "fa-file-video";
+        return "fa-folder";
+    }
+
+    render() {
+        const { itemClass, albumArts } = this.props;
+        if (albumArts && albumArts.length > 0)
+            return <img src={`/api/proxy/${escape(albumArts[0])}`} className="album-art-icon" alt="" />;
+        else
+            return <i className={`album-art-icon fas ${this.getIconClass(itemClass)}`} />
+    }
+}
+
 class DIDLItem extends React.Component {
 
     displayName = DIDLItem.name;
@@ -16,20 +35,14 @@ class DIDLItem extends React.Component {
         return <div>
             <div>
                 <NavLink to={`${base}/${data.id}`} className="h-100" {...other}>
-                    <i className={`fas x-fa-w-3 ${this.getIconClass(data.class)}`} />
+                    <AlbumArtImage itemClass={data.class} albumArts={data.albumArts} />
                     {data.title}</NavLink>
             </div>
             <div className="text-capitalize">{getKind(data.class)}</div>
         </div>;
     }
 
-    getIconClass(className) {
-        if (className.endsWith("musicTrack"))
-            return "fa-file-audio";
-        if (className.endsWith("videoItem"))
-            return "fa-file-video";
-        return "fa-folder";
-    }
+
 }
 
 class ContainerView extends React.Component {
