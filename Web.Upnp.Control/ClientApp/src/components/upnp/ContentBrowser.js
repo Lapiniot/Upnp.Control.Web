@@ -53,7 +53,7 @@ export default class ContentBrowser extends React.Component {
     render() {
         const { baseUrl, device, id } = this.props;
         return <DataView dataUri={`/api/browse/${device}/${id}`}
-            selector={(data => data.result)}
+            selector={data => data.result}
             containerTemplate={ContainerView}
             itemTemplate={DIDLItem}
             itemProps={{ base: `${baseUrl}/${device}` }} />;

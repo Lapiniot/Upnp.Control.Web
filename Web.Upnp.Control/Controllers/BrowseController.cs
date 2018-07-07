@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IoT.Protocol.Soap;
+using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
-using Web.Upnp.Control.Models.DIDL;
 using static IoT.Protocol.Upnp.UpnpServices;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
