@@ -25,46 +25,73 @@ namespace Web.Upnp.Control.Controllers
             this.context = context;
         }
 
-        [HttpGet("{id}/{*path}")]
-        public async Task<object> GetContentAsync(string id, string path, [FromQuery] uint take = 50, [FromQuery] uint skip = 0)
+        [HttpGet("{deviceId}/{*path}")]
+        public async Task<object> GetContentAsync(string deviceId, string path, [FromQuery] uint take = 50, [FromQuery] uint skip = 0, [FromQuery] bool withParents = false)
         {
-            var device = await context.UpnpDevices.Include(d => d.Services).Where(d => d.Udn == id).FirstAsync().ConfigureAwait(false);
+            ContentDirectoryService service = await GetServiceAsync(deviceId).ConfigureAwait(false);
 
-            var controlUrl = GetControlUrl(device);
-
-            if(controlUrl != null)
+            using(service.Target)
             {
-                var service = GetService(controlUrl);
 
-                using(service.Target)
+                var result = await service.BrowseAsync(path ?? "0", index: skip, count: take).ConfigureAwait(false);
+
+                return new
                 {
-                    var result = await service.BrowseAsync(path ?? "0", index: skip, count: take).ConfigureAwait(false);
-                    return new { Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"]) };
-                }
+                    Total = int.Parse(result["TotalMatches"]),
+                    Result = DIDLParser.Parse(result["Result"]),
+                    Parents = withParents ? (await GetParentsAsync(service, path).ConfigureAwait(false)).Select(p => new { p.Id, p.ParentId, p.Title }) : null
+                };
             }
-
-            return null;
         }
 
-        [HttpGet("metadata/{id}/{path?}")]
-        public async Task<object> GetMetadataAsync(string id, string path)
+        [HttpGet("metadata/{deviceId}/{path?}")]
+        public async Task<object> GetMetadataAsync(string deviceId, string path)
         {
-            var device = await context.UpnpDevices.Include(d => d.Services).Where(d => d.Udn == id).FirstAsync().ConfigureAwait(false);
+            ContentDirectoryService service = await GetServiceAsync(deviceId).ConfigureAwait(false);
+
+            using(service.Target)
+            {
+                var result = await service.BrowseAsync(path ?? "0", flags: "BrowseMetadata").ConfigureAwait(false);
+                return new { Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"]) };
+            }
+        }
+
+        [HttpGet("parents/{deviceId}/{path?}")]
+        public async Task<object> GetParentsAsync(string deviceId, string path)
+        {
+            ContentDirectoryService service = await GetServiceAsync(deviceId).ConfigureAwait(false);
+
+            using(service.Target)
+            {
+                return await GetParentsAsync(service, path, "title").ConfigureAwait(false);
+            }
+        }
+
+        private async Task<ContentDirectoryService> GetServiceAsync(string deviceId)
+        {
+            var device = await context.UpnpDevices.Include(d => d.Services).Where(d => d.Udn == deviceId).FirstAsync().ConfigureAwait(false);
 
             var controlUrl = GetControlUrl(device);
 
-            if(controlUrl != null)
+            return GetService(controlUrl);
+        }
+
+        private static async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string path, string filter = "*")
+        {
+            var parents = new List<Item>();
+
+            while(path != "-1")
             {
-                var service = GetService(controlUrl);
+                var metadataResult = await service.BrowseAsync(path ?? "0", flags: "BrowseMetadata", filter: filter).ConfigureAwait(false);
 
-                using(service.Target)
-                {
-                    var result = await service.BrowseAsync(path ?? "0", flags: "BrowseMetadata").ConfigureAwait(false);
-                    return new { Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"]) };
-                }
-            }
+                var metadata = DIDLParser.Parse(metadataResult["Result"]).First();
 
-            return null;
+                parents.Add(metadata);
+
+                path = metadata.ParentId;
+            };
+
+            return parents;
         }
 
         private static Uri GetControlUrl(Device device)

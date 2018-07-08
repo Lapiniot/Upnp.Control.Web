@@ -42,11 +42,15 @@ class DIDLItem extends React.Component {
     }
 }
 
+
 class ContainerView extends React.Component {
 
     displayName = ContainerView.name;
 
     render() {
+
+        const { "data-context": context = {}, navigateHandler } = this.props;
+
         return <div className="x-table x-table-sm x-table-hover x-table-striped x-table-head-light">
             <div>
                 <div>
@@ -55,10 +59,11 @@ class ContainerView extends React.Component {
                 </div>
             </div>
             <div>
-                <div>
-                    <div>...</div>
-                    <div>Parent</div>
-                </div>
+                {(context.parents && context.parents.length > 0) &&
+                    <div onDoubleClick={() => navigateHandler(context.parents[0].parentId)}>
+                        <div>...</div>
+                        <div>Parent</div>
+                    </div>}
                 {this.props.children}</div>
         </div>
     }
@@ -67,21 +72,27 @@ class ContainerView extends React.Component {
 class Browser extends React.Component {
 
     handleDoubleClick = event => {
-        console.log(this.props);
-        this.navigateTo(`${this.props.baseUrl}/${this.props.device}/${event.currentTarget.dataset.id}`)
+        const id = event.currentTarget.dataset.id;
+        this.navigateToItem(id);
     }
 
     navigateTo = (location) => this.props.history.push(location);
 
-    navigateBack = ()=> this.props.history.goBack();
+    navigateBack = () => this.props.history.goBack();
+
+    navigateToItem = (id) => {
+        if (id !== "-1")
+            this.navigateTo(`${this.props.baseUrl}/${this.props.device}/${id}`);
+        else
+            this.navigateTo(this.props.baseUrl);
+    }
 
     render() {
         const { device, id } = this.props;
-        return <DataView dataUri={`/api/browse/${device}/${id}`}
+        return <DataView dataUri={`/api/browse/${device}/${id}?withParents=true`}
             selector={data => data.result}
-            containerTemplate={ContainerView}
-            itemTemplate={DIDLItem}
-            itemProps={{ onDoubleClick: this.handleDoubleClick }} />;
+            containerTemplate={ContainerView} navigateHandler={this.navigateToItem}
+            itemTemplate={DIDLItem} itemProps={{ onDoubleClick: this.handleDoubleClick }} />;
     }
 }
 
