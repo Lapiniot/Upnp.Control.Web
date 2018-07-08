@@ -59,7 +59,7 @@ export default class DataView extends React.Component {
         } else {
             const { dataUri, selector = (d => d), loaderTemplate, loaderText,
                 containerTemplate: Container = "ul", itemTemplate: Item = "li", itemProps, ...other } = this.props;
-            return <Container {...other}>
+            return <Container {...other} data-context={this.state.data}>
                 {[
                     selector(this.state.data).map((e, index) =>
                         <Item key={index} data-source={e} data-row-id={index} {...itemProps} />)

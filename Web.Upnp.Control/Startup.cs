@@ -39,7 +39,7 @@ namespace Web.Upnp.Control
                 })
                 .AddMvcOptions(options =>
                 {
-                    options.OutputFormatters.Insert(0, new HttpResponseMessageFormatter());
+                    options.OutputFormatters.Insert(options.OutputFormatters.Count - 1, new HttpResponseMessageFormatter());
                 });
 
             services.AddHttpClient<HttpClient>("ImageLoader", c =>

@@ -1,6 +1,6 @@
 import React from "react";
 import DataView from "../DataView";
-import { NavLink } from "react-router-dom"
+import { withRouter } from "react-router-dom"
 
 function getKind(upnpClassName) {
     let index = upnpClassName.lastIndexOf(".");
@@ -32,17 +32,14 @@ class DIDLItem extends React.Component {
 
     render() {
         const { "data-source": data, base, ...other } = this.props;
-        return <div>
+        return <div data-id={data.id} {...other}>
             <div>
-                <NavLink to={`${base}/${data.id}`} className="h-100" {...other}>
-                    <AlbumArtImage itemClass={data.class} albumArts={data.albumArts} />
-                    {data.title}</NavLink>
+                <AlbumArtImage itemClass={data.class} albumArts={data.albumArts} />
+                {data.title}
             </div>
             <div className="text-capitalize">{getKind(data.class)}</div>
         </div>;
     }
-
-
 }
 
 class ContainerView extends React.Component {
@@ -57,18 +54,37 @@ class ContainerView extends React.Component {
                     <div>Kind</div>
                 </div>
             </div>
-            <div>{this.props.children}</div>
+            <div>
+                <div>
+                    <div>...</div>
+                    <div>Parent</div>
+                </div>
+                {this.props.children}</div>
         </div>
     }
 }
 
-export default class ContentBrowser extends React.Component {
+class Browser extends React.Component {
+
+    handleDoubleClick = event => {
+        console.log(this.props);
+        this.navigateTo(`${this.props.baseUrl}/${this.props.device}/${event.currentTarget.dataset.id}`)
+    }
+
+    navigateTo = (location) => this.props.history.push(location);
+
+    navigateBack = ()=> this.props.history.goBack();
+
     render() {
-        const { baseUrl, device, id } = this.props;
+        const { device, id } = this.props;
         return <DataView dataUri={`/api/browse/${device}/${id}`}
             selector={data => data.result}
             containerTemplate={ContainerView}
             itemTemplate={DIDLItem}
-            itemProps={{ base: `${baseUrl}/${device}` }} />;
+            itemProps={{ onDoubleClick: this.handleDoubleClick }} />;
     }
 }
+
+const ContentBrowser = withRouter(Browser);
+
+export default ContentBrowser;
