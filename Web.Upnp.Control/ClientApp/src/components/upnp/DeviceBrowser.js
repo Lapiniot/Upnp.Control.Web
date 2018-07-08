@@ -1,6 +1,6 @@
 ﻿import React from "react";
 import DataView from "../DataView";
-import { Switch, Route, NavLink } from "react-router-dom"
+import { Switch, Route } from "react-router-dom"
 import ContentBrowser from "./ContentBrowser";
 import UmiDevice from "./UmiDevice";
 import UpnpDevice from "./UpnpDevice";
@@ -29,8 +29,7 @@ function getBrowser(url) {
 function getDeviceList(category) {
     return function () {
         return <DataView dataUri={`/api/discovery/${category}`}
-            containerTemplate={"div"}
-            className="d-grid grid-c1 grid-xl-c2 grid-xxxl-c3 grid-xxxxl-c4 py-3 px-3"
+            containerTemplate={"div"} containerProps={{ className: "d-grid grid-c1 grid-xl-c2 grid-xxxl-c3 grid-xxxxl-c4 py-3 px-3" }}
             itemTemplate={templates[category]} />;
     };
 }

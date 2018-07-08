@@ -1,6 +1,6 @@
 import React from "react";
 import DataView from "../DataView";
-import { withRouter } from "react-router-dom"
+import { withRouter, NavLink } from "react-router-dom"
 
 function getKind(upnpClassName) {
     let index = upnpClassName.lastIndexOf(".");
@@ -23,6 +23,29 @@ class AlbumArtImage extends React.Component {
             return <img src={`/api/proxy/${escape(albumArts[0])}`} className="album-art-icon" alt="" />;
         else
             return <i className={`album-art-icon fas ${this.getIconClass(itemClass)}`} />
+    }
+}
+
+class Breadcrumbs extends React.Component {
+    render() {
+        const { "data-context": { parents } = [], baseUrl } = this.props;
+        return <nav aria-label="breadcrumb sticky-top">
+            <ol className="breadcrumb rounded-0 my-0 p-1">
+                {[parents.reverse().map((p, i) => {
+                    let isCurrent = i === parents.length - 1;
+                    let className = "breadcrumb-item" + (isCurrent ? " active" : "");
+                    return <li key={i} className={className} aria-current={isCurrent ? "page" : null}>
+                        {!isCurrent ? <NavLink to={`${baseUrl}/${p.id}`}>{p.title}</NavLink> : p.title}
+                    </li>
+                })]}
+            </ol>
+        </nav>;
+    }
+}
+
+class Pagination extends React.Component {
+    render() {
+        return <div></div>;
     }
 }
 
@@ -49,7 +72,7 @@ class ContainerView extends React.Component {
 
     render() {
 
-        const { "data-context": context = {}, navigateHandler } = this.props;
+        const { "data-context": { parents } = {}, navigateHandler } = this.props;
 
         return <div className="x-table x-table-sm x-table-hover x-table-striped x-table-head-light">
             <div>
@@ -59,12 +82,13 @@ class ContainerView extends React.Component {
                 </div>
             </div>
             <div>
-                {(context.parents && context.parents.length > 0) &&
-                    <div onDoubleClick={() => navigateHandler(context.parents[0].parentId)}>
+                {(parents && parents.length > 0) &&
+                    <div onDoubleClick={() => navigateHandler(parents[parents.length - 1].parentId)}>
                         <div>...</div>
                         <div>Parent</div>
                     </div>}
-                {this.props.children}</div>
+                {this.props.children}
+            </div>
         </div>
     }
 }
@@ -88,11 +112,13 @@ class Browser extends React.Component {
     }
 
     render() {
-        const { device, id } = this.props;
+        const { device, id, baseUrl } = this.props;
         return <DataView dataUri={`/api/browse/${device}/${id}?withParents=true`}
             selector={data => data.result}
-            containerTemplate={ContainerView} navigateHandler={this.navigateToItem}
-            itemTemplate={DIDLItem} itemProps={{ onDoubleClick: this.handleDoubleClick }} />;
+            headerTemplate={Breadcrumbs} headerProps={{ baseUrl: `${baseUrl}/${device}` }}
+            containerTemplate={ContainerView} containerProps={{ navigateHandler: this.navigateToItem }}
+            itemTemplate={DIDLItem} itemProps={{ onDoubleClick: this.handleDoubleClick }}
+            footerTemplate={Pagination} />;
     }
 }
 
