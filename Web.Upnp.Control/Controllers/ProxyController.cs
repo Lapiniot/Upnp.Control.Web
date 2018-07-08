@@ -23,7 +23,6 @@ namespace Web.Upnp.Control.Controllers
         public ProxyController(IHttpClientFactory clientFactory)
         {
             this.clientFactory = clientFactory;
-
         }
 
         [HttpGet("{*originalUri}")]
@@ -32,7 +31,16 @@ namespace Web.Upnp.Control.Controllers
         {
             HttpClient client = clientFactory.CreateClient("ImageLoader");
 
-            return await client.GetAsync(originalUri).ConfigureAwait(false);
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, originalUri);
+
+            foreach(var h in Request.Headers)
+            {
+                if(h.Key == "Host") continue;
+
+                message.Headers.TryAddWithoutValidation(h.Key, (IEnumerable<string>)h.Value);
+            }
+
+            return await client.SendAsync(message).ConfigureAwait(false);
         }
     }
 }

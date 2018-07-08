@@ -16,19 +16,20 @@ namespace Web.Upnp.Control
         public async Task WriteAsync(OutputFormatterWriteContext context)
         {
             using(var response = (HttpResponseMessage)context.Object)
+            using(response.RequestMessage)
             {
-                context.ContentType = response.Content.Headers.ContentType.ToString();
-
                 context.HttpContext.Response.StatusCode = (int)response.StatusCode;
+
+                var headers = context.HttpContext.Response.Headers;
 
                 foreach(var h in response.Headers)
                 {
-                    context.HttpContext.Response.Headers.Add(h.Key, h.Value.ToArray());
+                    if(!headers.TryGetValue(h.Key, out _)) headers.Add(h.Key, h.Value.ToArray());
                 }
 
                 foreach(var h in response.Content.Headers)
                 {
-                    context.HttpContext.Response.Headers.Add(h.Key, h.Value.ToArray());
+                    if(!headers.TryGetValue(h.Key, out _)) headers.Add(h.Key, h.Value.ToArray());
                 }
 
                 using(var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
