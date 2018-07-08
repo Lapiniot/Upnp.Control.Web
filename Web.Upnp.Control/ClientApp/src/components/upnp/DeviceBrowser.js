@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import DataView from "../DataView";
 import { Switch, Route } from "react-router-dom"
-import ContentBrowser from "./ContentBrowser";
+import ContentBrowser from "./browser/ContentBrowser";
 import UmiDevice from "./UmiDevice";
 import UpnpDevice from "./UpnpDevice";
 
