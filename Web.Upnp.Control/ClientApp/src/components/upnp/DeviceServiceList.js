@@ -10,14 +10,14 @@ export default class DeviceServiceList extends React.Component {
         const { "data-source": data, "data-row-id": id } = this.props;
 
         return <Spoiler title="Supported services" uniqueId={`card-${id}-s`}>
-            <ul className="list-group list-group-flush">
-                {[
+                   <ul className="list-group list-group-flush">
+                       {[
                     data.map(s =>
                         <li className="list-group-item">
                             <a href={s.url} className="card-link">{s.id}</a>
                         </li>)
                 ]}
-            </ul>
-        </Spoiler>;
+                   </ul>
+               </Spoiler>;
     }
 }

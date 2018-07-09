@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +25,7 @@ namespace Web.Upnp.Control
 
             services.AddResponseCaching();
 
-            services.AddResponseCompression(o=>{
-                
-            });
+            services.AddResponseCompression(o => { });
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest)
@@ -37,22 +34,19 @@ namespace Web.Upnp.Control
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     options.SerializerSettings.Formatting = Formatting.None;
                 })
-                .AddMvcOptions(options =>
-                {
-                    options.OutputFormatters.Insert(options.OutputFormatters.Count - 1, new HttpResponseMessageFormatter());
-                });
+                .AddMvcOptions(options => { options.OutputFormatters.Insert(options.OutputFormatters.Count - 1, new HttpResponseMessageFormatter()); });
 
             services.AddHttpClient<HttpClient>("ImageLoader", c =>
-            {
-                c.DefaultRequestHeaders.ConnectionClose = false;
-                c.DefaultRequestHeaders.Add("Accept-Encoding", new [] { "gzip", "deflate" });
-            })
-            .ConfigurePrimaryHttpMessageHandler(() =>
-                new SocketsHttpHandler()
                 {
-                    AutomaticDecompression = None,
-                    MaxConnectionsPerServer = 1
-                });
+                    c.DefaultRequestHeaders.ConnectionClose = false;
+                    c.DefaultRequestHeaders.Add("Accept-Encoding", new[] {"gzip", "deflate"});
+                })
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                    new SocketsHttpHandler
+                    {
+                        AutomaticDecompression = None,
+                        MaxConnectionsPerServer = 1
+                    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

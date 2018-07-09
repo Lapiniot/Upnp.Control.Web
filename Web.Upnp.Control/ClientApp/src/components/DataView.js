@@ -2,10 +2,13 @@
 import Spinner from "./Spinner";
 
 class LoaderPlaceholder extends React.Component {
+
+    displayName = LoaderPlaceholder.name;
+
     render() {
         return <div className="d-flex-fill-center">
-            <Spinner>{this.props.text || "Loading data..."}</Spinner>
-        </div>;
+                   <Spinner>{this.props.text || "Loading data..."}</Spinner>
+               </div>;
     }
 }
 
@@ -57,22 +60,31 @@ export default class DataView extends React.Component {
             const { loaderTemplate: Loader = LoaderPlaceholder, loaderText } = this.props;
             return <Loader text={loaderText} />;
         } else {
-            const { dataUri, selector = (d => d), loaderTemplate, loaderText,
-                containerTemplate: Container = "ul", containerProps,
-                itemTemplate: Item = "li", itemProps,
-                headerTemplate: Header, headerProps,
-                footerTemplate: Footer, footerProps,
-                ...other } = this.props;
+            const {
+                dataUri,
+                selector = (d => d),
+                loaderTemplate,
+                loaderText,
+                containerTemplate: Container = "ul",
+                containerProps,
+                itemTemplate: Item = "li",
+                itemProps,
+                headerTemplate: Header,
+                headerProps,
+                footerTemplate: Footer,
+                footerProps,
+                ...other
+            } = this.props;
             return <div {...other}>
-                {Header && <Header data-context={this.state.data} {...headerProps} />}
-                <Container data-context={this.state.data} {...containerProps}>
-                    {[
+                       {Header && <Header data-context={this.state.data} {...headerProps} />}
+                       <Container data-context={this.state.data} {...containerProps}>
+                           {[
                         selector(this.state.data).map((e, index) =>
                             <Item key={index} data-source={e} data-row-id={index} {...itemProps} />)
                     ]}
-                </Container>
-                {Footer && <Footer data-context={this.state.data} {...footerProps} />}
-            </div>;
+                       </Container>
+                       {Footer && <Footer data-context={this.state.data} {...footerProps} />}
+                   </div>;
         }
     }
 }

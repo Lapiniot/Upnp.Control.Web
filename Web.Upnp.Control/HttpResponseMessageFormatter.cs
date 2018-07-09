@@ -2,7 +2,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.Primitives;
 
 namespace Web.Upnp.Control
 {

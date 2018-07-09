@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import DataView from "../../DataView";
-import Breadcrumbs from "./Breadcrumbs";
+import Breadcrumb from "./Breadcrumb";
 import Pagination from "./Pagination";
 import DIDLItem from "./DIDLItem";
 import TableView from "./TableView";
@@ -14,9 +14,13 @@ class Browser extends React.Component {
         this.navigateToItem(id);
     }
 
-    navigateTo = (location) => this.props.history.push(location);
+    navigateTo = (location) => {
+        this.props.history.push(location);
+    }
 
-    navigateBack = () => this.props.history.goBack();
+    navigateBack = () => {
+        this.props.history.goBack();
+    }
 
     navigateToItem = (id) => {
         if (id !== "-1")
@@ -29,14 +33,14 @@ class Browser extends React.Component {
         const { device, id, baseUrl, match: { url }, location: { search: qstring } } = this.props;
         const { p: page = 1, s: size = 50 } = QString.parse(qstring);
         return <DataView dataUri={`/api/browse/${device}/${id}?withParents=true&take=${size}&skip=${(page - 1) * size}`}
-            selector={data => data.result}
-            headerTemplate={Breadcrumbs} headerProps={{ baseUrl: `${baseUrl}/${device}` }}
-            containerTemplate={TableView} containerProps={{ navigateHandler: this.navigateHandler }}
-            itemTemplate={DIDLItem} itemProps={{ onDoubleClick: this.navigateHandler }}
-            footerTemplate={Pagination} footerProps={{ baseUrl: url, page: parseInt(page), size: parseInt(size) }} />;
+                         selector={data => data.result}
+                         headerTemplate={Breadcrumb} headerProps={{ baseUrl: `${baseUrl}/${device}` }}
+                         containerTemplate={TableView} containerProps={{ navigateHandler: this.navigateHandler }}
+                         itemTemplate={DIDLItem} itemProps={{ onDoubleClick: this.navigateHandler }}
+                         footerTemplate={Pagination} footerProps={{ baseUrl: url, page: parseInt(page), size: parseInt(size) }} />;
     }
 }
 
 const ContentBrowser = withRouter(Browser);
 
-export default ContentBrowser; 
+export default ContentBrowser;

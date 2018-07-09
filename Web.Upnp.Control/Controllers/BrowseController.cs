@@ -28,18 +28,17 @@ namespace Web.Upnp.Control.Controllers
         [HttpGet("{deviceId}/{*path}")]
         public async Task<object> GetContentAsync(string deviceId, string path, [FromQuery] uint take = 50, [FromQuery] uint skip = 0, [FromQuery] bool withParents = false)
         {
-            ContentDirectoryService service = await GetServiceAsync(deviceId).ConfigureAwait(false);
+            var service = await GetServiceAsync(deviceId).ConfigureAwait(false);
 
             using(service.Target)
             {
-
                 var result = await service.BrowseAsync(path ?? "0", index: skip, count: take).ConfigureAwait(false);
 
                 return new
                 {
                     Total = int.Parse(result["TotalMatches"]),
                     Result = DIDLParser.Parse(result["Result"]),
-                    Parents = withParents ? (await GetParentsAsync(service, path).ConfigureAwait(false)).Select(p => new { p.Id, p.ParentId, p.Title }) : null
+                    Parents = withParents ? (await GetParentsAsync(service, path).ConfigureAwait(false)).Select(p => new {p.Id, p.ParentId, p.Title}) : null
                 };
             }
         }
@@ -47,19 +46,19 @@ namespace Web.Upnp.Control.Controllers
         [HttpGet("metadata/{deviceId}/{path?}")]
         public async Task<object> GetMetadataAsync(string deviceId, string path)
         {
-            ContentDirectoryService service = await GetServiceAsync(deviceId).ConfigureAwait(false);
+            var service = await GetServiceAsync(deviceId).ConfigureAwait(false);
 
             using(service.Target)
             {
                 var result = await service.BrowseAsync(path ?? "0", flags: "BrowseMetadata").ConfigureAwait(false);
-                return new { Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"]) };
+                return new {Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"])};
             }
         }
 
         [HttpGet("parents/{deviceId}/{path?}")]
         public async Task<object> GetParentsAsync(string deviceId, string path)
         {
-            ContentDirectoryService service = await GetServiceAsync(deviceId).ConfigureAwait(false);
+            var service = await GetServiceAsync(deviceId).ConfigureAwait(false);
 
             using(service.Target)
             {
@@ -89,7 +88,7 @@ namespace Web.Upnp.Control.Controllers
                 parents.Add(metadata);
 
                 path = metadata.ParentId;
-            };
+            }
 
             return parents;
         }
@@ -101,7 +100,7 @@ namespace Web.Upnp.Control.Controllers
             return contentDirectoryService != null
                 ? new Uri(contentDirectoryService.ControlUrl)
                 : device.Services.Any(s => s.ServiceType == "urn:xiaomi-com:service:Playlist:1")
-                    ? new UriBuilder(device.Location) { Path = $"{device.Udn.Substring(5)}-MS/upnp.org-ContentDirectory-1/control" }.Uri
+                    ? new UriBuilder(device.Location) {Path = $"{device.Udn.Substring(5)}-MS/upnp.org-ContentDirectory-1/control"}.Uri
                     : null;
         }
 

@@ -1,7 +1,7 @@
 import React from "react";
 
 export default class AlbumArtImage extends React.Component {
-    
+
     static getIconClass(itemClass) {
         if (itemClass.endsWith("musicTrack"))
             return "fa-file-audio";
@@ -9,7 +9,7 @@ export default class AlbumArtImage extends React.Component {
             return "fa-file-video";
         return "fa-folder";
     }
-    
+
     render() {
         const { itemClass, albumArts } = this.props;
         if (albumArts && albumArts.length > 0)
