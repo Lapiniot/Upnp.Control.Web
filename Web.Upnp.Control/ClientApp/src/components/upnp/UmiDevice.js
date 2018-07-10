@@ -24,6 +24,7 @@ export default class UmiDevice extends React.Component {
                    </div>
                    <div className="card-footer">
                        <RouteLink to={`/browse/umi/${d.udn}/`} glyph="folder" className="card-link">Browse</RouteLink>
+                       <RouteLink to={`/browse/umi/playlist/${d.udn}/PL:`} glyph="list-alt" className="card-link">Playlists</RouteLink>
                    </div>
                </div>;
     }

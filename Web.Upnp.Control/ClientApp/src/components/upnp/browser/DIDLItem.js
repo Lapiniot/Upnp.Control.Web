@@ -11,13 +11,13 @@ export default class DIDLItem extends React.Component {
     }
 
     render() {
-        const { "data-source": data, ...other } = this.props;
-        return <div data-id={data.id} {...other}>
-                   <div>
-                       <AlbumArtImage itemClass={data.class} albumArts={data.albumArts} />
-                       {data.title}
-                   </div>
-                   <div className="text-capitalize">{DIDLItem.getKind(data.class)}</div>
-               </div>;
+        const { "data-source": data, navigateHandler } = this.props;
+        return <div data-id={data.id} onDoubleClick={navigateHandler}>
+            <div>
+                <AlbumArtImage itemClass={data.class} albumArts={data.albumArts} />
+                {data.title}
+            </div>
+            <div className="text-capitalize">{DIDLItem.getKind(data.class)}</div>
+        </div>;
     }
 }

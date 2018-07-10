@@ -50,6 +50,10 @@ $fa-font-path: "../webfonts";
     content: fa-content($fa-var-spinner);
 }
 
+.#{$fa-css-prefix}-download:before {
+    content: fa-content($fa-var-download);
+}
+
 .#{$fa-css-prefix}-folder:before {
     content: fa-content($fa-var-folder);
 }
@@ -68,4 +72,8 @@ $fa-font-path: "../webfonts";
 
 .#{$fa-css-prefix}-file-video:before {
     content: fa-content($fa-var-file-video);
+}
+
+.#{$fa-css-prefix}-list-alt:before {
+    content: fa-content($fa-var-list-alt);
 }
