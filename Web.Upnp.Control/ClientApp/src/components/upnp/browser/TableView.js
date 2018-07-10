@@ -6,7 +6,7 @@ export default class TableView extends React.Component {
 
     render() {
         const { "data-context": { parents } = {}, navigateHandler } = this.props;
-        return <div className="x-table x-table-sm x-table-hover x-table-striped x-table-head-light">
+        return <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
                    <div>
                        <div>
                            <div>Name</div>
