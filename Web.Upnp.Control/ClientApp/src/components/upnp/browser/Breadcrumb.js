@@ -24,7 +24,7 @@ export default class Breadcrumb extends React.Component {
     render() {
         const { "data-context": { parents } = [], baseUrl } = this.props;
         return <nav className="position-sticky sticky-top" aria-label="breadcrumb">
-                   <ol className="breadcrumb rounded-0 my-0 p-1">
+                   <ol className="breadcrumb rounded-0 my-0 p-2">
                        {[
                            parents.reverse().map((p, i) => <BreadcrumbItem key={i} title={p.title} url={`${baseUrl}/${p.id}`} active={i === parents.length - 1} />)
                        ]}

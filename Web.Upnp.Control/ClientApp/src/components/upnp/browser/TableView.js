@@ -15,7 +15,7 @@ export default class TableView extends React.Component {
                    </div>
                    <div>
                        {(parents && parents.length > 0) &&
-                           <div data-id={parents[parents.length - 1].parentId} onDoubleClick={navigateHandler}>
+                           <div data-id={parents[parents.length - 1].parentId} onDoubleClick={navigateHandler} >
                                <div>...</div>
                                <div>Parent</div>
                            </div>}

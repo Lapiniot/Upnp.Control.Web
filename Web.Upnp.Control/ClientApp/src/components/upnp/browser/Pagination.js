@@ -58,8 +58,8 @@ export default class Pagination extends React.Component {
             pageData.push({ title: i + 1, url: `${template}${i + 1}` });
         }
 
-        return <nav aria-label="Page navigation">
-                   <ul className="pagination justify-content-center">
+        return <nav aria-label="Page navigation" className="position-sticky sticky-bottom p-2 bg-gray-200">
+                   <ul className="pagination my-0 justify-content-center flex-wrap">
                        <RelativePageLink key="prev" title="&laquo;" label="Previous" url={`${template}${page - 1}`} enabled={page > 1} />
                        {[
                            pageData.map((e, index) => <PageLink key={index + 1} title={e.title} url={e.url} current={index + 1 === page} />)

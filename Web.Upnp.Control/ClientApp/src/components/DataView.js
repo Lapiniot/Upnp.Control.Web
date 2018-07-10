@@ -79,9 +79,9 @@ export default class DataView extends React.Component {
                        {Header && <Header data-context={this.state.data} {...headerProps} />}
                        <Container data-context={this.state.data} {...containerProps}>
                            {[
-                        selector(this.state.data).map((e, index) =>
-                            <Item key={index} data-source={e} data-row-id={index} {...itemProps} />)
-                    ]}
+                               selector(this.state.data).map((e, index) =>
+                                   <Item key={index} data-source={e} data-row-id={index} {...itemProps} />)
+                           ]}
                        </Container>
                        {Footer && <Footer data-context={this.state.data} {...footerProps} />}
                    </div>;
