@@ -9,8 +9,8 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./components/Home";
-import { UpnpBrowser, UmiBrowser } from "./components/upnp/DeviceBrowser";
 import Settings from "./components/Settings";
+import { UpnpSection, UmiSection } from "./components/upnp/DeviceSections";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const container = document.getElementById("root-view");
@@ -20,8 +20,8 @@ ReactDOM.render(
         <Layout>
             <Route exact path="/" component={Home} />
             <Route path="/settings" component={Settings} />
-            <Route path="/upnp" component={UpnpBrowser} />
-            <Route path="/umi" component={UmiBrowser} />
+            <Route path="/upnp" component={UpnpSection} />
+            <Route path="/umi" component={UmiSection} />
         </Layout>
     </BrowserRouter>,
     container);

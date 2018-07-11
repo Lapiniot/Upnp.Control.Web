@@ -12,9 +12,17 @@ class BreadcrumbItem extends React.Component {
             return <li className="breadcrumb-item active" aria-current="page">{title}</li>;
         else
             return <li className="breadcrumb-item">
-                <NavLink to={url}>{title}</NavLink>
-            </li>;
+                       <NavLink to={url}>{title}</NavLink>
+                   </li>;
     }
+}
+
+function reversemap(array, fn) {
+    return array.reduceRight((acc, e) => {
+            acc.push(fn(e));
+            return acc;
+        },
+        []);
 }
 
 export default class Breadcrumb extends React.Component {
@@ -24,11 +32,11 @@ export default class Breadcrumb extends React.Component {
     render() {
         const { "data-context": { parents } = [], urls: { root: baseUrl } = {} } = this.props;
         return <nav className="position-sticky sticky-top" aria-label="breadcrumb">
-            <ol className="breadcrumb rounded-0 my-0 p-2">
-                {[
-                    parents.reverse().map((p, i) => <BreadcrumbItem key={i} title={p.title} url={`${baseUrl}/${p.id}`} active={i === parents.length - 1} />)
-                ]}
-            </ol>
-        </nav>;
+                   <ol className="breadcrumb rounded-0 my-0 p-2">
+                       {[
+                           reversemap(parents, (p, i) => <BreadcrumbItem key={i} title={p.title} url={`${baseUrl}/${p.id}`} active={i === parents.length - 1} />)
+                       ]}
+                   </ol>
+               </nav>;
     }
 }

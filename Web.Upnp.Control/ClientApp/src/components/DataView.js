@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import Spinner from "./Spinner";
 
 class LoaderPlaceholder extends React.Component {
@@ -60,19 +60,11 @@ export default class DataView extends React.Component {
             const { loaderTemplate: Loader = LoaderPlaceholder, loaderText } = this.props;
             return <Loader text={loaderText} />;
         } else {
-            const {
-                dataUri,
-                selector = (d => d),
-                loaderTemplate,
-                loaderText,
-                containerTemplate: Container = "ul",
-                containerProps,
-                itemTemplate: Item = "li",
-                itemProps,
-                headerTemplate: Header,
-                headerProps,
-                footerTemplate: Footer,
-                footerProps,
+            const { dataUri, selector = (d => d), loaderTemplate, loaderText,
+                containerTemplate: Container = "ul", containerProps,
+                itemTemplate: Item = "li", itemProps,
+                headerTemplate: Header, headerProps,
+                footerTemplate: Footer, footerProps,
                 ...other
             } = this.props;
             return <div {...other}>
