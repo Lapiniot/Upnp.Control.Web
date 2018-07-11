@@ -29,7 +29,7 @@ export default class UpnpDevice extends React.Component {
                    </div>
                    <div className="card-footer">
                        <a className="card-link d-inline-block" href={d.url}><Icon glyph="download" className="x-fa-w-2" />Metadata</a>
-                       {isMediaServer && <RouteLink to={`/browse/upnp/${d.udn}`} glyph="folder" className="card-link d-inline-block">Browse</RouteLink>}
+                       {isMediaServer && <RouteLink to={`/upnp/browse/${d.udn}`} glyph="folder" className="card-link d-inline-block">Browse</RouteLink>}
                    </div>
                </div>;
     }

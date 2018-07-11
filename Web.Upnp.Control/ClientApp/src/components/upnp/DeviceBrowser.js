@@ -10,16 +10,23 @@ const templates = { "umi": UmiDevice, "upnp": UpnpDevice };
 const RoutedBrowser = withRouter(Browser);
 const RoutedPlaylistBrowser = withRouter(PlaylistBrowser);
 
-export default class DeviceBrowser extends React.Component {
-
-    displayName = DeviceBrowser.name;
-
+export class UpnpBrowser extends React.Component {
     render() {
-        const { path, url, params: { category } } = this.props.match;
+        const { path, url } = this.props.match;
         return <Switch>
-            <Route path={path} exact render={getDeviceList(category)} />
+            <Route path={path} exact render={getDeviceList("upnp")} />
+            <Route path={`${path}/browse/:device/:id(.*)?`} render={getBrowser(url)} />
+        </Switch>;
+    }
+}
+
+export class UmiBrowser extends React.Component {
+    render() {
+        const { path, url } = this.props.match;
+        return <Switch>
+            <Route path={path} exact render={getDeviceList("umi")} />
             <Route path={`${path}/playlist/:device/:id(.*)?`} render={getPlaylistManager(url)} />
-            <Route path={`${path}/:device/:id(.*)?`} render={getBrowser(url)} />
+            <Route path={`${path}/browse/:device/:id(.*)?`} render={getBrowser(url)} />
         </Switch>;
     }
 }
