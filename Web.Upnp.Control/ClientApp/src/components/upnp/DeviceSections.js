@@ -2,9 +2,10 @@
 import DataView from "../DataView";
 import { Switch, Route, withRouter } from "react-router-dom"
 import { Browser, PlaylistBrowser } from "./browser/ContentBrowser";
-import { withProps, renderWithProps } from "../Extensions";
+import { withProps, renderWithProps, withDataFetch } from "../Extensions";
 import UmiDevice from "./UmiDevice";
 import UpnpDevice from "./UpnpDevice";
+import LoadIndicator from "../LoadIndicator";
 
 const containerClassName = "d-grid grid-c1 grid-xl-c2 grid-xxxl-c3 grid-xxxxl-c4 py-3 px-3";
 
@@ -16,8 +17,8 @@ class AbstractDeviceList extends React.Component {
 
 const RoutedBrowser = withRouter(Browser);
 const RoutedPlaylistBrowser = withRouter(PlaylistBrowser);
-const UpnpDeviceList = withProps(AbstractDeviceList, { dataUri: "/api/discovery/upnp", itemTemplate: UpnpDevice });
-const UmiDeviceList = withProps(AbstractDeviceList, { dataUri: "/api/discovery/umi", itemTemplate: UmiDevice });
+const UpnpDeviceList = withProps(withDataFetch(AbstractDeviceList, "/api/discovery/upnp", { template: LoadIndicator }), { itemTemplate: UpnpDevice });
+const UmiDeviceList = withProps(withDataFetch(AbstractDeviceList, "/api/discovery/umi", { template: LoadIndicator }), { itemTemplate: UmiDevice });
 
 function renderWithDeviceProps(Component, props) {
     return function({ match: { params: { device, id = "" } } }) {

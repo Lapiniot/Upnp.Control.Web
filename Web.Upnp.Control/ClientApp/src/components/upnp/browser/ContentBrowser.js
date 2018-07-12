@@ -4,7 +4,8 @@ import Breadcrumb from "./Breadcrumb";
 import Pagination from "./Pagination";
 import DIDLItem from "./DIDLItem";
 import TableView from "./TableView";
-import { QString } from "../../Extensions";
+import LoadIndicator from "../../LoadIndicator";
+import { QString, withDataFetch } from "../../Extensions";
 
 class AbstractBrowser extends React.Component {
 
@@ -29,7 +30,6 @@ class AbstractBrowser extends React.Component {
     }
 
     render() {
-        console.log(this.props);
         const { device, id, baseUrl, match: { url }, location: { search: qstring },
             headerTemplate: HeaderTemplate, containerTemplate: ContainerTemplate,
             itemTemplate: ItemTemplate, footerTemplate: FooterTemplate } = this.props;
@@ -40,13 +40,12 @@ class AbstractBrowser extends React.Component {
             size: parseInt(size),
             navigateHandler: this.navigateHandler
         };
-        console.log(context);
-        return <DataView dataUri={`/api/browse/${device}/${id}?withParents=true&take=${size}&skip=${(page - 1) * size}`}
-                         selector={data => data.result}
-                         headerTemplate={HeaderTemplate} headerProps={context}
-                         containerTemplate={ContainerTemplate} containerProps={context}
-                         itemTemplate={ItemTemplate} itemProps={context}
-                         footerTemplate={FooterTemplate} footerProps={context} />;
+        const View = withDataFetch(DataView, `/api/browse/${device}/${id}?withParents=true&take=${size}&skip=${(page - 1) * size}`, { template: LoadIndicator });
+        return <View selector={data => data.result}
+                     headerTemplate={HeaderTemplate} headerProps={context}
+                     containerTemplate={ContainerTemplate} containerProps={context}
+                     itemTemplate={ItemTemplate} itemProps={context}
+                     footerTemplate={FooterTemplate} footerProps={context} />;
     }
 }
 
