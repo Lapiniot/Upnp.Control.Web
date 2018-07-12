@@ -4,7 +4,7 @@ import Breadcrumb from "./Breadcrumb";
 import Pagination from "./Pagination";
 import DIDLItem from "./DIDLItem";
 import TableView from "./TableView";
-import { QString } from "../../Utils";
+import { QString } from "../../Extensions";
 
 class AbstractBrowser extends React.Component {
 
@@ -67,11 +67,4 @@ export class PlaylistBrowser extends React.Component {
                    itemTemplate={DIDLItem}
                    footerTemplate={Pagination} />;
     }
-}
-
-export function withDeviceRoute(component, props) {
-    return function({ match: { params: { device, id = "" } } = {} }) {
-        const Component = component;
-        return <Component device={device} id={id} {...props} />;
-    };
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { reversemap } from "../../Extensions";
 
 class BreadcrumbItem extends React.Component {
     displayName = Breadcrumb.name;
@@ -15,14 +16,6 @@ class BreadcrumbItem extends React.Component {
                        <NavLink to={url}>{title}</NavLink>
                    </li>;
     }
-}
-
-function reversemap(array, fn) {
-    return array.reduceRight((acc, e) => {
-            acc.push(fn(e));
-            return acc;
-        },
-        []);
 }
 
 export default class Breadcrumb extends React.Component {
