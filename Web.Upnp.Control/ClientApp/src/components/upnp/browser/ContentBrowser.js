@@ -7,63 +7,68 @@ import TableView from "./TableView";
 import LoadIndicator from "../../LoadIndicator";
 import { QString, withDataFetch } from "../../Extensions";
 
-class AbstractBrowser extends React.Component {
+function withNavigationContext(Component) {
+    return class extends React.Component {
 
-    navigateHandler = event => {
-        const id = event.currentTarget.dataset.id;
-        this.navigateToItem(id);
-    }
+        displayName = withNavigationContext.name + "(" + Component.name + ")";
 
-    navigateTo = (location) => {
-        this.props.history.push(location);
-    }
+        navigateHandler = event => {
+            const id = event.currentTarget.dataset.id;
+            this.navigateToItem(id);
+        }
 
-    navigateBack = () => {
-        this.props.history.goBack();
-    }
+        navigateTo = (location) => {
+            this.props.history.push(location);
+        }
 
-    navigateToItem = (id) => {
-        if (id !== "-1")
-            this.navigateTo(`${this.props.baseUrl}/${this.props.device}/${id}`);
-        else
-            this.navigateTo(this.props.baseUrl);
-    }
+        navigateToItem = (id) => {
+            if (id !== "-1")
+                this.navigateTo(`${this.props.baseUrl}/${this.props.device}/${id}`);
+            else
+                this.navigateTo(this.props.baseUrl);
+        }
 
+        render() {
+            const { device, baseUrl, match: { url }, location: { search: qstring } } = this.props;
+            const { p: page = 1, s: size = 50 } = QString.parse(qstring);
+            const context = {
+                urls: { current: url, base: baseUrl, root: `${baseUrl}/${device}` },
+                page: parseInt(page),
+                size: parseInt(size),
+                navigateHandler: this.navigateHandler
+            };
+
+            return <Component context={context} {...this.props} />;
+        }
+    };
+}
+
+class ContentView extends React.Component {
     render() {
-        const { device, id, baseUrl, match: { url }, location: { search: qstring },
-            headerTemplate: HeaderTemplate, containerTemplate: ContainerTemplate,
-            itemTemplate: ItemTemplate, footerTemplate: FooterTemplate } = this.props;
-        const { p: page = 1, s: size = 50 } = QString.parse(qstring);
-        const context = {
-            urls: { current: url, base: baseUrl, root: `${baseUrl}/${device}` },
-            page: parseInt(page),
-            size: parseInt(size),
-            navigateHandler: this.navigateHandler
-        };
-        const View = withDataFetch(DataView, `/api/browse/${device}/${id}?withParents=true&take=${size}&skip=${(page - 1) * size}`, { template: LoadIndicator });
-        return <View selector={data => data.result}
-                     headerTemplate={HeaderTemplate} headerProps={context}
-                     containerTemplate={ContainerTemplate} containerProps={context}
-                     itemTemplate={ItemTemplate} itemProps={context}
-                     footerTemplate={FooterTemplate} footerProps={context} />;
+        const { context, ...other } = this.props;
+        return <DataView
+                   headerTemplate={Breadcrumb} headerProps={context}
+                   containerTemplate={TableView} containerProps={context}
+                   itemTemplate={DIDLItem} itemProps={context}
+                   footerTemplate={Pagination} footerProps={context}
+                   {...other} selector={d => d.result} />;
     }
 }
 
+const OnlineContentView = withNavigationContext(withDataFetch(ContentView,
+    { template: LoadIndicator },
+    ({ device, id, context: { size, page } }) => {
+        return `/api/browse/${device}/${id}?withParents=true&take=${size}&skip=${(page - 1) * size}`;
+    }));
+
 export class Browser extends React.Component {
     render() {
-        return <AbstractBrowser {...this.props}
-                   headerTemplate={Breadcrumb}
-                   containerTemplate={TableView}
-                   itemTemplate={DIDLItem}
-                   footerTemplate={Pagination} />;
+        return <OnlineContentView {...this.props} />;
     }
 }
 
 export class PlaylistBrowser extends React.Component {
     render() {
-        return <AbstractBrowser {...this.props}
-                   containerTemplate={TableView}
-                   itemTemplate={DIDLItem}
-                   footerTemplate={Pagination} />;
+        return <OnlineContentView {...this.props} headerTemplate={null} />;
     }
 }

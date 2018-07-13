@@ -17,8 +17,8 @@ class AbstractDeviceList extends React.Component {
 
 const RoutedBrowser = withRouter(Browser);
 const RoutedPlaylistBrowser = withRouter(PlaylistBrowser);
-const UpnpDeviceList = withProps(withDataFetch(AbstractDeviceList, "/api/discovery/upnp", { template: LoadIndicator }), { itemTemplate: UpnpDevice });
-const UmiDeviceList = withProps(withDataFetch(AbstractDeviceList, "/api/discovery/umi", { template: LoadIndicator }), { itemTemplate: UmiDevice });
+const UpnpDeviceList = withProps(withDataFetch(AbstractDeviceList, { template: LoadIndicator }), { dataUrl: "/api/discovery/upnp", itemTemplate: UpnpDevice });
+const UmiDeviceList = withProps(withDataFetch(AbstractDeviceList, { template: LoadIndicator }), { dataUrl: "/api/discovery/umi", itemTemplate: UmiDevice });
 
 function renderWithDeviceProps(Component, props) {
     return function({ match: { params: { device, id = "" } } }) {
@@ -66,7 +66,7 @@ class UmiBrowser extends React.Component {
     render() {
         const { path, url } = this.props.match;
         return <Switch>
-                   <Route path={`${path}/browse`} exact component={UmiDeviceList} />
+                   <Route path={path} exact component={UmiDeviceList} />
                    <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedBrowser, { baseUrl: url })} />
                </Switch>;
     }

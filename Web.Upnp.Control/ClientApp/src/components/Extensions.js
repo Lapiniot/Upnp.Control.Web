@@ -33,19 +33,34 @@ export function renderWithProps(Component, props = {}) {
     return () => <Component {...props} {...this.props} />;
 }
 
-export function withDataFetch(Component, url, loadPlaceholderProps = {}) {
+export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuilder = props => props.dataUrl) {
 
     return class extends React.Component {
         constructor(props) {
             super(props);
+            const url = dataUrlBuilder(props);
             this.state = { loading: true, data: [] };
-            this.fetchData(url);
+
+            if (!!url) {
+                //fetch online data from dataUri
+                this.fetchData(url);
+            }
         }
 
-        fetchData(dataUri) {
-            fetch(dataUri)
+        fetchData(url) {
+            fetch(url)
                 .then(response => response.json())
                 .then(json => this.setState({ loading: false, data: json }));
+        }
+
+        shouldComponentUpdate(nextProps) {
+            const current = dataUrlBuilder(this.props);
+            const next = dataUrlBuilder(nextProps);
+            if (next !== current) {
+                this.setState({ loading: true, data: [] }, () => this.fetchData(next));
+                return false;
+            }
+            return true;
         }
 
         render() {
