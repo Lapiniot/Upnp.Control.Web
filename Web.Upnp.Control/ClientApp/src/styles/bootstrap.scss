@@ -48,7 +48,7 @@ $table-striped-order: even;
     margin-bottom: $spacer;
     background-color: $table-bg;
 
-    & > * {
+    & > div {
         display: table-row-group;
         border-top: (2 * $table-border-width) solid $table-border-color;
 
@@ -56,8 +56,8 @@ $table-striped-order: even;
             display: table-header-group;
             border-bottom: (2 * $table-border-width) solid $table-border-color;
 
-            & > * {
-                & > * {
+            & > div {
+                & > div {
                     :first-child {
                         border-left: none;
                     }
@@ -68,22 +68,26 @@ $table-striped-order: even;
             }
         }
 
-        & > * {
+        & > div {
             display: table-row;
 
-            & > * {
+            & > div {
                 display: table-cell;
                 vertical-align: middle;
                 padding: $table-cell-padding;
                 border-top: $table-border-width solid $table-border-color;
+
+                &.x-table-cell-min{
+                    width: 1px;
+                }
             }
         }
     }
 
     &.x-table-sm {
-        & > * {
-            & > * {
-                & > * {
+        & > div {
+            & > div {
+                & > div {
                     padding: $table-cell-padding-sm;
                 }
             }
@@ -119,8 +123,8 @@ $table-striped-order: even;
 
     &.x-table-head-dark {
         & > :nth-of-type(1) {
-            & > * {
-                & > * {
+            & > div {
+                & > div {
                     color: $table-dark-color;
                     background-color: $table-dark-bg;
                     border-color: $table-dark-border-color;
@@ -131,8 +135,8 @@ $table-striped-order: even;
 
     &.x-table-head-light {
         & > :nth-of-type(1) {
-            & > * {
-                & > * {
+            & > div {
+                & > div {
                     color: $table-head-color;
                     background-color: $table-head-bg;
                     border-color: $table-border-color;

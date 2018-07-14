@@ -36,3 +36,15 @@
 svg.album-art-icon {
     vertical-align: -0.5rem !important;
 }
+
+input[type=checkbox].chk-no-label{
+    &:after{
+        width: 20px;
+        content: ('0');
+        display: inline-block;
+        background-color: red;
+    }
+    &:checked:after{
+        content: ('1');
+    }
+}
