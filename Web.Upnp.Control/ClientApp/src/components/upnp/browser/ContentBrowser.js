@@ -1,4 +1,3 @@
-
 import React from "react";
 import DataView from "../../DataView";
 import LoadIndicator from "../../LoadIndicator";

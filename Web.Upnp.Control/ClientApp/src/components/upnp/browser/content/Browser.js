@@ -1,7 +1,7 @@
 import React from "react";
 import { OnlineContentBrowserView } from "../ContentBrowser";
 import ContentTableView from "../ContentTableView";
-import DIDLItem from "../DIDLItem";
+import DIDLItemRow, { DefaultCells } from "../DIDLItemRow";
 import LevelUpRow from "../LevelUpRow";
 import Breadcrumb from "../Breadcrumb";
 import Pagination from "../Pagination";
@@ -24,6 +24,14 @@ class LevelUp extends React.Component {
     }
 }
 
+class Item extends React.Component {
+    render() {
+        return <DIDLItemRow {...this.props}>
+            <DefaultCells {...this.props} />
+        </DIDLItemRow>;
+    }
+}
+
 class ContentBrowserTableView extends React.Component {
     render() {
         return <ContentTableView headerTemplate={ContentTableHeader} injectStart={LevelUp} {...this.props} />
@@ -32,11 +40,11 @@ class ContentBrowserTableView extends React.Component {
 
 export default class Browser extends React.Component {
     render() {
-        return <OnlineContentBrowserView 
-        headerTemplate={Breadcrumb}
-        containerTemplate={ContentBrowserTableView} 
-        itemTemplate={DIDLItem}
-        footerTemplate={Pagination} 
-        {...this.props} />;
+        return <OnlineContentBrowserView
+            headerTemplate={Breadcrumb}
+            containerTemplate={ContentBrowserTableView}
+            itemTemplate={Item}
+            footerTemplate={Pagination}
+            {...this.props} />;
     }
 }
