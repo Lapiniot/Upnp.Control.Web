@@ -27,8 +27,8 @@ export function withNavigationContext(Component) {
             const { p: page = 1, s: size = 50 } = QString.parse(qstring);
             const context = {
                 urls: { current: url, base: baseUrl, root: `${baseUrl}/${device}` },
-                page: parseInt(page),
-                size: parseInt(size),
+                page: parseInt(page, 10),
+                size: parseInt(size, 10),
                 navigateHandler: this.navigateHandler
             };
 

@@ -10,9 +10,8 @@ export default class DataView extends React.Component {
             itemTemplate: Item = "li", itemProps,
             headerTemplate: Header, headerProps,
             footerTemplate: Footer, footerProps,
-            ...other
-        } = this.props;
-        return <div {...other}>
+            className } = this.props;
+        return <div className={className}>
             {Header && <Header data-context={dataContext} {...headerProps} />}
             <Container data-context={dataContext} {...containerProps}>
                 {[
