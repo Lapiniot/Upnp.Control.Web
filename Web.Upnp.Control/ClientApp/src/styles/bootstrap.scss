@@ -70,16 +70,21 @@ $table-striped-order: even;
 
         & > div {
             display: table-row;
-
             & > div {
                 display: table-cell;
                 vertical-align: middle;
                 padding: $table-cell-padding;
                 border-top: $table-border-width solid $table-border-color;
-
+                
                 &.x-table-cell-min{
                     width: 1px;
                 }
+            }
+            & > div:first-child{
+                padding-left: 2 * $table-cell-padding;
+            }
+            & > div:last-child{
+                padding-right: 2 * $table-cell-padding;
             }
         }
     }
@@ -89,6 +94,12 @@ $table-striped-order: even;
             & > div {
                 & > div {
                     padding: $table-cell-padding-sm;
+                }
+                & > div:first-child{
+                    padding-left: 2 * $table-cell-padding-sm;
+                }
+                & > div:last-child{
+                    padding-right: 2 * $table-cell-padding-sm;
                 }
             }
         }
