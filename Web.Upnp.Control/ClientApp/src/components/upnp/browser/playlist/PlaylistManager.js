@@ -8,7 +8,7 @@ import Pagination from "../Pagination";
 class ContentTableHeader extends React.Component {
     render() {
         return (<React.Fragment>
-            <div className="x-table-cell-min"><input type="checkbox" id="select_all" /></div>
+            <div className="x-table-cell-min"><input type="checkbox" id="select_all" onChange={this.props.onSelect} /></div>
             <div>Name</div>
             <div className="x-table-cell-min">Kind</div>
         </React.Fragment>);
@@ -27,8 +27,11 @@ class LevelUp extends React.Component {
 
 class Item extends React.Component {
     render() {
-        return <DIDLItemRow {...this.props}>
-            <div className="x-table-cell-min"><input type="checkbox" name={this.props["data-source"].id} onChange={this.props.handler} /></div>
+        const { "data-source": data, selected, onSelect, navcontext: { navigateHandler }, ...other } = this.props;
+        return <DIDLItemRow id={data.id} data-selected={selected(data.id) ? true : null} onDoubleClick={navigateHandler} {...other}>
+            <div className="x-table-cell-min">
+                <input type="checkbox" name={data.id} onChange={onSelect} checked={selected(data.id) ? true : null} />
+            </div>
             <DefaultCells {...this.props} />
         </DIDLItemRow>;
     }
@@ -53,42 +56,69 @@ class Toolbar extends React.Component {
     }
 }
 
+class SelectionService {
+    constructor() {
+        this.map = new Map();
+    }
+
+    any = () => this.map.size > 0;
+
+    select = (key, selected = true) => {
+        if (selected)
+            this.map.set(key, true);
+        else
+            this.map.delete(key);
+    }
+
+    selectMany = (keys, selected) => {
+        keys.forEach(k => this.select(k, selected));
+    }
+
+    selected = (key) => this.map.has(key) && this.map.get(key);
+}
+
 export default class PlaylistManager extends React.Component {
 
     constructor(props) {
         super(props);
-        this.selection = new Map();
+        this.selection = new SelectionService();
+        this.toolbarConfig = [
+            { caption: "Add", glyph: "plus", handler: this.add, isEnabled: () => true },
+            { caption: "Remove", glyph: "trash", handler: this.remove, isEnabled: this.selection.any },
+            { caption: "Rename", glyph: "edit", handler: this.rename, isEnabled: this.selection.any },
+            { caption: "Copy", glyph: "copy", handler: this.copy, isEnabled: this.selection.any }
+        ];
+        this.allKeys = [];
     }
 
     add = () => { alert('add'); };
     remove = () => { alert('remove'); };
     rename = () => { alert('rename'); };
     copy = () => { alert('copy'); };
-    
+
     onSelect = (event) => {
         const checkbox = event.target;
-        if (checkbox.checked)
-            this.selection.set(checkbox.name, true);
-        else
-            this.selection.delete(checkbox.name);
-        this.forceUpdate();
+        this.selection.select(checkbox.name, checkbox.checked);
+        this.setState({ selection: this.selection });
     };
 
-    someItemSelected = () => this.selection.size != 0;
+    onSelectAll = (event) => {
+        const checkbox = event.target;
+        this.selection.selectMany(this.allKeys, checkbox.checked);
+        this.setState({ selection: this.selection });
+    };
 
-    config = [
-        { caption: "Add", glyph: "plus", handler: this.add, isEnabled: () => { return true; } },
-        { caption: "Remove", glyph: "trash", handler: this.remove, isEnabled: this.someItemSelected },
-        { caption: "Rename", glyph: "edit", handler: this.rename, isEnabled: this.someItemSelected },
-        { caption: "Copy", glyph: "copy", handler: this.copy, isEnabled: this.someItemSelected }
-    ];
+    onDataReady = (data) => {
+        this.allKeys = data.result.map(i => i.id);
+        return data;
+    };
 
     render() {
         return <OnlineContentBrowserView
-            headerTemplate={Toolbar} headerProps={{ config: this.config }}
-            containerTemplate={ContentBrowserTableView}
-            itemTemplate={Item} itemProps={{ handler: this.onSelect }}
-            footerTemplate={Pagination}
+            headerTemplate={Toolbar} headerProps={{ config: this.toolbarConfig }}
+            containerTemplate={ContentBrowserTableView} containerProps={{ onSelect: this.onSelectAll }}
+            itemTemplate={Item} itemProps={{ onSelect: this.onSelect, selected: this.selection.selected }}
+            footerTemplate={Pagination} onDataReady={this.onDataReady}
             {...this.props} />;
     }
 }

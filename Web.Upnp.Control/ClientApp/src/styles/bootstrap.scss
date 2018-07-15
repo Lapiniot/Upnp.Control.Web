@@ -70,6 +70,12 @@ $table-striped-order: even;
 
         & > div {
             display: table-row;
+
+            &[data-selected='true']{
+                background-color: $link-color !important;
+                color: $white !important;
+            }
+
             & > div {
                 display: table-cell;
                 vertical-align: middle;

@@ -26,7 +26,8 @@ class LevelUp extends React.Component {
 
 class Item extends React.Component {
     render() {
-        return <DIDLItemRow {...this.props}>
+        const { "data-source": data, navcontext: { navigateHandler }, ...other } = this.props;
+        return <DIDLItemRow id={data.id} onDoubleClick={navigateHandler} {...other}>
             <DefaultCells {...this.props} />
         </DIDLItemRow>;
     }
