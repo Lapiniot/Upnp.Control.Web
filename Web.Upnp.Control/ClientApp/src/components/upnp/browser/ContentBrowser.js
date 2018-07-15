@@ -6,14 +6,18 @@ import { withNavigationContext } from "./Navigator";
 
 export class ContentBrowserView extends React.Component {
     render() {
-        const { context, ...other } = this.props;
-        return <DataView headerProps={context} containerProps={context} itemProps={context} footerProps={context}
+        const { navcontext, headerProps, containerProps, itemProps, footerProps, ...other } = this.props;
+
+        return <DataView headerProps={{ navcontext, ...headerProps }}
+            containerProps={{ navcontext, ...containerProps }}
+            itemProps={{ navcontext, ...itemProps }}
+            footerProps={{ navcontext, ...footerProps }}
             selector={d => d.result} {...other} />;
     }
 }
 
 export const OnlineContentBrowserView = withNavigationContext(withDataFetch(ContentBrowserView,
     { template: LoadIndicator },
-    ({ device, id, context: { size, page } }) => {
+    ({ device, id, navcontext: { size, page } }) => {
         return `/api/browse/${device}/${id}?withParents=true&take=${size}&skip=${(page - 1) * size}`;
     }));

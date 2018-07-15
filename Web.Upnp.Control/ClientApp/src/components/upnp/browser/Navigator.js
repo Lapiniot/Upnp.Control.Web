@@ -32,7 +32,7 @@ export function withNavigationContext(Component) {
                 navigateHandler: this.navigateHandler
             };
 
-            return <Component context={context} {...this.props} />;
+            return <Component navcontext={context} {...this.props} />;
         }
     };
 }

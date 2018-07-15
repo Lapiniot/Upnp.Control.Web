@@ -6,7 +6,7 @@ export default class DIDLItemRow extends React.Component {
     displayName = DIDLItemRow.name;
 
     render() {
-        const { "data-source": { id }, navigateHandler } = this.props;
+        const { "data-source": { id }, navcontext: { navigateHandler } } = this.props;
         return <div data-id={id} onDoubleClick={navigateHandler}>
             {this.props.children}
         </div>;

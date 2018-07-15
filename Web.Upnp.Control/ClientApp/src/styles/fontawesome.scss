@@ -77,3 +77,19 @@ $fa-font-path: "../webfonts";
 .#{$fa-css-prefix}-list-alt:before {
     content: fa-content($fa-var-list-alt);
 }
+
+.#{$fa-css-prefix}-plus:before {
+    content: fa-content($fa-var-plus);
+}
+
+.#{$fa-css-prefix}-trash:before {
+    content: fa-content($fa-var-trash);
+}
+
+.#{$fa-css-prefix}-edit:before {
+    content: fa-content($fa-var-edit);
+}
+
+.#{$fa-css-prefix}-copy:before {
+    content: fa-content($fa-var-copy);
+}

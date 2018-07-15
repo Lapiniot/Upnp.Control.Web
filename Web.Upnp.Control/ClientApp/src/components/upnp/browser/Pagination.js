@@ -47,7 +47,7 @@ export default class Pagination extends React.Component {
     displayName = Pagination.name;
 
     render() {
-        const { "data-context": { result: { length } = [], total = 0 } = {}, urls: { current: baseUrl } = {}, page, size } = this.props;
+        const { "data-context": { result: { length } = [], total = 0 } = {}, navcontext: { urls: { current: baseUrl } = {}, page, size } } = this.props;
 
         if (length === 0 || total === length)
             return null;
