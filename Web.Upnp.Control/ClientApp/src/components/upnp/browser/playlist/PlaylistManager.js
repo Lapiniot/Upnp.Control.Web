@@ -10,7 +10,7 @@ class ContentTableHeader extends React.Component {
         return (<React.Fragment>
             <div className="x-table-cell-min"><input type="checkbox" id="select_all" /></div>
             <div>Name</div>
-            <div>Kind</div>
+            <div className="x-table-cell-min">Kind</div>
         </React.Fragment>);
     }
 }
@@ -45,7 +45,7 @@ class Toolbar extends React.Component {
         return <div className="btn-toolbar position-sticky sticky-top px-3 py-2 bg-gray-200" role="toolbar" aria-label="Playlist editor toolbar">
             <div className="btn-group mr-2" role="group" aria-label="Playlist editor buttons">
                 {[this.props.config.map((e, i) =>
-                    <button key={i} type="button" className="btn btn-light" onClick={e.handler}>
+                    <button key={i} type="button" className="btn btn-light" onClick={e.handler} disabled={e.isEnabled() ? null : true}>
                         <i className={`fas fa-${e.glyph}`} />
                     </button>)]}
             </div>
@@ -64,21 +64,23 @@ export default class PlaylistManager extends React.Component {
     remove = () => { alert('remove'); };
     rename = () => { alert('rename'); };
     copy = () => { alert('copy'); };
+    
     onSelect = (event) => {
         const checkbox = event.target;
-        console.log(checkbox.name);
         if (checkbox.checked)
             this.selection.set(checkbox.name, true);
         else
             this.selection.delete(checkbox.name);
-        console.log(this.selection);
+        this.forceUpdate();
     };
 
+    someItemSelected = () => this.selection.size != 0;
+
     config = [
-        { caption: "Add", glyph: "plus", handler: this.add },
-        { caption: "Remove", glyph: "trash", handler: this.remove },
-        { caption: "Rename", glyph: "edit", handler: this.rename },
-        { caption: "Copy", glyph: "copy", handler: this.copy }
+        { caption: "Add", glyph: "plus", handler: this.add, isEnabled: () => { return true; } },
+        { caption: "Remove", glyph: "trash", handler: this.remove, isEnabled: this.someItemSelected },
+        { caption: "Rename", glyph: "edit", handler: this.rename, isEnabled: this.someItemSelected },
+        { caption: "Copy", glyph: "copy", handler: this.copy, isEnabled: this.someItemSelected }
     ];
 
     render() {

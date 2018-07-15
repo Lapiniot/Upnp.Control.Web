@@ -10,7 +10,7 @@ class ContentTableHeader extends React.Component {
     render() {
         return (<React.Fragment>
             <div>Name</div>
-            <div>Kind</div>
+            <div className="x-table-cell-min">Kind</div>
         </React.Fragment>);
     }
 }
