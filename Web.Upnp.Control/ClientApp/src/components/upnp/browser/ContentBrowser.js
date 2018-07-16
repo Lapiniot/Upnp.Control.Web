@@ -21,3 +21,11 @@ export const OnlineContentBrowserView = withNavigationContext(withDataFetch(Cont
     ({ device, id, navcontext: { size, page } }) => {
         return `/api/browse/${device}/${id}?withParents=true&take=${size}&skip=${(page - 1) * size}`;
     }));
+
+export function navigatedDataView(WrappedComponent) {
+    return withNavigationContext(withDataFetch(WrappedComponent,
+        { template: LoadIndicator },
+        ({ device, id, navcontext: { size, page } }) => {
+            return `/api/browse/${device}/${id}?withParents=true&take=${size}&skip=${(page - 1) * size}`;
+        }));
+}

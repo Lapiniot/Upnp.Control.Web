@@ -1,14 +1,17 @@
 import React from "react";
-import { OnlineContentBrowserView } from "../ContentBrowser";
+import { navigatedDataView, OnlineContentBrowserView } from "../ContentBrowser";
 import ContentTableView from "../ContentTableView";
 import DIDLItemRow, { DefaultCells } from "../DIDLItemRow";
 import LevelUpRow from "../LevelUpRow";
 import Pagination from "../Pagination";
+import { SelectionService } from "../../../SelectionService";
 
 class ContentTableHeader extends React.Component {
     render() {
         return (<React.Fragment>
-            <div className="x-table-cell-min"><input type="checkbox" id="select_all" onChange={this.props.onSelect} /></div>
+            <div className="x-table-cell-min">
+                <input type="checkbox" id="select_all" checked={this.props.getState()} onChange={this.props.onChange} />
+            </div>
             <div>Name</div>
             <div className="x-table-cell-min">Kind</div>
         </React.Fragment>);
@@ -27,10 +30,10 @@ class LevelUp extends React.Component {
 
 class Item extends React.Component {
     render() {
-        const { "data-source": data, selected, onSelect, navcontext: { navigateHandler }, ...other } = this.props;
-        return <DIDLItemRow id={data.id} data-selected={selected(data.id) ? true : null} onDoubleClick={navigateHandler} {...other}>
+        const { "data-source": data, getState, onChange, navcontext: { navigateHandler }, ...other } = this.props;
+        return <DIDLItemRow id={data.id} data-selected={getState(data.id) ? true : null} onDoubleClick={navigateHandler} {...other}>
             <div className="x-table-cell-min">
-                <input type="checkbox" name={data.id} onChange={onSelect} checked={selected(data.id) ? true : null} />
+                <input type="checkbox" name={data.id} onChange={onChange} checked={getState(data.id)} />
             </div>
             <DefaultCells {...this.props} />
         </DIDLItemRow>;
@@ -56,27 +59,6 @@ class Toolbar extends React.Component {
     }
 }
 
-class SelectionService {
-    constructor() {
-        this.map = new Map();
-    }
-
-    any = () => this.map.size > 0;
-
-    select = (key, selected = true) => {
-        if (selected)
-            this.map.set(key, true);
-        else
-            this.map.delete(key);
-    }
-
-    selectMany = (keys, selected) => {
-        keys.forEach(k => this.select(k, selected));
-    }
-
-    selected = (key) => this.map.has(key) && this.map.get(key);
-}
-
 export default class PlaylistManager extends React.Component {
 
     constructor(props) {
@@ -89,6 +71,7 @@ export default class PlaylistManager extends React.Component {
             { caption: "Copy", glyph: "copy", handler: this.copy, isEnabled: this.selection.any }
         ];
         this.allKeys = [];
+        this.data = null;
     }
 
     add = () => { alert('add'); };
@@ -98,6 +81,7 @@ export default class PlaylistManager extends React.Component {
 
     onSelect = (event) => {
         const checkbox = event.target;
+        console.log(checkbox);
         this.selection.select(checkbox.name, checkbox.checked);
         this.setState({ selection: this.selection });
     };
@@ -108,16 +92,22 @@ export default class PlaylistManager extends React.Component {
         this.setState({ selection: this.selection });
     };
 
+    isSelected = id => this.selection.selected(id);
+
+    allSelected = () => this.selection.all(this.allKeys);
+
     onDataReady = (data) => {
+        this.selection.clear();
         this.allKeys = data.result.map(i => i.id);
+        this.data = data.result;
         return data;
     };
 
     render() {
         return <OnlineContentBrowserView
             headerTemplate={Toolbar} headerProps={{ config: this.toolbarConfig }}
-            containerTemplate={ContentBrowserTableView} containerProps={{ onSelect: this.onSelectAll }}
-            itemTemplate={Item} itemProps={{ onSelect: this.onSelect, selected: this.selection.selected }}
+            containerTemplate={ContentBrowserTableView} containerProps={{ onChange: this.onSelectAll, getState: this.allSelected }}
+            itemTemplate={Item} itemProps={{ onChange: this.onSelect, getState: this.isSelected }}
             footerTemplate={Pagination} onDataReady={this.onDataReady}
             {...this.props} />;
     }
