@@ -22,7 +22,7 @@ const UpnpDeviceList = withProps(withDataFetch(AbstractDeviceList, { template: L
 const UmiDeviceList = withProps(withDataFetch(AbstractDeviceList, { template: LoadIndicator }), { dataUrl: "/api/discovery/umi", itemTemplate: UmiDevice });
 
 function renderWithDeviceProps(Component, props) {
-    return function ({ match: { params: { device, id = "" } } }) {
+    return function({ match: { params: { device, id = "" } } }) {
         return <Component device={device} id={id} {...props} />;
     };
 }
@@ -32,9 +32,9 @@ export class UpnpSection extends React.Component {
     render() {
         const { path } = this.props.match;
         return <Switch>
-            <Route path={path} exact component={UpnpDeviceList} />
-            <Route path={`${path}/browse`} component={UpnpBrowser} />
-        </Switch>;
+                   <Route path={path} exact component={UpnpDeviceList} />
+                   <Route path={`${path}/browse`} component={UpnpBrowser} />
+               </Switch>;
     }
 }
 
@@ -44,9 +44,9 @@ class UpnpBrowser extends React.Component {
     render() {
         const { path, url } = this.props.match;
         return <Switch>
-            <Route path={path} exact component={UpnpDeviceList} />
-            <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedBrowser, { baseUrl: url })} />
-        </Switch>;
+                   <Route path={path} exact component={UpnpDeviceList} />
+                   <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedBrowser, { baseUrl: url })} />
+               </Switch>;
     }
 }
 
@@ -55,10 +55,10 @@ export class UmiSection extends React.Component {
     render() {
         const { path } = this.props.match;
         return <Switch>
-            <Route path={path} exact component={UmiDeviceList} />
-            <Route path={`${path}/browse`} component={UmiBrowser} />
-            <Route path={`${path}/playlist`} component={UmiPlaylistManager} />
-        </Switch>;
+                   <Route path={path} exact component={UmiDeviceList} />
+                   <Route path={`${path}/browse`} component={UmiBrowser} />
+                   <Route path={`${path}/playlist`} component={UmiPlaylistManager} />
+               </Switch>;
     }
 }
 
@@ -67,9 +67,9 @@ class UmiBrowser extends React.Component {
     render() {
         const { path, url } = this.props.match;
         return <Switch>
-            <Route path={path} exact component={UmiDeviceList} />
-            <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedBrowser, { baseUrl: url })} />
-        </Switch>;
+                   <Route path={path} exact component={UmiDeviceList} />
+                   <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedBrowser, { baseUrl: url })} />
+               </Switch>;
     }
 }
 
@@ -78,9 +78,9 @@ class UmiPlaylistManager extends React.Component {
     render() {
         const { path, url } = this.props.match;
         return <Switch>
-            <Route path={path} exact render={() => <Redirect to="/umi" />} />
-            <Route path={`${path}/:device/0`} render={() => <Redirect to="/umi" />} />
-            <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedPlaylistBrowser, { baseUrl: url })} />
-        </Switch>;
+                   <Route path={path} exact render={() => <Redirect to="/umi" />} />
+                   <Route path={`${path}/:device/0`} render={() => <Redirect to="/umi" />} />
+                   <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedPlaylistBrowser, { baseUrl: url })} />
+               </Switch>;
     }
 }

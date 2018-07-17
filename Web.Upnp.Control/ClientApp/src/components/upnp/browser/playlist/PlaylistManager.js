@@ -21,10 +21,10 @@ class ContentTableHeader extends React.Component {
 class LevelUp extends React.Component {
     render() {
         return <LevelUpRow {...this.props}>
-            <div>&nbsp;</div>
-            <div>...</div>
-            <div>Parent</div>
-        </LevelUpRow>
+                   <div>&nbsp;</div>
+                   <div>...</div>
+                   <div>Parent</div>
+               </LevelUpRow>;
     }
 }
 
@@ -42,20 +42,20 @@ class Item extends React.Component {
 
 class ContentBrowserTableView extends React.Component {
     render() {
-        return <ContentTableView headerTemplate={ContentTableHeader} injectStart={LevelUp} {...this.props} />
+        return <ContentTableView headerTemplate={ContentTableHeader} injectStart={LevelUp} {...this.props} />;
     }
 }
 
 class Toolbar extends React.Component {
     render() {
         return <div className="btn-toolbar position-sticky sticky-top px-3 py-2 bg-gray-200" role="toolbar" aria-label="Playlist editor toolbar">
-            <div className="btn-group mr-2" role="group" aria-label="Playlist editor buttons">
-                {[this.props.config.map((e, i) =>
+                   <div className="btn-group mr-2" role="group" aria-label="Playlist editor buttons">
+                       {[this.props.config.map((e, i) =>
                     <button key={i} type="button" className="btn btn-light" onClick={e.handler} disabled={e.isEnabled() ? null : true}>
                         <i className={`fas fa-${e.glyph}`} />
                     </button>)]}
-            </div>
-        </div>;
+                   </div>
+               </div>;
     }
 }
 
@@ -74,10 +74,13 @@ export default class PlaylistManager extends React.Component {
         this.data = null;
     }
 
-    add = () => { alert('add'); };
-    remove = () => { alert('remove'); };
-    rename = () => { alert('rename'); };
-    copy = () => { alert('copy'); };
+    add = () => { alert("add"); };
+
+    remove = () => { alert("remove"); };
+
+    rename = () => { alert("rename"); };
+
+    copy = () => { alert("copy"); };
 
     onSelect = (event) => {
         const checkbox = event.target;

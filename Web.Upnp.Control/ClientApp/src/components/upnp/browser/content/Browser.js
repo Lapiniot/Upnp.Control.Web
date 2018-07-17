@@ -9,18 +9,18 @@ import Pagination from "../Pagination";
 class ContentTableHeader extends React.Component {
     render() {
         return (<React.Fragment>
-            <div>Name</div>
-            <div className="x-table-cell-min">Kind</div>
-        </React.Fragment>);
+                    <div>Name</div>
+                    <div className="x-table-cell-min">Kind</div>
+                </React.Fragment>);
     }
 }
 
 class LevelUp extends React.Component {
     render() {
         return <LevelUpRow {...this.props}>
-            <div>...</div>
-            <div>Parent</div>
-        </LevelUpRow>
+                   <div>...</div>
+                   <div>Parent</div>
+               </LevelUpRow>;
     }
 }
 
@@ -28,24 +28,24 @@ class Item extends React.Component {
     render() {
         const { "data-source": data, navcontext: { navigateHandler }, ...other } = this.props;
         return <DIDLItemRow id={data.id} onDoubleClick={navigateHandler} {...other}>
-            <DefaultCells {...this.props} />
-        </DIDLItemRow>;
+                   <DefaultCells {...this.props} />
+               </DIDLItemRow>;
     }
 }
 
 class ContentBrowserTableView extends React.Component {
     render() {
-        return <ContentTableView headerTemplate={ContentTableHeader} injectStart={LevelUp} {...this.props} />
+        return <ContentTableView headerTemplate={ContentTableHeader} injectStart={LevelUp} {...this.props} />;
     }
 }
 
 export default class Browser extends React.Component {
     render() {
         return <OnlineContentBrowserView
-            headerTemplate={Breadcrumb}
-            containerTemplate={ContentBrowserTableView}
-            itemTemplate={Item}
-            footerTemplate={Pagination}
-            {...this.props} />;
+                   headerTemplate={Breadcrumb}
+                   containerTemplate={ContentBrowserTableView}
+                   itemTemplate={Item}
+                   footerTemplate={Pagination}
+                   {...this.props} />;
     }
 }
