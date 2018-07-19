@@ -1,5 +1,5 @@
 
-export class SelectionService {
+export default class SelectionService {
     constructor() {
         this.map = new Map();
     }

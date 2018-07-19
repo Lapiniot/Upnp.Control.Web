@@ -1,7 +1,7 @@
 import React from "react";
 import DataView from "../../components/DataView";
 import LoadIndicator from "../../components/LoadIndicator";
-import { withDataFetch } from "../../components/common/Extensions";
+import { withDataFetch } from "../../components/Extensions";
 import { withNavigationContext } from "./Navigator";
 
 export class ContentBrowserView extends React.Component {

@@ -1,6 +1,5 @@
 ﻿import React from "react";
-import { Switch, Route, withRouter, Redirect } from "react-router-dom"
-import { withProps, withDataFetch } from "../../components/common/Extensions";
+import { Switch, Route } from "react-router-dom"
 import UpnpDevices from "./browse/Devices";
 import UpnpBrowser from "./browse/Browse";
 

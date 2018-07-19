@@ -1,11 +1,11 @@
 import React from "react";
+import Modal from "../../../components/Modal";
+import SelectionService from "../../../components/SelectionService";
 import { OnlineContentBrowserView } from "../../common/ContentBrowser";
 import ContentTableView from "../../common/ContentTableView";
 import DIDLItemRow, { DefaultCells } from "../../common/DIDLItemRow";
 import LevelUpRow from "../../common/LevelUpRow";
 import Pagination from "../../common/Pagination";
-import { SelectionService } from "../../../components/common/SelectionService";
-import Modal from "../../../components/Modal";
 
 class ContentTableHeader extends React.Component {
     render() {

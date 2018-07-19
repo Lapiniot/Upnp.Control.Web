@@ -1,4 +1,4 @@
-import $ from "./common/jQuery";
+import $ from "./jQuery";
 import "bootstrap";
 import React from "react";
 

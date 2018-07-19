@@ -1,5 +1,5 @@
 import React from "react";
-import { QString } from "../../components/common/Extensions";
+import { QString } from "../../components/Extensions";
 
 export function withNavigationContext(Component) {
     return class extends React.Component {

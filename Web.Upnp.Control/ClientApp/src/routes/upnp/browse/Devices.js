@@ -1,13 +1,12 @@
 ﻿import React from "react";
-import { Switch, Route, withRouter, Redirect } from "react-router-dom"
-import { withProps, withDataFetch } from "../../../components/common/Extensions";
+import { withProps, withDataFetch } from "../../../components/Extensions";
 import Icon from "../../../components/Icon";
+import LoadIndicator from "../../../components/LoadIndicator";
+import { RouteLink } from "../../../components/NavLink";
 import DeviceInfo from "../../common/DeviceInfo";
 import DeviceIcon from "../../common/DeviceIcon";
 import ServicesList from "../../common/DeviceServiceList";
-import { RouteLink } from "../../../components/NavLink";
 import DeviceList from "../../common/DeviceList";
-import LoadIndicator from "../../../components/LoadIndicator";
 
 class UpnpDevice extends React.Component {
 
@@ -39,6 +38,11 @@ class UpnpDevice extends React.Component {
     }
 }
 
-const UpnpDevices = withProps(withDataFetch(DeviceList, { template: LoadIndicator }), { dataUrl: "/api/discovery/upnp", itemTemplate: UpnpDevice });
+const UpnpDevices = withProps(
+    withDataFetch(DeviceList, { template: LoadIndicator }),
+    {
+        dataUrl: "/api/discovery/upnp",
+        itemTemplate: UpnpDevice
+    });
 
 export default UpnpDevices;
