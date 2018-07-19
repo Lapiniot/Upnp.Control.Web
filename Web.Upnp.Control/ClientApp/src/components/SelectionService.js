@@ -4,7 +4,7 @@ export class SelectionService {
         this.map = new Map();
     }
 
-    any = () => this.map.size > 0;
+    any = () => { return this.map.size > 0; }
 
     select = (key, state = true) => {
         if (state)
@@ -13,13 +13,13 @@ export class SelectionService {
             this.map.delete(key);
     };
 
-    selectMany = (keys, state) => keys.forEach(k => this.select(k, state));
+    selectMany = (keys, state) => keys.forEach(k => { return this.select(k, state); });
 
-    selected = key => this.map.has(key) && this.map.get(key);
+    selected = key => { return this.map.has(key) && this.map.get(key); };
 
-    all = keys => keys.every(this.selected);
+    all = keys => keys.every(i => { return this.selected(i); });
 
-    selection = () => this.map.keys();
+    selection = () => { return this.map.keys(); };
 
-    clear = () => this.map.clear();
+    clear = () => { return this.map.clear(); };
 }
