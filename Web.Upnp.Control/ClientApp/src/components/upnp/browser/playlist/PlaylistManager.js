@@ -5,6 +5,7 @@ import DIDLItemRow, { DefaultCells } from "../DIDLItemRow";
 import LevelUpRow from "../LevelUpRow";
 import Pagination from "../Pagination";
 import { SelectionService } from "../../../SelectionService";
+import Modal from "../../../Modal";
 
 class ContentTableHeader extends React.Component {
     render() {
@@ -59,6 +60,7 @@ class Toolbar extends React.Component {
     }
 }
 
+
 export default class PlaylistManager extends React.Component {
 
     constructor(props) {
@@ -74,13 +76,10 @@ export default class PlaylistManager extends React.Component {
         this.data = null;
     }
 
-    add = () => { alert("add"); };
-
-    remove = () => { alert("remove"); };
-
-    rename = () => { alert("rename"); };
-
-    copy = () => { alert("copy"); };
+    add = () => { alert('add'); };
+    remove = () => { this.setState({showModal:true}); };
+    rename = () => { alert('rename'); };
+    copy = () => { alert('copy'); };
 
     onSelect = (event) => {
         const checkbox = event.target;
@@ -107,11 +106,14 @@ export default class PlaylistManager extends React.Component {
     };
 
     render() {
-        return <OnlineContentBrowserView
-            headerTemplate={Toolbar} headerProps={{ config: this.toolbarConfig }}
-            containerTemplate={ContentBrowserTableView} containerProps={{ onChange: this.onSelectAll, getState: this.allSelected }}
-            itemTemplate={Item} itemProps={{ onChange: this.onSelect, getState: this.isSelected }}
-            footerTemplate={Pagination} onDataReady={this.onDataReady}
-            {...this.props} />;
+        return <React.Fragment>
+            <OnlineContentBrowserView
+                headerTemplate={Toolbar} headerProps={{ config: this.toolbarConfig }}
+                containerTemplate={ContentBrowserTableView} containerProps={{ onChange: this.onSelectAll, getState: this.allSelected }}
+                itemTemplate={Item} itemProps={{ onChange: this.onSelect, getState: this.isSelected }}
+                footerTemplate={Pagination} onDataReady={this.onDataReady}
+                {...this.props} />
+            {this.state && this.state.showModal ? <Modal /> : null}
+        </React.Fragment>;
     }
 }
