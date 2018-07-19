@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import Spoiler from "../Spoiler";
+import Spoiler from "../../components/Spoiler";
 
 export default class DeviceServiceList extends React.Component {
 

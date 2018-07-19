@@ -6,10 +6,11 @@ import React from "react";
 import { Route } from "react-router";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import Home from "./components/Home";
-import Settings from "./components/Settings";
+import Home from "./routes/home/Home";
+import Settings from "./routes/settings/Settings";
 import { RouteLink } from "./components/NavLink";
-import { UpnpSection, UmiSection } from "./components/upnp/DeviceSections";
+import UpnpRoot from "./routes/upnp/Router";
+import UmiRoot from "./routes/umi/Router";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const container = document.getElementById("root-view");
@@ -31,8 +32,8 @@ ReactDOM.render(
                 </div>
                 <main className="col">
                     <Route exact path="/" component={Home} />
-                    <Route path="/upnp" component={UpnpSection} />
-                    <Route path="/umi" component={UmiSection} />
+                    <Route path="/upnp" component={UpnpRoot} />
+                    <Route path="/umi" component={UmiRoot} />
                     <Route path="/settings" component={Settings} />
                 </main>
             </div>

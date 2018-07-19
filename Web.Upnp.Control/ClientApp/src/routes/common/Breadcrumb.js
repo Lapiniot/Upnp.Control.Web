@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { reversemap } from "../../common/Extensions";
+import { reversemap } from "../../components/common/Extensions";
 
 class BreadcrumbItem extends React.Component {
     displayName = Breadcrumb.name;

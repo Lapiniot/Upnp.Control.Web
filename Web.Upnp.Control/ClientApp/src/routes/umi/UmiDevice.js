@@ -1,7 +1,7 @@
 import React from "react";
-import DeviceInfo from "./DeviceInfo";
-import DeviceIcon from "./DeviceIcon";
-import { RouteLink } from "../NavLink";
+import DeviceInfo from "../common/DeviceInfo";
+import DeviceIcon from "../common/DeviceIcon";
+import { RouteLink } from "../../components/NavLink";
 
 export default class UmiDevice extends React.Component {
 

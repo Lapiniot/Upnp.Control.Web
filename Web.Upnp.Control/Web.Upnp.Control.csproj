@@ -25,17 +25,6 @@
     <ProjectReference Include="..\IoT.Device.Upnp\IoT.Device.UPnP.csproj" />
     <ProjectReference Include="..\IoT.Device.Xiaomi.Umi\IoT.Device.Xiaomi.Umi.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="ClientApp\src\components\umi\browse\" />
-    <Folder Include="ClientApp\src\components\umi\playlist\" />
-    <Folder Include="ClientApp\src\components\upnp\browse\" />
-    <Folder Include="ClientApp\src\routes\common\" />
-    <Folder Include="ClientApp\src\routes\settings\" />
-    <Folder Include="ClientApp\src\routes\umi\browse\" />
-    <Folder Include="ClientApp\src\routes\umi\playlist\" />
-    <Folder Include="ClientApp\src\routes\upnp\browse\" />
-  </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->

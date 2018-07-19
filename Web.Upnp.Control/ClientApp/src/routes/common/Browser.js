@@ -1,10 +1,10 @@
 import React from "react";
-import { OnlineContentBrowserView } from "../ContentBrowser";
-import ContentTableView from "../ContentTableView";
-import DIDLItemRow, { DefaultCells } from "../DIDLItemRow";
-import LevelUpRow from "../LevelUpRow";
-import Breadcrumb from "../Breadcrumb";
-import Pagination from "../Pagination";
+import { OnlineContentBrowserView } from "./ContentBrowser";
+import ContentTableView from "./ContentTableView";
+import DIDLItemRow, { DefaultCells } from "./DIDLItemRow";
+import LevelUpRow from "./LevelUpRow";
+import Breadcrumb from "./Breadcrumb";
+import Pagination from "./Pagination";
 
 class ContentTableHeader extends React.Component {
     render() {
