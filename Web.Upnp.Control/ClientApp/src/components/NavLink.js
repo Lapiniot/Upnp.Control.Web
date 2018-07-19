@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink as RNavLink } from "react-router-dom";
-import Icon from "../Icon";
+import Icon from "./Icon";
 
 class LinkTemplate extends React.Component {
     render() {

@@ -2,7 +2,7 @@ import React from "react";
 import DeviceInfo from "./DeviceInfo";
 import ServicesList from "./DeviceServiceList";
 import DeviceIcon from "./DeviceIcon";
-import { RouteLink } from "../navigation/NavLink";
+import { RouteLink } from "../NavLink";
 import Icon from "../Icon";
 
 export default class UpnpDevice extends React.Component {

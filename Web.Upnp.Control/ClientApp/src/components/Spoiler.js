@@ -1,4 +1,5 @@
-﻿import React from "react";
+﻿import "./common/jQuery";
+import React from "react";
 
 export default class Spoiler extends React.Component {
 

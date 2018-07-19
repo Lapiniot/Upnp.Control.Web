@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import DataView from "../DataView";
 import { Switch, Route, withRouter, Redirect } from "react-router-dom"
-import { withProps, withDataFetch } from "../Extensions";
+import { withProps, withDataFetch } from "../common/Extensions";
 import Browser from "./browser/content/Browser";
 import PlaylistManager from "./browser/playlist/PlaylistManager";
 import UmiDevice from "./UmiDevice";
