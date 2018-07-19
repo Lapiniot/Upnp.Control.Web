@@ -1,14 +1,6 @@
 ﻿import React from "react";
-import { Switch, Route, withRouter, Redirect } from "react-router-dom"
-import Browser from "../../common/Browser";
-
-const RoutedBrowser = withRouter(Browser);
-
-function renderWithDeviceProps(Component, props) {
-    return function({ match: { params: { device, id = "" } } }) {
-        return <Component device={device} id={id} {...props} />;
-    };
-}
+import { Switch, Route, Redirect } from "react-router-dom";
+import { renderWithDeviceProps, RoutedBrowser } from "../../common/Browser";
 
 /***** Handles all /umi/browse routes *****/
 export default class UmiBrowser extends React.Component {

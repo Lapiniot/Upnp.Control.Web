@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 import Modal from "../../../components/Modal";
 import SelectionService from "../../../components/SelectionService";
 import { OnlineContentBrowserView } from "../../common/ContentBrowser";
@@ -134,3 +135,5 @@ export default class PlaylistManager extends React.Component {
                </React.Fragment>;
     }
 }
+
+export const RoutedPLaylistManager = withRouter(PlaylistManager);

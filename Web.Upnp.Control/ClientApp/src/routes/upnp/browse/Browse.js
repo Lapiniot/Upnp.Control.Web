@@ -1,14 +1,6 @@
 ﻿import React from "react";
-import { Switch, Route, withRouter, Redirect } from "react-router-dom"
-import Browser from "../../common/Browser";
-
-const RoutedBrowser = withRouter(Browser);
-
-function renderWithDeviceProps(Component, props) {
-    return function({ match: { params: { device, id = "" } } }) {
-        return <Component device={device} id={id} {...props} />;
-    };
-}
+import { Switch, Route, Redirect } from "react-router-dom"
+import { renderWithDeviceProps, RoutedBrowser } from "../../common/Browser";
 
 /***** Handles all /upnp/browse routes *****/
 export default class UpnpBrowser extends React.Component {
@@ -18,8 +10,8 @@ export default class UpnpBrowser extends React.Component {
     render() {
         const { path, url } = this.props.match;
         return <Switch>
-                   <Route path={path} exact render={() => <Redirect to="/upnp" />} />
-                   <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedBrowser, { baseUrl: url })} />
-               </Switch>;
+            <Route path={path} exact render={() => <Redirect to="/upnp" />} />
+            <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedBrowser, { baseUrl: url })} />
+        </Switch>;
     }
 }

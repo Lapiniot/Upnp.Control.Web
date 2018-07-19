@@ -1,14 +1,7 @@
 ﻿import React from "react";
-import { Switch, Route, withRouter, Redirect } from "react-router-dom"
-import PlaylistManager from "./PlaylistManager";
-
-const RoutedPlaylistBrowser = withRouter(PlaylistManager);
-
-function renderWithDeviceProps(Component, props) {
-    return function({ match: { params: { device, id = "" } } }) {
-        return <Component device={device} id={id} {...props} />;
-    };
-}
+import { Switch, Route, Redirect } from "react-router-dom"
+import {RoutedPLaylistManager} from "./PlaylistManager";
+import { renderWithDeviceProps } from "../../common/Browser";
 
 /***** Handles all /umi/playlist routes *****/
 export default class UmiPlaylistManager extends React.Component {
@@ -20,7 +13,7 @@ export default class UmiPlaylistManager extends React.Component {
         return <Switch>
                    <Route path={path} exact render={() => <Redirect to="/umi" />} />
                    <Route path={`${path}/:device/0`} render={() => <Redirect to="/umi" />} />
-                   <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedPlaylistBrowser, { baseUrl: url })} />
+                   <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedPLaylistManager, { baseUrl: url })} />
                </Switch>;
     }
 }
