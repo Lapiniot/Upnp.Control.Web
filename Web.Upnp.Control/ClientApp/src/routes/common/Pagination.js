@@ -47,9 +47,9 @@ export default class Pagination extends React.Component {
     displayName = Pagination.name;
 
     render() {
-        const { "data-context": { result: { length } = [], total = 0 } = {}, navcontext: { urls: { current: baseUrl } = {}, page, size } } = this.props;
+        const { count, total, baseUrl, current, size } = this.props;
 
-        if (length === 0 || total === length)
+        if (count === 0 || total === count)
             return null;
 
         const template = `${baseUrl}?s=${size}&p=`;
@@ -60,11 +60,11 @@ export default class Pagination extends React.Component {
 
         return <nav aria-label="Page navigation" className="position-sticky sticky-bottom p-2 bg-gray-200">
                    <ul className="pagination my-0 justify-content-center flex-wrap">
-                       <RelativePageLink key="prev" title="&laquo;" label="Previous" url={`${template}${page - 1}`} enabled={page > 1} />
+                       <RelativePageLink key="prev" title="&laquo;" label="Previous" url={`${template}${current - 1}`} enabled={current > 1} />
                        {[
-                           pageData.map((e, index) => <PageLink key={index + 1} title={e.title} url={e.url} current={index + 1 === page} />)
+                           pageData.map((e, index) => <PageLink key={index + 1} title={e.title} url={e.url} current={index + 1 === current} />)
                        ]}
-                       <RelativePageLink key="next" title="&raquo;" label="Next" url={`${template}${page + 1}`} enabled={page < pageData.length} />
+                       <RelativePageLink key="next" title="&raquo;" label="Next" url={`${template}${current + 1}`} enabled={current < pageData.length} />
                    </ul>
                </nav>;
     }

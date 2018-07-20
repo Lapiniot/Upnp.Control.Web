@@ -1,6 +1,6 @@
 ﻿import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom"
-import { RoutedPLaylistManager } from "./PlaylistManager";
+import { RoutedPlaylistManager } from "./PlaylistManager";
 import { renderWithDeviceProps } from "../../common/Browser";
 
 /***** Handles all /umi/playlist routes *****/
@@ -13,7 +13,7 @@ export default class UmiPlaylistManager extends React.Component {
         return <Switch>
                    <Route path={path} exact render={() => <Redirect to="/umi" />} />
                    <Route path={`${path}/:device/0`} render={() => <Redirect to="/umi" />} />
-                   <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedPLaylistManager, { baseUrl: url })} />
+                   <Route path={`${path}/:device/:id(.*)?`} render={renderWithDeviceProps(RoutedPlaylistManager, { baseUrl: url })} />
                </Switch>;
     }
 }

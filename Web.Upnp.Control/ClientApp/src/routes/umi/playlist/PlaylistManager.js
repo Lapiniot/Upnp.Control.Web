@@ -1,52 +1,14 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import { withDataFetch } from "../../../components/Extensions";
+import { withNavigationContext } from "../../common/Navigator";
+import { DIDLUtils } from "../../common/Browser";
 import Modal from "../../../components/Modal";
 import SelectionService from "../../../components/SelectionService";
-import { OnlineContentBrowserView } from "../../common/ContentBrowser";
-import ContentTableView from "../../common/ContentTableView";
-import DIDLItemRow, { DefaultCells } from "../../common/DIDLItemRow";
-import LevelUpRow from "../../common/LevelUpRow";
 import Pagination from "../../common/Pagination";
+import LoadIndicator from "../../../components/LoadIndicator";
+import AlbumArtImage from "../../common/AlbumArtImage";
 
-class ContentTableHeader extends React.Component {
-    render() {
-        return (<React.Fragment>
-                    <div className="x-table-cell-min">
-                        <input type="checkbox" id="select_all" checked={this.props.getState()} onChange={this.props.onChange} />
-                    </div>
-                    <div>Name</div>
-                    <div className="x-table-cell-min">Kind</div>
-                </React.Fragment>);
-    }
-}
-
-class LevelUp extends React.Component {
-    render() {
-        return <LevelUpRow {...this.props}>
-                   <div>&nbsp;</div>
-                   <div>...</div>
-                   <div>Parent</div>
-               </LevelUpRow>;
-    }
-}
-
-class Item extends React.Component {
-    render() {
-        const { "data-source": data, getState, onChange, navcontext: { navigateHandler }, ...other } = this.props;
-        return <DIDLItemRow id={data.id} data-selected={getState(data.id) ? true : null} onDoubleClick={navigateHandler} {...other}>
-                   <div className="x-table-cell-min">
-                       <input type="checkbox" name={data.id} onChange={onChange} checked={getState(data.id)} />
-                   </div>
-                   <DefaultCells {...this.props} />
-               </DIDLItemRow>;
-    }
-}
-
-class ContentBrowserTableView extends React.Component {
-    render() {
-        return <ContentTableView headerTemplate={ContentTableHeader} injectStart={LevelUp} {...this.props} />;
-    }
-}
 
 class Toolbar extends React.Component {
     render() {
@@ -75,8 +37,7 @@ export default class PlaylistManager extends React.Component {
             { caption: "Rename", glyph: "edit", handler: this.rename, isEnabled: this.selection.any },
             { caption: "Copy", glyph: "copy", handler: this.copy, isEnabled: this.selection.any }
         ];
-        this.allKeys = [];
-        this.data = null;
+        this.renderedKeys = [];
     }
 
     add = () => { alert("add"); };
@@ -101,39 +62,68 @@ export default class PlaylistManager extends React.Component {
 
     onSelect = (event) => {
         const checkbox = event.target;
-        console.log(checkbox);
         this.selection.select(checkbox.name, checkbox.checked);
         this.setState({ selection: this.selection });
     };
 
     onSelectAll = (event) => {
         const checkbox = event.target;
-        this.selection.selectMany(this.allKeys, checkbox.checked);
+        this.selection.selectMany(this.renderedKeys, checkbox.checked);
         this.setState({ selection: this.selection });
     };
 
     isSelected = id => { return this.selection.selected(id); }
 
-    allSelected = () => { return this.selection.all(this.allKeys); };
-
-    onDataReady = (data) => {
-        this.selection.clear();
-        this.allKeys = data.result.map(i => i.id);
-        this.data = data.result;
-        return data;
-    };
+    allSelected = () => { return this.selection.all(this.renderedKeys); };
 
     render() {
-        return <React.Fragment>
-                   <OnlineContentBrowserView
-                       headerTemplate={Toolbar} headerProps={{ config: this.toolbarConfig }}
-                       containerTemplate={ContentBrowserTableView} containerProps={{ onChange: this.onSelectAll, getState: this.allSelected }}
-                       itemTemplate={Item} itemProps={{ onChange: this.onSelect, getState: this.isSelected }}
-                       footerTemplate={Pagination} onDataReady={this.onDataReady}
-                       {...this.props} />
+        const { dataContext: data = {}, navContext: { navigateHandler, page, pageSize, urls } } = this.props;
+
+        this.renderedKeys = data.result.map(i => i.id);
+
+        return <div>
+                   <Toolbar config={this.toolbarConfig} />
+                   <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
+                       <div>
+                           <div>
+                               <div className="x-table-cell-min">
+                                   <input type="checkbox" id="select_all" checked={this.allSelected()} onChange={this.onSelectAll} />
+                               </div>
+                               <div>Name</div>
+                               <div className="x-table-cell-min">Kind</div>
+                           </div>
+                       </div>
+                       <div>
+                           <div data-id={data.parents[0].parentId} onDoubleClick={navigateHandler}>
+                               <div>&nbsp;</div>
+                               <div>...</div>
+                               <div>Parent</div>
+                           </div>
+                           {[data.result.map((e, index) => {
+                               const selected = this.isSelected(e.id);
+                               return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
+                                          <div className="x-table-cell-min">
+                                              <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} />
+                                          </div>
+                                          <div>
+                                              <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
+                                              {e.title}
+                                          </div>
+                                          <div className="text-capitalize">{DIDLUtils.getKind(e.class)}</div>
+                                      </div>;
+                           })]}
+                       </div>
+                   </div>
+                   <Pagination count={data.result.length} total={data.total} baseUrl={urls.current} current={page} size={pageSize} />
                    {this.state && this.state.modalState ? <Modal {...this.state.modalState} /> : null}
-               </React.Fragment>;
+               </div>;
     }
 }
 
-export const RoutedPLaylistManager = withRouter(PlaylistManager);
+export const RoutedPlaylistManager = withRouter(
+    withNavigationContext(
+        withDataFetch(PlaylistManager,
+            { template: LoadIndicator },
+            ({ device, id, navContext: { pageSize, page } }) => {
+                return `/api/browse/${device}/${id}?withParents=true&take=${pageSize}&skip=${(page - 1) * pageSize}`;
+            })));

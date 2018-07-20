@@ -50,7 +50,6 @@ export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuild
         fetchData(url) {
             fetch(url)
                 .then(response => response.json())
-                .then(json => (this.props.onDataReady || (j => j))(json))
                 .then(data => this.setState({ loading: false, data: data }));
         }
 

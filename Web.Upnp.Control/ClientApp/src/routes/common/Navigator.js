@@ -24,15 +24,15 @@ export function withNavigationContext(Component) {
 
         render() {
             const { device, baseUrl, match: { url }, location: { search: qstring } } = this.props;
-            const { p: page = 1, s: size = 50 } = QString.parse(qstring);
+            const { p: page = 1, s: pageSize = 50 } = QString.parse(qstring);
             const context = {
                 urls: { current: url, base: baseUrl, root: `${baseUrl}/${device}` },
                 page: parseInt(page, 10),
-                size: parseInt(size, 10),
+                pageSize: parseInt(pageSize, 10),
                 navigateHandler: this.navigateHandler
             };
 
-            return <Component navcontext={context} {...this.props} />;
+            return <Component navContext={context} {...this.props} />;
         }
     };
 }
