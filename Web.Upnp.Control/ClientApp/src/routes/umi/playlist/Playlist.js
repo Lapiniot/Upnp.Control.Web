@@ -1,6 +1,6 @@
 ﻿import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom"
-import {RoutedPLaylistManager} from "./PlaylistManager";
+import { RoutedPLaylistManager } from "./PlaylistManager";
 import { renderWithDeviceProps } from "../../common/Browser";
 
 /***** Handles all /umi/playlist routes *****/

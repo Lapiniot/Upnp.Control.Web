@@ -15,9 +15,9 @@ export class QString {
 
 export function reversemap(array, fn) {
     return array.reduceRight((acc, e, i) => {
-        acc.push(fn(e, i));
-        return acc;
-    },
+            acc.push(fn(e, i));
+            return acc;
+        },
         []);
 }
 

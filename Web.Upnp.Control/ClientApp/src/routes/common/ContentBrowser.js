@@ -9,10 +9,10 @@ export class ContentBrowserView extends React.Component {
         const { navcontext, headerProps, containerProps, itemProps, footerProps, ...other } = this.props;
 
         return <DataView headerProps={{ navcontext, ...headerProps }}
-            containerProps={{ navcontext, ...containerProps }}
-            itemProps={{ navcontext, ...itemProps }}
-            footerProps={{ navcontext, ...footerProps }}
-            selector={d => d.result} {...other} />;
+                         containerProps={{ navcontext, ...containerProps }}
+                         itemProps={{ navcontext, ...itemProps }}
+                         footerProps={{ navcontext, ...footerProps }}
+                         selector={d => d.result} {...other} />;
     }
 }
 

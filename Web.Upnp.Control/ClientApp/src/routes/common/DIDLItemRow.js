@@ -8,8 +8,8 @@ export default class DIDLItemRow extends React.Component {
     render() {
         const { id, ...other } = this.props;
         return <div data-id={id} {...other}>
-            {this.props.children}
-        </div>;
+                   {this.props.children}
+               </div>;
     }
 }
 
@@ -23,11 +23,11 @@ export class DefaultCells extends React.Component {
     render() {
         const { "data-source": { class: itemClass, albumArts, title } } = this.props;
         return (<React.Fragment>
-            <div>
-                <AlbumArtImage itemClass={itemClass} albumArts={albumArts} />
-                {title}
-            </div>
-            <div className="text-capitalize">{DefaultCells.getKind(itemClass)}</div>
-        </React.Fragment>);
+                    <div>
+                        <AlbumArtImage itemClass={itemClass} albumArts={albumArts} />
+                        {title}
+                    </div>
+                    <div className="text-capitalize">{DefaultCells.getKind(itemClass)}</div>
+                </React.Fragment>);
     }
 }
