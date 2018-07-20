@@ -1,13 +1,15 @@
 ﻿import React from "react";
-import DataView from "../../components/DataView";
-
-const containerClassName = "d-grid grid-c1 grid-xl-c2 grid-xxxl-c3 grid-xxxxl-c4 py-3 px-3";
 
 export default class DeviceList extends React.Component {
 
     displayName = DeviceList.name;
 
     render() {
-        return <DataView containerTemplate={"div"} containerProps={{ className: containerClassName }} {...this.props} />;
+        const { dataContext, itemTemplate:Item } = this.props;
+        return <div className="d-grid grid-c1 grid-xl-c2 grid-xxxl-c3 grid-xxxxl-c4 py-3 px-3">
+                   {[dataContext.map((item, index) => {
+                       return <Item key={index} data-source={item} data-row-id={index} />;
+                   })]}
+               </div>;
     }
 }
