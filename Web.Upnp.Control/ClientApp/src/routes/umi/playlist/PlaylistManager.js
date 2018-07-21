@@ -35,15 +35,34 @@ export default class PlaylistManager extends React.Component {
     add = () => { alert("add"); };
 
     remove = () => {
+
+        const keys = [...this.state.selection.selection];
+        const values = this.state.data.result.filter(e => keys.includes(e.id));
+        const removeImpl = () => {
+            fetch(`/api/playlist/${this.props.device}/remove`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(keys)
+                });
+        }
         this.setState({
             modal: {
                 id: "remove_confirm",
                 title: "Do you want to delete?",
                 immidiate: true,
                 buttons: [
-                    <Modal.Button key="delete" text="Delete" dismiss />,
-                    <Modal.Button key="cancel" text="Cancel" dismiss />
+                    <Modal.Button key="delete" text="Delete" className="btn-primary" onClick={removeImpl} dismiss />,
+                    <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
                 ],
+                renderBody: () => {
+                    return <ul className="list-unstyled">
+                        {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
+                    </ul>
+                },
                 onDismiss: () => this.setState({ modal: null })
             }
         });
@@ -77,8 +96,8 @@ export default class PlaylistManager extends React.Component {
         const noSelection = !this.state.selection.any();
 
         return <div>
-            <Toolbar className="position-sticky sticky-top px-3 py-2 bg-gray-200">
-                <Toolbar.Group className="mr-2">
+            <Toolbar className="position-sticky sticky-top px-3 py-2 bg-light">
+                <Toolbar.Group>
                     <Toolbar.Button title="Add" glyph="plus" onClick={this.add} />
                     <Toolbar.Button title="Remove" glyph="trash" onClick={this.remove} disabled={noSelection} />
                     <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={noSelection} />

@@ -19,7 +19,7 @@ export default class SelectionService {
 
     all = keys => keys.every(i => { return this.selected(i); });
 
-    selection = () => { return this.map.keys(); };
+    get selection() { return this.map.keys(); };
 
     clear = () => { return this.map.clear(); };
 }
