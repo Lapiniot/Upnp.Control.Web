@@ -16,7 +16,7 @@ export default class PlaylistManager extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { data: null, renderedKeys: [], selection: null };
+        this.state = { data: null, renderedKeys: [], selection: null, modal: null };
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -25,7 +25,8 @@ export default class PlaylistManager extends React.Component {
             return {
                 data: data,
                 renderedKeys: data.result.map(i => i.id),
-                selection: new SelectionService()
+                selection: new SelectionService(),
+                modal: null
             };
         }
         return null;
@@ -35,14 +36,15 @@ export default class PlaylistManager extends React.Component {
 
     remove = () => {
         this.setState({
-            modalState: {
+            modal: {
                 id: "remove_confirm",
                 title: "Do you want to delete?",
                 immidiate: true,
                 buttons: [
                     <Modal.Button key="delete" text="Delete" dismiss />,
                     <Modal.Button key="cancel" text="Cancel" dismiss />
-                ]
+                ],
+                onDismiss: () => this.setState({ modal: null })
             }
         });
     };
@@ -69,8 +71,6 @@ export default class PlaylistManager extends React.Component {
 
     render() {
         const { navContext: { navigateHandler, page, pageSize, urls } } = this.props;
-
-        console.log("Render");
 
         const { result: items, parents, total } = this.state.data;
 
@@ -117,7 +117,7 @@ export default class PlaylistManager extends React.Component {
                 </div>
             </div>
             <Pagination count={items.length} total={total} baseUrl={urls.current} current={page} size={pageSize} />
-            {this.state && this.state.modalState ? <Modal {...this.state.modalState} /> : null}
+            {this.state && this.state.modal ? <Modal {...this.state.modal} /> : null}
         </div>;
     }
 }
@@ -126,6 +126,5 @@ export const RoutedPlaylistManager = withRouter(
     withNavigationContext(
         withDataFetch(PlaylistManager,
             { template: LoadIndicator },
-            ({ device, id, navContext: { pageSize, page } }) => {
-                return `/api/browse/${device}/${id}?withParents=true&take=${pageSize}&skip=${(page - 1) * pageSize}`;
-            })));
+            ({ device, id, navContext: { pageSize, page } }) =>
+                `/api/browse/${device}/${id}?withParents=true&take=${pageSize}&skip=${(page - 1) * pageSize}`)));
