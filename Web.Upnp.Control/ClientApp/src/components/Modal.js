@@ -11,7 +11,23 @@ export default class Modal extends React.Component {
     }
 
     componentDidMount() {
+        const modal = $(`#${this.props.id}`);
+        const { onDismiss, onShown } = this.props;
+
+        if (onDismiss && typeof onDismiss === 'function') modal.on("hidden.bs.modal", onDismiss);
+
+        if (onShown && typeof onShown === 'function') modal.on("shown.bs.modal", onShown);
+
         this.showModal();
+    }
+
+    componentWillUnmount() {
+        const modal = $(`#${this.props.id}`);
+        const { onDismiss, onShown } = this.props;
+
+        if (onDismiss && typeof onDismiss === 'function') modal.off("hidden.bs.modal", onDismiss);
+
+        if (onShown && typeof onShown === 'function') modal.off("shown.bs.modal", onShown);
     }
 
     showModal() {
@@ -22,7 +38,9 @@ export default class Modal extends React.Component {
 
     render() {
 
-        const { id, immidiate, area, title, area: { label: areaLabel, hidden: areaHidden = true } = {}, ...other } = this.props;
+        const { id, immidiate, area, title, onDismiss, onShown,
+            area: { label: areaLabel, hidden: areaHidden = true } = {},
+            ...other } = this.props;
 
         return <React.Fragment>
             <div className="modal fade" id={id} tabIndex="-1" role="dialog" aria-labelledby={areaLabel} aria-hidden={areaHidden} {...other}>
