@@ -24,7 +24,7 @@ export default class PlaylistManager extends React.Component {
             const data = props.dataContext;
             return {
                 data: data,
-                renderedKeys: data.result.map(i => i.id),
+                renderedKeys: data.source.result.map(i => i.id),
                 selection: new SelectionService(),
                 modal: null
             };
@@ -37,7 +37,7 @@ export default class PlaylistManager extends React.Component {
     remove = () => {
 
         const keys = [...this.state.selection.selection];
-        const values = this.state.data.result.filter(e => keys.includes(e.id));
+        const values = this.state.data.source.result.filter(e => keys.includes(e.id));
         const removeImpl = () => {
             fetch(`/api/playlist/${this.props.device}/remove`,
                 {
@@ -50,9 +50,10 @@ export default class PlaylistManager extends React.Component {
                 })
                 .then(r => r.json())
                 .then(j => {
-                    this.forceUpdate();
+                    this.props.dataContext.reload();
                 });
         }
+        
         this.setState({
             modal: {
                 id: "remove_confirm",
@@ -95,7 +96,7 @@ export default class PlaylistManager extends React.Component {
     render() {
         const { navContext: { navigateHandler, page, pageSize, urls } } = this.props;
 
-        const { result: items, parents, total } = this.state.data;
+        const { result: items, parents, total } = this.state.data.source;
 
         const noSelection = !this.state.selection.any();
 

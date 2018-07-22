@@ -46,13 +46,12 @@ export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuild
     return class extends React.Component {
         constructor(props) {
             super(props);
-            const url = dataUrlBuilder(props);
-            this.state = { loading: true, data: [] };
+            this.state = { dataUrl: null, loading: true, data: [] };
+        }
 
-            if (!!url) {
-                //fetch online data from dataUri
-                this.fetchData(url);
-            }
+        static getDerivedStateFromProps(props, state) {
+            const url = dataUrlBuilder(props);
+            return state.dataUrl !== url ? { dataUrl: url, loading: true, data: [] } : null;
         }
 
         fetchData(url) {
@@ -61,14 +60,18 @@ export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuild
                 .then(data => this.setState({ loading: false, data: data }));
         }
 
-        shouldComponentUpdate(nextProps) {
-            const current = dataUrlBuilder(this.props);
-            const next = dataUrlBuilder(nextProps);
-            if (next !== current) {
-                this.setState({ loading: true, data: [] }, () => this.fetchData(next));
-                return false;
+        componentDidUpdate(prevProps, prevState) {
+            if (this.state.dataUrl !== prevState.dataUrl) {
+                this.reload();
             }
-            return true;
+        }
+
+        componentDidMount() {
+            this.fetchData(this.state.dataUrl);
+        }
+
+        reload = () => {
+            this.setState({ loading: true, data: [] }, () => this.fetchData(this.state.dataUrl));
         }
 
         render() {
@@ -76,7 +79,7 @@ export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuild
                 const { template: Template = "div", text = "Loading..." } = loadPlaceholderProps;
                 return <Template>{text}</Template>;
             } else {
-                return <Component dataContext={this.state.data} {...this.props} />;
+                return <Component dataContext={{ source: this.state.data, reload: this.reload }} {...this.props} />;
             }
         }
     };
