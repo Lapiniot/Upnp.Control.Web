@@ -41,12 +41,16 @@ export default class PlaylistManager extends React.Component {
         const removeImpl = () => {
             fetch(`/api/playlist/${this.props.device}/remove`,
                 {
-                    method: "POST",
+                    method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
                         "Accept": "application/json"
                     },
                     body: JSON.stringify(keys)
+                }).
+                then(r => r.json()).
+                then(j => {
+                    this.forceUpdate();
                 });
         }
         this.setState({
