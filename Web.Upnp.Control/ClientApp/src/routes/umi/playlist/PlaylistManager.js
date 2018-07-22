@@ -47,9 +47,9 @@ export default class PlaylistManager extends React.Component {
                         "Accept": "application/json"
                     },
                     body: JSON.stringify(keys)
-                }).
-                then(r => r.json()).
-                then(j => {
+                })
+                .then(r => r.json())
+                .then(j => {
                     this.forceUpdate();
                 });
         }
@@ -128,7 +128,8 @@ export default class PlaylistManager extends React.Component {
                         const selected = this.isSelected(e.id);
                         return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
                             <div className="x-table-cell-min">
-                                <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} />
+                                <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected}
+                                    disabled={e.vendor["mi:playlistType"] === "aux"} />
                             </div>
                             <div>
                                 <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
