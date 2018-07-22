@@ -4,7 +4,9 @@ export default class SelectionService {
         this.map = new Map();
     }
 
-    any = () => { return this.map.size > 0; }
+    any = () => { return this.map.size > 0 }
+
+    one = () => { return this.map.size === 1 }
 
     select = (key, state = true) => {
         if (state)

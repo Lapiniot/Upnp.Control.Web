@@ -24,12 +24,16 @@ export default class PlaylistManager extends React.Component {
             const data = props.dataContext;
             return {
                 data: data,
-                renderedKeys: data.source.result.map(i => i.id),
+                renderedKeys: data.source.result.filter(item => !PlaylistManager.isReadOnly(item)).map(i => i.id),
                 selection: new SelectionService(),
                 modal: null
             };
         }
         return null;
+    }
+
+    static isReadOnly(item) {
+        return item.vendor["mi:playlistType"] === "aux"
     }
 
     add = () => { alert("add"); };
@@ -53,7 +57,7 @@ export default class PlaylistManager extends React.Component {
                     this.props.dataContext.reload();
                 });
         }
-        
+
         this.setState({
             modal: {
                 id: "remove_confirm",
@@ -105,7 +109,7 @@ export default class PlaylistManager extends React.Component {
                 <Toolbar.Group>
                     <Toolbar.Button title="Add" glyph="plus" onClick={this.add} />
                     <Toolbar.Button title="Remove" glyph="trash" onClick={this.remove} disabled={noSelection} />
-                    <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={noSelection} />
+                    <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!this.state.selection.one()} />
                     <Toolbar.Button title="Copy" glyph="copy" onClick={this.copy} disabled={noSelection} />
                 </Toolbar.Group>
             </Toolbar>
@@ -129,8 +133,7 @@ export default class PlaylistManager extends React.Component {
                         const selected = this.isSelected(e.id);
                         return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
                             <div className="x-table-cell-min">
-                                <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected}
-                                    disabled={e.vendor["mi:playlistType"] === "aux"} />
+                                <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={PlaylistManager.isReadOnly(e)} />
                             </div>
                             <div>
                                 <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
