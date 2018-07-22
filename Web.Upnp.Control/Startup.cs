@@ -21,6 +21,8 @@ namespace Web.Upnp.Control
 
             services.AddHostedService<UpnpDiscoveryService>();
 
+            services.AddScoped<IUpnpServiceFactory, UpnpServiceFactory>();
+
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
 
             services.AddResponseCaching();
