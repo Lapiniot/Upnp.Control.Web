@@ -7,11 +7,14 @@ using IoT.Protocol.Soap;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
+using IoT.Protocol.Upnp.Services;
+using System.Collections.Concurrent;
 
 namespace Web.Upnp.Control.Services
 {
     public class UpnpServiceFactory : IUpnpServiceFactory
     {
+        static ConcurrentDictionary<Type, string> cache = new ConcurrentDictionary<Type, string>();
         static IDictionary<string, string> umiMappings = new Dictionary<string, string>(){
             {"urn:schemas-upnp-org:service:ContentDirectory:1", "{0}-MS/upnp.org-ContentDirectory-1/control"},
             {"urn:schemas-upnp-org:service:AVTransport:1", "{0}-MR/upnp.org-AVTransport-1/control"},
@@ -28,13 +31,15 @@ namespace Web.Upnp.Control.Services
             this.context = context;
         }
 
-        public async Task<TService> GetServiceAsync<TService>(string deviceId, string schema) where TService : SoapActionInvoker
+        public async Task<TService> GetServiceAsync<TService>(string deviceId, string schema = null) where TService : SoapActionInvoker
         {
             var device = await context.UpnpDevices
                 .Include(d => d.Services)
                 .Where(d => d.Udn == deviceId)
                 .FirstAsync()
                 .ConfigureAwait(false);
+
+            schema = schema ?? cache.GetOrAdd(typeof(TService), type => ServiceSchemaAttribute.GetSchema(type));
 
             var controlUrl = GetControlUrl(device, schema);
 

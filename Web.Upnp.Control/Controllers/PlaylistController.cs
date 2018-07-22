@@ -24,9 +24,9 @@ namespace Web.Upnp.Control.Controllers
         [HttpDelete("remove")]
         public async Task<object> RemoveAsync(string deviceId, [FromBody] string[] ids)
         {
-            var cdService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, UpnpServices.ContentDirectory);
+            var cdService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId);
 
-            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId, PlaylistService.ServiceSchema);
+            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId);
 
             using(cdService.Target)
             using(plService.Target)

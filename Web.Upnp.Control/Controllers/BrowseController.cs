@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
 using Web.Upnp.Control.Services;
-using static IoT.Protocol.Upnp.UpnpServices;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,7 +29,7 @@ namespace Web.Upnp.Control.Controllers
         [HttpGet("{*path}")]
         public async Task<object> GetContentAsync(string deviceId, string path, [FromQuery] uint take = 50, [FromQuery] uint skip = 0, [FromQuery] bool withParents = false)
         {
-            var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, ContentDirectory).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
             using(service.Target)
             {
@@ -48,7 +47,7 @@ namespace Web.Upnp.Control.Controllers
         [HttpGet("metadata/{path?}")]
         public async Task<object> GetMetadataAsync(string deviceId, string path)
         {
-            var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, ContentDirectory).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
             using(service.Target)
             {
@@ -60,7 +59,7 @@ namespace Web.Upnp.Control.Controllers
         [HttpGet("parents/{path?}")]
         public async Task<object> GetParentsAsync(string deviceId, string path)
         {
-            var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, ContentDirectory).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
             using(service.Target)
             {
