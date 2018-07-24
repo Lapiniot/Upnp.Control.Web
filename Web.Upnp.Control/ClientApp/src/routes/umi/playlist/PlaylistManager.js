@@ -36,7 +36,28 @@ export default class PlaylistManager extends React.Component {
         return item.vendor["mi:playlistType"] === "aux";
     }
 
-    add = () => { alert("add"); };
+    add = () => {
+        this.setState({
+            modal: {
+                id: "add_confirm",
+                title: "Create new playlist",
+                immediate: true,
+                buttons: [
+                    <Modal.Button key="add" text="Create" className="btn-primary" dismiss />,
+                    <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                ],
+                renderBody: () => {
+                    return <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Name</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="New Playlist" aria-label="Name" aria-describedby="basic-addon1" />
+                            </div>;
+                },
+                onDismiss: () => this.setState({ modal: null })
+            }
+        });
+    };
 
     remove = () => {
 
