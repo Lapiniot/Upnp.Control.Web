@@ -1,13 +1,9 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using IoT.Device.Xiaomi.Umi.Services;
-using IoT.Protocol.Upnp;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Services;
 
 namespace Web.Upnp.Control.Controllers
@@ -16,6 +12,7 @@ namespace Web.Upnp.Control.Controllers
     public class PlaylistController : Controller
     {
         private readonly IUpnpServiceFactory factory;
+
         public PlaylistController(IUpnpServiceFactory factory)
         {
             this.factory = factory;
@@ -31,15 +28,16 @@ namespace Web.Upnp.Control.Controllers
             using(cdService.Target)
             using(plService.Target)
             {
-                var data = await cdService.BrowseAsync("PL:", count: UInt32.MaxValue).ConfigureAwait(false);
+                var data = await cdService.BrowseAsync("PL:", count: uint.MaxValue).ConfigureAwait(false);
                 var playlists = DIDLParser.Parse(data["Result"]);
                 var map = playlists.Select((p, index) => (p.Id, index)).ToDictionary(p => p.Id, p => p.index + 1);
-                var indeces = ids.Select(id => map[id]).ToArray();
-                var result = await plService.DeleteAsync(indeces: indeces).ConfigureAwait(false);
+                var indices = ids.Select(id => map[id]).ToArray();
+                var result = await plService.DeleteAsync(indices: indices).ConfigureAwait(false);
                 if(result["LengthChange"] == "0")
                 {
-                    result = await plService.DeleteAsync(updateId: result["NewUpdateID"], indeces: indeces).ConfigureAwait(false);
+                    result = await plService.DeleteAsync(updateId: result["NewUpdateID"], indices: indices).ConfigureAwait(false);
                 }
+
                 return result;
             }
         }

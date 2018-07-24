@@ -33,7 +33,7 @@ export default class PlaylistManager extends React.Component {
     }
 
     static isReadOnly(item) {
-        return item.vendor["mi:playlistType"] === "aux"
+        return item.vendor["mi:playlistType"] === "aux";
     }
 
     add = () => { alert("add"); };
@@ -44,33 +44,31 @@ export default class PlaylistManager extends React.Component {
         const values = this.state.data.source.result.filter(e => keys.includes(e.id));
         const removeImpl = () => {
             fetch(`/api/playlist/${this.props.device}/remove`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    },
-                    body: JSON.stringify(keys)
-                })
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify(keys)
+                    })
                 .then(r => r.json())
-                .then(j => {
-                    this.props.dataContext.reload();
-                });
-        }
+                .then(this.props.dataContext.reload);
+        };
 
         this.setState({
             modal: {
                 id: "remove_confirm",
                 title: "Do you want to delete?",
-                immidiate: true,
+                immediate: true,
                 buttons: [
                     <Modal.Button key="delete" text="Delete" className="btn-primary" onClick={removeImpl} dismiss />,
                     <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
                 ],
                 renderBody: () => {
                     return <ul className="list-unstyled">
-                        {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
-                    </ul>
+                               {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
+                           </ul>;
                 },
                 onDismiss: () => this.setState({ modal: null })
             }
@@ -105,48 +103,48 @@ export default class PlaylistManager extends React.Component {
         const noSelection = !this.state.selection.any();
 
         return <div>
-            <Toolbar className="position-sticky sticky-top px-3 py-2 bg-light">
-                <Toolbar.Group>
-                    <Toolbar.Button title="Add" glyph="plus" onClick={this.add} />
-                    <Toolbar.Button title="Remove" glyph="trash" onClick={this.remove} disabled={noSelection} />
-                    <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!this.state.selection.one()} />
-                    <Toolbar.Button title="Copy" glyph="copy" onClick={this.copy} disabled={noSelection} />
-                </Toolbar.Group>
-            </Toolbar>
-            <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
-                <div>
-                    <div>
-                        <div className="x-table-cell-min">
-                            <input type="checkbox" id="select_all" checked={this.allSelected()} onChange={this.onSelectAll} />
-                        </div>
-                        <div>Name</div>
-                        <div className="x-table-cell-min">Kind</div>
-                    </div>
-                </div>
-                <div>
-                    <div data-id={parents[0].parentId} onDoubleClick={navigateHandler}>
-                        <div>&nbsp;</div>
-                        <div>...</div>
-                        <div>Parent</div>
-                    </div>
-                    {[items.map((e, index) => {
-                        const selected = this.isSelected(e.id);
-                        return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
-                            <div className="x-table-cell-min">
-                                <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={PlaylistManager.isReadOnly(e)} />
-                            </div>
-                            <div>
-                                <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
-                                {e.title}
-                            </div>
-                            <div className="text-capitalize">{DIDLUtils.getKind(e.class)}</div>
-                        </div>;
-                    })]}
-                </div>
-            </div>
-            <Pagination count={items.length} total={total} baseUrl={urls.current} current={page} size={pageSize} />
-            {this.state && this.state.modal ? <Modal {...this.state.modal} /> : null}
-        </div>;
+                   <Toolbar className="position-sticky sticky-top px-3 py-2 bg-light">
+                       <Toolbar.Group>
+                           <Toolbar.Button title="Add" glyph="plus" onClick={this.add} />
+                           <Toolbar.Button title="Remove" glyph="trash" onClick={this.remove} disabled={noSelection} />
+                           <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!this.state.selection.one()} />
+                           <Toolbar.Button title="Copy" glyph="copy" onClick={this.copy} disabled={noSelection} />
+                       </Toolbar.Group>
+                   </Toolbar>
+                   <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
+                       <div>
+                           <div>
+                               <div className="x-table-cell-min">
+                                   <input type="checkbox" id="select_all" checked={this.allSelected()} onChange={this.onSelectAll} />
+                               </div>
+                               <div>Name</div>
+                               <div className="x-table-cell-min">Kind</div>
+                           </div>
+                       </div>
+                       <div>
+                           <div data-id={parents[0].parentId} onDoubleClick={navigateHandler}>
+                               <div>&nbsp;</div>
+                               <div>...</div>
+                               <div>Parent</div>
+                           </div>
+                           {[items.map((e, index) => {
+                               const selected = this.isSelected(e.id);
+                               return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
+                                          <div className="x-table-cell-min">
+                                              <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={PlaylistManager.isReadOnly(e)} />
+                                          </div>
+                                          <div>
+                                              <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
+                                              {e.title}
+                                          </div>
+                                          <div className="text-capitalize">{DIDLUtils.getKind(e.class)}</div>
+                                      </div>;
+                           })]}
+                       </div>
+                   </div>
+                   <Pagination count={items.length} total={total} baseUrl={urls.current} current={page} size={pageSize} />
+                   {this.state && this.state.modal ? <Modal {...this.state.modal} /> : null}
+               </div>;
     }
 }
 
@@ -155,4 +153,4 @@ export const RoutedPlaylistManager = withRouter(
         withDataFetch(PlaylistManager,
             { template: LoadIndicator },
             ({ device, id, navContext: { pageSize, page } }) =>
-                `/api/browse/${device}/${id}?withParents=true&take=${pageSize}&skip=${(page - 1) * pageSize}`)));
+            `/api/browse/${device}/${id}?withParents=true&take=${pageSize}&skip=${(page - 1) * pageSize}`)));

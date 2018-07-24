@@ -1,5 +1,4 @@
-
-export default class SelectionService {
+export default class {
     constructor() {
         this.map = new Map();
     }
@@ -21,7 +20,7 @@ export default class SelectionService {
 
     all = keys => keys.every(i => { return this.selected(i); });
 
-    get selection() { return this.map.keys(); };
+    get selection() { return this.map.keys(); }
 
     clear = () => { return this.map.clear(); };
 }

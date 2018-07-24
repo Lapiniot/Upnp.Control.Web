@@ -1,33 +1,33 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using IoT.Protocol.Soap;
+using IoT.Protocol.Upnp.Services;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
-using IoT.Protocol.Upnp.Services;
-using System.Collections.Concurrent;
 
 namespace Web.Upnp.Control.Services
 {
     public class UpnpServiceFactory : IUpnpServiceFactory
     {
-        static ConcurrentDictionary<Type, string> cache = new ConcurrentDictionary<Type, string>();
-        static IDictionary<string, string> umiMappings = new Dictionary<string, string>(){
+        private static readonly ConcurrentDictionary<Type, string> cache = new ConcurrentDictionary<Type, string>();
+
+        private static readonly IDictionary<string, string> umiMappings = new Dictionary<string, string>
+        {
             {"urn:schemas-upnp-org:service:ContentDirectory:1", "{0}-MS/upnp.org-ContentDirectory-1/control"},
             {"urn:schemas-upnp-org:service:AVTransport:1", "{0}-MR/upnp.org-AVTransport-1/control"},
             {"urn:xiaomi-com:service:SystemProperties:1", "{0}/xiaomi.com-SystemProperties-1/control"},
             {"urn:schemas-upnp-org:service:ConnectionManager:1", "{0}-MR/upnp.org-ConnectionManager-1/control"},
-            {"urn:schemas-upnp-org:service:RenderingControl:1", "{0}-MR/upnp.org-RenderingControl-1/control"},
+            {"urn:schemas-upnp-org:service:RenderingControl:1", "{0}-MR/upnp.org-RenderingControl-1/control"}
         };
 
         private readonly UpnpDbContext context;
-        private readonly IHttpClientFactory clientFactory;
-        public UpnpServiceFactory(UpnpDbContext context, IHttpClientFactory clientFactory)
+
+        public UpnpServiceFactory(UpnpDbContext context)
         {
-            this.clientFactory = clientFactory;
             this.context = context;
         }
 
@@ -39,7 +39,7 @@ namespace Web.Upnp.Control.Services
                 .FirstAsync()
                 .ConfigureAwait(false);
 
-            schema = schema ?? cache.GetOrAdd(typeof(TService), type => ServiceSchemaAttribute.GetSchema(type));
+            schema = schema ?? cache.GetOrAdd(typeof(TService), ServiceSchemaAttribute.GetSchema);
 
             var controlUrl = GetControlUrl(device, schema);
 
@@ -53,7 +53,7 @@ namespace Web.Upnp.Control.Services
             return service != null
                 ? new Uri(service.ControlUrl)
                 : device.Services.Any(s => s.ServiceType == "urn:xiaomi-com:service:Playlist:1")
-                    ? new UriBuilder(device.Location) { Path = string.Format(umiMappings[schema], device.Udn.Substring(5)) }.Uri
+                    ? new UriBuilder(device.Location) {Path = string.Format(umiMappings[schema], device.Udn.Substring(5))}.Uri
                     : null;
         }
 

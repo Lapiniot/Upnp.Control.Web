@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IoT.Protocol.Soap;
-using IoT.Protocol.Upnp;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Web.Upnp.Control.DataAccess;
-using Web.Upnp.Control.Models.Database.Upnp;
 using Web.Upnp.Control.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -39,7 +33,7 @@ namespace Web.Upnp.Control.Controllers
                 {
                     Total = int.Parse(result["TotalMatches"]),
                     Result = DIDLParser.Parse(result["Result"]),
-                    Parents = withParents ? (await GetParentsAsync(service, path).ConfigureAwait(false)).Select(p => new { p.Id, p.ParentId, p.Title }) : null
+                    Parents = withParents ? (await GetParentsAsync(service, path).ConfigureAwait(false)).Select(p => new {p.Id, p.ParentId, p.Title}) : null
                 };
             }
         }
@@ -52,7 +46,7 @@ namespace Web.Upnp.Control.Controllers
             using(service.Target)
             {
                 var result = await service.BrowseAsync(path ?? "0", flags: "BrowseMetadata").ConfigureAwait(false);
-                return new { Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"]) };
+                return new {Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"])};
             }
         }
 

@@ -36,7 +36,7 @@ namespace Web.Upnp.Control.Controllers
                 case "upnp":
                     return GetUpnpDevicesAsync();
                 default:
-                    throw new ArgumentException("Inalid value", nameof(type));
+                    throw new ArgumentException("Invalid value", nameof(type));
             }
         }
 
