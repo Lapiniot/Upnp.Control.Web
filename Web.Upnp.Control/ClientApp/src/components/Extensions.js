@@ -15,18 +15,18 @@ export class QString {
 
 export function mergeClassNames(strings, ...values) {
     return [...strings, ...values].reduce((acc, current) => {
-            if (!!!current) return acc;
-            if (acc === "") return current.trim();
-            return acc + " " + current.trim();
-        },
+        if (!!!current) return acc;
+        if (acc === "") return current.trim();
+        return acc + " " + current.trim();
+    },
         "");
 }
 
 export function reversemap(array, fn) {
     return array.reduceRight((acc, e, i) => {
-            acc.push(fn(e, i));
-            return acc;
-        },
+        acc.push(fn(e, i));
+        return acc;
+    },
         []);
 }
 
@@ -55,10 +55,16 @@ export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuild
             return state.dataUrl !== url ? { dataUrl: url, loading: true, data: [] } : null;
         }
 
-        fetchData(url) {
-            fetch(url)
-                .then(response => response.json())
-                .then(data => this.setState({ loading: false, data: data }));
+        async fetchData(url) {
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+                this.setState({ loading: false, data: data });
+            }
+            catch (e) {
+                console.log(e);
+                this.setState({ loading: false, data: [], error: e });
+            }
         }
 
         componentDidUpdate(prevProps, prevState) {
