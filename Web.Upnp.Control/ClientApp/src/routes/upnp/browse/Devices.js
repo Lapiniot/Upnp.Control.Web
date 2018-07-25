@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import { withProps, withDataFetch } from "../../../components/Extensions";
+import $api from "../../../components/WebApi";
 import Icon from "../../../components/Icon";
 import LoadIndicator from "../../../components/LoadIndicator";
 import { RouteLink } from "../../../components/NavLink";
@@ -41,7 +42,7 @@ class UpnpDevice extends React.Component {
 const UpnpDevices = withProps(
     withDataFetch(DeviceList, { template: LoadIndicator }),
     {
-        dataUrl: "/api/discovery/upnp",
+        dataUrl: $api.discover("upnp").url(),
         itemTemplate: UpnpDevice
     });
 

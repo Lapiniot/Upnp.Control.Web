@@ -1,4 +1,5 @@
 ﻿import React from "react";
+import $api from "../../../components/WebApi";
 import LoadIndicator from "../../../components/LoadIndicator";
 import { RouteLink } from "../../../components/NavLink";
 import { withProps, withDataFetch } from "../../../components/Extensions";
@@ -36,7 +37,7 @@ class UmiDevice extends React.Component {
 const UmiDeviceList = withProps(
     withDataFetch(DeviceList, { template: LoadIndicator }),
     {
-        dataUrl: "/api/discovery/umi",
+        dataUrl: $api.discover("umi").url(),
         itemTemplate: UmiDevice
     });
 

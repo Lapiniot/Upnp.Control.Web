@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import $api from "../../components/WebApi";
 import { withDataFetch } from "../../components/Extensions";
 import { withNavigationContext } from "./Navigator";
 import LoadIndicator from "../../components/LoadIndicator";
@@ -45,7 +46,7 @@ export const RoutedBrowser = withRouter(
         withDataFetch(Browser,
             { template: LoadIndicator },
             ({ device, id, navContext: { pageSize, page } }) => {
-                return `/api/browse/${device}/${id}?withParents=true&take=${pageSize}&skip=${(page - 1) * pageSize}`;
+                return $api.browse(device).get(id).withParents().take(pageSize).skip((page - 1) * pageSize).url();
             })));
 
 export function renderWithDeviceProps(Component, props) {
