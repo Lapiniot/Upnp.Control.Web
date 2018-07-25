@@ -21,17 +21,17 @@ export default class {
 
     static playlist(deviceId) {
         return {
-            add: name => {
-                return new JsonPostFetch(`/api/playlist/${deviceId}/add`, null, { body: JSON.stringify({ name: name }) });
+            create: title => {
+                return new JsonPostFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify({ title: title }) });
             },
-            rename: (id, name) => {
-                return new JsonPutFetch(`/api/playlist/${deviceId}/rename/${id}`, null, { body: JSON.stringify({ name: name }) });
+            rename: (id, title) => {
+                return new JsonPutFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify({ id: id, title: title }) });
             },
-            remove: ids => {
-                return new JsonDeleteFetch(`/api/playlist/${deviceId}/remove`, null, { body: JSON.stringify(ids) });
+            delete: ids => {
+                return new JsonDeleteFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify(ids) });
             },
             copy: id => {
-                return new JsonFetch(`/api/playlist/${deviceId}/copy/${id}`, null, { method: "COPY" });
+                return new JsonFetch(`/api/playlist/${deviceId}/${id}`, null, { method: "COPY" });
             }
         };
     }

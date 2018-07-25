@@ -18,7 +18,7 @@ namespace Web.Upnp.Control.Controllers
             this.factory = factory;
         }
 
-        [HttpDelete("remove")]
+        [HttpDelete]
         public async Task<object> RemoveAsync(string deviceId, [FromBody] string[] ids)
         {
             var cdService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId);
@@ -40,6 +40,37 @@ namespace Web.Upnp.Control.Controllers
 
                 return result;
             }
+        }
+
+        [HttpPost]
+        public async Task<object> CreateAsync(string deviceId, [FromBody] Playlist playlist)
+        {
+            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId);
+
+            using(plService.Target)
+            {
+                return await plService.CreateAsync(title: playlist.Title).ConfigureAwait(false);
+            }
+        }
+
+        [HttpPut]
+        public async Task<object> UpdateAsync(string deviceId, [FromBody] Playlist playlist)
+        {
+            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId);
+
+            using(plService.Target)
+            {
+                var result = await plService.RenameAsync(objectId: playlist.Id, title: playlist.Title).ConfigureAwait(false);
+
+                return await plService.RenameAsync(objectId: playlist.Id, title: playlist.Title, updateId: result["NewUpdateID"]).ConfigureAwait(false);
+            }
+        }
+
+        public class Playlist
+        {
+            public string Title { get; set; }
+
+            public string Id { get; set; }
         }
     }
 }

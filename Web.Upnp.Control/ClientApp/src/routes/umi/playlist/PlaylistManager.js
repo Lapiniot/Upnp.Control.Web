@@ -38,22 +38,40 @@ export default class PlaylistManager extends React.Component {
     }
 
     add = () => {
+
+        let title = "New Playlist";
+
+        const onChange = event => { title = event.target.value; };
+
+        const onClick = async () => {
+            try {
+                const response = $api.playlist(this.props.device).create(title).fetch();
+                const json = await response.json();
+                console.info(json);
+            } catch (e) {
+                console.error(e);
+            } finally {
+                this.props.dataContext.reload();
+            }
+        };
+
         this.setState({
             modal: {
+                key: "create_modal",
                 id: "add_confirm",
                 title: "Create new playlist",
                 immediate: true,
                 buttons: [
-                    <Modal.Button key="add" text="Create" className="btn-primary" dismiss />,
+                    <Modal.Button key="create" text="Create" className="btn-primary" onClick={onClick} dismiss />,
                     <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
                 ],
                 renderBody: () => {
-                    return <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">Name</span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="New Playlist" aria-label="Name" aria-describedby="basic-addon1" />
-                            </div>;
+                    return <div className="input-group mb-3">
+                               <div className="input-group-prepend">
+                                   <span className="input-group-text" id="basic-addon1">Name</span>
+                               </div>
+                               <input type="text" onChange={onChange} className="form-control" value={title} placeholder="New Playlist" aria-label="Name" aria-describedby="basic-addon1" />
+                           </div>;
                 },
                 onDismiss: () => this.setState({ modal: null })
             }
@@ -66,7 +84,7 @@ export default class PlaylistManager extends React.Component {
         const values = this.state.data.source.result.filter(e => ids.includes(e.id));
         const removeImpl = async () => {
             try {
-                const response = await $api.playlist(this.props.device).remove(ids).fetch();
+                const response = await $api.playlist(this.props.device).delete(ids).fetch();
                 const json = await response.json();
                 console.info(json);
             } catch (e) {
@@ -78,6 +96,7 @@ export default class PlaylistManager extends React.Component {
 
         this.setState({
             modal: {
+                key: "delete_modal",
                 id: "remove_confirm",
                 title: "Do you want to delete?",
                 immediate: true,
@@ -87,15 +106,56 @@ export default class PlaylistManager extends React.Component {
                 ],
                 renderBody: () => {
                     return <ul className="list-unstyled">
-                        {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
-                    </ul>;
+                               {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
+                           </ul>;
                 },
                 onDismiss: () => this.setState({ modal: null })
             }
         });
     };
 
-    rename = () => { alert("rename"); };
+    rename = () => {
+        const id = this.state.selection.selection.next().value;
+        const value = this.state.data.source.result.find(e => e.id === id);
+
+        let title = "";
+
+        const onChange = event => { title = event.target.value; };
+
+        const onClick = async () => {
+            try {
+                const response = await $api.playlist(this.props.device).rename(id, title).fetch();
+                const json = await response.json();
+                console.info(json);
+            } catch (e) {
+                console.error(e);
+            } finally {
+                this.props.dataContext.reload();
+            }
+        };
+
+        this.setState({
+            modal: {
+                key: "rename_modal",
+                id: "rename_confirm",
+                title: "Rename playlist",
+                immediate: true,
+                buttons: [
+                    <Modal.Button key="rename" text="Rename" className="btn-primary" onClick={onClick} dismiss />,
+                    <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                ],
+                renderBody: () => {
+                    return <div className="input-group mb-3">
+                               <div className="input-group-prepend">
+                                   <span className="input-group-text" id="basic-addon1">Name</span>
+                               </div>
+                               <input type="text" onChange={onChange} className="form-control" placeholder="New Playlist" aria-label="Name" aria-describedby="basic-addon1" />
+                           </div>;
+                },
+                onDismiss: () => this.setState({ modal: null })
+            }
+        });
+    };
 
     copy = () => { alert("copy"); };
 
@@ -123,48 +183,48 @@ export default class PlaylistManager extends React.Component {
         const noSelection = !this.state.selection.any();
 
         return <div>
-            <Toolbar className="position-sticky sticky-top px-3 py-2 bg-light">
-                <Toolbar.Group>
-                    <Toolbar.Button title="Add" glyph="plus" onClick={this.add} />
-                    <Toolbar.Button title="Remove" glyph="trash" onClick={this.remove} disabled={noSelection} />
-                    <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!this.state.selection.one()} />
-                    <Toolbar.Button title="Copy" glyph="copy" onClick={this.copy} disabled={noSelection} />
-                </Toolbar.Group>
-            </Toolbar>
-            <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
-                <div>
-                    <div>
-                        <div className="x-table-cell-min">
-                            <input type="checkbox" id="select_all" checked={this.allSelected()} onChange={this.onSelectAll} />
-                        </div>
-                        <div>Name</div>
-                        <div className="x-table-cell-min">Kind</div>
-                    </div>
-                </div>
-                <div>
-                    <div data-id={parents[0].parentId} onDoubleClick={navigateHandler}>
-                        <div>&nbsp;</div>
-                        <div>...</div>
-                        <div>Parent</div>
-                    </div>
-                    {[items.map((e, index) => {
-                        const selected = this.isSelected(e.id);
-                        return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
-                            <div className="x-table-cell-min">
-                                <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={PlaylistManager.isReadOnly(e)} />
-                            </div>
-                            <div>
-                                <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
-                                {e.title}
-                            </div>
-                            <div className="text-capitalize">{DIDLUtils.getKind(e.class)}</div>
-                        </div>;
-                    })]}
-                </div>
-            </div>
-            <Pagination count={items.length} total={total} baseUrl={urls.current} current={page} size={pageSize} />
-            {this.state && this.state.modal ? <Modal {...this.state.modal} /> : null}
-        </div>;
+                   <Toolbar className="position-sticky sticky-top px-3 py-2 bg-light">
+                       <Toolbar.Group>
+                           <Toolbar.Button title="Add" glyph="plus" onClick={this.add} />
+                           <Toolbar.Button title="Remove" glyph="trash" onClick={this.remove} disabled={noSelection} />
+                           <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!this.state.selection.one()} />
+                           <Toolbar.Button title="Copy" glyph="copy" onClick={this.copy} disabled={noSelection} />
+                       </Toolbar.Group>
+                   </Toolbar>
+                   <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
+                       <div>
+                           <div>
+                               <div className="x-table-cell-min">
+                                   <input type="checkbox" id="select_all" checked={this.allSelected()} onChange={this.onSelectAll} />
+                               </div>
+                               <div>Name</div>
+                               <div className="x-table-cell-min">Kind</div>
+                           </div>
+                       </div>
+                       <div>
+                           <div data-id={parents[0].parentId} onDoubleClick={navigateHandler}>
+                               <div>&nbsp;</div>
+                               <div>...</div>
+                               <div>Parent</div>
+                           </div>
+                           {[items.map((e, index) => {
+                               const selected = this.isSelected(e.id);
+                               return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
+                                          <div className="x-table-cell-min">
+                                              <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={PlaylistManager.isReadOnly(e)} />
+                                          </div>
+                                          <div>
+                                              <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
+                                              {e.title}
+                                          </div>
+                                          <div className="text-capitalize">{DIDLUtils.getKind(e.class)}</div>
+                                      </div>;
+                           })]}
+                       </div>
+                   </div>
+                   <Pagination count={items.length} total={total} baseUrl={urls.current} current={page} size={pageSize} />
+                   {this.state && this.state.modal ? <Modal {...this.state.modal} /> : null}
+               </div>;
     }
 }
 
@@ -173,4 +233,4 @@ export const RoutedPlaylistManager = withRouter(
         withDataFetch(PlaylistManager,
             { template: LoadIndicator },
             ({ device, id, navContext: { pageSize, page } }) =>
-                `/api/browse/${device}/${id}?withParents=true&take=${pageSize}&skip=${(page - 1) * pageSize}`)));
+            $api.browse(device).get(id).withParents().take(pageSize).skip((page - 1) * pageSize).url())));
