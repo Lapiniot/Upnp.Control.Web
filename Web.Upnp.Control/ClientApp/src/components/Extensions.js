@@ -11,6 +11,14 @@ export class QString {
             .map(s => s.split("="))
             .reduce(reducer, {});
     }
+
+    static build(query) {
+        const qstring = Object
+            .entries(query)
+            .map(p => encodeURIComponent(p[0]) + "=" + encodeURIComponent(p[1]))
+            .join("&");
+        return qstring.length > 0 ? `?${qstring}` : qstring;
+    }
 }
 
 export function mergeClassNames(strings, ...values) {
