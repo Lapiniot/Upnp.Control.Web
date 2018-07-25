@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import $api from "../../../components/WebApi";
 import { withDataFetch } from "../../../components/Extensions";
 import { withNavigationContext } from "../../common/Navigator";
 import { DIDLUtils } from "../../common/Browser";
@@ -61,25 +62,17 @@ export default class PlaylistManager extends React.Component {
 
     remove = () => {
 
-        const keys = [...this.state.selection.selection];
-        const values = this.state.data.source.result.filter(e => keys.includes(e.id));
+        const ids = [...this.state.selection.selection];
+        const values = this.state.data.source.result.filter(e => ids.includes(e.id));
         const removeImpl = async () => {
-
             try {
-                let response = await fetch(`/api/playlist/${this.props.device}/remove`,
-                    {
-                        method: "DELETE",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json"
-                        },
-                        body: JSON.stringify(keys)
-                    });
-                let data = await response.json();
-                console.info(data);
+                const response = await $api.playlist(this.props.device).remove(ids).fetch();
+                const json = await response.json();
+                console.info(json);
+            } catch (e) {
+                console.error(e);
+            } finally {
                 this.props.dataContext.reload();
-            } catch (error) {
-                console.error(error);
             }
         };
 

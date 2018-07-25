@@ -1,57 +1,56 @@
-﻿import { QString } from "./Extensions";
+﻿import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch } from "./Http/HttpFetch";
 
 export default class {
     static discover = function(category) {
-        return Object.assign(Object.create(fetchImpl), { path: `/api/discovery/${category}`, query: {} });
+        return new HttpFetch(`/api/discovery/${category}`);
     }
 
     static browse(deviceId) {
         return {
             get: (id = "") => {
-                return Object.assign(Object.create(browseImpl), { path: `/api/browse/${deviceId}/${id}`, query: {} });
+                return new BrowseFetch(`/api/browse/${deviceId}/${id}`);
             },
             parents: id => {
-                return Object.assign(Object.create(fetchImpl), { path: `/api/browse/parents/${deviceId}/${id}` });
+                return new HttpFetch(`/api/browse/parents/${deviceId}/${id}`);
             },
             metadata: id => {
-                return Object.assign(Object.create(fetchImpl), { path: `/api/browse/metadata/${deviceId}/${id}` });
+                return new HttpFetch(`/api/browse/metadata/${deviceId}/${id}`);
             }
         };
     }
 
     static playlist(deviceId) {
         return {
-            add: name => { return null },
-            rename: (id, name) => { return null },
-            remove: ids => { return null },
-            copy: id => { return null }
+            add: name => {
+                return new JsonPostFetch(`/api/playlist/${deviceId}/add`, null, { body: JSON.stringify({ name: name }) });
+            },
+            rename: (id, name) => {
+                return new JsonPutFetch(`/api/playlist/${deviceId}/rename/${id}`, null, { body: JSON.stringify({ name: name }) });
+            },
+            remove: ids => {
+                return new JsonDeleteFetch(`/api/playlist/${deviceId}/remove`, null, { body: JSON.stringify(ids) });
+            },
+            copy: id => {
+                return new JsonFetch(`/api/playlist/${deviceId}/copy/${id}`, null, { method: "COPY" });
+            }
         };
     }
 }
 
+class BrowseFetch extends HttpFetch {
+    constructor(path, query = {}) {
+        super(path, query);
+    }
 
-export const getUrlImpl = {
-    url: function() {
-        return this.path + QString.build(this.query);
+    withParents() {
+        return new BrowseFetch(this.path, { ...this.query, withParents: true });
+    }
+
+    take(count) {
+        return new BrowseFetch(this.path, { ...this.query, take: count });
+    }
+
+    skip(count) {
+        return new BrowseFetch(this.path, { ...this.query, skip: count });
     }
 };
-
-export const fetchImpl = Object.assign({
-        fetch: function() {
-            return fetch(this.url());
-        }
-    },
-    getUrlImpl);
-
-export const browseImpl = Object.assign({
-        withParents: function() {
-            return Object.assign(Object.create(browseImpl), { path: this.path, query: { ...this.query, withParents: true } });
-        },
-        take: function(count) {
-            return Object.assign(Object.create(browseImpl), { path: this.path, query: { ...this.query, take: count } });
-        },
-        skip: function(count) {
-            return Object.assign(Object.create(browseImpl), { path: this.path, query: { ...this.query, skip: count } });
-        }
-    },
-    fetchImpl);
