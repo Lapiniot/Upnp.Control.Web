@@ -39,27 +39,24 @@ export default class Modal extends React.Component {
 
     render() {
 
-        const { id, immediate, area, title, onDismiss, onShown, className,
-            renderHeader, renderBody, renderFooter,
-            area: { label: areaLabel, hidden: areaHidden = true } = {},
-            ...other } = this.props;
+        const { id, title, className, immediate, area = {}, onDismiss, onShown, ...other } = this.props;
 
         let header, body, footer;
-        const rest = [];
+        const children = [];
         React.Children.map(this.props.children,
             c => {
                 if (c.type === Modal.Header) header = c;
                 else if (c.type === Modal.Body) body = c;
                 else if (c.type === Modal.Footer) footer = c;
-                else rest.push(c);
+                else children.push(c);
             });
 
-        return <div className={merge`modal fade ${className}`} id={id} tabIndex="-1" role="dialog" aria-labelledby={areaLabel} aria-hidden={areaHidden} {...other}>
+        return <div className={merge`modal fade ${className}`} id={id} tabIndex="-1" role="dialog" aria-labelledby={area.label} aria-hidden="true" {...other}>
                    <div className="modal-dialog modal-dialog-centered" role="document">
                        <div className="modal-content">
                            {!!header ? header : <Modal.Header>{title}</Modal.Header>}
-                           {!!body ? body : <Modal.Body>{typeof renderBody === "function" ? renderBody() : rest}</Modal.Body>}
-                           {!!footer ? footer : <Modal.Footer>{typeof renderFooter === "function" ? renderFooter() : [this.props.buttons]}</Modal.Footer>}
+                           {!!body ? body : <Modal.Body>{children}</Modal.Body>}
+                           {!!footer ? footer : <Modal.Footer>{[this.props.buttons]}</Modal.Footer>}
                        </div>
                    </div>
                </div>;
