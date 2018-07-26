@@ -37,7 +37,11 @@ export default class PlaylistManager extends React.Component {
         return item.vendor["mi:playlistType"] === "aux";
     }
 
-    add = () => {
+    resetModalState = () => {
+        this.setState({ modal: null });
+    }
+
+    create = () => {
 
         let title = "New Playlist";
 
@@ -45,7 +49,7 @@ export default class PlaylistManager extends React.Component {
 
         const createAsync = async () => {
             try {
-                const response = $api.playlist(this.props.device).create(title).fetch();
+                const response = await $api.playlist(this.props.device).create(title).fetch();
                 const json = await response.json();
                 console.info(json);
             } catch (e) {
@@ -56,24 +60,19 @@ export default class PlaylistManager extends React.Component {
         };
 
         this.setState({
-            modal: {
-                key: "create_modal",
-                id: "add_confirm",
-                title: "Create new playlist",
-                immediate: true,
-                buttons: [
-                    <Modal.Button key="create" text="Create" className="btn-primary" onClick={createAsync} dismiss />,
-                    <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
-                ],
-                renderBody: () => {
-                    return <div className="input-group mb-3">
+            modal: () => {
+                return <Modal id="add_confirm" title="Create new playlist" immediate onDismiss={this.resetModalState}>
+                           <div className="input-group mb-3">
                                <div className="input-group-prepend">
                                    <span className="input-group-text" id="basic-addon1">Name</span>
                                </div>
                                <input type="text" onChange={onChange} className="form-control" defaultValue={title} placeholder="[enter new name]" aria-label="Name" aria-describedby="basic-addon1" />
-                           </div>;
-                },
-                onDismiss: () => this.setState({ modal: null })
+                           </div>
+                           <Modal.Footer>
+                               <Modal.Button key="create" text="Create" className="btn-primary" onClick={createAsync} dismiss />
+                               <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                           </Modal.Footer>
+                       </Modal>;
             }
         });
     };
@@ -95,21 +94,16 @@ export default class PlaylistManager extends React.Component {
         };
 
         this.setState({
-            modal: {
-                key: "delete_modal",
-                id: "remove_confirm",
-                title: "Do you want to delete?",
-                immediate: true,
-                buttons: [
-                    <Modal.Button key="delete" text="Delete" className="btn-primary" onClick={removeImpl} dismiss />,
-                    <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
-                ],
-                renderBody: () => {
-                    return <ul className="list-unstyled">
+            modal: () => {
+                return <Modal id="remove_confirm" title="Do you want to delete?" immediate onDismiss={this.resetModalState}>
+                           <ul className="list-unstyled">
                                {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
-                           </ul>;
-                },
-                onDismiss: () => this.setState({ modal: null })
+                           </ul>
+                           <Modal.Footer>
+                               <Modal.Button key="delete" text="Delete" className="btn-primary" onClick={removeImpl} dismiss />
+                               <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                           </Modal.Footer>
+                       </Modal>;
             }
         });
     };
@@ -133,24 +127,19 @@ export default class PlaylistManager extends React.Component {
         };
 
         this.setState({
-            modal: {
-                key: "rename_modal",
-                id: "rename_confirm",
-                title: "Rename playlist",
-                immediate: true,
-                buttons: [
-                    <Modal.Button key="rename" text="Rename" className="btn-primary" onClick={renameAsync} dismiss />,
-                    <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
-                ],
-                renderBody: () => {
-                    return <div className="input-group mb-3">
+            modal: () => {
+                return <Modal id="rename_confirm" title="Rename playlist" immediate onDismiss={this.resetModalState}>
+                           <div className="input-group mb-3">
                                <div className="input-group-prepend">
                                    <span className="input-group-text" id="basic-addon1">Name</span>
                                </div>
                                <input type="text" onChange={onChange} defaultValue={title} className="form-control" placeholder="[enter new name]" aria-label="Name" aria-describedby="basic-addon1" />
-                           </div>;
-                },
-                onDismiss: () => this.setState({ modal: null })
+                           </div>
+                           <Modal.Footer>
+                               <Modal.Button key="rename" text="Rename" className="btn-primary" onClick={renameAsync} dismiss />
+                               <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                           </Modal.Footer>
+                       </Modal>;
             }
         });
     };
@@ -169,7 +158,7 @@ export default class PlaylistManager extends React.Component {
         this.setState({ selection: this.state.selection });
     };
 
-    isSelected = id => { return this.state.selection.selected(id); }
+    isSelected = id => { return this.state.selection.selected(id); };
 
     allSelected = () => { return this.state.selection.all(this.state.renderedKeys); };
 
@@ -183,7 +172,7 @@ export default class PlaylistManager extends React.Component {
         return <div>
                    <Toolbar className="position-sticky sticky-top px-3 py-2 bg-light">
                        <Toolbar.Group>
-                           <Toolbar.Button title="Add" glyph="plus" onClick={this.add} />
+                           <Toolbar.Button title="Add" glyph="plus" onClick={this.create} />
                            <Toolbar.Button title="Remove" glyph="trash" onClick={this.remove} disabled={noSelection} />
                            <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!this.state.selection.one()} />
                            <Toolbar.Button title="Copy" glyph="copy" onClick={this.copy} disabled={noSelection} />
