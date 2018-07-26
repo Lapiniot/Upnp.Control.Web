@@ -2,7 +2,7 @@ import React from "react";
 
 export function mergeClassNames(strings, ...values) {
     return [...strings, ...values].reduce((acc, current) => {
-            if (!!!current) return acc;
+            if (!current) return acc;
             if (acc === "") return current.trim();
             return acc + " " + current.trim();
         },

@@ -6,11 +6,10 @@ import { withNavigationContext } from "../../common/Navigator";
 import { DIDLUtils } from "../../common/Browser";
 import Modal from "../../../components/Modal";
 import { TextValueEditDialog, ConfirmationDialog } from "../../../components/Dialogs";
-import SelectionService from "../../../components/SelectionService";
 import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
 import LoadIndicator from "../../../components/LoadIndicator";
-import AlbumArtImage from "../../common/AlbumArtImage";
+import BrowserCore from "../../common/BrowserWithSelection";
 
 export default class PlaylistManager extends React.Component {
 
@@ -18,24 +17,18 @@ export default class PlaylistManager extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { data: null, renderedKeys: [], selection: null, modal: null };
+        this.state = { data: null, modal: null, selection: null };
     }
 
     static getDerivedStateFromProps(props, state) {
         if (state.data !== props.dataContext) {
-            const data = props.dataContext;
-            return {
-                data: data,
-                renderedKeys: data.source.result.filter(item => !PlaylistManager.isReadOnly(item)).map(i => i.id),
-                selection: new SelectionService(),
-                modal: null
-            };
+            return { data: props.dataContext, selection: null, modal: null };
         }
         return null;
     }
 
-    static isReadOnly(item) {
-        return item.vendor["mi:playlistType"] === "aux";
+    static isEditable(item) {
+        return item.vendor["mi:playlistType"] !== "aux";
     }
 
     resetModalState = () => {
@@ -109,70 +102,30 @@ export default class PlaylistManager extends React.Component {
 
     copy = () => { alert("copy"); };
 
-    onSelect = (event) => {
-        const checkbox = event.target;
-        this.state.selection.select(checkbox.name, checkbox.checked);
-        this.setState({ selection: this.state.selection });
-    };
-
-    onSelectAll = (event) => {
-        const checkbox = event.target;
-        this.state.selection.selectMany(this.state.renderedKeys, checkbox.checked);
-        this.setState({ selection: this.state.selection });
-    };
-
-    isSelected = id => { return this.state.selection.selected(id); };
-
-    allSelected = () => { return this.state.selection.all(this.state.renderedKeys); };
+    onSelectionChanged = (selection) => {
+        this.setState({ selection: selection });
+        return true;
+    }
 
     render() {
         const { navContext: { navigateHandler, page, pageSize, urls } } = this.props;
+        const { source: { total, result: { length:fetched } } } = this.state.data;
 
-        const { result: items, parents, total } = this.state.data.source;
+        const selection = this.state.selection;
 
-        const noSelection = !this.state.selection.any();
+        const noSelection = !selection || !selection.any();
 
         return <div>
                    <Toolbar className="position-sticky sticky-top px-3 py-2 bg-light">
                        <Toolbar.Group>
                            <Toolbar.Button title="Add" glyph="plus" onClick={this.create} />
                            <Toolbar.Button title="Remove" glyph="trash" onClick={this.remove} disabled={noSelection} />
-                           <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!this.state.selection.one()} />
+                           <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!selection || !selection.one()} />
                            <Toolbar.Button title="Copy" glyph="copy" onClick={this.copy} disabled={noSelection} />
                        </Toolbar.Group>
                    </Toolbar>
-                   <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
-                       <div>
-                           <div>
-                               <div className="x-table-cell-min">
-                                   <input type="checkbox" id="select_all" checked={this.allSelected()} onChange={this.onSelectAll} />
-                               </div>
-                               <div>Name</div>
-                               <div className="x-table-cell-min">Kind</div>
-                           </div>
-                       </div>
-                       <div>
-                           <div data-id={parents[0].parentId} onDoubleClick={navigateHandler}>
-                               <div>&nbsp;</div>
-                               <div>...</div>
-                               <div>Parent</div>
-                           </div>
-                           {[items.map((e, index) => {
-                               const selected = this.isSelected(e.id);
-                               return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
-                                          <div className="x-table-cell-min">
-                                              <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={PlaylistManager.isReadOnly(e)} />
-                                          </div>
-                                          <div>
-                                              <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
-                                              {e.title}
-                                          </div>
-                                          <div className="text-capitalize">{DIDLUtils.getKind(e.class)}</div>
-                                      </div>;
-                           })]}
-                       </div>
-                   </div>
-                   <Pagination count={items.length} total={total} baseUrl={urls.current} current={page} size={pageSize} />
+                   <BrowserCore dataContext={this.state.data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} onSelectionChanged={this.onSelectionChanged} />
+                   <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
                    {this.state && this.state.modal ? (typeof this.state.modal === "function" ? this.state.modal() : <Modal {...this.state.modal} />) : null}
                </div>;
     }
