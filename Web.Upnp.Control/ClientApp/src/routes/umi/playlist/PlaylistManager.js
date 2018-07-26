@@ -43,7 +43,7 @@ export default class PlaylistManager extends React.Component {
 
         const onChange = event => { title = event.target.value; };
 
-        const onClick = async () => {
+        const createAsync = async () => {
             try {
                 const response = $api.playlist(this.props.device).create(title).fetch();
                 const json = await response.json();
@@ -62,7 +62,7 @@ export default class PlaylistManager extends React.Component {
                 title: "Create new playlist",
                 immediate: true,
                 buttons: [
-                    <Modal.Button key="create" text="Create" className="btn-primary" onClick={onClick} dismiss />,
+                    <Modal.Button key="create" text="Create" className="btn-primary" onClick={createAsync} dismiss />,
                     <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
                 ],
                 renderBody: () => {
@@ -70,7 +70,7 @@ export default class PlaylistManager extends React.Component {
                                <div className="input-group-prepend">
                                    <span className="input-group-text" id="basic-addon1">Name</span>
                                </div>
-                               <input type="text" onChange={onChange} className="form-control" value={title} placeholder="New Playlist" aria-label="Name" aria-describedby="basic-addon1" />
+                               <input type="text" onChange={onChange} className="form-control" defaultValue={title} placeholder="[enter new name]" aria-label="Name" aria-describedby="basic-addon1" />
                            </div>;
                 },
                 onDismiss: () => this.setState({ modal: null })
@@ -116,13 +116,11 @@ export default class PlaylistManager extends React.Component {
 
     rename = () => {
         const id = this.state.selection.selection.next().value;
-        const value = this.state.data.source.result.find(e => e.id === id);
-
-        let title = "";
+        let title = this.state.data.source.result.find(e => e.id === id).title;
 
         const onChange = event => { title = event.target.value; };
 
-        const onClick = async () => {
+        const renameAsync = async () => {
             try {
                 const response = await $api.playlist(this.props.device).rename(id, title).fetch();
                 const json = await response.json();
@@ -141,7 +139,7 @@ export default class PlaylistManager extends React.Component {
                 title: "Rename playlist",
                 immediate: true,
                 buttons: [
-                    <Modal.Button key="rename" text="Rename" className="btn-primary" onClick={onClick} dismiss />,
+                    <Modal.Button key="rename" text="Rename" className="btn-primary" onClick={renameAsync} dismiss />,
                     <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
                 ],
                 renderBody: () => {
@@ -149,7 +147,7 @@ export default class PlaylistManager extends React.Component {
                                <div className="input-group-prepend">
                                    <span className="input-group-text" id="basic-addon1">Name</span>
                                </div>
-                               <input type="text" onChange={onChange} className="form-control" placeholder="New Playlist" aria-label="Name" aria-describedby="basic-addon1" />
+                               <input type="text" onChange={onChange} defaultValue={title} className="form-control" placeholder="[enter new name]" aria-label="Name" aria-describedby="basic-addon1" />
                            </div>;
                 },
                 onDismiss: () => this.setState({ modal: null })
@@ -223,7 +221,7 @@ export default class PlaylistManager extends React.Component {
                        </div>
                    </div>
                    <Pagination count={items.length} total={total} baseUrl={urls.current} current={page} size={pageSize} />
-                   {this.state && this.state.modal ? <Modal {...this.state.modal} /> : null}
+                   {this.state && this.state.modal ? (typeof this.state.modal === "function" ? this.state.modal() : <Modal {...this.state.modal} />) : null}
                </div>;
     }
 }
