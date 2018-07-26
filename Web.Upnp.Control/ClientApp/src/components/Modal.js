@@ -44,38 +44,61 @@ export default class Modal extends React.Component {
             area: { label: areaLabel, hidden: areaHidden = true } = {},
             ...other } = this.props;
 
-        return <React.Fragment>
-                   <div className={merge`modal fade ${className}`} id={id} tabIndex="-1" role="dialog" aria-labelledby={areaLabel} aria-hidden={areaHidden} {...other}>
-                       <div className="modal-dialog modal-dialog-centered" role="document">
-                           <div className="modal-content">
-                               <div className="modal-header">
-                                   {typeof renderHeader === "function"
-                                       ? renderHeader()
-                                       : <React.Fragment>
-                                             <h5 className="modal-title" id="exampleModalCenterTitle">{title}</h5>
-                                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                                 <span aria-hidden="true">&times;</span>
-                                             </button>
-                                         </React.Fragment>}
-                               </div>
-                               <div className="modal-body">
-                                   {typeof renderBody === "function" ? renderBody() : this.props.children}
-                               </div>
-                               <div className="modal-footer">
-                                   {typeof renderFooter === "function"
-                                       ? renderFooter()
-                                       : [this.props.buttons]}
-                               </div>
-                           </div>
+        let header, body, footer;
+        const rest = [];
+        React.Children.map(this.props.children,
+            c => {
+                if (c.type === Modal.Header) header = c;
+                else if (c.type === Modal.Body) body = c;
+                else if (c.type === Modal.Footer) footer = c;
+                else rest.push(c);
+            });
+
+        return <div className={merge`modal fade ${className}`} id={id} tabIndex="-1" role="dialog" aria-labelledby={areaLabel} aria-hidden={areaHidden} {...other}>
+                   <div className="modal-dialog modal-dialog-centered" role="document">
+                       <div className="modal-content">
+                           {!!header ? header : <Modal.Header>{title}</Modal.Header>}
+                           {!!body ? body : <Modal.Body>{typeof renderBody === "function" ? renderBody() : rest}</Modal.Body>}
+                           {!!footer ? footer : <Modal.Footer>{typeof renderFooter === "function" ? renderFooter() : [this.props.buttons]}</Modal.Footer>}
                        </div>
                    </div>
-               </React.Fragment>;
+               </div>;
     }
 
     static Button = class extends React.Component {
         render() {
-            const { dismiss, text, ...other } = this.props;
-            return <button type="button" className="btn" data-dismiss={dismiss ? "modal" : null} {...other}>{text}</button>;
+            const { dismiss, text, className, ...other } = this.props;
+            return <button type="button" className={merge`btn ${className}`} data-dismiss={dismiss ? "modal" : null} {...other}>{text}</button>;
+        }
+    };
+
+    static Header = class extends React.Component {
+        render() {
+            const { className, ...other } = this.props;
+            return <div className={merge`modal-header ${className}`} {...other}>
+                       <h5 className="modal-title">{this.props.children}</h5>
+                       <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true">&times;</span>
+                       </button>
+                   </div>;
+        }
+    };
+
+    static Body = class extends React.Component {
+        render() {
+            const { className, ...other } = this.props;
+            return <div className={merge`modal-body ${className}`} {...other}>
+                       {this.props.children}
+                   </div>;
+        }
+    };
+
+    static Footer = class extends React.Component {
+        render() {
+            const { className, ...other } = this.props;
+            return <div className={merge`modal-footer ${className}`} {...other}>
+                       {this.props.children}
+                   </div>;
         }
     };
 };
