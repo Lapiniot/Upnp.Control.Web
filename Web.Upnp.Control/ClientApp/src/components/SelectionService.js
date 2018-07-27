@@ -3,9 +3,13 @@ export default class {
         this.map = new Map();
     }
 
-    any = () => { return this.map.size > 0 }
+    any = () => {
+        return this.map.size > 0;
+    }
 
-    one = () => { return this.map.size === 1 }
+    one = () => {
+        return this.map.size === 1;
+    }
 
     select = (key, state = true) => {
         if (state)
@@ -14,13 +18,27 @@ export default class {
             this.map.delete(key);
     };
 
-    selectMany = (keys, state) => keys.forEach(k => { return this.select(k, state); });
+    selectMany = (keys, state = true) => {
+        const action = state ? key => this.map.set(key, true) : this.map.delete;
 
-    selected = key => { return this.map.has(key) && this.map.get(key); };
+        keys.forEach(action);
+    };
 
-    all = keys => keys.every(i => { return this.selected(i); });
+    selected = key => {
+        return this.map.has(key) && this.map.get(key);
+    };
 
-    get selection() { return this.map.keys(); }
+    all = keys => {
+        return keys.every(keys => {
+            return this.selected(keys);
+        });
+    }
 
-    clear = () => { return this.map.clear(); };
+    get selection() {
+        return this.map.keys();
+    }
+
+    clear = () => {
+        this.map.clear();
+    };
 }
