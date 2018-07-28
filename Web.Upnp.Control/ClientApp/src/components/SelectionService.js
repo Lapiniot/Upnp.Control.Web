@@ -19,7 +19,9 @@ export default class {
     };
 
     selectMany = (keys, state = true) => {
-        const action = state ? key => this.map.set(key, true) : this.map.delete;
+        const action = state ?
+            key => this.map.set(key, true) :
+            key => this.map.delete(key);
 
         keys.forEach(action);
     };
