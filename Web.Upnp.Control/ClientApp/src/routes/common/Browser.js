@@ -1,14 +1,10 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
-import $api from "../../components/WebApi";
-import { withDataFetch } from "../../components/Extensions";
-import { withNavigationContext } from "./Navigator";
-import LoadIndicator from "../../components/LoadIndicator";
 import Breadcrumb from "./Breadcrumb";
 import Pagination from "./Pagination";
 import AlbumArtImage from "./AlbumArtImage";
+import { DIDLUtils } from "./BrowserCore";
 
-class Browser extends React.Component {
+export class BrowserView extends React.Component {
     render() {
         const { dataContext: { source: data } = {}, navContext: { navigateHandler, page, pageSize, urls } } = this.props;
         return <div>
@@ -38,26 +34,5 @@ class Browser extends React.Component {
                    </div>
                    <Pagination count={data.result.length} total={data.total} baseUrl={urls.current} current={page} size={pageSize} />
                </div>;
-    }
-}
-
-export const RoutedBrowser = withRouter(
-    withNavigationContext(
-        withDataFetch(Browser,
-            { template: LoadIndicator },
-            ({ device, id, navContext: { pageSize, page } }) => {
-                return $api.browse(device).get(id).withParents().take(pageSize).skip((page - 1) * pageSize).url();
-            })));
-
-export function renderWithDeviceProps(Component, props) {
-    return function({ match: { params: { device, id = "" } } }) {
-        return <Component device={device} id={id} {...props} />;
-    };
-}
-
-export class DIDLUtils {
-    static getKind(upnpClassName) {
-        const index = upnpClassName.lastIndexOf(".");
-        return index > 0 ? upnpClassName.substring(index + 1) : upnpClassName;
     }
 }

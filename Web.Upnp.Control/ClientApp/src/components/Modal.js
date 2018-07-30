@@ -51,8 +51,8 @@ export default class Modal extends React.Component {
                 else children.push(c);
             });
 
-        return <div className={merge`modal fade ${className}`} id={id} tabIndex="-1" role="dialog" aria-labelledby={area.label} aria-hidden="true" {...other}>
-                   <div className="modal-dialog modal-dialog-centered" role="document">
+        return <div className="modal fade" id={id} tabIndex="-1" role="dialog" aria-labelledby={area.label} aria-hidden="true" {...other}>
+                   <div className={merge`modal-dialog modal-dialog-centered ${className}`} role="document">
                        <div className="modal-content">
                            {!!header ? header : <Modal.Header>{title}</Modal.Header>}
                            {!!body ? body : <Modal.Body>{children}</Modal.Body>}
