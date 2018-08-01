@@ -2,6 +2,7 @@ import React from "react";
 import { MemoryRouter, Switch, Route } from "react-router-dom";
 import Modal from "../../components/Modal";
 import LoadIndicator from "../../components/LoadIndicator";
+import Pagination from "./Pagination";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
 import { withProps, withDataFetch } from "../../components/Extensions";
@@ -54,17 +55,20 @@ class MediaSourceList extends React.Component {
     }
 }
 
-function isMusicTrack(i){
+function isMusicTrack(i) {
     return i.class.endsWith(".musicTrack");
 }
 
 class BrowserView extends React.Component {
     render() {
+        const { navContext: { page, pageSize, urls } } = this.props;
+        const { source: { total, result: { length: fetched } } } = this.props.dataContext;
         return <div>
             <BrowserCoreSelectable dataContext={this.props.dataContext} filter={isMusicTrack}
                 device={this.props.device} id={this.props.id}
                 navigateHandler={this.props.navContext.navigateHandler}
                 onSelectionChanged={this.props.onSelectionChanged} />
+            <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
         </div>;
     }
 }
