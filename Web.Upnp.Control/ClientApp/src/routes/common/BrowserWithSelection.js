@@ -43,7 +43,7 @@ export default class extends React.Component {
     onSelectionChanged = () => {
         const handler = this.props.onSelectionChanged;
 
-        if (!handler || handler(this.state.selection, this.state.selectableKeys) !== true) {
+        if (!handler || handler(this.state.selection, this.props.device, this.props.id) !== true) {
             // Perform default handling, if handler is not defined or returns any value other than "true" 
             // (means selection event is handled by external component itself)
             this.setState({ selection: this.state.selection });
