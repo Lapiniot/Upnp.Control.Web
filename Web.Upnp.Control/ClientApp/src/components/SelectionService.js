@@ -31,7 +31,7 @@ export default class {
     };
 
     all = keys => {
-        return keys.every(keys => {
+        return keys.length > 0 && keys.every(keys => {
             return this.selected(keys);
         });
     }
