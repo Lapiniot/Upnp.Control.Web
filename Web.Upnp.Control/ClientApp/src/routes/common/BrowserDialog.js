@@ -13,15 +13,22 @@ import $api from "../../components/WebApi";
 export default class BrowserDialog extends React.Component {
     displayName = BrowserDialog.name;
 
+    selection = null;
+
+    onSelectionChanged = (selection, device, id) => {
+        this.selection = { device: device, id: id, selection: Array.from(selection.keys) };
+    }
+
     render() {
-        const { onSelectionChanged, ...other } = this.props;
-        return <ConfirmationDialog {...other}>
+        const { onConfirm, ...other } = this.props;
+        const onConfirmWrapper = () => { if (onConfirm) onConfirm(this.selection) };
+        return <ConfirmationDialog {...other} onConfirm={onConfirmWrapper}>
             <Modal.Body className="p-0">
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
                         <Route path="/sources" exact component={MediaSourcePicker} />
                         <Route path="/sources/browse/:device/:id(.*)?" render={renderWithDeviceProps(Browser,
-                            { baseUrl: "/sources/browse", onSelectionChanged: onSelectionChanged })} />
+                            { baseUrl: "/sources/browse", onSelectionChanged: this.onSelectionChanged })} />
                     </Switch>
                 </MemoryRouter>
             </Modal.Body>
@@ -46,7 +53,7 @@ class MediaSourceList extends React.Component {
 class BrowserView extends React.Component {
     render() {
         return <div>
-            <BrowserCoreSelectable dataContext={this.props.dataContext}
+            <BrowserCoreSelectable dataContext={this.props.dataContext} device={this.props.device} id={this.props.id}
                 navigateHandler={this.props.navContext.navigateHandler}
                 onSelectionChanged={this.props.onSelectionChanged} />
         </div>;

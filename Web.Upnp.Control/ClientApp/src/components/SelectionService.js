@@ -36,7 +36,7 @@ export default class {
         });
     }
 
-    get selection() {
+    get keys() {
         return this.map.keys();
     }
 

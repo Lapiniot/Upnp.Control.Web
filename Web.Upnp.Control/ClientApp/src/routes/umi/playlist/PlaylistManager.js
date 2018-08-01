@@ -36,9 +36,9 @@ export default class PlaylistManager extends React.Component {
     }
 
     wrap = (requestInvoker) => {
-        return async () => {
+        return async (...args) => {
             try {
-                const response = await requestInvoker();
+                const response = await requestInvoker(...args);
                 const json = await response.json();
                 console.info(json);
             } catch (e) {
@@ -68,7 +68,7 @@ export default class PlaylistManager extends React.Component {
 
     remove = () => {
 
-        const ids = [...this.state.selection.selection];
+        const ids = [...this.state.selection.keys];
         const values = this.state.data.source.result.filter(e => ids.includes(e.id));
         const removeAction = this.wrap(() => $api.playlist(this.props.device).delete(ids).fetch());
 
@@ -85,7 +85,7 @@ export default class PlaylistManager extends React.Component {
     };
 
     rename = () => {
-        const id = this.state.selection.selection.next().value;
+        const id = this.state.selection.keys.next().value;
         let title = this.state.data.source.result.find(e => e.id === id).title;
 
         const onChanged = event => { title = event.target.value; };
@@ -101,11 +101,17 @@ export default class PlaylistManager extends React.Component {
     };
 
     add = () => {
-        const onSelectionChanged = (selection) => { console.log(selection) };
+        const addAction = this.wrap(
+            args => $api
+                .playlist(this.props.device)
+                .add(this.props.id, args.device, args.selection)
+                .fetch());
+
         this.setState({
             modal: () => {
-                return <BrowserDialog id="browse_dialog" title="Select items to add" confirmText="Add" className="modal-lg" immediate
-                    onDismiss={this.resetModalState} onSelectionChanged={onSelectionChanged} />
+                return <BrowserDialog id="browse_dialog" title="Select items to add"
+                    confirmText="Add" className="modal-lg" immediate
+                    onConfirm={addAction} onDismiss={this.resetModalState} />
             }
         });
     };
