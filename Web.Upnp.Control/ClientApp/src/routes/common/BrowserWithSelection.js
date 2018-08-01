@@ -57,7 +57,8 @@ export default class extends React.Component {
             <div>
                 <div>
                     <div className="x-table-cell-min">
-                        <input type="checkbox" id="select_all" checked={this.allSelected()} onChange={this.onSelectAll} />
+                        <input type="checkbox" id="select_all" onChange={this.onSelectAll}
+                            checked={this.allSelected()} disabled={this.state.selectableKeys.length === 0} />
                     </div>
                     <div>Name</div>
                     <div className="x-table-cell-min">Kind</div>
