@@ -162,3 +162,13 @@ $table-striped-order: even;
         }
     }
 }
+
+@mixin modal-body-vh($percent) {
+    .modal-body-vh-#{$percent}{
+        height: #{$percent}vh;
+        overflow-y: auto;
+    }    
+}
+
+@include modal-body-vh(50);
+@include modal-body-vh(60);
