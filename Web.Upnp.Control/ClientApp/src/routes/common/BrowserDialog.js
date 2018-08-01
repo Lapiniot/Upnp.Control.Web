@@ -23,7 +23,7 @@ export default class BrowserDialog extends React.Component {
         const { id, title, confirmText = "OK", onConfirm, ...other } = this.props;
         const onConfirmWrapper = () => { if (onConfirm) onConfirm(this.selection) };
 
-        return <Modal id={id} title={title} onConfirm={onConfirmWrapper} {...other}>
+        return <Modal id={id} title={title} {...other}>
             <Modal.Body className="p-0 modal-body-vh-60">
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
@@ -35,7 +35,7 @@ export default class BrowserDialog extends React.Component {
                 </MemoryRouter>
             </Modal.Body>
             <Modal.Footer>
-                <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={onConfirm} dismiss />
+                <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={onConfirmWrapper} dismiss />
                 <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
             </Modal.Footer>
         </Modal>;
