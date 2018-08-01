@@ -1,7 +1,6 @@
 import React from "react";
 import { MemoryRouter, Switch, Route } from "react-router-dom";
 import Modal from "../../components/Modal";
-import { ConfirmationDialog } from "../../components/Dialogs";
 import LoadIndicator from "../../components/LoadIndicator";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
@@ -20,9 +19,10 @@ export default class BrowserDialog extends React.Component {
     }
 
     render() {
-        const { onConfirm, ...other } = this.props;
+        const { id, title, confirmText = "OK", onConfirm, ...other } = this.props;
         const onConfirmWrapper = () => { if (onConfirm) onConfirm(this.selection) };
-        return <ConfirmationDialog {...other} onConfirm={onConfirmWrapper}>
+
+        return <Modal id={id} title={title} onConfirm={onConfirmWrapper} {...other}>
             <Modal.Body className="p-0">
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
@@ -32,7 +32,11 @@ export default class BrowserDialog extends React.Component {
                     </Switch>
                 </MemoryRouter>
             </Modal.Body>
-        </ConfirmationDialog>;
+            <Modal.Footer>
+                <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={onConfirm} dismiss />
+                <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+            </Modal.Footer>
+        </Modal>;
     }
 }
 
@@ -50,10 +54,15 @@ class MediaSourceList extends React.Component {
     }
 }
 
+function isMusicTrack(i){
+    return i.class.endsWith(".musicTrack");
+}
+
 class BrowserView extends React.Component {
     render() {
         return <div>
-            <BrowserCoreSelectable dataContext={this.props.dataContext} device={this.props.device} id={this.props.id}
+            <BrowserCoreSelectable dataContext={this.props.dataContext} filter={isMusicTrack}
+                device={this.props.device} id={this.props.id}
                 navigateHandler={this.props.navContext.navigateHandler}
                 onSelectionChanged={this.props.onSelectionChanged} />
         </div>;
