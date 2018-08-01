@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
@@ -66,11 +68,62 @@ namespace Web.Upnp.Control.Controllers
             }
         }
 
+        [HttpPut("{id}/add")]
+        public async Task<object> AddAsync(string deviceId, string id, [FromBody] MediaSourceData media)
+        {
+            var playlistService = await factory.GetServiceAsync<PlaylistService>(deviceId);
+            var sourceContentDirectoryService = await factory.GetServiceAsync<ContentDirectoryService>(media.DeviceId);
+            var contentDirectoryService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId);
+
+            using(playlistService.Target)
+            using(sourceContentDirectoryService.Target)
+            using(contentDirectoryService.Target)
+            {
+                XDocument xdoc = null;
+
+                foreach(var item in media.Items)
+                {
+                    var data = await sourceContentDirectoryService.BrowseAsync(item, flags: "BrowseMetadata").ConfigureAwait(false);
+
+                    string xml = data["Result"];
+
+                    if(xdoc == null)
+                    {
+                        xdoc = XDocument.Parse(xml);
+                    }
+                    else
+                    {
+                        var x = XDocument.Parse(xml);
+                        xdoc.Root.Add(x.Root.Elements());
+                    }
+                }
+
+                string updateId = await GetUpdateIdAsync(contentDirectoryService, id).ConfigureAwait(false);
+
+                return await playlistService.AddUriAsync(objectId: id, updateId: updateId,
+                    enqueuedUriMetaData: xdoc.ToString()).ConfigureAwait(false);
+            }
+        }
+
+        private async Task<string> GetUpdateIdAsync(ContentDirectoryService cdtService, string id)
+        {
+            var result = await cdtService.BrowseAsync(id, flags: "BrowseMetadata", filter: "id").ConfigureAwait(false);
+
+            return result["UpdateID"];
+        }
+
         public class Playlist
         {
             public string Title { get; set; }
 
             public string Id { get; set; }
+        }
+
+        public class MediaSourceData
+        {
+            public string DeviceId { get; set; }
+
+            public string[] Items { get; set; }
         }
     }
 }
