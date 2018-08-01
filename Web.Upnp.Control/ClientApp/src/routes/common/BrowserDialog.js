@@ -1,5 +1,5 @@
 import React from "react";
-import { MemoryRouter, Switch, Route } from "react-router-dom";
+import { MemoryRouter, Switch, Route, Redirect } from "react-router-dom";
 import Modal from "../../components/Modal";
 import LoadIndicator from "../../components/LoadIndicator";
 import Pagination from "./Pagination";
@@ -28,6 +28,7 @@ export default class BrowserDialog extends React.Component {
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
                         <Route path="/sources" exact component={MediaSourcePicker} />
+                        <Route path="/sources/browse" exact render={()=><Redirect to="/sources" />} />
                         <Route path="/sources/browse/:device/:id(.*)?" render={renderWithDeviceProps(Browser,
                             { baseUrl: "/sources/browse", onSelectionChanged: this.onSelectionChanged })} />
                     </Switch>
