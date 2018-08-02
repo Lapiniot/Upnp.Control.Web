@@ -4,11 +4,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using IoT.Device.Xiaomi.Umi.Services;
-using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
+using static IoT.Protocol.Upnp.UpnpServices;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,15 +17,18 @@ namespace Web.Upnp.Control.Controllers
     [Route("api/[controller]/{filter?}")]
     public class DiscoveryController : Controller
     {
-        private static IDictionary<string, Expression<Func<Device, bool>>> filters = new Dictionary<string, Expression<Func<Device, bool>>>()
+        private static readonly IDictionary<string, Expression<Func<Device, bool>>> filters = new Dictionary<string, Expression<Func<Device, bool>>>
         {
             {"umi", d => d.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema)},
             {"upnp", d => true},
-            {"media_servers", d => d.DeviceType == UpnpServices.MediaServer ||
-                d.Services.Any(s => s.ServiceType == UpnpServices.ContentDirectory ||
-                    s.ServiceType == PlaylistService.ServiceSchema)},
-            {"media_renderers",d => d.DeviceType == UpnpServices.MediaRenderer ||
-                    d.Services.Any(s => s.ServiceType == UpnpServices.MediaRenderer)}
+            {
+                "media_servers", d => d.DeviceType == MediaServer ||
+                                      d.Services.Any(s => s.ServiceType == ContentDirectory || s.ServiceType == PlaylistService.ServiceSchema)
+            },
+            {
+                "media_renderers", d => d.DeviceType == MediaRenderer ||
+                                        d.Services.Any(s => s.ServiceType == MediaRenderer)
+            }
         };
 
         private readonly UpnpDbContext context;
@@ -38,8 +41,9 @@ namespace Web.Upnp.Control.Controllers
         [HttpGet]
         public Task<Device[]> GetAsync(string filter = "upnp")
         {
-            return filters.TryGetValue(filter, out var filterExpression) ? QueryAsync(filterExpression) :
-                throw new ArgumentException("Unknown device category filter '" + filter + "'");
+            return filters.TryGetValue(filter, out var filterExpression)
+                ? QueryAsync(filterExpression)
+                : throw new ArgumentException("Unknown device category filter '" + filter + "'");
         }
 
         private Task<Device[]> QueryAsync(Expression<Func<Device, bool>> filter)

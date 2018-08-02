@@ -7,8 +7,8 @@ class LinkTemplate extends React.Component {
     render() {
         const { type: Tag, className, active, disabled, glyph, title, children, ...other } = this.props;
         return <Tag className={mc`${className} ${active && "active"} ${disabled && "disabled"}`} {...other}>
-            {glyph && <Icon glyph={glyph} className="x-fa-w-2" />}{title}{children}
-        </Tag>;
+                   {glyph && <Icon glyph={glyph} className="x-fa-w-2" />}{title}{children}
+               </Tag>;
     }
 }
 
@@ -26,5 +26,7 @@ export class RouteLink extends React.Component {
 
     displayName = RouteLink.name;
 
-    render() { return <LinkTemplate type={RNavLink} {...this.props} />; }
+    render() {
+        return <LinkTemplate type={RNavLink} {...this.props} />;
+    }
 }

@@ -1,4 +1,4 @@
-using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -85,7 +85,7 @@ namespace Web.Upnp.Control.Controllers
                 {
                     var data = await sourceContentDirectoryService.BrowseAsync(item, flags: "BrowseMetadata").ConfigureAwait(false);
 
-                    string xml = data["Result"];
+                    var xml = data["Result"];
 
                     if(xdoc == null)
                     {
@@ -94,11 +94,15 @@ namespace Web.Upnp.Control.Controllers
                     else
                     {
                         var x = XDocument.Parse(xml);
+                        Debug.Assert(xdoc.Root != null, "xdoc.Root != null");
+                        Debug.Assert(x.Root != null, "x.Root != null");
                         xdoc.Root.Add(x.Root.Elements());
                     }
                 }
 
-                string updateId = await GetUpdateIdAsync(contentDirectoryService, id).ConfigureAwait(false);
+                var updateId = await GetUpdateIdAsync(contentDirectoryService, id).ConfigureAwait(false);
+
+                Debug.Assert(xdoc != null, nameof(xdoc) + " != null");
 
                 return await playlistService.AddUriAsync(objectId: id, updateId: updateId,
                     enqueuedUriMetaData: xdoc.ToString()).ConfigureAwait(false);

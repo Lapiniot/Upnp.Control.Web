@@ -19,9 +19,7 @@ export default class {
     };
 
     selectMany = (keys, state = true) => {
-        const action = state ?
-            key => this.map.set(key, true) :
-            key => this.map.delete(key);
+        const action = state ? key => this.map.set(key, true) : key => this.map.delete(key);
 
         keys.forEach(action);
     };
@@ -31,9 +29,10 @@ export default class {
     };
 
     all = keys => {
-        return keys.length > 0 && keys.every(keys => {
-            return this.selected(keys);
-        });
+        return keys.length > 0 &&
+            keys.every(keys => {
+                return this.selected(keys);
+            });
     }
 
     get keys() {

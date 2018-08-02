@@ -24,21 +24,21 @@ export default class BrowserDialog extends React.Component {
         const onConfirmWrapper = () => { if (onConfirm) onConfirm(this.selection) };
 
         return <Modal id={id} title={title} {...other}>
-            <Modal.Body className="p-0 modal-body-vh-60">
-                <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
-                    <Switch>
-                        <Route path="/sources" exact component={MediaSourcePicker} />
-                        <Route path="/sources/browse" exact render={()=><Redirect to="/sources" />} />
-                        <Route path="/sources/browse/:device/:id(.*)?" render={renderWithDeviceProps(Browser,
-                            { baseUrl: "/sources/browse", onSelectionChanged: this.onSelectionChanged })} />
-                    </Switch>
-                </MemoryRouter>
-            </Modal.Body>
-            <Modal.Footer>
-                <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={onConfirmWrapper} dismiss />
-                <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
-            </Modal.Footer>
-        </Modal>;
+                   <Modal.Body className="p-0 modal-body-vh-60">
+                       <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
+                           <Switch>
+                               <Route path="/sources" exact component={MediaSourcePicker} />
+                               <Route path="/sources/browse" exact render={() => <Redirect to="/sources" />} />
+                               <Route path="/sources/browse/:device/:id(.*)?" render={renderWithDeviceProps(Browser,
+                                   { baseUrl: "/sources/browse", onSelectionChanged: this.onSelectionChanged })} />
+                           </Switch>
+                       </MemoryRouter>
+                   </Modal.Body>
+                   <Modal.Footer>
+                       <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={onConfirmWrapper} dismiss />
+                       <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                   </Modal.Footer>
+               </Modal>;
     }
 }
 
@@ -46,13 +46,13 @@ class MediaSourceList extends React.Component {
     render() {
         const { dataContext: { source: data } } = this.props;
         return <ul className="list-group list-group-flush">
-            {[data.map((d, i) => {
-                return <RouteLink key={i} to={`/sources/browse/${d.udn}`} className="list-group-item list-group-item-action">
-                    <DeviceIcon icon={d.icons.find(i => i.w <= 48)} alt={d.name} service={d.type} />
-                    {d.name}{d.description && ` (${d.description})`}
-                </RouteLink>
-            })]}
-        </ul>;
+                   {[data.map((d, i) => {
+                       return <RouteLink key={i} to={`/sources/browse/${d.udn}`} className="list-group-item list-group-item-action">
+                                  <DeviceIcon icon={d.icons.find(i => i.w <= 48)} alt={d.name} service={d.type} />
+                                  {d.name}{d.description && ` (${d.description})`}
+                              </RouteLink>;
+                   })]}
+               </ul>;
     }
 }
 
@@ -65,12 +65,12 @@ class BrowserView extends React.Component {
         const { navContext: { page, pageSize, urls } } = this.props;
         const { source: { total, result: { length: fetched } } } = this.props.dataContext;
         return <div>
-            <BrowserCoreSelectable dataContext={this.props.dataContext} filter={isMusicTrack}
-                device={this.props.device} id={this.props.id}
-                navigateHandler={this.props.navContext.navigateHandler}
-                onSelectionChanged={this.props.onSelectionChanged} />
-            <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
-        </div>;
+                   <BrowserCoreSelectable dataContext={this.props.dataContext} filter={isMusicTrack}
+                                          device={this.props.device} id={this.props.id}
+                                          navigateHandler={this.props.navContext.navigateHandler}
+                                          onSelectionChanged={this.props.onSelectionChanged} />
+                   <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
+               </div>;
     }
 }
 

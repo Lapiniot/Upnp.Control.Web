@@ -54,37 +54,37 @@ export default class extends React.Component {
         const { navigateHandler } = this.props;
         const { result: items, parents } = this.state.data.source;
         return <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
-            <div>
-                <div>
-                    <div className="x-table-cell-min">
-                        <input type="checkbox" id="select_all" onChange={this.onSelectAll}
-                            checked={this.allSelected()} disabled={this.state.selectableKeys.length === 0} />
-                    </div>
-                    <div>Name</div>
-                    <div className="x-table-cell-min">Kind</div>
-                </div>
-            </div>
-            <div>
-                <div data-id={parents[0].parentId} onDoubleClick={navigateHandler}>
-                    <div>&nbsp;</div>
-                    <div>...</div>
-                    <div>Parent</div>
-                </div>
-                {[items.map((e, index) => {
-                    const selected = this.isSelected(e.id);
-                    return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
-                        <div className="x-table-cell-min">
-                            <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={!this.state.filter(e)} />
-                        </div>
-                        <div>
-                            <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
-                            {e.title}
-                        </div>
-                        <div className="text-capitalize">{DIDLUtils.getKind(e.class)}</div>
-                    </div>;
-                })]}
-            </div>
-        </div>;
+                   <div>
+                       <div>
+                           <div className="x-table-cell-min">
+                               <input type="checkbox" id="select_all" onChange={this.onSelectAll}
+                                      checked={this.allSelected()} disabled={this.state.selectableKeys.length === 0} />
+                           </div>
+                           <div>Name</div>
+                           <div className="x-table-cell-min">Kind</div>
+                       </div>
+                   </div>
+                   <div>
+                       <div data-id={parents[0].parentId} onDoubleClick={navigateHandler}>
+                           <div>&nbsp;</div>
+                           <div>...</div>
+                           <div>Parent</div>
+                       </div>
+                       {[items.map((e, index) => {
+                           const selected = this.isSelected(e.id);
+                           return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
+                                      <div className="x-table-cell-min">
+                                          <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={!this.state.filter(e)} />
+                                      </div>
+                                      <div>
+                                          <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
+                                          {e.title}
+                                      </div>
+                                      <div className="text-capitalize">{DIDLUtils.getKind(e.class)}</div>
+                                  </div>;
+                       })]}
+                   </div>
+               </div>;
 
     }
 }

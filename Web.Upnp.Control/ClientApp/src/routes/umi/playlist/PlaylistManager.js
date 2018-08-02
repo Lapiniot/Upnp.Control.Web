@@ -60,8 +60,8 @@ export default class PlaylistManager extends React.Component {
         this.setState({
             modal: () => {
                 return <TextValueEditDialog id="create_confirm" title="Create new playlist" label="Name" confirmText="Create"
-                    defaultValue={title} onValueChanged={onChanged} onConfirm={createAction}
-                    immediate onDismiss={this.resetModalState} />;
+                                            defaultValue={title} onValueChanged={onChanged} onConfirm={createAction}
+                                            immediate onDismiss={this.resetModalState} />;
             }
         });
     };
@@ -75,11 +75,11 @@ export default class PlaylistManager extends React.Component {
         this.setState({
             modal: () => {
                 return <ConfirmationDialog id="remove_confirm" title="Do you want to delete?" confirmText="Delete" immediate
-                    onConfirm={removeAction} onDismiss={this.resetModalState}>
-                    <ul className="list-unstyled">
-                        {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
-                    </ul>
-                </ConfirmationDialog>;
+                                           onConfirm={removeAction} onDismiss={this.resetModalState}>
+                           <ul className="list-unstyled">
+                               {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
+                           </ul>
+                       </ConfirmationDialog>;
             }
         });
     };
@@ -94,8 +94,8 @@ export default class PlaylistManager extends React.Component {
         this.setState({
             modal: () => {
                 return <TextValueEditDialog id="rename_confirm" title="Rename playlist" label="Name" confirmText="Rename"
-                    defaultValue={title} onValueChanged={onChanged} onConfirm={renameAction}
-                    immediate onDismiss={this.resetModalState} />;
+                                            defaultValue={title} onValueChanged={onChanged} onConfirm={renameAction}
+                                            immediate onDismiss={this.resetModalState} />;
             }
         });
     };
@@ -103,15 +103,15 @@ export default class PlaylistManager extends React.Component {
     add = () => {
         const addAction = this.wrap(
             args => $api
-                .playlist(this.props.device)
-                .add(this.props.id, args.device, args.selection)
-                .fetch());
+            .playlist(this.props.device)
+            .add(this.props.id, args.device, args.selection)
+            .fetch());
 
         this.setState({
             modal: () => {
                 return <BrowserDialog id="browse_dialog" title="Select items to add"
-                    confirmText="Add" className="modal-lg" immediate
-                    onConfirm={addAction} onDismiss={this.resetModalState} />
+                                      confirmText="Add" className="modal-lg" immediate
+                                      onConfirm={addAction} onDismiss={this.resetModalState} />;
             }
         });
     };
@@ -132,23 +132,23 @@ export default class PlaylistManager extends React.Component {
         const noSelection = !selection || !selection.any();
 
         return <div>
-            <Toolbar className="position-sticky sticky-top px-3 py-2 bg-light">
-                {id === "PL:"
-                    ? <Toolbar.Group>
-                        <Toolbar.Button title="Create" glyph="plus" onClick={this.create} />
-                        <Toolbar.Button title="Delete" glyph="trash" onClick={this.remove} disabled={noSelection} />
-                        <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!selection || !selection.one()} />
-                        <Toolbar.Button title="Copy" glyph="copy" onClick={this.copy} disabled={noSelection} />
-                    </Toolbar.Group>
-                    : <Toolbar.Group>
-                        <Toolbar.Button title="Add items" glyph="plus" onClick={this.add} />
-                        <Toolbar.Button title="Remove items" glyph="trash" disabled={noSelection} />
-                    </Toolbar.Group>}
-            </Toolbar>
-            <BrowserCore dataContext={this.state.data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} onSelectionChanged={this.onSelectionChanged} />
-            <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
-            {this.state && this.state.modal ? (typeof this.state.modal === "function" ? this.state.modal() : <Modal {...this.state.modal} />) : null}
-        </div>;
+                   <Toolbar className="position-sticky sticky-top px-3 py-2 bg-light">
+                       {id === "PL:"
+                           ? <Toolbar.Group>
+                                 <Toolbar.Button title="Create" glyph="plus" onClick={this.create} />
+                                 <Toolbar.Button title="Delete" glyph="trash" onClick={this.remove} disabled={noSelection} />
+                                 <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!selection || !selection.one()} />
+                                 <Toolbar.Button title="Copy" glyph="copy" onClick={this.copy} disabled={noSelection} />
+                             </Toolbar.Group>
+                           : <Toolbar.Group>
+                                 <Toolbar.Button title="Add items" glyph="plus" onClick={this.add} />
+                                 <Toolbar.Button title="Remove items" glyph="trash" disabled={noSelection} />
+                             </Toolbar.Group>}
+                   </Toolbar>
+                   <BrowserCore dataContext={this.state.data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} onSelectionChanged={this.onSelectionChanged} />
+                   <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
+                   {this.state && this.state.modal ? (typeof this.state.modal === "function" ? this.state.modal() : <Modal {...this.state.modal} />) : null}
+               </div>;
     }
 }
 
@@ -157,4 +157,4 @@ export const RoutedPlaylistManager = withRouter(
         withDataFetch(PlaylistManager,
             { template: LoadIndicator },
             ({ device, id, navContext: { pageSize, page } }) =>
-                $api.browse(device).get(id).withParents().take(pageSize).skip((page - 1) * pageSize).url())));
+            $api.browse(device).get(id).withParents().take(pageSize).skip((page - 1) * pageSize).url())));

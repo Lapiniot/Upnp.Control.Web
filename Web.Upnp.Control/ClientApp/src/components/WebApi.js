@@ -1,7 +1,7 @@
 ﻿import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch } from "./Http/HttpFetch";
 
 export default class {
-    static discover = function (category) {
+    static discover = function(category) {
         return new HttpFetch(`/api/discovery/${category}`);
     }
 
@@ -34,7 +34,8 @@ export default class {
                 return new JsonFetch(`/api/playlist/${deviceId}/${id}`, null, { method: "COPY" });
             },
             add: (id, sourceDevice, sourceIds) => {
-                return new JsonPutFetch(`/api/playlist/${deviceId}/${id}/add`, null,
+                return new JsonPutFetch(`/api/playlist/${deviceId}/${id}/add`,
+                    null,
                     { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds }) });
             }
         };

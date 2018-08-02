@@ -6,7 +6,7 @@ import LoadIndicator from "../../components/LoadIndicator";
 import $api from "../../components/WebApi";
 
 export function renderWithDeviceProps(Component, props = {}) {
-    return function ({ match: { params: { device, id = "" } } }) {
+    return function({ match: { params: { device, id = "" } } }) {
         return <Component device={device} id={id} {...props} />;
     };
 }
