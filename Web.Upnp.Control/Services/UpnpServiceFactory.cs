@@ -2,12 +2,14 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.Services;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
+using Web.Upnp.Control.Services.HttpClients;
 
 namespace Web.Upnp.Control.Services
 {
@@ -24,11 +26,14 @@ namespace Web.Upnp.Control.Services
             {"urn:schemas-upnp-org:service:RenderingControl:1", "{0}-MR/upnp.org-RenderingControl-1/control"}
         };
 
+        private readonly IHttpClientFactory clientFactory;
+
         private readonly UpnpDbContext context;
 
-        public UpnpServiceFactory(UpnpDbContext context)
+        public UpnpServiceFactory(UpnpDbContext context, IHttpClientFactory clientFactory)
         {
             this.context = context;
+            this.clientFactory = clientFactory;
         }
 
         public async Task<TService> GetServiceAsync<TService>(string deviceId, string schema = null) where TService : SoapActionInvoker
@@ -57,9 +62,13 @@ namespace Web.Upnp.Control.Services
                     : null;
         }
 
-        private static T GetService<T>(Uri controlUrl)
+        private T GetService<T>(Uri controlUrl)
         {
-            var endpoint = new SoapControlEndpoint(controlUrl);
+            var httpClient = clientFactory.CreateClient(nameof(HttpSoapClient));
+
+            httpClient.BaseAddress = controlUrl;
+
+            var endpoint = new SoapControlEndpoint(httpClient);
 
             endpoint.Connect();
 

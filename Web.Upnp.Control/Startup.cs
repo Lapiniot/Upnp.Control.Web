@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Services;
+using Web.Upnp.Control.Services.HttpClients;
 using static System.Net.DecompressionMethods;
 
 namespace Web.Upnp.Control
@@ -38,17 +40,34 @@ namespace Web.Upnp.Control
                 })
                 .AddMvcOptions(options => { options.OutputFormatters.Insert(options.OutputFormatters.Count - 1, new HttpResponseMessageFormatter()); });
 
-            services.AddHttpClient<HttpClient>("ImageLoader", c =>
+            ConfigureHttpClients(services);
+        }
+
+        private static void ConfigureHttpClients(IServiceCollection services)
+        {
+            services.AddHttpClient<HttpClient>(nameof(ImageLoaderProxyClient),
+                    c => c.DefaultRequestHeaders.ConnectionClose = false)
+                .SetHandlerLifetime(TimeSpan.FromMinutes(10))
+                .AddTypedClient<ImageLoaderProxyClient>()
+                .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
                 {
-                    c.DefaultRequestHeaders.ConnectionClose = false;
-                    c.DefaultRequestHeaders.Add("Accept-Encoding", new[] {"gzip", "deflate"});
-                })
-                .ConfigurePrimaryHttpMessageHandler(() =>
-                    new SocketsHttpHandler
-                    {
-                        AutomaticDecompression = None,
-                        MaxConnectionsPerServer = 1
-                    });
+                    AutomaticDecompression = None,
+                    MaxConnectionsPerServer = 1
+                });
+
+            services.AddHttpClient<HttpClient>(nameof(HttpSoapClient),
+                    c => c.DefaultRequestHeaders.Add("Accept-Encoding", "gzip,deflate"))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                .AddTypedClient<HttpSoapClient>()
+                .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+                {
+                    AutomaticDecompression = GZip | Deflate,
+                    UseProxy = false,
+                    Proxy = null,
+                    UseCookies = false,
+                    CookieContainer = null,
+                    AllowAutoRedirect = false
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
