@@ -72,7 +72,7 @@ export default class extends React.Component {
                        </div>
                        {[items.map((e, index) => {
                            const selected = this.isSelected(e.id);
-                           return <div key={index} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
+                           return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} onDoubleClick={navigateHandler}>
                                       <div className="x-table-cell-min">
                                           <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={!this.state.filter(e)} />
                                       </div>
