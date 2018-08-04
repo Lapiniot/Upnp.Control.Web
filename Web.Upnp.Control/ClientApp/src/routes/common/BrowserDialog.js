@@ -1,12 +1,13 @@
 import React from "react";
 import { MemoryRouter, Switch, Route, Redirect } from "react-router-dom";
+import { withMatchProps } from "../../components/Extensions";
 import Modal from "../../components/Modal";
 import LoadIndicator from "../../components/LoadIndicator";
 import Pagination from "./Pagination";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
 import { withProps, withDataFetch } from "../../components/Extensions";
-import { withBrowserCore, withMatchProps } from "../common/BrowserCore";
+import { withBrowserCore} from "../common/BrowserCore";
 import BrowserCoreSelectable from "../common/BrowserWithSelection";
 import $api from "../../components/WebApi";
 
@@ -35,7 +36,7 @@ export default class BrowserDialog extends React.Component {
                     <Switch>
                         <Route path="/sources" exact component={MediaSourcePicker} />
                         <Route path="/sources/browse" exact render={() => <Redirect to="/sources" />} />
-                        <Route path="/sources/browse/:device/:id(.*)?" component={this.browserComponent} />
+                        <Route path="/sources/browse/:device/:id(.*)?" render={this.browserComponent} />
                     </Switch>
                 </MemoryRouter>
             </Modal.Body>

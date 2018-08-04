@@ -10,7 +10,7 @@ export default class extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (state.data === null || (state.data.source !== props.dataContext.source)) {
+        if (state.data !== props.dataContext) {
             const data = props.dataContext;
             const filter = props.filter || (() => true);
             return {
