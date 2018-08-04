@@ -1,14 +1,11 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import $api from "../../../components/WebApi";
-import { withDataFetch } from "../../../components/Extensions";
-import { withNavigationContext } from "../../common/Navigator";
 import Modal from "../../../components/Modal";
 import { TextValueEditDialog, ConfirmationDialog } from "../../../components/Dialogs";
+import { withBrowserCore } from "../../common/BrowserCore";
 import BrowserDialog from "../../common/BrowserDialog";
 import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
-import LoadIndicator from "../../../components/LoadIndicator";
 import BrowserCore from "../../common/BrowserWithSelection";
 
 export default class PlaylistManager extends React.Component {
@@ -104,7 +101,7 @@ export default class PlaylistManager extends React.Component {
         const addAction = this.wrap(
             args => $api
             .playlist(this.props.device)
-            .add(this.props.id, args.device, args.selection)
+            .add(this.props.id, args.device, args.keys)
             .fetch());
 
         this.setState({
@@ -152,9 +149,4 @@ export default class PlaylistManager extends React.Component {
     }
 }
 
-export const RoutedPlaylistManager = withRouter(
-    withNavigationContext(
-        withDataFetch(PlaylistManager,
-            { template: LoadIndicator },
-            ({ device, id, navContext: { pageSize, page } }) =>
-            $api.browse(device).get(id).withParents().take(pageSize).skip((page - 1) * pageSize).url())));
+export const RoutedPlaylistManager = withBrowserCore(PlaylistManager);
