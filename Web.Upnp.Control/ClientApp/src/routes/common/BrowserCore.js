@@ -5,10 +5,16 @@ import { withNavigationContext } from "./Navigator";
 import LoadIndicator from "../../components/LoadIndicator";
 import $api from "../../components/WebApi";
 
-export function renderWithDeviceProps(Component, props = {}) {
-    return function({ match: { params: { device, id = "" } } }) {
-        return <Component device={device} id={id} {...props} />;
+export function renderWithDeviceProps(Component, extra = {}) {
+    return function ({ match: { params: { device, id = "" } } }) {
+        return <Component device={device} id={id} {...extra} />;
     };
+}
+
+export function withMatchProps(Component, extra = {}) {
+    return function ({ match: { params } = {} }) {
+        return <Component {...params} {...extra} />
+    }
 }
 
 export class DIDLUtils {
