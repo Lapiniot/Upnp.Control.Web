@@ -6,7 +6,7 @@ import Pagination from "./Pagination";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
 import { withProps, withDataFetch } from "../../components/Extensions";
-import { renderWithDeviceProps, withBrowserCore } from "../common/BrowserCore";
+import { withBrowserCore, withMatchProps } from "../common/BrowserCore";
 import BrowserCoreSelectable from "../common/BrowserWithSelection";
 import $api from "../../components/WebApi";
 
@@ -17,34 +17,34 @@ export default class BrowserDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = { selection: { keys: [] } };
-    }
-
-    onSelectionChanged = (selection, device, id) => {
-        this.setState({ selection: { device: device, id: id, keys: Array.from(selection.keys) } });
-        return true;
+        this.browserComponent = withMatchProps(Browser, {
+            baseUrl: "/sources/browse",
+            onSelectionChanged: (selection, device, id) => {
+                this.setState({ selection: { device: device, id: id, keys: Array.from(selection.keys) } });
+                return true;
+            }
+        });
     }
 
     render() {
         const { id, title, confirmText = "OK", onConfirm, ...other } = this.props;
         const onConfirmWrapper = () => { if (onConfirm) onConfirm(this.state.selection) };
-
         return <Modal id={id} title={title} {...other}>
-                    <Modal.Body className="p-0 modal-body-vh-60">
-                        <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
-                            <Switch>
-                                <Route path="/sources" exact component={MediaSourcePicker} />
-                                <Route path="/sources/browse" exact render={() => <Redirect to="/sources" />} />
-                                <Route path="/sources/browse/:device/:id(.*)?" render={renderWithDeviceProps(Browser,
-                                    { baseUrl: "/sources/browse", onSelectionChanged: this.onSelectionChanged })} />
-                            </Switch>
-                        </MemoryRouter>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Modal.Button key="confirm" text={confirmText} className="btn-primary"
-                            disabled={this.state.selection.keys.length === 0} onClick={onConfirmWrapper} dismiss />
-                        <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
-                    </Modal.Footer>
-                </Modal>;
+            <Modal.Body className="p-0 modal-body-vh-60">
+                <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
+                    <Switch>
+                        <Route path="/sources" exact component={MediaSourcePicker} />
+                        <Route path="/sources/browse" exact render={() => <Redirect to="/sources" />} />
+                        <Route path="/sources/browse/:device/:id(.*)?" component={this.browserComponent} />
+                    </Switch>
+                </MemoryRouter>
+            </Modal.Body>
+            <Modal.Footer>
+                <Modal.Button key="confirm" text={confirmText} className="btn-primary"
+                    disabled={this.state.selection.keys.length === 0} onClick={onConfirmWrapper} dismiss />
+                <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+            </Modal.Footer>
+        </Modal>;
     }
 }
 
@@ -70,6 +70,7 @@ class BrowserView extends React.Component {
     render() {
         const { navContext: { page, pageSize, urls } } = this.props;
         const { source: { total, result: { length: fetched } } } = this.props.dataContext;
+
         return <div>
             <BrowserCoreSelectable dataContext={this.props.dataContext} filter={isMusicTrack}
                 device={this.props.device} id={this.props.id}
