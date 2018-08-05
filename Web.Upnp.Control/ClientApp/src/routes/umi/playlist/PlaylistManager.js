@@ -107,7 +107,7 @@ export default class PlaylistManager extends React.Component {
         this.setState({
             modal: () => {
                 return <BrowserDialog id="browse_dialog" title="Select items to add"
-                                      confirmText="Add" className="modal-lg" immediate
+                                      confirmText="Add" className="modal-lg modal-vh-80" immediate
                                       onConfirm={addAction} onDismiss={this.resetModalState} />;
             }
         });

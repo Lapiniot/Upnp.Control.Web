@@ -31,7 +31,7 @@ export default class BrowserDialog extends React.Component {
         const { id, title, confirmText = "OK", onConfirm, ...other } = this.props;
         const onConfirmWrapper = () => { if (onConfirm) onConfirm(this.state.selection) };
         return <Modal id={id} title={title} {...other}>
-            <Modal.Body className="p-0 modal-body-vh-60">
+            <Modal.Body className="p-0">
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
                         <Route path="/sources" exact component={MediaSourcePicker} />
