@@ -63,7 +63,7 @@ export default class PlaylistManager extends React.Component {
         });
     };
 
-    remove = () => {
+    delete = () => {
 
         const ids = [...this.state.selection.keys];
         const values = this.state.data.source.result.filter(e => ids.includes(e.id));
@@ -101,7 +101,7 @@ export default class PlaylistManager extends React.Component {
         const addAction = this.wrap(
             args => $api
             .playlist(this.props.device)
-            .add(this.props.id, args.device, args.keys)
+            .addItems(this.props.id, args.device, args.keys)
             .fetch());
 
         this.setState({
@@ -112,6 +112,23 @@ export default class PlaylistManager extends React.Component {
             }
         });
     };
+
+    remove = () => {
+        const ids = [...this.state.selection.keys];
+        const values = this.state.data.source.result.filter(e => ids.includes(e.id));
+        const removeAction = this.wrap(() => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch());
+
+        this.setState({
+            modal: () => {
+                return <ConfirmationDialog id="remove_items_confirm" title="Do you want to remove items from playlist?" confirmText="Remove" immediate
+                    onConfirm={removeAction} onDismiss={this.resetModalState}>
+                    <ul className="list-unstyled">
+                        {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
+                    </ul>
+                </ConfirmationDialog>;
+            }
+        });
+    }
 
     copy = () => { alert("copy"); };
 
@@ -133,13 +150,13 @@ export default class PlaylistManager extends React.Component {
                        {id === "PL:"
                            ? <Toolbar.Group>
                                  <Toolbar.Button title="Create" glyph="plus" onClick={this.create} />
-                                 <Toolbar.Button title="Delete" glyph="trash" onClick={this.remove} disabled={noSelection} />
+                                 <Toolbar.Button title="Delete" glyph="trash" onClick={this.delete} disabled={noSelection} />
                                  <Toolbar.Button title="Rename" glyph="edit" onClick={this.rename} disabled={!selection || !selection.one()} />
                                  <Toolbar.Button title="Copy" glyph="copy" onClick={this.copy} disabled={noSelection} />
                              </Toolbar.Group>
                            : <Toolbar.Group>
                                  <Toolbar.Button title="Add items" glyph="plus" onClick={this.add} />
-                                 <Toolbar.Button title="Remove items" glyph="trash" disabled={noSelection} />
+                                 <Toolbar.Button title="Remove items" glyph="trash" onClick={this.remove} disabled={noSelection} />
                              </Toolbar.Group>}
                    </Toolbar>
                    <BrowserCore dataContext={this.state.data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} onSelectionChanged={this.onSelectionChanged} />

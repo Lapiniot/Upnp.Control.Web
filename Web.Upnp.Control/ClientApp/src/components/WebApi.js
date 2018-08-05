@@ -33,7 +33,7 @@ export default class {
             copy: id => {
                 return new JsonFetch(`/api/playlist/${deviceId}/${id}`, null, { method: "COPY" });
             },
-            add: (id, sourceDevice, sourceIds) => {
+            addItems: (id, sourceDevice, sourceIds) => {
                 return new JsonPutFetch(`/api/playlist/${deviceId}/${id}/add`,
                     null,
                     { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds }) });
