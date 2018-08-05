@@ -8,6 +8,7 @@ import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
 import { withProps, withDataFetch } from "../../components/Extensions";
 import { withBrowserCore} from "../common/BrowserCore";
+import Breadcrumb from "../common/Breadcrumb";
 import BrowserCoreSelectable from "../common/BrowserWithSelection";
 import $api from "../../components/WebApi";
 
@@ -70,9 +71,10 @@ function isMusicTrack(i) {
 class BrowserView extends React.Component {
     render() {
         const { navContext: { page, pageSize, urls } } = this.props;
-        const { source: { total, result: { length: fetched } } } = this.props.dataContext;
+        const { source: { total, result: { length: fetched }, parents } } = this.props.dataContext;
 
         return <div>
+            <Breadcrumb dataContext={parents} baseUrl={urls.root} />
             <BrowserCoreSelectable dataContext={this.props.dataContext} filter={isMusicTrack}
                 device={this.props.device} id={this.props.id}
                 navigateHandler={this.props.navContext.navigateHandler}
