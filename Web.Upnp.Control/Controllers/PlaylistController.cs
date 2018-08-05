@@ -30,11 +30,10 @@ namespace Web.Upnp.Control.Controllers
             using(cdService.Target)
             using(plService.Target)
             {
-                var data = await cdService.BrowseAsync("PL:", count: uint.MaxValue).ConfigureAwait(false);
-                var playlists = DIDLParser.Parse(data["Result"]);
-                var map = playlists.Select((p, index) => (p.Id, index)).ToDictionary(p => p.Id, p => p.index + 1);
-                var indices = ids.Select(id => map[id]).ToArray();
+                int[] indices = await GetItemIndices(cdService, "PL:", ids).ConfigureAwait(false);
+
                 var result = await plService.DeleteAsync(indices: indices).ConfigureAwait(false);
+
                 if(result["LengthChange"] == "0")
                 {
                     result = await plService.DeleteAsync(updateId: result["NewUpdateID"], indices: indices).ConfigureAwait(false);
@@ -109,11 +108,34 @@ namespace Web.Upnp.Control.Controllers
             }
         }
 
+        [HttpDelete("{id}/remove")]
+        public async Task<object> RemoveAsync(string deviceId, string id, [FromBody] string[] ids)
+        {
+            var playlistService = await factory.GetServiceAsync<PlaylistService>(deviceId);
+            var contentDirectoryService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId);
+
+            using(playlistService.Target)
+            using(contentDirectoryService.Target)
+            {
+                var updateId = await GetUpdateIdAsync(contentDirectoryService, id).ConfigureAwait(false);
+                var indices = await GetItemIndices(contentDirectoryService, id, ids).ConfigureAwait(false);
+                return await playlistService.RemoveItemsAsync(objectId: id, updateId: updateId, indices: indices).ConfigureAwait(false);
+            }
+        }
+
         private async Task<string> GetUpdateIdAsync(ContentDirectoryService cdtService, string id)
         {
             var result = await cdtService.BrowseAsync(id, flags: "BrowseMetadata", filter: "id").ConfigureAwait(false);
 
             return result["UpdateID"];
+        }
+
+        private static async Task<int[]> GetItemIndices(ContentDirectoryService cdService, string parentId, string[] ids)
+        {
+            var data = await cdService.BrowseAsync(parentId, count: uint.MaxValue).ConfigureAwait(false);
+            var playlists = DIDLParser.Parse(data["Result"]);
+            var map = playlists.Select((p, index) => (p.Id, index)).ToDictionary(p => p.Id, p => p.index + 1);
+            return ids.Select(id => map[id]).ToArray();
         }
 
         public class Playlist

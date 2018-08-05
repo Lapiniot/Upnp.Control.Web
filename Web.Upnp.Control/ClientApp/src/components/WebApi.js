@@ -37,6 +37,11 @@ export default class {
                 return new JsonPutFetch(`/api/playlist/${deviceId}/${id}/add`,
                     null,
                     { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds }) });
+            },
+            removeItems: (id, ids) => {
+                return new JsonDeleteFetch(`/api/playlist/${deviceId}/${id}/remove`,
+                    null,
+                    { body: JSON.stringify(ids) });
             }
         };
     }
