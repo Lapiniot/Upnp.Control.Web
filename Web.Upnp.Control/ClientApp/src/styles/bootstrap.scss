@@ -163,12 +163,28 @@ $table-striped-order: even;
     }
 }
 
-@mixin modal-body-vh($percent) {
-    .modal-body-vh-#{$percent}{
-        height: #{$percent}vh;
-        overflow-y: auto;
-    }    
+%modal-vh{
+    .modal-content{
+        .modal-header, .modal-footer{
+            flex-shrink: 0;
+        };
+        .modal-body{
+            overflow-y: auto;
+       };
+    }
 }
 
-@include modal-body-vh(50);
-@include modal-body-vh(60);
+@mixin modal-vh($percent) {
+    .modal-vh-#{$percent}{
+        @extend %modal-vh;
+        .modal-content{
+            height: #{$percent}vh;
+        }
+    }
+}
+
+$dialog-sizes : (80);
+
+@each $p in $dialog-sizes {
+    @include modal-vh($p);
+}
