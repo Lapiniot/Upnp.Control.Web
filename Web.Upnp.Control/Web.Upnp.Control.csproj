@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="IoT.Device.Xiaomi.Umi" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   
@@ -20,19 +21,22 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
   
-  <ItemGroup>
-    <ProjectReference Include="..\IoT.Device.Upnp\IoT.Device.UPnP.csproj" />
-    <ProjectReference Include="..\IoT.Device.Xiaomi.Umi\IoT.Device.Xiaomi.Umi.csproj" />
-  </ItemGroup>
-
-  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+  <Target Name="EnsureNodeInstalled" Condition=" '$(Configuration)' == 'Debug'">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+  </Target>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" DependsOnTargets="EnsureNodeInstalled" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules')">
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+  </Target>
+
+  <Target Name="DebugEnsureNodeEnvTools" BeforeTargets="Build" DependsOnTargets="EnsureNodeInstalled" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(MSBuildProjectDirectory)/node_modules')">
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="npm install" />
   </Target>
   
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">

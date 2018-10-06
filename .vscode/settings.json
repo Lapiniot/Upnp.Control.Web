@@ -1,0 +1,18 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/.gitignore": true,
+        "*.DotSettings": true,
+        "**/bin/": true,
+        "**/obj/": true,
+        "**/package-lock.json": true,
+        "**/node_modules": true
+    },
+    "files.associations": {
+        "**/src/components/**/*.js": "javascriptreact",
+        "**/src/routes/**/*.js": "javascriptreact",
+        "**/src/index.js": "javascriptreact",
+        "**/src/styles/**/*.scss": "scss"
+    }
+}
