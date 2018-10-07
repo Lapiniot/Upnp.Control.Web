@@ -29,7 +29,7 @@ namespace Web.Upnp.Control.Services
             {
                 using(var context = scoped.ServiceProvider.GetRequiredService<UpnpDbContext>())
                 {
-                    // TODO: configure and start UPnP multicast listener in order to track device lifetime events
+                    // TODO: configure and start UPnP multi-cast listener in order to track device lifetime events
 
                     var upnpDevices = new UpnpDeviceEnumerator(UpnpServices.RootDevice).Enumerate(TimeSpan.FromSeconds(3), cancellationToken);
 

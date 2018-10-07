@@ -23,14 +23,14 @@ namespace Web.Upnp.Control.Controllers
         [HttpDelete]
         public async Task<object> RemoveAsync(string deviceId, [FromBody] string[] ids)
         {
-            var cdService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId);
+            var cdService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
-            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId);
+            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
 
             using(cdService.Target)
             using(plService.Target)
             {
-                int[] indices = await GetItemIndices(cdService, "PL:", ids).ConfigureAwait(false);
+                var indices = await GetItemIndices(cdService, "PL:", ids).ConfigureAwait(false);
 
                 var result = await plService.DeleteAsync(indices: indices).ConfigureAwait(false);
 
@@ -46,7 +46,7 @@ namespace Web.Upnp.Control.Controllers
         [HttpPost]
         public async Task<object> CreateAsync(string deviceId, [FromBody] Playlist playlist)
         {
-            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId);
+            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
 
             using(plService.Target)
             {
@@ -57,7 +57,7 @@ namespace Web.Upnp.Control.Controllers
         [HttpPut]
         public async Task<object> UpdateAsync(string deviceId, [FromBody] Playlist playlist)
         {
-            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId);
+            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
 
             using(plService.Target)
             {
@@ -70,9 +70,9 @@ namespace Web.Upnp.Control.Controllers
         [HttpPut("{id}/add")]
         public async Task<object> AddAsync(string deviceId, string id, [FromBody] MediaSourceData media)
         {
-            var playlistService = await factory.GetServiceAsync<PlaylistService>(deviceId);
-            var sourceContentDirectoryService = await factory.GetServiceAsync<ContentDirectoryService>(media.DeviceId);
-            var contentDirectoryService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId);
+            var playlistService = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
+            var sourceContentDirectoryService = await factory.GetServiceAsync<ContentDirectoryService>(media.DeviceId).ConfigureAwait(false);
+            var contentDirectoryService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
             using(playlistService.Target)
             using(sourceContentDirectoryService.Target)
@@ -111,8 +111,8 @@ namespace Web.Upnp.Control.Controllers
         [HttpDelete("{id}/remove")]
         public async Task<object> RemoveAsync(string deviceId, string id, [FromBody] string[] ids)
         {
-            var playlistService = await factory.GetServiceAsync<PlaylistService>(deviceId);
-            var contentDirectoryService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId);
+            var playlistService = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
+            var contentDirectoryService = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
             using(playlistService.Target)
             using(contentDirectoryService.Target)
