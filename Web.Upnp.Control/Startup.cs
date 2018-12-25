@@ -29,7 +29,7 @@ namespace Web.Upnp.Control
 
             services.AddResponseCaching();
 
-            services.AddResponseCompression(o => { });
+            services.AddResponseCompression(o => {});
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest)

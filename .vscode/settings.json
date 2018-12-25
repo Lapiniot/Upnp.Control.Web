@@ -1,8 +1,10 @@
 {
     "files.exclude": {
+        ".vs": true,
         "**/.git": true,
         "**/.DS_Store": true,
         "**/.gitignore": true,
+        "*.DotSettings.*": true,
         "*.DotSettings": true,
         "**/bin/": true,
         "**/obj/": true,
