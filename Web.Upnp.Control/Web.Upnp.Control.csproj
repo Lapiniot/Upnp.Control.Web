@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IoT.Device.Xiaomi.Umi" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   
@@ -19,6 +18,10 @@
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\IoT.Device\IoT.Device.Xiaomi.Umi\IoT.Device.Xiaomi.Umi.csproj" />
   </ItemGroup>
   
   <Target Name="EnsureNodeInstalled" Condition=" '$(Configuration)' == 'Debug'">

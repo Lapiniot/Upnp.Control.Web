@@ -70,8 +70,6 @@ namespace Web.Upnp.Control.Services
 
             var endpoint = new SoapControlEndpoint(httpClient);
 
-            endpoint.Connect();
-
             return (T)Activator.CreateInstance(typeof(T), endpoint);
         }
     }
