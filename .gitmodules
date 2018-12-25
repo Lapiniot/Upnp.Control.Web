@@ -1,0 +1,3 @@
+[submodule "IoT.Device"]
+	path = IoT.Device
+	url = https://github.com/Lapiniot/IoT.Device.git
