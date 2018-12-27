@@ -33,11 +33,6 @@ namespace Web.Upnp.Control
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest)
-                .AddJsonOptions(options =>
-                {
-                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                    options.SerializerSettings.Formatting = Formatting.None;
-                })
                 .AddMvcOptions(options => { options.OutputFormatters.Insert(options.OutputFormatters.Count - 1, new HttpResponseMessageFormatter()); });
 
             ConfigureHttpClients(services);
