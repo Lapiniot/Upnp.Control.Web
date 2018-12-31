@@ -24,17 +24,22 @@ namespace Web.Upnp.Control.Services
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            using(var timeoutSource = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
-            using(var linkedSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutSource.Token))
-            using(var scope = Services.CreateScope())
-            using(var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>())
+            using(var tcs = new CancellationTokenSource(10000))
             {
-                var token = linkedSource.Token;
                 var enumerator = new UpnpDeviceEnumerator(TimeSpan.FromSeconds(5), RootDevice);
+                await enumerator.DiscoverAsync(OnDiscovered, tcs.Token).ConfigureAwait(false);
+            }
+        }
 
-                await foreach(var dev in enumerator.EnumerateAsync(token))
+        private async void OnDiscovered(UpnpDevice device)
+        {
+            using(var scoped = Services.CreateScope())
+            {
+                using(var context = scoped.ServiceProvider.GetRequiredService<UpnpDbContext>())
                 {
-                    var description = await dev.GetDescriptionAsync(token).ConfigureAwait(false);
+                    // TODO: configure and start UPnP multi-cast listener in order to track device lifetime events
+                    var description = await device.GetDescriptionAsync();
+
                     var entity = new Device
                     {
                         Udn = description.Udn,
@@ -62,8 +67,9 @@ namespace Web.Upnp.Control.Services
                         }).ToList()
                     };
 
-                    await context.AddAsync(entity, token).ConfigureAwait(false);
-                    await context.SaveChangesAsync(token).ConfigureAwait(false);
+                    await context.AddAsync(entity).ConfigureAwait(false);
+
+                    await context.SaveChangesAsync().ConfigureAwait(false);
                 }
             }
         }
