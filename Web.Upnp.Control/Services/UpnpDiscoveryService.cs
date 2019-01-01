@@ -11,11 +11,8 @@ using static IoT.Protocol.Upnp.UpnpServices;
 
 namespace Web.Upnp.Control.Services
 {
-    public class UpnpDiscoveryService : IHostedService, IDisposable
+    public class UpnpDiscoveryService : BackgroundService
     {
-        private Task monitorTask;
-        private CancellationTokenSource tcs;
-
         public UpnpDiscoveryService(IServiceProvider services)
         {
             Services = services;
@@ -23,29 +20,14 @@ namespace Web.Upnp.Control.Services
 
         public IServiceProvider Services { get; }
 
-        #region Implementation of IDisposable
-
-        public void Dispose() {}
-
-        #endregion
-
-        #region Implementation of IHostedService
-
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            tcs = new CancellationTokenSource();
-            monitorTask = StartMonitorAsync(tcs.Token);
-            return Task.CompletedTask;
-        }
-
-        private async Task StartMonitorAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var enumerator = new UpnpDeviceEnumerator(TimeSpan.FromSeconds(30), RootDevice);
 
             using(var scope = Services.CreateScope())
             using(var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>())
             {
-                await enumerator.DiscoverAsync(device => DiscoveredAsync(device, (context, cancellationToken)), cancellationToken);
+                await enumerator.DiscoverAsync(device => DiscoveredAsync(device, (context, stoppingToken)), stoppingToken);
             }
         }
 
@@ -86,16 +68,5 @@ namespace Web.Upnp.Control.Services
 
             await ctx.SaveChangesAsync(token).ConfigureAwait(false);
         }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            using(tcs)
-            {
-                tcs.Cancel();
-                await monitorTask.ConfigureAwait(false);
-            }
-        }
-
-        #endregion
     }
 }
