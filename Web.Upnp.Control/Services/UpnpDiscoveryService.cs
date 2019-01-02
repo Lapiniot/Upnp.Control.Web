@@ -27,7 +27,7 @@ namespace Web.Upnp.Control.Services
             using(var scope = Services.CreateScope())
             using(var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>())
             {
-                await enumerator.DiscoverAsync(device => DiscoveredAsync(device, (context, stoppingToken)), stoppingToken);
+                await enumerator.DiscoverAsync(DiscoveredAsync, (context, stoppingToken), stoppingToken);
             }
         }
 
