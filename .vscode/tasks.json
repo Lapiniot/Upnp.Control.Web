@@ -15,6 +15,63 @@
                 "reveal": "always"
             },
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet publish -c Release",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "publish (self-contained)",
+            "command": "dotnet publish -c Release -r ${input:rid}",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy (remote SSH)",
+            "type": "shell",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "osx": {
+                "command": "rsync -r -v --delete -e ssh ./Web.Upnp.Control/bin/Release/netcoreapp3.0/publish/ ${input:remote-url}"
+            }
+        },
+        {
+            "label": "deploy self-contained (remote SSH)",
+            "type": "shell",
+            "problemMatcher": [],
+            "dependsOn": [
+                "publish (self-contained)"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "osx": {
+                "command": "rsync -r -v --delete -e ssh ./Web.Upnp.Control/bin/Release/netcoreapp3.0/${input:rid}/publish/ ${input:remote-url}"
+            }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "remote-url",
+            "description": "Remote folder for deployment (rsync destination)",
+            "type": "promptString"
+        },
+        {
+            "id": "rid",
+            "description": "Runtime Identifier",
+            "type": "pickString",
+            "options": [
+                "win10-x64",
+                "osx-x64",
+                "debian-arm64"
+            ],
+            "default": "osx-x64"
         }
     ]
 }
