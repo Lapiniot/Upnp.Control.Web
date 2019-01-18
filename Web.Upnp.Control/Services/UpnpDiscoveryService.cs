@@ -27,15 +27,13 @@ namespace Web.Upnp.Control.Services
             using(var scope = Services.CreateScope())
             using(var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>())
             {
-                await enumerator.DiscoverAsync(DiscoveredAsync, (context, stoppingToken), stoppingToken);
+                await enumerator.DiscoverAsync(DiscoveredAsync, context, stoppingToken);
             }
         }
 
-        private async Task DiscoveredAsync(UpnpDevice dev, (UpnpDbContext context, CancellationToken cancellationToken) state)
+        private async Task DiscoveredAsync(UpnpDevice dev, UpnpDbContext ctx, CancellationToken cancellationToken)
         {
-            var (ctx, token) = state;
-
-            var description = await dev.GetDescriptionAsync(token).ConfigureAwait(false);
+            var description = await dev.GetDescriptionAsync(cancellationToken).ConfigureAwait(false);
 
             var entity = new Device
             {
@@ -64,9 +62,8 @@ namespace Web.Upnp.Control.Services
                 }).ToList()
             };
 
-            await ctx.AddAsync(entity, token).ConfigureAwait(false);
-
-            await ctx.SaveChangesAsync(token).ConfigureAwait(false);
+            await ctx.AddAsync(entity, cancellationToken).ConfigureAwait(false);
+            await ctx.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }
