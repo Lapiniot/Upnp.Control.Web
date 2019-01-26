@@ -14,28 +14,29 @@ namespace Web.Upnp.Control
 
         public async Task WriteAsync(OutputFormatterWriteContext context)
         {
-            using(var response = (HttpResponseMessage)context.Object)
-            using(response.RequestMessage)
+            using var message = (HttpResponseMessage)context.Object;
+            using var messageContent = message.Content;
+            using var httpRequestMessage = message.RequestMessage;
+
+            var response = context.HttpContext.Response;
+
+            response.StatusCode = (int)message.StatusCode;
+
+            var headers = response.Headers;
+
+            foreach(var h in message.Headers)
             {
-                context.HttpContext.Response.StatusCode = (int)response.StatusCode;
-
-                var headers = context.HttpContext.Response.Headers;
-
-                foreach(var h in response.Headers)
-                {
-                    if(!headers.TryGetValue(h.Key, out _)) headers.Add(h.Key, h.Value.ToArray());
-                }
-
-                foreach(var h in response.Content.Headers)
-                {
-                    if(!headers.TryGetValue(h.Key, out _)) headers.Add(h.Key, h.Value.ToArray());
-                }
-
-                using(var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                {
-                    await stream.CopyToAsync(context.HttpContext.Response.Body, 16 * 1024).ConfigureAwait(false);
-                }
+                if(!headers.TryGetValue(h.Key, out _)) headers.Add(h.Key, h.Value.ToArray());
             }
+
+            foreach(var h in message.Content.Headers)
+            {
+                if(!headers.TryGetValue(h.Key, out _)) headers.Add(h.Key, h.Value.ToArray());
+            }
+
+            using var stream = await message.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
+            await stream.CopyToAsync(response.Body, 16 * 1024).ConfigureAwait(false);
         }
     }
 }

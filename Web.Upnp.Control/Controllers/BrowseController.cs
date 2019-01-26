@@ -11,7 +11,8 @@ using Web.Upnp.Control.Services;
 namespace Web.Upnp.Control.Controllers
 {
     [Route("api/[controller]/{deviceId}")]
-    public class BrowseController : Controller
+    [ApiController]
+    public class BrowseController : ControllerBase
     {
         private readonly IUpnpServiceFactory factory;
 

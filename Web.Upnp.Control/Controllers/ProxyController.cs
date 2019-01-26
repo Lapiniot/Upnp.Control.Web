@@ -8,7 +8,8 @@ using Web.Upnp.Control.Services.HttpClients;
 namespace Web.Upnp.Control.Controllers
 {
     [Route("api/[controller]")]
-    public class ProxyController : Controller
+    [ApiController]
+    public class ProxyController : ControllerBase
     {
         private readonly ImageLoaderProxyClient proxyClient;
 
