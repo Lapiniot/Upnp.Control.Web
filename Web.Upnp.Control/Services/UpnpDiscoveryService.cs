@@ -27,7 +27,7 @@ namespace Web.Upnp.Control.Services
             using var scope = Services.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
 
-            await foreach(var dev in enumerator.EnumerateAsync(stoppingToken).ConfigureAwait(false))
+            await foreach(var dev in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
             {
                 var d = await dev.GetDescriptionAsync(stoppingToken).ConfigureAwait(false);
                 var entity = new Device
