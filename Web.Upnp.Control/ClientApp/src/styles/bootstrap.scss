@@ -15,19 +15,6 @@ $enable-gradients: true;
     z-index: $zindex-sticky;
 }
 
-.d-flex-fill {
-    @extend .d-flex;
-    width: 100%;
-    height: 100%;
-    flex-grow: 1;
-}
-
-.d-flex-fill-center {
-    @extend .d-flex-fill;
-    justify-content: center;
-    align-items: center;
-}
-
 .d-table-caption {
     display: table-caption;
 }
