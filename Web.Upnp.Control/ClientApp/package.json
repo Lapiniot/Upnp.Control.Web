@@ -3,16 +3,16 @@
   "name": "upnp.control.web",
   "private": true,
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.7.1",
-    "bootstrap": "^4.2.1",
+    "@fortawesome/fontawesome-free": "^5.8.1",
+    "bootstrap": "^4.3.1",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.7",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.2",
-    "rimraf": "^2.6.2"
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5",
+    "react-router": "^5.0.0",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "^2.1.8",
+    "rimraf": "^2.6.3"
   },
   "scripts": {
     "start": "rimraf ./build && react-scripts start",
