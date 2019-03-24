@@ -25,7 +25,7 @@ export default class PlaylistManager extends React.Component {
     }
 
     static isEditable(item) {
-        return item.vendor["mi:playlistType"] !== "aux";
+        return !item.readonly;
     }
 
     resetModalState = () => {

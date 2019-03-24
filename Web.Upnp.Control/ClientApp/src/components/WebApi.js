@@ -22,10 +22,10 @@ export default class {
     static playlist(deviceId) {
         return {
             create: title => {
-                return new JsonPostFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify({ title: title }) });
+                return new JsonPostFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify({ Title: title }) });
             },
             rename: (id, title) => {
-                return new JsonPutFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify({ id: id, title: title }) });
+                return new JsonPutFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify({ Id: id, Title: title }) });
             },
             delete: ids => {
                 return new JsonDeleteFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify(ids) });
@@ -36,7 +36,7 @@ export default class {
             addItems: (id, sourceDevice, sourceIds) => {
                 return new JsonPutFetch(`/api/playlist/${deviceId}/${id}/add`,
                     null,
-                    { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds }) });
+                    { body: JSON.stringify({ DeviceId: sourceDevice, Items: sourceIds }) });
             },
             removeItems: (id, ids) => {
                 return new JsonDeleteFetch(`/api/playlist/${deviceId}/${id}/remove`,

@@ -7,9 +7,9 @@ export class UrlBuilder {
     }
 
     url() {
-        return !!this.query ? this.path + qs.build(this.query) : this.path;
+        return this.query ? this.path + qs.build(this.query) : this.path;
     }
-};
+}
 
 export class HttpFetch extends UrlBuilder {
     constructor(path, query, init) {
@@ -20,25 +20,25 @@ export class HttpFetch extends UrlBuilder {
     fetch() {
         return fetch(this.url(), this.init);
     }
-};
+}
 
 export class HttpPost extends HttpFetch {
     constructor(path, query, init) {
         super(path, query, { ...init, method: "POST" });
     }
-};
+}
 
 export class HttpPut extends HttpFetch {
     constructor(path, query, init) {
         super(path, query, { ...init, method: "PUT" });
     }
-};
+}
 
 export class HttpDelete extends HttpFetch {
     constructor(path, query, init) {
         super(path, query, { ...init, method: "DELETE" });
     }
-};
+}
 
 export class JsonFetch extends HttpFetch {
     constructor(path, query, init) {

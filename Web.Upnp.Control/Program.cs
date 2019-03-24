@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Web.Upnp.Control
 {
@@ -7,7 +7,8 @@ namespace Web.Upnp.Control
     {
         public static void Main(string[] args)
         {
-            WebHost.CreateDefaultBuilder<Startup>(args)
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(whb => whb.UseStartup<Startup>())
                 .Build()
                 .Run();
         }

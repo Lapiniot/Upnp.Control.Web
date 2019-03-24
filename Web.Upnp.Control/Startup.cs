@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control.DataAccess;
+using Web.Upnp.Control.Formatters;
 using Web.Upnp.Control.Services;
 using Web.Upnp.Control.Services.HttpClients;
 using static System.Net.DecompressionMethods;
-using static Newtonsoft.Json.NullValueHandling;
 
 namespace Web.Upnp.Control
 {
@@ -36,9 +37,11 @@ namespace Web.Upnp.Control
 
             services.AddResponseCaching();
 
-            services.AddMvcCore()
-                .AddNewtonsoftJson(o => { o.SerializerSettings.NullValueHandling = Ignore; })
-                .AddMvcOptions(o => { o.OutputFormatters.Insert(o.OutputFormatters.Count - 1, new HttpResponseMessageFormatter()); });
+            services.AddMvcCore(c =>
+            {
+                c.OutputFormatters.Insert(c.OutputFormatters.Count - 1, new SystemTextJsonDictionaryOutputFormatter());
+                c.OutputFormatters.Insert(c.OutputFormatters.Count - 1, new HttpResponseMessageFormatter());
+            });
 
             ConfigureHttpClients(services);
         }
@@ -71,17 +74,17 @@ namespace Web.Upnp.Control
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if(env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvcWithDefaultRoute();
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseResponseCaching();
+            app.UseMvcWithDefaultRoute()
+                .UseHttpsRedirection()
+                .UseStaticFiles()
+                .UseResponseCaching();
 
             app.UseSpaStaticFiles();
             app.UseSpa(spa =>

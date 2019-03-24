@@ -1,16 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using System.Runtime.Serialization;
 
 namespace Web.Upnp.Control.Models.Database.Upnp
 {
     public class Icon
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public int Id { get; set; }
 
-        [JsonProperty("w")]
         public int Width { get; set; }
 
-        [JsonProperty("h")]
         public int Height { get; set; }
 
         public string Url { get; set; }

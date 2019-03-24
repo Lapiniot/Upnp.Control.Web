@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
-namespace Web.Upnp.Control
+namespace Web.Upnp.Control.Formatters
 {
     internal class HttpResponseMessageFormatter : IOutputFormatter
     {

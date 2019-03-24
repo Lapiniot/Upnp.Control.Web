@@ -17,7 +17,7 @@ class UmiDevice extends React.Component {
 
         return <div className="card">
                    <div className="card-header d-flex flex-row">
-                       <DeviceIcon icon={d.icons.find(i => i.w <= 48)} alt={d.name} service={d.type} />
+                       <DeviceIcon icon={d.icons && d.icons.find(i => i.w <= 48)} alt={d.name} service={d.type} />
                        <div>
                            <h5 className="card-title">{d.name}</h5>
                            <h6 className="card-subtitle">{d.description}</h6>
