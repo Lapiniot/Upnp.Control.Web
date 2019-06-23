@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Web.Upnp.Control.Services;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Web.Upnp.Control.Controllers
 {
-    [Route("api/[controller]/{deviceId}")]
     [ApiController]
     [Produces("application/json")]
+    [Route("api/[controller]/{deviceId}")]
     public class BrowseController : ControllerBase
     {
         private readonly IUpnpServiceFactory factory;

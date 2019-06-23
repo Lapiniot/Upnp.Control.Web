@@ -24,17 +24,16 @@ namespace Web.Upnp.Control
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
+            services
+                .AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
                 .AddHostedService<UpnpDiscoveryService>()
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddImageProxyHttpClient()
                 .AddSoapHttpClient();
 
-            services.AddControllers(c =>
-            {
-                c.OutputFormatters.Insert(c.OutputFormatters.Count - 1, new SystemTextJsonDictionaryOutputFormatter());
-                c.OutputFormatters.Insert(c.OutputFormatters.Count - 1, new HttpResponseMessageFormatter());
-            });
+            services
+                .AddControllers(c => c.OutputFormatters.Insert(c.OutputFormatters.Count - 1, new HttpResponseMessageFormatter()))
+                .AddJsonOptions(o => o.JsonSerializerOptions.IgnoreNullValues = true);
 
             services.AddResponseCaching();
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });

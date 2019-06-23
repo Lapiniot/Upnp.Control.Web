@@ -85,6 +85,6 @@ class BrowserView extends React.Component {
 }
 
 const MediaSourcePicker = withProps(withDataFetch(MediaSourceList, { template: LoadIndicator }),
-    { dataUrl: $api.discover("media_servers").url() });
+    { dataUrl: $api.discover("servers").url() });
 
 const Browser = withBrowserCore(BrowserView);
