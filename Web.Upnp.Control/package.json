@@ -6,7 +6,7 @@
     "scss": "^0.2.4"
   },
   "devDependencies": {
-    "gulp": "^4.0.0",
+    "gulp": "^4.0.2",
     "gulp-sass": "^4.0.2"
   }
 }
