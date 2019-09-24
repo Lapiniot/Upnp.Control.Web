@@ -44,7 +44,7 @@ namespace Web.Upnp.Control.Services
                 .FirstAsync()
                 .ConfigureAwait(false);
 
-            schema = schema ?? cache.GetOrAdd(typeof(TService), ServiceSchemaAttribute.GetSchema);
+            schema ??= cache.GetOrAdd(typeof(TService), ServiceSchemaAttribute.GetSchema);
 
             var controlUrl = GetControlUrl(device, schema);
 

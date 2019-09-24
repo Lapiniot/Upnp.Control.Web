@@ -32,7 +32,7 @@ namespace Web.Upnp.Control.Services
                 var enumerator = new UpnpDeviceEnumerator(TimeSpan.FromSeconds(30), RootDevice);
 
                 using var scope = Services.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
+                await using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
 
                 await foreach(var dev in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                 {
