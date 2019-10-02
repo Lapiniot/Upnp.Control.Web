@@ -8,7 +8,9 @@ namespace Web.Upnp.Control
         public static void Main(string[] args)
         {
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(whb => whb.UseStartup<Startup>())
+                .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder.UseStartup<Startup>())
+                .UseWindowsService()
+                .UseSystemd()
                 .Build()
                 .Run();
         }
