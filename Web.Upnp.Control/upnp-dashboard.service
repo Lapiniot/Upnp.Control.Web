@@ -1,0 +1,13 @@
+﻿[Unit]
+Description=UPNP Controller Dashboard Service
+After=network.target
+
+[Service]
+Type=notify
+WorkingDirectory=/var/www/upnp-dashboard
+ExecStart=/usr/bin/dotnet Web.Upnp.Control.dll
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

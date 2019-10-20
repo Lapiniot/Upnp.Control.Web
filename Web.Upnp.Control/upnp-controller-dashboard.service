@@ -1,9 +1,0 @@
-﻿[Unit]
-Description=UPNP Controller Dashboard Service
-
-[Service]
-Type=notify
-ExecStart=/usr/sbin/testapp
-
-[Install]
-WantedBy=multi-user.target
