@@ -48,7 +48,7 @@ namespace Web.Upnp.Control.Controllers
             using(service.Target)
             {
                 var result = await service.BrowseAsync(path ?? "0", flags: "BrowseMetadata").ConfigureAwait(false);
-                return new {Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"])};
+                return new { Total = int.Parse(result["TotalMatches"]), Result = DIDLParser.Parse(result["Result"]) };
             }
         }
 
@@ -93,6 +93,7 @@ namespace Web.Upnp.Control.Controllers
             {
                 w.WriteStartObject();
                 w.WriteString("id", item.Id);
+                w.WriteBoolean("container", item is Container);
                 w.WriteString("class", item.Class);
                 w.WriteString("title", item.Title);
 
