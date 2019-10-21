@@ -6,8 +6,13 @@ After=network.target
 Type=notify
 WorkingDirectory=/var/www/upnp-dashboard
 ExecStart=/usr/bin/dotnet Web.Upnp.Control.dll
+Restart=always
+RestartSec=10
 User=www-data
-Group=www-data
+KillSignal=SIGINT
+SyslogIdentifier=upnp-dashboard
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
 
 [Install]
 WantedBy=multi-user.target
