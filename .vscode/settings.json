@@ -4,13 +4,16 @@
         "**/.git": true,
         "**/.DS_Store": true,
         "**/.gitignore": true,
-        "*.DotSettings.*": true,
-        "*.DotSettings": true,
+        "**/*.DotSettings.*": true,
+        "**/*.DotSettings": true,
         "**/bin/": true,
         "**/obj/": true,
         "**/package-lock.json": true,
         "**/node_modules": true,
-        "**/*.user": true
+        "**/*.user": true,
+        "*/**/.vscode": true,
+        "**/*.sln": true,
+        "**/.gitmodules": true
     },
     "files.associations": {
         "**/src/components/**/*.js": "javascriptreact",
