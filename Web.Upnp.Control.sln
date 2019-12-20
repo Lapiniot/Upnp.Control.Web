@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Upnp.Control", "Web.Upnp.Control\Web.Upnp.Control.csproj", "{3C340B3D-CB80-49F5-9B8D-1A8D6E2D5E1C}"
 EndProject
@@ -20,6 +20,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Common", "IoT.Device\IoT.Protocol\System.Common\System.Common\System.Common.csproj", "{5BBB8F59-B565-4BE7-B0D0-67713ABAB41F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Common.Net", "IoT.Device\IoT.Protocol\System.Common\System.Common.Net\System.Common.Net.csproj", "{60C8B0B6-24D1-42C4-A4DF-AD4DEA9BB4CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0216E868-52F5-4838-89E9-1900673E2A0F}"
+	ProjectSection(SolutionItems) = preProject
+		IoT.Device\IoT.Protocol\.editorconfig = IoT.Device\IoT.Protocol\.editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
