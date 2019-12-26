@@ -2,6 +2,12 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "2.0.0",
+    "options": {
+        "env": {
+            "FRAMEWORK": "netcoreapp3.1",
+            "CONFIGURATION": "Release"
+        }
+    },
     "tasks": [
         {
             "label": "build",
@@ -25,27 +31,35 @@
         },
         {
             "label": "publish",
-            "command": "dotnet publish -c Release",
+            "command": "dotnet publish -c $CONFIGURATION",
             "type": "shell",
             "group": "build",
             "problemMatcher": []
         },
         {
             "label": "publish (self-contained)",
-            "command": "dotnet publish -c Release -r ${input:rid}",
+            "command": "dotnet publish -c $CONFIGURATION -r $RUNTIME",
             "type": "shell",
             "group": "build",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "options": {
+                "env": {
+                    "RUNTIME": "${input:rid}"
+                }
+            }
         },
         {
             "label": "deploy (remote SSH)",
+            "dependsOn": [
+                "publish"
+            ],
             "type": "shell",
             "problemMatcher": [],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "osx": {
-                "command": "rsync -r -v --delete -e ssh ./Web.Upnp.Control/bin/Release/netcoreapp3.0/publish/ ${input:remote-url}"
+                "command": "rsync -r -v --delete -e ssh ./Web.Upnp.Control/bin/$CONFIGURATION/$FRAMEWORK/publish/ ${input:remote-url}"
             }
         },
         {
@@ -59,7 +73,7 @@
                 "cwd": "${workspaceFolder}"
             },
             "osx": {
-                "command": "rsync -r -v --delete -e ssh ./Web.Upnp.Control/bin/Release/netcoreapp3.0/${input:rid}/publish/ ${input:remote-url}"
+                "command": "rsync -r -v --delete -e ssh ./Web.Upnp.Control/bin/Release/netcoreapp3.1/${input:rid}/publish/ ${input:remote-url}"
             }
         }
     ],
