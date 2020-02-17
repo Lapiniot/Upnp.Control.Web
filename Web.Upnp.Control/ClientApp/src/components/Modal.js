@@ -15,9 +15,9 @@ export default class Modal extends React.Component {
         const modal = $(`#${this.props.id}`);
         const { onDismiss, onShown } = this.props;
 
-        if (onDismiss && typeof onDismiss === "function") modal.on("hidden.bs.modal", onDismiss);
+        if (typeof onDismiss === "function") modal.on("hidden.bs.modal", onDismiss);
 
-        if (onShown && typeof onShown === "function") modal.on("shown.bs.modal", onShown);
+        if (typeof onShown === "function") modal.on("shown.bs.modal", onShown);
 
         this.showModal();
     }
@@ -26,9 +26,9 @@ export default class Modal extends React.Component {
         const modal = $(`#${this.props.id}`);
         const { onDismiss, onShown } = this.props;
 
-        if (onDismiss && typeof onDismiss === "function") modal.off("hidden.bs.modal", onDismiss);
+        if (typeof onDismiss === "function") modal.off("hidden.bs.modal", onDismiss);
 
-        if (onShown && typeof onShown === "function") modal.off("shown.bs.modal", onShown);
+        if (typeof onShown === "function") modal.off("shown.bs.modal", onShown);
     }
 
     showModal() {
