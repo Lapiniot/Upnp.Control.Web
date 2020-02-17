@@ -7,7 +7,7 @@ import Pagination from "./Pagination";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
 import { withProps, withDataFetch } from "../../components/Extensions";
-import { withBrowserCore} from "../common/BrowserCore";
+import { withBrowserCore } from "../common/BrowserCore";
 import Breadcrumb from "../common/Breadcrumb";
 import BrowserCoreSelectable from "../common/BrowserWithSelection";
 import $api from "../../components/WebApi";
@@ -28,9 +28,14 @@ export default class BrowserDialog extends React.Component {
         });
     }
 
+    hasSelection() {
+        return this.state.selection.keys.length === 0;
+    }
+
+    confirm = () => { if (!!this.props.onConfirm) this.props.onConfirm(this.state.selection); }
+
     render() {
-        const { id, title, confirmText = "OK", onConfirm, ...other } = this.props;
-        const onConfirmWrapper = () => { if (onConfirm) onConfirm(this.state.selection) };
+        const { id, title, confirmText = "OK", ...other } = this.props;
         return <Modal id={id} title={title} {...other}>
             <Modal.Body className="p-0 d-flex flex-column">
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
@@ -42,9 +47,11 @@ export default class BrowserDialog extends React.Component {
                 </MemoryRouter>
             </Modal.Body>
             <Modal.Footer>
-                <Modal.Button key="confirm" text={confirmText} className="btn-primary"
-                    disabled={this.state.selection.keys.length === 0} onClick={onConfirmWrapper} dismiss />
-                <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                {(typeof (this.props.children) === 'function' ? this.props.children.bind(this)() : this.props.children) ??
+                    <React.Fragment>
+                        <Modal.Button key="confirm" text={confirmText} className="btn-primary" disabled={this.hasSelection()} onClick={this.confirm} dismiss />
+                        <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                    </React.Fragment>}
             </Modal.Footer>
         </Modal>;
     }
