@@ -65,7 +65,7 @@ export default class Modal extends React.Component {
     static Button = class extends React.Component {
         render() {
             const { dismiss, text, className, ...other } = this.props;
-            return <button type="button" className={merge`btn ${className}`} data-dismiss={dismiss ? "modal" : null} {...other}>{text}</button>;
+        return <button type="button" className={merge`btn ${className}`} data-dismiss={dismiss ? "modal" : null} {...other}>{text}{this.props.children}</button>;
         }
     };
 
