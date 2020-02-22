@@ -28,9 +28,9 @@ export default class BrowserDialog extends React.Component {
         });
     }
 
-    hasSelection() {
-        return this.state.selection.keys.length === 0;
-    }
+    hasSelection = () => this.state.selection.keys.length !== 0;
+
+    getSelection = () => this.state.selection;
 
     confirm = () => { if (!!this.props.onConfirm) this.props.onConfirm(this.state.selection); }
 
@@ -47,7 +47,7 @@ export default class BrowserDialog extends React.Component {
                 </MemoryRouter>
             </Modal.Body>
             <Modal.Footer>
-                {(typeof (this.props.children) === 'function' ? this.props.children.bind(this)() : this.props.children) ??
+                {(typeof (this.props.children) === 'function' ? this.props.children(this) : this.props.children) ??
                     <React.Fragment>
                         <Modal.Button key="confirm" text={confirmText} className="btn-primary" disabled={this.hasSelection()} onClick={this.confirm} dismiss />
                         <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
@@ -57,41 +57,25 @@ export default class BrowserDialog extends React.Component {
     }
 }
 
-class MediaSourceList extends React.Component {
-    render() {
-        const { dataContext: { source: data } } = this.props;
-        return <ul className="list-group list-group-flush">
-            {[data.map((d, i) => {
-                return <RouteLink key={i} to={`/sources/browse/${d.udn}`} className="list-group-item list-group-item-action">
-                    <DeviceIcon icon={d.icons.find(i => i.w <= 48)} alt={d.name} service={d.type} />
-                    {d.name}{d.description && ` (${d.description})`}
-                </RouteLink>;
-            })]}
-        </ul>;
-    }
-}
+const MediaSourceList = ({ dataContext: { source: data } }) =>
+    <ul className="list-group list-group-flush">
+        {[data.map(({ udn, name, type, description, icons }, i) => {
+            return <RouteLink key={i} to={`/sources/browse/${udn}`} className="list-group-item list-group-item-action">
+                <DeviceIcon icon={icons.find(i => i.w <= 48)} alt={name} service={type} />
+                {name}{description && ` (${description})`}
+            </RouteLink>;
+        })]}
+    </ul>;
 
-function isMusicTrack(i) {
-    return i.class.endsWith(".musicTrack");
-}
+const BrowserView = ({ dataContext, onSelectionChanged, device, id, navContext: { page, pageSize, urls, navigateHandler },
+    dataContext: { source: { total, result: { length: fetched }, parents } } }) =>
+    <div>
+        <Breadcrumb dataContext={parents} baseUrl={urls.root} />
+        <BrowserCoreSelectable dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} device={device} id={id}
+            navigateHandler={navigateHandler} onSelectionChanged={onSelectionChanged} />
+        <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
+    </div>;
 
-class BrowserView extends React.Component {
-    render() {
-        const { navContext: { page, pageSize, urls } } = this.props;
-        const { source: { total, result: { length: fetched }, parents } } = this.props.dataContext;
-
-        return <div>
-            <Breadcrumb dataContext={parents} baseUrl={urls.root} />
-            <BrowserCoreSelectable dataContext={this.props.dataContext} filter={isMusicTrack}
-                device={this.props.device} id={this.props.id}
-                navigateHandler={this.props.navContext.navigateHandler}
-                onSelectionChanged={this.props.onSelectionChanged} />
-            <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
-        </div>;
-    }
-}
-
-const MediaSourcePicker = withProps(withDataFetch(MediaSourceList, { template: LoadIndicator }),
-    { dataUrl: $api.discover("servers").url() });
+const MediaSourcePicker = withProps(withDataFetch(MediaSourceList, { template: LoadIndicator }), { dataUrl: $api.discover("servers").url() });
 
 const Browser = withBrowserCore(BrowserView);
