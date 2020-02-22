@@ -52,50 +52,28 @@ export default class Modal extends React.Component {
             });
 
         return <div className="modal fade" id={id} tabIndex="-1" role="dialog" aria-labelledby={area.label} aria-hidden="true" {...other}>
-                   <div className={merge`modal-dialog modal-dialog-centered ${className}`} role="document">
-                       <div className="modal-content">
-                           {!!header ? header : <Modal.Header>{title}</Modal.Header>}
-                           {!!body ? body : <Modal.Body>{children}</Modal.Body>}
-                           {!!footer ? footer : <Modal.Footer>{[this.props.buttons]}</Modal.Footer>}
-                       </div>
-                   </div>
-               </div>;
+            <div className={merge`modal-dialog modal-dialog-centered ${className}`} role="document">
+                <div className="modal-content">
+                    {!!header ? header : <Modal.Header>{title}</Modal.Header>}
+                    {!!body ? body : <Modal.Body>{children}</Modal.Body>}
+                    {!!footer ? footer : <Modal.Footer>{[this.props.buttons]}</Modal.Footer>}
+                </div>
+            </div>
+        </div>;
     }
 
-    static Button = class extends React.Component {
-        render() {
-            const { dismiss, text, className, ...other } = this.props;
-        return <button type="button" className={merge`btn ${className}`} data-dismiss={dismiss ? "modal" : null} {...other}>{text}{this.props.children}</button>;
-        }
-    };
+    static Button = ({ dismiss, text, className, children, ...other }) =>
+        <button type="button" className={merge`btn ${className}`} data-dismiss={dismiss ? "modal" : null} {...other}>{text}{children}</button>;
 
-    static Header = class extends React.Component {
-        render() {
-            const { className, ...other } = this.props;
-            return <div className={merge`modal-header ${className}`} {...other}>
-                       <h5 className="modal-title">{this.props.children}</h5>
-                       <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                           <span aria-hidden="true">&times;</span>
-                       </button>
-                   </div>;
-        }
-    };
+    static Header = ({ className, children, ...other }) =>
+        <div className={merge`modal-header ${className}`} {...other}>
+            <h5 className="modal-title">{children}</h5>
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>;
 
-    static Body = class extends React.Component {
-        render() {
-            const { className, ...other } = this.props;
-            return <div className={merge`modal-body ${className}`} {...other}>
-                       {this.props.children}
-                   </div>;
-        }
-    };
+    static Body = ({ className, children, ...other }) => <div className={merge`modal-body ${className}`} {...other}>{children}</div>;
 
-    static Footer = class extends React.Component {
-        render() {
-            const { className, ...other } = this.props;
-            return <div className={merge`modal-footer ${className}`} {...other}>
-                       {this.props.children}
-                   </div>;
-        }
-    };
+    static Footer = ({ className, children, ...other }) => <div className={merge`modal-footer ${className}`} {...other}>{children}</div>;
 };

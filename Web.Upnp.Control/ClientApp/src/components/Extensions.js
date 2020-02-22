@@ -5,16 +5,14 @@ export function mergeClassNames(strings, ...values) {
         if (!current) return acc;
         if (acc === "") return current.trim();
         return acc + " " + current.trim();
-    },
-        "");
+    }, "");
 }
 
 export function reversemap(array, fn) {
     return array.reduceRight((acc, e, i) => {
         acc.push(fn(e, i));
         return acc;
-    },
-        []);
+    }, []);
 }
 
 export function withProps(Component, props = {}) {
