@@ -16,8 +16,8 @@ export class TextValueEditDialog extends React.Component {
                               placeholder="[provide value]" aria-label={label} aria-describedby="basic-addon1" />
                    </div>
                    <Modal.Footer>
-                       <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={onConfirm} dismiss />
                        <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                       <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={onConfirm} dismiss />
                    </Modal.Footer>
                </Modal>;
     }
@@ -32,8 +32,8 @@ export class ConfirmationDialog extends React.Component {
         return <Modal id={id} title={title} {...other}>
                    {this.props.children}
                    <Modal.Footer>
-                       <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={onConfirm} dismiss />
                        <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                       <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={onConfirm} dismiss />
                    </Modal.Footer>
                </Modal>;
     }
