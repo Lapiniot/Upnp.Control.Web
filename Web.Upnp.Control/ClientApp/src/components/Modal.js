@@ -1,40 +1,30 @@
-import $ from "./jQuery";
 import "bootstrap";
 import React from "react";
 import { mergeClassNames as merge } from "./Extensions";
+import * as $ from "jquery";
 
 export default class Modal extends React.Component {
 
     displayName = Modal.name;
-
-    componentDidUpdate() {
-        this.showModal();
-    }
 
     componentDidMount() {
         const modal = $(`#${this.props.id}`);
         const { onDismiss, onShown } = this.props;
 
         if (typeof onDismiss === "function") modal.on("hidden.bs.modal", onDismiss);
-
         if (typeof onShown === "function") modal.on("shown.bs.modal", onShown);
-
-        this.showModal();
+        
+        if (this.props.immediate) modal.modal("show");
     }
 
     componentWillUnmount() {
         const modal = $(`#${this.props.id}`);
         const { onDismiss, onShown } = this.props;
-
+        
         if (typeof onDismiss === "function") modal.off("hidden.bs.modal", onDismiss);
-
         if (typeof onShown === "function") modal.off("shown.bs.modal", onShown);
-    }
-
-    showModal() {
-        if (this.props.immediate) {
-            $(`#${this.props.id}`).modal("show");
-        }
+        
+        modal.modal("dispose");
     }
 
     render() {
@@ -62,8 +52,8 @@ export default class Modal extends React.Component {
         </div>;
     }
 
-    static Button = ({ dismiss, text, className, children, ...other }) =>
-        <button type="button" className={merge`btn ${className}`} data-dismiss={dismiss ? "modal" : null} {...other}>{text}{children}</button>;
+    static Button = ({ dismiss, text, className, icon, children, ...other }) =>
+        <button type="button" className={merge`btn ${className}`} data-dismiss={dismiss ? "modal" : null} {...other}>{icon && <i className={`mr-2 fas fa-${icon}`} />}{text}{children}</button>;
 
     static Header = ({ className, children, ...other }) =>
         <div className={merge`modal-header ${className}`} {...other}>

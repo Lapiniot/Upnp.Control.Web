@@ -4,15 +4,8 @@ import UpnpDevices from "./browse/Devices";
 import UpnpBrowser from "./browse/Browse";
 
 /***** Handles all /upnp/* routes *****/
-export default class Router extends React.Component {
-
-    displayName = Router.name;
-
-    render() {
-        const { path } = this.props.match;
-        return <Switch>
-                   <Route path={path} exact component={UpnpDevices} />
-                   <Route path={`${path}/browse`} component={UpnpBrowser} />
-               </Switch>;
-    }
-}
+export default ({ match: { path } }) =>
+    <Switch>
+        <Route path={path} exact component={UpnpDevices} />
+        <Route path={`${path}/browse`} component={UpnpBrowser} />
+    </Switch>;

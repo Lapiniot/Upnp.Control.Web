@@ -15,18 +15,12 @@ export function reversemap(array, fn) {
     }, []);
 }
 
-export function withProps(Component, props = {}) {
-    return class extends React.Component {
-        render() {
-            return <Component {...props} {...this.props} />;
-        }
-    };
+export function withProps(Component, extra = {}) {
+    return (props) => <Component {...extra} {...props} />;
 }
 
 export function withMatchProps(Component, extra = {}) {
-    return function ({ match: { params } = {} }) {
-        return <Component {...params} {...extra} />
-    }
+    return ({ match: { params } = {}, ...other }) => <Component {...params} {...extra} {...other} />
 }
 
 export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuilder = props => props.dataUrl) {
@@ -35,6 +29,8 @@ export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuild
         constructor(props) {
             super(props);
             this.state = { dataUrl: null, loading: true, dataContext: null };
+            const { template: Template = "div", text = "Loading...", usePreloader = true } = loadPlaceholderProps;
+            this.preloader = usePreloader && <Template>{text}</Template>;
         }
 
         static getDerivedStateFromProps(props, state) {
@@ -48,12 +44,12 @@ export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuild
                 const data = await response.json();
                 this.setState({ loading: false, dataContext: { source: data, reload: this.reload } });
             } catch (e) {
-                console.log(e);
+                console.error(e);
                 this.setState({ loading: false, dataContext: null, error: e });
             }
         }
 
-        componentDidUpdate(prevProps, prevState) {
+        componentDidUpdate(_prevProps, prevState) {
             if (this.state.dataUrl !== prevState.dataUrl) {
                 this.reload();
             }
@@ -68,12 +64,10 @@ export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuild
         }
 
         render() {
-            if (this.state.loading) {
-                const { template: Template = "div", text = "Loading..." } = loadPlaceholderProps;
-                return <Template>{text}</Template>;
-            } else {
-                return <Component dataContext={this.state.dataContext} {...this.props} />;
+            if (this.state.loading && this.preloader) {
+                return this.preloader;
             }
+            return <Component dataContext={this.state.dataContext} {...this.props} />;
         }
     };
 }

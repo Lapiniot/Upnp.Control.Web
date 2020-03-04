@@ -9,37 +9,47 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Web.Upnp.Control/bin/Debug/netcoreapp3.1/Web.Upnp.Control.dll",
+            "program": "./bin/Debug/netcoreapp3.1/Web.Upnp.Control.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Web.Upnp.Control",
             "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart",
-            "launchBrowser": {
-                "enabled": true,
-                "args": "${auto-detect-url}",
-                "windows": {
-                    "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}"
-                },
-                "osx": {
-                    "command": "open"
-                },
-                "linux": {
-                    "command": "xdg-open"
-                }
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+                "/Views": "./Views"
             }
         },
         {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
+            "name": "Launch in Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "address": "localhost",
+            "port": 9222,
+            "url": "http://localhost:9000",
+            "webRoot": "${workspaceFolder}/Web.Upnp.Control/ClientApp"
+        },
+        {
+            "name": "Attach to Chrome",
+            "type": "chrome",
             "request": "attach",
-            "processId": "${command:pickProcess}"
+            "address": "localhost",
+            "port": 9222,
+            "url": "http://localhost:9000",
+            "webRoot": "${workspaceFolder}/Web.Upnp.Control/ClientApp"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Compound",
+            "configurations": [
+                ".NET Core Launch (web)",
+                "Launch in Chrome"
+            ]
         }
     ]
 }

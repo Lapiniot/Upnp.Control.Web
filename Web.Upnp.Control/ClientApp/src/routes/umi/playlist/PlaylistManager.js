@@ -7,6 +7,7 @@ import BrowserDialog from "../../common/BrowserDialog";
 import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
 import BrowserCore from "../../common/BrowserWithSelection";
+import LoadIndicator from "../../../components/LoadIndicator";
 
 export default class PlaylistManager extends React.Component {
 
@@ -55,13 +56,10 @@ export default class PlaylistManager extends React.Component {
     removeItems = (ids) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch();
 
     onCreate = () => {
-        let title = "New Playlist";
-        const onChanged = event => { title = event.target.value; };
-
+        const input = React.createRef();
         this.setState({
-            modal: <TextValueEditDialog id="create_confirm" title="Create new playlist" label="Name" confirmText="Create"
-                defaultValue={title} onValueChanged={onChanged} onConfirm={this.wrap(() => this.createPlaylist(title))}
-                immediate onDismiss={this.resetModalState} />
+            modal: <TextValueEditDialog id="create_confirm" inputRef={input} title="Create new playlist" label="Name" confirmText="Create"
+                defaultValue="New Playlist" onConfirm={this.wrap(() => this.createPlaylist(input.current.value))} immediate />
         });
     }
 
@@ -77,7 +75,7 @@ export default class PlaylistManager extends React.Component {
                 </ul>
                 <Modal.Footer>
                     <Modal.Button text="Cancel" className="btn-secondary" dismiss />
-                    <Modal.Button text="Delete" className="btn-danger" onClick={this.wrap(() => this.removePlaylist(ids))} dismiss />
+                    <Modal.Button text="Delete" className="btn-danger" icon="trash" onClick={this.wrap(() => this.removePlaylist(ids))} dismiss />
                 </Modal.Footer>
             </Modal>
         });
@@ -86,23 +84,23 @@ export default class PlaylistManager extends React.Component {
     onRename = () => {
         const id = this.state.selection.keys.next().value;
         let title = this.state.data.source.result.find(e => e.id === id).title;
-        const onChanged = event => { title = event.target.value; };
+        const input = React.createRef();
 
         this.setState({
-            modal: <TextValueEditDialog id="rename_confirm" title="Rename playlist" label="Name" confirmText="Rename"
-                defaultValue={title} onValueChanged={onChanged} onConfirm={this.wrap(() => this.renamePlaylist(id, title))} immediate />
+            modal: <TextValueEditDialog id="rename_confirm" inputRef={input} title="Rename playlist" label="Name" confirmText="Rename"
+                defaultValue={title} onConfirm={this.wrap(() => this.renamePlaylist(id, input.current.value))} immediate />
         });
     }
 
     onAddItems = () => {
         const addItems = this.wrap(({ device, keys }) => this.addItems(device, keys));
         this.setState({
-            modal: <BrowserDialog id="browse_dialog" title="Select items to add" className="modal-lg modal-vh-80" immediate >
+            modal: <BrowserDialog key="add_items_dialog" id="browse_dialog" title="Select items to add" className="modal-lg modal-vh-80" immediate >
                 {browser => [
-                    browser.hasSelection() && <i className="mr-auto">{browser.getSelection().keys.length} item(s) selected</i>,
-                    <Modal.Button text="Cancel" className="btn-secondary" dismiss />,
-                    <Modal.Button className="btn-primary" disabled={!browser.hasSelection()}
-                        onClick={() => addItems(browser.getSelection())}><i className="fas fa-fw fa-plus" />Add</Modal.Button>
+                    browser.hasSelection() && <i key="counter" className="mr-auto">{browser.getSelection().keys.length} item(s) selected</i>,
+                    <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />,
+                    <Modal.Button key="add" className="btn-primary" icon="plus" disabled={!browser.hasSelection()}
+                        onClick={() => addItems(browser.getSelection())}>Add</Modal.Button>
                 ]}
             </BrowserDialog>
         })
@@ -113,13 +111,13 @@ export default class PlaylistManager extends React.Component {
         const values = this.state.data.source.result.filter(e => ids.includes(e.id));
 
         this.setState({
-            modal: <Modal id="remove_items_confirm" title="Do you want to remove items from playlist?" immediate >
+            modal: <Modal id="remove_items_confirm" title="Do you want to remove items from playlist?" className="modal-vh-80" immediate >
                 <ul className="list-unstyled">
                     {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
                 </ul>
                 <Modal.Footer>
                     <Modal.Button text="Cancel" className="btn-secondary" dismiss />
-                    <Modal.Button text="Remove" className="btn-danger" onClick={this.wrap(() => this.removeItems(ids))} dismiss />
+                    <Modal.Button text="Remove" className="btn-danger" icon="trash" onClick={this.wrap(() => this.removeItems(ids))} dismiss />
                 </Modal.Footer>
             </Modal>
         });
@@ -133,15 +131,15 @@ export default class PlaylistManager extends React.Component {
     }
 
     render() {
+
+        const { source: { total = 0, result: { length: fetched = 0 } = {} } = {} } = this.state.data || {};
         const { id, navContext: { navigateHandler, page, pageSize, urls } } = this.props;
-        const { source: { total, result: { length: fetched } } } = this.state.data;
 
         const selection = this.state.selection;
-
         const noSelection = !selection || !selection.any();
 
-        return <div>
-            <Toolbar className="position-sticky sticky-top px-3 py-2 bg-light">
+        return <div className="d-flex flex-column h-100">
+            <Toolbar className="position-sticky sticky-top px-2 py-1 bg-light shadow-sm">
                 {id === "PL:"
                     ? <Toolbar.Group>
                         <Toolbar.Button title="Create" glyph="plus" onClick={this.onCreate} />
@@ -154,11 +152,15 @@ export default class PlaylistManager extends React.Component {
                         <Toolbar.Button title="Remove items" glyph="trash" onClick={this.onRemoveItems} disabled={noSelection} />
                     </Toolbar.Group>}
             </Toolbar>
-            <BrowserCore dataContext={this.state.data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} onSelectionChanged={this.onSelectionChanged} />
-            <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
-            {(this.state && this.state.modal) && (typeof this.state.modal === "function" ? this.state.modal() : this.state.modal)}
+            {
+                this.state.data ?
+                    <BrowserCore dataContext={this.state.data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} onSelectionChanged={this.onSelectionChanged} /> :
+                    <LoadIndicator />
+            }
+            <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} className="shadow-sm" />
+            {this.state.modal && (typeof this.state.modal === "function" ? this.state.modal() : this.state.modal)}
         </div>;
     }
 }
 
-export const RoutedPlaylistManager = withBrowserCore(PlaylistManager);
+export const RoutedPlaylistManager = withBrowserCore(PlaylistManager, false);

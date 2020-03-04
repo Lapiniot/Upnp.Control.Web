@@ -5,28 +5,20 @@ export default class Toolbar extends React.Component {
 
     displayName = Toolbar.name;
 
-    static Button = class extends React.Component {
-        render() {
-            const { className, areaLabel, title, glyph, ...other } = this.props;
-            return <button type="button" className={merge`btn ${className}`} title={title} area-label={areaLabel} {...other}>
-                       {glyph && <i className={`fas fa-${glyph}`} />}{this.props.children}
-                   </button>;
-        }
-    }
+    static Button = ({ className, areaLabel, title, glyph, children, ...other }) =>
+        <button type="button" className={merge`btn ${className}`} title={title} area-label={areaLabel} {...other}>
+            {glyph && <i className={`fas fa-${glyph}`} />}{children}
+        </button>;
 
-    static Group = class extends React.Component {
-        render() {
-            const { className, areaLabel, ...other } = this.props;
-            return <div className={merge`btn-group ${className}`} role="group" aria-label={areaLabel} {...other}>
-                       {this.props.children}
-                   </div>;
-        }
-    }
+    static Group = ({ className, areaLabel, children, ...other }) =>
+        <div className={merge`btn-group ${className}`} role="group" aria-label={areaLabel} {...other}>
+            {children}
+        </div>;
 
     render() {
-        const { className, areaLabel, ...other } = this.props;
+        const { className, areaLabel, children, ...other } = this.props;
         return <div className={merge`btn-toolbar ${className}`} role="toolbar" aria-label={areaLabel} {...other}>
-                   {this.props.children}
-               </div>;
+            {children}
+        </div>;
     }
 }

@@ -2,7 +2,7 @@ import { withRouter } from "react-router-dom";
 import { withDataFetch } from "../../components/Extensions";
 import { withNavigationContext } from "./Navigator";
 import LoadIndicator from "../../components/LoadIndicator";
-import $api from "../../components/WebApi";
+import $ from "../../components/WebApi";
 
 export class DIDLUtils {
     static getKind(upnpClassName) {
@@ -11,12 +11,11 @@ export class DIDLUtils {
     }
 }
 
-export function withBrowserCore(BrowserView) {
+export function withBrowserCore(BrowserView, usePreloader = true) {
     return withRouter(
         withNavigationContext(
             withDataFetch(BrowserView,
-                { template: LoadIndicator },
-                ({ device, id, navContext: { pageSize, page } }) => {
-                    return $api.browse(device).get(id).withParents().take(pageSize).skip((page - 1) * pageSize).url();
-                })));
+                { template: LoadIndicator, usePreloader: usePreloader },
+                ({ device, id, navContext: { pageSize, page } }) =>
+                    $.browse(device).get(id).withParents().take(pageSize).skip((page - 1) * pageSize).url())));
 }

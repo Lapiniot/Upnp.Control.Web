@@ -1,20 +1,10 @@
-﻿import "./jQuery";
-import React from "react";
+﻿import React from "react";
 
-export default class Spoiler extends React.Component {
-
-    displayName = Spoiler.name;
-
-    render() {
-        return <div className="spoiler">
-                   <button className="btn-light collapsed"
-                           aria-expanded="false" aria-controls={this.props.uniqueId}
-                           data-toggle="collapse" data-target={`#${this.props.uniqueId}`}>
-                       <i />{this.props.title}
-                   </button>
-                   <div className="collapse" id={this.props.uniqueId}>
-                       {this.props.children}
-                   </div>
-               </div>;
-    }
-}
+export default ({ uniqueId, title, children }) =>
+    <div className="spoiler">
+        <button className="btn-light collapsed" aria-expanded="false" aria-controls={uniqueId}
+            data-toggle="collapse" data-target={`#${uniqueId}`}>
+            <i />{title}
+        </button>
+        <div className="collapse" id={uniqueId}>{children}</div>
+    </div>;

@@ -19,13 +19,15 @@ export default class BrowserDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = { selection: { keys: [] } };
-        this.browserComponent = withMatchProps(Browser, {
+        this.browser = withMatchProps(Browser, {
             baseUrl: "/sources/browse",
             onSelectionChanged: (selection, device, id) => {
                 this.setState({ selection: { device: device, id: id, keys: Array.from(selection.keys) } });
                 return true;
             }
         });
+        this.sourcePicker = withProps(withDataFetch(MediaSourceList,
+            { template: LoadIndicator }), { dataUrl: $api.discover("servers").url() });
     }
 
     hasSelection = () => this.state.selection.keys.length !== 0;
@@ -36,13 +38,13 @@ export default class BrowserDialog extends React.Component {
 
     render() {
         const { id, title, confirmText = "OK", ...other } = this.props;
-        return <Modal id={id} title={title} {...other}>
+        return <Modal id={id} title={title} {...other} data-keyboard={true}>
             <Modal.Body className="p-0 d-flex flex-column">
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
-                        <Route path="/sources" exact component={MediaSourcePicker} />
+                        <Route path="/sources" exact component={this.sourcePicker} />
                         <Route path="/sources/browse" exact render={() => <Redirect to="/sources" />} />
-                        <Route path="/sources/browse/:device/:id(.*)?" render={this.browserComponent} />
+                        <Route path="/sources/browse/:device/:id(.*)?" component={this.browser} />
                     </Switch>
                 </MemoryRouter>
             </Modal.Body>
@@ -55,7 +57,7 @@ export default class BrowserDialog extends React.Component {
             </Modal.Footer>
         </Modal>;
     }
-}
+};
 
 const MediaSourceList = ({ dataContext: { source: data } }) =>
     <ul className="list-group list-group-flush">
@@ -75,7 +77,5 @@ const BrowserView = ({ dataContext, onSelectionChanged, device, id, navContext: 
             navigateHandler={navigateHandler} onSelectionChanged={onSelectionChanged} />
         <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
     </div>;
-
-const MediaSourcePicker = withProps(withDataFetch(MediaSourceList, { template: LoadIndicator }), { dataUrl: $api.discover("servers").url() });
 
 const Browser = withBrowserCore(BrowserView);
