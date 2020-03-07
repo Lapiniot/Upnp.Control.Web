@@ -25,7 +25,7 @@ const RelativePageLink = ({ enabled, title, url, label, ...other }) => enabled ?
 
 export default ({ count, total, baseUrl, current, size, className }) => {
 
-    if (count == 0 || total == count) return null;
+    if (count === 0 || total === count) return null;
 
     const template = `${baseUrl}?s=${size}&p=`;
     const pageData = [];
