@@ -3,43 +3,21 @@ export default class {
         this.map = new Map();
     }
 
-    any = () => {
-        return this.map.size > 0;
-    }
+    any = () => this.map.size > 0;
 
-    one = () => {
-        return this.map.size === 1;
-    }
+    one = () => this.map.size === 1;
 
-    select = (key, state = true) => {
-        if (state)
-            this.map.set(key, true);
-        else
-            this.map.delete(key);
-    };
+    select = (key, state = true) => state ? this.map.set(key, true) : this.map.delete(key);
 
-    selectMany = (keys, state = true) => {
-        const action = state ? key => this.map.set(key, true) : key => this.map.delete(key);
+    selectMany = (keys, state = true) => keys.forEach(state ? key => this.map.set(key, true) : key => this.map.delete(key));
 
-        keys.forEach(action);
-    };
+    selected = key => this.map.has(key) && this.map.get(key);
 
-    selected = key => {
-        return this.map.has(key) && this.map.get(key);
-    };
+    all = keys => keys.length > 0 && keys.every(keys => this.selected(keys));
 
-    all = keys => {
-        return keys.length > 0 &&
-            keys.every(keys => {
-                return this.selected(keys);
-            });
-    }
+    clear = () => this.map.clear();
 
     get keys() {
         return this.map.keys();
     }
-
-    clear = () => {
-        this.map.clear();
-    };
 }
