@@ -11,6 +11,7 @@ import { withBrowserCore } from "../common/BrowserCore";
 import Breadcrumb from "../common/Breadcrumb";
 import BrowserCoreSelectable from "../common/BrowserWithSelection";
 import $api from "../../components/WebApi";
+import SelectionService from "../../components/SelectionService";
 
 export default class BrowserDialog extends React.Component {
 
@@ -19,20 +20,26 @@ export default class BrowserDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = { selection: { keys: [] } };
+        this.selection = new SelectionService();
         this.browser = withMatchProps(Browser, {
             baseUrl: "/sources/browse",
+            selection: this.selection,
             onSelectionChanged: (selection, device, id) => {
                 this.setState({ selection: { device: device, id: id, keys: Array.from(selection.keys) } });
                 return true;
             }
         });
-        this.sourcePicker = withProps(withDataFetch(MediaSourceList,
-            { template: LoadIndicator }), { dataUrl: $api.discover("servers").url() });
+        this.sourcePicker = withProps(withDataFetch(MediaSourceList, { template: LoadIndicator }), { dataUrl: $api.discover("servers").url() });
     }
 
     hasSelection = () => this.state.selection.keys.length !== 0;
 
     getSelection = () => this.state.selection;
+
+    clearSelection = () => {
+        this.selection.clear();
+        this.setState({ selection: { keys: [] } });
+    }
 
     confirm = () => { if (!!this.props.onConfirm) this.props.onConfirm(this.state.selection); }
 
@@ -69,12 +76,11 @@ const MediaSourceList = ({ dataContext: { source: data } }) =>
         })]}
     </ul>;
 
-const BrowserView = ({ dataContext, onSelectionChanged, device, id, navContext: { page, pageSize, urls, navigateHandler },
-    dataContext: { source: { total, result: { length: fetched }, parents } } }) =>
+const BrowserView = ({ dataContext, navContext: { page, pageSize, urls, navigateHandler },
+    dataContext: { source: { total, result: { length: fetched }, parents } }, ...other }) =>
     <div>
         <Breadcrumb dataContext={parents} baseUrl={urls.root} />
-        <BrowserCoreSelectable dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} device={device} id={id}
-            navigateHandler={navigateHandler} onSelectionChanged={onSelectionChanged} />
+        <BrowserCoreSelectable dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} navigateHandler={navigateHandler} {...other} />
         <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
     </div>;
 
