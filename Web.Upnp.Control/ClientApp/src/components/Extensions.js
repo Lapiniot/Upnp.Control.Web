@@ -29,8 +29,8 @@ export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuild
         constructor(props) {
             super(props);
             this.state = { dataUrl: null, loading: true, dataContext: null };
-            const { template: Template = "div", text = "Loading...", usePreloader = true } = loadPlaceholderProps;
-            this.preloader = usePreloader && <Template>{text}</Template>;
+            const { template: Template = "div", text = "Loading...", usePreloader = true, ...other } = loadPlaceholderProps;
+            this.preloader = usePreloader && <Template {...other}>{text}</Template>;
         }
 
         static getDerivedStateFromProps(props, state) {
@@ -59,15 +59,12 @@ export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuild
             this.fetchData(this.state.dataUrl);
         }
 
-        reload = () => {
-            this.setState({ loading: true, dataContext: null }, () => this.fetchData(this.state.dataUrl));
-        }
+        reload = () => this.setState({ loading: true, dataContext: null }, () => this.fetchData(this.state.dataUrl));
 
         render() {
-            if (this.state.loading && this.preloader) {
-                return this.preloader;
-            }
-            return <Component dataContext={this.state.dataContext} {...this.props} />;
+            return this.state.loading && this.preloader
+                ? this.preloader
+                : <Component dataContext={this.state.dataContext} {...this.props} />;
         }
     };
 }
