@@ -6,26 +6,24 @@ import { DIDLUtils as utils } from "./BrowserCore";
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { data: null, selectableKeys: [], selection: null, modal: null };
+        this.state = { data: null, selectableKeys: [], selection: props.selection, modal: null };
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (state.data !== props.dataContext) {
-            const data = props.dataContext;
-            const filter = props.filter || (() => true);
+    static getDerivedStateFromProps({ dataContext, selection = new SelectionService(), filter = () => true }, state) {
+        if (state.data !== dataContext) {
             return {
-                data: data,
-                selectableKeys: data.source.result.filter(filter).map(i => i.id),
-                selection: new SelectionService(),
+                data: dataContext,
+                selectableKeys: dataContext.source.result.filter(filter).map(i => i.id),
+                selection: selection,
                 filter: filter
-            };
-        }
-        return null;
+            }
+        } else
+            return null;
     }
 
-    isSelected = id => { return this.state.selection.selected(id); };
+    isSelected = id => this.state.selection.selected(id);
 
-    allSelected = () => { return this.state.selection.all(this.state.selectableKeys); };
+    allSelected = () => this.state.selection.all(this.state.selectableKeys);
 
     onSelect = (event) => {
         const checkbox = event.target;
