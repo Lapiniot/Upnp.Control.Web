@@ -21,27 +21,18 @@ export default class BrowserDialog extends React.Component {
         super(props);
         this.state = { selection: { keys: [] } };
         this.selection = new SelectionService();
-        this.browser = withMatchProps(Browser, {
-            baseUrl: "/sources/browse",
-            selection: this.selection,
-            onSelectionChanged: (selection, device, id) => {
-                this.setState({ selection: { device: device, id: id, keys: Array.from(selection.keys) } });
-                return true;
-            }
+        this.selection.addEventListener('changed', e => {
+            const { target: selection, detail: { device } = {} } = e;
+            e.preventDefault();
+            this.setState({ selection: selection, device: device });
         });
+        this.browser = withMatchProps(Browser, { baseUrl: "/sources/browse", selection: this.selection });
         this.sourcePicker = withProps(withDataFetch(MediaSourceList, { template: LoadIndicator }), { dataUrl: $api.discover("servers").url() });
     }
 
-    hasSelection = () => this.state.selection.keys.length !== 0;
+    confirm = () => !!this.props.onConfirm && this.props.onConfirm(this.state.selection);
 
-    getSelection = () => this.state.selection;
-
-    clearSelection = () => {
-        this.selection.clear();
-        this.setState({ selection: { keys: [] } });
-    }
-
-    confirm = () => { if (!!this.props.onConfirm) this.props.onConfirm(this.state.selection); }
+    getSelectionData = () => [this.state.device, Array.from(this.state.selection.keys)];
 
     render() {
         const { id, title, confirmText = "OK", ...other } = this.props;
@@ -58,7 +49,7 @@ export default class BrowserDialog extends React.Component {
             <Modal.Footer>
                 {(typeof (this.props.children) === 'function' ? this.props.children(this) : this.props.children) ??
                     <React.Fragment>
-                        <Modal.Button key="confirm" text={confirmText} className="btn-primary" disabled={this.hasSelection()} onClick={this.confirm} dismiss />
+                        <Modal.Button key="confirm" text={confirmText} className="btn-primary" disabled={this.selection.any()} onClick={this.confirm} dismiss />
                         <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
                     </React.Fragment>}
             </Modal.Footer>

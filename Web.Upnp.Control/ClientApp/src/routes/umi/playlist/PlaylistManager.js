@@ -8,6 +8,7 @@ import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
 import BrowserCore from "../../common/BrowserWithSelection";
 import LoadIndicator from "../../../components/LoadIndicator";
+import SelectionService from "../../../components/SelectionService";
 
 export default class PlaylistManager extends React.Component {
 
@@ -15,13 +16,13 @@ export default class PlaylistManager extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { data: null, modal: null, selection: null };
+        this.state = { data: null, modal: null };
         this.resetModal = () => this.setState({ modal: null });
     }
 
     static getDerivedStateFromProps(props, state) {
         if (state.data !== props.dataContext) {
-            return { data: props.dataContext, selection: null };
+            return { data: props.dataContext, selection: new SelectionService() };
         }
         return null;
     }
@@ -78,16 +79,15 @@ export default class PlaylistManager extends React.Component {
     }
 
     onAddItems = () => {
-        const addItems = async ({ device, keys }) => { await this.addItems(device, keys); this.reload() };
         this.setState({
             modal: <BrowserDialog id="browse_dialog" title="Select items to add" className="modal-lg modal-vh-80" onDismiss={this.resetModal} immediate >
-                {browser => [
-                    browser.hasSelection() && <button type="button" key="counter" className="btn btn-link text-decoration-none mr-auto px-0"
-                        onClick={browser.clearSelection}>Clear selection</button>,
+                {b => [
+                    b.selection.any() && <button type="button" key="counter" className="btn btn-link text-decoration-none mr-auto px-0"
+                        onClick={b.selection.clear}>Clear selection</button>,
                     <Modal.Button key="close" text="Close" className="btn-secondary" dismiss />,
-                    <Modal.Button key="add" className="btn-primary" icon="plus" disabled={!browser.hasSelection()}
-                        onClick={() => addItems(browser.getSelection()).then(browser.clearSelection)}>
-                        Add{browser.selection.any() && <span className="badge badge-light ml-1">{browser.getSelection().keys.length}</span>}
+                    <Modal.Button key="add" className="btn-primary" icon="plus" disabled={b.selection.none()}
+                        onClick={() => this.addItems(...b.getSelectionData()).then(b.selection.clear).then(this.reload)}>
+                        Add{b.selection.any() && <span className="badge badge-light ml-1">{b.selection.length}</span>}
                     </Modal.Button>
                 ]}
             </BrowserDialog>
@@ -113,36 +113,28 @@ export default class PlaylistManager extends React.Component {
 
     onCopy = () => { alert("not implemented yet"); };
 
-    onSelectionChanged = (selection) => {
-        this.setState({ selection: selection });
-        return true;
-    }
-
     render() {
 
         const { source: { total = 0, result: { length: fetched = 0 } = {} } = {} } = this.state.data || {};
         const { id, navContext: { navigateHandler, page, pageSize, urls }, ...other } = this.props;
-
-        const selection = this.state.selection;
-        const noSelection = !selection || !selection.any();
-
+        const disabled = this.state.selection && this.state.selection.none();
         return <div className="d-flex flex-column h-100">
             <Toolbar className="position-sticky sticky-top px-2 py-1 bg-light shadow-sm">
                 {id === "PL:"
                     ? <Toolbar.Group>
                         <Toolbar.Button title="Create" glyph="plus" onClick={this.onCreate} />
-                        <Toolbar.Button title="Delete" glyph="trash" onClick={this.onDelete} disabled={noSelection} />
-                        <Toolbar.Button title="Rename" glyph="edit" onClick={this.onRename} disabled={!selection || !selection.one()} />
-                        <Toolbar.Button title="Copy" glyph="copy" onClick={this.onCopy} disabled={noSelection} />
+                        <Toolbar.Button title="Delete" glyph="trash" onClick={this.onDelete} disabled={disabled} />
+                        <Toolbar.Button title="Rename" glyph="edit" onClick={this.onRename} disabled={disabled} />
+                        <Toolbar.Button title="Copy" glyph="copy" onClick={this.onCopy} disabled={disabled} />
                     </Toolbar.Group>
                     : <Toolbar.Group>
                         <Toolbar.Button title="Add items" glyph="plus" onClick={this.onAddItems} />
-                        <Toolbar.Button title="Remove items" glyph="trash" onClick={this.onRemoveItems} disabled={noSelection} />
+                        <Toolbar.Button title="Remove items" glyph="trash" onClick={this.onRemoveItems} disabled={disabled} />
                     </Toolbar.Group>}
             </Toolbar>
             {
                 this.state.data ?
-                    <BrowserCore dataContext={this.state.data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} onSelectionChanged={this.onSelectionChanged} {...other} /> :
+                    <BrowserCore dataContext={this.state.data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} selection={this.state.selection} {...other} /> :
                     <LoadIndicator />
             }
             <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} className="shadow-sm" />

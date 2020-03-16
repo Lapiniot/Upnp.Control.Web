@@ -9,16 +9,13 @@ export default class extends React.Component {
         this.state = { data: null, selectableKeys: [], selection: props.selection, modal: null };
     }
 
-    static getDerivedStateFromProps({ dataContext, selection = new SelectionService(), filter = () => true }, state) {
-        if (state.data !== dataContext) {
-            return {
-                data: dataContext,
-                selectableKeys: dataContext.source.result.filter(filter).map(i => i.id),
-                selection: selection,
-                filter: filter
-            }
-        } else
-            return null;
+    static getDerivedStateFromProps({ dataContext, selection, filter = () => true }, state) {
+        return (state.data !== dataContext) ? {
+            data: dataContext,
+            selectableKeys: dataContext.source.result.filter(filter).map(i => i.id),
+            selection: selection || new SelectionService(),
+            filter: filter
+        } : null;
     }
 
     isSelected = id => this.state.selection.selected(id);
@@ -27,25 +24,18 @@ export default class extends React.Component {
 
     onSelect = (event) => {
         const checkbox = event.target;
-        this.state.selection.select(checkbox.name, checkbox.checked);
-        this.onSelectionChanged();
+        const cancelled = !this.state.selection.select(checkbox.name, checkbox.checked, { device: this.props.device, id: this.props.id });
+        this.onSelectionChanged(cancelled);
     };
-
 
     onSelectAll = (event) => {
         const checkbox = event.target;
-        this.state.selection.selectMany(this.state.selectableKeys, checkbox.checked);
-        this.onSelectionChanged();
+        const cancelled = !this.state.selection.selectMany(this.state.selectableKeys, checkbox.checked, { device: this.props.device, id: this.props.id });
+        this.onSelectionChanged(cancelled);
     };
 
-    onSelectionChanged = () => {
-        const handler = this.props.onSelectionChanged;
-
-        if (!handler || handler(this.state.selection, this.props.device, this.props.id) !== true) {
-            // Perform default handling, if handler is not defined or returns any value other than "true" 
-            // (means selection event is handled by external component itself)
-            this.setState({ selection: this.state.selection });
-        }
+    onSelectionChanged = (cancelled) => {
+        if (!cancelled) this.setState({ selection: this.state.selection })
     }
 
     render() {
