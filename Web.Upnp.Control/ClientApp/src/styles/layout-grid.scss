@@ -2,14 +2,21 @@
 
 $grid-layout-max-columns: 8;
 
-$grid-layout-breakpoints: map-merge($grid-breakpoints, (xxl: 1600px, xxxl: 1920px, xxxxl: 2560px));
+$grid-layout-breakpoints: map-merge(
+    $grid-breakpoints,
+    (
+        xxl: 1600px,
+        xxxl: 1920px,
+        xxxxl: 2560px
+    )
+);
 
 @mixin grid-template($rows, $columns) {
-    @if($columns) {
+    @if ($columns) {
         grid-template-columns: repeat($columns, 1fr);
     }
 
-    @if($rows) {
+    @if ($rows) {
         grid-template-rows: repeat($rows, 1fr);
     }
 }

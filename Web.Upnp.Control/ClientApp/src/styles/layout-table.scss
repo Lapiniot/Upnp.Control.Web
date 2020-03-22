@@ -1,33 +1,4 @@
-﻿/********** Bootstrap core styles **********/
-
-$enable-gradients: true;
-
-@import "../../node_modules/bootstrap/scss/bootstrap";
-
-@each $level in map-keys($grays) {
-    .bg-gray-#{$level} {
-        background-color: map-get($grays, $level);
-    }
-}
-
-.sticky-bottom {
-    bottom: 0;
-    z-index: $zindex-sticky;
-}
-
-.d-table-caption {
-    display: table-caption;
-}
-
-.d-table-head {
-    display: table-header-group;
-}
-
-.d-table-body {
-    display: table-row-group;
-}
-
-$table-striped-order: even;
+﻿$table-striped-order: even;
 
 .x-table {
     display: table;
@@ -59,7 +30,7 @@ $table-striped-order: even;
         & > div {
             display: table-row;
 
-            &[data-selected='true']{
+            &[data-selected="true"] {
                 background-color: $link-color !important;
                 color: $white !important;
             }
@@ -69,15 +40,15 @@ $table-striped-order: even;
                 vertical-align: middle;
                 padding: $table-cell-padding;
                 border-top: $table-border-width solid $table-border-color;
-                
-                &.x-table-cell-min{
+
+                &.x-table-cell-min {
                     width: 1px;
                 }
             }
-            & > div:first-child{
+            & > div:first-child {
                 padding-left: 2 * $table-cell-padding;
             }
-            & > div:last-child{
+            & > div:last-child {
                 padding-right: 2 * $table-cell-padding;
             }
         }
@@ -89,10 +60,10 @@ $table-striped-order: even;
                 & > div {
                     padding: $table-cell-padding-sm;
                 }
-                & > div:first-child{
+                & > div:first-child {
                     padding-left: 2 * $table-cell-padding-sm;
                 }
-                & > div:last-child{
+                & > div:last-child {
                     padding-right: 2 * $table-cell-padding-sm;
                 }
             }
@@ -149,30 +120,4 @@ $table-striped-order: even;
             }
         }
     }
-}
-
-%modal-vh{
-    .modal-content{
-        .modal-header, .modal-footer{
-            flex-shrink: 0;
-        };
-        .modal-body{
-            overflow-y: auto;
-       };
-    }
-}
-
-@mixin modal-vh($percent) {
-    .modal-vh-#{$percent}{
-        @extend %modal-vh;
-        .modal-content{
-            height: #{$percent}vh;
-        }
-    }
-}
-
-$dialog-sizes : (80);
-
-@each $p in $dialog-sizes {
-    @include modal-vh($p);
 }

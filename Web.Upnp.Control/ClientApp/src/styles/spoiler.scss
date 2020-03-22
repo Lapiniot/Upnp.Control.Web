@@ -24,7 +24,6 @@
         }
 
         &.collapsed {
-
             & > i {
                 &:before {
                     content: fa-content($fa-var-angle-down);

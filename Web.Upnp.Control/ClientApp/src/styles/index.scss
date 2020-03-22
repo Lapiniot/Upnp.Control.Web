@@ -1,8 +1,22 @@
-﻿@import "bootstrap";
+﻿$enable-gradients: true;
+@import "../../node_modules/bootstrap/scss/bootstrap";
 @import "fontawesome";
-@import "display-grid";
-@import "spoiler-component";
-@import "form-table-component";
+@import "layout-grid";
+@import "layout-table";
+@import "spoiler";
+@import "form-table";
+@import "modal";
+
+@each $level in map-keys($grays) {
+    .bg-gray-#{$level} {
+        background-color: map-get($grays, $level);
+    }
+}
+
+.sticky-bottom {
+    bottom: 0;
+    z-index: $zindex-sticky;
+}
 
 /********** Specific site element styles **********/
 
@@ -26,10 +40,10 @@
     height: 2rem !important;
     margin-right: 0.25rem;
     display: inline-block;
-    line-height:2rem;
+    line-height: 2rem;
     text-align: center;
     &:after {
-        content: '?';
+        content: "?";
     }
 }
 
@@ -37,14 +51,14 @@ svg.album-art-icon {
     vertical-align: -0.5rem !important;
 }
 
-input[type=checkbox].chk-no-label{
-    &:after{
+input[type="checkbox"].chk-no-label {
+    &:after {
         width: 20px;
-        content: ('0');
+        content: ("0");
         display: inline-block;
         background-color: red;
     }
-    &:checked:after{
-        content: ('1');
+    &:checked:after {
+        content: ("1");
     }
 }
