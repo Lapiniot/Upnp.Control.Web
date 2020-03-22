@@ -16,15 +16,16 @@ export default class PlaylistManager extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { data: null, modal: null };
+        this.selection = new SelectionService();
+        this.selection.addEventListener("changed", () => this.setState({ selection: this.selection }));
+        this.state = { modal: null, selection: this.selection };
         this.resetModal = () => this.setState({ modal: null });
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (state.data !== props.dataContext) {
-            return { data: props.dataContext, selection: new SelectionService() };
+    componentDidUpdate(prevProps) {
+        if (prevProps.dataContext !== this.props.dataContext) {
+            this.selection.reset();
         }
-        return null;
     }
 
     static isEditable = (item) => !item.readonly;
@@ -51,8 +52,8 @@ export default class PlaylistManager extends React.Component {
 
     onDelete = () => {
 
-        const ids = [...this.state.selection.keys];
-        const values = this.state.data.source.result.filter(e => ids.includes(e.id));
+        const ids = [...this.selection.keys];
+        const values = this.props.dataContext.source.result.filter(e => ids.includes(e.id));
 
         this.setState({
             modal: <Modal id="remove_confirm" title="Do you want to delete playlist?" onDismiss={this.resetModal} immediate>
@@ -68,8 +69,8 @@ export default class PlaylistManager extends React.Component {
     }
 
     onRename = () => {
-        const id = this.state.selection.keys.next().value;
-        let title = this.state.data.source.result.find(e => e.id === id).title;
+        const id = this.selection.keys.next().value;
+        let title = this.props.dataContext.source.result.find(e => e.id === id).title;
         const input = React.createRef();
 
         this.setState({
@@ -95,8 +96,8 @@ export default class PlaylistManager extends React.Component {
     }
 
     onRemoveItems = () => {
-        const ids = [...this.state.selection.keys];
-        const values = this.state.data.source.result.filter(e => ids.includes(e.id));
+        const ids = [...this.selection.keys];
+        const values = this.props.dataContext.source.result.filter(e => ids.includes(e.id));
 
         this.setState({
             modal: <Modal id="remove_items_confirm" title="Do you want to remove items from playlist?" className="modal-vh-80" onDismiss={this.resetModal} immediate >
@@ -115,9 +116,9 @@ export default class PlaylistManager extends React.Component {
 
     render() {
 
-        const { source: { total = 0, result: { length: fetched = 0 } = {} } = {} } = this.state.data || {};
-        const { id, navContext: { navigateHandler, page, pageSize, urls }, ...other } = this.props;
-        const disabled = this.state.selection && this.state.selection.none();
+        const { dataContext: data, navContext: { navigateHandler, page, pageSize, urls }, id, ...other } = this.props;
+        const { source: { total = 0, result: { length: fetched = 0 } = {} } = {} } = data || {};
+        const disabled = this.selection.none();
         return <div className="d-flex flex-column h-100">
             <Toolbar className="position-sticky sticky-top px-2 py-1 bg-light shadow-sm">
                 {id === "PL:"
@@ -133,8 +134,8 @@ export default class PlaylistManager extends React.Component {
                     </Toolbar.Group>}
             </Toolbar>
             {
-                this.state.data ?
-                    <BrowserCore dataContext={this.state.data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} selection={this.state.selection} {...other} /> :
+                data ?
+                    <BrowserCore dataContext={data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} selection={this.selection} {...other} /> :
                     <LoadIndicator />
             }
             <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} className="shadow-sm" />
