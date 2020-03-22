@@ -23,43 +23,39 @@ export function withMatchProps(Component, extra = {}) {
     return ({ match: { params } = {}, ...other }) => <Component {...params} {...extra} {...other} />
 }
 
-export function withDataFetch(Component, loadPlaceholderProps = {}, dataUrlBuilder = props => props.dataUrl) {
-
+export function withDataFetch(Component, loadIndicatorConfig = {}, dataUrlBuilder = props => props.dataUrl) {
     return class extends React.Component {
         constructor(props) {
             super(props);
-            this.state = { dataUrl: null, loading: true, dataContext: null };
-            const { template: Template = "div", text = "Loading...", usePreloader = true, ...other } = loadPlaceholderProps;
+            this.state = { loading: true, dataContext: null };
+            const { template: Template = "div", text = "Loading...", usePreloader = true, ...other } = loadIndicatorConfig;
             this.preloader = usePreloader && <Template {...other}>{text}</Template>;
-        }
-
-        static getDerivedStateFromProps(props, state) {
-            const url = dataUrlBuilder(props);
-            return state.dataUrl !== url ? { dataUrl: url, loading: true, dataContext: null } : null;
         }
 
         async fetchData(url) {
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                this.setState({ loading: false, dataContext: { source: data, reload: this.reload } });
+                this.setState({ loading: false, dataContext: { source: data, reload: () => this.load(url) } });
             } catch (e) {
                 console.error(e);
                 this.setState({ loading: false, dataContext: null, error: e });
             }
         }
 
-        componentDidUpdate(_prevProps, prevState) {
-            if (this.state.dataUrl !== prevState.dataUrl) {
-                this.reload();
+        componentDidUpdate(prevProps) {
+            const previous = dataUrlBuilder(prevProps);
+            const current = dataUrlBuilder(this.props);
+            if (previous !== current) {
+                this.load(current);
             }
         }
 
         componentDidMount() {
-            this.fetchData(this.state.dataUrl);
+            this.fetchData(dataUrlBuilder(this.props));
         }
 
-        reload = () => this.setState({ loading: true, dataContext: null }, () => this.fetchData(this.state.dataUrl));
+        load = url => this.setState({ loading: true, dataContext: null }, () => this.fetchData(url));
 
         render() {
             return this.state.loading && this.preloader
