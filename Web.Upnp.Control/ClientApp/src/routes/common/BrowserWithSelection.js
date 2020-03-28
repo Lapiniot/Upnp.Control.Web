@@ -68,7 +68,7 @@ export default class extends React.Component {
                             <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
                             {e.title}
                         </div>
-                        <div className="text-capitalize">{utils.getKind(e.class)}</div>
+                        <div className="text-capitalize">{utils.getDisplayName(e.class)}</div>
                     </div>;
                 })]}
             </div>

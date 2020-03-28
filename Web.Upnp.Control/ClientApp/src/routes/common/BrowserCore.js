@@ -9,6 +9,14 @@ export class DIDLUtils {
         const index = upnpClassName.lastIndexOf(".");
         return index > 0 ? upnpClassName.substring(index + 1) : upnpClassName;
     }
+
+    static getDisplayName(upnpClassName) {
+        const kind = DIDLUtils.getKind(upnpClassName);
+        if (kind.endsWith("Container"))
+            return kind.substring(0, kind.length - 9);
+        else
+            return kind;
+    }
 }
 
 export function withBrowserCore(BrowserView, usePreloader = true) {

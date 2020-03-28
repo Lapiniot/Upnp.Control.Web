@@ -25,7 +25,7 @@ export function BrowserView({ dataContext: { source: data } = {}, navContext: { 
                             <AlbumArtImage itemClass={cls} albumArts={albumArts} />
                             {title}
                         </div>
-                        <div className="text-capitalize">{utils.getKind(cls)}</div>
+                        <div className="text-capitalize">{utils.getDisplayName(cls)}</div>
                     </div>;
                 })]}
             </div>
