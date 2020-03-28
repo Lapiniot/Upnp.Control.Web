@@ -6,6 +6,7 @@ import { withBrowserCore } from "../../common/BrowserCore";
 import BrowserDialog from "../../common/BrowserDialog";
 import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
+import Breadcrumb from "../../common/Breadcrumb";
 import BrowserCore from "../../common/BrowserWithSelection";
 import LoadIndicator from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
@@ -117,28 +118,30 @@ export default class PlaylistManager extends React.Component {
     render() {
 
         const { dataContext: data, navContext: { navigateHandler, page, pageSize, urls }, id, ...other } = this.props;
-        const { source: { total = 0, result: { length: fetched = 0 } = {} } = {} } = data || {};
+        const { source: { total = 0, result: { length: fetched = 0 } = {}, parents } = {} } = data || {};
         const disabled = this.selection.none();
         return <div className="d-flex flex-column h-100">
-            <Toolbar className="position-sticky sticky-top px-2 py-1 bg-light shadow-sm">
-                {id === "PL:"
-                    ? <Toolbar.Group>
-                        <Toolbar.Button title="Create" glyph="plus" onClick={this.onCreate} />
-                        <Toolbar.Button title="Delete" glyph="trash" onClick={this.onDelete} disabled={disabled} />
-                        <Toolbar.Button title="Rename" glyph="edit" onClick={this.onRename} disabled={disabled} />
-                        <Toolbar.Button title="Copy" glyph="copy" onClick={this.onCopy} disabled={disabled} />
-                    </Toolbar.Group>
-                    : <Toolbar.Group>
-                        <Toolbar.Button title="Add items" glyph="plus" onClick={this.onAddItems} />
-                        <Toolbar.Button title="Remove items" glyph="trash" onClick={this.onRemoveItems} disabled={disabled} />
-                    </Toolbar.Group>}
-            </Toolbar>
             {
-                data ?
-                    <BrowserCore dataContext={data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} selection={this.selection} {...other} /> :
+                data ? <>
+                    <Breadcrumb dataContext={parents} baseUrl={urls.root} />
+                    <Toolbar className="position-sticky sticky-top px-2 py-1 bg-light shadow-sm">
+                        {id === "PL:"
+                            ? <Toolbar.Group>
+                                <Toolbar.Button title="Create" glyph="plus" onClick={this.onCreate} />
+                                <Toolbar.Button title="Delete" glyph="trash" onClick={this.onDelete} disabled={disabled} />
+                                <Toolbar.Button title="Rename" glyph="edit" onClick={this.onRename} disabled={disabled} />
+                                <Toolbar.Button title="Copy" glyph="copy" onClick={this.onCopy} disabled={disabled} />
+                            </Toolbar.Group>
+                            : <Toolbar.Group>
+                                <Toolbar.Button title="Add items" glyph="plus" onClick={this.onAddItems} />
+                                <Toolbar.Button title="Remove items" glyph="trash" onClick={this.onRemoveItems} disabled={disabled} />
+                            </Toolbar.Group>}
+                    </Toolbar>
+                    <BrowserCore dataContext={data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} selection={this.selection} {...other} />
+                    <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} className="shadow-sm" />
+                </> :
                     <LoadIndicator />
             }
-            <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} className="shadow-sm" />
             {this.state.modal && (typeof this.state.modal === "function" ? this.state.modal() : this.state.modal)}
         </div>;
     }
