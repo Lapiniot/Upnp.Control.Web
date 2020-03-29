@@ -36,5 +36,22 @@ namespace Web.Upnp.Control.Services.HttpClients
 
             return services;
         }
+
+        public static IServiceCollection AddEventSubscribeClient(this IServiceCollection services)
+        {
+            services.AddHttpClient<EventSubscribeClient>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+                {
+                    Proxy = null,
+                    CookieContainer = null,
+                    UseProxy = false,
+                    UseCookies = false,
+                    AllowAutoRedirect = false
+                });
+
+            return services;
+        }
+
     }
 }

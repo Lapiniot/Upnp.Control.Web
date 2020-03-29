@@ -29,7 +29,8 @@ namespace Web.Upnp.Control
                 .AddHostedService<UpnpDiscoveryService>()
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddImageProxyHttpClient()
-                .AddSoapHttpClient();
+                .AddSoapHttpClient()
+                .AddEventSubscribeClient();
 
             services
                 .AddControllers(c => c.OutputFormatters.Insert(c.OutputFormatters.Count - 1, new HttpResponseMessageFormatter()))
