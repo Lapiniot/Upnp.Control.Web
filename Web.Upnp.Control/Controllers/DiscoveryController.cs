@@ -14,8 +14,8 @@ using static IoT.Protocol.Upnp.UpnpServices;
 namespace Web.Upnp.Control.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
     [Route("api/[controller]/{filter?}")]
+    [Produces("application/json")]
     public class DiscoveryController : ControllerBase
     {
         private static readonly IDictionary<string, Expression<Func<Device, bool>>> filters = new Dictionary<string, Expression<Func<Device, bool>>>

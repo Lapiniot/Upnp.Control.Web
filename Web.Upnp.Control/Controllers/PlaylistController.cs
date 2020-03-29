@@ -11,8 +11,8 @@ using Web.Upnp.Control.Services;
 
 namespace Web.Upnp.Control.Controllers
 {
-    [Route("api/[controller]/{deviceId}")]
     [ApiController]
+    [Route("api/[controller]/{deviceId}")]
     [Produces("application/json")]
     public class PlaylistController : ControllerBase
     {
