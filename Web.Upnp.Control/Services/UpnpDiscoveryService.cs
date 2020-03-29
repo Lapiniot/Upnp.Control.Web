@@ -3,40 +3,45 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IoT.Device.Upnp;
+using IoT.Device.Xiaomi.Umi.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
+using Web.Upnp.Control.Services.HttpClients;
 using static IoT.Protocol.Upnp.UpnpServices;
+using Icon = Web.Upnp.Control.Models.Database.Upnp.Icon;
 
 namespace Web.Upnp.Control.Services
 {
     public class UpnpDiscoveryService : BackgroundService
     {
-        public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger)
-        {
-            Services = services;
-            Logger = logger;
-        }
+        private readonly EventSubscribeClient subscribeClient;
+        private readonly IServiceProvider services;
+        private readonly ILogger<UpnpDiscoveryService> logger;
 
-        public IServiceProvider Services { get; }
-        public ILogger<UpnpDiscoveryService> Logger { get; }
+        public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger, EventSubscribeClient subscribeClient)
+        {
+            this.services = services;
+            this.logger = logger;
+            this.subscribeClient = subscribeClient;
+        }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Logger.LogInformation("Started UPnP device discovery service...");
+            logger.LogInformation("Started UPnP device discovery service...");
 
             try
             {
                 var enumerator = new UpnpDeviceEnumerator(TimeSpan.FromSeconds(30), RootDevice);
 
-                using var scope = Services.CreateScope();
+                using var scope = services.CreateScope();
                 await using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
 
                 await foreach(var dev in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                 {
-                    Logger.LogInformation($"New device discovered: {dev.Usn}");
+                    logger.LogInformation($"New device discovered: {dev.Usn}");
                     var d = await dev.GetDescriptionAsync(stoppingToken).ConfigureAwait(false);
                     var entity = new Device
                     {
@@ -61,9 +66,21 @@ namespace Web.Upnp.Control.Services
                             ServiceId = s.ServiceId,
                             ServiceType = s.ServiceType,
                             MetadataUrl = s.MetadataUri.AbsoluteUri,
-                            ControlUrl = s.ControlUri.AbsoluteUri
+                            ControlUrl = s.ControlUri.AbsoluteUri,
+                            EventsUrl = s.EventSubscribeUri.AbsoluteUri
                         }).ToList()
                     };
+
+                    if(entity.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema))
+                    {
+                        var callbackUrl = new Uri($"api/events/{Uri.EscapeUriString(entity.Udn)}/notify", UriKind.Relative);
+
+                        var rcService = entity.Services.Single(s => s.ServiceType == RenderingControl);
+                        var avtService = entity.Services.Single(s => s.ServiceType == AVTransport);
+
+                        await subscribeClient.SubscribeAsync(new Uri(rcService.EventsUrl), callbackUrl, TimeSpan.FromMinutes(5), stoppingToken);
+                        await subscribeClient.SubscribeAsync(new Uri(avtService.EventsUrl), callbackUrl, TimeSpan.FromMinutes(5), stoppingToken);
+                    }
 
                     await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
                     await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
@@ -71,7 +88,7 @@ namespace Web.Upnp.Control.Services
             }
             catch(Exception ex)
             {
-                Logger.LogError(ex, "Error discovering UPnP devices and services!");
+                logger.LogError(ex, "Error discovering UPnP devices and services!");
             }
         }
     }
