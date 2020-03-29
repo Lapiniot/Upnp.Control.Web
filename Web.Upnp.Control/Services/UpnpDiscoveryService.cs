@@ -73,13 +73,13 @@ namespace Web.Upnp.Control.Services
 
                     if(entity.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema))
                     {
-                        var callbackUrl = new Uri($"api/events/{Uri.EscapeUriString(entity.Udn)}/notify", UriKind.Relative);
+                        var baseUrl = $"api/events/{Uri.EscapeUriString(entity.Udn)}/notify";
 
                         var rcService = entity.Services.Single(s => s.ServiceType == RenderingControl);
                         var avtService = entity.Services.Single(s => s.ServiceType == AVTransport);
 
-                        await subscribeClient.SubscribeAsync(new Uri(rcService.EventsUrl), callbackUrl, TimeSpan.FromMinutes(5), stoppingToken);
-                        await subscribeClient.SubscribeAsync(new Uri(avtService.EventsUrl), callbackUrl, TimeSpan.FromMinutes(5), stoppingToken);
+                        await subscribeClient.SubscribeAsync(new Uri(rcService.EventsUrl), new Uri(baseUrl + "/rc", UriKind.Relative), TimeSpan.FromMinutes(5), stoppingToken);
+                        await subscribeClient.SubscribeAsync(new Uri(avtService.EventsUrl), new Uri(baseUrl + "/avt", UriKind.Relative), TimeSpan.FromMinutes(5), stoppingToken);
                     }
 
                     await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
