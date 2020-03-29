@@ -17,7 +17,7 @@ namespace Web.Upnp.Control.Services.HttpClients
 
         public Task<HttpResponseMessage> GetAsync(string originalUri, IHeaderDictionary originalHeaders, CancellationToken cancellationToken = default)
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, originalUri);
+            using var message = new HttpRequestMessage(HttpMethod.Get, originalUri);
 
             foreach(var h in originalHeaders)
             {
