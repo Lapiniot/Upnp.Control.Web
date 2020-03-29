@@ -93,3 +93,19 @@ $fa-font-path: "../webfonts";
 .#{$fa-css-prefix}-copy:before {
     content: fa-content($fa-var-copy);
 }
+
+.#{$fa-css-prefix}-play:before {
+    content: fa-content($fa-var-play);
+}
+
+.#{$fa-css-prefix}-stop:before {
+    content: fa-content($fa-var-stop);
+}
+
+.#{$fa-css-prefix}-step-backward:before {
+    content: fa-content($fa-var-step-backward);
+}
+
+.#{$fa-css-prefix}-step-forward:before {
+    content: fa-content($fa-var-step-forward);
+}
