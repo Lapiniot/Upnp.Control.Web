@@ -19,5 +19,8 @@ namespace Web.Upnp.Control.Models.Database.Upnp
 
         [JsonIgnore]
         public string ControlUrl { get; set; }
+
+        [JsonIgnore]
+        public string EventsUrl { get; set; }
     }
 }
