@@ -5,7 +5,7 @@ import { withBrowserCore } from "../../common/BrowserCore";
 import { BrowserView } from "../../common/Browser";
 
 const Browser = withBrowserCore(BrowserView);
-const UmiRoot = <Redirect to="/umi" />;
+const UmiRoot = () => <Redirect to="/umi" />;
 /***** Handles all /umi/browse routes *****/
 export default ({ match: { path, url } }) =>
     <Switch>
