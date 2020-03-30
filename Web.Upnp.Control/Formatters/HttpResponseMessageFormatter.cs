@@ -24,17 +24,17 @@ namespace Web.Upnp.Control.Formatters
 
             var headers = response.Headers;
 
-            foreach(var h in message.Headers)
+            foreach(var (key, value) in message.Headers)
             {
-                if(!headers.TryGetValue(h.Key, out _)) headers.Add(h.Key, h.Value.ToArray());
+                if(!headers.TryGetValue(key, out _)) headers.Add(key, value.ToArray());
             }
 
-            foreach(var h in message.Content.Headers)
+            foreach(var (key, value) in message.Content.Headers)
             {
-                if(!headers.TryGetValue(h.Key, out _)) headers.Add(h.Key, h.Value.ToArray());
+                if(!headers.TryGetValue(key, out _)) headers.Add(key, value.ToArray());
             }
 
-            using var stream = await message.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            await using var stream = await message.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
             await stream.CopyToAsync(response.Body, 16 * 1024).ConfigureAwait(false);
         }

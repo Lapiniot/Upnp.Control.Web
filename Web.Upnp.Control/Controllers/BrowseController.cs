@@ -81,7 +81,7 @@ namespace Web.Upnp.Control.Controllers
             return parents;
         }
 
-        private void WriteResponse(PipeWriter writer, int total, IEnumerable<Item> items, IEnumerable<Item> parents)
+        private static void WriteResponse(PipeWriter writer, int total, IEnumerable<Item> items, IEnumerable<Item> parents)
         {
             var w = new Utf8JsonWriter(writer);
 

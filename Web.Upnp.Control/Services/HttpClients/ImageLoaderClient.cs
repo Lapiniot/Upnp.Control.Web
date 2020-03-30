@@ -19,11 +19,11 @@ namespace Web.Upnp.Control.Services.HttpClients
         {
             using var message = new HttpRequestMessage(HttpMethod.Get, originalUri);
 
-            foreach(var h in originalHeaders)
+            foreach(var (key, value) in originalHeaders)
             {
-                if(h.Key == "Host") continue;
+                if(key == "Host") continue;
 
-                message.Headers.TryAddWithoutValidation(h.Key, (IEnumerable<string>)h.Value);
+                message.Headers.TryAddWithoutValidation(key, (IEnumerable<string>)value);
             }
 
             return client.SendAsync(message, cancellationToken);

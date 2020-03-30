@@ -126,14 +126,14 @@ namespace Web.Upnp.Control.Controllers
             }
         }
 
-        private async Task<string> GetUpdateIdAsync(ContentDirectoryService cdtService, string id)
+        private static async Task<string> GetUpdateIdAsync(ContentDirectoryService cdtService, string id)
         {
             var result = await cdtService.BrowseAsync(id, flags: "BrowseMetadata", filter: "id").ConfigureAwait(false);
 
             return result["UpdateID"];
         }
 
-        private static async Task<int[]> GetItemIndices(ContentDirectoryService cdService, string parentId, string[] ids)
+        private static async Task<int[]> GetItemIndices(ContentDirectoryService cdService, string parentId, IEnumerable<string> ids)
         {
             var data = await cdService.BrowseAsync(parentId, count: uint.MaxValue).ConfigureAwait(false);
             var playlists = DIDLParser.Parse(data["Result"]);

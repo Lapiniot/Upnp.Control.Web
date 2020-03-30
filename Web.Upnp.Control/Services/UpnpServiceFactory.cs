@@ -15,9 +15,9 @@ namespace Web.Upnp.Control.Services
 {
     public class UpnpServiceFactory : IUpnpServiceFactory
     {
-        private static readonly ConcurrentDictionary<Type, string> cache = new ConcurrentDictionary<Type, string>();
+        private static readonly ConcurrentDictionary<Type, string> Cache = new ConcurrentDictionary<Type, string>();
 
-        private static readonly IDictionary<string, string> umiMappings = new Dictionary<string, string>
+        private static readonly IDictionary<string, string> UmiMappings = new Dictionary<string, string>
         {
             {"urn:schemas-upnp-org:service:ContentDirectory:1", "{0}-MS/upnp.org-ContentDirectory-1/control"},
             {"urn:schemas-upnp-org:service:AVTransport:1", "{0}-MR/upnp.org-AVTransport-1/control"},
@@ -44,7 +44,7 @@ namespace Web.Upnp.Control.Services
                 .FirstAsync()
                 .ConfigureAwait(false);
 
-            schema ??= cache.GetOrAdd(typeof(TService), ServiceSchemaAttribute.GetSchema);
+            schema ??= Cache.GetOrAdd(typeof(TService), ServiceSchemaAttribute.GetSchema);
 
             var controlUrl = GetControlUrl(device, schema);
 
@@ -58,7 +58,7 @@ namespace Web.Upnp.Control.Services
             return service != null
                 ? new Uri(service.ControlUrl)
                 : device.Services.Any(s => s.ServiceType == "urn:xiaomi-com:service:Playlist:1")
-                    ? new UriBuilder(device.Location) {Path = string.Format(umiMappings[schema], device.Udn.Substring(5))}.Uri
+                    ? new UriBuilder(device.Location) {Path = string.Format(UmiMappings[schema], device.Udn.Substring(5))}.Uri
                     : null;
         }
 

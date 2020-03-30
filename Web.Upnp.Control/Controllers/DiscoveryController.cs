@@ -18,7 +18,7 @@ namespace Web.Upnp.Control.Controllers
     [Produces("application/json")]
     public class DiscoveryController : ControllerBase
     {
-        private static readonly IDictionary<string, Expression<Func<Device, bool>>> filters = new Dictionary<string, Expression<Func<Device, bool>>>
+        private static readonly IDictionary<string, Expression<Func<Device, bool>>> Filters = new Dictionary<string, Expression<Func<Device, bool>>>
         {
             {"umi", d => d.Services.Any(s => s.ServiceType == ServiceSchema)},
             {"upnp", d => true},
@@ -42,7 +42,7 @@ namespace Web.Upnp.Control.Controllers
         [HttpGet]
         public Task<Device[]> GetAsync(string filter = "upnp")
         {
-            return filters.TryGetValue(filter, out var filterExpression)
+            return Filters.TryGetValue(filter, out var filterExpression)
                 ? QueryAsync(filterExpression)
                 : throw new ArgumentException($"Unknown device category filter '{filter}'");
         }
