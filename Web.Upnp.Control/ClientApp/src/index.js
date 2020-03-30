@@ -3,6 +3,7 @@ import "@fortawesome/fontawesome-free/js/fontawesome";
 import "@fortawesome/fontawesome-free/js/solid";
 
 import React from "react";
+import * as signalR from "@microsoft/signalr";
 import { Route } from "react-router";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
@@ -14,6 +15,11 @@ import UmiRoot from "./routes/umi/Router";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const container = document.getElementById("root-view");
+const hub = new signalR.HubConnectionBuilder().withUrl("/upnpevents").build();
+hub.on("UpnpEvent", (device, message) => {
+    alert(`${device}: ${message}`)
+});
+hub.start().catch(e => alert(e));
 
 ReactDOM.render(
     <BrowserRouter basename={baseUrl}>

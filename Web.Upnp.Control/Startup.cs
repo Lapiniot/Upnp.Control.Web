@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Formatters;
+using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Services;
 using Web.Upnp.Control.Services.HttpClients;
 
@@ -38,6 +40,7 @@ namespace Web.Upnp.Control
 
             services.AddResponseCaching();
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
+            services.AddSignalR();
         }
 
 
@@ -50,7 +53,11 @@ namespace Web.Upnp.Control
             }
 
             app.UseRouting()
-                .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute())
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapDefaultControllerRoute();
+                    endpoints.MapHub<UpnpEventsHub>("/upnpevents", o => o.Transports = HttpTransportType.WebSockets);
+                })
                 .UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseResponseCaching();
