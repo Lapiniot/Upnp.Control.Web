@@ -11,15 +11,14 @@ using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
 using Web.Upnp.Control.Services.HttpClients;
 using static IoT.Protocol.Upnp.UpnpServices;
-using Icon = Web.Upnp.Control.Models.Database.Upnp.Icon;
 
 namespace Web.Upnp.Control.Services
 {
     public class UpnpDiscoveryService : BackgroundService
     {
-        private readonly EventSubscribeClient subscribeClient;
-        private readonly IServiceProvider services;
         private readonly ILogger<UpnpDiscoveryService> logger;
+        private readonly IServiceProvider services;
+        private readonly EventSubscribeClient subscribeClient;
 
         public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger, EventSubscribeClient subscribeClient)
         {
@@ -78,8 +77,8 @@ namespace Web.Upnp.Control.Services
                         var rcService = entity.Services.Single(s => s.ServiceType == RenderingControl);
                         var avtService = entity.Services.Single(s => s.ServiceType == AVTransport);
 
-                        await subscribeClient.SubscribeAsync(new Uri(rcService.EventsUrl), new Uri(baseUrl + "/rc", UriKind.Relative), TimeSpan.FromMinutes(5), stoppingToken);
-                        await subscribeClient.SubscribeAsync(new Uri(avtService.EventsUrl), new Uri(baseUrl + "/avt", UriKind.Relative), TimeSpan.FromMinutes(5), stoppingToken);
+                        await subscribeClient.SubscribeAsync(new Uri(rcService.EventsUrl), new Uri(baseUrl + "/rc", UriKind.Relative), TimeSpan.FromMinutes(5), stoppingToken).ConfigureAwait(false);
+                        await subscribeClient.SubscribeAsync(new Uri(avtService.EventsUrl), new Uri(baseUrl + "/avt", UriKind.Relative), TimeSpan.FromMinutes(5), stoppingToken).ConfigureAwait(false);
                     }
 
                     await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);

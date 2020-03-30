@@ -52,6 +52,5 @@ namespace Web.Upnp.Control.Services.HttpClients
 
             return services;
         }
-
     }
 }

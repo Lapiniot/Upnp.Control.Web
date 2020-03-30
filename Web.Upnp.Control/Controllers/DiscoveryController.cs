@@ -40,11 +40,11 @@ namespace Web.Upnp.Control.Controllers
         }
 
         [HttpGet]
-        public async Task<Device[]> GetAsync(string filter = "upnp")
+        public Task<Device[]> GetAsync(string filter = "upnp")
         {
             return filters.TryGetValue(filter, out var filterExpression)
-                ? await QueryAsync(filterExpression)
-                : throw new ArgumentException("Unknown device category filter '" + filter + "'");
+                ? QueryAsync(filterExpression)
+                : throw new ArgumentException($"Unknown device category filter '{filter}'");
         }
 
         private Task<Device[]> QueryAsync(Expression<Func<Device, bool>> filter)
