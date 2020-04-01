@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -9,7 +10,6 @@ namespace Web.Upnp.Control.Controllers
 {
     [ApiController]
     [Route("api/events/{deviceId}")]
-    [Produces("application/json")]
     [Consumes("application/xml", "text/xml")]
     public class UpnpEventsController : ControllerBase
     {
@@ -17,33 +17,31 @@ namespace Web.Upnp.Control.Controllers
 
         public UpnpEventsController(IHubContext<UpnpEventsHub, IUpnpEventClient> hub)
         {
-            this.hub = hub ?? throw new System.ArgumentNullException(nameof(hub));
+            this.hub = hub ?? throw new ArgumentNullException(nameof(hub));
         }
 
         [HttpNotify("[action]/{service?}")]
-        public async Task<object> NotifyAsync(string deviceId, [FromHeader(Name = "SID")] string sid)
+        public async Task NotifyAsync(string deviceId, [FromHeader(Name = "SID")] string sid)
         {
             var xml = await XElement.LoadAsync(HttpContext.Request.Body, LoadOptions.None, default).ConfigureAwait(false);
             Debug.WriteLine(xml.ToString());
-            return Task.FromResult((object)new object[] { new { deviceId, sid }, "string1", "string2" });
+            var _ = hub.Clients.All.UpnpEvent(deviceId, sid);
         }
 
         [HttpNotify("notify/rc")]
-        public async Task<object> NotifyRenderingControlAsync(string deviceId, [FromHeader(Name = "SID")] string sid)
+        public async Task NotifyRenderingControlAsync(string deviceId, [FromHeader(Name = "SID")] string sid)
         {
             var xml = await XElement.LoadAsync(HttpContext.Request.Body, LoadOptions.None, default).ConfigureAwait(false);
             Debug.WriteLine(xml.ToString());
-            await hub.Clients.All.UpnpEvent(deviceId, sid);
-            return Task.FromResult((object)new object[] { new { deviceId, sid }, "string1", "string2" });
+            var _ = hub.Clients.All.UpnpEvent(deviceId, sid);
         }
 
         [HttpNotify("notify/avt")]
-        public async Task<object> NotifyAVTransportAsync(string deviceId, [FromHeader(Name = "SID")] string sid)
+        public async Task NotifyAVTransportAsync(string deviceId, [FromHeader(Name = "SID")] string sid)
         {
             var xml = await XElement.LoadAsync(HttpContext.Request.Body, LoadOptions.None, default).ConfigureAwait(false);
             Debug.WriteLine(xml.ToString());
-            await hub.Clients.All.UpnpEvent(deviceId, sid);
-            return Task.FromResult((object)new object[] { new { deviceId, sid }, "string1", "string2" });
+            var _ = hub.Clients.All.UpnpEvent(deviceId, sid);
         }
     }
 }
