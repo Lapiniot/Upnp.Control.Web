@@ -102,6 +102,10 @@ $fa-font-path: "../webfonts";
     content: fa-content($fa-var-stop);
 }
 
+.#{$fa-css-prefix}-pause:before {
+    content: fa-content($fa-var-pause);
+}
+
 .#{$fa-css-prefix}-step-backward:before {
     content: fa-content($fa-var-step-backward);
 }
