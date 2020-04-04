@@ -27,7 +27,7 @@ export function withDataFetch(Component, loadIndicatorConfig = {}, dataUrlBuilde
     return class extends React.Component {
         constructor(props) {
             super(props);
-            this.state = { loading: true, dataContext: null };
+            this.state = { loading: true, dataContext: undefined };
             const { template: Template = "div", text = "Loading...", usePreloader = true, ...other } = loadIndicatorConfig;
             this.preloader = usePreloader && <Template {...other}>{text}</Template>;
         }
@@ -39,7 +39,7 @@ export function withDataFetch(Component, loadIndicatorConfig = {}, dataUrlBuilde
                 this.setState({ loading: false, dataContext: { source: data, reload: () => this.load(url) } });
             } catch (e) {
                 console.error(e);
-                this.setState({ loading: false, dataContext: null, error: e });
+                this.setState({ loading: false, dataContext: undefined, error: e });
             }
         }
 
@@ -55,7 +55,7 @@ export function withDataFetch(Component, loadIndicatorConfig = {}, dataUrlBuilde
             this.fetchData(dataUrlBuilder(this.props));
         }
 
-        load = url => this.setState({ loading: true, dataContext: null }, () => this.fetchData(url));
+        load = url => this.setState({ loading: true, dataContext: undefined }, () => this.fetchData(url));
 
         render() {
             return this.state.loading && this.preloader
