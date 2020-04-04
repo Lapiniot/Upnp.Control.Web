@@ -31,14 +31,14 @@ ReactDOM.render(
                         </nav>
                     </div>
                 </div>
-                <SignalRConnection hubUrl="/upnpevents">
-                    <main className="col">
+                <main className="col">
+                    <SignalRConnection hubUrl="/upnpevents">
                         <Route exact path="/" component={Home} />
                         <Route path="/upnp" component={UpnpRoot} />
                         <Route path="/umi" component={UmiRoot} />
                         <Route path="/settings" component={Settings} />
-                    </main>
-                </SignalRConnection>
+                    </SignalRConnection>
+                </main>
             </div>
         </div>
     </BrowserRouter>, container);
