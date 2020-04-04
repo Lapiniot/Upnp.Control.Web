@@ -5,13 +5,13 @@ export default class Toolbar extends React.Component {
 
     displayName = Toolbar.name;
 
-    static Button = ({ className, areaLabel, title, glyph, children, ...other }) =>
-        <button type="button" className={merge`btn ${className}`} title={title} area-label={areaLabel} {...other}>
+    static Button = ({ className, areaLabel, title, glyph, children, visible, ...other }) =>
+        <button type="button" className={merge`btn ${className} ${visible === false ? 'd-none' : ''}`} title={title} area-label={areaLabel} {...other}>
             {glyph && <i className={`fas fa-${glyph}`} />}{children}
         </button>;
 
-    static Group = ({ className, areaLabel, children, ...other }) =>
-        <div className={merge`btn-group ${className}`} role="group" aria-label={areaLabel} {...other}>
+    static Group = ({ className, areaLabel, children, visible, ...other }) =>
+        <div className={merge`btn-group ${className} ${visible === false ? 'd-none' : ''}`} role="group" aria-label={areaLabel} {...other}>
             {children}
         </div>;
 
