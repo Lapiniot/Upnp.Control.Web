@@ -4,6 +4,6 @@ namespace Web.Upnp.Control.Hubs
 {
     public interface IUpnpEventClient
     {
-        Task UpnpEvent(string device, string message);
+        Task UpnpEvent(string device, object message);
     }
 }
