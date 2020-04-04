@@ -4,9 +4,9 @@ import LoadIndicator from "../../../components/LoadIndicator";
 import { RouteLink } from "../../../components/NavLink";
 import { withProps, withDataFetch } from "../../../components/Extensions";
 import DeviceList from "../../common/DeviceList";
-import DeviceInfo from "../../common/DeviceInfo";
+//import DeviceInfo from "../../common/DeviceInfo";
 import DeviceIcon from "../../common/DeviceIcon";
-import Toolbar from "../../../components/Toolbar";
+import PlayerWidget from "../../../components/PlayerWidget";
 
 const UmiDevice = ({ "data-source": d, "data-source": { icons, name, type, description, udn } }) =>
     <div className="card">
@@ -18,16 +18,11 @@ const UmiDevice = ({ "data-source": d, "data-source": { icons, name, type, descr
             </div>
         </div>
         <div className="card-body">
-            <DeviceInfo data-source={d} />
+            {/* <DeviceInfo data-source={d} /> */}
+            <PlayerWidget udn={udn} />
         </div>
         <div className="card-footer d-flex align-items-center justify-content-end">
-            <Toolbar className="bg-normal mr-auto">
-                <Toolbar.Group>
-                    <Toolbar.Button title="Create" glyph="step-backward" />
-                    <Toolbar.Button title="Delete" glyph="play" />
-                    <Toolbar.Button title="Rename" glyph="step-forward" />
-                </Toolbar.Group>
-            </Toolbar>
+            
             <RouteLink to={`/umi/browse/${udn}/`} glyph="folder" className="card-link">Browse</RouteLink>
             <RouteLink to={`/umi/playlist/${udn}/PL:`} glyph="list-alt" className="card-link">Playlists</RouteLink>
         </div>
