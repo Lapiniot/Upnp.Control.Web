@@ -26,12 +26,11 @@ namespace Web.Upnp.Control.Controllers
             this.hub = hub ?? throw new ArgumentNullException(nameof(hub));
         }
 
-        [HttpNotify("[action]/{service?}")]
-        public async Task NotifyAsync(string deviceId, [FromHeader(Name = "SID")] string sid)
+        [HttpNotify("[action]/{service}")]
+        public Task NotifyAsync(string deviceId, string service)
         {
-            var xml = await XElement.LoadAsync(HttpContext.Request.Body, LoadOptions.None, default).ConfigureAwait(false);
-            Debug.WriteLine(xml.ToString());
-            var _ = hub.Clients.All.UpnpEvent(deviceId, sid);
+            var _ = hub.Clients.All.UpnpEvent(deviceId, service, new object { });
+            return Task.CompletedTask;
         }
 
         [HttpNotify("notify/rc")]
@@ -39,7 +38,7 @@ namespace Web.Upnp.Control.Controllers
         {
             var xml = await XElement.LoadAsync(HttpContext.Request.Body, LoadOptions.None, default).ConfigureAwait(false);
             Debug.WriteLine(xml.ToString());
-            var _ = hub.Clients.All.UpnpEvent(deviceId, sid);
+            var _ = hub.Clients.All.RenderingControlEvent(deviceId, sid);
         }
 
         [HttpNotify("notify/avt")]
@@ -49,7 +48,7 @@ namespace Web.Upnp.Control.Controllers
             var innerXml = xml.Element(NS + "property").Elements().First().Value;
             var map = XElement.Parse(innerXml).Elements().First().Elements().ToDictionary(
                 i => i.Name.LocalName, i => i.Attribute("val")?.Value ?? i.Value);
-            
+
             var state = new AVTransportState(map.TryGetValue("TransportState", out var value) ? value : null, null,
                 map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : default(int?), null)
             {
@@ -57,14 +56,14 @@ namespace Web.Upnp.Control.Controllers
                 Current = map.TryGetValue("CurrentTrackMetaData", out value) ? DIDLParser.Parse(value).FirstOrDefault() : null,
                 Next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLParser.Parse(value).FirstOrDefault() : null
             };
-            
+
             var position = new AVPositionInfo(
                 map.TryGetValue("CurrentTrack", out value) ? value : null,
                 map.TryGetValue("CurrentTrackDuration", out value) ? value : null,
                 map.TryGetValue("RelativeTimePosition", out value) ? value : null,
                 null, null, null);
-            
-            var _ = hub.Clients.All.UpnpEvent(deviceId, new { state, position });
+
+            var _ = hub.Clients.All.AVTransportEvent(deviceId, new { state, position });
         }
     }
 }
