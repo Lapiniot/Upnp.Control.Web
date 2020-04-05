@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
+using IoT.Protocol.Upnp;
 using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Models;
+
 
 namespace Web.Upnp.Control.Controllers
 {
@@ -17,7 +20,7 @@ namespace Web.Upnp.Control.Controllers
     [Consumes("application/xml", "text/xml")]
     public class UpnpEventsController : ControllerBase
     {
-        private readonly XNamespace NS = "urn:schemas-upnp-org:event-1-0";
+        readonly XmlReaderSettings settings = new XmlReaderSettings() { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
 
         private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
 
@@ -44,10 +47,12 @@ namespace Web.Upnp.Control.Controllers
         [HttpNotify("notify/avt")]
         public async Task NotifyAVTransportAsync(string deviceId)
         {
-            var xml = await XElement.LoadAsync(HttpContext.Request.Body, LoadOptions.None, default).ConfigureAwait(false);
-            var innerXml = xml.Element(NS + "property").Elements().First().Value;
-            var map = XElement.Parse(innerXml).Elements().First().Elements().ToDictionary(
-                i => i.Name.LocalName, i => i.Attribute("val")?.Value ?? i.Value);
+            IDictionary<string, string> map = null;
+
+            using(var reader = XmlReader.Create(HttpContext.Request.Body, settings))
+            {
+                map = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
+            }
 
             var state = new AVTransportState(map.TryGetValue("TransportState", out var value) ? value : null, null,
                 map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : default(int?), null)
