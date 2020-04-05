@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR;
@@ -27,22 +28,27 @@ namespace Web.Upnp.Control
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
+            services.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
                 .AddHostedService<UpnpDiscoveryService>()
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddImageProxyHttpClient()
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
 
-            services
-                .AddControllers(c => c.OutputFormatters.Insert(c.OutputFormatters.Count - 1, new HttpResponseMessageFormatter()))
-                .AddJsonOptions(o => o.JsonSerializerOptions.IgnoreNullValues = true);
+            services.AddControllers(c => c.OutputFormatters.Insert(c.OutputFormatters.Count - 1, new HttpResponseMessageFormatter()))
+                .AddJsonOptions(o =>
+                {
+                    o.JsonSerializerOptions.IgnoreNullValues = true;
+                    o.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+                });
 
             services.AddResponseCaching();
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
-            services.AddSignalR();
-            services.AddOptions<JsonHubProtocolOptions>().Configure(c => c.PayloadSerializerOptions.IgnoreNullValues = true);
+            services.AddSignalR().AddJsonProtocol(c =>
+            {
+                c.PayloadSerializerOptions.IgnoreNullValues = true;
+                c.PayloadSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+            });
         }
 
 
