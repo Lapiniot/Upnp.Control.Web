@@ -71,7 +71,7 @@ export default class PlaylistManager extends React.Component {
 
     onRename = () => {
         const id = this.selection.keys.next().value;
-        let title = this.props.dataContext.source.result.find(e => e.id === id).title;
+        const title = this.props.dataContext.source.result.find(e => e.id === id).title;
         const input = React.createRef();
 
         this.setState({

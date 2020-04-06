@@ -2,7 +2,7 @@ export default class SelectionService extends EventTarget {
     constructor() {
         super();
         this.map = new Map();
-    };
+    }
 
     static createEvent = detail => new CustomEvent("changed", { detail: detail, cancelable: true });
 
@@ -24,7 +24,7 @@ export default class SelectionService extends EventTarget {
 
     selected = key => this.map.has(key) && this.map.get(key);
 
-    all = keys => keys.length > 0 && keys.every(keys => this.selected(keys));
+    all = keys => keys.length > 0 && keys.every(this.selected);
 
     clear = detail => {
         this.map.clear();
@@ -35,9 +35,9 @@ export default class SelectionService extends EventTarget {
 
     get keys() {
         return this.map.keys();
-    };
+    }
 
     get length() {
         return this.map.size;
-    };
+    }
 }

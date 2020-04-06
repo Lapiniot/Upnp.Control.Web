@@ -11,10 +11,10 @@
     }
 
     static build(query) {
-        const qstring = Object
+        const str = Object
             .entries(query)
             .map(p => encodeURIComponent(p[0]) + "=" + encodeURIComponent(p[1]))
             .join("&");
-        return qstring.length > 0 ? `?${qstring}` : qstring;
+        return str.length > 0 ? `?${str}` : str;
     }
 }

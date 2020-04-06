@@ -21,7 +21,7 @@ export default class BrowserDialog extends React.Component {
         super(props);
         this.state = { selection: { keys: [] } };
         this.selection = new SelectionService();
-        this.selection.addEventListener('changed', e => {
+        this.selection.addEventListener("changed", e => {
             const { target: selection, detail: { device } = {} } = e;
             e.preventDefault();
             this.setState({ selection: selection, device: device });
@@ -47,7 +47,7 @@ export default class BrowserDialog extends React.Component {
                 </MemoryRouter>
             </Modal.Body>
             <Modal.Footer>
-                {(typeof (this.props.children) === 'function' ? this.props.children(this) : this.props.children) ??
+                {(typeof (this.props.children) === "function" ? this.props.children(this) : this.props.children) ??
                     <React.Fragment>
                         <Modal.Button key="confirm" text={confirmText} className="btn-primary" disabled={this.selection.any()} onClick={this.confirm} dismiss />
                         <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
@@ -61,7 +61,7 @@ const MediaSourceList = ({ dataContext: { source: data } }) =>
     <ul className="list-group list-group-flush">
         {[data.map(({ udn, name, type, description, icons }, i) => {
             return <RouteLink key={i} to={`/sources/browse/${udn}`} className="list-group-item list-group-item-action">
-                <DeviceIcon icon={icons.find(i => i.w <= 48)} alt={name} service={type} />
+                <DeviceIcon icon={icons.find(icon => icon.w <= 48)} alt={name} service={type} />
                 {name}{description && ` (${description})`}
             </RouteLink>;
         })]}

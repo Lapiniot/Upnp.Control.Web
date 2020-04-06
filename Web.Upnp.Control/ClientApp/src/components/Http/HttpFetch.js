@@ -18,7 +18,7 @@ export class HttpFetch extends UrlBuilder {
     }
 
     fetch() {
-        return fetch(this.url(), this.init);
+        return window.fetch(this.url(), this.init);
     }
 }
 

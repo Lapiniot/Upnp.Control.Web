@@ -17,7 +17,7 @@ class PlayerCore extends React.Component {
     }
 
     static getDerivedStateFromProps({ dataContext, dataContext: { source } = {} } = {}, prevState) {
-        return (dataContext != prevState.dataContext) ? {
+        return (dataContext !== prevState.dataContext) ? {
             dataContext: dataContext, actions: source.actions,
             current: source.current, next: source.next, playbackState: source.state
         } : null;
