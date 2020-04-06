@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using IoT.Protocol.Upnp.DIDL;
 
 namespace Web.Upnp.Control.Models

@@ -20,7 +20,7 @@ namespace Web.Upnp.Control.Controllers
 
         public UpnpControlController(IUpnpServiceFactory factory)
         {
-            this.factory = factory ?? throw new System.ArgumentNullException(nameof(factory));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         [HttpGet("state")]

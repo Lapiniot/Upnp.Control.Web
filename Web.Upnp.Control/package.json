@@ -1,12 +1,12 @@
 {
-  "version": "0.1.0",
-  "name": "web.upnp.control",
-  "private": true,
-  "dependencies": {
-    "scss": "^0.2.4"
-  },
-  "devDependencies": {
-    "gulp": "^4.0.2",
-    "gulp-sass": "^4.0.2"
-  }
+    "version": "0.1.0",
+    "name": "web.upnp.control",
+    "private": true,
+    "dependencies": {
+        "scss": "^0.2.4"
+    },
+    "devDependencies": {
+        "gulp": "^4.0.2",
+        "gulp-sass": "^4.0.2"
+    }
 }

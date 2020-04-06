@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.SignalR;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Models;
 
-
 namespace Web.Upnp.Control.Controllers
 {
     [ApiController]
@@ -20,9 +19,8 @@ namespace Web.Upnp.Control.Controllers
     [Consumes("application/xml", "text/xml")]
     public class UpnpEventsController : ControllerBase
     {
-        readonly XmlReaderSettings settings = new XmlReaderSettings() { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
-
         private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
+        private readonly XmlReaderSettings settings = new XmlReaderSettings {Async = true, IgnoreComments = true, IgnoreWhitespace = true};
 
         public UpnpEventsController(IHubContext<UpnpEventsHub, IUpnpEventClient> hub)
         {
@@ -32,7 +30,7 @@ namespace Web.Upnp.Control.Controllers
         [HttpNotify("[action]/{service}")]
         public Task NotifyAsync(string deviceId, string service)
         {
-            var _ = hub.Clients.All.UpnpEvent(deviceId, service, new object { });
+            var _ = hub.Clients.All.UpnpEvent(deviceId, service, new object());
             return Task.CompletedTask;
         }
 
@@ -47,7 +45,7 @@ namespace Web.Upnp.Control.Controllers
         [HttpNotify("notify/avt")]
         public async Task NotifyAVTransportAsync(string deviceId)
         {
-            IDictionary<string, string> map = null;
+            IDictionary<string, string> map;
 
             using(var reader = XmlReader.Create(HttpContext.Request.Body, settings))
             {
@@ -68,7 +66,7 @@ namespace Web.Upnp.Control.Controllers
                 map.TryGetValue("RelativeTimePosition", out value) ? value : null,
                 null, null, null);
 
-            var _ = hub.Clients.All.AVTransportEvent(deviceId, new { state, position });
+            var _ = hub.Clients.All.AVTransportEvent(deviceId, new {state, position});
         }
     }
 }

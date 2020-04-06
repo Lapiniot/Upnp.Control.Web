@@ -32,7 +32,7 @@ namespace Web.Upnp.Control.Services.HttpClients
 
             using var request = new HttpRequestMessage(new HttpMethod("SUBSCRIBE"), subscribeUri)
             {
-                Headers = { { "NT", "upnp:event" }, { "CALLBACK", $"<{deliveryUri.AbsoluteUri}>" }, { "TIMEOUT", $"Second-{timeout.TotalSeconds}" } }
+                Headers = {{"NT", "upnp:event"}, {"CALLBACK", $"<{deliveryUri.AbsoluteUri}>"}, {"TIMEOUT", $"Second-{timeout.TotalSeconds}"}}
             };
 
             using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
@@ -45,7 +45,7 @@ namespace Web.Upnp.Control.Services.HttpClients
         {
             using var request = new HttpRequestMessage(new HttpMethod("SUBSCRIBE"), subscribeUri)
             {
-                Headers = { { "SID", sid }, { "TIMEOUT", $"Second-{timeout.TotalSeconds}" } }
+                Headers = {{"SID", sid}, {"TIMEOUT", $"Second-{timeout.TotalSeconds}"}}
             };
 
             using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
@@ -58,7 +58,7 @@ namespace Web.Upnp.Control.Services.HttpClients
         {
             using var request = new HttpRequestMessage(new HttpMethod("UNSUBSCRIBE"), subscribeUri)
             {
-                Headers = { { "SID", sid } }
+                Headers = {{"SID", sid}}
             };
 
             using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);

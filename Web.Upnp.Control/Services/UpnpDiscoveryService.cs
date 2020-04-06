@@ -20,9 +20,9 @@ namespace Web.Upnp.Control.Services
     {
         private readonly ILogger<UpnpDiscoveryService> logger;
         private readonly IServiceProvider services;
+        private readonly TimeSpan sessionTimeout = TimeSpan.FromMinutes(30);
         private readonly EventSubscribeClient subscribeClient;
         private readonly List<Task> subscriptionTasks = new List<Task>();
-        private readonly TimeSpan sessionTimout = TimeSpan.FromMinutes(30);
 
         public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger, EventSubscribeClient subscribeClient)
         {
@@ -81,8 +81,8 @@ namespace Web.Upnp.Control.Services
                         var rcService = entity.Services.Single(s => s.ServiceType == RenderingControl);
                         var avtService = entity.Services.Single(s => s.ServiceType == AVTransport);
 
-                        subscriptionTasks.Add(StartSubscriptionAsync(new Uri(rcService.EventsUrl), new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimout, stoppingToken));
-                        subscriptionTasks.Add(StartSubscriptionAsync(new Uri(avtService.EventsUrl), new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimout, stoppingToken));
+                        subscriptionTasks.Add(StartSubscriptionAsync(new Uri(rcService.EventsUrl), new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout, stoppingToken));
+                        subscriptionTasks.Add(StartSubscriptionAsync(new Uri(avtService.EventsUrl), new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout, stoppingToken));
                     }
 
                     await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
@@ -102,7 +102,7 @@ namespace Web.Upnp.Control.Services
         private async Task StartSubscriptionAsync(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken cancellationToken)
         {
             var (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
-            logger.LogInformation($"Succesfully subscribed to events from {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
+            logger.LogInformation($"Successfully subscribed to events from {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
             logger.LogInformation($"Starting refresh loop for session: {sid}.");
             while(!cancellationToken.IsCancellationRequested)
             {
@@ -111,19 +111,19 @@ namespace Web.Upnp.Control.Services
                     await Task.Delay(TimeSpan.FromSeconds(seconds - 10), cancellationToken).ConfigureAwait(false);
                     logger.LogInformation($"Refreshing subscription for session: {sid}.");
                     (sid, seconds) = await subscribeClient.RenewAsync(subscribeUri, sid, timeout, cancellationToken).ConfigureAwait(false);
-                    logger.LogInformation($"Succesfully refreshed subscription for session: {sid}. Timeout: {seconds} seconds.");
+                    logger.LogInformation($"Successfully refreshed subscription for session: {sid}. Timeout: {seconds} seconds.");
                 }
                 catch(HttpRequestException hre)
                 {
                     logger.LogWarning($"Failed to refresh subscription for {sid}. {hre.Message}");
-                    logger.LogWarning($"Requesting new subscribtion session at {subscribeUri}.");
+                    logger.LogWarning($"Requesting new subscription session at {subscribeUri}.");
                     (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
-                    logger.LogInformation($"Succesfully requested new subscription for {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
+                    logger.LogInformation($"Successfully requested new subscription for {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
                 }
                 catch(OperationCanceledException)
                 {
                     await subscribeClient.UnsubscribeAsync(subscribeUri, sid, default).ConfigureAwait(false);
-                    logger.LogInformation($"Succesfully cancelled subscription for SID: {sid}.");
+                    logger.LogInformation($"Successfully cancelled subscription for SID: {sid}.");
                 }
             }
         }
