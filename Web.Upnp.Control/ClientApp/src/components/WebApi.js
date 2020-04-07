@@ -1,22 +1,37 @@
 ﻿import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch } from "./Http/HttpFetch";
 
+const controlBaseUrl = "/api/upnpcontrol/";
+const discoverBaseUrl = "/api/discovery/";
+const browseBaseUrl = "/api/browse/";
+const playlistBaseUrl = "/api/playlist/";
+
 export default class {
 
-    static discover = (category) => new HttpFetch(`/api/discovery/${category}`);
+    static discover = (category) => new HttpFetch(`${discoverBaseUrl}${category}`);
 
     static browse = (deviceId) => ({
-        get: (id = "") => new BrowseFetch(`/api/browse/${deviceId}/${id}`),
-        parents: id => new HttpFetch(`/api/browse/parents/${deviceId}/${id}`),
-        metadata: id => new HttpFetch(`/api/browse/metadata/${deviceId}/${id}`)
+        get: (id = "") => new BrowseFetch(`${browseBaseUrl}${deviceId}/${id}`),
+        parents: id => new HttpFetch(`${browseBaseUrl}parents/${deviceId}/${id}`),
+        metadata: id => new HttpFetch(`${browseBaseUrl}metadata/${deviceId}/${id}`)
     });
 
     static playlist = (deviceId) => ({
-        create: title => new JsonPostFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify({ Title: title }) }),
-        rename: (id, title) => new JsonPutFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify({ Id: id, Title: title }) }),
-        delete: ids => new JsonDeleteFetch(`/api/playlist/${deviceId}`, null, { body: JSON.stringify(ids) }),
-        copy: id => new JsonFetch(`/api/playlist/${deviceId}/${id}`, null, { method: "COPY" }),
-        addItems: (id, sourceDevice, sourceIds) => new JsonPutFetch(`/api/playlist/${deviceId}/${id}/add`, null, { body: JSON.stringify({ DeviceId: sourceDevice, Items: sourceIds }) }),
-        removeItems: (id, ids) => new JsonDeleteFetch(`/api/playlist/${deviceId}/${id}/remove`, null, { body: JSON.stringify(ids) })
+        create: title => new JsonPostFetch(`${playlistBaseUrl}${deviceId}`, null, { body: JSON.stringify({ Title: title }) }),
+        rename: (id, title) => new JsonPutFetch(`${playlistBaseUrl}${deviceId}`, null, { body: JSON.stringify({ Id: id, Title: title }) }),
+        delete: ids => new JsonDeleteFetch(`${playlistBaseUrl}${deviceId}`, null, { body: JSON.stringify(ids) }),
+        copy: id => new JsonFetch(`${playlistBaseUrl}${deviceId}/${id}`, null, { method: "COPY" }),
+        addItems: (id, sourceDevice, sourceIds) => new JsonPutFetch(`${playlistBaseUrl}${deviceId}/${id}/add`, null, { body: JSON.stringify({ DeviceId: sourceDevice, Items: sourceIds }) }),
+        removeItems: (id, ids) => new JsonDeleteFetch(`${playlistBaseUrl}${deviceId}/${id}/remove`, null, { body: JSON.stringify(ids) })
+    });
+
+    static control = (deviceId) => ({
+        state: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/state${detailed && "?detailed"}`),
+        position: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/position${detailed && "?detailed"}`),
+        play: () => new JsonFetch(`${controlBaseUrl}${deviceId}/play()`),
+        pause: () => new JsonFetch(`${controlBaseUrl}${deviceId}/pause()`),
+        stop: () => new JsonFetch(`${controlBaseUrl}${deviceId}/stop()`),
+        prev: () => new JsonFetch(`${controlBaseUrl}${deviceId}/prev()`),
+        next: () => new JsonFetch(`${controlBaseUrl}${deviceId}/next()`),
     });
 }
 
