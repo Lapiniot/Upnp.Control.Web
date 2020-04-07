@@ -41,21 +41,21 @@ export class HttpDelete extends HttpFetch {
 }
 
 export class JsonFetch extends HttpFetch {
-    constructor(path, query, init) {
+    constructor(path, query, init = {}) {
         const { headers, ...other } = init;
         super(path, query, { headers: { ...headers, "Accept": "application/json" }, ...other });
     }
 }
 
 export class JsonWithBodyFetch extends JsonFetch {
-    constructor(path, query, init) {
+    constructor(path, query, init = {}) {
         const { headers, ...other } = init;
         super(path, query, { headers: { ...headers, "Content-Type": "application/json" }, ...other });
     }
 }
 
 export class JsonPostFetch extends JsonWithBodyFetch {
-    constructor(path, query, init) {
+    constructor(path, query, init = {}) {
         super(path, query, { ...init, method: "POST" });
     }
 }
