@@ -41,8 +41,8 @@ namespace Web.Upnp.Control.Controllers
                     media.TryGetValue("PlayMedium", out value) ? value : null)
                 {
                     Actions = actions.TryGetValue("Actions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-                    Current = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLParser.Parse(value).FirstOrDefault() : null,
-                    Next = detailed != false && media.TryGetValue("NextURIMetaData", out value) ? DIDLParser.Parse(value).FirstOrDefault() : null
+                    Current = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLParser.Parse(value, false).FirstOrDefault() : null,
+                    Next = detailed != false && media.TryGetValue("NextURIMetaData", out value) ? DIDLParser.Parse(value, false).FirstOrDefault() : null
                 };
             }
             else
@@ -70,7 +70,7 @@ namespace Web.Upnp.Control.Controllers
                 info.TryGetValue("RelCount", out value) && int.TryParse(value, out var time) ? time : default(int?),
                 info.TryGetValue("AbsCount", out value) && int.TryParse(value, out time) ? time : default(int?))
             {
-                Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLParser.Parse(value).FirstOrDefault() : null
+                Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLParser.Parse(value, false).FirstOrDefault() : null
             };
         }
 

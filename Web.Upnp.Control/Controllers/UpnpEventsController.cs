@@ -52,19 +52,23 @@ namespace Web.Upnp.Control.Controllers
                 map = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
             }
 
-            var state = new AVTransportState(map.TryGetValue("TransportState", out var value) ? value : null, null,
+            if(map == null || map.Count == 0) return;
+
+            var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLParser.Parse(value, false).FirstOrDefault() : null;
+            var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLParser.Parse(value, false).FirstOrDefault() : null;
+
+            var state = new AVTransportState(map.TryGetValue("TransportState", out value) ? value : null, null,
                 map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : default(int?), null)
             {
                 Actions = map.TryGetValue("CurrentTransportActions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-                Current = map.TryGetValue("CurrentTrackMetaData", out value) ? DIDLParser.Parse(value).FirstOrDefault() : null,
-                Next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLParser.Parse(value).FirstOrDefault() : null
+                Current = current,
+                Next = next
             };
 
-            var position = new AVPositionInfo(
-                map.TryGetValue("CurrentTrack", out value) ? value : null,
-                map.TryGetValue("CurrentTrackDuration", out value) ? value : null,
-                map.TryGetValue("RelativeTimePosition", out value) ? value : null,
-                null, null, null);
+            var track = map.TryGetValue("CurrentTrack", out value) ? value : null;
+            var duration = map.TryGetValue("CurrentTrackDuration", out value) ? value : null;
+            var relTime = map.TryGetValue("RelativeTimePosition", out value) ? value : null;
+            var position = new AVPositionInfo(track, duration, relTime, null, null, null);
 
             var _ = hub.Clients.All.AVTransportEvent(deviceId, new {state, position});
         }
