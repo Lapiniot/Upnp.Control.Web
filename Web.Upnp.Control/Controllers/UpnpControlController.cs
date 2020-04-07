@@ -73,5 +73,50 @@ namespace Web.Upnp.Control.Controllers
                 Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLParser.Parse(value).FirstOrDefault() : null
             };
         }
+
+        [HttpGet("play")]
+        [HttpGet("play()")]
+        [Produces("application/json")]
+        public async Task PlayAsync(string deviceId)
+        {
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            await avt.PlayAsync().ConfigureAwait(false);
+        }
+
+        [HttpGet("pause")]
+        [HttpGet("pause()")]
+        [Produces("application/json")]
+        public async Task PauseAsync(string deviceId)
+        {
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            await avt.PauseAsync().ConfigureAwait(false);
+        }
+
+        [HttpGet("stop")]
+        [HttpGet("stop()")]
+        [Produces("application/json")]
+        public async Task StopAsync(string deviceId)
+        {
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            await avt.StopAsync().ConfigureAwait(false);
+        }
+
+        [HttpGet("prev")]
+        [HttpGet("prev()")]
+        [Produces("application/json")]
+        public async Task PrevAsync(string deviceId)
+        {
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            await avt.PreviousAsync().ConfigureAwait(false);
+        }
+
+        [HttpGet("next")]
+        [HttpGet("next()")]
+        [Produces("application/json")]
+        public async Task NextAsync(string deviceId)
+        {
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            await avt.NextAsync().ConfigureAwait(false);
+        }
     }
 }
