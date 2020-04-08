@@ -38,17 +38,45 @@
 .album-art-icon {
     width: 2rem !important;
     height: 2rem !important;
-    margin-right: 0.25rem;
-    display: inline-block;
     line-height: 2rem;
     text-align: center;
+    display: inline-block;
+    font-weight: bolder;
     &:after {
         content: "?";
     }
 }
 
+.icon-cntr {
+    display: inline-block;
+    position: relative;
+    
+    & > &-overlay {
+        display: flex;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        visibility: hidden;
+        color: white;
+    }
+
+    *[data-selected="true"] & > &-overlay {
+        color: $link-color;
+    }
+
+    &:hover > &-overlay {
+        visibility: visible;
+    }
+}
+
+.x-table-hover-link > * > *:hover .icon-cntr > .icon-cntr-overlay {
+     visibility: visible;
+}
+
 svg.album-art-icon {
-    vertical-align: -0.5rem !important;
+    vertical-align: middle !important;
 }
 
 input[type="checkbox"].chk-no-label {

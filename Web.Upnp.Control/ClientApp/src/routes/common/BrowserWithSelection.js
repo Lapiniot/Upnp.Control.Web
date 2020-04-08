@@ -65,7 +65,12 @@ export default class extends React.Component {
                             <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={!this.state.filter(e)} />
                         </div>
                         <div>
-                            <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
+                            <div className="icon-cntr mr-1">
+                                <AlbumArtImage itemClass={e.class} albumArts={e.albumArts} />
+                                <div className="icon-cntr-overlay">
+                                    <i className="m-auto far fa-lg fa-play-circle" />
+                                </div>
+                            </div>
                             {e.title}
                         </div>
                         <div className="text-capitalize">{utils.getDisplayName(e.class)}</div>
