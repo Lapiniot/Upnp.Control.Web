@@ -35,6 +35,35 @@
     margin-right: 0.5rem;
 }
 
+.album-art {
+    text-align: center;
+    display: inline-block;
+    font-weight: bolder;
+    line-height: 100%;
+    &:after {
+        content: "?";
+    }
+}
+
+@mixin album-art($size) {
+    width: $size !important;
+    height: $size !important;
+}
+
+$album-art-sizes: ("xs": 1rem, "sm": 2rem, "md": 2.5rem, "lg": 5rem, "xl": 10rem);
+
+@each $name, $size in $album-art-sizes{
+    .album-art-#{$name}{
+        @include album-art($size);
+    }
+}
+
+@for $i from 1 through 4 {
+    .album-art-#{$i}x {
+        @include album-art($i * 2rem);
+    }
+}
+
 .album-art-icon {
     width: 2rem !important;
     height: 2rem !important;
