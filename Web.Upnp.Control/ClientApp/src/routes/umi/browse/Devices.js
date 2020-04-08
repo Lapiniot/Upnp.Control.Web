@@ -6,7 +6,7 @@ import { withProps, withDataFetch } from "../../../components/Extensions";
 import DeviceList from "../../common/DeviceList";
 //import DeviceInfo from "../../common/DeviceInfo";
 import DeviceIcon from "../../common/DeviceIcon";
-import PlayerWidget from "../../../components/PlayerWidget";
+import PlayerWidget from "../../common/PlayerWidget";
 
 const UmiDevice = ({ "data-source": d, "data-source": { icons, name, type, description, udn } }) =>
     <div className="card">

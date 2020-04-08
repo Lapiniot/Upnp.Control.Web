@@ -35,13 +35,22 @@
     margin-right: 0.5rem;
 }
 
+$album-art-size-base: 2rem;
+
 .album-art {
-    text-align: center;
     display: inline-block;
-    font-weight: bolder;
-    line-height: 100%;
+    width: $album-art-size-base !important;
+    height: $album-art-size-base !important;
+    line-height: $album-art-size-base;
+    text-align: center;
+    vertical-align: middle !important;
+    // This renders in case of image download error
     &:after {
         content: "?";
+        display: block;
+        color: orangered;
+        border: 1px dashed orangered;
+        font-weight: bolder;
     }
 }
 
@@ -50,62 +59,47 @@
     height: $size !important;
 }
 
-$album-art-sizes: ("xs": 1rem, "sm": 2rem, "md": 2.5rem, "lg": 5rem, "xl": 10rem);
+$album-art-sizes: ( "xs": 0.50, "sm": 0.75, "md": 1.25, "lg": 1.75, "xl": 2.00);
 
-@each $name, $size in $album-art-sizes{
-    .album-art-#{$name}{
-        @include album-art($size);
+@each $name, $size in $album-art-sizes {
+    .album-art-#{$name} {
+        @include album-art($size * $album-art-size-base);
     }
 }
 
-@for $i from 1 through 4 {
+@for $i from 2 through 5 {
     .album-art-#{$i}x {
-        @include album-art($i * 2rem);
+        @include album-art($i * $album-art-size-base);
     }
 }
 
-.album-art-icon {
-    width: 2rem !important;
-    height: 2rem !important;
-    line-height: 2rem;
-    text-align: center;
-    display: inline-block;
-    font-weight: bolder;
-    &:after {
-        content: "?";
-    }
-}
-
-.icon-cntr {
-    display: inline-block;
+.stack {
     position: relative;
-    
-    & > &-overlay {
-        display: flex;
+
+    & > &-layer {
         position: absolute;
         left: 0;
         top: 0;
-        width: 100%;
-        height: 100%;
-        visibility: hidden;
-        color: white;
+        bottom: 0;
+        right: 0;
+
+        &-hover {
+            visibility: hidden;
+        }
     }
 
-    *[data-selected="true"] & > &-overlay {
-        color: $link-color;
-    }
-
-    &:hover > &-overlay {
+    &:hover > &-layer {
         visibility: visible;
     }
 }
 
-.x-table-hover-link > * > *:hover .icon-cntr > .icon-cntr-overlay {
-     visibility: visible;
+.x-table-hover-link > * > *:hover .stack-layer {
+    visibility: visible;
+    color: white;
 }
 
-svg.album-art-icon {
-    vertical-align: middle !important;
+.x-table-hover-link > * > *[data-selected="true"] .stack-layer {
+    color: $link-color;
 }
 
 input[type="checkbox"].chk-no-label {
@@ -115,6 +109,7 @@ input[type="checkbox"].chk-no-label {
         display: inline-block;
         background-color: red;
     }
+
     &:checked:after {
         content: ("1");
     }

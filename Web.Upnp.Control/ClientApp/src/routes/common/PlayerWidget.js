@@ -1,8 +1,8 @@
 import React from "react";
-import Toolbar from "./Toolbar";
-import { withDataFetch } from "./Extensions";
-import { SignalRListener } from "./SignalR";
-import $api from "./WebApi";
+import Toolbar from "../../components/Toolbar";
+import { withDataFetch } from "../../components/Extensions";
+import { SignalRListener } from "../../components/SignalR";
+import $api from "../../components/WebApi";
 
 class PlayerCore extends React.Component {
     constructor(props) {

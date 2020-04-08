@@ -1,7 +1,7 @@
 import React from "react";
 import Breadcrumb from "./Breadcrumb";
 import Pagination from "./Pagination";
-import AlbumArtImage from "./AlbumArtImage";
+import AlbumArtImage from "./AlbumArt";
 import { DIDLUtils as utils } from "./BrowserCore";
 
 export function BrowserView({ dataContext: { source: data } = {}, navContext: { navigateHandler, page, pageSize, urls } }) {
