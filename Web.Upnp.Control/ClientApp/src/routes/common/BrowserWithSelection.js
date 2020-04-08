@@ -2,11 +2,13 @@
 import AlbumArt from "./AlbumArt";
 import SelectionService from "../../components/SelectionService";
 import { DIDLUtils as utils } from "./BrowserCore";
+import $api from "../../components/WebApi";
 
 export default class extends React.Component {
     constructor(props) {
         super(props);
         this.state = { data: null, selectableKeys: [], selection: props.selection, modal: null };
+        this.ctrl = $api.control(this.props.device);
     }
 
     static getDerivedStateFromProps({ dataContext, selection, filter = () => true }, state) {
@@ -16,6 +18,12 @@ export default class extends React.Component {
             selection: selection || new SelectionService(),
             filter: filter
         } : null;
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.device !== this.props.device) {
+            this.ctrl = $api.control(this.props.device);
+        }
     }
 
     isSelected = id => this.state.selection.selected(id);
@@ -67,7 +75,7 @@ export default class extends React.Component {
                         <div>
                             <div className="d-inline-block stack mr-1">
                                 <AlbumArt itemClass={e.class} albumArts={e.albumArts} />
-                                <div className="stack-layer stack-layer-hover d-flex">
+                                <div className="stack-layer stack-layer-hover d-flex" onClick={this.ctrl.play(e.id).fetch}>
                                     <i className="m-auto fas fa-lg fa-play-circle" />
                                 </div>
                             </div>

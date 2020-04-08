@@ -119,3 +119,11 @@ $fa-font-path: "../webfonts";
 .#{$fa-css-prefix}-play-circle:before {
     content: fa-content($fa-var-play-circle);
 }
+
+.#{$fa-css-prefix}-pause-circle:before {
+    content: fa-content($fa-var-pause-circle);
+}
+
+.#{$fa-css-prefix}-stop-circle:before {
+    content: fa-content($fa-var-stop-circle);
+}

@@ -104,6 +104,32 @@ namespace Web.Upnp.Control.Controllers
             await avt.PlayAsync().ConfigureAwait(false);
         }
 
+        [HttpGet("play/{id}")]
+        [HttpGet("play({id})")]
+        [Produces("application/json")]
+        public async Task PlayItemAsync(string deviceId, [FromRoute] [FromQuery] string id)
+        {
+            var cd = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
+            var result = await cd.BrowseAsync(id, flags: "BrowseMetadata").ConfigureAwait(false);
+            var item = DIDLParser.Parse(result["Result"]).FirstOrDefault();
+            if(item is {Resource: {Url: {} resUrl}})
+            {
+                var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+                await avt.SetAVTransportUriAsync(currentUri: resUrl).ConfigureAwait(false);
+                await avt.PlayAsync().ConfigureAwait(false);
+            }
+        }
+
+        [HttpGet("play_uri/{uri?}")]
+        [HttpGet("play_uri({uri})")]
+        [Produces("application/json")]
+        public async Task PlayUriAsync(string deviceId, [FromRoute] [FromQuery] string uri)
+        {
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            await avt.SetAVTransportUriAsync(currentUri: uri).ConfigureAwait(false);
+            await avt.PlayAsync().ConfigureAwait(false);
+        }
+
         [HttpGet("pause")]
         [HttpGet("pause()")]
         [Produces("application/json")]

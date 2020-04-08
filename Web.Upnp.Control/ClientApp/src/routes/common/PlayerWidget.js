@@ -54,8 +54,8 @@ class PlayerCore extends React.Component {
                     <Toolbar className="bg-normal">
                         <Toolbar.Group>
                             <Toolbar.Button title="Prev" onClick={this.prev} glyph="step-backward fa-sm" className="px-1" disabled={!actions.includes("Previous")} />
-                            {actions.includes("Play") && <Toolbar.Button title="Play" onClick={this.play} glyph="play fa-2x" />}
-                            {(actions.includes("Pause") || transitioning) && <Toolbar.Button title="Pause" onClick={this.pause} glyph="pause fa-2x" disabled={transitioning} />}
+                            {actions.includes("Play") && <Toolbar.Button title="Play" onClick={this.play} glyph="play-circle" className="fa-2x" />}
+                            {(actions.includes("Pause") || transitioning) && <Toolbar.Button title="Pause" onClick={this.pause} glyph="pause-circle" className="fa-2x" disabled={transitioning} />}
                             <Toolbar.Button title={next ? `Next: ${next.title}` : "Next"} onClick={this.next} glyph="step-forward fa-sm" className="px-1" disabled={!actions.includes("Next")} />
                         </Toolbar.Group>
                     </Toolbar>
