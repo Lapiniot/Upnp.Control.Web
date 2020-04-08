@@ -6,7 +6,10 @@ const SignalRContext = React.createContext();
 class SignalRConnection extends React.Component {
     constructor(props) {
         super(props);
-        this.hub = new signalR.HubConnectionBuilder().withUrl(props.hubUrl).build();
+        this.hub = new signalR.HubConnectionBuilder()
+            .withUrl(props.hubUrl)
+            .withAutomaticReconnect([2, 4, 8, 16, 32, 64])
+            .build();
         this.state = { error: null, connected: false };
     }
 
