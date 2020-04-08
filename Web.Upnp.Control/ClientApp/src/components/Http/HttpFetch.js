@@ -6,9 +6,7 @@ export class UrlBuilder {
         this.query = query;
     }
 
-    url() {
-        return this.query ? this.path + qs.build(this.query) : this.path;
-    }
+    url = () => this.query ? this.path + qs.build(this.query) : this.path;
 }
 
 export class HttpFetch extends UrlBuilder {
@@ -17,9 +15,7 @@ export class HttpFetch extends UrlBuilder {
         this.init = { method: "GET", ...init };
     }
 
-    fetch() {
-        return window.fetch(this.url(), this.init);
-    }
+    fetch = () => window.fetch(this.url(), this.init);
 }
 
 export class HttpPost extends HttpFetch {

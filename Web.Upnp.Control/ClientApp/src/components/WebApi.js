@@ -24,15 +24,19 @@ export default class {
         removeItems: (id, ids) => new JsonDeleteFetch(`${playlistBaseUrl}${deviceId}/${id}/remove`, null, { body: JSON.stringify(ids) })
     });
 
-    static control = (deviceId) => ({
-        state: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/state${detailed && "?detailed"}`),
-        position: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/position${detailed && "?detailed"}`),
-        play: () => new JsonFetch(`${controlBaseUrl}${deviceId}/play()`),
-        pause: () => new JsonFetch(`${controlBaseUrl}${deviceId}/pause()`),
-        stop: () => new JsonFetch(`${controlBaseUrl}${deviceId}/stop()`),
-        prev: () => new JsonFetch(`${controlBaseUrl}${deviceId}/prev()`),
-        next: () => new JsonFetch(`${controlBaseUrl}${deviceId}/next()`),
-    });
+    static control = (deviceId) => {
+        deviceId = encodeURIComponent(deviceId);
+        return {
+            state: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/state${detailed && "?detailed"}`),
+            position: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/position${detailed && "?detailed"}`),
+            play: (id) => new JsonFetch(`${controlBaseUrl}${deviceId}/play(${!!id ? encodeURIComponent(id) : ""})`),
+            playUri: (uri) => new JsonFetch(`${controlBaseUrl}${deviceId}/play_uri(${encodeURIComponent(uri)})`),
+            pause: () => new JsonFetch(`${controlBaseUrl}${deviceId}/pause()`),
+            stop: () => new JsonFetch(`${controlBaseUrl}${deviceId}/stop()`),
+            prev: () => new JsonFetch(`${controlBaseUrl}${deviceId}/prev()`),
+            next: () => new JsonFetch(`${controlBaseUrl}${deviceId}/next()`),
+        };
+    }
 }
 
 class BrowseFetch extends HttpFetch {
@@ -40,15 +44,9 @@ class BrowseFetch extends HttpFetch {
         super(path, query);
     }
 
-    withParents() {
-        return new BrowseFetch(this.path, { ...this.query, withParents: true });
-    }
+    withParents = () => new BrowseFetch(this.path, { ...this.query, withParents: true });
 
-    take(count) {
-        return new BrowseFetch(this.path, { ...this.query, take: count });
-    }
+    take = (count) => new BrowseFetch(this.path, { ...this.query, take: count });
 
-    skip(count) {
-        return new BrowseFetch(this.path, { ...this.query, skip: count });
-    }
+    skip = (count) => new BrowseFetch(this.path, { ...this.query, skip: count });
 };
