@@ -54,8 +54,8 @@ namespace Web.Upnp.Control.Controllers
 
             if(map == null || map.Count == 0) return;
 
-            var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLParser.Parse(value, false).FirstOrDefault() : null;
-            var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLParser.Parse(value, false).FirstOrDefault() : null;
+            var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null;
+            var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null;
 
             var state = new AVTransportState(map.TryGetValue("TransportState", out value) ? value : null, null,
                 map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : default(int?), null)
@@ -65,10 +65,10 @@ namespace Web.Upnp.Control.Controllers
                 Next = next
             };
 
-            var track = map.TryGetValue("CurrentTrack", out value) ? value : null;
-            var duration = map.TryGetValue("CurrentTrackDuration", out value) ? value : null;
-            var relTime = map.TryGetValue("RelativeTimePosition", out value) ? value : null;
-            var position = new AVPositionInfo(track, duration, relTime, null, null, null);
+            var position = new AVPositionInfo(map.TryGetValue("CurrentTrack", out value) ? value : null,
+                map.TryGetValue("CurrentTrackDuration", out value) ? value : null,
+                map.TryGetValue("RelativeTimePosition", out value) ? value : null,
+                null, null, null);
 
             var _ = hub.Clients.All.AVTransportEvent(deviceId, new {state, position});
         }

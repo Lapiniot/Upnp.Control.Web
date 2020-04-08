@@ -8,6 +8,27 @@ using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+/*
+ * http-get:*:audio/dsd:*,
+ * http-get:*:audio/wav:*,
+ * http-get:*:audio/wave:*,
+ * http-get:*:audio/x-wav:*,
+ * http-get:*:audio/x-aiff:*,
+ * http-get:*:audio/mpeg:*,
+ * http-get:*:audio/mpegurl:*,
+ * http-get:*:audio/x-mpeg:*,
+ * http-get:*:audio/mp1:*,
+ * http-get:*:audio/aac:*,
+ * http-get:*:audio/flac:*,
+ * http-get:*:audio/x-flac:*,
+ * http-get:*:audio/m4a:*,
+ * http-get:*:audio/mp4:*,
+ * http-get:*:audio/x-m4a:*,
+ * http-get:*:audio/vorbis:*,
+ * http-get:*:audio/ogg:*,
+ * http-get:*:audio/x-ogg:*,
+ * http-get:*:audio/x-scpls:*
+ */
 
 namespace Web.Upnp.Control.Controllers
 {
@@ -31,18 +52,18 @@ namespace Web.Upnp.Control.Controllers
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
             var actions = await avt.GetCurrentTransportActionsAsync(0, HttpContext.RequestAborted).ConfigureAwait(false);
             var transport = await avt.GetTransportInfoAsync(0, HttpContext.RequestAborted).ConfigureAwait(false);
+
             if(detailed != false)
             {
                 var media = await avt.GetMediaInfoAsync(0, HttpContext.RequestAborted).ConfigureAwait(false);
-                //var positionInfo = await avt.GetPositionInfoAsync(0, HttpContext.RequestAborted).ConfigureAwait(false);
                 return new AVTransportState(transport.TryGetValue("CurrentTransportState", out var value) ? value : null,
                     transport.TryGetValue("CurrentTransportStatus", out value) ? value : null,
                     media.TryGetValue("NrTracks", out value) && int.TryParse(value, out var numTracks) ? numTracks : 0,
                     media.TryGetValue("PlayMedium", out value) ? value : null)
                 {
                     Actions = actions.TryGetValue("Actions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-                    Current = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLParser.Parse(value, false).FirstOrDefault() : null,
-                    Next = detailed != false && media.TryGetValue("NextURIMetaData", out value) ? DIDLParser.Parse(value, false).FirstOrDefault() : null
+                    Current = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null,
+                    Next = detailed != false && media.TryGetValue("NextURIMetaData", out value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null
                 };
             }
             else
@@ -70,7 +91,7 @@ namespace Web.Upnp.Control.Controllers
                 info.TryGetValue("RelCount", out value) && int.TryParse(value, out var time) ? time : default(int?),
                 info.TryGetValue("AbsCount", out value) && int.TryParse(value, out time) ? time : default(int?))
             {
-                Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLParser.Parse(value, false).FirstOrDefault() : null
+                Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLParser.Parse(value).FirstOrDefault() : null
             };
         }
 
