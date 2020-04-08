@@ -48,7 +48,7 @@ class PlayerCore extends React.Component {
             <SignalRListener handlers={this.handlers} >{null}</SignalRListener>
             <div className="d-flex flex-column">
                 <div className="progress my-1" style={{ height: "3px" }}>
-                    <div class="progress-bar" role="progressbar" style={{ width: "25%" }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" />
+                    <div className="progress-bar" role="progressbar" style={{ width: "25%" }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" />
                 </div>
                 <div className="d-flex align-items-center">
                     <Toolbar className="bg-normal">
