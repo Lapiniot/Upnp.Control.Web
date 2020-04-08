@@ -5,9 +5,11 @@ $fa-font-path: "../webfonts";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/mixins";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/core";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/animated";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/stacked";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/larger";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/fixed-width";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/solid";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/regular";
 
 @mixin fa-icon-wide($quarter-fraction) {
     text-align: center;
@@ -112,4 +114,8 @@ $fa-font-path: "../webfonts";
 
 .#{$fa-css-prefix}-step-forward:before {
     content: fa-content($fa-var-step-forward);
+}
+
+.#{$fa-css-prefix}-play-circle:before {
+    content: fa-content($fa-var-play-circle);
 }
