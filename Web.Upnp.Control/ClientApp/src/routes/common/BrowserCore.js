@@ -4,6 +4,14 @@ import { withNavigationContext } from "./Navigator";
 import LoadIndicator from "../../components/LoadIndicator";
 import $ from "../../components/WebApi";
 
+const defaultUrlBuilder = ({ device, id, navContext: { pageSize, page } }) =>
+    $.browse(device)
+        .get(id)
+        .withParents()
+        .take(pageSize)
+        .skip((page - 1) * pageSize)
+        .url();
+
 export class DIDLUtils {
     static getKind(upnpClassName) {
         const index = upnpClassName.lastIndexOf(".");
@@ -19,11 +27,8 @@ export class DIDLUtils {
     }
 }
 
-export function withBrowserCore(BrowserView, usePreloader = true) {
+export function withBrowserCore(BrowserView, usePreloader = true, dataUrlBuilder = defaultUrlBuilder) {
     return withRouter(
         withNavigationContext(
-            withDataFetch(BrowserView,
-                { template: LoadIndicator, usePreloader: usePreloader },
-                ({ device, id, navContext: { pageSize, page } }) =>
-                    $.browse(device).get(id).withParents().take(pageSize).skip((page - 1) * pageSize).url())));
+            withDataFetch(BrowserView, { template: LoadIndicator, usePreloader: usePreloader }, dataUrlBuilder)));
 }
