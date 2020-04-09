@@ -46,6 +46,10 @@ class BrowseFetch extends HttpFetch {
 
     withParents = () => new BrowseFetch(this.path, { ...this.query, withParents: true });
 
+    withResource = () => new BrowseFetch(this.path, { ...this.query, resource: true });
+
+    withVendor = () => new BrowseFetch(this.path, { ...this.query, vendor: true });
+
     take = (count) => new BrowseFetch(this.path, { ...this.query, take: count });
 
     skip = (count) => new BrowseFetch(this.path, { ...this.query, skip: count });

@@ -23,7 +23,10 @@ namespace Web.Upnp.Control.Controllers
         }
 
         [HttpGet("{*path}")]
-        public async Task GetContentAsync(string deviceId, string path, [FromQuery] uint take = 50, [FromQuery] uint skip = 0, [FromQuery] bool withParents = false)
+        public async Task GetContentAsync(string deviceId, string path, [FromQuery] uint take = 50, [FromQuery] uint skip = 0,
+            [FromQuery] bool withParents = false,
+            [FromQuery(Name = "resource")] bool? withResource = false,
+            [FromQuery(Name = "vendor")] bool? withVendor = false)
         {
             var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
@@ -34,7 +37,8 @@ namespace Web.Upnp.Control.Controllers
                 WriteResponse(Response.BodyWriter,
                     int.Parse(result["TotalMatches"]),
                     DIDLParser.Parse(result["Result"]),
-                    withParents ? await GetParentsAsync(service, path).ConfigureAwait(false) : null);
+                    withParents ? await GetParentsAsync(service, path).ConfigureAwait(false) : null,
+                    withResource != false, withVendor != false);
 
                 await Response.BodyWriter.FlushAsync().ConfigureAwait(false);
             }
@@ -81,7 +85,8 @@ namespace Web.Upnp.Control.Controllers
             return parents;
         }
 
-        private static void WriteResponse(PipeWriter writer, int total, IEnumerable<Item> items, IEnumerable<Item> parents)
+        private static void WriteResponse(PipeWriter writer, int total, IEnumerable<Item> items, IEnumerable<Item> parents,
+            bool emmitResourceData, bool emmitVendorData)
         {
             var w = new Utf8JsonWriter(writer);
 
@@ -97,18 +102,35 @@ namespace Web.Upnp.Control.Controllers
                 w.WriteString("class", item.Class);
                 w.WriteString("title", item.Title);
 
-                if(item.Vendor != null && item.Vendor.TryGetValue("mi:playlistType", out var pt) && pt == "aux")
-                {
-                    w.WriteBoolean("readonly", true);
-                }
-
                 if(item.AlbumArts != null)
                 {
                     w.WriteStartArray("albumArts");
-
                     foreach(var art in item.AlbumArts) w.WriteStringValue(art);
-
                     w.WriteEndArray();
+                }
+
+                if(emmitResourceData && item.Resource is { } r)
+                {
+                    w.WriteStartObject("res");
+                    w.WriteString("url", r.Url);
+                    w.WriteString("proto", r.Protocol);
+
+                    if(r.Attributes is { Count: var count } && count > 0)
+                    {
+                        foreach(var (k, v) in r.Attributes) w.WriteString(k, v);
+                    }
+
+                    w.WriteEndObject();
+                }
+
+                if(emmitVendorData && item.Vendor is { } vendor && vendor.Count > 0)
+                {
+                    w.WriteStartObject("vendor");
+                    foreach(var (k, v) in vendor)
+                    {
+                        if(!string.IsNullOrEmpty(v)) w.WriteString(k, v);
+                    }
+                    w.WriteEndObject();
                 }
 
                 w.WriteEndObject();
