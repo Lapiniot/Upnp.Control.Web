@@ -25,9 +25,9 @@ class PlayerCore extends React.Component {
         } : null;
     }
 
-    onAVTransportEvent = (device, { state: { actions, current, next, state } }) => {
+    onAVTransportEvent = (device, { state: { actions, current, next, state }, vendor }) => {
         if (device === this.props.udn) {
-            this.setState({ actions: actions, current: current, next: next, playbackState: state })
+            this.setState({ actions, current, next, playbackState: state, vendor })
         }
     }
 

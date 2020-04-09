@@ -147,4 +147,6 @@ export default class PlaylistManager extends React.Component {
     }
 }
 
-export const RoutedPlaylistManager = withBrowserCore(PlaylistManager, false);
+export const RoutedPlaylistManager = withBrowserCore(PlaylistManager, false,
+    ({ device, id, navContext: { pageSize, page } }) => $api.browse(device).get(id)
+        .withParents().withResource().withVendor().take(pageSize).skip((page - 1) * pageSize).url());

@@ -47,6 +47,7 @@ export default class extends React.Component {
     }
 
     render() {
+        //mi:playlist_transport_uri
         const { navigateHandler } = this.props;
         const { result: items, parents } = this.state.data.source;
         return <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
@@ -75,13 +76,16 @@ export default class extends React.Component {
                         <div>
                             <div className="d-inline-block stack mr-1">
                                 <AlbumArt itemClass={e.class} albumArts={e.albumArts} />
+                                <div className="stack-layer stack-layer d-flex">
+                                    <i className="m-auto fas fa-lg fa-pause-circle" />
+                                </div>
                                 <div className="stack-layer stack-layer-hover d-flex" onClick={this.ctrl.play(e.id).fetch}>
                                     <i className="m-auto fas fa-lg fa-play-circle" />
                                 </div>
                             </div>
                             {e.title}
                         </div>
-                        <div className="text-capitalize">{utils.getDisplayName(e.class)}</div>
+                        <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
                     </div>;
                 })]}
             </div>
