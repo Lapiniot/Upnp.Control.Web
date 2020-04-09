@@ -51,16 +51,22 @@ class SignalRListener extends React.Component {
     static contextType = SignalRContext;
 
     componentDidMount() {
-        for (let [event, handler] of this.props.handlers) {
-            this.context.on(event, handler);
-            console.info(`Subscibed to event '${event}'`);
-        }
+        this.foreach((e, h) => {
+            this.context.on(e, h);
+            console.info(`Subscibed to event '${e}'`);
+        });
     }
 
     componentWillUnmount() {
-        for (let [event, handler] of this.props.handlers) {
-            this.context.off(event, handler);
-            console.info(`Unsubscibed from event '${event}'`);
+        this.foreach((e, h) => {
+            this.context.off(e, h);
+            console.info(`Unsubscibed from event '${e}'`);
+        });
+    }
+
+    foreach(func) {
+        if (this.props.handlers && typeof this.props.handlers[Symbol.iterator] === "function") {
+            for (let [event, handler] of this.props.handlers) func(event, handler)
         }
     }
 
