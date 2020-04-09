@@ -46,10 +46,11 @@ namespace Web.Upnp.Control.Controllers
         public async Task NotifyAVTransportAsync(string deviceId)
         {
             IDictionary<string, string> map;
+            IDictionary<string, string> vendor;
 
             using(var reader = XmlReader.Create(HttpContext.Request.Body, settings))
             {
-                map = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
+                (map, vendor) = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
             }
 
             if(map == null || map.Count == 0) return;
@@ -70,7 +71,7 @@ namespace Web.Upnp.Control.Controllers
                 map.TryGetValue("RelativeTimePosition", out value) ? value : null,
                 null, null, null);
 
-            var _ = hub.Clients.All.AVTransportEvent(deviceId, new {state, position});
+            var _ = hub.Clients.All.AVTransportEvent(deviceId, new {state, position, vendor});
         }
     }
 }
