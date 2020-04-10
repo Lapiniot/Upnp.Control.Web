@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { withProps, withDataFetch } from "../../../components/Extensions";
+import { withDataFetch } from "../../../components/DataFetch";
 import $api from "../../../components/WebApi";
 import LoadIndicator from "../../../components/LoadIndicator";
 import { RouteLink } from "../../../components/NavLink";
@@ -32,11 +32,7 @@ const UpnpDevice = ({ "data-source": d, "data-row-id": id }) => {
     </div>;
 }
 
-const UpnpDevices = withProps(
-    withDataFetch(DeviceList, { template: LoadIndicator }),
-    {
-        dataUrl: $api.discover("upnp").url(),
-        itemTemplate: UpnpDevice
-    });
+const dataUrl = $api.discover("upnp").url();
+const UpnpDevices = withDataFetch(DeviceList, { template: LoadIndicator }, () => dataUrl);
 
-export default UpnpDevices;
+export default (props) => <UpnpDevices itemTemplate={UpnpDevice} {...props} />;

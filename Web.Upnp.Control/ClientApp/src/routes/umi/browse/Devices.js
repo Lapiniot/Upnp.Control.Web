@@ -2,7 +2,7 @@
 import $api from "../../../components/WebApi";
 import LoadIndicator from "../../../components/LoadIndicator";
 import { RouteLink } from "../../../components/NavLink";
-import { withProps, withDataFetch } from "../../../components/Extensions";
+import { withDataFetch } from "../../../components/DataFetch";
 import DeviceList from "../../common/DeviceList";
 //import DeviceInfo from "../../common/DeviceInfo";
 import DeviceIcon from "../../common/DeviceIcon";
@@ -22,17 +22,12 @@ const UmiDevice = ({ "data-source": d, "data-source": { icons, name, type, descr
             <PlayerWidget udn={udn} />
         </div>
         <div className="card-footer d-flex align-items-center justify-content-end">
-            
             <RouteLink to={`/umi/browse/${udn}/`} glyph="folder" className="card-link">Browse</RouteLink>
             <RouteLink to={`/umi/playlist/${udn}/PL:`} glyph="list-alt" className="card-link">Playlists</RouteLink>
         </div>
     </div>;
 
-const UmiDeviceList = withProps(
-    withDataFetch(DeviceList, { template: LoadIndicator }),
-    {
-        dataUrl: $api.discover("umi").url(),
-        itemTemplate: UmiDevice
-    });
+const dataUrl = $api.discover("umi").url();
+const UmiDeviceList = withDataFetch(DeviceList, { template: LoadIndicator }, () => dataUrl);
 
-export default UmiDeviceList;
+export default (props) => <UmiDeviceList itemTemplate={UmiDevice} {...props} />;

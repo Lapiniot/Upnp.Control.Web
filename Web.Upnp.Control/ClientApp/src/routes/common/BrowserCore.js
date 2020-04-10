@@ -1,5 +1,5 @@
 import { withRouter } from "react-router-dom";
-import { withDataFetch } from "../../components/Extensions";
+import { withDataFetch } from "../../components/DataFetch";
 import { withNavigationContext } from "./Navigator";
 import LoadIndicator from "../../components/LoadIndicator";
 import $ from "../../components/WebApi";

@@ -1,6 +1,6 @@
 import React from "react";
 import Toolbar from "../../components/Toolbar";
-import { withDataFetch } from "../../components/Extensions";
+import { withDataFetch } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
 import $api from "../../components/WebApi";
 

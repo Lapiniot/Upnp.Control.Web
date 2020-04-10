@@ -1,12 +1,11 @@
 import React from "react";
 import { MemoryRouter, Switch, Route, Redirect } from "react-router-dom";
-import { withMatchProps } from "../../components/Extensions";
 import Modal from "../../components/Modal";
 import LoadIndicator from "../../components/LoadIndicator";
 import Pagination from "./Pagination";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
-import { withProps, withDataFetch } from "../../components/Extensions";
+import { withDataFetch } from "../../components/DataFetch";
 import { withBrowserCore } from "../common/BrowserCore";
 import Breadcrumb from "../common/Breadcrumb";
 import BrowserCoreSelectable from "../common/BrowserWithSelection";
@@ -26,8 +25,9 @@ export default class BrowserDialog extends React.Component {
             e.preventDefault();
             this.setState({ selection: selection, device: device });
         });
-        this.browser = withMatchProps(Browser, { baseUrl: "/sources/browse", selection: this.selection });
-        this.sourcePicker = withProps(withDataFetch(MediaSourceList, { template: LoadIndicator }), { dataUrl: $api.discover("servers").url() });
+        this.browser = ({ match: { params } }) => <Browser baseUrl="/sources/browse" selection={this.selection} {...params} />;
+        const dataUrl = $api.discover("servers").url();
+        this.sourcePicker = withDataFetch(MediaSourceList, { template: LoadIndicator }, () => dataUrl);
     }
 
     confirm = () => !!this.props.onConfirm && this.props.onConfirm(this.state.selection);
