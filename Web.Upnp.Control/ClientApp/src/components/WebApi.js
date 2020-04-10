@@ -1,4 +1,4 @@
-﻿import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch } from "./Http/HttpFetch";
+﻿import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch } from "./HttpFetch";
 
 const controlBaseUrl = "/api/upnpcontrol/";
 const discoverBaseUrl = "/api/discovery/";
@@ -44,13 +44,13 @@ class BrowseFetch extends HttpFetch {
         super(path, query);
     }
 
-    withParents = () => new BrowseFetch(this.path, { ...this.query, withParents: true });
+    withParents = () => { return new BrowseFetch(this.path, { ...this.query, withParents: true }); };
 
-    withResource = () => new BrowseFetch(this.path, { ...this.query, resource: true });
+    withResource = () => { return new BrowseFetch(this.path, { ...this.query, resource: true }); };
 
-    withVendor = () => new BrowseFetch(this.path, { ...this.query, vendor: true });
+    withVendor = () => { return new BrowseFetch(this.path, { ...this.query, vendor: true }); };
 
-    take = (count) => new BrowseFetch(this.path, { ...this.query, take: count });
+    take = (count) => { return new BrowseFetch(this.path, { ...this.query, take: count }); };
 
-    skip = (count) => new BrowseFetch(this.path, { ...this.query, skip: count });
+    skip = (count) => { return new BrowseFetch(this.path, { ...this.query, skip: count }); };
 };

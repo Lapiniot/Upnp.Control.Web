@@ -1,4 +1,4 @@
-﻿import qs from "./QueryString";
+﻿
 
 export class UrlBuilder {
     constructor(path, query) {
@@ -6,7 +6,10 @@ export class UrlBuilder {
         this.query = query;
     }
 
-    url = () => this.query ? this.path + qs.build(this.query) : this.path;
+    url = () => {
+        const search = this.query && new URLSearchParams(this.query).toString();
+        return search && search.length > 0 ? this.path + "?" + search : this.path;
+    }
 }
 
 export class HttpFetch extends UrlBuilder {
@@ -15,7 +18,7 @@ export class HttpFetch extends UrlBuilder {
         this.init = { method: "GET", ...init };
     }
 
-    fetch = () => window.fetch(this.url(), this.init);
+    fetch = () => { return window.fetch(this.url(), this.init); }
 }
 
 export class HttpPost extends HttpFetch {

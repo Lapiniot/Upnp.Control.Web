@@ -1,5 +1,4 @@
 import React from "react";
-import qs from "../../components/Http/QueryString";
 
 export function withNavigationContext(Component) {
     return class extends React.Component {
@@ -24,15 +23,17 @@ export function withNavigationContext(Component) {
 
         render() {
             const { device, baseUrl, match: { url }, location: { search: query } } = this.props;
-            const { p: page = 1, s: pageSize = 50 } = qs.parse(query);
+            const params = new window.URLSearchParams(query);
+            const page = params.get("p");
+            const pageSize = params.get("s");
             const context = {
                 urls: { current: url, base: baseUrl, root: `${baseUrl}/${device}` },
-                page: parseInt(page, 10),
-                pageSize: parseInt(pageSize, 10),
+                page: page ? parseInt(page, 10) : 1,
+                pageSize: pageSize ? parseInt(pageSize, 10) : 50,
                 navigateHandler: this.navigateHandler
             };
 
-            return <Component navContext={context} {...this.props} />;
+            return <Component navContext={context} {...this.props}/>;
         }
     };
 }
