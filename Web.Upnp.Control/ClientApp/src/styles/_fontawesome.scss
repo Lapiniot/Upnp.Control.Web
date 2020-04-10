@@ -127,3 +127,20 @@ $fa-font-path: "../webfonts";
 .#{$fa-css-prefix}-stop-circle:before {
     content: fa-content($fa-var-stop-circle);
 }
+
+.#{$fa-css-prefix}-volume-down:before {
+    content: fa-content($fa-var-volume-down);
+}
+
+.#{$fa-css-prefix}-volume-up:before {
+    content: fa-content($fa-var-volume-up);
+}
+
+.#{$fa-css-prefix}-volume-mute:before {
+    content: fa-content($fa-var-volume-mute);
+}
+
+.#{$fa-css-prefix}-volume-off:before {
+    content: fa-content($fa-var-volume-off);
+}
+
