@@ -4,8 +4,9 @@ import UpnpDevices from "./browse/Devices";
 import UpnpBrowser from "./browse/Browse";
 
 /***** Handles all /upnp/* routes *****/
-export default ({ match: { path } }) =>
+
+export default ({ match: { url } }) =>
     <Switch>
-        <Route path={path} exact component={UpnpDevices} />
-        <Route path={`${path}/browse`} component={UpnpBrowser} />
+        <Route path={url} exact render={(props) => <UpnpDevices {...props} />} />
+        <Route path={`${url}/browse`} render={(props) => <UpnpBrowser {...props} />} />
     </Switch>;
