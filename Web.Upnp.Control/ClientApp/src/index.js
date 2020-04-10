@@ -4,15 +4,15 @@ import "@fortawesome/fontawesome-free/js/solid";
 import "@fortawesome/fontawesome-free/js/regular";
 
 import React from "react";
-import { Route } from "react-router";
 import ReactDOM from "react-dom";
+import { Route } from "react-router";
 import { BrowserRouter } from "react-router-dom";
-import Home from "./routes/home/Home";
-import Settings from "./routes/settings/Settings";
 import { RouteLink } from "./components/NavLink";
-import UpnpRoot from "./routes/upnp/Router";
-import UmiRoot from "./routes/umi/Router";
 import { SignalRConnection } from "./components/SignalR";
+import HomePage from "./routes/home/Home";
+import UpnpPage from "./routes/upnp/Router";
+import UmiPage from "./routes/umi/Router";
+import SettingsPage from "./routes/settings/Settings";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const container = document.getElementById("root-view");
@@ -34,10 +34,10 @@ ReactDOM.render(
                 </div>
                 <main className="col">
                     <SignalRConnection hubUrl="/upnpevents">
-                        <Route exact path="/" component={Home} />
-                        <Route path="/upnp" component={UpnpRoot} />
-                        <Route path="/umi" component={UmiRoot} />
-                        <Route path="/settings" component={Settings} />
+                        <Route exact path="/" render={() => <HomePage />} />
+                        <Route path="/upnp" render={(props) => <UpnpPage {...props} />} />
+                        <Route path="/umi" render={(props) => <UmiPage {...props} />} />
+                        <Route path="/settings" render={() => <SettingsPage />} />
                     </SignalRConnection>
                 </main>
             </div>
