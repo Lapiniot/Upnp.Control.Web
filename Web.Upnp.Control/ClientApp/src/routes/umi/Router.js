@@ -7,7 +7,7 @@ import UmiPlaylistManager from "./playlist/Playlist";
 /***** Handles all /umi/* routes *****/
 export default ({ match: { path } }) =>
     <Switch>
-        <Route path={path} exact component={UmiDeviceList} />
-        <Route path={`${path}/browse`} component={UmiBrowser} />
-        <Route path={`${path}/playlist`} component={UmiPlaylistManager} />
+        <Route path={path} exact render={(props) => <UmiDeviceList {...props} />} />
+        <Route path={`${path}/browse`} render={(props) => <UmiBrowser {...props} />} />
+        <Route path={`${path}/playlist`} render={(props) => <UmiPlaylistManager {...props} />} />
     </Switch>;

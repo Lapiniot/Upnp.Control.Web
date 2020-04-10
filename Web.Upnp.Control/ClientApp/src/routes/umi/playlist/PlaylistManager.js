@@ -11,9 +11,9 @@ import BrowserCore from "../../common/BrowserWithSelection";
 import LoadIndicator from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
 
-export default class PlaylistManager extends React.Component {
+export class PlaylistManagerCore extends React.Component {
 
-    displayName = PlaylistManager.name;
+    displayName = PlaylistManagerCore.name;
 
     constructor(props) {
         super(props);
@@ -27,6 +27,14 @@ export default class PlaylistManager extends React.Component {
         if (prevProps.dataContext !== this.props.dataContext) {
             this.selection.reset();
         }
+    }
+
+    componentDidMount() {
+        var i = 0;
+    }
+
+    componentWillUnmount() {
+        var i = 0;
     }
 
     static isEditable = (item) => !item.readonly;
@@ -122,7 +130,7 @@ export default class PlaylistManager extends React.Component {
         const disabled = this.selection.none();
         return <div className="d-flex flex-column h-100">
             {
-                data ? <>
+                data ? <React.Fragment>
                     <Breadcrumb dataContext={parents} baseUrl={urls.root} />
                     <Toolbar className="position-sticky sticky-top px-2 py-1 bg-light shadow-sm">
                         {id === "PL:"
@@ -137,9 +145,9 @@ export default class PlaylistManager extends React.Component {
                                 <Toolbar.Button title="Remove items" glyph="trash" onClick={this.onRemoveItems} disabled={disabled} />
                             </Toolbar.Group>}
                     </Toolbar>
-                    <BrowserCore dataContext={data} filter={PlaylistManager.isEditable} navigateHandler={navigateHandler} selection={this.selection} {...other} />
+                    <BrowserCore dataContext={data} filter={PlaylistManagerCore.isEditable} navigateHandler={navigateHandler} selection={this.selection} {...other} />
                     <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} className="shadow-sm" />
-                </> :
+                </React.Fragment> :
                     <LoadIndicator />
             }
             {this.state.modal && (typeof this.state.modal === "function" ? this.state.modal() : this.state.modal)}
@@ -147,6 +155,6 @@ export default class PlaylistManager extends React.Component {
     }
 }
 
-export const RoutedPlaylistManager = withBrowserCore(PlaylistManager, false,
+export default withBrowserCore(PlaylistManagerCore, false,
     ({ device, id, navContext: { pageSize, page } }) => $api.browse(device).get(id)
         .withParents().withResource().withVendor().take(pageSize).skip((page - 1) * pageSize).url());
