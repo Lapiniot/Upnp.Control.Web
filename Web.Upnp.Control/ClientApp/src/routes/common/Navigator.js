@@ -1,6 +1,7 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 
-export default function (Component) {
+function withNavigation(Component) {
     return class extends React.Component {
         navigateHandler = event => {
             const id = event.currentTarget.dataset.id;
@@ -33,4 +34,8 @@ export default function (Component) {
             return <Component navContext={context} {...this.props} />;
         }
     };
+}
+
+export default function(Component) {
+    return withRouter(withNavigation(Component));
 }

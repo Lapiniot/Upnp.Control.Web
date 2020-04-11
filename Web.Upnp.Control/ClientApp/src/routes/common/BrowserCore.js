@@ -1,4 +1,3 @@
-import { withRouter } from "react-router-dom";
 import { withDataFetch } from "../../components/DataFetch";
 import withNavigation from "./Navigator";
 import LoadIndicator from "../../components/LoadIndicator";
@@ -28,7 +27,5 @@ export class DIDLUtils {
 }
 
 export function withBrowserCore(BrowserView, usePreloader = true, dataUrlBuilder = defaultUrlBuilder) {
-    return withRouter(
-        withNavigation(
-            withDataFetch(BrowserView, { template: LoadIndicator, usePreloader: usePreloader }, dataUrlBuilder)));
+    return withNavigation(withDataFetch(BrowserView, { template: LoadIndicator, usePreloader: usePreloader }, dataUrlBuilder));
 }
