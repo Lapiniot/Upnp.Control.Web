@@ -1,13 +1,5 @@
 /// <binding BeforeBuild='SASS' />
-var gulp = require("gulp"),
-    fs = require("fs"),
-    sass = require("gulp-sass");
-
-//gulp.task("less", function () {
-//    return gulp.src('Styles/main.less')
-//        .pipe(less())
-//        .pipe(gulp.dest('wwwroot/css'));
-//});
+var gulp = require("gulp"), sass = require("gulp-sass");
 
 const sources = [
     "./ClientApp/src/styles/index.scss"
