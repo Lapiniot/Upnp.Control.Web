@@ -1,10 +1,7 @@
 import React from "react";
 
-export function withNavigationContext(Component) {
+export default function (Component) {
     return class extends React.Component {
-
-        displayName = withNavigationContext.name + "(" + Component.name + ")";
-
         navigateHandler = event => {
             const id = event.currentTarget.dataset.id;
             this.navigateToItem(id);
@@ -33,7 +30,7 @@ export function withNavigationContext(Component) {
                 navigateHandler: this.navigateHandler
             };
 
-            return <Component navContext={context} {...this.props}/>;
+            return <Component navContext={context} {...this.props} />;
         }
     };
 }
