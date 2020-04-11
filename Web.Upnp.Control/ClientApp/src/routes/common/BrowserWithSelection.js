@@ -25,14 +25,6 @@ export default class extends React.Component {
         }
     }
 
-    componentDidMount() {
-        var i = 0;
-    }
-
-    componentWillUnmount() {
-        var i = 0;
-    }
-
     isSelected = id => this.selection.selected(id);
 
     onSelect = (event) => {
@@ -55,7 +47,7 @@ export default class extends React.Component {
         //mi:playlist_transport_uri
         const { navigateHandler, filter = () => true,
             dataContext: { source: { result: items = [], parents = [] } = {} } = {},
-            mainCellTemplate: MainCellTemplate = DefaultMainCellTemplate } = this.props;
+            mainCellTemplate: MainCellTemplate = CellTemplate } = this.props;
         this.selectables = items.filter(filter).map(i => i.id);
         const allSelected = this.selection.all(this.selectables);
         return <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
@@ -91,9 +83,5 @@ export default class extends React.Component {
     }
 }
 
-const DefaultMainCellTemplate = ({ data: { class: itemClass, albumArts, title } }) => {
-    return <div>
-        <AlbumArt itemClass={itemClass} albumArts={albumArts} className="mr-2" />
-        {title}
-    </div>;
-}
+const CellTemplate = ({ data: { class: itemClass, albumArts, title } }) =>
+    <div><AlbumArt itemClass={itemClass} albumArts={albumArts} className="mr-2" />{title}</div>;
