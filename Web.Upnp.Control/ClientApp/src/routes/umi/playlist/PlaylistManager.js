@@ -11,6 +11,7 @@ import BrowserCore from "../../common/BrowserWithSelection";
 import AlbumArt from "../../common/AlbumArt";
 import LoadIndicator from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
+import { SignalRListener } from "../../../components/SignalR";
 
 export class PlaylistManagerCore extends React.Component {
 
@@ -20,17 +21,30 @@ export class PlaylistManagerCore extends React.Component {
         super(props);
         this.selection = new SelectionService();
         this.selection.addEventListener("changed", () => this.setState({ selection: this.selection }));
+        this.handlers = new Map([["AVTransportEvent", this.onAVTransportEvent]]);
         this.state = { modal: null, selection: this.selection };
-        this.resetModal = () => this.setState({ modal: null });
+        this.ctrl = $api.control(this.props.device);
     }
 
     componentDidUpdate(prevProps) {
+        if (prevProps.device !== this.props.device) {
+            this.ctrl = $api.control(this.props.device);
+        }
+
         if (prevProps.dataContext !== this.props.dataContext) {
             this.selection.reset();
         }
     }
 
+    onAVTransportEvent = (device, { state: { actions, current, next, state }, vendor: { "mi:playlist_transport_uri": playlist } }) => {
+        if (device === this.props.device) {
+            this.setState({ actions, current, next, playbackState: state, playlist })
+        }
+    }
+
     static isEditable = (item) => !item.readonly;
+
+    resetModal = () => this.setState({ modal: null });
 
     reload = () => this.props.dataContext.reload();
 
@@ -118,9 +132,10 @@ export class PlaylistManagerCore extends React.Component {
 
     render() {
 
-        const { dataContext: data, navContext: { navigateHandler, page, pageSize, urls }, id, ...other } = this.props;
+        const { dataContext: data, navContext: { navigateHandler, page, pageSize, urls }, id } = this.props;
         const { source: { total = 0, result: { length: fetched = 0 } = {}, parents } = {} } = data || {};
         const disabled = this.selection.none();
+        const cellContext = { playlist: this.state.playlist, ctrl: this.ctrl, state: this.state.playbackState };
         return <div className="d-flex flex-column h-100">
             <div className="position-sticky sticky-top">
                 <Breadcrumb dataContext={parents} baseUrl={urls.root} />
@@ -138,7 +153,9 @@ export class PlaylistManagerCore extends React.Component {
                         </Toolbar.Group>}
                 </Toolbar>
             </div>
-            <BrowserCore dataContext={data} mainCellTemplate={MainCellTemplate} filter={PlaylistManagerCore.isEditable} navigateHandler={navigateHandler} selection={this.selection} />
+            <SignalRListener handlers={this.handlers}>
+                <BrowserCore dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext} filter={PlaylistManagerCore.isEditable} navigateHandler={navigateHandler} selection={this.selection} />
+            </SignalRListener>
             {!data && <LoadIndicator />}
             <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} className="shadow-sm" />
             {this.state.modal && (typeof this.state.modal === "function" ? this.state.modal() : this.state.modal)}
@@ -146,16 +163,21 @@ export class PlaylistManagerCore extends React.Component {
     }
 }
 
-const MainCellTemplate = ({ data: { class: itemClass, albumArts, title } }) => {
+const MainCellTemplate = ({ data: { id, class: itemClass, albumArts, title, res: { url } = {} }, context: { playlist, ctrl } }) => {
     return <div>
         <div className="d-inline-block stack mr-1 accordion">
             <AlbumArt itemClass={itemClass} albumArts={albumArts} />
-            <div className="stack-layer stack-layer d-flex">
-                <i className="m-auto fas fa-lg fa-volume-up" />
-            </div>
-            <div className="stack-layer stack-layer-hover d-flex">
-                <i className="m-auto fas fa-lg fa-play-circle" />
-            </div>
+            {url === playlist ? <>
+                <div className="stack-layer stack-layer d-flex">
+                    <i className="m-auto fas fa-lg fa-volume-up" />
+                </div>
+                <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.pause().fetch}>
+                    <i className="m-auto fas fa-lg fa-pause-circle" />
+                </div></> :
+                <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.play(id).fetch}>
+                    <i className="m-auto fas fa-lg fa-play-circle" />
+                </div>
+            }
         </div>
         {title}
     </div>;

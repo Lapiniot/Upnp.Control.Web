@@ -8,15 +8,11 @@ export default class extends React.Component {
     constructor(props) {
         super(props);
         this.state = { modal: null };
-        this.ctrl = $api.control(this.props.device);
         this.filter = props.filter;
         this.selection = props.selection || new SelectionService();
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.device !== this.props.device) {
-            this.ctrl = $api.control(this.props.device);
-        }
         if (prevProps.filter !== this.props.filter) {
             this.filter = this.props.filter;
         }
@@ -44,10 +40,9 @@ export default class extends React.Component {
     }
 
     render() {
-        //mi:playlist_transport_uri
         const { navigateHandler, filter = () => true,
             dataContext: { source: { result: items = [], parents = [] } = {} } = {},
-            mainCellTemplate: MainCellTemplate = CellTemplate } = this.props;
+            cellTemplate: MainCellTemplate = CellTemplate, cellContext } = this.props;
         this.selectables = items.filter(filter).map(i => i.id);
         const allSelected = this.selection.all(this.selectables);
         return <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
@@ -74,7 +69,7 @@ export default class extends React.Component {
                         <div className="x-table-cell-min">
                             <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={!filter(e)} />
                         </div>
-                        <MainCellTemplate data={e} />
+                        <MainCellTemplate data={e} context={cellContext} />
                         <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
                     </div>;
                 })]}
