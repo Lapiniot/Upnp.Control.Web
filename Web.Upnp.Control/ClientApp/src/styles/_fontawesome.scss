@@ -144,3 +144,11 @@ $fa-font-path: "../webfonts";
     content: fa-content($fa-var-volume-off);
 }
 
+.#{$fa-css-prefix}-random:before {
+    content: fa-content($fa-var-random);
+}
+
+.#{$fa-css-prefix}-retweet:before {
+    content: fa-content($fa-var-retweet);
+}
+
