@@ -10,14 +10,24 @@
     },
     "tasks": [
         {
+            "label": "Sass Compile",
+            "type": "shell",
+            "options": {
+                "cwd": "Web.Upnp.Control/ClientApp/src"
+            },
+            "command": "node-sass styles/index.scss css/index.css",
+            "group": "build",
+            "problemMatcher": [
+                "$node-sass"
+            ]
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "shell",
             "args": [
                 "build",
-                // Ask dotnet build to generate full paths for file names.
                 "/property:GenerateFullPaths=true",
-                // Do not generate summary otherwise it leads to duplicate errors in Problems panel
                 "/consoleloggerparameters:NoSummary"
             ],
             "group": {
@@ -49,6 +59,23 @@
             "osx": {
                 "command": "rsync -r -v --delete -e ssh ./Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/publish/ ${input:remote-url}"
             }
+        },
+        {
+            "type": "npm",
+            "script": "build",
+            "path": "Web.Upnp.Control/ClientApp/",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: build - Web.Upnp.Control/ClientApp",
+            "detail": "react-scripts build"
+        },
+        {
+            "type": "npm",
+            "script": "install",
+            "path": "Web.Upnp.Control/",
+            "problemMatcher": [],
+            "label": "npm: install - Web.Upnp.Control",
+            "detail": "install dependencies from package"
         }
     ],
     "inputs": [
