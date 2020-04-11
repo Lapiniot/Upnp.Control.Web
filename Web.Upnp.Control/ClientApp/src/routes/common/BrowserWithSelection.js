@@ -7,22 +7,21 @@ import $api from "../../components/WebApi";
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { data: null, selectableKeys: [], selection: props.selection, modal: null };
+        this.state = { modal: null };
         this.ctrl = $api.control(this.props.device);
-    }
-
-    static getDerivedStateFromProps({ dataContext, selection, filter = () => true }, state) {
-        return (state.data !== dataContext) ? {
-                data: dataContext,
-                selectableKeys: dataContext.source.result.filter(filter).map(i => i.id),
-                selection: selection || new SelectionService(),
-                filter: filter
-            } : null;
+        this.filter = props.filter;
+        this.selection = props.selection || new SelectionService();
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.device !== this.props.device) {
             this.ctrl = $api.control(this.props.device);
+        }
+        if (prevProps.filter !== this.props.filter) {
+            this.filter = this.props.filter;
+        }
+        if (prevProps.selection !== this.props.selection) {
+            this.selection = this.props.selection || new SelectionService();
         }
     }
 
@@ -34,73 +33,67 @@ export default class extends React.Component {
         var i = 0;
     }
 
-    isSelected = id => this.state.selection.selected(id);
-
-    allSelected = () => this.state.selection.all(this.state.selectableKeys);
+    isSelected = id => this.selection.selected(id);
 
     onSelect = (event) => {
         const checkbox = event.target;
-        const cancelled = !this.state.selection.select(checkbox.name,
-            checkbox.checked,
-            { device: this.props.device, id: this.props.id });
+        const cancelled = !this.selection.select(checkbox.name, checkbox.checked, { device: this.props.device, id: this.props.id });
         this.onSelectionChanged(cancelled);
     };
 
     onSelectAll = (event) => {
         const checkbox = event.target;
-        const cancelled = !this.state.selection.selectMany(this.state.selectableKeys,
-            checkbox.checked,
-            { device: this.props.device, id: this.props.id });
+        const cancelled = !this.selection.selectMany(this.selectables, checkbox.checked, { device: this.props.device, id: this.props.id });
         this.onSelectionChanged(cancelled);
     };
 
     onSelectionChanged = (cancelled) => {
-        if (!cancelled) this.setState({ selection: this.state.selection });
+        if (!cancelled) this.setState({ selection: true });
     }
 
     render() {
         //mi:playlist_transport_uri
-        const { navigateHandler } = this.props;
-        const { result: items, parents } = this.state.data.source;
+        const { navigateHandler, filter = () => true,
+            dataContext: { source: { result: items = [], parents = [] } = {} } = {},
+            mainCellTemplate: MainCellTemplate = DefaultMainCellTemplate } = this.props;
+        this.selectables = items.filter(filter).map(i => i.id);
+        const allSelected = this.selection.all(this.selectables);
         return <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
-                   <div>
-                       <div>
-                           <div className="x-table-cell-min">
-                               <input type="checkbox" id="select_all" onChange={this.onSelectAll}
-                                      checked={this.allSelected()} disabled={this.state.selectableKeys.length === 0}/>
-                           </div>
-                           <div>Name</div>
-                           <div className="x-table-cell-min">Kind</div>
-                       </div>
-                   </div>
-                   <div>
-                       <div data-id={parents[0].parentId} onDoubleClick={navigateHandler}>
-                           <div>&nbsp;</div>
-                           <div>...</div>
-                           <div>Parent</div>
-                       </div>
-                       {[items.map((e, index) => {
-                            const selected = this.isSelected(e.id);
-                            return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} onDoubleClick={e.container ? navigateHandler : null}>
-                                <div className="x-table-cell-min">
-                                    <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={!this.state.filter(e)} />
-                                </div>
-                                <div>
-                                <div className="d-inline-block stack mr-1">
-                                    <AlbumArt itemClass={e.class} albumArts={e.albumArts} />
-                                    <div className="stack-layer stack-layer d-flex">
-                                        <i className="m-auto fas fa-lg fa-volume-up" />
-                                    </div>
-                                    <div className="stack-layer stack-layer-hover d-flex" onClick={this.ctrl.play(e.id).fetch}>
-                                        <i className="m-auto fas fa-lg fa-play-circle" />
-                                    </div>
-                                </div>
-                                {e.title}
-                            </div>
+            <div className="position-sticky sticky-top">
+                <div>
+                    <div className="x-table-cell-min">
+                        <input type="checkbox" id="select_all" onChange={this.onSelectAll}
+                            checked={allSelected} disabled={this.selectables.length === 0} />
+                    </div>
+                    <div>Name</div>
+                    <div className="x-table-cell-min">Kind</div>
+                </div>
+            </div>
+            <div>
+                {parents && parents.length > 0 &&
+                    <div data-id={parents[0].parentId} onDoubleClick={navigateHandler}>
+                        <div>&nbsp;</div>
+                        <div>...</div>
+                        <div>Parent</div>
+                    </div>}
+                {[items.map((e, index) => {
+                    const selected = this.isSelected(e.id);
+                    return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} onDoubleClick={e.container ? navigateHandler : null}>
+                        <div className="x-table-cell-min">
+                            <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={!filter(e)} />
+                        </div>
+                        <MainCellTemplate data={e} />
                         <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
                     </div>;
-                     })]}
-                   </div>
-               </div>;
+                })]}
+            </div>
+        </div>;
     }
+}
+
+const DefaultMainCellTemplate = ({ data: { class: itemClass, albumArts, title } }) => {
+    return <div>
+        <AlbumArt itemClass={itemClass} albumArts={albumArts} className="mr-2" />
+        {title}
+    </div>;
 }
