@@ -2,7 +2,6 @@
 import AlbumArt from "./AlbumArt";
 import SelectionService from "../../components/SelectionService";
 import { DIDLUtils as utils } from "./BrowserCore";
-import $api from "../../components/WebApi";
 
 export default class extends React.Component {
     constructor(props) {

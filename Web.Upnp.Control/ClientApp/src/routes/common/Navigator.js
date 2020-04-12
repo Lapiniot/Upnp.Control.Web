@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter } from "react-router";
 
 function withNavigation(Component) {
     return class extends React.Component {

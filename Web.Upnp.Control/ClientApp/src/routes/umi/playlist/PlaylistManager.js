@@ -176,8 +176,7 @@ const MainCellTemplate = ({ data: { id, class: itemClass, albumArts, title, res:
                 </div></> :
                 <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.play(id).fetch}>
                     <i className="m-auto fas fa-lg fa-play-circle" />
-                </div>
-            }
+                </div>}
         </div>
         {title}
     </div>;

@@ -27,5 +27,5 @@ export class DIDLUtils {
 }
 
 export function withBrowserCore(BrowserView, usePreloader = true, dataUrlBuilder = defaultUrlBuilder) {
-    return withNavigation(withDataFetch(BrowserView, { template: LoadIndicator, usePreloader: usePreloader }, dataUrlBuilder));
+    return withNavigation(withDataFetch(BrowserView, { template: LoadIndicator, usePreloader }, dataUrlBuilder));
 }
