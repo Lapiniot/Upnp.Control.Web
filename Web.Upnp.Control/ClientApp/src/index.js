@@ -35,8 +35,8 @@ ReactDOM.render(
                 <main className="col">
                     <SignalRConnection hubUrl="/upnpevents">
                         <Route exact path="/" render={() => <HomePage />} />
-                        <Route path="/upnp" render={(props) => <UpnpPage {...props} />} />
-                        <Route path="/umi" render={(props) => <UmiPage {...props} />} />
+                        <Route path="/upnp" render={props => <UpnpPage {...props} />} />
+                        <Route path="/umi" render={props => <UmiPage {...props} />} />
                         <Route path="/settings" render={() => <SettingsPage />} />
                     </SignalRConnection>
                 </main>

@@ -35,4 +35,4 @@ const UpnpDevice = ({ "data-source": d, "data-row-id": id }) => {
 const dataUrl = $api.discover("upnp").url();
 const UpnpDevices = withDataFetch(DeviceList, { template: LoadIndicator }, () => dataUrl);
 
-export default (props) => <UpnpDevices itemTemplate={UpnpDevice} {...props} />;
+export default props => <UpnpDevices itemTemplate={UpnpDevice} {...props} />;

@@ -39,9 +39,8 @@ export default class extends React.Component {
     }
 
     render() {
-        const { navigateHandler, filter = () => true,
-            dataContext: { source: { result: items = [], parents = [] } = {} } = {},
-            cellTemplate: MainCellTemplate = CellTemplate, cellContext } = this.props;
+        const { navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
+            dataContext: { source: { result: items = [], parents = [] } = {} } = {} } = this.props;
         this.selectables = items.filter(filter).map(i => i.id);
         const allSelected = this.selection.all(this.selectables);
         return <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
@@ -57,14 +56,14 @@ export default class extends React.Component {
             </div>
             <div>
                 {parents && parents.length > 0 &&
-                    <div data-id={parents[0].parentId} onDoubleClick={navigateHandler}>
+                    <div data-id={parents[0].parentId} onDoubleClick={navigate}>
                         <div>&nbsp;</div>
                         <div>...</div>
                         <div>Parent</div>
                     </div>}
                 {[items.map((e, index) => {
                     const selected = this.isSelected(e.id);
-                    return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} onDoubleClick={e.container ? navigateHandler : null}>
+                    return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} onDoubleClick={e.container ? navigate : null}>
                         <div className="x-table-cell-min">
                             <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={!filter(e)} />
                         </div>

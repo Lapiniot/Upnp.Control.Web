@@ -1,17 +1,15 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, generatePath } from "react-router-dom";
 import { reversemap } from "../../components/Extensions";
 
 const BreadcrumbItem = ({ active, title, url }) => active
     ? <li className="breadcrumb-item active" aria-current="page">{title}</li>
     : <li className="breadcrumb-item"><NavLink to={url}>{title}</NavLink></li>;
 
-export default ({ dataContext = [], baseUrl }) =>
+export default ({ items = [], path, params }) =>
     <nav aria-label="breadcrumb">
         <ol className="breadcrumb rounded-0 my-0 p-2">
-            {[
-                reversemap(dataContext, ({ title, id }, i) => <BreadcrumbItem key={i} title={title} url={`${baseUrl}/${id}`} active={i === 0} />)
-            ]}
+            {reversemap(items, ({ title, id }, i) => <BreadcrumbItem key={i} title={title} url={generatePath(path, { ...params, id })} active={i === 0} />)}
             &nbsp;
         </ol>
     </nav>;

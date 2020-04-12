@@ -10,5 +10,5 @@ export default ({ match: { path, url } }) =>
     <Switch>
         <Route path={path} exact render={umiRoot} />
         <Route path={`${path}/:device/0`} render={umiRoot} />
-        <Route path={`${path}/:device/:id(.*)?`} render={({ match: { params } }) => <Playlist baseUrl={url} {...params} />} />
+        <Route path={`${path}/:device/:id(.*)?`} render={props => <Playlist baseUrl={url} {...props} />} />
     </Switch>;

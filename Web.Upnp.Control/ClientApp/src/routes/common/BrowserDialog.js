@@ -10,6 +10,7 @@ import { withBrowserCore } from "../common/BrowserCore";
 import Breadcrumb from "../common/Breadcrumb";
 import BrowserCoreSelectable from "../common/BrowserWithSelection";
 import $api from "../../components/WebApi";
+import $config from "../common/Config";
 import SelectionService from "../../components/SelectionService";
 
 export default class BrowserDialog extends React.Component {
@@ -25,9 +26,6 @@ export default class BrowserDialog extends React.Component {
             e.preventDefault();
             this.setState({ selection: selection, device: device });
         });
-        this.browser = ({ match: { params } }) => <Browser baseUrl="/sources/browse" selection={this.selection} {...params} />;
-        const dataUrl = $api.discover("servers").url();
-        this.sourcePicker = withDataFetch(MediaSourceList, { template: LoadIndicator }, () => dataUrl);
     }
 
     confirm = () => !!this.props.onConfirm && this.props.onConfirm(this.state.selection);
@@ -36,13 +34,14 @@ export default class BrowserDialog extends React.Component {
 
     render() {
         const { id, title, confirmText = "OK", ...other } = this.props;
+        const url = "/sources/browse";
         return <Modal id={id} title={title} {...other} data-keyboard={true}>
             <Modal.Body className="p-0 d-flex flex-column">
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
-                        <Route path="/sources" exact component={this.sourcePicker} />
-                        <Route path="/sources/browse" exact render={() => <Redirect to="/sources" />} />
-                        <Route path="/sources/browse/:device/:id(.*)?" component={this.browser} />
+                        <Route path="/sources" exact render={() => <MediaSourceList />} />
+                        <Route path={url} exact render={() => <Redirect to="/sources" />} />
+                        <Route path={`${url}/:device/:id(.*)?`} render={props => <Browser baseUrl={url} selection={this.selection} {...props} />} />
                     </Switch>
                 </MemoryRouter>
             </Modal.Body>
@@ -57,22 +56,24 @@ export default class BrowserDialog extends React.Component {
     }
 };
 
-const MediaSourceList = ({ dataContext: { source: data } }) =>
+const browseSourcesUrl = $api.discover("servers").url();
+
+const MediaSourceList = withDataFetch(({ dataContext: { source: data } }) =>
     <ul className="list-group list-group-flush">
-        {[data.map(({ udn, name, type, description, icons }, i) => {
-            return <RouteLink key={i} to={`/sources/browse/${udn}`} className="list-group-item list-group-item-action">
+        {data.map(({ udn, name, type, description, icons }, i) =>
+            <RouteLink key={`dev-${i}`} to={`/sources/browse/${udn}`} className="list-group-item list-group-item-action">
                 <DeviceIcon icon={icons.find(icon => icon.w <= 48)} alt={name} service={type} />
                 {name}{description && ` (${description})`}
-            </RouteLink>;
-        })]}
-    </ul>;
+            </RouteLink>)}
+    </ul>, { template: LoadIndicator }, () => browseSourcesUrl)
 
-const BrowserView = ({ dataContext, navContext: { page, pageSize, urls, navigateHandler },
+const BrowserView = ({ dataContext, match, p: page, s: size,
     dataContext: { source: { total, result: { length: fetched }, parents } }, ...other }) =>
     <div>
-        <Breadcrumb dataContext={parents} baseUrl={urls.root} />
-        <BrowserCoreSelectable dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} navigateHandler={navigateHandler} {...other} />
-        <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} />
+        <Breadcrumb items={parents} {...match} />
+        <BrowserCoreSelectable dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} {...other} />
+        <Pagination {...match} className="position-sticky sticky-bottom" count={fetched} total={total}
+            current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
     </div>;
 
 const Browser = withBrowserCore(BrowserView);

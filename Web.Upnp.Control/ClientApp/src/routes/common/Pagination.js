@@ -23,23 +23,22 @@ const RelativePageLink = ({ enabled, title, url, label, ...other }) => enabled ?
     </li>;
 
 
-export default ({ count, total, baseUrl, current, size, className }) => {
+export default ({ count, total, url, current, size, className }) => {
 
     if (count === 0 || total === count) return null;
 
-    const template = `${baseUrl}?s=${size}&p=`;
-    const pageData = [];
-    for (let i = 0; i < Math.ceil(total / size); i++) {
-        pageData.push({ title: i + 1, url: `${template}${i + 1}` });
+    const pattern = `${url}?s=${size}&p=`;
+
+    const items = [];
+    for (let i = 1; i <= Math.ceil(total / size); i++) {
+        items.push(<PageLink key={`pb-${i}`} title={i} url={`${pattern}${i}`} current={i === current} />);
     }
 
-    return <nav aria-label="Page navigation" className={merge`position-sticky sticky-bottom p-2 bg-gray-200 ${className}`}>
-        <ul className="pagination my-0 justify-content-center flex-wrap">
-            <RelativePageLink key="prev" title="&laquo;" label="Previous" url={`${template}${current - 1}`} enabled={current > 1} />
-            {[
-                pageData.map(({ title, url }, index) => <PageLink key={index + 1} title={title} url={url} current={index + 1 === current} />)
-            ]}
-            <RelativePageLink key="next" title="&raquo;" label="Next" url={`${template}${current + 1}`} enabled={current < pageData.length} />
+    return <nav aria-label="Page navigation" className={merge`p-2 bg-gray-200 ${className}`}>
+        <ul className="pagination pagination-sm my-0 justify-content-center flex-wrap">
+            <RelativePageLink key="prev" title="&laquo;" label="Previous" url={`${pattern}${current - 1}`} enabled={current > 1} />
+            {items}
+            <RelativePageLink key="next" title="&raquo;" label="Next" url={`${pattern}${current + 1}`} enabled={current < items.length} />
         </ul>
     </nav>;
 }

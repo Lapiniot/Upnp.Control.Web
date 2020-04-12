@@ -11,5 +11,5 @@ const umiRoot = () => <Redirect to="/umi" />;
 export default ({ match: { path, url } }) =>
     <Switch>
         <Route path={path} exact render={umiRoot} />
-        <Route path={`${path}/:device/:id(.*)?`} render={({ match: { params } }) => <Browser baseUrl={url} {...params} />} />
+        <Route path={`${path}/:device/:id(.*)?`} render={props => <Browser baseUrl={url} {...props} />} />
     </Switch>;

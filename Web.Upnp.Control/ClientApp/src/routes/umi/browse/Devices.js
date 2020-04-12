@@ -30,4 +30,4 @@ const UmiDevice = ({ "data-source": d, "data-source": { icons, name, type, descr
 const dataUrl = $api.discover("umi").url();
 const UmiDeviceList = withDataFetch(DeviceList, { template: LoadIndicator }, () => dataUrl);
 
-export default (props) => <UmiDeviceList itemTemplate={UmiDevice} {...props} />;
+export default props => <UmiDeviceList itemTemplate={UmiDevice} {...props} />;

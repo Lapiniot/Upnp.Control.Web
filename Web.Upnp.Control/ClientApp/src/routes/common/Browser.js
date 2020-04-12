@@ -3,10 +3,12 @@ import Breadcrumb from "./Breadcrumb";
 import Pagination from "./Pagination";
 import AlbumArtImage from "./AlbumArt";
 import { DIDLUtils as utils } from "./BrowserCore";
+import $config from "../common/Config";
 
-export function BrowserView({ dataContext: { source: data } = {}, navContext: { navigateHandler, page, pageSize, urls } }) {
+export function BrowserView(props) {
+    const { dataContext: { source: { total = 0, parents = [], result: items = [] } = {} } = {}, match, navigate, p: page, s: size } = props;
     return <div>
-        <Breadcrumb dataContext={data.parents} baseUrl={urls.root} />
+        <Breadcrumb items={parents} {...match} />
         <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
             <div>
                 <div>
@@ -15,14 +17,15 @@ export function BrowserView({ dataContext: { source: data } = {}, navContext: { 
                 </div>
             </div>
             <div>
-                <div data-id={data.parents[0].parentId} onDoubleClick={navigateHandler}>
-                    <div>...</div>
-                    <div>Parent</div>
-                </div>
-                {[data.result.map(({ id, container, class: cls, albumArts, title }, index) => {
-                    return <div key={index} data-id={id} onDoubleClick={container && navigateHandler}>
+                {parents && parents.length > 0 &&
+                    <div data-id={parents[0].parentId} onDoubleClick={navigate}>
+                        <div>...</div>
+                        <div>Parent</div>
+                    </div>}
+                {[items.map(({ id, container, class: cls, albumArts, title }, index) => {
+                    return <div key={index} data-id={id} onDoubleClick={container && navigate}>
                         <div>
-                            <AlbumArtImage itemClass={cls} albumArts={albumArts} />
+                            <AlbumArtImage itemClass={cls} albumArts={albumArts} className="mr-1" />
                             {title}
                         </div>
                         <div className="text-capitalize">{utils.getDisplayName(cls)}</div>
@@ -30,6 +33,7 @@ export function BrowserView({ dataContext: { source: data } = {}, navContext: { 
                 })]}
             </div>
         </div>
-        <Pagination count={data.result.length} total={data.total} baseUrl={urls.current} current={page} size={pageSize} />
-    </div>;
+        <Pagination {...match} className="position-sticky sticky-bottom" count={items.length} total={total}
+            current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
+    </div >;
 }

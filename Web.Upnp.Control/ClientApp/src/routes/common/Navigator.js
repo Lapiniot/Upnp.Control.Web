@@ -1,41 +1,21 @@
 import React from "react";
-import { withRouter } from "react-router";
+import { generatePath } from "react-router";
 
-function withNavigation(Component) {
+export default function (Component) {
     return class extends React.Component {
-        navigateHandler = event => {
-            const id = event.currentTarget.dataset.id;
-            this.navigateToItem(id);
+        navigateHandler = ({ currentTarget: { dataset } }) => {
+            this.navigateToItem(dataset);
         }
 
-        navigateTo = (location) => {
-            this.props.history.push(location);
-        }
-
-        navigateToItem = (id) => {
-            if (id !== "-1")
-                this.navigateTo(`${this.props.baseUrl}/${this.props.device}/${id}`);
-            else
-                this.navigateTo(this.props.baseUrl);
+        navigateToItem = (data) => {
+            const { match: { path, params }, history } = this.props;
+            history.push(generatePath(path, { ...params, ...data }));
         }
 
         render() {
-            const { device, baseUrl, match: { url }, location: { search: query } } = this.props;
-            const params = new window.URLSearchParams(query);
-            const page = params.get("p");
-            const pageSize = params.get("s");
-            const context = {
-                urls: { current: url, base: baseUrl, root: `${baseUrl}/${device}` },
-                page: page ? parseInt(page, 10) : 1,
-                pageSize: pageSize ? parseInt(pageSize, 10) : 50,
-                navigateHandler: this.navigateHandler
-            };
-
-            return <Component navContext={context} {...this.props} />;
+            const { location: { search }, match: { params: { ...params } } } = this.props;
+            new window.URLSearchParams(search).forEach((value, key) => params[key] = value);
+            return <Component navigate={this.navigateHandler} {...this.props} {...params} />;
         }
     };
-}
-
-export default function(Component) {
-    return withRouter(withNavigation(Component));
 }

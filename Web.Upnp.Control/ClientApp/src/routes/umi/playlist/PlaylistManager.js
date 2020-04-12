@@ -1,6 +1,7 @@
 import React from "react";
 import $api from "../../../components/WebApi";
 import Modal from "../../../components/Modal";
+import $config from "../../common/Config";
 import { TextValueEditDialog } from "../../../components/Dialogs";
 import { withBrowserCore } from "../../common/BrowserCore";
 import BrowserDialog from "../../common/BrowserDialog";
@@ -132,13 +133,13 @@ export class PlaylistManagerCore extends React.Component {
 
     render() {
 
-        const { dataContext: data, navContext: { navigateHandler, page, pageSize, urls }, id } = this.props;
+        const { dataContext: data, match, navigate, id, s: size, p: page } = this.props;
         const { source: { total = 0, result: { length: fetched = 0 } = {}, parents } = {} } = data || {};
         const disabled = this.selection.none();
         const cellContext = { playlist: this.state.playlist, ctrl: this.ctrl, state: this.state.playbackState };
         return <div className="d-flex flex-column h-100">
             <div className="position-sticky sticky-top">
-                <Breadcrumb dataContext={parents} baseUrl={urls.root} />
+                <Breadcrumb items={parents} {...match} />
                 <Toolbar className="px-2 py-1 bg-light shadow-sm">
                     {id === "PL:"
                         ? <Toolbar.Group>
@@ -154,10 +155,11 @@ export class PlaylistManagerCore extends React.Component {
                 </Toolbar>
             </div>
             <SignalRListener handlers={this.handlers}>
-                <BrowserCore dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext} filter={PlaylistManagerCore.isEditable} navigateHandler={navigateHandler} selection={this.selection} />
+                <BrowserCore dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext} filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection} />
             </SignalRListener>
             {!data && <LoadIndicator />}
-            <Pagination count={fetched} total={total} baseUrl={urls.current} current={page} size={pageSize} className="shadow-sm" />
+            <Pagination {...match} className="position-sticky sticky-bottom shadow-sm"
+                count={fetched} total={total} current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
             {this.state.modal && (typeof this.state.modal === "function" ? this.state.modal() : this.state.modal)}
         </div>;
     }
@@ -183,5 +185,8 @@ const MainCellTemplate = ({ data: { id, class: itemClass, albumArts, title, res:
 }
 
 export default withBrowserCore(PlaylistManagerCore, false,
-    ({ device, id, navContext: { pageSize, page } }) => $api.browse(device).get(id)
-        .withParents().withResource().withVendor().take(pageSize).skip((page - 1) * pageSize).url());
+    ({ device, id, p, s }) => {
+        const page = parseInt(p) || 1;
+        const size = parseInt(s) || $config.pageSize;
+        return $api.browse(device).get(id).withParents().withResource().withVendor().take(size).skip((page - 1) * size).url()
+    });

@@ -2,14 +2,13 @@ import { withDataFetch } from "../../components/DataFetch";
 import withNavigation from "./Navigator";
 import LoadIndicator from "../../components/LoadIndicator";
 import $ from "../../components/WebApi";
+import $config from "../common/Config";
 
-const defaultUrlBuilder = ({ device, id, navContext: { pageSize, page } }) =>
-    $.browse(device)
-        .get(id)
-        .withParents()
-        .take(pageSize)
-        .skip((page - 1) * pageSize)
-        .url();
+const defaultUrlBuilder = ({ device, id, p, s }) => {
+    const size = parseInt(s) || $config.pageSize;
+    const page = parseInt(p) || 1;
+    return $.browse(device).get(id).withParents().take(size).skip((page - 1) * size).url();
+}
 
 export class DIDLUtils {
     static getKind(upnpClassName) {
