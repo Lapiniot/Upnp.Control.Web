@@ -8,9 +8,9 @@ const upnpRoot = () => <Redirect to="/upnp" />;
 
 /***** Handles all /upnp/browse routes *****/
 
-export default ({ match: { url } }) =>
+export default ({ match: { path, url } }) =>
     <Switch>
-        <Route path={url} exact render={upnpRoot} />
-        <Route path={`${url}/:device/:id(.*)?`} render={({ match: { params } }) => <Browser baseUrl={url} {...params} />} />
+        <Route path={path} exact render={upnpRoot} />
+        <Route path={`${path}/:device/:id(.*)?`} render={({ match: { params } }) => <Browser baseUrl={url} {...params} />} />
     </Switch>;
 
