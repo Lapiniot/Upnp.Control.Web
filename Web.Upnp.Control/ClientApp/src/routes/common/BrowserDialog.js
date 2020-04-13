@@ -34,14 +34,14 @@ export default class BrowserDialog extends React.Component {
 
     render() {
         const { id, title, confirmText = "OK", ...other } = this.props;
-        const url = "/sources/browse";
         return <Modal id={id} title={title} {...other} data-keyboard={true}>
             <Modal.Body className="p-0 d-flex flex-column">
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
-                        <Route path="/sources" exact render={() => <MediaSourceList />} />
-                        <Route path={url} exact render={() => <Redirect to="/sources" />} />
-                        <Route path={`${url}/:device/:id(.*)?`} render={props => <Browser baseUrl={url} selection={this.selection} {...props} />} />
+                        <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
+                        <Route path={"/sources/:device/:id(.*)?"} render={props => props.match.params.id !== "-1"
+                            ? <Browser selection={this.selection} {...props} />
+                            : <Redirect to="/sources" />} />
                     </Switch>
                 </MemoryRouter>
             </Modal.Body>
@@ -61,7 +61,7 @@ const browseSourcesUrl = $api.discover("servers").url();
 const MediaSourceList = withDataFetch(({ dataContext: { source: data } }) =>
     <ul className="list-group list-group-flush">
         {data.map(({ udn, name, type, description, icons }, i) =>
-            <RouteLink key={`dev-${i}`} to={`/sources/browse/${udn}`} className="list-group-item list-group-item-action">
+            <RouteLink key={`dev-${i}`} to={`/sources/${udn}`} className="list-group-item list-group-item-action">
                 <DeviceIcon icon={icons.find(icon => icon.w <= 48)} alt={name} service={type} />
                 {name}{description && ` (${description})`}
             </RouteLink>)}
