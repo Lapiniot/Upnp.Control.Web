@@ -7,10 +7,10 @@ const Browser = withBrowserCore(BrowserView);
 
 /***** Handles all /upnp/browse routes *****/
 
-export default ({ match: { path, url } }) =>
+export default ({ match: { path } }) =>
     <Switch>
-        <Route path={path} exact render={props => <Devices {...props}/>}/>
+        <Route path={path} exact render={props => <Devices {...props} />} />
         <Route path={`${path}/:device/:id(.*)?`} render={props => props.match.params.id !== "-1"
-            ? <Browser baseUrl={url} {...props}/>
-            : <Redirect to={path}/>}/>
+            ? <Browser {...props} />
+            : <Redirect to={path} />} />
     </Switch>;
