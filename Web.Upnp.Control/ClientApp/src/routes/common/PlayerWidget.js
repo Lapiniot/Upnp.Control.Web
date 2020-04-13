@@ -8,7 +8,7 @@ class PlayerCore extends React.Component {
     constructor(props) {
         super(props);
         this.handlers = new Map([["AVTransportEvent", this.onAVTransportEvent]]);
-        this.state = { actions: [], current: null, next: null, playbackState: null };
+        this.state = { actions: [], current: null, next: null, playbackState: null, dataContext: null };
         this.ctrl = $api.control(this.props.udn);
     }
 
@@ -18,10 +18,11 @@ class PlayerCore extends React.Component {
         }
     }
 
-    static getDerivedStateFromProps({ dataContext, dataContext: { source } = {} } = {}, prevState) {
-        return (dataContext !== prevState.dataContext) ? {
-            dataContext: dataContext, actions: source.actions,
-            current: source.current, next: source.next, playbackState: source.state
+    static getDerivedStateFromProps(props, prevState) {
+        return (props.dataContext !== prevState.dataContext && props.dataContext) ? {
+            dataContext: props.dataContext, actions: props.dataContext.source.actions,
+            current: props.dataContext.source.current, next: props.dataContext.source.next,
+            playbackState: props.dataContext.source.state
         } : null;
     }
 
