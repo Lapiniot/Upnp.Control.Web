@@ -23,7 +23,7 @@ export function BrowserView(props) {
                         <div>Parent</div>
                     </div>}
                 {[items.map(({ id, container, class: cls, albumArts, title }, index) => {
-                    return <div key={index} data-id={id} onDoubleClick={container && navigate}>
+                    return <div key={index} data-id={id} onDoubleClick={container ? navigate : undefined}>
                         <div>
                             <AlbumArtImage itemClass={cls} albumArts={albumArts} className="mr-1" />
                             {title}
