@@ -188,5 +188,5 @@ export default withBrowserCore(PlaylistManagerCore, false,
     ({ device, id, p, s }) => {
         const page = parseInt(p) || 1;
         const size = parseInt(s) || $config.pageSize;
-        return $api.browse(device).get(id).withParents().withResource().withVendor().take(size).skip((page - 1) * size).url()
+        return $api.browse(device).get(id || "PL:").withParents().withResource().withVendor().take(size).skip((page - 1) * size).url()
     });

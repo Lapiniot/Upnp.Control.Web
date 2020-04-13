@@ -4,11 +4,11 @@ import Playlist from "./PlaylistManager";
 
 /***** Handles all /umi/playlist routes *****/
 
-const umiRoot = () => <Redirect to="/umi" />;
-
 export default ({ match: { path, url } }) =>
     <Switch>
-        <Route path={path} exact render={umiRoot} />
-        <Route path={`${path}/:device/0`} render={umiRoot} />
-        <Route path={`${path}/:device/:id(.*)?`} render={props => <Playlist baseUrl={url} {...props} />} />
+        <Redirect from={path} exact to="/umi"/>
+        <Route path={`${path}/:device/:id(.*)?`} render={props =>
+            props.match.params.id !== "0" && props.match.params.id !== "-1"
+            ? <Playlist baseUrl={url} {...props}/>
+            : <Redirect to="/umi"/>}/>
     </Switch>;

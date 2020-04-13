@@ -34,10 +34,10 @@ ReactDOM.render(
                 </div>
                 <main className="col">
                     <SignalRConnection hubUrl="/upnpevents">
-                        <Route exact path="/" render={() => <HomePage />} />
-                        <Route path="/upnp" render={props => <UpnpPage {...props} />} />
-                        <Route path="/umi" render={props => <UmiPage {...props} />} />
-                        <Route path="/settings" render={() => <SettingsPage />} />
+                        <Route exact path="/" component={HomePage} />
+                        <Route path="/upnp" component={UpnpPage} />
+                        <Route path="/umi" component={UmiPage} />
+                        <Route path="/settings" component={SettingsPage} />
                     </SignalRConnection>
                 </main>
             </div>
