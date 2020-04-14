@@ -38,9 +38,7 @@ export function withDataFetch(Component, loadIndicatorConfig = {}, dataUrlBuilde
             this.fetchData();
         }
 
-        reload() {
-            return this.setState({ loading: true, dataContext: null }, this.fetchData);
-        }
+        reload = () => this.setState({ loading: true, dataContext: null }, this.fetchData);
 
         render() {
             return this.state.loading && this.preloader
