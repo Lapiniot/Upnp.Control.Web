@@ -6,9 +6,9 @@ import Pagination from "./Pagination";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
 import { withDataFetch } from "../../components/DataFetch";
-import { withBrowserCore } from "../common/BrowserCore";
+import { withBrowser } from "./BrowserUtils";
 import Breadcrumb from "../common/Breadcrumb";
-import BrowserCoreSelectable from "../common/BrowserWithSelection";
+import BrowserCoreSelectable from "./BrowserCoreSelectable";
 import $api from "../../components/WebApi";
 import $config from "../common/Config";
 import SelectionService from "../../components/SelectionService";
@@ -76,4 +76,4 @@ const BrowserView = ({ dataContext, match, p: page, s: size,
             current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
     </div>;
 
-const Browser = withBrowserCore(BrowserView);
+const Browser = withBrowser(BrowserView);

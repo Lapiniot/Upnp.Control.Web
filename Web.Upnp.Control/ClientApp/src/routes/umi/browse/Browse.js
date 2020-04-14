@@ -1,10 +1,10 @@
 ﻿import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { withBrowserCore } from "../../common/BrowserCore";
-import { BrowserView } from "../../common/Browser";
+import { withBrowser } from "../../common/BrowserUtils";
+import BrowserCore from "../../common/BrowserCore";
 import Devices from "./Devices";
 
-const Browser = withBrowserCore(BrowserView);
+const Browser = withBrowser(BrowserCore);
 
 /***** Handles all /umi/browse routes *****/
 

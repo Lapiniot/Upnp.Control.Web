@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import AlbumArt from "./AlbumArt";
 import SelectionService from "../../components/SelectionService";
-import { DIDLUtils as utils } from "./BrowserCore";
+import { DIDLUtils as utils } from "./BrowserUtils";
 
 export default class extends React.Component {
     constructor(props) {
@@ -39,8 +39,8 @@ export default class extends React.Component {
     }
 
     render() {
-        const { navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
-            dataContext: { source: { result: items = [], parents = [] } = {} } = {} } = this.props;
+        const { navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext } = this.props;
+        const { source: { result: items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.selectables = items.filter(filter).map(i => i.id);
         const allSelected = this.selection.all(this.selectables);
         return <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">

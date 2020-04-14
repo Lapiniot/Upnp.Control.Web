@@ -3,12 +3,12 @@ import $api from "../../../components/WebApi";
 import Modal from "../../../components/Modal";
 import $config from "../../common/Config";
 import { TextValueEditDialog } from "../../../components/Dialogs";
-import { withBrowserCore } from "../../common/BrowserCore";
+import { withBrowser } from "../../common/BrowserUtils";
 import BrowserDialog from "../../common/BrowserDialog";
 import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
-import BrowserCore from "../../common/BrowserWithSelection";
+import BrowserCore from "../../common/BrowserCoreSelectable";
 import AlbumArt from "../../common/AlbumArt";
 import LoadIndicator from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
@@ -27,13 +27,30 @@ export class PlaylistManagerCore extends React.Component {
         this.ctrl = $api.control(this.props.device);
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if (prevProps.device !== this.props.device) {
             this.ctrl = $api.control(this.props.device);
         }
-
         if (prevProps.dataContext !== this.props.dataContext) {
             this.selection.reset();
+        }
+    }
+
+    async componentDidMount() {
+        try {
+            var response = await this.ctrl.state(true).fetch();
+            const { actions, current, next, state, medium } = await response.json();
+            if (medium === "X-MI-AUX") {
+                this.setState({ actions, current, next, playbackState: state, playlist: "aux" });
+            }
+            else {
+                response = await this.ctrl.playlistState().fetch();
+                const { playlist_transport_uri: playlist } = await response.json();
+                this.setState({ actions, current, next, playbackState: state, playlist });
+            }
+        }
+        catch (e) {
+            console.error(e);
         }
     }
 
@@ -136,7 +153,12 @@ export class PlaylistManagerCore extends React.Component {
         const { dataContext: data, match, navigate, id, s: size, p: page } = this.props;
         const { source: { total = 0, result: { length: fetched = 0 } = {}, parents } = {} } = data || {};
         const disabled = this.selection.none();
-        const cellContext = { playlist: this.state.playlist, ctrl: this.ctrl, state: this.state.playbackState };
+        const cellContext = {
+            ctrl: this.ctrl, state: this.state.playbackState,
+            selected: this.state.playlist === "aux"
+                ? d => d.vendor["mi:playlistType"] === "aux"
+                : d => d.res.url === this.state.playlist
+        };
         return <div className="d-flex flex-column h-100">
             <div className="position-sticky sticky-top">
                 <Breadcrumb items={parents} {...match} />
@@ -165,26 +187,26 @@ export class PlaylistManagerCore extends React.Component {
     }
 }
 
-const MainCellTemplate = ({ data: { id, class: itemClass, albumArts, title, res: { url } = {} }, context: { playlist, ctrl } }) => {
+const MainCellTemplate = ({ data, context: { ctrl, selected } }) => {
     return <div>
         <div className="d-inline-block stack mr-1 accordion">
-            <AlbumArt itemClass={itemClass} albumArts={albumArts} />
-            {url === playlist ? <>
+            <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
+            {selected(data) ? <>
                 <div className="stack-layer stack-layer d-flex">
                     <i className="m-auto fas fa-lg fa-volume-up" />
                 </div>
                 <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.pause().fetch}>
                     <i className="m-auto fas fa-lg fa-pause-circle" />
                 </div></> :
-                <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.play(id).fetch}>
+                <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.play(data.id).fetch}>
                     <i className="m-auto fas fa-lg fa-play-circle" />
                 </div>}
         </div>
-        {title}
+        {data.title}
     </div>;
 }
 
-export default withBrowserCore(PlaylistManagerCore, false,
+export default withBrowser(PlaylistManagerCore, false,
     ({ device, id, p, s }) => {
         const page = parseInt(p) || 1;
         const size = parseInt(s) || $config.pageSize;
