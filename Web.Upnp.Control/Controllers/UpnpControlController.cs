@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -76,6 +78,17 @@ namespace Web.Upnp.Control.Controllers
             }
         }
 
+        [HttpGet("playlist_state")]
+        [HttpGet("playlist_state()")]
+        [Produces("application/json")]
+        public async Task GetPlaylistStateAsync(string deviceId)
+        {
+            var sp = await factory.GetServiceAsync<SystemPropertiesService>(deviceId).ConfigureAwait(false);
+            var value = await sp.GetStringAsync("fastCall?command=state_playlists").ConfigureAwait(false);
+            await HttpContext.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes(value)).ConfigureAwait(false);
+            await HttpContext.Response.BodyWriter.CompleteAsync(null).ConfigureAwait(false);
+        }
+
         [HttpGet("position")]
         [HttpGet("position()")]
         [Produces("application/json")]
@@ -112,7 +125,7 @@ namespace Web.Upnp.Control.Controllers
             var cd = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
             var result = await cd.BrowseAsync(id, flags: "BrowseMetadata").ConfigureAwait(false);
             var item = DIDLParser.Parse(result["Result"]).FirstOrDefault();
-            if(item is {Resource: {Url: {} resUrl}})
+            if(item is { Resource: { Url: { } resUrl } })
             {
                 var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
                 await avt.SetAVTransportUriAsync(currentUri: resUrl).ConfigureAwait(false);

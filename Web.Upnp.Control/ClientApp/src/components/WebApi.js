@@ -28,6 +28,7 @@ export default class {
         deviceId = encodeURIComponent(deviceId);
         return {
             state: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/state${detailed && "?detailed"}`),
+            playlistState: () => new JsonFetch(`${controlBaseUrl}${deviceId}/playlist_state`),
             position: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/position${detailed && "?detailed"}`),
             play: (id) => new JsonFetch(`${controlBaseUrl}${deviceId}/play(${!!id ? encodeURIComponent(id) : ""})`),
             playUri: (uri) => new JsonFetch(`${controlBaseUrl}${deviceId}/play_uri(${encodeURIComponent(uri)})`),
