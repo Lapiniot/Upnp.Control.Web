@@ -54,9 +54,9 @@ export class PlaylistManagerCore extends React.Component {
         }
     }
 
-    onAVTransportEvent = (device, { state: { actions, current, next, state }, vendor: { "mi:playlist_transport_uri": playlist } }) => {
+    onAVTransportEvent = (device, { state: { actions, current, next, state }, vendor: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport }, vendor }) => {
         if (device === this.props.device) {
-            this.setState({ actions, current, next, playbackState: state, playlist })
+            this.setState({ actions, current, next, playbackState: state, playlist: transport === "AUX" ? "aux" : playlist })
         }
     }
 
