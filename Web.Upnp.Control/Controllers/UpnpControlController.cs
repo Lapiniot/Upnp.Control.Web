@@ -64,8 +64,8 @@ namespace Web.Upnp.Control.Controllers
                     media.TryGetValue("PlayMedium", out value) ? value : null)
                 {
                     Actions = actions.TryGetValue("Actions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-                    Current = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null,
-                    Next = detailed != false && media.TryGetValue("NextURIMetaData", out value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null
+                    CurrentTrackMetadata = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null,
+                    NextTrackMetadata = detailed != false && media.TryGetValue("NextURIMetaData", out value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null
                 };
             }
             else
@@ -85,6 +85,7 @@ namespace Web.Upnp.Control.Controllers
         {
             var sp = await factory.GetServiceAsync<SystemPropertiesService>(deviceId).ConfigureAwait(false);
             var value = await sp.GetStringAsync("fastCall?command=state_playlists").ConfigureAwait(false);
+            var lv = await sp.GetStringAsync("UpdateState").ConfigureAwait(false);
             await HttpContext.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes(value)).ConfigureAwait(false);
             await HttpContext.Response.BodyWriter.CompleteAsync(null).ConfigureAwait(false);
         }

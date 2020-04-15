@@ -62,8 +62,10 @@ namespace Web.Upnp.Control.Controllers
                 map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : default(int?), null)
             {
                 Actions = map.TryGetValue("CurrentTransportActions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-                Current = current,
-                Next = next
+                CurrentTrackMetadata = current,
+                CurrentTrack = map.TryGetValue("CurrentTrack", out value) ? value : null,
+                CurrentTrackUri = map.TryGetValue("CurrentTrackURI", out value) ? value : null,
+                NextTrackMetadata = next
             };
 
             var position = new AVPositionInfo(map.TryGetValue("CurrentTrack", out value) ? value : null,

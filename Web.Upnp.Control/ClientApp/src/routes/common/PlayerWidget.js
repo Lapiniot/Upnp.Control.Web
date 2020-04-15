@@ -21,12 +21,13 @@ class PlayerCore extends React.Component {
     static getDerivedStateFromProps(props, prevState) {
         return (props.dataContext !== prevState.dataContext && props.dataContext) ? {
             dataContext: props.dataContext, actions: props.dataContext.source.actions,
-            current: props.dataContext.source.current, next: props.dataContext.source.next,
+            current: props.dataContext.source.currentTrackMetadata,
+            next: props.dataContext.source.nextTrackMetadata,
             playbackState: props.dataContext.source.state
         } : null;
     }
 
-    onAVTransportEvent = (device, { state: { actions, current, next, state }, vendor }) => {
+    onAVTransportEvent = (device, { state: { actions, currentTrackMetadata: current, nextTrackMetadata: next, state }, vendor }) => {
         if (device === this.props.udn) {
             this.setState({ actions, current, next, playbackState: state, vendor })
         }

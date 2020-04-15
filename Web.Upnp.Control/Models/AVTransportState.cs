@@ -13,11 +13,13 @@ namespace Web.Upnp.Control.Models
         }
 
         public string[] Actions { get; internal set; }
-        public Item Current { get; internal set; }
-        public Item Next { get; internal set; }
+        public Item CurrentTrackMetadata { get; internal set; }
+        public Item NextTrackMetadata { get; internal set; }
         public string State { get; }
         public string Status { get; }
         public int? Tracks { get; }
         public string Medium { get; }
+        public string CurrentTrack { get; internal set; }
+        public string CurrentTrackUri { get; internal set; }
     }
 }

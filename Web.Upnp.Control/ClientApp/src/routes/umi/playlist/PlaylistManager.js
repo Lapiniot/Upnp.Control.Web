@@ -39,14 +39,16 @@ export class PlaylistManagerCore extends React.Component {
     async componentDidMount() {
         try {
             var response = await this.ctrl.state(true).fetch();
-            const { actions, current, next, state, medium } = await response.json();
+            const { actions, currentTrackMetadata: current, state, medium } = await response.json();
             if (medium === "X-MI-AUX") {
-                this.setState({ actions, current, next, playbackState: state, playlist: "aux" });
+                this.setState({ actions, current, playbackState: state, playlist: "aux", track: null });
             }
             else {
                 response = await this.ctrl.playlistState().fetch();
-                const { playlist_transport_uri: playlist } = await response.json();
-                this.setState({ actions, current, next, playbackState: state, playlist });
+                const { "playlist_transport_uri": playlist } = await response.json();
+                response = await this.ctrl.position(true).fetch();
+                const { track } = await response.json();
+                this.setState({ actions, current, playbackState: state, playlist, track });
             }
         }
         catch (e) {
@@ -54,9 +56,9 @@ export class PlaylistManagerCore extends React.Component {
         }
     }
 
-    onAVTransportEvent = (device, { state: { actions, current, next, state }, vendor: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport }, vendor }) => {
+    onAVTransportEvent = (device, { state: { actions, currentTrackMetadata: current, currentTrack: track, state }, vendor: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport }, vendor }) => {
         if (device === this.props.device) {
-            this.setState({ actions, current, next, playbackState: state, playlist: transport === "AUX" ? "aux" : playlist })
+            this.setState({ actions, current, playbackState: state, playlist: transport === "AUX" ? "aux" : playlist, track })
         }
     }
 
@@ -155,9 +157,10 @@ export class PlaylistManagerCore extends React.Component {
         const disabled = this.selection.none();
         const cellContext = {
             ctrl: this.ctrl, state: this.state.playbackState,
-            selected: this.state.playlist === "aux"
-                ? d => d.vendor["mi:playlistType"] === "aux"
-                : d => d.res.url === this.state.playlist
+            selected: id !== "PL:" ? (_, index) => index + 1 == this.state.track
+                : (this.state.playlist === "aux"
+                    ? d => d.vendor["mi:playlistType"] === "aux"
+                    : d => d.res.url === this.state.playlist)
         };
         return <div className="d-flex flex-column h-100">
             <div className="position-sticky sticky-top">
@@ -187,11 +190,11 @@ export class PlaylistManagerCore extends React.Component {
     }
 }
 
-const MainCellTemplate = ({ data, context: { ctrl, selected } }) => {
+const MainCellTemplate = ({ data, context: { ctrl, selected }, index }) => {
     return <div>
         <div className="d-inline-block stack mr-1 accordion">
             <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
-            {selected(data) ? <>
+            {selected(data, index) ? <>
                 <div className="stack-layer stack-layer d-flex">
                     <i className="m-auto fas fa-lg fa-volume-up" />
                 </div>
