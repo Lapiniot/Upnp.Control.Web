@@ -67,7 +67,7 @@ export default class extends React.Component {
                         <div className="x-table-cell-min">
                             <input type="checkbox" name={e.id} onChange={this.onSelect} checked={selected} disabled={!filter(e)} />
                         </div>
-                        <MainCellTemplate data={e} context={cellContext} />
+                        <MainCellTemplate data={e} index={index} context={cellContext} />
                         <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
                     </div>;
                 })]}
