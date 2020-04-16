@@ -5,7 +5,7 @@ import "@fortawesome/fontawesome-free/js/regular";
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { Route } from "react-router";
+import { Route, Switch } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalR";
@@ -34,10 +34,16 @@ ReactDOM.render(
                 </div>
                 <main className="col">
                     <SignalRConnection hubUrl="/upnpevents">
-                        <Route exact path="/" component={HomePage} />
-                        <Route path="/upnp" component={UpnpPage} />
-                        <Route path="/umi" component={UmiPage} />
-                        <Route path="/settings" component={SettingsPage} />
+                        <Switch>
+                            <Route exact path="/" component={HomePage} />
+                            <Route path="/upnp" component={UpnpPage} />
+                            <Route path="/umi" component={UmiPage} />
+                            <Route path="/settings" component={SettingsPage} />
+                            <Route path="*" render={() => <div className="m-2 text-danger">
+                                <h3>404 - Not Found</h3>
+                                <h5>Page you are looking for is not found</h5>
+                            </div>} />
+                        </Switch>
                     </SignalRConnection>
                 </main>
             </div>
