@@ -55,8 +55,8 @@ namespace Web.Upnp.Control.Controllers
 
             if(map == null || map.Count == 0) return;
 
-            var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null;
-            var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null;
+            var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null;
+            var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null;
 
             var state = new AVTransportState(map.TryGetValue("TransportState", out value) ? value : null, null,
                 map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : default(int?), null)

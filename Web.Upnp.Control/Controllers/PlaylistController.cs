@@ -136,7 +136,7 @@ namespace Web.Upnp.Control.Controllers
         private static async Task<int[]> GetItemIndices(ContentDirectoryService cdService, string parentId, IEnumerable<string> ids)
         {
             var data = await cdService.BrowseAsync(parentId, count: uint.MaxValue).ConfigureAwait(false);
-            var playlists = DIDLParser.Parse(data["Result"]);
+            var playlists = DIDLXmlParser.Parse(data["Result"]);
             var map = playlists.Select((p, index) => (p.Id, index)).ToDictionary(p => p.Id, p => p.index + 1);
             return ids.Select(id => map[id]).ToArray();
         }

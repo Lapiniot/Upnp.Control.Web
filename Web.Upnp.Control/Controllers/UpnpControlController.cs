@@ -64,8 +64,8 @@ namespace Web.Upnp.Control.Controllers
                     media.TryGetValue("PlayMedium", out value) ? value : null)
                 {
                     Actions = actions.TryGetValue("Actions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-                    CurrentTrackMetadata = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null,
-                    NextTrackMetadata = detailed != false && media.TryGetValue("NextURIMetaData", out value) ? DIDLParser.ParseLoose(value).FirstOrDefault() : null
+                    CurrentTrackMetadata = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null,
+                    NextTrackMetadata = detailed != false && media.TryGetValue("NextURIMetaData", out value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null
                 };
             }
             else
@@ -105,7 +105,7 @@ namespace Web.Upnp.Control.Controllers
                 info.TryGetValue("RelCount", out value) && int.TryParse(value, out var time) ? time : default(int?),
                 info.TryGetValue("AbsCount", out value) && int.TryParse(value, out time) ? time : default(int?))
             {
-                Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLParser.Parse(value).FirstOrDefault() : null
+                Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLXmlParser.Parse(value).FirstOrDefault() : null
             };
         }
 
@@ -125,7 +125,7 @@ namespace Web.Upnp.Control.Controllers
         {
             var cd = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
             var result = await cd.BrowseAsync(id, flags: "BrowseMetadata").ConfigureAwait(false);
-            var item = DIDLParser.Parse(result["Result"]).FirstOrDefault();
+            var item = DIDLXmlParser.Parse(result["Result"]).FirstOrDefault();
             if(item is { Resource: { Url: { } resUrl } })
             {
                 var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
