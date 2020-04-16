@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Services.HttpClients;
@@ -18,11 +19,33 @@ namespace Web.Upnp.Control.Controllers
             this.proxyClient = proxyClient;
         }
 
-        [HttpGet("{*originalUri}")]
-        [ResponseCache(Duration = 10 * 60)]
-        public Task<HttpResponseMessage> GetContentAsync(string originalUri)
+        [HttpGet("[action]/{*originalUri}")]
+        [ResponseCache(Duration = 10 * 60, NoStore = false, Location = ResponseCacheLocation.Any)]
+        public async Task GetAsync(string originalUri)
         {
-            return proxyClient.GetAsync(originalUri, Request.Headers);
+            var responseMessage = await proxyClient.GetAsync(originalUri, Request.Headers).ConfigureAwait(false);
+            var content = responseMessage.Content;
+
+            Response.StatusCode = (int)responseMessage.StatusCode;
+
+            foreach(var (key, value) in responseMessage.Headers)
+            {
+                if(!Response.Headers.TryGetValue(key, out _))
+                {
+                    Response.Headers.Add(key, value.ToArray());
+                }
+            }
+
+            foreach(var (key, value) in content.Headers)
+            {
+                if(!Response.Headers.TryGetValue(key, out _))
+                {
+                    Response.Headers.Add(key, value.ToArray());
+                }
+            }
+
+            await content.CopyToAsync(Response.Body).ConfigureAwait(false);
+            await Response.CompleteAsync().ConfigureAwait(false);
         }
     }
 }

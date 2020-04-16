@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control.DataAccess;
-using Web.Upnp.Control.Formatters;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Services;
 using Web.Upnp.Control.Services.HttpClients;
@@ -34,12 +33,11 @@ namespace Web.Upnp.Control
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
 
-            services.AddControllers(c => c.OutputFormatters.Insert(c.OutputFormatters.Count - 1, new HttpResponseMessageFormatter()))
-                .AddJsonOptions(o =>
-                {
-                    o.JsonSerializerOptions.IgnoreNullValues = true;
-                    o.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-                });
+            services.AddControllers().AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.IgnoreNullValues = true;
+                o.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+            });
 
             services.AddResponseCaching();
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });

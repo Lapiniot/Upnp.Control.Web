@@ -14,7 +14,9 @@ namespace Web.Upnp.Control.Services.HttpClients
                 .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
                 {
                     AutomaticDecompression = None,
-                    MaxConnectionsPerServer = 1
+                    MaxConnectionsPerServer = 1,
+                    UseProxy = false,
+                    UseCookies = false
                 });
 
             return services;
