@@ -191,8 +191,8 @@ export class PlaylistManagerCore extends React.Component {
 }
 
 const MainCellTemplate = ({ data, context: { ctrl, selected }, index }) => {
-    return <div>
-        <div className="d-inline-block stack mr-1 accordion">
+    return <div className="d-flex align-items-center">
+        <div className="d-inline-block stack mr-1">
             <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
             {selected(data, index) ? <>
                 <div className="stack-layer stack-layer d-flex">
@@ -205,7 +205,11 @@ const MainCellTemplate = ({ data, context: { ctrl, selected }, index }) => {
                     <i className="m-auto fas fa-lg fa-play-circle" />
                 </div>}
         </div>
-        {data.title}
+        <div>
+            {data.title}
+            {data.creator && <small>&nbsp;&bull;&nbsp;{data.creator}</small>}
+            {data.album && <small>&nbsp;&bull;&nbsp;{data.album}</small>}
+        </div>
     </div>;
 }
 

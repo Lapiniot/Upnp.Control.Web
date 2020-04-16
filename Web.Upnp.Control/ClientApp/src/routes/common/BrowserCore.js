@@ -22,13 +22,18 @@ export default function (props) {
                         <div>...</div>
                         <div>Parent</div>
                     </div>}
-                {[items.map(({ id, container, class: cls, albumArts, title }, index) => {
+                {[items.map((e, index) => {
+                    const { id, container, class: cls, albumArts, title, creator, album } = e;
                     return <div key={index} data-id={id} onDoubleClick={container ? navigate : undefined}>
-                        <div>
+                        <div className="d-flex align-items-center">
                             <AlbumArtImage itemClass={cls} albumArts={albumArts} className="mr-1" />
-                            {title}
+                            <div>
+                                {title}
+                                {creator && <small>&nbsp;&bull;&nbsp;{creator}</small>}
+                                {album && <small>&nbsp;&bull;&nbsp;{album}</small>}
+                            </div>
                         </div>
-                        <div className="text-capitalize">{utils.getDisplayName(cls)}</div>
+                        <div title={JSON.stringify(e, null, 2)} className="text-capitalize">{utils.getDisplayName(cls)}</div>
                     </div>;
                 })]}
             </div>

@@ -76,5 +76,12 @@ export default class extends React.Component {
     }
 }
 
-const CellTemplate = ({ data: { class: itemClass, albumArts, title } }) =>
-    <div><AlbumArt itemClass={itemClass} albumArts={albumArts} className="mr-2" />{title}</div>;
+const CellTemplate = ({ data: { class: itemClass, albumArts, title, creator, album } }) =>
+    <div className="d-flex align-items-center">
+        <AlbumArt itemClass={itemClass} albumArts={albumArts} className="mr-2" />
+        <div>
+            {title}
+            {creator && <small>&nbsp;&bull;&nbsp;{creator}</small>}
+            {album && <small>&nbsp;&bull;&nbsp;{album}</small>}
+        </div>
+    </div>;
