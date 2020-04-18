@@ -124,7 +124,7 @@ namespace Web.Upnp.Control.Controllers
         public async Task PlayItemAsync(string deviceId, [FromRoute] [FromQuery] string id)
         {
             var cd = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
-            var result = await cd.BrowseAsync(id, flags: "BrowseMetadata").ConfigureAwait(false);
+            var result = await cd.BrowseAsync(id, flags: BrowseFlags.BrowseMetadata).ConfigureAwait(false);
             var item = DIDLXmlParser.Parse(result["Result"]).FirstOrDefault();
             if(item is { Resource: { Url: { } resUrl } })
             {

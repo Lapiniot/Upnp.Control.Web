@@ -22,7 +22,7 @@ namespace Web.Upnp.Control.Controllers
         }
 
         [HttpGet("{*path}")]
-        public async Task GetContentAsync(string deviceId, string path, [FromQuery] uint take = 50, [FromQuery] uint skip = 0,
+        public async Task GetContentAsync(string deviceId, string path = "0", [FromQuery] uint take = 50, [FromQuery] uint skip = 0,
             [FromQuery] bool withParents = false,
             [FromQuery(Name = "resource")] bool? withResource = false,
             [FromQuery(Name = "vendor")] bool? withVendor = false)
@@ -31,12 +31,15 @@ namespace Web.Upnp.Control.Controllers
 
             using(service.Target)
             {
-                var result = await service.BrowseAsync(path ?? "0", index: skip, count: take).ConfigureAwait(false);
+                var result = await service.BrowseAsync(path, index: skip, count: take).ConfigureAwait(false);
 
                 await using var jsonWriter = new Utf8JsonWriter(Response.BodyWriter);
 
-                DIDLJsonSerializer.Serialize(jsonWriter, int.Parse(result["TotalMatches"]), DIDLXmlParser.Parse(result["Result"]),
-                    withParents ? await GetParentsAsync(service, path).ConfigureAwait(false) : null, withResource != false, withVendor != false);
+                var items = DIDLXmlParser.Parse(result["Result"]);
+
+                var parents = withParents ? await GetParentsAsync(service, path).ConfigureAwait(false) : null;
+
+                DIDLJsonSerializer.Serialize(jsonWriter, int.Parse(result["TotalMatches"]), items, parents, withResource != false, withVendor != false);
 
                 await Response.BodyWriter.FlushAsync().ConfigureAwait(false);
                 await Response.BodyWriter.CompleteAsync().ConfigureAwait(false);
@@ -44,13 +47,13 @@ namespace Web.Upnp.Control.Controllers
         }
 
         [HttpGet("metadata/{path?}")]
-        public async Task<object> GetMetadataAsync(string deviceId, string path)
+        public async Task<object> GetMetadataAsync(string deviceId, string path = "0")
         {
             var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
             using(service.Target)
             {
-                var result = await service.BrowseAsync(path ?? "0", flags: "BrowseMetadata").ConfigureAwait(false);
+                var result = await service.BrowseAsync(path, flags: BrowseFlags.BrowseMetadata).ConfigureAwait(false);
                 return new {Total = int.Parse(result["TotalMatches"]), Result = DIDLXmlParser.Parse(result["Result"])};
             }
         }
@@ -66,15 +69,17 @@ namespace Web.Upnp.Control.Controllers
             }
         }
 
-        private static async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string path, string filter = "*")
+        private static async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string path = "0", string filter = "*")
         {
             var parents = new List<Item>();
 
             while(path != "-1")
             {
-                var metadataResult = await service.BrowseAsync(path ?? "0", flags: "BrowseMetadata", filter: filter).ConfigureAwait(false);
+                var metadataResult = await service.BrowseAsync(path, flags: BrowseFlags.BrowseMetadata, filter: filter).ConfigureAwait(false);
 
-                var metadata = DIDLXmlParser.Parse(metadataResult["Result"]).First();
+                var metadata = DIDLXmlParser.Parse(metadataResult["Result"]).FirstOrDefault();
+
+                if(metadata == null) break;
 
                 parents.Add(metadata);
 

@@ -85,7 +85,7 @@ namespace Web.Upnp.Control.Controllers
 
                 foreach(var item in media.Items)
                 {
-                    var data = await sourceContentDirectoryService.BrowseAsync(item, flags: "BrowseMetadata").ConfigureAwait(false);
+                    var data = await sourceContentDirectoryService.BrowseAsync(item, flags: BrowseFlags.BrowseMetadata).ConfigureAwait(false);
 
                     var xml = data["Result"];
 
@@ -128,7 +128,7 @@ namespace Web.Upnp.Control.Controllers
 
         private static async Task<string> GetUpdateIdAsync(ContentDirectoryService cdtService, string id)
         {
-            var result = await cdtService.BrowseAsync(id, flags: "BrowseMetadata", filter: "id").ConfigureAwait(false);
+            var result = await cdtService.BrowseAsync(id, flags: BrowseFlags.BrowseMetadata, filter: "id").ConfigureAwait(false);
 
             return result["UpdateID"];
         }
