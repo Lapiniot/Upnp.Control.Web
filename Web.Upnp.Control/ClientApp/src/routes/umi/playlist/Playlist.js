@@ -7,7 +7,7 @@ import Playlist from "./PlaylistManager";
 export default ({ match: { path } }) =>
     <Switch>
         <Redirect from={path} exact to="/umi" />
-        <Route path={`${path}/:device/:id(.*)?`} render={props =>
+        <Route path={`${path}/:device/:id*`} render={props =>
             props.match.params.id !== "0" && props.match.params.id !== "-1"
                 ? <Playlist {...props} />
                 : <Redirect to="/umi" />} />
