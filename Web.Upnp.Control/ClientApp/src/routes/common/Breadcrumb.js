@@ -1,6 +1,6 @@
 import React from "react";
-import { NavLink, generatePath } from "react-router-dom";
-import { reversemap } from "../../components/Extensions";
+import { NavLink } from "react-router-dom";
+import { reversemap, generatePath } from "../../components/Extensions";
 
 const BreadcrumbItem = ({ active, title, url }) => active
     ? <li className="breadcrumb-item active" aria-current="page">{title}</li>
