@@ -9,6 +9,7 @@ using IoT.Protocol.Upnp;
 using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Web.Upnp.Control.Controllers.Routing;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Models;
 

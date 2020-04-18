@@ -6,6 +6,7 @@ using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
+using Web.Upnp.Control.Controllers.Routing;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services;
 
@@ -111,7 +112,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpGet("play()")]
         [HttpGet("play/{*id}")]
-        public async Task PlayItemAsync(string deviceId, string id)
+        public async Task PlayItemAsync(string deviceId, [FromRouteOrQuery] string id)
         {
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
 
