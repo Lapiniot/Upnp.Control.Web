@@ -156,8 +156,8 @@ export class PlaylistManagerCore extends React.Component {
         const { source: { total = 0, result: { length: fetched = 0 } = {}, parents } = {} } = data || {};
         const disabled = this.selection.none();
         const cellContext = {
-            ctrl: this.ctrl, state: this.state.playbackState,
-            selected: id !== "PL:" ? (_, index) => index + 1 == this.state.track
+            ctrl: this.ctrl, state: this.state.playbackState, parents,
+            selected: id !== "PL:" ? (_, index) => index + 1 === this.state.track
                 : (this.state.playlist === "aux"
                     ? d => d.vendor["mi:playlistType"] === "aux"
                     : d => d.res.url === this.state.playlist)
@@ -190,7 +190,7 @@ export class PlaylistManagerCore extends React.Component {
     }
 }
 
-const MainCellTemplate = ({ data, context: { ctrl, selected }, index }) => {
+const MainCellTemplate = ({ data, context: { ctrl, selected, parents }, index }) => {
     return <div className="d-flex align-items-center">
         <div className="d-inline-block stack mr-1">
             <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
@@ -201,7 +201,8 @@ const MainCellTemplate = ({ data, context: { ctrl, selected }, index }) => {
                 <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.pause().fetch}>
                     <i className="m-auto fas fa-lg fa-pause-circle" />
                 </div></> :
-                <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.play(data.id).fetch}>
+                <div className="stack-layer stack-layer-hover d-flex"
+                    onClick={ctrl.playUri(parents[0].url ? `${parents[0].url}#tracknr=${index + 1},play` : data.res.url).fetch}>
                     <i className="m-auto fas fa-lg fa-play-circle" />
                 </div>}
         </div>
