@@ -37,7 +37,7 @@ namespace Web.Upnp.Control.Controllers
 
                 var items = DIDLXmlParser.Parse(result["Result"]);
 
-                var parents = withParents ? await GetParentsAsync(service, path).ConfigureAwait(false) : null;
+                var parents = withParents ? await GetParentsAsync(service, path, "id,title,parentId,res").ConfigureAwait(false) : null;
 
                 DIDLJsonSerializer.Serialize(jsonWriter, int.Parse(result["TotalMatches"]), items, parents, withResource != false, withVendor != false);
 
@@ -54,7 +54,7 @@ namespace Web.Upnp.Control.Controllers
             using(service.Target)
             {
                 var result = await service.BrowseAsync(path, flags: BrowseFlags.BrowseMetadata).ConfigureAwait(false);
-                return new {Total = int.Parse(result["TotalMatches"]), Result = DIDLXmlParser.Parse(result["Result"])};
+                return new { Total = int.Parse(result["TotalMatches"]), Result = DIDLXmlParser.Parse(result["Result"]) };
             }
         }
 

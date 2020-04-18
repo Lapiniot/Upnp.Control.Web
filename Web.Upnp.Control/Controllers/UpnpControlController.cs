@@ -135,7 +135,8 @@ namespace Web.Upnp.Control.Controllers
         }
 
         [HttpGet("play_uri/{*uri}")]
-        public async Task PlayUriAsync(string deviceId, string uri)
+        [HttpGet("play_uri()")]
+        public async Task PlayUriAsync(string deviceId, [FromRouteOrQuery] string uri)
         {
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
             await avt.SetAVTransportUriAsync(currentUri: uri).ConfigureAwait(false);

@@ -13,11 +13,9 @@ export function reversemap(array, fn) {
     }, []);
 }
 
-const pathRegex = new RegExp(":([\\w]+)[^\/]*", "g");
+const pathRegex = new RegExp(":([\\w]+)[^/]*", "g");
 
 export function generatePath(path, params) {
-    return path.replace(pathRegex, (_, name) => {
-        return params[name];
-    });
+    return path.replace(pathRegex, (_, name) => params[name]);
 }
 
