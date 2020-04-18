@@ -12,3 +12,12 @@ export function reversemap(array, fn) {
         return acc;
     }, []);
 }
+
+const pathRegex = new RegExp(":([\\w]+)[^\/]*", "g");
+
+export function generatePath(path, params) {
+    return path.replace(pathRegex, (_, name) => {
+        return params[name];
+    });
+}
+

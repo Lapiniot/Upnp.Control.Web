@@ -1,5 +1,5 @@
 import React from "react";
-import { generatePath } from "react-router";
+import { generatePath } from "../../components/Extensions";
 
 export default function (Component) {
     return class extends React.Component {
