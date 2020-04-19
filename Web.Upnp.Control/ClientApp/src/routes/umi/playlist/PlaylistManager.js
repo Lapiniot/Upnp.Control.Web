@@ -157,7 +157,7 @@ export class PlaylistManagerCore extends React.Component {
         const disabled = this.selection.none();
         const cellContext = {
             ctrl: this.ctrl, state: this.state.playbackState, parents,
-            selected: id !== "PL:" ? (_, index) => index + 1 === this.state.track
+            active: id !== "PL:" ? (_, index) => index + 1 === this.state.track
                 : (this.state.playlist === "aux"
                     ? d => d.vendor["mi:playlistType"] === "aux"
                     : d => d.res.url === this.state.playlist)
@@ -190,23 +190,35 @@ export class PlaylistManagerCore extends React.Component {
     }
 }
 
-const MainCellTemplate = ({ data, context: { ctrl, selected, parents }, index }) => {
+const MainCellTemplate = ({ data, context: { ctrl, active, parents, state }, index }) => {
+    var active = active(data,index);
     return <div className="d-flex align-items-center">
         <div className="d-inline-block stack mr-1">
             <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
-            {selected(data, index) ? <>
-                <div className="stack-layer stack-layer d-flex">
-                    <i className="m-auto fas fa-lg fa-volume-up" />
-                </div>
-                <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.pause().fetch}>
-                    <i className="m-auto fas fa-lg fa-pause-circle" />
-                </div></> :
+            {active ?
+                state === "PLAYING" ?
+                    <React.Fragment key="active-playing">
+                        <div className="stack-layer d-flex">
+                            <i className="m-auto fas fa-lg fa-volume-up animate-pulse" />
+                        </div>
+                        <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.pause().fetch}>
+                            <i className="m-auto fas fa-lg fa-pause-circle" />
+                        </div>
+                    </React.Fragment> :
+                    <React.Fragment key="active-paused">
+                        <div className="stack-layer d-flex">
+                            <i className="m-auto fas fa-lg fa-volume-off text-muted" />
+                        </div>
+                        <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.play().fetch}>
+                            <i className="m-auto fas fa-lg fa-play-circle" />
+                        </div>
+                    </React.Fragment> :
                 <div className="stack-layer stack-layer-hover d-flex"
                     onClick={ctrl.playUri(parents[0].url ? `${parents[0].url}#tracknr=${index + 1},play` : data.res.url).fetch}>
                     <i className="m-auto fas fa-lg fa-play-circle" />
                 </div>}
         </div>
-        <div>
+        <div className={active ? "text-primary" : null}>
             {data.title}
             {data.creator && <small>&nbsp;&bull;&nbsp;{data.creator}</small>}
             {data.album && <small>&nbsp;&bull;&nbsp;{data.album}</small>}

@@ -100,8 +100,22 @@ $album-art-sizes: ( "xs": 0.50, "sm": 0.75, "md": 1.25, "lg": 1.75, "xl": 2.00);
     }
 
     &:hover .stack-layer{
+        visibility: hidden;
+    }
+
+    &:hover .stack-layer-hover{
         visibility: visible;
     }
+}
+
+@keyframes fade{
+    25% { color: rgba($color: #FFF, $alpha: 0.75); }
+    50% { color: rgba($color: #FFF, $alpha: 0.5); }
+    75% { color: rgba($color: #FFF, $alpha: 0.75); }
+}
+
+.animate-pulse{
+    animation: fade 2s ease-in-out infinite;
 }
 
 input[type="checkbox"].chk-no-label {
