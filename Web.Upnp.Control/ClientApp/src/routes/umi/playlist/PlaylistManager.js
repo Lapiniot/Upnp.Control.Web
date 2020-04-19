@@ -191,7 +191,7 @@ export class PlaylistManagerCore extends React.Component {
 }
 
 const MainCellTemplate = ({ data, context: { ctrl, active, parents, state }, index }) => {
-    var active = active(data,index);
+    var active = active(data, index);
     return <div className="d-flex align-items-center">
         <div className="d-inline-block stack mr-1">
             <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
@@ -229,6 +229,6 @@ const MainCellTemplate = ({ data, context: { ctrl, active, parents, state }, ind
 export default withBrowser(PlaylistManagerCore, false,
     ({ device, id, p, s }) => {
         const page = parseInt(p) || 1;
-        const size = parseInt(s) || $config.pageSize;
+        const size = parseInt(s) || $config.playlist.pageSize;
         return $api.browse(device).get(id || "PL:").withParents().withResource().withVendor().take(size).skip((page - 1) * size).url()
     });
