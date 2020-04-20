@@ -7,6 +7,18 @@
 @import "form-table";
 @import "modal";
 
+.flex-basis-100{
+    flex-basis: 100%;
+}
+
+.flex-basis-0{
+    flex-basis: 0;
+}
+
+.text-tiny{
+    font-size: 0.6rem;
+}
+
 @each $level in map-keys($grays) {
     .bg-gray-#{$level} {
         background-color: map-get($grays, $level);
@@ -126,7 +138,7 @@ $album-art-sizes: ( "xs": 0.50, "sm": 0.75, "md": 1.25, "lg": 1.75, "xl": 2.00);
     animation: fade 1.5s ease-in-out infinite;
 }
 
-$slider-size: 5px;
+$slider-size: 3px;
 
 .slider{
     display: flex;
