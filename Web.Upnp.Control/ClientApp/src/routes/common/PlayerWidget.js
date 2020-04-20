@@ -96,15 +96,11 @@ class PlayerCore extends React.Component {
 function Progress({ time, duration, running }) {
     const total = parseMilliseconds(duration);
     const current = parseMilliseconds(time);
-    const progress = Math.round(current * 100 / total);
+    const progress = total > 0 ? Math.round(current * 100 / total) : 0;
     return <div>
-        <div className="slider my-2">
-            {
-                running
-                    ? <div style={{ width: `${progress}%`, animationDuration: `${total - current}ms` }} />
-                    : <div style={{ width: `${progress}%` }} />
-            }
-            <div />
+        <div className="slider my-2" data-running={running}>
+            <div className="slider-line" style={{ width: `${progress}%`, animationDuration: `${running ? (total - current) : 0}ms` }} />
+            <div className="slider-ticker" />
         </div>
     </div>
 }
