@@ -18,14 +18,15 @@ class PlayerCore extends React.Component {
             dataContext: props.dataContext, actions: props.dataContext.source.actions,
             current: props.dataContext.source.currentTrackMetadata,
             next: props.dataContext.source.nextTrackMetadata,
-            playbackState: props.dataContext.source.state
+            playbackState: props.dataContext.source.state,
+            playMode: props.dataContext.source.playMode
         } : null;
     }
 
-    onAVTransportEvent = (device, { state: { actions, currentTrackMetadata: current, nextTrackMetadata: next, state }, position }) => {
+    onAVTransportEvent = (device, { state: { actions, currentTrackMetadata: current, nextTrackMetadata: next, state, playMode }, position }) => {
         if (device === this.props.udn) {
             this.setState({
-                actions, current, next,
+                actions, current, next, playMode,
                 playbackState: state,
                 time: position.relTime,
                 duration: position.duration
@@ -60,12 +61,12 @@ class PlayerCore extends React.Component {
     next = () => this.ctrl.next().fetch();
 
     render() {
-        const { actions = [], current, next, playbackState } = this.state;
+        const { actions = [], current, next, playbackState, playMode, time, duration } = this.state;
         const transitioning = playbackState === "TRANSITIONING";
         return <>
             <SignalRListener handlers={this.handlers} >{null}</SignalRListener>
             <div className="d-flex flex-column">
-                <Progress time={this.state.time} duration={this.state.duration} running={playbackState === "PLAYING"} />
+                <Progress time={time} duration={duration} running={playbackState === "PLAYING"} />
                 <div className="d-flex align-items-center justify-content-between">
                     <Toolbar>
                         <Toolbar.Group className="align-items-center">
@@ -75,13 +76,15 @@ class PlayerCore extends React.Component {
                             <Toolbar.Button title={next ? `Next: ${next.title}` : "Next"} onClick={this.next} glyph="step-forward fa-sm" className="p-0 px-1" disabled={!actions.includes("Next")} />
                         </Toolbar.Group>
                     </Toolbar>
-                    {current && <div className="text-center align-middle mx-2 overflow-hidden" title={JSON.stringify(current)}>
-                        <h6 className="text-truncate" title={current.title}>{current.title}</h6>
+                    {current && <div className="d-flex flex-wrap justify-content-center mx-2 overflow-hidden" title={JSON.stringify(current)}>
+                        <h6 className="text-center text-truncate flex-basis-100 m-0" title={current.title}>{current.title}</h6>
+                        <small className="m-0">{current.creator}</small>
+                        <small className="m-0">&nbsp;&bull;&nbsp;{current.album}</small>
                     </div>}
                     <Toolbar className="flex-nowrap">
                         <Toolbar.Group>
-                            <Toolbar.Button glyph="random" className="p-1" />
-                            <Toolbar.Button glyph="retweet" className="p-1" />
+                            <Toolbar.Button glyph="random" className={playMode === "REPEAT_SHUFFLE" ? "p-1 text-primary" : "p-1"} />
+                            <Toolbar.Button glyph="retweet" className={playMode === "REPEAT_ALL" ? "p-1 text-primary" : "p-1"} />
                         </Toolbar.Group>
                         <Toolbar.Group>
                             <Toolbar.Button glyph="volume-off" className="p-2" />
@@ -94,11 +97,15 @@ class PlayerCore extends React.Component {
 }
 
 function Progress({ time, duration, running }) {
+
     const total = parseMilliseconds(duration);
     const current = parseMilliseconds(time);
     const progress = total > 0 ? Math.round(current * 100 / total) : 0;
-    return <div>
-        <div className="slider my-2" data-running={running}>
+
+    return <div className="d-flex flex-wrap justify-content-between">
+        <small className="text-tiny">{time}</small>
+        <small className="text-tiny">{duration}</small>
+        <div className="slider my-2 flex-basis-100" data-running={running}>
             <div className="slider-line" style={{ width: `${progress}%`, animationDuration: `${running ? (total - current) : 0}ms` }} />
             <div className="slider-ticker" />
         </div>
