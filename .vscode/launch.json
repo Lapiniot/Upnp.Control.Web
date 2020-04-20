@@ -8,7 +8,7 @@
             "name": ".NET Core Launch (web)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "Build",
             "program": "./bin/Debug/netcoreapp3.1/Web.Upnp.Control.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Web.Upnp.Control",
