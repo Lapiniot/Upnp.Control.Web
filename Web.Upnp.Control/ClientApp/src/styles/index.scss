@@ -109,13 +109,44 @@ $album-art-sizes: ( "xs": 0.50, "sm": 0.75, "md": 1.25, "lg": 1.75, "xl": 2.00);
 }
 
 @keyframes fade{
-    25% { color: rgba($color: #FFF, $alpha: 0.75); }
-    50% { color: rgba($color: #FFF, $alpha: 0.5); }
-    75% { color: rgba($color: #FFF, $alpha: 0.75); }
+    25% { color: rgba($color: #FFF, $alpha: 0.9); }
+    50% { color: rgba($color: #FFF, $alpha: 0.8); }
+    75% { color: rgba($color: #FFF, $alpha: 0.9); }
+}
+
+@keyframes inflate-width{
+    to { width: 100%; }
+}
+
+@keyframes inflate-left{
+    to { left: 100%; }
 }
 
 .animate-pulse{
-    animation: fade 2s ease-in-out infinite;
+    animation: fade 1.5s ease-in-out infinite;
+}
+
+$slider-size: 0.2rem;
+
+.slider{
+    display: flex;
+    height: $slider-size;
+    align-items: stretch;
+    background-color: $light;
+}
+
+.slider :first-child{
+    background-color: $primary;
+    animation: inflate-width 0s linear 0s forwards;
+}
+
+.slider :nth-child(2){
+    align-self: center;
+    width: 4 * $slider-size;
+    height: 4 * $slider-size;
+    margin-left: -2 * $slider-size;
+    background-color: $primary;
+    border-radius: 50%;
 }
 
 input[type="checkbox"].chk-no-label {

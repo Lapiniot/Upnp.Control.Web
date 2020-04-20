@@ -46,7 +46,7 @@ export class PlaylistManagerCore extends React.Component {
             else {
                 response = await this.ctrl.playlistState().fetch();
                 const { "playlist_transport_uri": playlist } = await response.json();
-                response = await this.ctrl.position(true).fetch();
+                response = await this.ctrl.position().fetch();
                 const { track } = await response.json();
                 this.setState({ actions, current, playbackState: state, playlist, track: parseInt(track) });
             }
@@ -56,7 +56,8 @@ export class PlaylistManagerCore extends React.Component {
         }
     }
 
-    onAVTransportEvent = (device, { state: { actions, currentTrackMetadata: current, currentTrack: track, state }, vendor: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport }, vendor }) => {
+    onAVTransportEvent = (device, { state: { actions, currentTrackMetadata: current, currentTrack: track, state },
+        vendor: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } }) => {
         if (device === this.props.device) {
             this.setState({ actions, current, playbackState: state, playlist: transport === "AUX" ? "aux" : playlist, track: parseInt(track) })
         }

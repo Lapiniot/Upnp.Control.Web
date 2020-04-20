@@ -19,3 +19,7 @@ export function generatePath(path, params) {
     return path.replace(pathRegex, (_, name) => params[name]);
 }
 
+export function parseMilliseconds(time) {
+    return new Date('1970-01-01T' + time + 'Z').getTime();
+}
+

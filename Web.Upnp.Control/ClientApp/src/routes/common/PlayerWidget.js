@@ -1,5 +1,6 @@
 import React from "react";
 import Toolbar from "../../components/Toolbar";
+import { parseMilliseconds } from "../../components/Extensions";
 import { withDataFetch } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
 import $api from "../../components/WebApi";
@@ -8,14 +9,8 @@ class PlayerCore extends React.Component {
     constructor(props) {
         super(props);
         this.handlers = new Map([["AVTransportEvent", this.onAVTransportEvent]]);
-        this.state = { actions: [], current: null, next: null, playbackState: null, dataContext: null };
+        this.state = { actions: [], current: null, next: null, playbackState: null, dataContext: null, progress: 0 };
         this.ctrl = $api.control(this.props.udn);
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.udn !== this.props.udn) {
-            this.ctrl = $api.control(this.props.udn);
-        }
     }
 
     static getDerivedStateFromProps(props, prevState) {
@@ -27,9 +22,30 @@ class PlayerCore extends React.Component {
         } : null;
     }
 
-    onAVTransportEvent = (device, { state: { actions, currentTrackMetadata: current, nextTrackMetadata: next, state }, vendor }) => {
+    onAVTransportEvent = (device, { state: { actions, currentTrackMetadata: current, nextTrackMetadata: next, state }, position }) => {
         if (device === this.props.udn) {
-            this.setState({ actions, current, next, playbackState: state, vendor })
+            this.setState({
+                actions, current, next,
+                playbackState: state,
+                time: position.relTime,
+                duration: position.duration
+            })
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.udn !== this.props.udn) {
+            this.ctrl = $api.control(this.props.udn);
+        }
+    }
+
+    async componentDidMount() {
+        try {
+            var response = await this.ctrl.position().fetch();
+            var position = await response.json();
+            this.setState({ time: position.relTime, duration: position.duration });
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -49,9 +65,7 @@ class PlayerCore extends React.Component {
         return <>
             <SignalRListener handlers={this.handlers} >{null}</SignalRListener>
             <div className="d-flex flex-column">
-                <div className="progress my-1" style={{ height: "3px" }}>
-                    <div className="progress-bar" role="progressbar" style={{ width: "25%" }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" />
-                </div>
+                <Progress time={this.state.time} duration={this.state.duration} running={playbackState === "PLAYING"} />
                 <div className="d-flex align-items-center justify-content-between">
                     <Toolbar>
                         <Toolbar.Group className="align-items-center">
@@ -77,6 +91,22 @@ class PlayerCore extends React.Component {
             </div>
         </>;
     }
+}
+
+function Progress({ time, duration, running }) {
+    const total = parseMilliseconds(duration);
+    const current = parseMilliseconds(time);
+    const progress = Math.round(current * 100 / total);
+    return <div>
+        <div className="slider my-2">
+            {
+                running
+                    ? <div style={{ width: `${progress}%`, animationDuration: `${total - current}ms` }} />
+                    : <div style={{ width: `${progress}%` }} />
+            }
+            <div />
+        </div>
+    </div>
 }
 
 export default withDataFetch(PlayerCore, { usePreloader: false }, ({ udn }) => $api.control(udn).state(true).url());
