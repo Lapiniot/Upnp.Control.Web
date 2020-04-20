@@ -60,7 +60,8 @@ namespace Web.Upnp.Control.Controllers
             var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null;
 
             var state = new AVTransportState(map.TryGetValue("TransportState", out value) ? value : null, null,
-                map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : default(int?), null)
+                map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : (int?)null, null,
+                map.TryGetValue("CurrentPlayMode", out value) ? value : null)
             {
                 Actions = map.TryGetValue("CurrentTransportActions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
                 CurrentTrackMetadata = current,

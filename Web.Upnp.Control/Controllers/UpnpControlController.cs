@@ -59,10 +59,12 @@ namespace Web.Upnp.Control.Controllers
             if(detailed != false)
             {
                 var media = await avt.GetMediaInfoAsync(0, HttpContext.RequestAborted).ConfigureAwait(false);
+                var settings = await avt.GetTransportSettingsAsync().ConfigureAwait(false);
                 return new AVTransportState(transport.TryGetValue("CurrentTransportState", out var value) ? value : null,
                     transport.TryGetValue("CurrentTransportStatus", out value) ? value : null,
                     media.TryGetValue("NrTracks", out value) && int.TryParse(value, out var numTracks) ? numTracks : 0,
-                    media.TryGetValue("PlayMedium", out value) ? value : null)
+                    media.TryGetValue("PlayMedium", out value) ? value : null,
+                    settings.TryGetValue("PlayMode", out value) ? value : null)
                 {
                     Actions = actions.TryGetValue("Actions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
                     CurrentTrackMetadata = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null,
@@ -72,7 +74,7 @@ namespace Web.Upnp.Control.Controllers
             else
             {
                 return new AVTransportState(transport.TryGetValue("CurrentTransportState", out var value) ? value : null,
-                    transport.TryGetValue("CurrentTransportStatus", out value) ? value : null, null, null)
+                    transport.TryGetValue("CurrentTransportStatus", out value) ? value : null, null, null, null)
                 {
                     Actions = actions.TryGetValue("Actions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null
                 };
