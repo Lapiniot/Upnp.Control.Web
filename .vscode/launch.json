@@ -14,7 +14,7 @@
             "cwd": "${workspaceFolder}/Web.Upnp.Control",
             "stopAtEntry": false,
             "serverReadyAction": {
-                "action": "openExternally",
+                "action": "debugWithChrome",
                 "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
             },
             "env": {
@@ -23,33 +23,6 @@
             "sourceFileMap": {
                 "/Views": "./Views"
             }
-        },
-        {
-            "name": "Launch in Chrome",
-            "type": "chrome",
-            "request": "launch",
-            "address": "localhost",
-            "port": 9222,
-            "url": "http://localhost:9000",
-            "webRoot": "${workspaceFolder}/Web.Upnp.Control/ClientApp"
-        },
-        {
-            "name": "Attach to Chrome",
-            "type": "chrome",
-            "request": "attach",
-            "address": "localhost",
-            "port": 9222,
-            "url": "http://localhost:9000",
-            "webRoot": "${workspaceFolder}/Web.Upnp.Control/ClientApp"
-        }
-    ],
-    "compounds": [
-        {
-            "name": "Compound",
-            "configurations": [
-                ".NET Core Launch (web)",
-                "Launch in Chrome"
-            ]
         }
     ]
 }

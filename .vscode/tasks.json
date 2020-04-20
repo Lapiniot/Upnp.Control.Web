@@ -10,20 +10,9 @@
     },
     "tasks": [
         {
-            "label": "Sass Compile",
-            "type": "shell",
-            "options": {
-                "cwd": "Web.Upnp.Control/ClientApp/src"
-            },
-            "command": "node-sass styles/index.scss css/index.css",
-            "group": "build",
-            "problemMatcher": [
-                "$node-sass"
-            ]
-        },
-        {
-            "label": "build",
+            "label": "Build",
             "command": "dotnet",
+            "detail": "Runs dotnet build task",
             "type": "shell",
             "args": [
                 "build",
@@ -40,14 +29,16 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "Publish",
             "command": "dotnet publish -c $CONFIG",
+            "detail": "Runs dotnet publish command",
             "type": "shell",
             "group": "build",
             "problemMatcher": []
         },
         {
-            "label": "deploy (remote SSH)",
+            "label": "Deploy (remote SSH)",
+            "detail": "Starts deployment to remote server via rsync over SSH",
             "dependsOn": [
                 "publish"
             ],
@@ -61,21 +52,42 @@
             }
         },
         {
-            "type": "npm",
-            "script": "build",
-            "path": "Web.Upnp.Control/ClientApp/",
-            "group": "build",
-            "problemMatcher": [],
-            "label": "npm: build - Web.Upnp.Control/ClientApp",
-            "detail": "react-scripts build"
-        },
-        {
+            "label": "npm: install - Web.Upnp.Control",
+            "detail": "install dependencies from package",
             "type": "npm",
             "script": "install",
             "path": "Web.Upnp.Control/",
-            "problemMatcher": [],
-            "label": "npm: install - Web.Upnp.Control",
-            "detail": "install dependencies from package"
+            "problemMatcher": []
+        },
+        {
+            "label": "Gulp Compile",
+            "detail": "Compiles *.scss files to *.css files",
+            "type": "gulp",
+            "task": "sass",
+            "group": "build",
+            "options": {
+                "cwd": "Web.Upnp.Control/"
+            },
+            "problemMatcher": "$gulp-tsc"
+        },
+        {
+            "label": "Gulp Watch SCSS",
+            "detail": "Starts *.scss files modification background watch task",
+            "type": "gulp",
+            "task": "watch",
+            "isBackground": true,
+            "options": {
+                "cwd": "Web.Upnp.Control/"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": "$gulp-tsc"
         }
     ],
     "inputs": [
