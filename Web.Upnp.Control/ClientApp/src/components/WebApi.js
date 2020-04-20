@@ -27,9 +27,9 @@ export default class {
     static control = (deviceId) => {
         deviceId = encodeURIComponent(deviceId);
         return {
-            state: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/state${detailed && "?detailed"}`),
+            state: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/state${detailed ? "?detailed" : ""}`),
             playlistState: () => new JsonFetch(`${controlBaseUrl}${deviceId}/playlist_state`),
-            position: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/position${detailed && "?detailed"}`),
+            position: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/position${detailed ? "?detailed" : ""}`),
             play: (id) => new JsonFetch(`${controlBaseUrl}${deviceId}/play()${id ? "?id=" + encodeURIComponent(id) : ""}`),
             playUri: (uri) => new JsonFetch(`${controlBaseUrl}${deviceId}/play_uri()?uri=${encodeURIComponent(uri)}`),
             pause: () => new JsonFetch(`${controlBaseUrl}${deviceId}/pause()`),

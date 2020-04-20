@@ -84,9 +84,8 @@ namespace Web.Upnp.Control.Controllers
         [Produces("application/json")]
         public async Task GetPlaylistStateAsync(string deviceId)
         {
-            var sp = await factory.GetServiceAsync<SystemPropertiesService>(deviceId).ConfigureAwait(false);
-            var value = await sp.GetStringAsync("fastCall?command=state_playlists").ConfigureAwait(false);
-            var lv = await sp.GetStringAsync("UpdateState").ConfigureAwait(false);
+            var sps = await factory.GetServiceAsync<SystemPropertiesService>(deviceId).ConfigureAwait(false);
+            var value = await sps.GetStringAsync("fastCall?command=state_playlists").ConfigureAwait(false);
             await HttpContext.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes(value)).ConfigureAwait(false);
             await HttpContext.Response.BodyWriter.CompleteAsync(null).ConfigureAwait(false);
         }
@@ -102,9 +101,7 @@ namespace Web.Upnp.Control.Controllers
                 info.TryGetValue("Track", out var value) ? value : null,
                 info.TryGetValue("TrackDuration", out value) ? value : null,
                 info.TryGetValue("RelTime", out value) ? value : null,
-                info.TryGetValue("AbsTime", out value) ? value : null,
-                info.TryGetValue("RelCount", out value) && int.TryParse(value, out var time) ? time : default(int?),
-                info.TryGetValue("AbsCount", out value) && int.TryParse(value, out time) ? time : default(int?))
+                info.TryGetValue("AbsTime", out value) ? value : null)
             {
                 Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLXmlParser.Parse(value).FirstOrDefault() : null
             };
