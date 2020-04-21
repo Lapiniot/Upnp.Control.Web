@@ -63,7 +63,7 @@ namespace Web.Upnp.Control
                 {
                     endpoints.MapDefaultControllerRoute();
                     endpoints.MapHub<UpnpEventsHub>("/upnpevents", o => o.Transports = HttpTransportType.WebSockets);
-                    endpoints.MapImageLoaderProxy("/imageproxy/{*path}");
+                    endpoints.MapImageLoaderProxy("/proxy/{*url}");
                 })
                 .UseHttpsRedirection()
                 .UseStaticFiles()

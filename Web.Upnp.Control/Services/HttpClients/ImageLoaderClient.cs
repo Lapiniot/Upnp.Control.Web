@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Web.Upnp.Control.Services.HttpClients
             this.client = client;
         }
 
-        public Task<HttpResponseMessage> GetAsync(string originalUri, IHeaderDictionary originalHeaders, CancellationToken cancellationToken = default)
+        public Task<HttpResponseMessage> GetAsync(Uri originalUri, IHeaderDictionary originalHeaders, CancellationToken cancellationToken = default)
         {
             using var message = new HttpRequestMessage(HttpMethod.Get, originalUri);
 

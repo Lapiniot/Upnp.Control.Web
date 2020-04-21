@@ -59,7 +59,11 @@ namespace Web.Upnp.Control.Services
 
         public static IEndpointConventionBuilder MapImageLoaderProxy(this IEndpointRouteBuilder routeBuilder, string route)
         {
-            return routeBuilder.Map(route, routeBuilder.CreateApplicationBuilder().UseMiddleware<ImageLoaderProxyMiddleware>().Build());
+            return routeBuilder.Map(route, routeBuilder
+                    .CreateApplicationBuilder()
+                    .UseMiddleware<ImageLoaderProxyMiddleware>()
+                    .Build())
+                .WithDisplayName("Image Loader Proxy Middleware");
         }
     }
 }
