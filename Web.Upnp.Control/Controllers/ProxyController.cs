@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Services.HttpClients;
@@ -21,9 +21,9 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpGet("[action]/{*originalUri}")]
         [ResponseCache(Duration = 10 * 60, NoStore = false, Location = ResponseCacheLocation.Any)]
-        public async Task GetAsync(string originalUri)
+        public async Task GetAsync(string originalUri, CancellationToken cancellationToken)
         {
-            var responseMessage = await proxyClient.GetAsync(originalUri, Request.Headers).ConfigureAwait(false);
+            var responseMessage = await proxyClient.GetAsync(originalUri, Request.Headers, cancellationToken).ConfigureAwait(false);
             var content = responseMessage.Content;
 
             Response.StatusCode = (int)responseMessage.StatusCode;
@@ -43,6 +43,8 @@ namespace Web.Upnp.Control.Controllers
                     Response.Headers.Add(key, value.ToArray());
                 }
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             await content.CopyToAsync(Response.Body).ConfigureAwait(false);
             await Response.CompleteAsync().ConfigureAwait(false);

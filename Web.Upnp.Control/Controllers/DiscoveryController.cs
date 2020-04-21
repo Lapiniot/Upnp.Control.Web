@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
+using IoT.Device.Xiaomi.Umi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
-using static IoT.Device.Xiaomi.Umi.Services.PlaylistService;
 using static IoT.Protocol.Upnp.UpnpServices;
 
 
@@ -20,16 +19,10 @@ namespace Web.Upnp.Control.Controllers
     {
         private static readonly IDictionary<string, Expression<Func<Device, bool>>> Filters = new Dictionary<string, Expression<Func<Device, bool>>>
         {
-            {"umi", d => d.Services.Any(s => s.ServiceType == ServiceSchema)},
+            {"umi", d => d.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema)},
             {"upnp", d => true},
-            {
-                "servers", d => d.DeviceType == MediaServer ||
-                                d.Services.Any(s => s.ServiceType == ContentDirectory || s.ServiceType == ServiceSchema)
-            },
-            {
-                "renderers", d => d.DeviceType == MediaRenderer ||
-                                  d.Services.Any(s => s.ServiceType == MediaRenderer)
-            }
+            {"servers", d => d.DeviceType == MediaServer || d.Services.Any(s => s.ServiceType == ContentDirectory || s.ServiceType == PlaylistService.ServiceSchema)},
+            {"renderers", d => d.DeviceType == MediaRenderer || d.Services.Any(s => s.ServiceType == MediaRenderer)}
         };
 
         private readonly UpnpDbContext context;
@@ -40,21 +33,19 @@ namespace Web.Upnp.Control.Controllers
         }
 
         [HttpGet]
-        public Task<Device[]> GetAsync(string filter = "upnp")
+        public IAsyncEnumerable<Device> GetAsync(string filter = "upnp")
         {
             return Filters.TryGetValue(filter, out var filterExpression)
                 ? QueryAsync(filterExpression)
                 : throw new ArgumentException($"Unknown device category filter '{filter}'");
         }
 
-        private Task<Device[]> QueryAsync(Expression<Func<Device, bool>> filter)
+        private IAsyncEnumerable<Device> QueryAsync(Expression<Func<Device, bool>> filter)
         {
             return context.UpnpDevices
-                .Include(d => d.Icons)
-                .Include(d => d.Services)
-                .Where(d => d.IsOnline)
-                .Where(filter)
-                .ToArrayAsync();
+                .Include(d => d.Icons).Include(d => d.Services)
+                .Where(d => d.IsOnline).Where(filter)
+                .AsAsyncEnumerable();
         }
     }
 }
