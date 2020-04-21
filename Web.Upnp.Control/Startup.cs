@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Services;
-using Web.Upnp.Control.Services.HttpClients;
 
 namespace Web.Upnp.Control
 {
@@ -29,7 +28,6 @@ namespace Web.Upnp.Control
             services.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
                 .AddHostedService<UpnpDiscoveryService>()
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
-                .AddImageProxyHttpClient()
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
 
@@ -43,6 +41,7 @@ namespace Web.Upnp.Control
 
             services.AddResponseCaching();
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
+            services.AddImageLoaderProxyMiddleware();
             services.AddSignalR().AddJsonProtocol(c =>
             {
                 c.PayloadSerializerOptions.IgnoreNullValues = true;
@@ -64,6 +63,7 @@ namespace Web.Upnp.Control
                 {
                     endpoints.MapDefaultControllerRoute();
                     endpoints.MapHub<UpnpEventsHub>("/upnpevents", o => o.Transports = HttpTransportType.WebSockets);
+                    endpoints.MapImageLoaderProxy("/imageproxy/{*path}");
                 })
                 .UseHttpsRedirection()
                 .UseStaticFiles()
