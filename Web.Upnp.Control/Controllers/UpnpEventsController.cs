@@ -72,7 +72,7 @@ namespace Web.Upnp.Control.Controllers
 
             var position = new AVPositionInfo(map.TryGetValue("CurrentTrack", out value) ? value : null,
                 map.TryGetValue("CurrentTrackDuration", out value) ? value : null,
-                map.TryGetValue("RelativeTimePosition", out value) ? value : null, null);
+                map.TryGetValue("RelativeTimePosition", out value) ? value : null);
 
             var _ = hub.Clients.All.AVTransportEvent(deviceId, new {state, position, vendor});
         }

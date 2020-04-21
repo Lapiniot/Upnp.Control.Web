@@ -33,11 +33,13 @@ namespace Web.Upnp.Control
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
 
-            services.AddControllers().AddJsonOptions(o =>
-            {
-                o.JsonSerializerOptions.IgnoreNullValues = true;
-                o.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-            });
+            services
+                .AddControllers(options => options.Filters.Add<RequestCancelledExceptionFilter>())
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+                });
 
             services.AddResponseCaching();
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });

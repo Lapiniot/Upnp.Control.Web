@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
 
 namespace Web.Upnp.Control.Models
@@ -13,9 +14,13 @@ namespace Web.Upnp.Control.Models
             PlayMode = playMode;
         }
 
-        public string[] Actions { get; internal set; }
+        [JsonConverter(typeof(ItemJsonConverter))]
         public Item CurrentTrackMetadata { get; internal set; }
+
+        [JsonConverter(typeof(ItemJsonConverter))]
         public Item NextTrackMetadata { get; internal set; }
+
+        public string[] Actions { get; internal set; }
         public string State { get; }
         public string Status { get; }
         public int? Tracks { get; }
