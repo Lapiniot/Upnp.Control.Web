@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -33,5 +34,8 @@ namespace Web.Upnp.Control.Models.Database.Upnp
         public List<Service> Services { get; set; }
 
         public bool IsOnline { get; set; }
+
+        [JsonIgnore]
+        public DateTime ExpiresAt { get; set; }
     }
 }
