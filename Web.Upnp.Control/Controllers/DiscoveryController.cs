@@ -44,7 +44,7 @@ namespace Web.Upnp.Control.Controllers
         {
             return context.UpnpDevices
                 .Include(d => d.Icons).Include(d => d.Services)
-                .Where(d => d.IsOnline).Where(filter)
+                .Where(d => d.ExpiresAt > DateTime.UtcNow).Where(filter)
                 .AsAsyncEnumerable();
         }
     }

@@ -42,23 +42,30 @@ namespace Web.Upnp.Control.Services
                 using var scope = services.CreateScope();
                 await using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
 
-                var enumerator = new SsdpEventEnumerator(TimeSpan.FromSeconds(5), RootDevice);
+                var enumerator = new SsdpEventEnumerator(TimeSpan.FromSeconds(120), RootDevice);
                 await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                 {
-                    if(reply.StartLine.StartsWith("M-SEARCH"))
-                    {
-                        continue;
-                    }
+                    if(reply.StartLine.StartsWith("M-SEARCH")) continue;
 
                     if(reply.StartLine.StartsWith("NOTIFY"))
                     {
-                        continue;
+                        if(reply.TryGetValue("NT", out var nt))
+                        {
+                            if(nt != RootDevice)
+                            {
+                                continue;
+                            }
+                            logger.LogInformation($"NOTIFY {nt}: {reply.MaxAge} sec.");
+                        }
                     }
 
                     var entity = await context.FindAsync<Device>(reply.UniqueDeviceName).ConfigureAwait(false);
 
                     if(entity != null)
                     {
+                        entity.ExpiresAt = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
+                        context.Update(entity);
+                        await context.SaveChangesAsync().ConfigureAwait(false);
                         continue;
                     }
 
@@ -67,6 +74,7 @@ namespace Web.Upnp.Control.Services
                     logger.LogInformation($"New device discovered: {dev.Usn}");
 
                     entity = MapConvert(await dev.GetDescriptionAsync(stoppingToken).ConfigureAwait(false));
+                    entity.ExpiresAt = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
 
                     if(entity.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema))
                     {
