@@ -19,5 +19,10 @@ namespace Web.Upnp.Control.Hubs
         {
             return Clients.All.RenderingControlEvent(deviceId, message);
         }
+
+        public Task SendSsdpDiscoveryEventAsync(string deviceId, object message)
+        {
+            return Clients.All.SsdpDiscoveryEvent(deviceId, message);
+        }
     }
 }

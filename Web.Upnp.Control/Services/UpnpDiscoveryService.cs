@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using IoT.Device.Upnp;
 using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.DataAccess;
+using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Models.Database.Upnp;
 using Web.Upnp.Control.Services.HttpClients;
 using static IoT.Protocol.Upnp.UpnpServices;
@@ -24,13 +26,16 @@ namespace Web.Upnp.Control.Services
         private readonly IServiceProvider services;
         private readonly TimeSpan sessionTimeout = TimeSpan.FromMinutes(30);
         private readonly EventSubscribeClient subscribeClient;
+        private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
         private readonly List<Task> subscriptionTasks = new List<Task>();
 
-        public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger, EventSubscribeClient subscribeClient)
+        public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger, EventSubscribeClient subscribeClient,
+            IHubContext<UpnpEventsHub, IUpnpEventClient> hub)
         {
             this.services = services;
             this.logger = logger;
             this.subscribeClient = subscribeClient;
+            this.hub = hub;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -45,22 +50,25 @@ namespace Web.Upnp.Control.Services
                 var enumerator = new SsdpEventEnumerator(TimeSpan.FromSeconds(120), RootDevice);
                 await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                 {
-                    if(reply.StartLine.StartsWith("M-SEARCH")) continue;
-
-                    if(reply.StartLine.StartsWith("NOTIFY"))
+                    if(reply.StartLine.StartsWith("M-SEARCH") || reply.TryGetValue("NT", out var nt) && nt != RootDevice)
                     {
-                        if(reply.TryGetValue("NT", out var nt))
-                        {
-                            if(nt != RootDevice)
-                            {
-                                continue;
-                            }
-
-                            logger.LogInformation($"NOTIFY {nt}: {reply.MaxAge} sec.");
-                        }
+                        continue;
                     }
 
-                    var entity = await context.FindAsync<Device>(reply.UniqueDeviceName).ConfigureAwait(false);
+                    var udn = reply.UniqueDeviceName;
+
+                    var entity = await context.FindAsync<Device>(udn).ConfigureAwait(false);
+
+                    if(reply.StartLine.StartsWith("NOTIFY") && reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
+                    {
+                        if(entity != null)
+                        {
+                            context.Remove(entity);
+                            await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                            var _ = hub.Clients.All.SsdpDiscoveryEvent(udn, "disappeared");
+                        }
+                        continue;
+                    }
 
                     if(entity != null)
                     {
@@ -84,6 +92,7 @@ namespace Web.Upnp.Control.Services
 
                     await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
                     await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                    _ = hub.Clients.All.SsdpDiscoveryEvent(udn, "appeared");
                 }
             }
             catch(OperationCanceledException)
