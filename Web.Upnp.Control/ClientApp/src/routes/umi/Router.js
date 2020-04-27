@@ -8,7 +8,7 @@ import PlaylistManager from "./playlist/Playlist";
 
 export default ({ match: { path } }) =>
     <Switch>
-        <Route path={path} exact render={props => <Devices {...props}/>}/>
-        <Route path={`${path}/browse`} render={props => <Browser {...props}/>}/>
-        <Route path={`${path}/playlist`} render={props => <PlaylistManager {...props}/>}/>
+        <Route path={path} exact render={props => <Devices {...props}/>} />
+        <Route path={`${path}/browse`} render={props => <Browser {...props}/>} />
+        <Route path={`${path}/playlist`} render={props => <PlaylistManager {...props}/>} />
     </Switch>;

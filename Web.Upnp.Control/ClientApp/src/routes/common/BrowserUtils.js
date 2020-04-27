@@ -8,7 +8,7 @@ const defaultUrlBuilder = ({ device, id, p, s }) => {
     const size = parseInt(s) || $config.pageSize;
     const page = parseInt(p) || 1;
     return $api.browse(device).get(id).withParents().take(size).skip((page - 1) * size).url();
-}
+};
 
 export class DIDLUtils {
     static getKind(upnpClassName) {

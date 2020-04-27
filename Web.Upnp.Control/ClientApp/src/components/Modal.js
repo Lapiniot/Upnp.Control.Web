@@ -13,17 +13,17 @@ export default class Modal extends React.Component {
 
         if (typeof onDismiss === "function") modal.on("hidden.bs.modal", onDismiss);
         if (typeof onShown === "function") modal.on("shown.bs.modal", onShown);
-        
+
         if (this.props.immediate) modal.modal("show");
     }
 
     componentWillUnmount() {
         const modal = $(`#${this.props.id}`);
         const { onDismiss, onShown } = this.props;
-        
+
         if (typeof onDismiss === "function") modal.off("hidden.bs.modal", onDismiss);
         if (typeof onShown === "function") modal.off("shown.bs.modal", onShown);
-        
+
         modal.modal("dispose");
     }
 
@@ -42,14 +42,14 @@ export default class Modal extends React.Component {
             });
 
         return <div className="modal fade" id={id} tabIndex="-1" role="dialog" aria-labelledby={area.label} aria-hidden="true" {...other}>
-            <div className={merge`modal-dialog modal-dialog-centered ${className}`} role="document">
-                <div className="modal-content">
-                    {!!header ? header : <Modal.Header>{title}</Modal.Header>}
-                    {!!body ? body : <Modal.Body>{children}</Modal.Body>}
-                    {!!footer ? footer : <Modal.Footer>{[this.props.buttons]}</Modal.Footer>}
-                </div>
-            </div>
-        </div>;
+                   <div className={merge`modal-dialog modal-dialog-centered ${className}`} role="document">
+                       <div className="modal-content">
+                           {!!header ? header : <Modal.Header>{title}</Modal.Header>}
+                           {!!body ? body : <Modal.Body>{children}</Modal.Body>}
+                           {!!footer ? footer : <Modal.Footer>{[this.props.buttons]}</Modal.Footer>}
+                       </div>
+                   </div>
+               </div>;
     }
 
     static Button = ({ dismiss, text, className, icon, children, ...other }) =>

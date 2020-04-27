@@ -7,8 +7,8 @@ using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
-using Web.Upnp.Control.Controllers.Routing;
 using Web.Upnp.Control.Models;
+using Web.Upnp.Control.Routing;
 using Web.Upnp.Control.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

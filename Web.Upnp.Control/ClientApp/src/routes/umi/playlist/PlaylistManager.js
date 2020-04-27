@@ -38,7 +38,7 @@ export class PlaylistManagerCore extends React.Component {
 
     async componentDidMount() {
         try {
-            var response = await this.ctrl.state(true).fetch();
+            let response = await this.ctrl.state(true).fetch();
             const { actions, currentTrackMetadata: current, state, medium } = await response.json();
             if (medium === "X-MI-AUX") {
                 this.setState({ actions, current, playbackState: state, playlist: "aux", track: null });
@@ -192,11 +192,11 @@ export class PlaylistManagerCore extends React.Component {
 }
 
 const MainCellTemplate = ({ data, context: { ctrl, active, parents, state }, index }) => {
-    var active = active(data, index);
+    const isActive = active(data, index);
     return <div className="d-flex align-items-center">
         <div className="d-inline-block stack mr-1">
             <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
-            {active ?
+            {isActive ?
                 state === "PLAYING" ?
                     <React.Fragment key="active-playing">
                         <div className="stack-layer d-flex">
@@ -219,7 +219,7 @@ const MainCellTemplate = ({ data, context: { ctrl, active, parents, state }, ind
                     <i className="m-auto fas fa-lg fa-play-circle" />
                 </div>}
         </div>
-        <div className={active ? "text-primary" : null}>
+        <div className={isActive ? "text-primary" : null}>
             {data.title}
             {data.creator && <small>&nbsp;&bull;&nbsp;{data.creator}</small>}
             {data.album && <small>&nbsp;&bull;&nbsp;{data.album}</small>}

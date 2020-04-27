@@ -1,5 +1,5 @@
 import React from "react";
-import {mergeClassNames as merge} from "../../components/Extensions";
+import { mergeClassNames as merge } from "../../components/Extensions";
 
 
 function getIconClass(itemClass) {

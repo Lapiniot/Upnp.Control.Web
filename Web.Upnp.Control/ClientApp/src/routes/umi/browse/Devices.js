@@ -8,7 +8,7 @@ import DeviceList from "../../common/DeviceList";
 import DeviceIcon from "../../common/DeviceIcon";
 import PlayerWidget from "../../common/PlayerWidget";
 
-const UmiDevice = ({ "data-source": d, "data-source": { icons, name, type, description, udn } }) =>
+const UmiDevice = ({ "data-source": { icons, name, type, description, udn } }) =>
     <div className="card">
         <div className="card-header d-flex flex-row">
             <DeviceIcon icon={icons && icons.find(i => i.w <= 48)} alt={name} service={type} />

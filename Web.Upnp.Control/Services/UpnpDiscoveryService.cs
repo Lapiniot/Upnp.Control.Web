@@ -55,6 +55,7 @@ namespace Web.Upnp.Control.Services
                             {
                                 continue;
                             }
+
                             logger.LogInformation($"NOTIFY {nt}: {reply.MaxAge} sec.");
                         }
                     }
@@ -65,7 +66,7 @@ namespace Web.Upnp.Control.Services
                     {
                         entity.ExpiresAt = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
                         context.Update(entity);
-                        await context.SaveChangesAsync().ConfigureAwait(false);
+                        await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
                         continue;
                     }
 

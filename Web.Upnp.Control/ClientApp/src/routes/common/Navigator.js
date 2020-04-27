@@ -1,7 +1,7 @@
 import React from "react";
 import { generatePath } from "../../components/Extensions";
 
-export default function (Component) {
+export default function(Component) {
     return class extends React.Component {
         navigateHandler = ({ currentTarget: { dataset } }) => {
             this.navigateToItem(dataset);

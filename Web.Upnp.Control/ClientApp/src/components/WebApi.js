@@ -20,7 +20,8 @@ export default class {
         rename: (id, title) => new JsonPutFetch(`${playlistBaseUrl}${deviceId}`, null, { body: JSON.stringify({ Id: id, Title: title }) }),
         delete: ids => new JsonDeleteFetch(`${playlistBaseUrl}${deviceId}`, null, { body: JSON.stringify(ids) }),
         copy: id => new JsonFetch(`${playlistBaseUrl}${deviceId}/${id}`, null, { method: "COPY" }),
-        addItems: (id, sourceDevice, sourceIds) => new JsonPutFetch(`${playlistBaseUrl}${deviceId}/${id}/add`, null, { body: JSON.stringify({ DeviceId: sourceDevice, Items: sourceIds }) }),
+        addItems: (id, sourceDevice, sourceIds) => new JsonPutFetch(`${playlistBaseUrl}${deviceId}/${id}/add`,
+            null, { body: JSON.stringify({ DeviceId: sourceDevice, Items: sourceIds }) }),
         removeItems: (id, ids) => new JsonDeleteFetch(`${playlistBaseUrl}${deviceId}/${id}/remove`, null, { body: JSON.stringify(ids) })
     });
 
@@ -30,12 +31,12 @@ export default class {
             state: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/state${detailed ? "?detailed" : ""}`),
             playlistState: () => new JsonFetch(`${controlBaseUrl}${deviceId}/playlist_state`),
             position: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/position${detailed ? "?detailed" : ""}`),
-            play: (id) => new JsonFetch(`${controlBaseUrl}${deviceId}/play()${id ? "?id=" + encodeURIComponent(id) : ""}`),
+            play: (id) => new JsonFetch(`${controlBaseUrl}${deviceId}/play()${id ? `?id=${encodeURIComponent(id)}` : ""}`),
             playUri: (uri) => new JsonFetch(`${controlBaseUrl}${deviceId}/play_uri()?uri=${encodeURIComponent(uri)}`),
             pause: () => new JsonFetch(`${controlBaseUrl}${deviceId}/pause()`),
             stop: () => new JsonFetch(`${controlBaseUrl}${deviceId}/stop()`),
             prev: () => new JsonFetch(`${controlBaseUrl}${deviceId}/prev()`),
-            next: () => new JsonFetch(`${controlBaseUrl}${deviceId}/next()`),
+            next: () => new JsonFetch(`${controlBaseUrl}${deviceId}/next()`)
         };
     }
 }

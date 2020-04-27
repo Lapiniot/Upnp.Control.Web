@@ -48,4 +48,5 @@ ReactDOM.render(
                 </main>
             </div>
         </div>
-    </BrowserRouter>, container);
+    </BrowserRouter>,
+    container);

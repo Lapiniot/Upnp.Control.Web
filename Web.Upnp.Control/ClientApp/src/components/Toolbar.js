@@ -18,7 +18,7 @@ export default class Toolbar extends React.Component {
     render() {
         const { className, areaLabel, children, ...other } = this.props;
         return <div className={merge`btn-toolbar ${className}`} role="toolbar" aria-label={areaLabel} {...other}>
-            {children}
-        </div>;
+                   {children}
+               </div>;
     }
 }

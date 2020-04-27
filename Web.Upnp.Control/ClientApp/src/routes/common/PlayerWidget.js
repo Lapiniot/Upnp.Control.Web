@@ -42,8 +42,8 @@ class PlayerCore extends React.Component {
 
     async componentDidMount() {
         try {
-            var response = await this.ctrl.position().fetch();
-            var position = await response.json();
+            const response = await this.ctrl.position().fetch();
+            const position = await response.json();
             this.setState({ time: position.relTime, duration: position.duration });
         } catch (error) {
             console.error(error);
@@ -113,6 +113,3 @@ function Progress({ time, duration, running }) {
 }
 
 export default withDataFetch(PlayerCore, { usePreloader: false }, ({ udn }) => $api.control(udn).state(true).url());
-
-
-

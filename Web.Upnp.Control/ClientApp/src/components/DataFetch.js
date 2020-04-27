@@ -21,8 +21,7 @@ export function withDataFetch(Component, loadIndicatorConfig = {}, dataUrlBuilde
                 const response = await window.fetch(this.state.dataUrl);
                 const data = await response.json();
                 this.setState({ loading: false, dataContext: { source: data, reload: this.reload }, error: null });
-            }
-            catch (e) {
+            } catch (e) {
                 console.error(e);
                 this.setState({ loading: false, dataContext: null, error: e });
             }
