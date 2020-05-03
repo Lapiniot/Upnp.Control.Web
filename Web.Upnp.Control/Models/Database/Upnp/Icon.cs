@@ -4,6 +4,14 @@ namespace Web.Upnp.Control.Models.Database.Upnp
 {
     public class Icon
     {
+        public Icon(int width, int height, string url, string mime)
+        {
+            Width = width;
+            Height = height;
+            Url = url;
+            Mime = mime;
+        }
+
         [JsonIgnore]
         public int Id { get; set; }
 

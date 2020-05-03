@@ -118,32 +118,13 @@ namespace Web.Upnp.Control.Services
 
         private static Device MapConvert(UpnpDeviceDescription device)
         {
-            return new Device
+            return new Device(device.Udn, device.Location.AbsoluteUri, device.DeviceType, device.FriendlyName, device.Manufacturer,
+                device.ModelDescription, device.ModelName, device.ModelNumber)
             {
-                Udn = device.Udn,
-                Location = device.Location.AbsoluteUri,
-                DeviceType = device.DeviceType,
-                FriendlyName = device.FriendlyName,
-                Manufacturer = device.Manufacturer,
-                Description = device.ModelDescription,
-                ModelName = device.ModelName,
-                ModelNumber = device.ModelNumber,
                 IsOnline = true,
-                Icons = device.Icons.Select(i => new Icon
-                {
-                    Width = i.Width,
-                    Height = i.Height,
-                    Mime = i.Mime,
-                    Url = i.Uri.AbsoluteUri
-                }).ToList(),
-                Services = device.Services.Select(s => new Service
-                {
-                    ServiceId = s.ServiceId,
-                    ServiceType = s.ServiceType,
-                    MetadataUrl = s.MetadataUri.AbsoluteUri,
-                    ControlUrl = s.ControlUri.AbsoluteUri,
-                    EventsUrl = s.EventSubscribeUri.AbsoluteUri
-                }).ToList()
+                Icons = device.Icons.Select(i => new Icon(i.Width, i.Height, i.Uri.AbsoluteUri, i.Mime)).ToList(),
+                Services = device.Services.Select(s => new Service(s.ServiceId, s.MetadataUri.AbsoluteUri,
+                    s.ServiceType, s.ControlUri.AbsoluteUri, s.EventSubscribeUri.AbsoluteUri)).ToList()
             };
         }
 

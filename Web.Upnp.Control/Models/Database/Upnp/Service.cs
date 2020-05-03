@@ -8,6 +8,15 @@ namespace Web.Upnp.Control.Models.Database.Upnp
         [JsonIgnore]
         public int Id { get; set; }
 
+        public Service(string serviceId, string metadataUrl, string serviceType, string controlUrl, string eventsUrl)
+        {
+            ServiceId = serviceId;
+            MetadataUrl = metadataUrl;
+            ServiceType = serviceType;
+            ControlUrl = controlUrl;
+            EventsUrl = eventsUrl;
+        }
+
         [JsonPropertyName("id")]
         public string ServiceId { get; set; }
 

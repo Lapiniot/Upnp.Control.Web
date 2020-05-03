@@ -10,6 +10,18 @@ namespace Web.Upnp.Control.Models.Database.Upnp
         [Key]
         public string Udn { get; set; }
 
+        public Device(string udn, string location, string deviceType, string friendlyName, string manufacturer, string description, string modelName, string modelNumber)
+        {
+            Udn = udn;
+            Location = location;
+            DeviceType = deviceType;
+            FriendlyName = friendlyName;
+            Manufacturer = manufacturer;
+            Description = description;
+            ModelName = modelName;
+            ModelNumber = modelNumber;
+        }
+
         [JsonPropertyName("url")]
         public string Location { get; set; }
 
@@ -29,13 +41,13 @@ namespace Web.Upnp.Control.Models.Database.Upnp
 
         public string ModelNumber { get; set; }
 
-        public List<Icon> Icons { get; set; }
-
-        public List<Service> Services { get; set; }
-
         public bool IsOnline { get; set; }
 
         [JsonIgnore]
         public DateTime ExpiresAt { get; set; }
+
+        public ICollection<Icon> Icons { get; set; }
+
+        public ICollection<Service> Services { get; set; }
     }
 }
