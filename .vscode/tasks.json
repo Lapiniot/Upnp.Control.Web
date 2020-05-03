@@ -40,7 +40,7 @@
             "label": "Deploy (remote SSH)",
             "detail": "Starts deployment to remote server via rsync over SSH",
             "dependsOn": [
-                "publish"
+                "Publish"
             ],
             "type": "shell",
             "problemMatcher": [],
