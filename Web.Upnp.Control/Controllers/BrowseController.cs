@@ -7,6 +7,7 @@ using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Services;
+using static IoT.Protocol.Upnp.Services.BrowseMode;
 
 namespace Web.Upnp.Control.Controllers
 {
@@ -54,7 +55,7 @@ namespace Web.Upnp.Control.Controllers
 
             using(service.Target)
             {
-                var result = await service.BrowseAsync(path, flags: BrowseFlags.BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
+                var result = await service.BrowseAsync(path, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
                 return new {Total = int.Parse(result["TotalMatches"]), Result = DIDLXmlParser.Parse(result["Result"])};
             }
         }
@@ -76,7 +77,7 @@ namespace Web.Upnp.Control.Controllers
 
             while(path != "-1")
             {
-                var metadataResult = await service.BrowseAsync(path, flags: BrowseFlags.BrowseMetadata, filter: filter, cancellationToken: cancellationToken).ConfigureAwait(false);
+                var metadataResult = await service.BrowseAsync(path, mode: BrowseMetadata, filter: filter, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 var metadata = DIDLXmlParser.Parse(metadataResult["Result"]).FirstOrDefault();
 

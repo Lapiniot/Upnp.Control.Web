@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Routing;
 using Web.Upnp.Control.Services;
+using static IoT.Protocol.Upnp.Services.BrowseMode;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 /*
@@ -116,7 +117,7 @@ namespace Web.Upnp.Control.Controllers
             if(!string.IsNullOrWhiteSpace(id))
             {
                 var cd = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
-                var result = await cd.BrowseAsync(id, flags: BrowseFlags.BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
+                var result = await cd.BrowseAsync(id, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
                 var item = DIDLXmlParser.Parse(result["Result"]).FirstOrDefault();
                 if(!(item is { Resource: { Url: { } resUrl } })) throw new InvalidOperationException();
                 await avt.SetAVTransportUriAsync(currentUri: resUrl, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -171,7 +172,7 @@ namespace Web.Upnp.Control.Controllers
         public async Task SetPlayModeAsync(string deviceId, string mode, CancellationToken cancellationToken)
         {
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
-            await avt.SetPlayModeAsync(0, mode, cancellationToken);
+            await avt.SetPlayModeAsync(0, mode, cancellationToken).ConfigureAwait(false);
         }
     }
 }

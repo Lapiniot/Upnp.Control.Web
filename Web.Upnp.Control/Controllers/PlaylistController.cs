@@ -10,6 +10,7 @@ using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services;
+using static IoT.Protocol.Upnp.Services.BrowseMode;
 
 namespace Web.Upnp.Control.Controllers
 {
@@ -71,7 +72,7 @@ namespace Web.Upnp.Control.Controllers
 
             foreach(var item in media.Items)
             {
-                var data = await sourceContentDirectoryService.BrowseAsync(item, flags: BrowseFlags.BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
+                var data = await sourceContentDirectoryService.BrowseAsync(item, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 var xml = data["Result"];
 
@@ -108,7 +109,7 @@ namespace Web.Upnp.Control.Controllers
 
         private static async Task<string> GetUpdateIdAsync(ContentDirectoryService cdtService, string id, CancellationToken cancellationToken)
         {
-            return (await cdtService.BrowseAsync(id, flags: BrowseFlags.BrowseMetadata, filter: "id", cancellationToken: cancellationToken).ConfigureAwait(false))["UpdateID"];
+            return (await cdtService.BrowseAsync(id, mode: BrowseMetadata, filter: "id", cancellationToken: cancellationToken).ConfigureAwait(false))["UpdateID"];
         }
 
         private static async Task<int[]> GetItemIndices(ContentDirectoryService cdService, string parentId, IEnumerable<string> ids, CancellationToken cancellationToken)
