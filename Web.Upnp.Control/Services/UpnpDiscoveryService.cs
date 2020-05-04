@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using IoT.Device.Upnp;
@@ -22,19 +21,19 @@ namespace Web.Upnp.Control.Services
 {
     public class UpnpDiscoveryService : BackgroundService
     {
+        private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
         private readonly ILogger<UpnpDiscoveryService> logger;
         private readonly IServiceProvider services;
+        private readonly EventSessionFactory sessionFactory;
+        private readonly IDictionary<string, IAsyncDisposable[]> sessions = new Dictionary<string, IAsyncDisposable[]>();
         private readonly TimeSpan sessionTimeout = TimeSpan.FromMinutes(30);
-        private readonly EventSubscribeClient subscribeClient;
-        private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
-        private readonly List<Task> subscriptionTasks = new List<Task>();
 
-        public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger, EventSubscribeClient subscribeClient,
+        public UpnpDiscoveryService(IServiceProvider services, ILoggerFactory factory, EventSubscribeClient subscribeClient,
             IHubContext<UpnpEventsHub, IUpnpEventClient> hub)
         {
             this.services = services;
-            this.logger = logger;
-            this.subscribeClient = subscribeClient;
+            logger = factory.CreateLogger<UpnpDiscoveryService>();
+            sessionFactory = new EventSessionFactory(subscribeClient, factory.CreateLogger<EventSessionFactory>());
             this.hub = hub;
         }
 
@@ -67,6 +66,7 @@ namespace Web.Upnp.Control.Services
                             await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
                             var _ = hub.Clients.All.SsdpDiscoveryEvent(udn, "disappeared");
                         }
+
                         continue;
                     }
 
@@ -97,7 +97,20 @@ namespace Web.Upnp.Control.Services
             }
             catch(OperationCanceledException)
             {
-                await Task.WhenAll(subscriptionTasks).ConfigureAwait(false);
+                foreach(var (_, subscriptions) in sessions)
+                {
+                    foreach(var disposable in subscriptions)
+                    {
+                        try
+                        {
+                            await disposable.DisposeAsync().ConfigureAwait(false);
+                        }
+                        catch(Exception exception)
+                        {
+                            logger.LogError(exception, "Error cancelling subscribe session");
+                        }
+                    }
+                }
             }
             catch(Exception ex)
             {
@@ -112,8 +125,11 @@ namespace Web.Upnp.Control.Services
             var rcService = entity.Services.Single(s => s.ServiceType == RenderingControl);
             var avtService = entity.Services.Single(s => s.ServiceType == AVTransport);
 
-            subscriptionTasks.Add(StartSubscriptionAsync(new Uri(rcService.EventsUrl), new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout, stoppingToken));
-            subscriptionTasks.Add(StartSubscriptionAsync(new Uri(avtService.EventsUrl), new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout, stoppingToken));
+            sessions.Add(entity.Udn, new[]
+            {
+                sessionFactory.StartSession(new Uri(rcService.EventsUrl), new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout, stoppingToken),
+                sessionFactory.StartSession(new Uri(avtService.EventsUrl), new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout, stoppingToken)
+            });
         }
 
         private static Device MapConvert(UpnpDeviceDescription device)
@@ -126,35 +142,6 @@ namespace Web.Upnp.Control.Services
                 Services = device.Services.Select(s => new Service(s.ServiceId, s.MetadataUri.AbsoluteUri,
                     s.ServiceType, s.ControlUri.AbsoluteUri, s.EventSubscribeUri.AbsoluteUri)).ToList()
             };
-        }
-
-        private async Task StartSubscriptionAsync(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken cancellationToken)
-        {
-            var (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
-            logger.LogInformation($"Successfully subscribed to events from {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
-            logger.LogInformation($"Starting refresh loop for session: {sid}.");
-            while(!cancellationToken.IsCancellationRequested)
-            {
-                try
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(seconds - 10), cancellationToken).ConfigureAwait(false);
-                    logger.LogInformation($"Refreshing subscription for session: {sid}.");
-                    (sid, seconds) = await subscribeClient.RenewAsync(subscribeUri, sid, timeout, cancellationToken).ConfigureAwait(false);
-                    logger.LogInformation($"Successfully refreshed subscription for session: {sid}. Timeout: {seconds} seconds.");
-                }
-                catch(HttpRequestException hre)
-                {
-                    logger.LogWarning($"Failed to refresh subscription for {sid}. {hre.Message}");
-                    logger.LogWarning($"Requesting new subscription session at {subscribeUri}.");
-                    (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
-                    logger.LogInformation($"Successfully requested new subscription for {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
-                }
-                catch(OperationCanceledException)
-                {
-                    await subscribeClient.UnsubscribeAsync(subscribeUri, sid, default).ConfigureAwait(false);
-                    logger.LogInformation($"Successfully cancelled subscription for SID: {sid}.");
-                }
-            }
         }
     }
 }
