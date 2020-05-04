@@ -28,31 +28,31 @@ export default class BrowserDialog extends React.Component {
         });
     }
 
-    confirm = () => !!this.props.onConfirm && this.props.onConfirm(this.state.selection);
+    confirm = () => { return !!this.props.onConfirm && this.props.onConfirm(this.state.selection); }
 
-    getSelectionData = () => [this.state.device, Array.from(this.state.selection.keys)];
+    getSelectionData = () => { return [this.state.device, Array.from(this.state.selection.keys)]; }
 
     render() {
         const { id, title, confirmText = "OK", ...other } = this.props;
         return <Modal id={id} title={title} {...other} data-keyboard={true}>
-            <Modal.Body className="p-0 d-flex flex-column">
-                <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
-                    <Switch>
-                        <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
-                        <Route path={"/sources/:device/:id(.*)?"} render={props => props.match.params.id !== "-1"
+                   <Modal.Body className="p-0 d-flex flex-column">
+                       <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
+                           <Switch>
+                               <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
+                               <Route path={"/sources/:device/:id(.*)?"} render={props => props.match.params.id !== "-1"
                             ? <Browser selection={this.selection} {...props} />
                             : <Redirect to="/sources" />} />
-                    </Switch>
-                </MemoryRouter>
-            </Modal.Body>
-            <Modal.Footer>
-                {(typeof (this.props.children) === "function" ? this.props.children(this) : this.props.children) ??
+                           </Switch>
+                       </MemoryRouter>
+                   </Modal.Body>
+                   <Modal.Footer>
+                       {(typeof (this.props.children) === "function" ? this.props.children(this) : this.props.children) ||
                     <React.Fragment>
                         <Modal.Button key="confirm" text={confirmText} className="btn-primary" disabled={this.selection.any()} onClick={this.confirm} dismiss />
                         <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
                     </React.Fragment>}
-            </Modal.Footer>
-        </Modal>;
+                   </Modal.Footer>
+               </Modal>;
     }
 };
 
@@ -65,15 +65,15 @@ const MediaSourceList = withDataFetch(({ dataContext: { source: data } }) =>
                 <DeviceIcon icon={icons.find(icon => icon.w <= 48)} alt={name} service={type} />
                 {name}{description && ` (${description})`}
             </RouteLink>)}
-    </ul>, { template: LoadIndicator }, () => browseSourcesUrl)
+    </ul>, { template: LoadIndicator }, () => browseSourcesUrl);
 
 const BrowserView = ({ dataContext, match, p: page, s: size,
-    dataContext: { source: { total, result: { length: fetched }, parents } }, ...other }) =>
+        dataContext: { source: { total, result: { length: fetched }, parents } }, ...other }) =>
     <div>
         <Breadcrumb items={parents} {...match} />
         <BrowserCoreSelectable dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} {...other} />
         <Pagination {...match} className="position-sticky sticky-bottom" count={fetched} total={total}
-            current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
+                               current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
     </div>;
 
 const Browser = withBrowser(BrowserView);

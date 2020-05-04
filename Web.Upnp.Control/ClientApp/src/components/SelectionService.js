@@ -6,11 +6,11 @@ export default class SelectionService extends EventTarget {
 
     static createEvent = detail => new CustomEvent("changed", { detail: detail, cancelable: true });
 
-    any = () => this.map.size > 0;
+    any = () => { return this.map.size > 0; }
 
-    one = () => this.map.size === 1;
+    one = () => { return this.map.size === 1; }
 
-    none = () => this.map.size === 0;
+    none = () => { return this.map.size === 0; }
 
     select = (key, state = true, detail = null) => {
         state ? this.map.set(key, true) : this.map.delete(key);
@@ -22,16 +22,16 @@ export default class SelectionService extends EventTarget {
         return this.dispatchEvent(SelectionService.createEvent(detail));
     };
 
-    selected = key => this.map.has(key) && this.map.get(key);
+    selected = key => { return this.map.has(key) && this.map.get(key); }
 
-    all = keys => keys.length > 0 && keys.every(this.selected);
+    all = keys => { return keys.length > 0 && keys.every(this.selected); }
 
     clear = detail => {
         this.map.clear();
         return this.dispatchEvent(SelectionService.createEvent(detail));
     };
 
-    reset = () => this.map.clear();
+    reset = () => { this.map.clear(); }
 
     get keys() {
         return this.map.keys();
