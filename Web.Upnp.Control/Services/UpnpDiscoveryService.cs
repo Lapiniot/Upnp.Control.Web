@@ -49,26 +49,46 @@ namespace Web.Upnp.Control.Services
                 var enumerator = new SsdpEventEnumerator(TimeSpan.FromSeconds(120), RootDevice);
                 await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                 {
-                    if(reply.StartLine.StartsWith("M-SEARCH") || reply.TryGetValue("NT", out var nt) && nt != RootDevice)
+                    if(reply.StartLine.StartsWith("M-SEARCH"))
                     {
                         continue;
+                    }
+
+                    if(reply.StartLine.StartsWith("NOTIFY"))
+                    {
+                        if(reply.TryGetValue("NTS", out var nts))
+                        {
+                            if(nts == "ssdp:byebye")
+                            {
+                                if(reply.TryGetValue("NT", out var nt))
+                                {
+                                    var id = nt == RootDevice ? reply.UniqueDeviceName : nt;
+                                    var existing = await context.FindAsync<Device>(id).ConfigureAwait(false);
+                                    if(existing != null)
+                                    {
+                                        context.Remove(existing);
+                                        await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                                        if(sessions.Remove(id, out var subscriptions))
+                                        {
+                                            await SafeDisposeAsync(subscriptions).ConfigureAwait(false);
+                                        }
+                                        var _ = hub.Clients.All.SsdpDiscoveryEvent(nt, "disappeared");
+                                    }
+                                    continue;
+                                }
+                            }
+                            else if(nts == "ssdp:alive")
+                            {
+                            }
+                        }
+                    }
+                    else if(reply.StartLine.StartsWith("HTTP"))
+                    {
                     }
 
                     var udn = reply.UniqueDeviceName;
 
                     var entity = await context.FindAsync<Device>(udn).ConfigureAwait(false);
-
-                    if(reply.StartLine.StartsWith("NOTIFY") && reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
-                    {
-                        if(entity != null)
-                        {
-                            context.Remove(entity);
-                            await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-                            var _ = hub.Clients.All.SsdpDiscoveryEvent(udn, "disappeared");
-                        }
-
-                        continue;
-                    }
 
                     if(entity != null)
                     {
@@ -99,22 +119,27 @@ namespace Web.Upnp.Control.Services
             {
                 foreach(var (_, subscriptions) in sessions)
                 {
-                    foreach(var disposable in subscriptions)
-                    {
-                        try
-                        {
-                            await disposable.DisposeAsync().ConfigureAwait(false);
-                        }
-                        catch(Exception exception)
-                        {
-                            logger.LogError(exception, "Error cancelling subscribe session");
-                        }
-                    }
+                    await SafeDisposeAsync(subscriptions).ConfigureAwait(false);
                 }
             }
             catch(Exception ex)
             {
                 logger.LogError(ex, "Error discovering UPnP devices and services!");
+            }
+
+            async Task SafeDisposeAsync(IEnumerable<IAsyncDisposable> disposables)
+            {
+                foreach(var disposable in disposables)
+                {
+                    try
+                    {
+                        await disposable.DisposeAsync().ConfigureAwait(false);
+                    }
+                    catch(Exception exception)
+                    {
+                        logger.LogTrace(exception, "Error cancelling subscribe session");
+                    }
+                }
             }
         }
 
