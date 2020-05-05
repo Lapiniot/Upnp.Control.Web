@@ -34,7 +34,7 @@ namespace Web.Upnp.Control.Services
                 {
                     try
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(seconds - 10), cancellationToken).ConfigureAwait(false);
+                        await Task.Delay(TimeSpan.FromSeconds(seconds - 5), cancellationToken).ConfigureAwait(false);
                         logger.LogInformation($"Refreshing subscription for session: {sid}.");
                         (sid, seconds) = await subscribeClient.RenewAsync(subscribeUri, sid, timeout, cancellationToken).ConfigureAwait(false);
                         logger.LogInformation($"Successfully refreshed subscription for session: {sid}. Timeout: {seconds} seconds.");
@@ -51,7 +51,8 @@ namespace Web.Upnp.Control.Services
             }
             finally
             {
-                await subscribeClient.UnsubscribeAsync(subscribeUri, sid, default).ConfigureAwait(false);
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                await subscribeClient.UnsubscribeAsync(subscribeUri, sid, cts.Token).ConfigureAwait(false);
                 logger.LogInformation($"Successfully cancelled subscription for SID: {sid}.");
             }
         }
