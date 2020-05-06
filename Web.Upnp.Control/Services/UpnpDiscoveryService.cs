@@ -46,7 +46,7 @@ namespace Web.Upnp.Control.Services
                 using var scope = services.CreateScope();
                 await using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
 
-                var enumerator = new SsdpEventEnumerator(TimeSpan.FromSeconds(120), RootDevice);
+                var enumerator = new SsdpEventEnumerator(TimeSpan.FromSeconds(20), RootDevice);
                 await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                 {
                     if(reply.StartLine.StartsWith("M-SEARCH"))
@@ -56,34 +56,32 @@ namespace Web.Upnp.Control.Services
 
                     if(reply.StartLine.StartsWith("NOTIFY"))
                     {
-                        if(reply.TryGetValue("NTS", out var nts))
+                        if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
                         {
-                            if(nts == "ssdp:byebye")
+                            if(reply.TryGetValue("NT", out var nt))
                             {
-                                if(reply.TryGetValue("NT", out var nt))
+                                var id = nt == RootDevice ? reply.UniqueDeviceName : nt;
+                                var existing = await context.FindAsync<Device>(id).ConfigureAwait(false);
+                                if(existing != null)
                                 {
-                                    var id = nt == RootDevice ? reply.UniqueDeviceName : nt;
-                                    var existing = await context.FindAsync<Device>(id).ConfigureAwait(false);
-                                    if(existing != null)
+                                    context.Remove(existing);
+                                    await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+
+                                    if(sessions.Remove(id, out var subscriptions))
                                     {
-                                        context.Remove(existing);
-                                        await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-                                        if(sessions.Remove(id, out var subscriptions))
-                                        {
-                                            await SafeDisposeAsync(subscriptions).ConfigureAwait(false);
-                                        }
-                                        var _ = hub.Clients.All.SsdpDiscoveryEvent(nt, "disappeared");
+                                        var _ = SilentDisposeAsync(subscriptions);
                                     }
-                                    continue;
+
+                                    _ = hub.Clients.All.SsdpDiscoveryEvent(nt, "disappeared");
                                 }
-                            }
-                            else if(nts == "ssdp:alive")
-                            {
+
+                                continue;
                             }
                         }
                     }
                     else if(reply.StartLine.StartsWith("HTTP"))
                     {
+
                     }
 
                     var udn = reply.UniqueDeviceName;
@@ -119,27 +117,29 @@ namespace Web.Upnp.Control.Services
             {
                 foreach(var (_, subscriptions) in sessions)
                 {
-                    await SafeDisposeAsync(subscriptions).ConfigureAwait(false);
+                    await SilentDisposeAsync(subscriptions).ConfigureAwait(false);
                 }
             }
             catch(Exception ex)
             {
                 logger.LogError(ex, "Error discovering UPnP devices and services!");
             }
+        }
 
-            async Task SafeDisposeAsync(IEnumerable<IAsyncDisposable> disposables)
+        private Task SilentDisposeAsync(IEnumerable<IAsyncDisposable> disposables)
+        {
+            return Task.WhenAll(disposables.Select(SilentDisposeAsync));
+        }
+
+        private async Task SilentDisposeAsync(IAsyncDisposable disposable)
+        {
+            try
             {
-                foreach(var disposable in disposables)
-                {
-                    try
-                    {
-                        await disposable.DisposeAsync().ConfigureAwait(false);
-                    }
-                    catch(Exception exception)
-                    {
-                        logger.LogTrace(exception, "Error cancelling subscribe session");
-                    }
-                }
+                await disposable.DisposeAsync().ConfigureAwait(false);
+            }
+            catch(Exception exception)
+            {
+                logger.LogTrace(exception, "Error cancelling subscribe session");
             }
         }
 
