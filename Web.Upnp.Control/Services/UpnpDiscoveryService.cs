@@ -46,7 +46,7 @@ namespace Web.Upnp.Control.Services
                 using var scope = services.CreateScope();
                 await using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
 
-                var enumerator = new SsdpEventEnumerator(TimeSpan.FromSeconds(20), RootDevice);
+                var enumerator = new SsdpEventEnumerator(TimeSpan.FromSeconds(120), RootDevice);
                 await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                 {
                     if(reply.StartLine.StartsWith("M-SEARCH"))
