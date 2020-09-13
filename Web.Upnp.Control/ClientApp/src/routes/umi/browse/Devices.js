@@ -18,8 +18,6 @@ function UmiDevice({ "data-source": { icons, name, type, description, udn } }) {
                    </div>
                </div>
                <div className="card-body">
-                   { /* <DeviceInfo data-source={d} /> */
-            }
                    <PlayerWidget udn={udn} />
                </div>
                <div className="card-footer d-flex align-items-center justify-content-end">

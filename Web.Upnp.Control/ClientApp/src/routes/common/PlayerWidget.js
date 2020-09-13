@@ -1,8 +1,9 @@
 import React from "react";
 import Toolbar from "../../components/Toolbar";
-import { parseMilliseconds } from "../../components/Extensions";
+import { parseMilliseconds, formatTime } from "../../components/Extensions";
 import { withDataFetch } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
+import Timer from "../../components/Timer";
 import $api from "../../components/WebApi";
 
 class PlayerCore extends React.Component {
@@ -66,57 +67,63 @@ class PlayerCore extends React.Component {
 
     next = () => { return this.ctrl.next().fetch(); }
 
+    changePosition = () => {};
+
     render() {
         const { actions = [], current, next, playbackState, playMode, time, duration } = this.state;
         const transitioning = playbackState === "TRANSITIONING";
         return <React.Fragment>
-                   <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
-                   <div className="d-flex flex-column">
-                       <Progress time={time} duration={duration} running={playbackState === "PLAYING"} />
-                       <div className="d-flex align-items-center justify-content-between">
-                           <Toolbar>
-                               <Toolbar.Group className="align-items-center">
-                                   <Toolbar.Button title="Prev" onClick={this.prev} glyph="step-backward fa-sm" className="p-0 px-1" disabled={!actions.includes("Previous")} />
-                                   {actions.includes("Play") && <Toolbar.Button title="Play" onClick={this.play} glyph="play-circle" className="fa-2x p-0 px-1" />}
-                                   {(actions.includes("Pause") || transitioning) && <Toolbar.Button title="Pause" onClick={this.pause} glyph="pause-circle" className="fa-2x p-0 px-1" disabled={transitioning} />}
-                                   <Toolbar.Button title={next ? `Next: ${next.title}` : "Next"} onClick={this.next} glyph="step-forward fa-sm" className="p-0 px-1" disabled={!actions.includes("Next")} />
-                               </Toolbar.Group>
-                           </Toolbar>
-                           {current &&
-                               <div className="d-flex flex-wrap justify-content-center mx-2 overflow-hidden" title={JSON.stringify(current)}>
-                                   <h6 className="text-center text-truncate flex-basis-100 m-0" title={current.title}>{current.title}</h6>
-                                   <small className="m-0">{current.creator}</small>
-                                   <small className="m-0">&nbsp;&bull;&nbsp;{current.album}</small>
-                               </div>}
-                           <Toolbar className="flex-nowrap">
-                               <Toolbar.Group>
-                                   <Toolbar.Button glyph="random" className={playMode === "REPEAT_SHUFFLE" ? "p-1 text-primary" : "p-1"} />
-                                   <Toolbar.Button glyph="retweet" className={playMode === "REPEAT_ALL" ? "p-1 text-primary" : "p-1"} />
-                               </Toolbar.Group>
-                               <Toolbar.Group>
-                                   <Toolbar.Button glyph="volume-off" className="p-2" />
-                               </Toolbar.Group>
-                           </Toolbar>
-                       </div>
-                   </div>
-               </React.Fragment>;
+            <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
+            <div className="d-flex flex-column">
+                <Progress time={time} duration={duration} running={playbackState === "PLAYING"} onChange={this.changePosition} />
+                <div className="d-flex align-items-center justify-content-between">
+                    <Toolbar>
+                        <Toolbar.Group className="align-items-center">
+                            <Toolbar.Button title="Prev" onClick={this.prev} glyph="step-backward fa-sm" className="p-0 px-1" disabled={!actions.includes("Previous")} />
+                            {actions.includes("Play") && <Toolbar.Button title="Play" onClick={this.play} glyph="play-circle" className="fa-2x p-0 px-1" />}
+                            {(actions.includes("Pause") || transitioning) && <Toolbar.Button title="Pause" onClick={this.pause} glyph="pause-circle" className="fa-2x p-0 px-1" disabled={transitioning} />}
+                            <Toolbar.Button title={next ? `Next: ${next.title}` : "Next"} onClick={this.next} glyph="step-forward fa-sm" className="p-0 px-1" disabled={!actions.includes("Next")} />
+                        </Toolbar.Group>
+                    </Toolbar>
+                    {current &&
+                        <div className="d-flex flex-wrap justify-content-center mx-2 overflow-hidden" title={JSON.stringify(current)}>
+                            <h6 className="text-center text-truncate flex-basis-100 m-0" title={current.title}>{current.title}</h6>
+                            <small className="m-0">{current.creator}</small>
+                            <small className="m-0">&nbsp;&bull;&nbsp;{current.album}</small>
+                        </div>}
+                    <Toolbar className="flex-nowrap">
+                        <Toolbar.Group>
+                            <Toolbar.Button glyph="random" className={playMode === "REPEAT_SHUFFLE" ? "p-1 text-primary" : "p-1"} />
+                            <Toolbar.Button glyph="retweet" className={playMode === "REPEAT_ALL" ? "p-1 text-primary" : "p-1"} />
+                        </Toolbar.Group>
+                        <Toolbar.Group>
+                            <Toolbar.Button glyph="volume-off" className="p-2" />
+                        </Toolbar.Group>
+                    </Toolbar>
+                </div>
+            </div>
+        </React.Fragment>;
     }
 }
 
-function Progress({ time, duration, running }) {
+function changeProgress(e){
+    alert(e.pageX - e.target.offsetLeft);
+}
+
+function Progress({ time, duration, running, onChange = ()=>{} }) {
 
     const total = parseMilliseconds(duration);
     const current = parseMilliseconds(time);
     const progress = total > 0 ? Math.round(current * 100 / total) : 0;
 
     return <div className="d-flex flex-wrap justify-content-between">
-               <small className="text-tiny">{time}</small>
-               <small className="text-tiny">{duration}</small>
-               <div className="slider my-2 flex-basis-100" data-running={running}>
-                   <div className="slider-line" style={{ width: `${progress}%`, animationDuration: `${running ? (total - current) : 0}ms` }} />
-                   <div className="slider-ticker" />
-               </div>
-           </div>;
+        <Timer className="text-tiny" current={current / 1000} total={total / 1000} running={running} />
+        <small className="text-tiny">{formatTime(total / 1000)}</small>
+        <div className="slider my-2 flex-basis-100" data-running={running} onClick={changeProgress} >
+            <div className="slider-line" style={{ width: `${progress}%`, animationDuration: `${running ? (total - current) : 0}ms` }} />
+            <div className="slider-ticker" />
+        </div>
+    </div>;
 }
 
 export default withDataFetch(PlayerCore, { usePreloader: false }, ({ udn }) => $api.control(udn).state(true).url());
