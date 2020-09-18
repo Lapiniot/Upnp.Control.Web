@@ -3,11 +3,11 @@
     "name": "web.upnp.control",
     "private": true,
     "dependencies": {
-        "node-sass": "^4.13.1",
+        "node-sass": "^4.14.1",
         "scss": "^0.2.4"
     },
     "devDependencies": {
         "gulp": "^4.0.2",
-        "gulp-sass": "^4.0.2"
+        "gulp-sass": "^4.1.0"
     }
 }
