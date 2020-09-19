@@ -108,6 +108,13 @@ namespace Web.Upnp.Control.Controllers
             };
         }
 
+        [HttpGet("seek/{position}")]
+        [HttpGet("seek({position})")]
+        public async Task SetPositionAsync(string deviceId, CancellationToken cancellationToken, string position)
+        {
+
+        }
+
         [HttpGet("play()")]
         [HttpGet("play/{*id}")]
         public async Task PlayItemAsync(string deviceId, [FromRouteOrQuery] string id, CancellationToken cancellationToken)
