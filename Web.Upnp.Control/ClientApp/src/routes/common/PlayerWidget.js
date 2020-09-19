@@ -71,6 +71,7 @@ class PlayerCore extends React.Component {
 
     render() {
         const { actions = [], current, next, playbackState, playMode, time, duration } = this.state;
+        const { title, album, creator } = current || {};
         const transitioning = playbackState === "TRANSITIONING";
         return <React.Fragment>
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
@@ -86,10 +87,11 @@ class PlayerCore extends React.Component {
                         </Toolbar.Group>
                     </Toolbar>
                     {current &&
-                        <div className="d-flex flex-wrap justify-content-center mx-2 overflow-hidden" title={JSON.stringify(current)}>
-                            <h6 className="text-center text-truncate flex-basis-100 m-0" title={current.title}>{current.title}</h6>
-                            <small className="m-0">{current.creator}</small>
-                            <small className="m-0">&nbsp;&bull;&nbsp;{current.album}</small>
+                        <div className="d-flex flex-wrap justify-content-center mx-2 overflow-hidden">
+                            <h6 className="text-center text-truncate flex-basis-100 m-0" title={title}>{title}</h6>
+                            {creator && <small className="m-0">{creator}</small>}
+                            {creator && album && <small>&nbsp;&bull;&nbsp;</small>}
+                            {album && <small className="m-0">{album}</small>}
                         </div>}
                     <Toolbar className="flex-nowrap">
                         <Toolbar.Group>
@@ -111,9 +113,11 @@ function changeProgress(e){
 }
 
 function Progress({ time, duration, running, onChange = ()=>{} }) {
-
     const total = parseMilliseconds(duration);
     const current = parseMilliseconds(time);
+    
+    if(!total) return null;
+    
     const progress = total > 0 ? Math.round(current * 100 / total) : 0;
 
     return <div className="d-flex flex-wrap justify-content-between">
