@@ -13,10 +13,9 @@ export default class extends React.Component {
     }
 
     componentDidUpdate() {
+        this.stop();
         if (this.props.running) {
             this.start();
-        } else {
-            this.stop();
         }
     }
 
