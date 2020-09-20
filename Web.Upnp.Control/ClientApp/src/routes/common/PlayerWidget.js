@@ -1,10 +1,9 @@
 import React from "react";
 import Toolbar from "../../components/Toolbar";
-import { parseMilliseconds, formatTime } from "../../components/Extensions";
 import { withDataFetch } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
-import Timer from "../../components/Timer";
 import $api from "../../components/WebApi";
+import { Progress } from "./Progress";
 
 class PlayerCore extends React.Component {
     constructor(props) {
@@ -67,7 +66,7 @@ class PlayerCore extends React.Component {
 
     next = () => { return this.ctrl.next().fetch(); }
 
-    changePosition = () => {};
+    changePosition = position => { return this.ctrl.seek(position.toFixed(3)).fetch(); };
 
     render() {
         const { actions = [], current, next, playbackState, playMode, time, duration } = this.state;
@@ -76,7 +75,7 @@ class PlayerCore extends React.Component {
         return <React.Fragment>
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
             <div className="d-flex flex-column">
-                <Progress time={time} duration={duration} running={playbackState === "PLAYING"} onChange={this.changePosition} />
+                <Progress time={time} duration={duration} running={playbackState === "PLAYING"} onChangeRequested={this.changePosition} />
                 <div className="d-flex align-items-center justify-content-between">
                     <Toolbar>
                         <Toolbar.Group className="align-items-center">
@@ -106,28 +105,6 @@ class PlayerCore extends React.Component {
             </div>
         </React.Fragment>;
     }
-}
-
-function changeProgress(e){
-    alert(e.pageX - e.target.offsetLeft);
-}
-
-function Progress({ time, duration, running, onChange = ()=>{} }) {
-    const total = parseMilliseconds(duration);
-    const current = parseMilliseconds(time);
-    
-    if(!total) return null;
-    
-    const progress = total > 0 ? Math.round(current * 100 / total) : 0;
-
-    return <div className="d-flex flex-wrap justify-content-between">
-        <Timer className="text-tiny" current={current / 1000} total={total / 1000} running={running} />
-        <small className="text-tiny">{formatTime(total / 1000)}</small>
-        <div className="slider my-2 flex-basis-100" data-running={running} onClick={changeProgress} >
-            <div className="slider-line" style={{ width: `${progress}%`, animationDuration: `${running ? (total - current) : 0}ms` }} />
-            <div className="slider-ticker" />
-        </div>
-    </div>;
 }
 
 export default withDataFetch(PlayerCore, { usePreloader: false }, ({ udn }) => $api.control(udn).state(true).url());
