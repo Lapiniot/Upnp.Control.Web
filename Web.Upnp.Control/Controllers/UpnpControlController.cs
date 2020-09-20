@@ -12,29 +12,6 @@ using Web.Upnp.Control.Routing;
 using Web.Upnp.Control.Services;
 using static IoT.Protocol.Upnp.Services.BrowseMode;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-/*
- * http-get:*:audio/dsd:*,
- * http-get:*:audio/wav:*,
- * http-get:*:audio/wave:*,
- * http-get:*:audio/x-wav:*,
- * http-get:*:audio/x-aiff:*,
- * http-get:*:audio/mpeg:*,
- * http-get:*:audio/mpegurl:*,
- * http-get:*:audio/x-mpeg:*,
- * http-get:*:audio/mp1:*,
- * http-get:*:audio/aac:*,
- * http-get:*:audio/flac:*,
- * http-get:*:audio/x-flac:*,
- * http-get:*:audio/m4a:*,
- * http-get:*:audio/mp4:*,
- * http-get:*:audio/x-m4a:*,
- * http-get:*:audio/vorbis:*,
- * http-get:*:audio/ogg:*,
- * http-get:*:audio/x-ogg:*,
- * http-get:*:audio/x-scpls:*
- */
-
 namespace Web.Upnp.Control.Controllers
 {
     [ApiController]
@@ -108,11 +85,29 @@ namespace Web.Upnp.Control.Controllers
             };
         }
 
-        [HttpGet("seek/{position}")]
-        [HttpGet("seek({position})")]
-        public async Task SetPositionAsync(string deviceId, CancellationToken cancellationToken, string position)
+        [HttpGet("seek/{position:double}")]
+        [HttpGet("seek({position:double})")]
+        public async Task SeekAsync(string deviceId, CancellationToken cancellationToken, double position)
         {
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            var info = await avt.GetPositionInfoAsync(0, cancellationToken).ConfigureAwait(false);
+            if(info.TryGetValue("TrackDuration", out var value) && TimeSpan.TryParse(value, out var duration))
+            {
+                var absTime = duration * position;
+                await avt.SeekAsync(target: absTime.ToString("hh\\:mm\\:ss")).ConfigureAwait(false);
+            }
+            else
+            {
+                throw new InvalidOperationException("Operation is not supported in the current state");
+            }
+        }
 
+        [HttpGet("seek/{time:timespan}")]
+        [HttpGet("seek({time:timespan})")]
+        public async Task SeekAsync(string deviceId, CancellationToken cancellationToken, TimeSpan time)
+        {
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            await avt.SeekAsync(target: time.ToString("hh\\:mm\\:ss")).ConfigureAwait(false);
         }
 
         [HttpGet("play()")]
