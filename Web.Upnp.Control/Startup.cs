@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Hubs;
+using Web.Upnp.Control.Routing;
 using Web.Upnp.Control.Services;
 
 namespace Web.Upnp.Control
@@ -32,6 +34,7 @@ namespace Web.Upnp.Control
                 .AddEventSubscribeClient();
 
             services
+                .Configure<RouteOptions>(options => options.ConstraintMap.Add("timespan", typeof(TimeSpanRouteConstraint)))
                 .AddControllers(options => options.Filters.Add<RequestCancelledExceptionFilter>())
                 .AddJsonOptions(options =>
                 {
