@@ -20,7 +20,7 @@ namespace Web.Upnp.Control.Services
 
         public IAsyncDisposable StartSession(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken stoppingToken)
         {
-            return new CancellationScope(token => StartSubscriptionLoopAsync(subscribeUri, callbackUri, timeout, token), stoppingToken);
+            return CancelableScope.StartInScope(token => StartSubscriptionLoopAsync(subscribeUri, callbackUri, timeout, token), stoppingToken);
         }
 
         private async Task StartSubscriptionLoopAsync(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken cancellationToken)
@@ -46,7 +46,7 @@ namespace Web.Upnp.Control.Services
                         (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
                         logger.LogInformation($"Successfully requested new subscription for {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
                     }
-                    catch(OperationCanceledException) {}
+                    catch(OperationCanceledException) { }
                 }
             }
             finally
