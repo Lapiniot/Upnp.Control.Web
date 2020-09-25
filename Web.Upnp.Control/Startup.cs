@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
@@ -35,6 +36,7 @@ namespace Web.Upnp.Control
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
                 .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
                 .AddTransient<IEventSubscribeClient>(sp => sp.GetRequiredService<EventSubscribeClient>())
+                .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifier>()
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
 

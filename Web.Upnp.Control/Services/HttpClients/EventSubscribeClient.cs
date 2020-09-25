@@ -8,10 +8,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.HttpClients
 {
-    public class EventSubscribeClient
+    public class EventSubscribeClient : IEventSubscribeClient
     {
         private readonly HttpClient client;
         private readonly IServerAddressesFeature serverAddresses;

@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 using IoT.Device.Upnp;
 using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.DataAccess;
-using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Models.Database.Upnp;
 using Web.Upnp.Control.Services.Abstractions;
 using static IoT.Protocol.Upnp.UpnpServices;
@@ -19,25 +17,27 @@ using Icon = Web.Upnp.Control.Models.Database.Upnp.Icon;
 
 namespace Web.Upnp.Control.Services
 {
+    // TODO: Refactor this service! The only responsibility should be observers notification in response to the discovery database changes
     public class UpnpDiscoveryService : BackgroundService
     {
-        private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
         private readonly IUpnpSubscriptionsRepository subscriptions;
         private readonly ILogger<UpnpDiscoveryService> logger;
         private readonly IServiceProvider services;
         private readonly IUpnpEventSubscriptionFactory subscribeFactory;
+        private readonly IObserver<UpnpDiscoveryEvent>[] observers;
         private readonly TimeSpan sessionTimeout = TimeSpan.FromMinutes(30);
 
-        public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger,
-            IHubContext<UpnpEventsHub, IUpnpEventClient> hub,
-            IUpnpSubscriptionsRepository subscriptionsRepository, 
-            IUpnpEventSubscriptionFactory subscribeFactory)
+        public UpnpDiscoveryService(IServiceProvider services,
+            ILogger<UpnpDiscoveryService> logger,
+            IUpnpSubscriptionsRepository subscriptionsRepository,
+            IUpnpEventSubscriptionFactory subscribeFactory,
+            IEnumerable<IObserver<UpnpDiscoveryEvent>> observers = null)
         {
             this.services = services ?? throw new ArgumentNullException(nameof(services));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.hub = hub ?? throw new ArgumentNullException(nameof(hub));
             this.subscriptions = subscriptionsRepository ?? throw new ArgumentNullException(nameof(subscriptionsRepository));
             this.subscribeFactory = subscribeFactory ?? throw new ArgumentNullException(nameof(subscribeFactory));
+            this.observers = observers?.ToArray() ?? Array.Empty<IObserver<UpnpDiscoveryEvent>>();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -73,7 +73,11 @@ namespace Web.Upnp.Control.Services
                                         await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
                                         subscriptions.Remove(id, out var subs);
                                         await TerminateAsync(subs).ConfigureAwait(false);
-                                        _ = hub.Clients.All.SsdpDiscoveryEvent(nt, "disappeared");
+
+                                        foreach(var observer in observers)
+                                        {
+                                            observer.OnNext(new UpnpDeviceDisappearedEvent(nt));
+                                        }
                                     }
 
                                     continue;
@@ -111,7 +115,11 @@ namespace Web.Upnp.Control.Services
 
                         await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
                         await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-                        _ = hub.Clients.All.SsdpDiscoveryEvent(udn, "appeared");
+
+                        foreach(var observer in observers)
+                        {
+                            observer.OnNext(new UpnpDeviceAppearedEvent(udn));
+                        }
                     }
                     catch(Exception exception)
                     {
@@ -121,12 +129,20 @@ namespace Web.Upnp.Control.Services
             }
             catch(OperationCanceledException)
             {
-                await TerminateAsync(subscriptions.GetAll()).ConfigureAwait(false);
-                subscriptions.Clear();
             }
             catch(Exception ex)
             {
                 logger.LogError(ex, "Error discovering UPnP devices and services!");
+            }
+            finally
+            {
+                await TerminateAsync(subscriptions.GetAll()).ConfigureAwait(false);
+                subscriptions.Clear();
+
+                foreach(var observer in observers)
+                {
+                    observer.OnCompleted();
+                }
             }
         }
 

@@ -1,0 +1,6 @@
+namespace Web.Upnp.Control.Services
+{
+    public abstract record UpnpDiscoveryEvent(string DeviceId);
+    public sealed record UpnpDeviceAppearedEvent(string DeviceId) : UpnpDiscoveryEvent(DeviceId);
+    public sealed record UpnpDeviceDisappearedEvent(string DeviceId) : UpnpDiscoveryEvent(DeviceId);
+}
