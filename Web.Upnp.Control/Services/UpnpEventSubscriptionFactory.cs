@@ -7,18 +7,18 @@ using Web.Upnp.Control.Services.HttpClients;
 
 namespace Web.Upnp.Control.Services
 {
-    public class EventSessionFactory
+    public class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
     {
         private readonly ILogger logger;
         private readonly EventSubscribeClient subscribeClient;
 
-        public EventSessionFactory(EventSubscribeClient subscribeClient, ILogger logger)
+        public UpnpEventSubscriptionFactory(EventSubscribeClient subscribeClient, ILogger<UpnpEventSubscriptionFactory> logger)
         {
             this.subscribeClient = subscribeClient;
             this.logger = logger;
         }
 
-        public IAsyncDisposable StartSession(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken stoppingToken)
+        public IAsyncDisposable Subscribe(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken stoppingToken)
         {
             return CancelableScope.StartInScope(token => StartSubscriptionLoopAsync(subscribeUri, callbackUri, timeout, token), stoppingToken);
         }

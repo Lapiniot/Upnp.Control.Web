@@ -25,19 +25,19 @@ namespace Web.Upnp.Control.Services
         private readonly IUpnpSubscriptionsRepository subscriptions;
         private readonly ILogger<UpnpDiscoveryService> logger;
         private readonly IServiceProvider services;
-        private readonly EventSessionFactory sessionFactory;
+        private readonly IUpnpEventSubscriptionFactory subscribeFactory;
         private readonly TimeSpan sessionTimeout = TimeSpan.FromMinutes(30);
 
-        public UpnpDiscoveryService(IServiceProvider services, ILoggerFactory factory, EventSubscribeClient subscribeClient,
-            IHubContext<UpnpEventsHub, IUpnpEventClient> hub, IUpnpSubscriptionsRepository subscriptions)
+        public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger,
+            IHubContext<UpnpEventsHub, IUpnpEventClient> hub,
+            IUpnpSubscriptionsRepository subscriptionsRepository, 
+            IUpnpEventSubscriptionFactory subscribeFactory)
         {
-            if(factory is null) throw new ArgumentNullException(nameof(factory));
-
             this.services = services ?? throw new ArgumentNullException(nameof(services));
-            logger = factory.CreateLogger<UpnpDiscoveryService>();
-            sessionFactory = new EventSessionFactory(subscribeClient, factory.CreateLogger<EventSessionFactory>());
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.hub = hub ?? throw new ArgumentNullException(nameof(hub));
-            this.subscriptions = subscriptions ?? throw new ArgumentNullException(nameof(subscriptions));
+            this.subscriptions = subscriptionsRepository ?? throw new ArgumentNullException(nameof(subscriptionsRepository));
+            this.subscribeFactory = subscribeFactory ?? throw new ArgumentNullException(nameof(subscribeFactory));
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -153,8 +153,8 @@ namespace Web.Upnp.Control.Services
             var avtService = entity.Services.Single(s => s.ServiceType == AVTransport);
 
             subscriptions.Add(entity.Udn,
-                sessionFactory.StartSession(new Uri(rcService.EventsUrl), new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout, stoppingToken),
-                sessionFactory.StartSession(new Uri(avtService.EventsUrl), new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout, stoppingToken)
+                subscribeFactory.Subscribe(new Uri(rcService.EventsUrl), new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout, stoppingToken),
+                subscribeFactory.Subscribe(new Uri(avtService.EventsUrl), new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout, stoppingToken)
             );
         }
 
