@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Models.Database.Upnp;
-using Web.Upnp.Control.Services.HttpClients;
+using Web.Upnp.Control.Services.Abstractions;
 using static IoT.Protocol.Upnp.UpnpServices;
 using Icon = Web.Upnp.Control.Models.Database.Upnp.Icon;
 

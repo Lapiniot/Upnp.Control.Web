@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Web.Upnp.Control.Services
+namespace Web.Upnp.Control.Services.Abstractions
 {
     public interface IUpnpSubscriptionsRepository
     {

@@ -9,7 +9,7 @@ using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Routing;
-using Web.Upnp.Control.Services;
+using Web.Upnp.Control.Services.Abstractions;
 using static IoT.Protocol.Upnp.Services.BrowseMode;
 
 namespace Web.Upnp.Control.Controllers

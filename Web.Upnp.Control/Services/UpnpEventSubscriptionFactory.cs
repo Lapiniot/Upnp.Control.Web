@@ -3,16 +3,16 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Web.Upnp.Control.Services.HttpClients;
+using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services
 {
     public class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
     {
         private readonly ILogger logger;
-        private readonly EventSubscribeClient subscribeClient;
+        private readonly IEventSubscribeClient subscribeClient;
 
-        public UpnpEventSubscriptionFactory(EventSubscribeClient subscribeClient, ILogger<UpnpEventSubscriptionFactory> logger)
+        public UpnpEventSubscriptionFactory(IEventSubscribeClient subscribeClient, ILogger<UpnpEventSubscriptionFactory> logger)
         {
             this.subscribeClient = subscribeClient;
             this.logger = logger;

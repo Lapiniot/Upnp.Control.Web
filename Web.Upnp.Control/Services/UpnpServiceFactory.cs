@@ -9,7 +9,7 @@ using IoT.Protocol.Upnp.Services;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
-using Web.Upnp.Control.Services.HttpClients;
+using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services
 {
@@ -58,13 +58,13 @@ namespace Web.Upnp.Control.Services
             return service != null
                 ? new Uri(service.ControlUrl)
                 : device.Services.Any(s => s.ServiceType == "urn:xiaomi-com:service:Playlist:1")
-                    ? new UriBuilder(device.Location) {Path = string.Format(UmiMappings[schema], device.Udn.Substring(5))}.Uri
+                    ? new UriBuilder(device.Location) { Path = string.Format(UmiMappings[schema], device.Udn.Substring(5)) }.Uri
                     : null;
         }
 
         private T GetService<T>(Uri controlUrl)
         {
-            var httpClient = clientFactory.CreateClient(nameof(HttpSoapClient));
+            var httpClient = clientFactory.CreateClient("HttpSoapClient");
 
             httpClient.BaseAddress = controlUrl;
 
