@@ -30,6 +30,7 @@ namespace Web.Upnp.Control
             services.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
                 .AddHostedService<UpnpDiscoveryService>()
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
+                .AddSingleton<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
 

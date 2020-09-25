@@ -22,19 +22,22 @@ namespace Web.Upnp.Control.Services
     public class UpnpDiscoveryService : BackgroundService
     {
         private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
+        private readonly IUpnpSubscriptionsRepository subscriptions;
         private readonly ILogger<UpnpDiscoveryService> logger;
         private readonly IServiceProvider services;
         private readonly EventSessionFactory sessionFactory;
-        private readonly IDictionary<string, IAsyncDisposable[]> sessions = new Dictionary<string, IAsyncDisposable[]>();
         private readonly TimeSpan sessionTimeout = TimeSpan.FromMinutes(30);
 
         public UpnpDiscoveryService(IServiceProvider services, ILoggerFactory factory, EventSubscribeClient subscribeClient,
-            IHubContext<UpnpEventsHub, IUpnpEventClient> hub)
+            IHubContext<UpnpEventsHub, IUpnpEventClient> hub, IUpnpSubscriptionsRepository subscriptions)
         {
-            this.services = services;
+            if(factory is null) throw new ArgumentNullException(nameof(factory));
+
+            this.services = services ?? throw new ArgumentNullException(nameof(services));
             logger = factory.CreateLogger<UpnpDiscoveryService>();
             sessionFactory = new EventSessionFactory(subscribeClient, factory.CreateLogger<EventSessionFactory>());
-            this.hub = hub;
+            this.hub = hub ?? throw new ArgumentNullException(nameof(hub));
+            this.subscriptions = subscriptions ?? throw new ArgumentNullException(nameof(subscriptions));
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -49,76 +52,77 @@ namespace Web.Upnp.Control.Services
                 var enumerator = new SsdpEventEnumerator(TimeSpan.FromSeconds(120), RootDevice);
                 await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                 {
-                    if(reply.StartLine.StartsWith("M-SEARCH"))
+                    try
                     {
-                        continue;
-                    }
-
-                    if(reply.StartLine.StartsWith("NOTIFY"))
-                    {
-                        if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
+                        if(reply.StartLine.StartsWith("M-SEARCH"))
                         {
-                            if(reply.TryGetValue("NT", out var nt))
-                            {
-                                var id = nt == RootDevice ? reply.UniqueDeviceName : nt;
-                                var existing = await context.FindAsync<Device>(id).ConfigureAwait(false);
-                                if(existing != null)
-                                {
-                                    context.Remove(existing);
-                                    await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                            continue;
+                        }
 
-                                    if(sessions.Remove(id, out var subscriptions))
+                        if(reply.StartLine.StartsWith("NOTIFY"))
+                        {
+                            if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
+                            {
+                                if(reply.TryGetValue("NT", out var nt))
+                                {
+                                    var id = nt == RootDevice ? reply.UniqueDeviceName : nt;
+                                    var existing = await context.FindAsync<Device>(id).ConfigureAwait(false);
+                                    if(existing != null)
                                     {
-                                        var _ = SilentDisposeAsync(subscriptions);
+                                        context.Remove(existing);
+                                        await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                                        subscriptions.Remove(id, out var subs);
+                                        await TerminateAsync(subs).ConfigureAwait(false);
+                                        _ = hub.Clients.All.SsdpDiscoveryEvent(nt, "disappeared");
                                     }
 
-                                    _ = hub.Clients.All.SsdpDiscoveryEvent(nt, "disappeared");
+                                    continue;
                                 }
-
-                                continue;
                             }
                         }
-                    }
-                    else if(reply.StartLine.StartsWith("HTTP"))
-                    {
+                        else if(reply.StartLine.StartsWith("HTTP"))
+                        {
 
-                    }
+                        }
 
-                    var udn = reply.UniqueDeviceName;
+                        var udn = reply.UniqueDeviceName;
 
-                    var entity = await context.FindAsync<Device>(udn).ConfigureAwait(false);
+                        var entity = await context.FindAsync<Device>(udn).ConfigureAwait(false);
 
-                    if(entity != null)
-                    {
+                        if(entity != null)
+                        {
+                            entity.ExpiresAt = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
+                            context.Update(entity);
+                            await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                            continue;
+                        }
+
+                        var dev = new UpnpDevice(new Uri(reply.Location), reply.UniqueServiceName);
+
+                        logger.LogInformation($"New device discovered: {dev.Usn}");
+
+                        entity = MapConvert(await dev.GetDescriptionAsync(stoppingToken).ConfigureAwait(false));
                         entity.ExpiresAt = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
-                        context.Update(entity);
+
+                        if(entity.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema))
+                        {
+                            SubscribeToEvents(entity, stoppingToken);
+                        }
+
+                        await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
                         await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-                        continue;
+                        _ = hub.Clients.All.SsdpDiscoveryEvent(udn, "appeared");
                     }
-
-                    var dev = new UpnpDevice(new Uri(reply.Location), reply.UniqueServiceName);
-
-                    logger.LogInformation($"New device discovered: {dev.Usn}");
-
-                    entity = MapConvert(await dev.GetDescriptionAsync(stoppingToken).ConfigureAwait(false));
-                    entity.ExpiresAt = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
-
-                    if(entity.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema))
+                    catch(Exception exception)
                     {
-                        SubscribeToEvents(entity, stoppingToken);
+                        logger.LogError(exception, $"Error processing SSDP reply {reply.StartLine} for USN={reply.UniqueServiceName}");
                     }
-
-                    await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
-                    await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-                    _ = hub.Clients.All.SsdpDiscoveryEvent(udn, "appeared");
                 }
             }
             catch(OperationCanceledException)
             {
-                foreach(var (_, subscriptions) in sessions)
-                {
-                    await SilentDisposeAsync(subscriptions).ConfigureAwait(false);
-                }
+                await TerminateAsync(subscriptions.GetAll()).ConfigureAwait(false);
+                subscriptions.Clear();
             }
             catch(Exception ex)
             {
@@ -126,20 +130,18 @@ namespace Web.Upnp.Control.Services
             }
         }
 
-        private Task SilentDisposeAsync(IEnumerable<IAsyncDisposable> disposables)
+        private async Task TerminateAsync(IEnumerable<IAsyncDisposable> subscriptions)
         {
-            return Task.WhenAll(disposables.Select(SilentDisposeAsync));
-        }
-
-        private async Task SilentDisposeAsync(IAsyncDisposable disposable)
-        {
-            try
+            foreach(var subscription in subscriptions)
             {
-                await disposable.DisposeAsync().ConfigureAwait(false);
-            }
-            catch(Exception exception)
-            {
-                logger.LogTrace(exception, "Error cancelling subscribe session");
+                try
+                {
+                    await subscription.ConfigureAwait(false).DisposeAsync();
+                }
+                catch(Exception exception)
+                {
+                    logger.LogError(exception, "Error terminating maintanance worker for UPnP event subscription");
+                }
             }
         }
 
@@ -150,11 +152,10 @@ namespace Web.Upnp.Control.Services
             var rcService = entity.Services.Single(s => s.ServiceType == RenderingControl);
             var avtService = entity.Services.Single(s => s.ServiceType == AVTransport);
 
-            sessions.Add(entity.Udn, new[]
-            {
+            subscriptions.Add(entity.Udn,
                 sessionFactory.StartSession(new Uri(rcService.EventsUrl), new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout, stoppingToken),
                 sessionFactory.StartSession(new Uri(avtService.EventsUrl), new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout, stoppingToken)
-            });
+            );
         }
 
         private static Device MapConvert(UpnpDeviceDescription device)
