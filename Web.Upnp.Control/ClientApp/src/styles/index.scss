@@ -130,10 +130,6 @@ $album-art-sizes: ( "xs": 0.50, "sm": 0.75, "md": 1.25, "lg": 1.75, "xl": 2.00);
     to { width: 100%; }
 }
 
-@keyframes inflate-left{
-    to { left: 100%; }
-}
-
 .animate-pulse{
     animation: fade 1.5s ease-in-out infinite;
 }
@@ -149,10 +145,6 @@ $slider-size: 3px;
     & > .slider-line{
         background-color: $primary;
         flex-shrink: 0;
-    }
-
-    &[data-running=true] > .slider-line{
-        animation: inflate-width linear forwards;
     }
 
     & > .slider-ticker{
