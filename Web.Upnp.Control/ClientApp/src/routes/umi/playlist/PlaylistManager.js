@@ -71,23 +71,23 @@ export class PlaylistManagerCore extends React.Component {
 
     reload = () => { this.props.dataContext.reload(); }
 
-    renamePlaylist = (id, title) => { $api.playlist(this.props.device).rename(id, title).fetch(); }
+    renamePlaylist = (id, title) => $api.playlist(this.props.device).rename(id, title).fetch();
 
-    createPlaylist = (title) => { $api.playlist(this.props.device).create(title).fetch(); }
+    createPlaylist = (title) => $api.playlist(this.props.device).create(title).fetch();
 
-    removePlaylist = (ids) => { $api.playlist(this.props.device).delete(ids).fetch(); }
+    removePlaylist = (ids) => $api.playlist(this.props.device).delete(ids).fetch();
 
-    addItems = (device, ids) => { $api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch(); }
+    addItems = (device, ids) => $api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch();
 
-    removeItems = (ids) => { $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch(); }
+    removeItems = (ids) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch();
 
     onCreate = () => {
         const input = React.createRef();
         this.setState({
             modal:
                 <TextValueEditDialog id="create_confirm" inputRef={input} title="Create new playlist" label="Name" confirmText="Create"
-                                     defaultValue="New Playlist" onConfirm={() => this.createPlaylist(input.current.value).then(this.reload)}
-                                     onDismiss={this.resetModal} immediate />
+                    defaultValue="New Playlist" onConfirm={() => this.createPlaylist(input.current.value).then(this.reload)}
+                    onDismiss={this.resetModal} immediate />
         });
     }
 
@@ -98,14 +98,14 @@ export class PlaylistManagerCore extends React.Component {
 
         this.setState({
             modal: <Modal id="remove_confirm" title="Do you want to delete playlist?" onDismiss={this.resetModal} immediate>
-                       <ul className="list-unstyled">
-                           {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
-                       </ul>
-                       <Modal.Footer>
-                           <Modal.Button text="Cancel" className="btn-secondary" dismiss />
-                           <Modal.Button text="Delete" className="btn-danger" icon="trash" onClick={() => this.removePlaylist(ids).then(this.reload)} dismiss />
-                       </Modal.Footer>
-                   </Modal>
+                <ul className="list-unstyled">
+                    {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
+                </ul>
+                <Modal.Footer>
+                    <Modal.Button text="Cancel" className="btn-secondary" dismiss />
+                    <Modal.Button text="Delete" className="btn-danger" icon="trash" onClick={() => this.removePlaylist(ids).then(this.reload)} dismiss />
+                </Modal.Footer>
+            </Modal>
         });
     }
 
@@ -116,8 +116,8 @@ export class PlaylistManagerCore extends React.Component {
 
         this.setState({
             modal: <TextValueEditDialog id="rename_confirm" inputRef={input} title="Rename playlist" label="Name" confirmText="Rename"
-                                        defaultValue={title} onConfirm={() => this.renamePlaylist(id, input.current.value).then(this.reload)}
-                                        onDismiss={this.resetModal} immediate />
+                defaultValue={title} onConfirm={() => this.renamePlaylist(id, input.current.value).then(this.reload)}
+                onDismiss={this.resetModal} immediate />
         });
     }
 
@@ -128,12 +128,12 @@ export class PlaylistManagerCore extends React.Component {
                     {b => [
                         b.selection.any() &&
                         <button type="button" key="counter" className="btn btn-link text-decoration-none mr-auto px-0"
-                                onClick={b.selection.clear}>
+                            onClick={b.selection.clear}>
                             Clear selection
                         </button>,
                         <Modal.Button key="close" text="Close" className="btn-secondary" dismiss />,
                         <Modal.Button key="add" className="btn-primary" icon="plus" disabled={b.selection.none()}
-                                      onClick={() => this.addItems(...b.getSelectionData()).then(b.selection.clear).then(this.reload)}>
+                            onClick={() => this.addItems(...b.getSelectionData()).then(b.selection.clear).then(this.reload)}>
                             Add{b.selection.any() && <span className="badge badge-light ml-1">{b.selection.length}</span>}
                         </Modal.Button>
                     ]}
@@ -177,68 +177,68 @@ export class PlaylistManagerCore extends React.Component {
                     : d => d.res.url === this.state.playlist)
         };
         return <div className="d-flex flex-column h-100">
-                   <div className="position-sticky sticky-top">
-                       <Breadcrumb items={parents} {...match} />
-                       <Toolbar className="px-2 py-1 bg-light shadow-sm">
-                           {id === "PL:"
-                               ? <Toolbar.Group>
+            <div className="position-sticky sticky-top">
+                <Breadcrumb items={parents} {...match} />
+                <Toolbar className="px-2 py-1 bg-light shadow-sm">
+                    {id === "PL:"
+                        ? <Toolbar.Group>
                             <Toolbar.Button title="Create" glyph="plus" onClick={this.onCreate} />
                             <Toolbar.Button title="Delete" glyph="trash" onClick={this.onDelete} disabled={disabled} />
                             <Toolbar.Button title="Rename" glyph="edit" onClick={this.onRename} disabled={disabled} />
                             <Toolbar.Button title="Copy" glyph="copy" onClick={this.onCopy} disabled={disabled} />
                         </Toolbar.Group>
-                               : <Toolbar.Group>
+                        : <Toolbar.Group>
                             <Toolbar.Button title="Add items" glyph="plus" onClick={this.onAddItems} />
                             <Toolbar.Button title="Remove items" glyph="trash" onClick={this.onRemoveItems} disabled={disabled} />
                         </Toolbar.Group>}
-                       </Toolbar>
-                   </div>
-                   <SignalRListener handlers={this.handlers}>
-                       <BrowserCore dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext}
-                                    filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection} />
-                   </SignalRListener>
-                   {!data && <LoadIndicator />}
-                   <Pagination {...match} className="position-sticky sticky-bottom shadow-sm"
-                                          count={fetched} total={total} current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
-                   {this.state.modal && (typeof this.state.modal === "function" ? this.state.modal() : this.state.modal)}
-               </div>;
+                </Toolbar>
+            </div>
+            <SignalRListener handlers={this.handlers}>
+                <BrowserCore dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext}
+                    filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection} />
+            </SignalRListener>
+            {!data && <LoadIndicator />}
+            <Pagination {...match} className="position-sticky sticky-bottom shadow-sm"
+                count={fetched} total={total} current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
+            {this.state.modal && (typeof this.state.modal === "function" ? this.state.modal() : this.state.modal)}
+        </div>;
     }
 }
 
 const MainCellTemplate = ({ data, context: { ctrl, active, parents, state }, index }) => {
     const isActive = active(data, index);
     return <div className="d-flex align-items-center">
-               <div className="d-inline-block stack mr-1">
-                   <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
-                   {isActive
-                       ? state === "PLAYING"
-                       ? <React.Fragment key="active-playing">
-                             <div className="stack-layer d-flex">
-                                 <i className="m-auto fas fa-lg fa-volume-up animate-pulse" />
-                             </div>
-                             <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.pause().fetch}>
-                                 <i className="m-auto fas fa-lg fa-pause-circle" />
-                             </div>
-                         </React.Fragment>
-                       : <React.Fragment key="active-paused">
-                             <div className="stack-layer d-flex">
-                                 <i className="m-auto fas fa-lg fa-volume-off text-muted" />
-                             </div>
-                             <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.play().fetch}>
-                                 <i className="m-auto fas fa-lg fa-play-circle" />
-                             </div>
-                         </React.Fragment>
-                       : <div className="stack-layer stack-layer-hover d-flex"
-                              onClick={ctrl.playUri(parents[0].url ? `${parents[0].url}#tracknr=${index + 1},play` : data.res.url).fetch}>
-                             <i className="m-auto fas fa-lg fa-play-circle" />
-                         </div>}
-               </div>
-               <div className={isActive ? "text-primary" : null}>
-                   {data.title}
-                   {data.creator && <small>&nbsp;&bull;&nbsp;{data.creator}</small>}
-                   {data.album && <small>&nbsp;&bull;&nbsp;{data.album}</small>}
-               </div>
-           </div>;
+        <div className="d-inline-block stack mr-1">
+            <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
+            {isActive
+                ? state === "PLAYING"
+                    ? <React.Fragment key="active-playing">
+                        <div className="stack-layer d-flex">
+                            <i className="m-auto fas fa-lg fa-volume-up animate-pulse" />
+                        </div>
+                        <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.pause().fetch}>
+                            <i className="m-auto fas fa-lg fa-pause-circle" />
+                        </div>
+                    </React.Fragment>
+                    : <React.Fragment key="active-paused">
+                        <div className="stack-layer d-flex">
+                            <i className="m-auto fas fa-lg fa-volume-off text-muted" />
+                        </div>
+                        <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.play().fetch}>
+                            <i className="m-auto fas fa-lg fa-play-circle" />
+                        </div>
+                    </React.Fragment>
+                : <div className="stack-layer stack-layer-hover d-flex"
+                    onClick={ctrl.playUri(parents[0].url ? `${parents[0].url}#tracknr=${index + 1},play` : data.res.url).fetch}>
+                    <i className="m-auto fas fa-lg fa-play-circle" />
+                </div>}
+        </div>
+        <div className={isActive ? "text-primary" : null}>
+            {data.title}
+            {data.creator && <small>&nbsp;&bull;&nbsp;{data.creator}</small>}
+            {data.album && <small>&nbsp;&bull;&nbsp;{data.album}</small>}
+        </div>
+    </div>;
 };
 
 export default withBrowser(PlaylistManagerCore, false,
