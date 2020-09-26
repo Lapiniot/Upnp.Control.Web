@@ -37,6 +37,7 @@ namespace Web.Upnp.Control
                 .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
                 .AddTransient<IEventSubscribeClient>(sp => sp.GetRequiredService<EventSubscribeClient>())
                 .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifier>()
+                .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
 

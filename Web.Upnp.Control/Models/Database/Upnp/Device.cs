@@ -7,10 +7,7 @@ namespace Web.Upnp.Control.Models.Database.Upnp
 {
     public class Device
     {
-        [Key]
-        public string Udn { get; set; }
-
-        public Device(string udn, string location, string deviceType, string friendlyName, string manufacturer, string description, string modelName, string modelNumber)
+        public Device(string udn, Uri location, string deviceType, string friendlyName, string manufacturer, string description, string modelName, string modelNumber)
         {
             Udn = udn;
             Location = location;
@@ -22,8 +19,11 @@ namespace Web.Upnp.Control.Models.Database.Upnp
             ModelNumber = modelNumber;
         }
 
+        [Key]
+        public string Udn { get; set; }
+
         [JsonPropertyName("url")]
-        public string Location { get; set; }
+        public Uri Location { get; set; }
 
         [JsonPropertyName("type")]
         public string DeviceType { get; set; }

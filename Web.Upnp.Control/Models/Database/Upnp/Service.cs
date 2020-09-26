@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace Web.Upnp.Control.Models.Database.Upnp
 {
@@ -8,11 +9,11 @@ namespace Web.Upnp.Control.Models.Database.Upnp
         [JsonIgnore]
         public int Id { get; set; }
 
-        public Service(string serviceId, string metadataUrl, string serviceType, string controlUrl, string eventsUrl)
+        public Service(string serviceId, string serviceType, Uri metadataUrl, Uri controlUrl, Uri eventsUrl)
         {
             ServiceId = serviceId;
-            MetadataUrl = metadataUrl;
             ServiceType = serviceType;
+            MetadataUrl = metadataUrl;
             ControlUrl = controlUrl;
             EventsUrl = eventsUrl;
         }
@@ -20,16 +21,16 @@ namespace Web.Upnp.Control.Models.Database.Upnp
         [JsonPropertyName("id")]
         public string ServiceId { get; set; }
 
-        [JsonPropertyName("url")]
-        public string MetadataUrl { get; set; }
-
         [JsonPropertyName("type")]
         public string ServiceType { get; set; }
 
-        [JsonIgnore]
-        public string ControlUrl { get; set; }
+        [JsonPropertyName("url")]
+        public Uri MetadataUrl { get; set; }
 
         [JsonIgnore]
-        public string EventsUrl { get; set; }
+        public Uri ControlUrl { get; set; }
+
+        [JsonIgnore]
+        public Uri EventsUrl { get; set; }
     }
 }

@@ -56,7 +56,7 @@ namespace Web.Upnp.Control.Services
             var service = device.Services.FirstOrDefault(s => s.ServiceType == schema);
 
             return service != null
-                ? new Uri(service.ControlUrl)
+                ? service.ControlUrl
                 : device.Services.Any(s => s.ServiceType == "urn:xiaomi-com:service:Playlist:1")
                     ? new UriBuilder(device.Location) { Path = string.Format(UmiMappings[schema], device.Udn.Substring(5)) }.Uri
                     : null;
