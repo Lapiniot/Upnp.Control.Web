@@ -9,7 +9,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services
 {
-    public sealed class UpnpEventSubscribeObserver : IObserver<UpnpDiscoveryEvent>
+    public sealed class UpnpEventSubscribeObserver : IObserver<UpnpDiscoveryEvent>, IAsyncDisposable
     {
         private readonly IUpnpSubscriptionsRepository repository;
         private readonly IUpnpEventSubscriptionFactory factory;
@@ -27,10 +27,8 @@ namespace Web.Upnp.Control.Services
 
         #region Implementation of IObserver<UpnpDiscoveryEvent>
 
-        public async void OnCompleted()
+        public void OnCompleted()
         {
-            await TerminateAsync(repository.GetAll()).ConfigureAwait(false);
-            repository.Clear();
         }
 
         public void OnError(Exception error)
@@ -45,10 +43,20 @@ namespace Web.Upnp.Control.Services
                     SubscribeToEvents(dae.Description);
                     break;
                 case UpnpDeviceDisappearedEvent dde:
-                    repository.Remove(e.DeviceId, out var subs);
-                    var _ = TerminateAsync(subs);
+                    repository.Remove(dde.DeviceId, out var subscriptions);
+                    var _ = TerminateAsync(subscriptions);
                     break;
             }
+        }
+
+        #endregion
+
+        #region Implementation of IAsyncDisposable
+
+        public async ValueTask DisposeAsync()
+        {
+            await TerminateAsync(repository.GetAll()).ConfigureAwait(false);
+            repository.Clear();
         }
 
         #endregion
@@ -72,7 +80,7 @@ namespace Web.Upnp.Control.Services
             {
                 try
                 {
-                    await subscription.ConfigureAwait(false).DisposeAsync();
+                    await subscription.DisposeAsync().ConfigureAwait(false);
                 }
                 catch(Exception exception)
                 {
