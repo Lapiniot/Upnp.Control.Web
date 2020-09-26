@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
+using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
@@ -38,6 +40,7 @@ namespace Web.Upnp.Control
                 .AddTransient<IEventSubscribeClient>(sp => sp.GetRequiredService<EventSubscribeClient>())
                 .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
                 .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
+                .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => new SsdpEventEnumerator(TimeSpan.FromSeconds(120), UpnpServices.RootDevice))
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
 

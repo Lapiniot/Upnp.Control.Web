@@ -39,7 +39,7 @@ namespace Web.Upnp.Control.Services
 
                 await using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
 
-                var enumerator = new SsdpEventEnumerator(TimeSpan.FromSeconds(120), "upnp:rootdevice");
+                var enumerator = scope.ServiceProvider.GetRequiredService<IAsyncEnumerable<SsdpReply>>();
 
                 await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                 {
