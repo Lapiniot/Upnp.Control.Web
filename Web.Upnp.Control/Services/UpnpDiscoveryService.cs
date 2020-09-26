@@ -62,11 +62,7 @@ namespace Web.Upnp.Control.Services
                                     {
                                         context.Remove(existing);
                                         await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-
-                                        foreach(var observer in observers)
-                                        {
-                                            observer.OnNext(new UpnpDeviceDisappearedEvent(nt));
-                                        }
+                                        Notify(new UpnpDeviceDisappearedEvent(nt));
                                     }
 
                                     continue;
@@ -101,10 +97,7 @@ namespace Web.Upnp.Control.Services
                         await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
                         await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
 
-                        foreach(var observer in observers)
-                        {
-                            observer.OnNext(new UpnpDeviceAppearedEvent(udn, description));
-                        }
+                        Notify(new UpnpDeviceAppearedEvent(udn, description));
                     }
                     catch(Exception exception)
                     {
@@ -121,9 +114,36 @@ namespace Web.Upnp.Control.Services
             }
             finally
             {
-                foreach(var observer in observers)
+                NotifyCompletion();
+            }
+        }
+
+        private void Notify(UpnpDiscoveryEvent discoveryEvent)
+        {
+            foreach(var observer in observers)
+            {
+                try
+                {
+                    observer.OnNext(discoveryEvent);
+                }
+                catch(Exception exception)
+                {
+                    logger.LogError(exception, $"Error providing new data to the observer: {observer}");
+                }
+            }
+        }
+
+        private void NotifyCompletion()
+        {
+            foreach(var observer in observers)
+            {
+                try
                 {
                     observer.OnCompleted();
+                }
+                catch(Exception exception)
+                {
+                    logger.LogError(exception, $"Error sending completion notification to the observer: {observer}");
                 }
             }
         }
