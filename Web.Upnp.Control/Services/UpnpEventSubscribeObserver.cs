@@ -25,6 +25,8 @@ namespace Web.Upnp.Control.Services
             sessionTimeout = TimeSpan.FromMinutes(30);
         }
 
+        #region Implementation of IObserver<UpnpDiscoveryEvent>
+
         public async void OnCompleted()
         {
             await TerminateAsync(repository.GetAll()).ConfigureAwait(false);
@@ -48,6 +50,8 @@ namespace Web.Upnp.Control.Services
                     break;
             }
         }
+
+        #endregion
 
         private void SubscribeToEvents(UpnpDeviceDescription description)
         {

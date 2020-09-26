@@ -13,6 +13,8 @@ namespace Web.Upnp.Control.Services
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        #region Implementation of IObserver<UpnpDiscoveryEvent>
+
         public void OnCompleted()
         {
         }
@@ -32,5 +34,7 @@ namespace Web.Upnp.Control.Services
                 _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, "disappeared");
             }
         }
+
+        #endregion
     }
 }
