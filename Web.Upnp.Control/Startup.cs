@@ -40,6 +40,7 @@ namespace Web.Upnp.Control
                 .AddTransient<IEventSubscribeClient>(sp => sp.GetRequiredService<EventSubscribeClient>())
                 .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
                 .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
+                .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
                 .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => new SsdpEventEnumerator(TimeSpan.FromSeconds(120), UpnpServices.RootDevice))
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();

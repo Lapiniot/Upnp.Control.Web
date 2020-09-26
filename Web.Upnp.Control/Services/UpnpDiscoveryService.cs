@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models.Database.Upnp;
+using Web.Upnp.Control.Services.Abstractions;
 using Icon = Web.Upnp.Control.Models.Database.Upnp.Icon;
 
 namespace Web.Upnp.Control.Services
@@ -18,14 +19,16 @@ namespace Web.Upnp.Control.Services
     public class UpnpDiscoveryService : BackgroundService
     {
         private readonly ILogger<UpnpDiscoveryService> logger;
+        private readonly IUpnpServiceMetadataProvider metadataProvider;
         private readonly IServiceProvider services;
         private readonly IObserver<UpnpDiscoveryEvent>[] observers;
 
         public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger,
-            IEnumerable<IObserver<UpnpDiscoveryEvent>> observers = null)
+            IUpnpServiceMetadataProvider metadataProvider, IEnumerable<IObserver<UpnpDiscoveryEvent>> observers = null)
         {
             this.services = services ?? throw new ArgumentNullException(nameof(services));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.metadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
             this.observers = observers?.ToArray() ?? Array.Empty<IObserver<UpnpDiscoveryEvent>>();
         }
 
@@ -86,11 +89,9 @@ namespace Web.Upnp.Control.Services
                             continue;
                         }
 
-                        var dev = new UpnpDevice(new Uri(reply.Location), reply.UniqueServiceName);
+                        logger.LogInformation($"New device discovered: {reply.UniqueServiceName}");
 
-                        logger.LogInformation($"New device discovered: {dev.Usn}");
-
-                        var description = await dev.GetDescriptionAsync(stoppingToken).ConfigureAwait(false);
+                        var description = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
                         entity = MapConvert(description);
                         entity.ExpiresAt = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
 
