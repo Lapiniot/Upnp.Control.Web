@@ -40,7 +40,7 @@ namespace Web.Upnp.Control.Services
             switch(e)
             {
                 case UpnpDeviceAppearedEvent dae when dae.Description.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema):
-                    SubscribeToEvents(dae.Description);
+                    SubscribeToEvents(dae.DeviceId, dae.Description);
                     break;
                 case UpnpDeviceDisappearedEvent dde:
                     repository.Remove(dde.DeviceId, out var subscriptions);
@@ -61,14 +61,14 @@ namespace Web.Upnp.Control.Services
 
         #endregion
 
-        private void SubscribeToEvents(UpnpDeviceDescription description)
+        private void SubscribeToEvents(string deviceId, UpnpDeviceDescription description)
         {
-            var baseUrl = $"api/events/{Uri.EscapeUriString(description.Udn)}/notify";
+            var baseUrl = $"api/events/{Uri.EscapeUriString(deviceId)}/notify";
 
             var rcService = description.Services.Single(s => s.ServiceType == UpnpServices.RenderingControl);
             var avtService = description.Services.Single(s => s.ServiceType == UpnpServices.AVTransport);
 
-            repository.Add(description.Udn,
+            repository.Add(deviceId,
                 factory.Subscribe(rcService.EventSubscribeUri, new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout),
                 factory.Subscribe(avtService.EventSubscribeUri, new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout)
             );

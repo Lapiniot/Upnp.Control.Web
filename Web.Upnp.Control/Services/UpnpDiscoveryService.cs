@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IoT.Device.Upnp;
 using IoT.Protocol.Upnp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -77,8 +76,6 @@ namespace Web.Upnp.Control.Services
                             continue;
                         }
 
-                        //DebugDump(reply);
-
                         var entity = await context.FindAsync<Device>(udn).ConfigureAwait(false);
 
                         if(entity != null)
@@ -100,7 +97,7 @@ namespace Web.Upnp.Control.Services
 
                         logger.LogInformation($"New device discovered with UDN='{description.Udn}'");
 
-                        Notify(new UpnpDeviceAppearedEvent(description.Udn, description));
+                        Notify(new UpnpDeviceAppearedEvent(udn, description));
                     }
                     catch(Exception exception)
                     {
