@@ -53,7 +53,7 @@ namespace Web.Upnp.Control.Services
 
                         DebugDump(reply);
 
-                        var udn = GetUdn(reply.UniqueServiceName);
+                        var udn = ExtractUdn(reply.UniqueServiceName);
 
                         if(reply.StartLine.StartsWith("NOTIFY") && reply.TryGetValue("NT", out var nt))
                         {
@@ -131,13 +131,13 @@ namespace Web.Upnp.Control.Services
             Console.WriteLine();
         }
 
-        private string GetUdn(string value)
+        private string ExtractUdn(string usn)
         {
-            var i1 = value.IndexOf(':');
-            if(i1 < 0) return value;
-            var i2 = value.IndexOf(':', ++i1);
-            if(i2 < 0) return value[i1..];
-            return value[i1..i2];
+            var i1 = usn.IndexOf(':');
+            if(i1 < 0) return usn;
+            var i2 = usn.IndexOf(':', ++i1);
+            if(i2 < 0) return usn[i1..];
+            return usn[i1..i2];
         }
 
         private void Notify(UpnpDiscoveryEvent discoveryEvent)
