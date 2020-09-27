@@ -93,7 +93,7 @@ namespace Web.Upnp.Control.Services
                         var description = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
                         entity = MapConvert(description);
                         entity.Udn = udn;
-                        entity.ExpiresAt = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
+                        entity.ExpiresAt = DateTimeOffset.UtcNow.AddSeconds(reply.MaxAge + 10);
 
                         await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
                         await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
