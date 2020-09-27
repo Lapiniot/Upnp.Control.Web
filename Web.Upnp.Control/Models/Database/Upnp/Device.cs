@@ -44,7 +44,7 @@ namespace Web.Upnp.Control.Models.Database.Upnp
         public bool IsOnline { get; set; }
 
         [JsonIgnore]
-        public DateTime ExpiresAt { get; set; }
+        public DateTimeOffset ExpiresAt { get; set; }
 
         public ICollection<Icon> Icons { get; set; }
 
