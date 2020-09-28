@@ -3,6 +3,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Web.Upnp.Control.Services.Abstractions;
 using Web.Upnp.Control.Services.HttpClients;
 using static System.Net.DecompressionMethods;
 
@@ -29,7 +30,8 @@ namespace Web.Upnp.Control.Services
 
         public static IServiceCollection AddEventSubscribeClient(this IServiceCollection services)
         {
-            services.AddHttpClient<EventSubscribeClient>()
+            services.AddTransient<IEventSubscribeClient>(sp => sp.GetRequiredService<EventSubscribeClient>())
+                .AddHttpClient<EventSubscribeClient>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5))
                 .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
                 {
