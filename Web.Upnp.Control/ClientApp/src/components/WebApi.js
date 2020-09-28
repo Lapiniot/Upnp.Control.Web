@@ -37,7 +37,7 @@ export default class {
             stop: () => new JsonFetch(`${controlBaseUrl}${deviceId}/stop()`),
             prev: () => new JsonFetch(`${controlBaseUrl}${deviceId}/prev()`),
             next: () => new JsonFetch(`${controlBaseUrl}${deviceId}/next()`),
-            seek: (position) => new JsonFetch(`${controlBaseUrl}${deviceId}/seek(${position})`)
+            seek: (position) => new JsonPutFetch(`${controlBaseUrl}${deviceId}/position`, null, { position: position })
         };
     }
 }

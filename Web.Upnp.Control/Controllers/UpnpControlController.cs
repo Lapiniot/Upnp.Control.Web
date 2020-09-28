@@ -85,9 +85,10 @@ namespace Web.Upnp.Control.Controllers
             };
         }
 
-        [HttpGet("seek/{position:double}")]
-        [HttpGet("seek({position:double})")]
-        public async Task SeekAsync(string deviceId, CancellationToken cancellationToken, double position)
+        [HttpPut("position")]
+        [HttpPut("position()")]
+        [Consumes("application/json")]
+        public async Task SeekAsync(string deviceId, [FromBody] double position, CancellationToken cancellationToken)
         {
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
             var info = await avt.GetPositionInfoAsync(0, cancellationToken).ConfigureAwait(false);
@@ -104,7 +105,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpGet("seek/{time:timespan}")]
         [HttpGet("seek({time:timespan})")]
-        public async Task SeekAsync(string deviceId, CancellationToken cancellationToken, TimeSpan time)
+        public async Task SeekAsync(string deviceId, TimeSpan time, CancellationToken cancellationToken)
         {
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
             await avt.SeekAsync(target: time.ToString("hh\\:mm\\:ss")).ConfigureAwait(false);
@@ -169,9 +170,9 @@ namespace Web.Upnp.Control.Controllers
             await avt.NextAsync(0, cancellationToken).ConfigureAwait(false);
         }
 
-        [HttpGet("play_mode/{mode}")]
-        [HttpGet("play_mode({mode})")]
-        public async Task SetPlayModeAsync(string deviceId, string mode, CancellationToken cancellationToken)
+        [HttpPut("play_mode")]
+        [HttpPut("play_mode()")]
+        public async Task SetPlayModeAsync([FromBody][FromQuery] string deviceId, string mode, CancellationToken cancellationToken)
         {
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
             await avt.SetPlayModeAsync(0, mode, cancellationToken).ConfigureAwait(false);
