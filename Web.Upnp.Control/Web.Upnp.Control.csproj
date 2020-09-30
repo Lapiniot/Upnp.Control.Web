@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <RuntimeIdentifiers>win10-x64;osx-x64;debian-arm64</RuntimeIdentifiers>
+        <!-- <RuntimeIdentifiers>win10-x64;osx-x64;debian-arm64</RuntimeIdentifiers> -->
         <LangVersion>9.0</LangVersion>
         <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
         <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
