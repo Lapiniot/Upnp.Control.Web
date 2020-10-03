@@ -56,17 +56,17 @@ class PlayerCore extends React.Component {
         }
     }
 
-    play = () => { return this.ctrl.play().fetch(); }
+    play = () => this.ctrl.play().fetch();
 
-    pause = () => { return this.ctrl.pause().fetch(); }
+    pause = () => this.ctrl.pause().fetch();
 
-    stop = () => { return this.ctrl.stop().fetch(); }
+    stop = () => this.ctrl.stop().fetch();
 
-    prev = () => { return this.ctrl.prev().fetch(); }
+    prev = () => this.ctrl.prev().fetch();
 
-    next = () => { return this.ctrl.next().fetch(); }
+    next = () => this.ctrl.next().fetch();
 
-    changePosition = position => { return this.ctrl.seek(position.toFixed(3)).fetch(); };
+    seek = position => this.ctrl.seek(position.toFixed(2)).fetch();
 
     render() {
         const { actions = [], current, next, playbackState, playMode, time, duration } = this.state;
@@ -75,7 +75,7 @@ class PlayerCore extends React.Component {
         return <React.Fragment>
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
             <div className="d-flex flex-column">
-                <Progress time={time} duration={duration} running={playbackState === "PLAYING"} onChangeRequested={this.changePosition} />
+                <Progress time={time} duration={duration} running={playbackState === "PLAYING"} onChangeRequested={this.seek} />
                 <div className="d-flex align-items-center justify-content-between">
                     <Toolbar>
                         <Toolbar.Group className="align-items-center">
