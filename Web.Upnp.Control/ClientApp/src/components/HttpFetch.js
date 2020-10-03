@@ -1,6 +1,4 @@
-﻿
-
-export class UrlBuilder {
+﻿export class UrlBuilder {
     constructor(path, query) {
         this.path = path;
         this.query = query;
