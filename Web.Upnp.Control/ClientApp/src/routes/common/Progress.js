@@ -24,7 +24,7 @@ export class Progress extends React.Component {
 
         const style = running
             ? { width: `${progress}%`, animation: `inflate-width ${total - current}ms linear forwards` }
-            : { width: `${progress}%` };
+            : { width: `${progress}%`, animation: "none" };
 
         return <div className="d-flex flex-wrap justify-content-between user-select-none" onClick={this.clickHandler}>
             <Timer className="text-tiny" current={current / 1000} total={total / 1000} running={running} />
