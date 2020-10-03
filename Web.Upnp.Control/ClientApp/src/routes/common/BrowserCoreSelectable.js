@@ -43,8 +43,8 @@ export default class extends React.Component {
         const { source: { result: items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.selectables = items.filter(filter).map(i => i.id);
         const allSelected = this.selection.all(this.selectables);
-        return <div className="x-table x-table-sm x-table-hover-link x-table-striped x-table-head-light">
-                   <div className="position-sticky sticky-top">
+        return <div className="x-table x-table-sm x-table-hover-link x-table-striped">
+                   <div className="position-sticky sticky-top bg-light">
                        <div>
                            <div className="x-table-cell-min">
                                <input type="checkbox" id="select_all" onChange={this.onSelectAll}

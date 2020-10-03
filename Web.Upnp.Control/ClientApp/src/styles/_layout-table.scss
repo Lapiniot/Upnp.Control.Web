@@ -1,11 +1,23 @@
-﻿$table-striped-order: even;
+﻿$x-table-striped-order: even;
 
 .x-table {
+    --bs-x-table-bg: #{$table-bg};
+    --bs-x-table-accent-bg: transparent;
+    --bs-x-table-striped-color: #{$table-striped-color};
+    --bs-x-table-striped-bg: #{$table-striped-bg};
+    --bs-x-table-active-color: #{$table-active-color};
+    --bs-x-table-active-bg: #{$table-active-bg};
+    --bs-x-table-hover-color: #{$table-hover-color};
+    --bs-x-table-hover-bg: #{$table-hover-bg};
+
     display: table;
     width: 100%;
     max-width: 100%;
     margin-bottom: $spacer;
     background-color: $table-bg;
+    color: $table-color;
+    vertical-align: $table-cell-vertical-align;
+    border-color: $table-border-color;
 
     & > div {
         display: table-row-group;
@@ -29,6 +41,8 @@
 
         & > div {
             display: table-row;
+            background-color: var(--bs-x-table-bg);
+            background-image: linear-gradient(var(--bs-x-table-accent-bg), var(--bs-x-table-accent-bg));
 
             &[data-selected="true"] {
                 background-color: $link-color !important;
@@ -38,18 +52,20 @@
             & > div {
                 display: table-cell;
                 vertical-align: middle;
-                padding: $table-cell-padding;
+                padding: $table-cell-padding-x $table-cell-padding-y;
                 border-top: $table-border-width solid $table-border-color;
 
                 &.x-table-cell-min {
                     width: 1px;
                 }
             }
+
             & > div:first-child {
-                padding-left: 2 * $table-cell-padding;
+                padding-left: 2 * $table-cell-padding-x;
             }
+
             & > div:last-child {
-                padding-right: 2 * $table-cell-padding;
+                padding-right: 2 * $table-cell-padding-x;
             }
         }
     }
@@ -58,13 +74,15 @@
         & > div {
             & > div {
                 & > div {
-                    padding: $table-cell-padding-sm;
+                    padding: $table-cell-padding-x-sm $table-cell-padding-y-sm;
                 }
+                
                 & > div:first-child {
-                    padding-left: 2 * $table-cell-padding-sm;
+                    padding-left: 2 * $table-cell-padding-x-sm;
                 }
+
                 & > div:last-child {
-                    padding-right: 2 * $table-cell-padding-sm;
+                    padding-right: 2 * $table-cell-padding-x-sm;
                 }
             }
         }
@@ -72,8 +90,9 @@
 
     &.x-table-striped {
         & > :nth-of-type(2) {
-            & > :nth-of-type(#{$table-striped-order}) {
-                background-color: $table-accent-bg;
+            & > :nth-of-type(#{$x-table-striped-order}) {
+                --bs-x-table-accent-bg: var(--bs-x-table-striped-bg);
+                color: var(--bs-x-table-striped-color);
             }
         }
     }
@@ -81,7 +100,8 @@
     &.x-table-hover {
         & > :nth-of-type(2) {
             & > :hover {
-                background-color: $table-hover-bg;
+                --bs-x-table-accent-bg: var(--bs-x-table-hover-bg);
+                color: var(--bs-x-table-hover-color);
             }
         }
     }
@@ -89,34 +109,10 @@
     &.x-table-hover-link {
         & > :nth-of-type(2) {
             & > :hover {
-                background-color: $table-hover-bg;
+                --bs-x-table-accent-bg: var(--bs-x-table-hover-bg);
                 color: $link-hover-color;
                 text-decoration: none;
                 cursor: default;
-            }
-        }
-    }
-
-    &.x-table-head-dark {
-        & > :nth-of-type(1) {
-            & > div {
-                & > div {
-                    color: $table-dark-color;
-                    background-color: $table-dark-bg;
-                    border-color: $table-dark-border-color;
-                }
-            }
-        }
-    }
-
-    &.x-table-head-light {
-        & > :nth-of-type(1) {
-            & > div {
-                & > div {
-                    color: $table-head-color;
-                    background-color: $table-head-bg;
-                    border-color: $table-border-color;
-                }
             }
         }
     }
