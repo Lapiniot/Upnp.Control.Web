@@ -30,14 +30,14 @@ export default class {
         return {
             state: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/state${detailed ? "?detailed" : ""}`),
             playlistState: () => new JsonFetch(`${controlBaseUrl}${deviceId}/playlist_state`),
-            position: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/position${detailed ? "?detailed" : ""}`),
             play: (id) => new JsonFetch(`${controlBaseUrl}${deviceId}/play()${id ? `?id=${encodeURIComponent(id)}` : ""}`),
             playUri: (uri) => new JsonFetch(`${controlBaseUrl}${deviceId}/play_uri()?uri=${encodeURIComponent(uri)}`),
             pause: () => new JsonFetch(`${controlBaseUrl}${deviceId}/pause()`),
             stop: () => new JsonFetch(`${controlBaseUrl}${deviceId}/stop()`),
             prev: () => new JsonFetch(`${controlBaseUrl}${deviceId}/prev()`),
             next: () => new JsonFetch(`${controlBaseUrl}${deviceId}/next()`),
-            seek: (position) => new JsonPutFetch(`${controlBaseUrl}${deviceId}/position`, null, { position: position })
+            position: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/position${detailed ? "?detailed" : ""}`),
+            seek: (position) => new JsonPutFetch(`${controlBaseUrl}${deviceId}/position`, null, { body: position })
         };
     }
 }
