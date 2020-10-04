@@ -1,4 +1,7 @@
 ﻿$enable-gradients: true;
+$breadcrumb-divider: quote("\276f");
+$breadcrumb-item-padding-x: .25rem !default;
+
 @import "../../node_modules/bootstrap/scss/bootstrap";
 @import "fontawesome";
 @import "layout-grid";

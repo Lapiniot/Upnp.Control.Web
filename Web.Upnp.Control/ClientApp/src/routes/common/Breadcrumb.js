@@ -10,7 +10,7 @@ const BreadcrumbItem = ({ active, title, url }) => active
 
 export default ({ items = [], path, params }) =>
     <nav aria-label="breadcrumb">
-        <ol className="breadcrumb rounded-0 my-0 p-2">
+        <ol className="breadcrumb rounded-0 my-0 p-1 px-2 bg-gradient">
             {reversemap(items, ({ title, id }, i) => <BreadcrumbItem key={i} title={title} url={generatePath(path, { ...params, id })} active={i === 0} />)}
             &nbsp;
         </ol>
