@@ -130,15 +130,21 @@ $album-art-sizes: ( "xs": 0.50, "sm": 0.75, "md": 1.25, "lg": 1.75, "xl": 2.00);
     75% { color: rgba($color: #FFF, $alpha: 0.9); }
 }
 
-@keyframes inflate-width{
-    to { width: 100%; }
+@mixin inflate-width-animation($suffix) {
+    @keyframes inflate-width#{$suffix} {
+        to { width: 100%; }
+    }    
 }
+
+@include inflate-width-animation("");
+@include inflate-width-animation("-0");
+@include inflate-width-animation("-1");
 
 .animate-pulse{
     animation: fade 1.5s ease-in-out infinite;
 }
 
-$slider-size: 3px;
+$slider-size: 0.15rem;
 
 .slider{
     display: flex;
@@ -153,9 +159,9 @@ $slider-size: 3px;
 
     & > .slider-ticker{
         align-self: center;
-        width: 4 * $slider-size;
-        height: 4 * $slider-size;
-        margin-left: -2 * $slider-size;
+        width: 5.2 * $slider-size;
+        height: 5.2 * $slider-size;
+        margin-left: -2.6 * $slider-size;
         background-color: $primary;
         border-radius: 50%;
         flex-shrink: 0;
