@@ -1,6 +1,7 @@
 ﻿$enable-gradients: true;
 $breadcrumb-divider: quote("\276f");
 $breadcrumb-item-padding-x: .25rem !default;
+$breadcrumb-border-radius: 0 !default;
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
 @import "fontawesome";
