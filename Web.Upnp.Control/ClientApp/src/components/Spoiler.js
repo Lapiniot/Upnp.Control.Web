@@ -1,4 +1,5 @@
 ﻿import React from "react";
+import "bootstrap/js/src/collapse";
 
 export default ({ uniqueId, title, children }) =>
     <div className="spoiler">
