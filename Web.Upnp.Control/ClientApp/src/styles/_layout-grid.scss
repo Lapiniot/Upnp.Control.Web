@@ -14,16 +14,18 @@ $grid-layout-breakpoints: map-merge(
 @mixin grid-template($rows, $columns) {
     @if ($columns) {
         grid-template-columns: repeat($columns, 1fr);
+        grid-auto-flow: row dense;
     }
 
     @if ($rows) {
         grid-template-rows: repeat($rows, 1fr);
+        grid-auto-flow: column dense;
     }
 }
 
 .d-grid {
     display: grid;
-    grid-gap: 15px;
+    grid-gap: 1rem;
 }
 
 .grid-no-gap {
