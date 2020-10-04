@@ -4,7 +4,7 @@ import { reversemap, generatePath } from "../../components/Extensions";
 
 const BreadcrumbItem = ({ active, title, url }) => active
     ? <li className="breadcrumb-item active" aria-current="page">{title}</li>
-    : <li className="breadcrumb-item">
+    : <li className="breadcrumb-item no-decoration">
           <NavLink to={url}>{title}</NavLink>
       </li>;
 

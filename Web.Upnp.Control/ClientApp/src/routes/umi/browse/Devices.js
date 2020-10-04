@@ -20,9 +20,9 @@ function UmiDevice({ "data-source": { icons, name, type, description, udn } }) {
                <div className="card-body">
                    <PlayerWidget udn={udn} />
                </div>
-               <div className="card-footer d-flex align-items-center justify-content-end">
-                   <RouteLink to={`/umi/browse/${udn}/`} glyph="folder" className="card-link">Browse</RouteLink>
-                   <RouteLink to={`/umi/playlist/${udn}/PL:`} glyph="list-alt" className="card-link">Playlists</RouteLink>
+               <div className="card-footer d-flex align-items-center justify-content-end no-decoration">
+                   <RouteLink to={`/umi/browse/${udn}/`} glyph="folder">Browse</RouteLink>
+                   <RouteLink to={`/umi/playlist/${udn}/PL:`} glyph="list-alt">Playlists</RouteLink>
                </div>
            </div>;
 }

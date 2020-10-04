@@ -23,6 +23,10 @@ $breadcrumb-border-radius: 0 !default;
     font-size: 0.6rem;
 }
 
+a.no-decoration, .no-decoration > a{
+    text-decoration: none;
+}
+
 @each $level in map-keys($grays) {
     .bg-gray-#{$level} {
         background-color: map-get($grays, $level);
