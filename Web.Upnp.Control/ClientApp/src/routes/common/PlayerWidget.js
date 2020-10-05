@@ -72,6 +72,12 @@ class PlayerCore extends React.Component {
         const { actions = [], current, next, playbackState, playMode, time, duration } = this.state;
         const { title, album, creator } = current || {};
         const transitioning = playbackState === "TRANSITIONING";
+        
+        const btnStyle = "no-outline p-1";
+        const btnActiveStyle = `${btnStyle} text-primary`;
+        const btnSmallStyle = `${btnStyle} py-0`;
+        const btnLargeStyle = `${btnSmallStyle} fa-2x`;
+        
         return <React.Fragment>
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
             <div className="d-flex flex-column">
@@ -79,10 +85,10 @@ class PlayerCore extends React.Component {
                 <div className="d-flex align-items-center justify-content-between">
                     <Toolbar>
                         <Toolbar.Group className="align-items-center">
-                            <Toolbar.Button title="Prev" onClick={this.prev} glyph="step-backward fa-sm" className="p-0 px-1" disabled={!actions.includes("Previous")} />
-                            {actions.includes("Play") && <Toolbar.Button title="Play" onClick={this.play} glyph="play-circle" className="fa-2x p-0 px-1" />}
-                            {(actions.includes("Pause") || transitioning) && <Toolbar.Button title="Pause" onClick={this.pause} glyph="pause-circle" className="fa-2x p-0 px-1" disabled={transitioning} />}
-                            <Toolbar.Button title={next ? `Next: ${next.title}` : "Next"} onClick={this.next} glyph="step-forward fa-sm" className="p-0 px-1" disabled={!actions.includes("Next")} />
+                            <Toolbar.Button title="Prev" onClick={this.prev} glyph="step-backward fa-sm" className={btnSmallStyle} disabled={!actions.includes("Previous")} />
+                            {actions.includes("Play") && <Toolbar.Button title="Play" onClick={this.play} glyph="play-circle" className={btnLargeStyle} />}
+                            {(actions.includes("Pause") || transitioning) && <Toolbar.Button title="Pause" onClick={this.pause} glyph="pause-circle" className={btnLargeStyle} disabled={transitioning} />}
+                            <Toolbar.Button title={next ? `Next: ${next.title}` : "Next"} onClick={this.next} glyph="step-forward fa-sm" className={btnSmallStyle} disabled={!actions.includes("Next")} />
                         </Toolbar.Group>
                     </Toolbar>
                     {current &&
@@ -94,11 +100,11 @@ class PlayerCore extends React.Component {
                         </div>}
                     <Toolbar className="flex-nowrap">
                         <Toolbar.Group>
-                            <Toolbar.Button glyph="random" className={playMode === "REPEAT_SHUFFLE" ? "p-1 text-primary" : "p-1"} />
-                            <Toolbar.Button glyph="retweet" className={playMode === "REPEAT_ALL" ? "p-1 text-primary" : "p-1"} />
+                            <Toolbar.Button glyph="random" className={playMode === "REPEAT_SHUFFLE" ? btnActiveStyle : btnStyle} />
+                            <Toolbar.Button glyph="retweet" className={playMode === "REPEAT_ALL" ? btnActiveStyle : btnStyle} />
                         </Toolbar.Group>
                         <Toolbar.Group>
-                            <Toolbar.Button glyph="volume-off" className="p-2" />
+                            <Toolbar.Button glyph="volume-off" className={btnStyle} />
                         </Toolbar.Group>
                     </Toolbar>
                 </div>
