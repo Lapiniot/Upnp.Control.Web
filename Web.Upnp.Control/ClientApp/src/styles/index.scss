@@ -150,6 +150,7 @@ $album-art-sizes: ( "xs": 0.50, "sm": 0.75, "md": 1.25, "lg": 1.75, "xl": 2.00);
 
 $slider-size: 0.15rem;
 $ticker-size: 5.4 * $slider-size;
+$ticker-size-hover: 1.4 * $ticker-size;
 
 .slider{
     display: flex;
@@ -170,6 +171,14 @@ $ticker-size: 5.4 * $slider-size;
         background-color: $primary;
         border-radius: 50%;
         flex-shrink: 0;
+        transition: 0.125s ease-in-out 0s;
+        transition-property: width, height, margin-left;
+
+        &:hover{
+            width: $ticker-size-hover;
+            height: $ticker-size-hover;
+            margin-left: -$ticker-size-hover / 2;
+        }
     }
 }
 
