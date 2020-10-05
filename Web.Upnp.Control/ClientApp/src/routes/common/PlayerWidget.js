@@ -5,6 +5,12 @@ import { SignalRListener } from "../../components/SignalR";
 import $api from "../../components/WebApi";
 import { Progress } from "./Progress";
 
+const PM_REPEAT_SHUFFLE = "REPEAT_SHUFFLE";
+const PM_REPEAT_ALL = "REPEAT_ALL";
+
+const ST_TRANSITIONING = "TRANSITIONING";
+const ST_PLAYING = "PLAYING";
+
 class PlayerCore extends React.Component {
     constructor(props) {
         super(props);
@@ -68,20 +74,24 @@ class PlayerCore extends React.Component {
 
     seek = position => this.ctrl.seek(position.toFixed(2)).fetch();
 
+    setRepeatAllPlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_ALL).fetch();
+
+    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_SHUFFLE).fetch();
+
     render() {
         const { actions = [], current, next, playbackState, playMode, time, duration } = this.state;
         const { title, album, creator } = current || {};
-        const transitioning = playbackState === "TRANSITIONING";
-        
+        const transitioning = playbackState === ST_TRANSITIONING;
+
         const btnStyle = "no-outline p-1";
         const btnActiveStyle = `${btnStyle} text-primary`;
         const btnSmallStyle = `${btnStyle} py-0`;
         const btnLargeStyle = `${btnSmallStyle} fa-2x`;
-        
+
         return <React.Fragment>
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
             <div className="d-flex flex-column">
-                <Progress time={time} duration={duration} running={playbackState === "PLAYING"} onChangeRequested={this.seek} />
+                <Progress time={time} duration={duration} running={playbackState === ST_PLAYING} onChangeRequested={this.seek} />
                 <div className="d-flex align-items-center justify-content-between">
                     <Toolbar>
                         <Toolbar.Group className="align-items-center">
@@ -100,8 +110,8 @@ class PlayerCore extends React.Component {
                         </div>}
                     <Toolbar className="flex-nowrap">
                         <Toolbar.Group>
-                            <Toolbar.Button glyph="random" className={playMode === "REPEAT_SHUFFLE" ? btnActiveStyle : btnStyle} />
-                            <Toolbar.Button glyph="retweet" className={playMode === "REPEAT_ALL" ? btnActiveStyle : btnStyle} />
+                            <Toolbar.Button glyph="random" className={playMode === PM_REPEAT_SHUFFLE ? btnActiveStyle : btnStyle} onClick={this.setRepeatShufflePlayMode} />
+                            <Toolbar.Button glyph="retweet" className={playMode === PM_REPEAT_ALL ? btnActiveStyle : btnStyle} onClick={this.setRepeatAllPlayMode} />
                         </Toolbar.Group>
                         <Toolbar.Group>
                             <Toolbar.Button glyph="volume-off" className={btnStyle} />
