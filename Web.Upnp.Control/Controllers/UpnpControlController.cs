@@ -172,7 +172,8 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpPut("play_mode")]
         [HttpPut("play_mode()")]
-        public async Task SetPlayModeAsync([FromBody][FromQuery] string deviceId, string mode, CancellationToken cancellationToken)
+        [Consumes("application/json")]
+        public async Task SetPlayModeAsync(string deviceId, [FromBody] string mode, CancellationToken cancellationToken)
         {
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
             await avt.SetPlayModeAsync(0, mode, cancellationToken).ConfigureAwait(false);
