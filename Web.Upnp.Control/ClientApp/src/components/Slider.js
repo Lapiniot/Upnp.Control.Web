@@ -16,7 +16,7 @@ export default class extends React.Component {
         style.width = `${progress}%`;
 
         return <div onClick={this.clickHandler} role="button" {...other}>
-            <div className="slider my-2">
+            <div className="slider">
                 <div className="slider-line" style={style} />
                 <div className="slider-ticker" />
             </div>
