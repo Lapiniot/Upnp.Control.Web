@@ -3,7 +3,7 @@ import Toolbar from "../../components/Toolbar";
 import { withDataFetch } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
 import $api from "../../components/WebApi";
-import { Progress } from "./Progress";
+import Progress from "./Progress";
 
 const PM_REPEAT_SHUFFLE = "REPEAT_SHUFFLE";
 const PM_REPEAT_ALL = "REPEAT_ALL";
@@ -110,11 +110,11 @@ class PlayerCore extends React.Component {
                         </div>}
                     <Toolbar className="flex-nowrap">
                         <Toolbar.Group>
-                            <Toolbar.Button glyph="random" className={playMode === PM_REPEAT_SHUFFLE ? btnActiveStyle : btnStyle} onClick={this.setRepeatShufflePlayMode} />
-                            <Toolbar.Button glyph="retweet" className={playMode === PM_REPEAT_ALL ? btnActiveStyle : btnStyle} onClick={this.setRepeatAllPlayMode} />
+                            <Toolbar.Button glyph="volume-up" className={btnStyle} />
                         </Toolbar.Group>
                         <Toolbar.Group>
-                            <Toolbar.Button glyph="volume-off" className={btnStyle} />
+                            <Toolbar.Button glyph="random" className={playMode === PM_REPEAT_SHUFFLE ? btnActiveStyle : btnStyle} onClick={this.setRepeatShufflePlayMode} />
+                            <Toolbar.Button glyph="retweet" className={playMode === PM_REPEAT_ALL ? btnActiveStyle : btnStyle} onClick={this.setRepeatAllPlayMode} />
                         </Toolbar.Group>
                     </Toolbar>
                 </div>

@@ -3,7 +3,7 @@ import { parseMilliseconds, formatTime } from "../../components/Extensions";
 import Timer from "../../components/Timer";
 import Slider from "../../components/Slider";
 
-export class Progress extends React.Component {
+export default class Progress extends React.Component {
 
     constructor(props) {
         super(props);
