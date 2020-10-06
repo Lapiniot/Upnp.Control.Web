@@ -10,6 +10,7 @@ $breadcrumb-border-radius: 0 !default;
 @import "spoiler";
 @import "form-table";
 @import "modal";
+@import "slider";
 
 .flex-basis-100{
     flex-basis: 100%;
@@ -146,43 +147,6 @@ $album-art-sizes: ( "xs": 0.50, "sm": 0.75, "md": 1.25, "lg": 1.75, "xl": 2.00);
 
 .animate-pulse{
     animation: fade 1.5s ease-in-out infinite;
-}
-
-$slider-size: 0.15rem;
-$ticker-size: 5.4 * $slider-size;
-$ticker-hover-scale-factor: 1.5;
-
-.slider{
-    --slider-color: #{$primary};
-    --slider-bg-color: #{$light};
-    display: flex;
-    height: $slider-size;
-    align-items: stretch;
-    background-color: var(--slider-bg-color);
-    margin: $ticker-size / 2 0;
-
-    & > .slider-line{
-        background-color: var(--slider-color);
-        flex-shrink: 0;
-        //box-shadow: 0 0 0 #000;
-        //transform: translate3d(0,0,0);
-        //will-change: width, animation;
-    }
-
-    & > .slider-ticker{
-        align-self: center;
-        flex-shrink: 0;
-        width: $ticker-size;
-        height: $ticker-size;
-        margin-left: -$ticker-size / 2;
-        background-color: var(--slider-color);
-        clip-path: circle(45%);
-        transition: transform 0.25s ease-in-out 0s;
-
-        &:hover{
-            transform: scale3d($ticker-hover-scale-factor, $ticker-hover-scale-factor, 1);
-        }
-    }
 }
 
 input[type="checkbox"].chk-no-label {
