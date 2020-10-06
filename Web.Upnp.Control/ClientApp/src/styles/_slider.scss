@@ -2,7 +2,7 @@ $slider-size: 0.15rem;
 $ticker-size: 5.8 * $slider-size;
 $ticker-hover-scale-factor: 1.5;
 
-.slider{
+.slider {
     --slider-color: #{$primary};
     --slider-bg-color: #{$light};
     display: flex;
@@ -11,7 +11,7 @@ $ticker-hover-scale-factor: 1.5;
     background-color: var(--slider-bg-color);
     margin: $ticker-size / 2 0;
 
-    & > .slider-line{
+    & > .slider-line {
         background-color: var(--slider-color);
         flex-shrink: 0;
         //box-shadow: 0 0 0 #000;
@@ -19,7 +19,7 @@ $ticker-hover-scale-factor: 1.5;
         //will-change: width, animation;
     }
 
-    & > .slider-ticker{
+    & > .slider-ticker {
         align-self: center;
         flex-shrink: 0;
         width: $ticker-size;
@@ -29,7 +29,7 @@ $ticker-hover-scale-factor: 1.5;
         clip-path: circle(45%);
         transition: transform 0.25s ease-in-out 0s;
 
-        &:hover{
+        &:hover {
             transform: scale3d($ticker-hover-scale-factor, $ticker-hover-scale-factor, 1);
         }
     }

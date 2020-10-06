@@ -1,6 +1,6 @@
 ﻿$enable-gradients: true;
 $breadcrumb-divider: quote("\276f");
-$breadcrumb-item-padding-x: .25rem !default;
+$breadcrumb-item-padding-x: 0.25rem !default;
 $breadcrumb-border-radius: 0 !default;
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
@@ -12,19 +12,20 @@ $breadcrumb-border-radius: 0 !default;
 @import "modal";
 @import "slider";
 
-.flex-basis-100{
+.flex-basis-100 {
     flex-basis: 100%;
 }
 
-.flex-basis-0{
+.flex-basis-0 {
     flex-basis: 0;
 }
 
-.text-tiny{
+.text-tiny {
     font-size: 0.6rem;
 }
 
-a.no-decoration, .no-decoration > a{
+a.no-decoration,
+.no-decoration > a {
     text-decoration: none;
 }
 
@@ -80,7 +81,13 @@ $album-art-size-base: 2rem;
     height: $size !important;
 }
 
-$album-art-sizes: ( "xs": 0.50, "sm": 0.75, "md": 1.25, "lg": 1.75, "xl": 2.00);
+$album-art-sizes: (
+    "xs": 0.5,
+    "sm": 0.75,
+    "md": 1.25,
+    "lg": 1.75,
+    "xl": 2,
+);
 
 @each $name, $size in $album-art-sizes {
     .album-art-#{$name} {
@@ -109,43 +116,51 @@ $album-art-sizes: ( "xs": 0.50, "sm": 0.75, "md": 1.25, "lg": 1.75, "xl": 2.00);
         }
     }
 
-    &:hover > &-layer-hover{
+    &:hover > &-layer-hover {
         visibility: visible;
     }
 }
 
 .x-table-hover-link > * > * {
-    & .stack-layer{
+    & .stack-layer {
         background-color: rgba($color: #000000, $alpha: 0.7);
         color: white;
     }
 
-    &:hover .stack-layer{
+    &:hover .stack-layer {
         visibility: hidden;
     }
 
-    &:hover .stack-layer-hover{
+    &:hover .stack-layer-hover {
         visibility: visible;
     }
 }
 
-@keyframes fade{
-    25% { color: rgba($color: #FFF, $alpha: 0.9); }
-    50% { color: rgba($color: #FFF, $alpha: 0.8); }
-    75% { color: rgba($color: #FFF, $alpha: 0.9); }
+@keyframes fade {
+    25% {
+        color: rgba($color: #fff, $alpha: 0.9);
+    }
+    50% {
+        color: rgba($color: #fff, $alpha: 0.8);
+    }
+    75% {
+        color: rgba($color: #fff, $alpha: 0.9);
+    }
 }
 
 @mixin inflate-width-animation($suffix) {
     @keyframes inflate-width#{$suffix} {
-        to { width: 100%; }
-    }    
+        to {
+            width: 100%;
+        }
+    }
 }
 
 @include inflate-width-animation("");
 @include inflate-width-animation("-0");
 @include inflate-width-animation("-1");
 
-.animate-pulse{
+.animate-pulse {
     animation: fade 1.5s ease-in-out infinite;
 }
 
@@ -163,7 +178,8 @@ input[type="checkbox"].chk-no-label {
 }
 
 .no-outline {
-    &:focus, &:active {
+    &:focus,
+    &:active {
         outline: none !important;
         box-shadow: none;
     }
