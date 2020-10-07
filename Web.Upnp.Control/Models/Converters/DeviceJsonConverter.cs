@@ -22,7 +22,6 @@ namespace Web.Upnp.Control.Models.Converters
             writer.WriteString("description", value.Description);
             writer.WriteString("model", value.ModelName);
             writer.WriteString("modelNumber", value.ModelNumber);
-            writer.WriteBoolean("isOnline", value.IsOnline);
 
             var serviceConverter = (JsonConverter<Service>)options.GetConverter(typeof(Service));
 

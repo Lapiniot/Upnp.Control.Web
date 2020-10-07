@@ -80,24 +80,27 @@ namespace Web.Upnp.Control.Services
 
                         if(entity != null)
                         {
-                            entity.ExpiresAt = DateTimeOffset.UtcNow.AddSeconds(reply.MaxAge + 10);
-                            context.Update(entity);
+                            context.Update(entity with { ExpiresAt = DateTimeOffset.UtcNow.AddSeconds(reply.MaxAge + 10) });
                             await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
                             logger.LogInformation($"Device expiration updated for UDN='{udn}'");
                             continue;
                         }
 
-                        var description = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
-                        entity = MapConvert(description);
-                        entity.Udn = udn;
-                        entity.ExpiresAt = DateTimeOffset.UtcNow.AddSeconds(reply.MaxAge + 10);
+                        var desc = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
+
+                        entity = new Device(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
+                            desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTimeOffset.UtcNow.AddSeconds(reply.MaxAge + 10))
+                        {
+                            Icons = desc.Icons.Select(i => new Icon(0, i.Width, i.Height, i.Uri, i.Mime)).ToList(),
+                            Services = desc.Services.Select(s => new Service(0, s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
+                        };
 
                         await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
                         await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
 
-                        logger.LogInformation($"New device discovered with UDN='{description.Udn}'");
+                        logger.LogInformation($"New device discovered with UDN='{desc.Udn}'");
 
-                        Notify(new UpnpDeviceAppearedEvent(udn, description));
+                        Notify(new UpnpDeviceAppearedEvent(udn, desc));
                     }
                     catch(Exception exception)
                     {
@@ -165,18 +168,6 @@ namespace Web.Upnp.Control.Services
                     logger.LogError(exception, $"Error sending completion notification to the observer: {observer}");
                 }
             }
-        }
-
-        private static Device MapConvert(UpnpDeviceDescription device)
-        {
-            return new Device(device.Udn, device.Location, device.DeviceType, device.FriendlyName, device.Manufacturer,
-                device.ModelDescription, device.ModelName, device.ModelNumber)
-            {
-                IsOnline = true,
-                Icons = device.Icons.Select(i => new Icon(i.Width, i.Height, i.Uri.AbsoluteUri, i.Mime)).ToList(),
-                Services = device.Services.Select(s => new Service(s.ServiceId,
-                    s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
-            };
         }
     }
 }

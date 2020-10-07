@@ -8,5 +8,10 @@ namespace Web.Upnp.Control.DataAccess
         public UpnpDbContext(DbContextOptions options) : base(options) {}
 
         public DbSet<Device> UpnpDevices { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Device>().HasKey(d => d.Udn);
+        }
     }
 }
