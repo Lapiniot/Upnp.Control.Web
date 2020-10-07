@@ -8,7 +8,7 @@ using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.Services;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
-using Web.Upnp.Control.Models.Database.Upnp;
+using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services

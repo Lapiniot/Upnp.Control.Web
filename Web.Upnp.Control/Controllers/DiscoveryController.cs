@@ -6,9 +6,8 @@ using IoT.Device.Xiaomi.Umi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
-using Web.Upnp.Control.Models.Database.Upnp;
+using Web.Upnp.Control.Models;
 using static IoT.Protocol.Upnp.UpnpServices;
-
 
 namespace Web.Upnp.Control.Controllers
 {

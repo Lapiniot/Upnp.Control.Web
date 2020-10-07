@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Web.Upnp.Control.Models.Database.Upnp;
+using Web.Upnp.Control.Models;
 
 namespace Web.Upnp.Control.DataAccess
 {

@@ -8,9 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.DataAccess;
-using Web.Upnp.Control.Models.Database.Upnp;
+using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
-using Icon = Web.Upnp.Control.Models.Database.Upnp.Icon;
+using Icon = Web.Upnp.Control.Models.Icon;
 
 namespace Web.Upnp.Control.Services
 {

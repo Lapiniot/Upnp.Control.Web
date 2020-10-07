@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace Web.Upnp.Control.Models.Database.Upnp
+namespace Web.Upnp.Control.Models
 {
     public class Service
     {
