@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Hubs;
+using Web.Upnp.Control.Models.Converters;
 using Web.Upnp.Control.Routing;
 using Web.Upnp.Control.Services;
 using Web.Upnp.Control.Services.Abstractions;
@@ -51,6 +52,9 @@ namespace Web.Upnp.Control
                 {
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                     options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+                    options.JsonSerializerOptions.Converters.Add(new IconJsonConverter());
+                    options.JsonSerializerOptions.Converters.Add(new ServiceJsonConverter());
+                    options.JsonSerializerOptions.Converters.Add(new DeviceJsonConverter());
                 });
 
             services.AddResponseCaching();
