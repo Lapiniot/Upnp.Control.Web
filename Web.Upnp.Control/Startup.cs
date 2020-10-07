@@ -33,7 +33,9 @@ namespace Web.Upnp.Control
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
+            services
+                //.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
+                .AddDbContext<UpnpDbContext>(p => p.UseSqlite("Data Source=upnp.db3;"))
                 .AddHostedService<UpnpDiscoveryService>()
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
