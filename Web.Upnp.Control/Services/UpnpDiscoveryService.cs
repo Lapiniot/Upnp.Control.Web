@@ -76,7 +76,7 @@ namespace Web.Upnp.Control.Services
                             continue;
                         }
 
-                        var entity = await context.FindAsync<Device>(udn).ConfigureAwait(false);
+                        var entity = await context.FindAsync<Device>(udn, stoppingToken).ConfigureAwait(false);
 
                         if(entity != null)
                         {
