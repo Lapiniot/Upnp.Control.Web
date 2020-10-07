@@ -41,6 +41,7 @@ namespace Web.Upnp.Control.Services
                 using var scope = services.CreateScope();
 
                 await using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
+                await context.Database.EnsureCreatedAsync(stoppingToken).ConfigureAwait(false);
 
                 var enumerator = scope.ServiceProvider.GetRequiredService<IAsyncEnumerable<SsdpReply>>();
 
@@ -60,7 +61,7 @@ namespace Web.Upnp.Control.Services
 
                             if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
                             {
-                                var existing = await context.FindAsync<Device>(udn).ConfigureAwait(false);
+                                var existing = await context.FindAsync<Device>(new[] { udn }, stoppingToken).ConfigureAwait(false);
                                 if(existing != null)
                                 {
                                     context.Remove(existing);
@@ -76,26 +77,27 @@ namespace Web.Upnp.Control.Services
                             continue;
                         }
 
-                        var entity = await context.FindAsync<Device>(udn, stoppingToken).ConfigureAwait(false);
+                        var device = await context.FindAsync<Device>(new[] { udn }, stoppingToken).ConfigureAwait(false);
 
-                        if(entity != null)
+                        if(device != null)
                         {
-                            context.Update(entity with { ExpiresAt = DateTimeOffset.UtcNow.AddSeconds(reply.MaxAge + 10) });
+                            context.Entry(device).Property(d => d.ExpiresAt).CurrentValue = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
                             await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+
                             logger.LogInformation($"Device expiration updated for UDN='{udn}'");
                             continue;
                         }
 
                         var desc = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
 
-                        entity = new Device(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
-                            desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTimeOffset.UtcNow.AddSeconds(reply.MaxAge + 10))
+                        device = new Device(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
+                            desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10))
                         {
                             Icons = desc.Icons.Select(i => new Icon(i.Width, i.Height, i.Uri, i.Mime)).ToList(),
                             Services = desc.Services.Select(s => new Service(s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
                         };
 
-                        await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
+                        await context.AddAsync(device, stoppingToken).ConfigureAwait(false);
                         await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
 
                         logger.LogInformation($"New device discovered with UDN='{desc.Udn}'");

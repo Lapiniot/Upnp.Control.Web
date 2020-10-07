@@ -11,9 +11,7 @@ namespace Web.Upnp.Control.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Device>().HasKey(d => d.Udn);
-            modelBuilder.Entity<Icon>().HasKey("id");
-            modelBuilder.Entity<Service>().HasKey("id");
+            modelBuilder.ApplyConfiguration(new DeviceEntityTypeConfiguration());
         }
     }
 }

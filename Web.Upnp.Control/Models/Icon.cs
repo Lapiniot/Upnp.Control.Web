@@ -2,8 +2,5 @@
 
 namespace Web.Upnp.Control.Models
 {
-    public record Icon(int Width, int Height, Uri Url, string Mime)
-    {
-        private int id;
-    }
+    public record Icon(int Width, int Height, Uri Url, string Mime);
 }
