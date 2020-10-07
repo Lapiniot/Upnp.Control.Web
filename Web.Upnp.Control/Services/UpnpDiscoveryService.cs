@@ -91,8 +91,8 @@ namespace Web.Upnp.Control.Services
                         entity = new Device(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
                             desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTimeOffset.UtcNow.AddSeconds(reply.MaxAge + 10))
                         {
-                            Icons = desc.Icons.Select(i => new Icon(0, i.Width, i.Height, i.Uri, i.Mime)).ToList(),
-                            Services = desc.Services.Select(s => new Service(0, s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
+                            Icons = desc.Icons.Select(i => new Icon(i.Width, i.Height, i.Uri, i.Mime)).ToList(),
+                            Services = desc.Services.Select(s => new Service(s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
                         };
 
                         await context.AddAsync(entity, stoppingToken).ConfigureAwait(false);
