@@ -1,7 +1,7 @@
 import React from "react";
-import Toolbar from "../../components/Toolbar";
 import { withDataFetch } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
+import { mergeClassNames as merge } from "../../components/Extensions";
 import $api from "../../components/WebApi";
 import Progress from "./Progress";
 
@@ -10,6 +10,13 @@ const PM_REPEAT_ALL = "REPEAT_ALL";
 
 const ST_TRANSITIONING = "TRANSITIONING";
 const ST_PLAYING = "PLAYING";
+
+function Button(props) {
+    const { className, glyph, children, active, ...other } = props;
+    return <button type="button" className={merge`btn no-outline p-1 ${className} ${active && "text-primary"}`} {...other}>
+        {glyph && <i className={`fas fa-${glyph}`} />}{children}
+    </button>
+}
 
 class PlayerCore extends React.Component {
     constructor(props) {
@@ -82,41 +89,27 @@ class PlayerCore extends React.Component {
         const { actions = [], current, next, playbackState, playMode, time, duration } = this.state;
         const { title, album, creator } = current || {};
         const transitioning = playbackState === ST_TRANSITIONING;
-
-        const btnStyle = "no-outline p-1";
-        const btnActiveStyle = `${btnStyle} text-primary`;
-        const btnSmallStyle = `${btnStyle} py-0`;
-        const btnLargeStyle = `${btnSmallStyle} fa-2x`;
+        const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
 
         return <React.Fragment>
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
             <div className="d-flex flex-column">
                 <Progress time={time} duration={duration} running={playbackState === ST_PLAYING} onChangeRequested={this.seek} />
-                <div className="d-flex align-items-center justify-content-between">
-                    <Toolbar>
-                        <Toolbar.Group className="align-items-center">
-                            <Toolbar.Button title="Prev" onClick={this.prev} glyph="step-backward fa-sm" className={btnSmallStyle} disabled={!actions.includes("Previous")} />
-                            {actions.includes("Play") && <Toolbar.Button title="Play" onClick={this.play} glyph="play-circle" className={btnLargeStyle} />}
-                            {(actions.includes("Pause") || transitioning) && <Toolbar.Button title="Pause" onClick={this.pause} glyph="pause-circle" className={btnLargeStyle} disabled={transitioning} />}
-                            <Toolbar.Button title={next ? `Next: ${next.title}` : "Next"} onClick={this.next} glyph="step-forward fa-sm" className={btnSmallStyle} disabled={!actions.includes("Next")} />
-                        </Toolbar.Group>
-                    </Toolbar>
+                <div className="d-flex align-items-center flex-nowrap">
+                    <Button title="Prev" glyph="step-backward" className="py-0" onClick={this.prev} disabled={!actions.includes("Previous")} />
+                    {actions.includes("Play") && <Button title="Play" glyph="play-circle" className="fa-2x" onClick={this.play} />}
+                    {(actions.includes("Pause") || transitioning) && <Button title="Pause" glyph="pause-circle" className="fa-2x" onClick={this.pause} disabled={transitioning} />}
+                    <Button title={nextTitle} glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
                     {current &&
-                        <div className="d-flex flex-wrap justify-content-center mx-2 overflow-hidden">
+                        <div className="d-flex flex-wrap justify-content-center flex-grow-1 overflow-hidden mx-2">
                             <h6 className="text-center text-truncate flex-basis-100 m-0" title={title}>{title}</h6>
                             {creator && <small className="m-0">{creator}</small>}
                             {creator && album && <small>&nbsp;&bull;&nbsp;</small>}
                             {album && <small className="m-0">{album}</small>}
                         </div>}
-                    <Toolbar className="flex-nowrap">
-                        <Toolbar.Group>
-                            <Toolbar.Button glyph="volume-up" className={btnStyle} />
-                        </Toolbar.Group>
-                        <Toolbar.Group>
-                            <Toolbar.Button glyph="random" className={playMode === PM_REPEAT_SHUFFLE ? btnActiveStyle : btnStyle} onClick={this.setRepeatShufflePlayMode} />
-                            <Toolbar.Button glyph="retweet" className={playMode === PM_REPEAT_ALL ? btnActiveStyle : btnStyle} onClick={this.setRepeatAllPlayMode} />
-                        </Toolbar.Group>
-                    </Toolbar>
+                    <Button title="volume" glyph="volume-up" />
+                    <Button title="shuffle play mode" glyph="random" active={playMode === PM_REPEAT_SHUFFLE} onClick={this.setRepeatShufflePlayMode} />
+                    <Button title="repeat all play mode" glyph="retweet" active={playMode === PM_REPEAT_ALL} onClick={this.setRepeatAllPlayMode} />
                 </div>
             </div>
         </React.Fragment>;
