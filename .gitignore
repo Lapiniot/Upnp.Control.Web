@@ -8,3 +8,7 @@ _ReSharper.Caches/
 *.user
 package-lock.json
 /Web.Upnp.Control/ClientApp/src/css/index.css
+Web.Upnp.Control/*.db
+Web.Upnp.Control/*.db3
+Web.Upnp.Control/*.sqlite
+Web.Upnp.Control/*.sqlite3
