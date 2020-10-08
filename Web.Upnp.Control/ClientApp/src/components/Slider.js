@@ -12,8 +12,8 @@ export default class extends React.Component {
     };
 
     render() {
-        const { progress, style = {}, ...other } = this.props;
-        style.width = `${progress}%`;
+        const { progress, style = {}, onChangeRequested, ...other } = this.props;
+        style.width = `${(progress * 100).toFixed(2)}%`;
 
         return <div onClick={this.clickHandler} role="button" {...other}>
             <div className="slider">

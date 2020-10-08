@@ -17,7 +17,7 @@ export default class Progress extends React.Component {
 
         if (!total) return null;
 
-        const progress = total > 0 ? Math.round(current * 100 / total) : 0;
+        const progress = total > 0 ? current / total : 0;
 
         // we constantly switch between animations with same settings, but different names 'inflate-width-0' and
         // 'inflate-width-1' e.g. - this is a trick in order to apply new animation resetting running one
