@@ -19,11 +19,12 @@ export default class Progress extends React.Component {
 
         const progress = total > 0 ? current / total : 0;
 
-        // we constantly switch between animations with same settings, but different names 'inflate-width-0' and
-        // 'inflate-width-1' e.g. - this is a trick in order to apply new animation resetting running one
-        const style = running
-            ? { animation: `inflate-width-${this.spin} ${total - current}ms linear forwards` }
-            : { animation: "none" };
+        // we constantly switch between animations with same settings, but different names 'slider-run0' and
+        // 'slider-run1' e.g. - this is a trick in order to apply new animation resetting running one
+        const style = {
+            "--slider-animation-duration": running ? `${total - current}ms` : 0,
+            "--slider-animation-name": `slider-run${this.spin}`
+        };
 
         this.spin ^= 0x01;
 

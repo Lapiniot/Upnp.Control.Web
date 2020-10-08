@@ -13,12 +13,14 @@ export default class extends React.Component {
 
     render() {
         const { progress, style = {}, onChangeRequested, ...other } = this.props;
-        style.width = `${(progress * 100).toFixed(2)}%`;
+        style["--slider-progress"] = progress;
 
         return <div onClick={this.clickHandler} role="button" {...other}>
-            <div className="slider">
-                <div className="slider-line" style={style} />
-                <div className="slider-ticker" />
+            <div className="slider" style={style}>
+                <div className="slider-line" />
+                <div className="slider-ticker">
+                    <div />
+                </div>
             </div>
         </div>;
     }

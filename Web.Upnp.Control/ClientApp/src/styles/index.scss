@@ -148,18 +148,6 @@ $album-art-sizes: (
     }
 }
 
-@mixin inflate-width-animation($suffix) {
-    @keyframes inflate-width#{$suffix} {
-        to {
-            width: 100%;
-        }
-    }
-}
-
-@include inflate-width-animation("");
-@include inflate-width-animation("-0");
-@include inflate-width-animation("-1");
-
 .animate-pulse {
     animation: fade 1.5s ease-in-out infinite;
 }

@@ -1,36 +1,65 @@
-$slider-size: 0.15rem;
-$ticker-size: 5.8 * $slider-size;
-$ticker-hover-scale-factor: 1.5;
-
 .slider {
     --slider-color: #{$primary};
     --slider-bg-color: #{$light};
-    display: flex;
-    height: $slider-size;
-    align-items: stretch;
+    --slider-size: 0.15rem;
+    --slider-ticker-size: calc(5 * var(--slider-size));
+    --slider-ticker-scale-factor: 1.5;
+    --slider-progress: 0;
+    --slider-animation-duration: 0;
+    --slider-animation-name: none;
+    --slider-animation: var(--slider-animation-name) var(--slider-animation-duration) linear forwards;
+
+    height: var(--slider-size);
+    position: relative;
     background-color: var(--slider-bg-color);
-    margin: $ticker-size / 2 0;
+    margin: calc(var(--slider-ticker-size) / 2) 0;
 
     & > .slider-line {
+        position: absolute;
         background-color: var(--slider-color);
-        flex-shrink: 0;
-        //box-shadow: 0 0 0 #000;
-        //transform: translate3d(0,0,0);
-        //will-change: width, animation;
+        width: 100%;
+        height: 100%;
+        will-change: transform, animation;
+        transform-origin: left top;
+        transform: scale3d(var(--slider-progress), 1, 1);
+        animation: var(--slider-animation);
     }
 
     & > .slider-ticker {
-        align-self: center;
-        flex-shrink: 0;
-        width: $ticker-size;
-        height: $ticker-size;
-        margin-left: -$ticker-size / 2;
-        background-color: var(--slider-color);
-        clip-path: circle(45%);
-        transition: transform 0.25s ease-in-out 0s;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        will-change: transform, animation;
+        transform: translate3d(calc((var(--slider-progress) - 1) * 100%), 0, 0);
+        animation: var(--slider-animation-name) var(--slider-animation-duration) linear forwards;
 
-        &:hover {
-            transform: scale3d($ticker-hover-scale-factor, $ticker-hover-scale-factor, 1);
+        & > div {
+            position: absolute;
+            width: var(--slider-ticker-size);
+            height: var(--slider-ticker-size);
+            right: calc(var(--slider-ticker-size) / -2);
+            top: calc((var(--slider-size) - var(--slider-ticker-size)) / 2);
+            background-color: var(--slider-color);
+            clip-path: circle(48%);
+            will-change: transform;
+            transition: transform 0.25s ease-in-out 0s;
+
+            &:hover {
+                transform: scale3d(var(--slider-ticker-scale-factor), var(--slider-ticker-scale-factor), 1);
+            }
         }
     }
 }
+
+@mixin slider-run-animation($suffix) {
+    @keyframes slider-run#{$suffix} {
+        to {
+            transform: scale3d(1, 1, 1);
+            transform: translate3d(0, 0, 0);
+        }
+    }
+}
+
+@include slider-run-animation("");
+@include slider-run-animation("0");
+@include slider-run-animation("1");
