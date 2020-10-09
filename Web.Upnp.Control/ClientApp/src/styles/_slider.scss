@@ -14,7 +14,7 @@
     position: relative;
     background-color: var(--slider-bg-color);
     margin: calc(var(--slider-ticker-size) / 2) 0;
-    transform: scale3d(1, 1.01, 1);
+    transform: scale3d(1, 1, 1.0001);
 
     &:hover {
         --slider-color: var(--slider-hover-color);
@@ -25,7 +25,6 @@
         background-color: var(--slider-color);
         width: 100%;
         height: 100%;
-        will-change: transform, animation;
         transform-origin: left top;
         transform: scale3d(var(--slider-progress), 1, 1);
         animation: var(--slider-animation);
@@ -35,7 +34,6 @@
         position: absolute;
         width: 100%;
         height: 100%;
-        will-change: transform, animation;
         transform: translate3d(calc((var(--slider-progress) - 1) * 100%), 0, 0);
         animation: var(--slider-animation-name) var(--slider-animation-duration) linear forwards;
 
@@ -47,7 +45,6 @@
             top: calc((var(--slider-size) - var(--slider-ticker-size)) / 2);
             background-color: var(--slider-color);
             clip-path: circle(48%);
-            will-change: transform;
             transition: transform 250ms ease-in-out;
 
             &:hover {
@@ -60,8 +57,7 @@
 @mixin slider-run-animation($suffix) {
     @keyframes slider-run#{$suffix} {
         to {
-            transform: scale3d(1, 1, 1);
-            transform: translate3d(0, 0, 0);
+            transform: none;
         }
     }
 }
