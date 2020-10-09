@@ -14,10 +14,10 @@ using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Models.Converters;
+using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Routing;
 using Web.Upnp.Control.Services;
 using Web.Upnp.Control.Services.Abstractions;
-using Web.Upnp.Control.Services.HttpClients;
 
 namespace Web.Upnp.Control
 {
@@ -34,14 +34,15 @@ namespace Web.Upnp.Control
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                //.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
-                .AddDbContext<UpnpDbContext>(p => p.UseSqlite("Data Source=upnp.db3;"))
+                .AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
+                //.AddDbContext<UpnpDbContext>(p => p.UseSqlite("Data Source=upnp.db3;"))
                 .AddHostedService<UpnpDiscoveryService>()
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
                 .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
                 .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
                 .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
+                .AddTransient<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
                 .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
                 .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => new SsdpEventEnumerator(TimeSpan.FromSeconds(120), UpnpServices.RootDevice))
                 .AddSoapHttpClient()

@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using IoT.Protocol.Upnp;
-using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using Web.Upnp.Control.Hubs;
-using Web.Upnp.Control.Models;
+using Microsoft.Extensions.Logging;
+using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Routing;
 
 namespace Web.Upnp.Control.Controllers
@@ -20,18 +18,19 @@ namespace Web.Upnp.Control.Controllers
     [Consumes("application/xml", "text/xml")]
     public class UpnpEventsController : ControllerBase
     {
-        private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
-        private readonly XmlReaderSettings settings = new XmlReaderSettings {Async = true, IgnoreComments = true, IgnoreWhitespace = true};
+        private readonly ILogger<UpnpEventsController> logger;
+        private readonly IEnumerable<IObserver<UpnpEvent>> observers;
+        private readonly XmlReaderSettings settings = new XmlReaderSettings { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
 
-        public UpnpEventsController(IHubContext<UpnpEventsHub, IUpnpEventClient> hub)
+        public UpnpEventsController(ILogger<UpnpEventsController> logger, IEnumerable<IObserver<UpnpEvent>> observers)
         {
-            this.hub = hub ?? throw new ArgumentNullException(nameof(hub));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.observers = observers?.ToArray() ?? Array.Empty<IObserver<UpnpEvent>>();
         }
 
         [HttpNotify("[action]/{service}")]
         public Task NotifyAsync(string deviceId, string service)
         {
-            var _ = hub.Clients.All.UpnpEvent(deviceId, service, new object());
             return Task.CompletedTask;
         }
 
@@ -40,41 +39,41 @@ namespace Web.Upnp.Control.Controllers
         {
             var xml = await XElement.LoadAsync(HttpContext.Request.Body, LoadOptions.None, default).ConfigureAwait(false);
             Debug.WriteLine(xml.ToString());
-            var _ = hub.Clients.All.RenderingControlEvent(deviceId, sid);
         }
 
         [HttpNotify("notify/avt")]
         public async Task NotifyAVTransportAsync(string deviceId)
         {
-            IDictionary<string, string> map;
-            IDictionary<string, string> vendor;
+            IReadOnlyDictionary<string, string> properties;
+            IReadOnlyDictionary<string, string> vendorProperties;
 
             using(var reader = XmlReader.Create(HttpContext.Request.Body, settings))
             {
-                (map, vendor) = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
+                (properties, vendorProperties) = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
             }
 
-            if(map == null || map.Count == 0) return;
+            if(properties == null || properties.Count == 0) return;
 
-            var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null;
-            var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null;
+            NotifyObservers<UpnpAVTransportPropertyChangedevent>(deviceId, properties, vendorProperties);
+        }
 
-            var state = new AVTransportState(map.TryGetValue("TransportState", out value) ? value : null, null,
-                map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : (int?)null, null,
-                map.TryGetValue("CurrentPlayMode", out value) ? value : null)
+        private void NotifyObservers<T>(string deviceId, IReadOnlyDictionary<string, string> properties,
+            IReadOnlyDictionary<string, string> vendorProperties)
+            where T : UpnpPropertyChangedEvent, new()
+        {
+            var @event = new T() { DeviceId = deviceId, Properties = properties, VendorProperties = vendorProperties };
+
+            foreach(var observer in observers)
             {
-                Actions = map.TryGetValue("CurrentTransportActions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-                CurrentTrackMetadata = current,
-                CurrentTrack = map.TryGetValue("CurrentTrack", out value) ? value : null,
-                CurrentTrackUri = map.TryGetValue("CurrentTrackURI", out value) ? value : null,
-                NextTrackMetadata = next
-            };
-
-            var position = new AVPositionInfo(map.TryGetValue("CurrentTrack", out value) ? value : null,
-                map.TryGetValue("CurrentTrackDuration", out value) ? value : null,
-                map.TryGetValue("RelativeTimePosition", out value) ? value : null);
-
-            var _ = hub.Clients.All.AVTransportEvent(deviceId, new {state, position, vendor});
+                try
+                {
+                    observer.OnNext(@event);
+                }
+                catch(Exception exception)
+                {
+                    logger.LogError(exception, $"Error sending UPnP event notification to observer {observer}");
+                }
+            }
         }
     }
 }

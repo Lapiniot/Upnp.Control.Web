@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.SignalR;
 using Web.Upnp.Control.Hubs;
+using Web.Upnp.Control.Models.Events;
 
 namespace Web.Upnp.Control.Services
 {

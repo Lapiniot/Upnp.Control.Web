@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp;
 using Microsoft.Extensions.Logging;
+using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services
