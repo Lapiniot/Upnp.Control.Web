@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Linq;
 using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -35,26 +34,30 @@ namespace Web.Upnp.Control.Controllers
         }
 
         [HttpNotify("notify/rc")]
-        public async Task NotifyRenderingControlAsync(string deviceId, [FromHeader(Name = "SID")] string sid)
+        public Task NotifyRenderingControlAsync(string deviceId, [FromHeader(Name = "SID")] string sid)
         {
-            var xml = await XElement.LoadAsync(HttpContext.Request.Body, LoadOptions.None, default).ConfigureAwait(false);
-            Debug.WriteLine(xml.ToString());
+            return ProcessRequestStreamAsync<UpnpRenderingControlPropertyChangedevent>(HttpContext.Request.Body, deviceId);
         }
 
         [HttpNotify("notify/avt")]
-        public async Task NotifyAVTransportAsync(string deviceId)
+        public Task NotifyAVTransportAsync(string deviceId)
+        {
+            return ProcessRequestStreamAsync<UpnpAVTransportPropertyChangedevent>(HttpContext.Request.Body, deviceId);
+        }
+
+        private async Task ProcessRequestStreamAsync<T>(Stream stream, string deviceId) where T : UpnpPropertyChangedEvent, new()
         {
             IReadOnlyDictionary<string, string> properties;
             IReadOnlyDictionary<string, string> vendorProperties;
 
-            using(var reader = XmlReader.Create(HttpContext.Request.Body, settings))
+            using(var reader = XmlReader.Create(stream, settings))
             {
                 (_, properties, vendorProperties) = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
             }
 
             if(properties == null || properties.Count == 0) return;
 
-            NotifyObservers<UpnpAVTransportPropertyChangedevent>(deviceId, properties, vendorProperties);
+            NotifyObservers<T>(deviceId, properties, vendorProperties);
         }
 
         private void NotifyObservers<T>(string deviceId, IReadOnlyDictionary<string, string> properties,

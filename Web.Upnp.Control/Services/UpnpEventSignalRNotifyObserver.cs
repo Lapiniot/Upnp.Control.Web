@@ -32,6 +32,9 @@ namespace Web.Upnp.Control.Services
                 case UpnpAVTransportPropertyChangedevent avte:
                     NotifyAVTransportEvent(avte);
                     break;
+                case UpnpRenderingControlPropertyChangedevent rce:
+                    NotifyRenderingControlEvent(rce);
+                    break;
             }
         }
 
@@ -57,6 +60,14 @@ namespace Web.Upnp.Control.Services
                 map.TryGetValue("RelativeTimePosition", out value) ? value : null);
 
             var _ = hub.Clients.All.AVTransportEvent(avtEvent.DeviceId, new { state, position, avtEvent.VendorProperties });
+        }
+
+        private void NotifyRenderingControlEvent(UpnpRenderingControlPropertyChangedevent rce)
+        {
+            var _ = hub.Clients.All.RenderingControlEvent(rce.DeviceId, new
+            {
+                volume = rce.Properties.TryGetValue("Volume", out var v) && int.TryParse(v, out var vol) ? vol : 0
+            });
         }
     }
 }
