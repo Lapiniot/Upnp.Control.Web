@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp;
+using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
@@ -48,28 +50,37 @@ namespace Web.Upnp.Control
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
 
+            var customConverters = new JsonConverter[]
+            {
+                new IconJsonConverter(),
+                new ServiceJsonConverter(),
+                new DeviceJsonConverter(),
+                new DIDLItemJsonConverter()
+            };
+
             services
-                .Configure<RouteOptions>(options => options.ConstraintMap.Add("timespan", typeof(TimeSpanRouteConstraint)))
+                .Configure((Action<RouteOptions>)(options => options.ConstraintMap.Add("timespan", typeof(TimeSpanRouteConstraint))))
                 .AddControllers(options => options.Filters.Add<RequestCancelledExceptionFilter>())
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.IgnoreNullValues = true;
-                    options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-                    options.JsonSerializerOptions.Converters.Add(new IconJsonConverter());
-                    options.JsonSerializerOptions.Converters.Add(new ServiceJsonConverter());
-                    options.JsonSerializerOptions.Converters.Add(new DeviceJsonConverter());
-                });
+                .AddJsonOptions(options => ConfigureJsonSerializer(options.JsonSerializerOptions, customConverters));
+
+            services
+                .AddSignalR()
+                .AddJsonProtocol(options => ConfigureJsonSerializer(options.PayloadSerializerOptions, customConverters));
 
             services.AddResponseCaching();
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
             services.AddImageLoaderProxyMiddleware();
-            services.AddSignalR().AddJsonProtocol(c =>
-            {
-                c.PayloadSerializerOptions.IgnoreNullValues = true;
-                c.PayloadSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-            });
         }
 
+        private static void ConfigureJsonSerializer(JsonSerializerOptions options, IEnumerable<JsonConverter> converters)
+        {
+            options.IgnoreNullValues = true;
+            options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+            foreach(var converter in converters)
+            {
+                options.Converters.Add(converter);
+            }
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

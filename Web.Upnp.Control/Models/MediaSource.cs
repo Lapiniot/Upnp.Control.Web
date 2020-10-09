@@ -1,8 +1,4 @@
 namespace Web.Upnp.Control.Models
 {
-    public class MediaSource
-    {
-        public string DeviceId { get; set; }
-        public string[] Items { get; set; }
-    }
+    public record MediaSource(string DeviceId, string[] Items);
 }
