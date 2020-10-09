@@ -1,5 +1,6 @@
 .slider {
-    --slider-color: #{$primary};
+    --slider-color: #{$link-color};
+    --slider-hover-color: #{$link-hover-color};
     --slider-bg-color: #{$light};
     --slider-size: 0.15rem;
     --slider-ticker-size: calc(5 * var(--slider-size));
@@ -14,6 +15,10 @@
     background-color: var(--slider-bg-color);
     margin: calc(var(--slider-ticker-size) / 2) 0;
     transform: scale3d(1, 1.01, 1);
+
+    &:hover {
+        --slider-color: var(--slider-hover-color);
+    }
 
     & > .slider-line {
         position: absolute;
@@ -43,7 +48,7 @@
             background-color: var(--slider-color);
             clip-path: circle(48%);
             will-change: transform;
-            transition: transform 0.25s ease-in-out 0s;
+            transition: transform 250ms ease-in-out;
 
             &:hover {
                 transform: scale3d(var(--slider-ticker-scale-factor), var(--slider-ticker-scale-factor), 1);
