@@ -4,6 +4,7 @@ import { SignalRListener } from "../../components/SignalR";
 import { mergeClassNames as merge } from "../../components/Extensions";
 import $api from "../../components/WebApi";
 import Progress from "./Progress";
+import Slider from "../../components/Slider";
 
 const PM_REPEAT_SHUFFLE = "REPEAT_SHUFFLE";
 const PM_REPEAT_ALL = "REPEAT_ALL";
@@ -21,8 +22,10 @@ function Button(props) {
 class PlayerCore extends React.Component {
     constructor(props) {
         super(props);
-        this.handlers = new Map([["AVTransportEvent", this.onAVTransportEvent]]);
-        this.state = { actions: [], current: null, next: null, playbackState: null, dataContext: null, progress: 0 };
+        this.handlers = new Map([
+            ["AVTransportEvent", this.onAVTransportEvent],
+            ["RenderingControlEvent", this.onRenderingControlEvent]]);
+        this.state = { actions: [], current: null, next: null, playbackState: null, dataContext: null, progress: 0, volume: 0, muted: false };
         this.ctrl = $api.control(this.props.udn);
     }
 
@@ -53,6 +56,12 @@ class PlayerCore extends React.Component {
         }
     }
 
+    onRenderingControlEvent = (device, { volume }) => {
+        if (device === this.props.udn) {
+            this.setState({ volume });
+        }
+    }
+
     componentDidUpdate(prevProps) {
         if (prevProps.udn !== this.props.udn) {
             this.ctrl = $api.control(this.props.udn);
@@ -61,9 +70,12 @@ class PlayerCore extends React.Component {
 
     async componentDidMount() {
         try {
-            const response = await this.ctrl.position().fetch();
-            const position = await response.json();
-            this.setState({ time: position.relTime, duration: position.duration });
+            const { [0]: { relTime, duration }, [1]: { volume, muted } } =
+                await Promise.all([
+                    await (await this.ctrl.position().fetch()).json(),
+                    await (await this.ctrl.volume().fetch()).json()]);
+
+            this.setState({ time: relTime, duration, volume, muted });
         } catch (error) {
             console.error(error);
         }
@@ -86,12 +98,18 @@ class PlayerCore extends React.Component {
     setRepeatShufflePlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_SHUFFLE).fetch();
 
     render() {
-        const { actions = [], current, next, playbackState, playMode, time, duration } = this.state;
+        const { actions = [], current, next, playbackState, playMode, time, duration, volume = 0, muted = false } = this.state;
         const { title, album, creator } = current || {};
         const transitioning = playbackState === ST_TRANSITIONING;
         const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
+        const volumeStr = `Volume: ${volume}%`;
+        const volumeIcon = muted ? "volume-mute" : volume > 50 ? "volume-up" : volume > 20 ? "volume-down" : "volume-off";
 
         return <React.Fragment>
+            <i data-fa-symbol="volume-mute" className="fas fa-volume-mute fa-fw fa" />
+            <i data-fa-symbol="volume-off" className="fas fa-volume-off" />
+            <i data-fa-symbol="volume-down" className="fas fa-volume-down" />
+            <i data-fa-symbol="volume-up" className="fas fa-volume-up" />
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
             <div className="d-flex flex-column">
                 <Progress time={time} duration={duration} running={playbackState === ST_PLAYING} onChangeRequested={this.seek} />
@@ -107,7 +125,12 @@ class PlayerCore extends React.Component {
                             {creator && album && <small>&nbsp;&bull;&nbsp;</small>}
                             {album && <small className="m-0">{album}</small>}
                         </div>}
-                    <Button title="volume" glyph="volume-up" />
+                    <span>
+                        <Button title={volumeStr}>
+                            <svg className="svg-inline--fa fa-random fa-w-16"><use xlinkHref={`#${volumeIcon}`} /></svg>
+                        </Button>
+                        <Slider progress={volume / 100} style={{ width: "80px" }} className="position-fixed" />
+                    </span>
                     <Button title="shuffle play mode" glyph="random" active={playMode === PM_REPEAT_SHUFFLE} onClick={this.setRepeatShufflePlayMode} />
                     <Button title="repeat all play mode" glyph="retweet" active={playMode === PM_REPEAT_ALL} onClick={this.setRepeatAllPlayMode} />
                 </div>
