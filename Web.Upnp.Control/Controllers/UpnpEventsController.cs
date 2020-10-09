@@ -49,7 +49,7 @@ namespace Web.Upnp.Control.Controllers
 
             using(var reader = XmlReader.Create(HttpContext.Request.Body, settings))
             {
-                (properties, vendorProperties) = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
+                (_, properties, vendorProperties) = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
             }
 
             if(properties == null || properties.Count == 0) return;
