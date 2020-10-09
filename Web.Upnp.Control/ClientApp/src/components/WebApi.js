@@ -38,7 +38,10 @@ export default class {
             next: () => new JsonFetch(`${controlBaseUrl}${deviceId}/next()`),
             position: (detailed = false) => new JsonFetch(`${controlBaseUrl}${deviceId}/position${detailed ? "?detailed" : ""}`),
             seek: position => new JsonPutFetch(`${controlBaseUrl}${deviceId}/position`, null, { body: position }),
-            setPlayMode: mode => new JsonPutFetch(`${controlBaseUrl}${deviceId}/play_mode`, null, { body: JSON.stringify(mode) })
+            setPlayMode: mode => new JsonPutFetch(`${controlBaseUrl}${deviceId}/play_mode`, null, { body: JSON.stringify(mode) }),
+            volume: () => new JsonFetch(`${controlBaseUrl}${deviceId}/volume`),
+            setVolume: volume => new JsonPutFetch(`${controlBaseUrl}${deviceId}/volume`, null, { body: volume }),
+            setMute: mute => new JsonPutFetch(`${controlBaseUrl}${deviceId}/mute`, null, { body: mute })
         };
     }
 }

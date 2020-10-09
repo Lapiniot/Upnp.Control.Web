@@ -178,5 +178,36 @@ namespace Web.Upnp.Control.Controllers
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
             await avt.SetPlayModeAsync(0, mode, cancellationToken).ConfigureAwait(false);
         }
+
+        [HttpGet("volume")]
+        [HttpGet("volume()")]
+        public async Task<object> GetVolumeAsync(string deviceId, CancellationToken cancellationToken)
+        {
+            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
+            var rv = await service.GetVolumeAsync(0, cancellationToken);
+            var rm = await service.GetMuteAsync(0, cancellationToken);
+
+            return new
+            {
+                Volume = rv.TryGetValue("CurrentVolume", out var v) && int.TryParse(v, out var vol) ? vol : 0,
+                Muted = rv.TryGetValue("CurrentMute", out v) && bool.TryParse(v, out var muted) ? muted : false,
+            };
+        }
+
+        [HttpPut("volume")]
+        [HttpPut("volume()")]
+        public async Task SetVolumeAsync(string deviceId, [FromBody] uint volume, CancellationToken cancellationToken)
+        {
+            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
+            await service.SetVolumeAsync(0, volume, cancellationToken);
+        }
+
+        [HttpPut("mute")]
+        [HttpPut("mute()")]
+        public async Task SetMuteAsync(string deviceId, [FromBody] bool mute, CancellationToken cancellationToken)
+        {
+            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
+            await service.SetMuteAsync(0, mute, cancellationToken);
+        }
     }
 }
