@@ -4,10 +4,10 @@ $fa-font-path: "../webfonts";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/variables";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/mixins";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/core";
-@import "../../node_modules/@fortawesome/fontawesome-free/scss/animated";
-@import "../../node_modules/@fortawesome/fontawesome-free/scss/stacked";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/larger";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/fixed-width";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/regular";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/solid";
 
 @mixin fa-icon-wide($quarter-fraction) {
     text-align: center;
@@ -21,6 +21,14 @@ $fa-font-path: "../webfonts";
 }
 
 /* Icons referenced by the project */
+
+.#{$fa-css-prefix}-angle-down-1:before {
+    content: fa-content($fa-var-angle-down);
+}
+
+.#{$fa-css-prefix}-angle-up:before {
+    content: fa-content($fa-var-angle-up);
+}
 
 .#{$fa-css-prefix}-tv:before {
     content: fa-content($fa-var-tv);
