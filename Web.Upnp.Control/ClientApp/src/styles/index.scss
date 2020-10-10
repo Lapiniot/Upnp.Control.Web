@@ -52,8 +52,9 @@ a.no-decoration,
 }
 
 .upnp-dev-icon {
+    height: 48px !important;
     width: 48px !important;
-    height: auto;
+    object-fit: contain;
     margin-right: 0.5rem;
 }
 
