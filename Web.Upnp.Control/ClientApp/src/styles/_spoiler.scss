@@ -6,16 +6,11 @@
     overflow: hidden;
 
     & > [data-toggle="collapse"] {
-        @extend .btn;
-        @extend .btn-block;
         text-align: left;
         box-shadow: none !important;
-        @include border-radius(0);
 
-        & > i {
-            @include fa-icon;
+        & > :nth-child(1) {
             @extend .fas;
-            @include fa-icon-wide(1);
             font-weight: bolder;
 
             &:before {
@@ -23,12 +18,8 @@
             }
         }
 
-        &.collapsed {
-            & > i {
-                &:before {
-                    content: fa-content($fa-var-angle-down);
-                }
-            }
+        &.collapsed > :nth-child(1):before {
+            content: fa-content($fa-var-angle-down);
         }
     }
 }
