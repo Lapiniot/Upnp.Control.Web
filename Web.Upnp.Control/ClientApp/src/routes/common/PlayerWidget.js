@@ -56,9 +56,9 @@ class PlayerCore extends React.Component {
         }
     }
 
-    onRenderingControlEvent = (device, { volume }) => {
+    onRenderingControlEvent = (device, state) => {
         if (device === this.props.udn) {
-            this.setState({ volume });
+            this.setState(state);
         }
     }
 
@@ -97,16 +97,20 @@ class PlayerCore extends React.Component {
 
     setRepeatShufflePlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_SHUFFLE).fetch();
 
+    toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch();
+
+    changeVolume = volume => this.ctrl.setVolume(Math.round(volume * 100)).fetch();
+
     render() {
         const { actions = [], current, next, playbackState, playMode, time, duration, volume = 0, muted = false } = this.state;
         const { title, album, creator } = current || {};
         const transitioning = playbackState === ST_TRANSITIONING;
         const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
-        const volumeStr = `Volume: ${volume}%`;
+        const volumeStr = muted ? "Muted" : `Volume: ${volume}%`;
         const volumeIcon = muted ? "volume-mute" : volume > 50 ? "volume-up" : volume > 20 ? "volume-down" : "volume-off";
 
         return <React.Fragment>
-            <i data-fa-symbol="volume-mute" className="fas fa-volume-mute fa-fw fa" />
+            <i data-fa-symbol="volume-mute" className="fas fa-volume-mute" />
             <i data-fa-symbol="volume-off" className="fas fa-volume-off" />
             <i data-fa-symbol="volume-down" className="fas fa-volume-down" />
             <i data-fa-symbol="volume-up" className="fas fa-volume-up" />
@@ -126,10 +130,10 @@ class PlayerCore extends React.Component {
                             {album && <small className="m-0">{album}</small>}
                         </div>}
                     <span>
-                        <Button title={volumeStr}>
-                            <svg className="svg-inline--fa fa-random fa-w-16"><use xlinkHref={`#${volumeIcon}`} /></svg>
+                        <Button title={volumeStr} onClick={this.toggleMute}>
+                            <svg className="svg-inline--fa fa-w-16"><use xlinkHref={`#${volumeIcon}`} /></svg>
                         </Button>
-                        <Slider progress={volume / 100} style={{ width: "80px" }} className="position-fixed" />
+                        <Slider progress={volume / 100} style={{ width: "80px" }} className="position-absolute" onChangeRequested={this.changeVolume} />
                     </span>
                     <Button title="shuffle play mode" glyph="random" active={playMode === PM_REPEAT_SHUFFLE} onClick={this.setRepeatShufflePlayMode} />
                     <Button title="repeat all play mode" glyph="retweet" active={playMode === PM_REPEAT_ALL} onClick={this.setRepeatAllPlayMode} />

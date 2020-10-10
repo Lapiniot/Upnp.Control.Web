@@ -10,4 +10,11 @@ namespace Web.Upnp.Control.Models
         public string CurrentTrack { get; init; }
         public string CurrentTrackUri { get; init; }
     }
+
+    public record AVPositionInfo(string Track, string Duration, string RelTime)
+    {
+        public Item Current { get; init; }
+    }
+
+    public record RCVolumeState(uint? Volume, bool? Muted);
 }

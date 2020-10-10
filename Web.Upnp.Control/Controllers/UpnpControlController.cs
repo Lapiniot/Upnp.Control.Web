@@ -181,17 +181,15 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpGet("volume")]
         [HttpGet("volume()")]
-        public async Task<object> GetVolumeAsync(string deviceId, CancellationToken cancellationToken)
+        public async Task<RCVolumeState> GetVolumeAsync(string deviceId, CancellationToken cancellationToken)
         {
             var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
             var rv = await service.GetVolumeAsync(0, cancellationToken);
             var rm = await service.GetMuteAsync(0, cancellationToken);
 
-            return new
-            {
-                Volume = rv.TryGetValue("CurrentVolume", out var v) && int.TryParse(v, out var vol) ? vol : 0,
-                Muted = rv.TryGetValue("CurrentMute", out v) && bool.TryParse(v, out var muted) ? muted : false,
-            };
+            return new RCVolumeState(
+                rv.TryGetValue("CurrentVolume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
+                rm.TryGetValue("CurrentMute", out v) && bool.TryParse(v, out var muted) ? muted : null);
         }
 
         [HttpPut("volume")]

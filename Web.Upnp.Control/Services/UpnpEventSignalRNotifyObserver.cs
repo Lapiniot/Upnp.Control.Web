@@ -64,10 +64,9 @@ namespace Web.Upnp.Control.Services
 
         private void NotifyRenderingControlEvent(UpnpRenderingControlPropertyChangedevent rce)
         {
-            var _ = hub.Clients.All.RenderingControlEvent(rce.DeviceId, new
-            {
-                volume = rce.Properties.TryGetValue("Volume", out var v) && int.TryParse(v, out var vol) ? vol : 0
-            });
+            var _ = hub.Clients.All.RenderingControlEvent(rce.DeviceId, new RCVolumeState(
+                rce.Properties.TryGetValue("Volume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
+                rce.Properties.TryGetValue("Mute", out v) ? (v == "1" || v == "true" || v == "True") : null));
         }
     }
 }
