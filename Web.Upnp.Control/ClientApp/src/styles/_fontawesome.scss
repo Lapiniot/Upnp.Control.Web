@@ -22,7 +22,7 @@ $fa-font-path: "../webfonts";
 
 /* Icons referenced by the project */
 
-.#{$fa-css-prefix}-angle-down-1:before {
+.#{$fa-css-prefix}-angle-down:before {
     content: fa-content($fa-var-angle-down);
 }
 
