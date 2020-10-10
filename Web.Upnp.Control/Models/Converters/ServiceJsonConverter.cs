@@ -14,7 +14,7 @@ namespace Web.Upnp.Control.Models.Converters
         public override void Write(Utf8JsonWriter writer, Service value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
-            writer.WriteString("id", value.UniqueServiceName);
+            writer.WriteString("usn", value.UniqueServiceName);
             writer.WriteString("type", value.ServiceType);
             writer.WriteString("url", value.MetadataUrl.AbsoluteUri);
             writer.WriteEndObject();

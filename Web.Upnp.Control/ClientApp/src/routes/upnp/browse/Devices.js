@@ -11,7 +11,8 @@ import DeviceList from "../../common/DeviceList";
 function UpnpDevice({ "data-source": d, "data-row-id": id }) {
 
     const isMediaServer = d.services && d.services.some(
-        s => s.usn === "urn:upnp-org:serviceId:ContentDirectory" || s.usn === "urn:xiaomi-com:serviceId:Playlist");
+        s => s.type.startsWith("urn:schemas-upnp-org:service:ContentDirectory:") ||
+            s.type.startsWith("urn:xiaomi-com:service:Playlist:"));
 
     return <div className="card">
         <div className="card-header d-flex">
@@ -25,9 +26,9 @@ function UpnpDevice({ "data-source": d, "data-row-id": id }) {
             <DeviceInfo data-source={d} />
             <ServicesList data-source={d.services} data-row-id={id} />
         </div>
-        <div className="card-footer no-decoration d-flex justify-content-end">
+        <div className="card-footer no-decoration d-flex">
             <a href={d.url}><i className="fas x-fa-w-2 fa-download" />Metadata</a>
-            {isMediaServer && <RouteLink to={`/upnp/browse/${d.udn}`} glyph="folder">Browse</RouteLink>}
+            {isMediaServer && <RouteLink to={`/upnp/browse/${d.udn}`} glyph="folder" className="px-2">Browse</RouteLink>}
         </div>
     </div>;
 }
