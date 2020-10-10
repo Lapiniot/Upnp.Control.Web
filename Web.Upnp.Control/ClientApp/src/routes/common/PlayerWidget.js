@@ -106,7 +106,7 @@ class PlayerCore extends React.Component {
         const { title, album, creator } = current || {};
         const transitioning = playbackState === ST_TRANSITIONING;
         const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
-        const volumeStr = muted ? "Muted" : `Volume: ${volume}%`;
+        const volumeStr = muted ? "Muted" : `${volume}%`;
         const volumeIcon = muted ? "volume-mute" : volume > 50 ? "volume-up" : volume > 20 ? "volume-down" : "volume-off";
 
         return <React.Fragment>
@@ -124,19 +124,21 @@ class PlayerCore extends React.Component {
                     <Button title={nextTitle} glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
                     {current &&
                         <div className="d-flex flex-wrap justify-content-center flex-grow-1 overflow-hidden mx-2">
-                            <h6 className="text-center text-truncate flex-basis-100 m-0" title={title}>{title}</h6>
+                            <h6 className="text-center text-truncate flex-basis-100 m-0">{title}</h6>
                             {creator && <small className="m-0">{creator}</small>}
                             {creator && album && <small>&nbsp;&bull;&nbsp;</small>}
                             {album && <small className="m-0">{album}</small>}
                         </div>}
-                    <span>
-                        <Button title={volumeStr} onClick={this.toggleMute}>
-                            <svg className="svg-inline--fa fa-w-16"><use xlinkHref={`#${volumeIcon}`} /></svg>
-                        </Button>
-                        <Slider progress={volume / 100} style={{ width: "80px" }} className="position-absolute" onChangeRequested={this.changeVolume} />
-                    </span>
-                    <Button title="shuffle play mode" glyph="random" active={playMode === PM_REPEAT_SHUFFLE} onClick={this.setRepeatShufflePlayMode} />
-                    <Button title="repeat all play mode" glyph="retweet" active={playMode === PM_REPEAT_ALL} onClick={this.setRepeatAllPlayMode} />
+                    <div className="d-flex position-relative flex-nowrap">
+                        <div className="hover-container">
+                            <Button title={volumeStr} onClick={this.toggleMute}>
+                                <svg className="svg-inline--fa fa-w-16"><use xlinkHref={`#${volumeIcon}`} /></svg>
+                            </Button>
+                            <Slider progress={volume / 100} className="hover-activated position-absolute w-100 px-1" onChangeRequested={this.changeVolume} />
+                        </div>
+                        <Button title="shuffle play mode" glyph="random" active={playMode === PM_REPEAT_SHUFFLE} onClick={this.setRepeatShufflePlayMode} />
+                        <Button title="repeat all play mode" glyph="retweet" active={playMode === PM_REPEAT_ALL} onClick={this.setRepeatAllPlayMode} />
+                    </div>
                 </div>
             </div>
         </React.Fragment>;
