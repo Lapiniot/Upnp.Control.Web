@@ -70,7 +70,7 @@ class PlayerCore extends React.Component {
 
     async componentDidMount() {
         try {
-            const { [0]: { relTime, duration }, [1]: { volume, muted } } =
+            const { 0: { relTime, duration }, 1: { volume, muted } } =
                 await Promise.all([
                     await (await this.ctrl.position().fetch()).json(),
                     await (await this.ctrl.volume().fetch()).json()]);
