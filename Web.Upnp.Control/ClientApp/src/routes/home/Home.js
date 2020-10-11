@@ -1,3 +1,3 @@
 ﻿import React from "react";
 
-export default () => <div>HOME</div>;
+export default () => <div className="m-2 d-flex h-100 align-items-center justify-content-center">HOME</div>;
