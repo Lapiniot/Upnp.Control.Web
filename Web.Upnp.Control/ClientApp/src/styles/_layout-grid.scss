@@ -1,5 +1,7 @@
 ﻿/********** Grid Layout utilities **********/
 
+$generate-grid-layout-responsive-styles: true !default;
+$generate-grid-layout-auto-columns-styles: true !default;
 $grid-layout-max-columns: 8;
 
 $grid-layout-breakpoints: map-merge(
@@ -25,6 +27,7 @@ $grid-layout-breakpoints: map-merge(
 
 @mixin grid-auto-columns($size) {
     grid-template-columns: repeat(auto-fit, minmax(10rem, $size));
+    grid-auto-flow: dense;
 }
 
 .d-grid {
@@ -36,20 +39,24 @@ $grid-layout-breakpoints: map-merge(
     grid-gap: 0 !important;
 }
 
-@each $breakpoint in map-keys($grid-layout-breakpoints) {
-    @include media-breakpoint-up($breakpoint, $grid-layout-breakpoints) {
-        $infix: breakpoint-infix($breakpoint, $grid-layout-breakpoints);
+@if $generate-grid-layout-responsive-styles {
+    @each $breakpoint in map-keys($grid-layout-breakpoints) {
+        @include media-breakpoint-up($breakpoint, $grid-layout-breakpoints) {
+            $infix: breakpoint-infix($breakpoint, $grid-layout-breakpoints);
 
-        @for $i from 1 through $grid-layout-max-columns {
-            .grid#{$infix}-c#{$i} {
-                @include grid-template(null, $i);
+            @for $i from 1 through $grid-layout-max-columns {
+                .grid#{$infix}-c#{$i} {
+                    @include grid-template(null, $i);
+                }
             }
         }
     }
 }
 
-@for $i from 1 through 5 {
-    .grid-auto-c#{$i} {
-        @include grid-auto-columns(20rem + $i * 5rem);
+@if $generate-grid-layout-auto-columns-styles {
+    @for $i from 1 through 5 {
+        .grid-auto-x#{$i} {
+            @include grid-auto-columns(20rem + $i * 5rem);
+        }
     }
 }

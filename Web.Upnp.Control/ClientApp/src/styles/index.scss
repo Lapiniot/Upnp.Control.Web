@@ -2,8 +2,9 @@
 $breadcrumb-divider: quote("\276f");
 $breadcrumb-item-padding-x: 0.25rem !default;
 $breadcrumb-border-radius: 0 !default;
+$generate-album-art-sizes: false;
+$generate-grid-layout-responsive-styles: false;
 
-// scss-docs-start import-stack
 // Configuration
 @import "../../node_modules/bootstrap/scss/functions";
 @import "../../node_modules/bootstrap/scss/variables";
@@ -22,7 +23,6 @@ $utilities: (
 @import "../../node_modules/bootstrap/scss/root";
 @import "../../node_modules/bootstrap/scss/reboot";
 @import "../../node_modules/bootstrap/scss/type";
-@import "../../node_modules/bootstrap/scss/grid";
 @import "../../node_modules/bootstrap/scss/forms";
 @import "../../node_modules/bootstrap/scss/buttons";
 @import "../../node_modules/bootstrap/scss/transitions";
@@ -44,9 +44,43 @@ $utilities: (
 
 // Utilities
 @import "../../node_modules/bootstrap/scss/utilities/api";
-// scss-docs-end import-stack
 
-//@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+// Grid classes
+
+// Uncoment to generate all responsive grid classes
+//@import "../../node_modules/bootstrap/scss/grid";
+
+.row {
+    @include make-row();
+
+    > * {
+        @include make-col-ready();
+    }
+}
+
+.col {
+    flex: 1 0 0%; // Flexbugs #4: https://github.com/philipwalton/flexbugs#flexbug-4
+}
+
+.col-auto {
+    @include make-col-auto();
+}
+
+// Gutters
+//
+// Make use of `.g-*`, `.gx-*` or `.gy-*` utilities to change spacing between the columns.
+@each $key, $value in $gutters {
+    .g-#{$key},
+    .gx-#{$key} {
+        --bs-gutter-x: #{$value};
+    }
+
+    .g-#{$key},
+    .gy-#{$key} {
+        --bs-gutter-y: #{$value};
+    }
+}
+
 @import "fontawesome";
 @import "layout-grid";
 @import "layout-table";
@@ -67,32 +101,18 @@ $utilities: (
     font-size: 0.6rem;
 }
 
-a.no-decoration,
-.no-decoration > a {
-    text-decoration: none;
-}
-
-@each $level in map-keys($grays) {
-    .bg-gray-#{$level} {
-        background-color: map-get($grays, $level);
-    }
-}
-
 .sticky-bottom {
     bottom: 0;
     z-index: $zindex-sticky;
 }
 
-/********** Specific site element styles **********/
-
-.navbar-side {
-    @extend .navbar;
-    flex-direction: column;
-    justify-content: flex-start;
-    min-height: 100vh;
-    position: sticky;
-    top: 0;
+.sticky-left {
+    top: 0 !important;
+    height: 100vh;
+    z-index: $zindex-sticky;
 }
+
+/********** Specific site element styles **********/
 
 .upnp-dev-icon {
     height: 48px !important;
@@ -102,6 +122,14 @@ a.no-decoration,
 }
 
 $album-art-size-base: 2rem;
+
+$album-art-sizes: (
+    "xs": 0.5,
+    "sm": 0.75,
+    "md": 1.25,
+    "lg": 1.75,
+    "xl": 2,
+);
 
 .album-art {
     display: inline-block;
@@ -121,47 +149,22 @@ $album-art-size-base: 2rem;
 }
 
 @mixin album-art($size) {
+    @extend .album-art;
     width: $size !important;
     height: $size !important;
 }
 
-$album-art-sizes: (
-    "xs": 0.5,
-    "sm": 0.75,
-    "md": 1.25,
-    "lg": 1.75,
-    "xl": 2,
-);
-
-@each $name, $size in $album-art-sizes {
-    .album-art-#{$name} {
-        @include album-art($size * $album-art-size-base);
-    }
-}
-
-@for $i from 2 through 5 {
-    .album-art-#{$i}x {
-        @include album-art($i * $album-art-size-base);
-    }
-}
-
-.stack {
-    position: relative;
-
-    & > &-layer {
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        right: 0;
-
-        &-hover {
-            visibility: hidden;
+@if $generate-album-art-sizes {
+    @each $name, $size in $album-art-sizes {
+        .album-art-#{$name} {
+            @include album-art($size * $album-art-size-base);
         }
     }
 
-    &:hover > &-layer-hover {
-        visibility: visible;
+    @for $i from 2 through 5 {
+        .album-art-#{$i}x {
+            @include album-art($i * $album-art-size-base);
+        }
     }
 }
 
@@ -214,6 +217,31 @@ input[type="checkbox"].chk-no-label {
     &:active {
         outline: none !important;
         box-shadow: none;
+    }
+}
+
+a.no-decoration,
+.no-decoration > a {
+    text-decoration: none;
+}
+
+.stack {
+    position: relative;
+
+    & > &-layer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+
+        &-hover {
+            visibility: hidden;
+        }
+    }
+
+    &:hover > &-layer-hover {
+        visibility: visible;
     }
 }
 

@@ -34,7 +34,7 @@ export default ({ count, total, url, current, size, className }) => {
         items.push(<PageLink key={`pb-${i}`} title={i} url={`${pattern}${i}`} current={i === current} />);
     }
 
-    return <nav aria-label="Page navigation" className={merge`p-2 bg-gray-200 ${className}`}>
+    return <nav aria-label="Page navigation" className={merge`p-2 bg-light ${className}`}>
                <ul className="pagination pagination-sm my-0 justify-content-center flex-wrap">
                    <RelativePageLink key="prev" title="&laquo;" label="Previous" url={`${pattern}${current - 1}`} enabled={current > 1} />
                    {items}

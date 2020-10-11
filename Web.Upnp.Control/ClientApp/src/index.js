@@ -22,7 +22,7 @@ ReactDOM.render(
         <div className="p-0">
             <div className="row g-0 flex-nowrap">
                 <div className="col-auto">
-                    <div className="navbar-side navbar-dark bg-dark bg-gradient px-3">
+                    <div className="navbar position-sticky sticky-left flex-column justify-content-start navbar-dark bg-dark bg-gradient px-3">
                         <h5 className="navbar-brand mx-0">UPnP Controller</h5>
                         <nav className="navbar-nav">
                             <RouteLink to="/" exact glyph="home" className="nav-item nav-link">Home</RouteLink>
