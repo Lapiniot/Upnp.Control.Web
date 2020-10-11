@@ -3,6 +3,20 @@ $breadcrumb-divider: quote("\276f");
 $breadcrumb-item-padding-x: 0.25rem !default;
 $breadcrumb-border-radius: 0 !default;
 
+$utilities: (
+    "gap": (
+        property: gap,
+        values: (
+            0: 0,
+            1: 0.25rem,
+            2: 0.5rem,
+            3: 1rem,
+            4: 1.5rem,
+            5: 3rem,
+        ),
+    ),
+);
+
 @import "../../node_modules/bootstrap/scss/bootstrap";
 @import "fontawesome";
 @import "layout-grid";
