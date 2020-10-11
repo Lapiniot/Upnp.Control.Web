@@ -4,7 +4,7 @@ import { mergeClassNames as merge } from "./Extensions"
 
 const LinkTemplate = ({ type: Tag, className, active, disabled, glyph, title, children, ...other }) =>
     <Tag className={merge`${className} ${active && "active"} ${disabled && "disabled"}`} {...other}>
-        {glyph && <i className={`fas x-fa-w-2 fa-${glyph}`} />}{title}{children}
+        {glyph && <i className={`fas fa-fw fa-${glyph} mr-1`} />}{title}{children}
     </Tag>;
 
 
