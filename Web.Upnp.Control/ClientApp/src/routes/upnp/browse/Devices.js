@@ -2,7 +2,7 @@
 import { withDataFetch } from "../../../components/DataFetch";
 import $api from "../../../components/WebApi";
 import LoadIndicator from "../../../components/LoadIndicator";
-import { RouteLink } from "../../../components/NavLink";
+import { NavLink, RouteLink } from "../../../components/NavLink";
 import DeviceInfo from "../../common/DeviceInfo";
 import DeviceIcon from "../../common/DeviceIcon";
 import ServicesList from "../../common/DeviceServiceList";
@@ -26,9 +26,9 @@ function UpnpDevice({ "data-source": d, "data-row-id": id }) {
             <DeviceInfo data-source={d} />
             <ServicesList data-source={d.services} data-row-id={id} />
         </div>
-        <div className="card-footer no-decoration d-flex">
-            <a href={d.url}><i className="fas x-fa-w-2 fa-download" />Metadata</a>
-            {isMediaServer && <RouteLink to={`/upnp/browse/${d.udn}`} glyph="folder" className="px-2">Browse</RouteLink>}
+        <div className="card-footer no-decoration d-flex gap-2">
+            <NavLink to={d.url} glyph="download">Metadata</NavLink>
+            {isMediaServer && <RouteLink to={`/upnp/browse/${d.udn}`} glyph="folder">Browse</RouteLink>}
         </div>
     </div>;
 }
