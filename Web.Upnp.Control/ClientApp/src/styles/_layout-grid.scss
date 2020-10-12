@@ -26,7 +26,7 @@ $grid-layout-breakpoints: map-merge(
 }
 
 @mixin grid-auto-columns($size) {
-    grid-template-columns: repeat(auto-fit, minmax(10rem, $size));
+    grid-template-columns: repeat(auto-fit, minmax(unquote("min(10rem, 100%)"), $size));
     grid-auto-flow: dense;
 }
 
