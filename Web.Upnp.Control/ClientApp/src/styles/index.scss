@@ -10,13 +10,6 @@ $generate-grid-layout-responsive-styles: false;
 @import "../../node_modules/bootstrap/scss/variables";
 @import "../../node_modules/bootstrap/scss/mixins";
 
-$utilities: (
-    "gap": (
-        property: gap,
-        values: $spacers,
-    ),
-);
-
 @import "../../node_modules/bootstrap/scss/utilities";
 
 // Layout & components
@@ -85,7 +78,6 @@ $utilities: (
 @import "layout-grid";
 @import "layout-table";
 @import "spoiler";
-@import "form-table";
 @import "modal";
 @import "slider";
 
@@ -110,6 +102,25 @@ $utilities: (
     top: 0 !important;
     height: 100vh;
     z-index: $zindex-sticky;
+}
+
+@each $k, $v in $spacers {
+    .gapx-#{$k} {
+        column-gap: $v;
+    }
+}
+
+@each $k, $v in $spacers {
+    .gapy-#{$k} {
+        row-gap: $v;
+    }
+}
+
+@each $k, $v in $spacers {
+    .gap-#{$k} {
+        @extend .gapx-#{$k};
+        @extend .gapy-#{$k};
+    }
 }
 
 /********** Specific site element styles **********/
@@ -183,6 +194,28 @@ $album-art-sizes: (
     }
 }
 
+.grid-form {
+    @extend .d-grid;
+    @extend .gapx-2;
+    @extend .gapy-1;
+    grid-template-columns: auto 1fr;
+    white-space: nowrap !important;
+
+    & > :nth-of-type(odd) {
+        justify-self: end;
+        color: $text-muted;
+        
+        &::after {
+            content: ":";
+        }
+    }
+
+    & > :nth-of-type(even){
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
 @keyframes fade {
     25% {
         color: rgba($color: #fff, $alpha: 0.9);
@@ -236,12 +269,14 @@ a.no-decoration,
         right: 0;
 
         &-hover {
-            visibility: hidden;
+            opacity: 0;
+            transition: opacity 250ms ease-in-out 125ms;
         }
     }
 
     &:hover > &-layer-hover {
-        visibility: visible;
+        opacity: 1;
+        transition-delay: 0ms;
     }
 }
 
