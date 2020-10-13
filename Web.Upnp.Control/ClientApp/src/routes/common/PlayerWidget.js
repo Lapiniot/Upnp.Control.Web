@@ -132,7 +132,7 @@ class PlayerCore extends React.Component {
                     <div className="d-flex position-relative flex-nowrap">
                         <div className="hover-container">
                             <Button title={volumeStr} onClick={this.toggleMute}>
-                                <svg className="svg-inline--fa fa-w-16"><use xlinkHref={`#${volumeIcon}`} /></svg>
+                                <svg className="svg-inline--fa fa-w-16"><use href={`#${volumeIcon}`} /></svg>
                             </Button>
                             <Slider progress={volume / 100} className="hover-activated position-absolute w-100 px-1" onChangeRequested={this.changeVolume} />
                         </div>
