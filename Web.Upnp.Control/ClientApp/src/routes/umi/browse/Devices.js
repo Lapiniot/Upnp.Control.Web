@@ -9,9 +9,10 @@ import DeviceIcon from "../../common/DeviceIcon";
 import PlayerWidget from "../../common/PlayerWidget";
 
 function UmiDevice({ "data-source": { icons, name, type, description, udn } }) {
+    const icon = icons?.sort((i1, i2) => i2.w - i1.w)?.find(i => i.w <= 48) || icons?.[0];
     return <div className="card">
                <div className="card-header d-flex flex-row">
-                   <DeviceIcon icon={icons && icons.find(i => i.w <= 48)} alt={name} service={type} />
+                   <DeviceIcon icon={icon?.url} service={type} />
                    <div>
                        <h5 className="card-title">{name}</h5>
                        <h6 className="card-subtitle">{description}</h6>
