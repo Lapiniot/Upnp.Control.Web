@@ -14,11 +14,9 @@ function UpnpDevice({ "data-source": d, "data-row-id": id }) {
         s => s.type.startsWith("urn:schemas-upnp-org:service:ContentDirectory:") ||
             s.type.startsWith("urn:xiaomi-com:service:Playlist:"));
 
-    const icon = d.icons?.sort((i1, i2) => i2.w - i1.w)?.find(i => i.w <= 48) || d.icons?.[0];
-
     return <div className="card">
         <div className="card-header d-flex">
-            <DeviceIcon icon={icon?.url} service={d.type} />
+            <DeviceIcon service={d.type} icons={d.icons} />
             <div>
                 <h5 className="card-title">{d.name}</h5>
                 <h6 className="card-subtitle">{d.description}</h6>

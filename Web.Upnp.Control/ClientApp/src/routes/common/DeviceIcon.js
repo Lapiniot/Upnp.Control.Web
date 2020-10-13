@@ -1,5 +1,21 @@
 import React from "react";
 
-export default ({ icon, service, alt = "" }) => icon
-    ? <img src={icon} className="upnp-dev-icon align-self-center" alt={alt} />
-    : <i className={`fas fa-${service === "urn:schemas-upnp-org:device:MediaRenderer:1" ? "tv" : "server"} upnp-dev-icon align-self-center`} />;
+export default ({ icons = [], service, alt = "" }) => {
+    const icon = getOptimalIcon(icons);
+    return icon
+        ? <img src={icon?.url} className="upnp-dev-icon" alt={alt} />
+        : <svg className="upnp-dev-icon">
+            <use href={getFallbackIcon(service)} />
+        </svg>;
+}
+
+function getOptimalIcon(icons, preferredSize = 48) {
+    return icons?.sort((i1, i2) => i1.w - i2.w)?.find(i => i.w >= preferredSize) ||
+        icons?.sort((i1, i2) => i2.w - i1.w)?.find(i => i.w <= preferredSize);
+}
+
+function getFallbackIcon(service) {
+    return service?.startsWith("urn:schemas-upnp-org:device:MediaRenderer:")
+        ? "#upnp-renderer"
+        : "#upnp-server";
+}
