@@ -20,6 +20,7 @@ using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Routing;
 using Web.Upnp.Control.Services;
 using Web.Upnp.Control.Services.Abstractions;
+using Web.Upnp.Control.Services.Configuration;
 
 namespace Web.Upnp.Control
 {
@@ -36,8 +37,8 @@ namespace Web.Upnp.Control
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
-                //.AddDbContext<UpnpDbContext>(p => p.UseSqlite("Data Source=upnp.db3;"))
+                //.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
+                .AddDbContext<UpnpDbContext>(p => p.UseSqlite("Data Source=upnp.db3;"))
                 .AddHostedService<UpnpDiscoveryService>()
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
@@ -49,6 +50,10 @@ namespace Web.Upnp.Control
                 .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => new SsdpEventEnumerator(TimeSpan.FromSeconds(120), UpnpServices.RootDevice))
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
+
+            services
+                .AddOptions<UpnpEventOptions>()
+                .BindConfiguration("UpnpEventSubscriptions");
 
             var customConverters = new JsonConverter[]
             {

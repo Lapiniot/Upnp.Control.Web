@@ -84,11 +84,11 @@ namespace Web.Upnp.Control.Services
                         {
                             context.Entry(device).Property(d => d.ExpiresAt).CurrentValue = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
                             await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-                            
-                            Notify(new UpnpDeviceUpdatedEvent(udn));
-                            
+
+                            Notify(new UpnpDeviceUpdatedEvent(udn, device.Services));
+
                             logger.LogInformation($"Device expiration updated for UDN='{udn}'");
-                            
+
                             continue;
                         }
 
@@ -106,7 +106,7 @@ namespace Web.Upnp.Control.Services
 
                         logger.LogInformation($"New device discovered with UDN='{desc.Udn}'");
 
-                        Notify(new UpnpDeviceAppearedEvent(udn, desc));
+                        Notify(new UpnpDeviceAppearedEvent(udn, device.Services));
                     }
                     catch(Exception exception)
                     {
