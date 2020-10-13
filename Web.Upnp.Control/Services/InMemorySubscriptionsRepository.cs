@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services
 {
     internal class InMemorySubscriptionsRepository : IUpnpSubscriptionsRepository
     {
-        private readonly Dictionary<string, List<IAsyncDisposable>> storage = new Dictionary<string, List<IAsyncDisposable>>();
+        private readonly Dictionary<string, List<IAsyncCancelable>> storage = new Dictionary<string, List<IAsyncCancelable>>();
 
         public InMemorySubscriptionsRepository()
         {
-            storage = new Dictionary<string, List<IAsyncDisposable>>();
+            storage = new Dictionary<string, List<IAsyncCancelable>>();
         }
 
-        public void Add(string udn, params IAsyncDisposable[] sessions)
+        public void Add(string udn, params IAsyncCancelable[] sessions)
         {
             lock(storage)
             {
@@ -24,7 +25,7 @@ namespace Web.Upnp.Control.Services
                 }
                 else
                 {
-                    storage[udn] = new List<IAsyncDisposable>(sessions);
+                    storage[udn] = new List<IAsyncCancelable>(sessions);
                 }
             }
         }
@@ -37,15 +38,15 @@ namespace Web.Upnp.Control.Services
             }
         }
 
-        public IEnumerable<IAsyncDisposable> Get(string udn)
+        public IEnumerable<IAsyncCancelable> Get(string udn)
         {
             lock(storage)
             {
-                return storage.TryGetValue(udn, out var list) ? list : Array.Empty<IAsyncDisposable>();
+                return storage.TryGetValue(udn, out var list) ? list : Array.Empty<IAsyncCancelable>();
             }
         }
 
-        public IEnumerable<IAsyncDisposable> GetAll()
+        public IEnumerable<IAsyncCancelable> GetAll()
         {
             lock(storage)
             {
@@ -53,7 +54,7 @@ namespace Web.Upnp.Control.Services
             }
         }
 
-        public bool Remove(string udn, out IEnumerable<IAsyncDisposable> sessions)
+        public bool Remove(string udn, out IEnumerable<IAsyncCancelable> sessions)
         {
             lock(storage)
             {

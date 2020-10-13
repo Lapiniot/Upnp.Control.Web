@@ -18,7 +18,7 @@ namespace Web.Upnp.Control.Services
             this.logger = logger;
         }
 
-        public IAsyncDisposable Subscribe(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken stoppingToken)
+        public IAsyncCancelable Subscribe(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken stoppingToken)
         {
             return CancelableScope.StartInScope(token => StartSubscriptionLoopAsync(subscribeUri, callbackUri, timeout, token), stoppingToken);
         }
