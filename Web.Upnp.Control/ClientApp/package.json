@@ -3,7 +3,7 @@
     "name": "upnp.control.web",
     "private": true,
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.14.0",
+        "@fortawesome/fontawesome-free": "^5.15.1",
         "@microsoft/signalr": "^3.1.8",
         "bootstrap": "^5.0.0-alpha2",
         "react": "^16.13.1",
@@ -14,15 +14,15 @@
         "rimraf": "^3.0.2"
     },
     "devDependencies": {
-        "@types/bootstrap": "^4.5.0",
-        "ajv": "^6.12.5",
+        "@types/bootstrap": "^5.0.0",
+        "ajv": "^6.12.6",
         "cross-env": "^7.0.2",
-        "eslint": "^6.8.0",
+        "eslint": "^7.11.0",
         "eslint-config-react-app": "^5.2.1",
         "eslint-plugin-flowtype": "^5.2.0",
         "eslint-plugin-import": "^2.22.1",
         "eslint-plugin-jsx-a11y": "^6.3.1",
-        "eslint-plugin-react": "^7.21.3",
+        "eslint-plugin-react": "^7.21.4",
         "nan": "^2.14.1",
         "typescript": "^4.0.3"
     },
