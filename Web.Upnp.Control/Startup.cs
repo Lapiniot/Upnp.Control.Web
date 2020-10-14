@@ -50,7 +50,7 @@ namespace Web.Upnp.Control
                 .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
                 .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => new SsdpEventEnumerator(UpnpServices.RootDevice,
                     new RepeatPolicyBuilder()
-                        .WithExponentialDelay(2, 180)
+                        .WithExponentialInterval(2, 180)
                         .WithJitter(500, 1000)
                         .Build()))
                 .AddSoapHttpClient()
