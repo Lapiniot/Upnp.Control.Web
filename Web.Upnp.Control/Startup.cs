@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Policies;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp;
@@ -47,7 +48,11 @@ namespace Web.Upnp.Control
                 .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
                 .AddTransient<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
                 .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
-                .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => new SsdpEventEnumerator(TimeSpan.FromSeconds(120), UpnpServices.RootDevice))
+                .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => new SsdpEventEnumerator(UpnpServices.RootDevice,
+                    new RepeatPolicyBuilder()
+                        .WithExponentialDelay(2, 180)
+                        .WithJitter(500, 1000)
+                        .Build()))
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient();
 
