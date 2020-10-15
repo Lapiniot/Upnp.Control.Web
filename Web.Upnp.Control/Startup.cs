@@ -39,7 +39,7 @@ namespace Web.Upnp.Control
         {
             services
                 //.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
-                .AddDbContext<UpnpDbContext>(p => p.UseSqlite("Data Source=upnp.db3;"))
+                .AddDbContext<UpnpDbContext>(o => o.UseSqlite("Data Source=upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)))
                 .AddHostedService<UpnpDiscoveryService>()
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()

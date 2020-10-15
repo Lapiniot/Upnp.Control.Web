@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using IoT.Protocol.Upnp;
@@ -50,9 +51,9 @@ namespace Web.Upnp.Control.Services
                 {
                     try
                     {
-                        if(reply.StartLine.StartsWith("M-SEARCH")) continue;
+                        if(logger.IsEnabled(LogLevel.Trace)) DebugDump(reply, LogLevel.Trace);
 
-                        DebugDump(reply);
+                        if(reply.StartLine.StartsWith("M-SEARCH")) continue;
 
                         var udn = ExtractUdn(reply.UniqueServiceName);
 
@@ -97,6 +98,8 @@ namespace Web.Upnp.Control.Services
                         device = new Device(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
                             desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10))
                         {
+                            BootId = reply.BootId,
+                            ConfigId = reply.ConfigId,
                             Icons = desc.Icons.Select(i => new Icon(i.Width, i.Height, i.Uri, i.Mime)).ToList(),
                             Services = desc.Services.Select(s => new Service(s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
                         };
@@ -127,14 +130,16 @@ namespace Web.Upnp.Control.Services
             }
         }
 
-        private static void DebugDump(SsdpReply reply)
+        private void DebugDump(SsdpReply reply, LogLevel logLevel)
         {
-            Console.WriteLine($"***** {reply.StartLine} *****");
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine($"***** {reply.StartLine} *****");
             foreach(var item in reply)
             {
-                Console.WriteLine($"{item.Key}: {item.Value}");
+                sb.AppendLine($"{item.Key}: {item.Value}");
             }
-            Console.WriteLine();
+            logger.Log(logLevel, sb.ToString());
         }
 
         private string ExtractUdn(string usn)
