@@ -40,7 +40,6 @@ namespace Web.Upnp.Control
             services
                 //.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
                 .AddDbContext<UpnpDbContext>(o => o.UseSqlite("Data Source=upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)))
-                .AddHostedService<UpnpDiscoveryService>()
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
                 .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
@@ -107,7 +106,7 @@ namespace Web.Upnp.Control
                     endpoints.MapHub<UpnpEventsHub>("/upnpevents", o => o.Transports = HttpTransportType.WebSockets);
                     endpoints.MapImageLoaderProxy("/proxy/{*url}");
                 })
-                .UseHttpsRedirection()
+                //.UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseResponseCaching();
 
