@@ -1,50 +1,86 @@
 {
-	// Place your System.Net.Mqtt workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
-	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
-	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
-	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
-	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
-	// Placeholders with the same ids are connected.
-	// Example:
-	// "Print to console": {
-	// 	"scope": "javascript,typescript",
-	// 	"prefix": "log",
-	// 	"body": [
-	// 		"console.log('$1');",
-	// 		"$2"
-	// 	],
-	// 	"description": "Log output to console"
-	// }
-	"Wrap with try{} catch{} block":{
+	"Wrap with if(){} statement": {
+		"scope": "csharp",
+		"prefix": "if",
+		"description": "Wrap selected code with if(){} block",
+		"body": [
+			"if($0)",
+			"{",
+			"\t${TM_SELECTED_TEXT}",
+			"}"
+		]
+	},
+	"Wrap with if(){}else{} statement": {
+		"scope": "csharp",
+		"prefix": "ifelse",
+		"description": "Wrap selected code with if(){}else{} block",
+		"body": [
+			"if($0)",
+			"{",
+			"\t${TM_SELECTED_TEXT}",
+			"}",
+			"else",
+			"{",
+			"}"
+		]
+	},
+	"Wrap with try{} catch{} block": {
 		"scope": "csharp",
 		"prefix": "tryc",
 		"description": "Wrap selected code with try{}catch{} block",
-		"body":[
-			"$0try\r{\r\t${TM_SELECTED_TEXT}\r}\rcatch(Exception exception)\r{\r\tthrow;\r}"
+		"body": [
+			"$0try",
+			"{",
+			"\t${TM_SELECTED_TEXT}",
+			"}",
+			"catch(Exception exception)",
+			"{",
+			"\tthrow;",
+			"}"
 		]
 	},
-	"Wrap with try{} finally{} block":{
+	"Wrap with try{} finally{} block": {
 		"scope": "csharp",
 		"prefix": "tryf",
 		"description": "Wrap selected code with try{}finally{} block",
-		"body":[
-			"$0try\r{\r\t${TM_SELECTED_TEXT}\r}\rfinally\r{\r}"
+		"body": [
+			"$0try",
+			"{",
+			"\t${TM_SELECTED_TEXT}",
+			"}",
+			"finally",
+			"{",
+			"}"
 		]
 	},
-	"Wrap with try{} catch{} finally{} block":{
+	"Wrap with try{} catch{} finally{} block": {
 		"scope": "csharp",
 		"prefix": "trycf",
 		"description": "Wrap selected code with try{}catch{}finally{} block",
-		"body":[
-			"$0try\r{\r\t${TM_SELECTED_TEXT}\r}\rcatch(Exception exception)\r{\r\tthrow;\r}\rfinally{\r}"
+		"body": [
+			"$0try",
+			"{",
+			"\t${TM_SELECTED_TEXT}",
+			"}",
+			"catch(Exception exception)",
+			"{",
+			"\tthrow;",
+			"}",
+			"finally",
+			"{",
+			"}"
 		]
 	},
-	"Wrap selected text with #region ... #endregion":{
+	"Wrap selected text with #region ... #endregion": {
 		"scope": "csharp",
 		"prefix": "region",
 		"description": "Wrap selected text with #region ... #endregion",
-		"body":[
-			"#region ${1:region_name}\r\r${TM_SELECTED_TEXT}\r\r#endregion"
+		"body": [
+			"#region ${1:region_name}",
+			"",
+			"${TM_SELECTED_TEXT}",
+			"",
+			"#endregion"
 		]
-	},
+	}
 }
