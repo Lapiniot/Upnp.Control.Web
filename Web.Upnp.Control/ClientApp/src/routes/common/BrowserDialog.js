@@ -56,7 +56,7 @@ export default class BrowserDialog extends React.Component {
     }
 };
 
-const browseSourcesUrl = $api.discover("servers").url();
+const browseSourcesUrl = $api.devices("servers").url();
 
 const MediaSourceList = withDataFetch(({ dataContext: { source: data } }) =>
     <ul className="list-group list-group-flush">

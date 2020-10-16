@@ -33,7 +33,7 @@ function UpnpDevice({ "data-source": d, "data-row-id": id }) {
     </div>;
 }
 
-const dataUrl = $api.discover("upnp").url();
+const dataUrl = $api.devices("upnp").url();
 
 const UpnpDevices = withDataFetch(DeviceList, { template: LoadIndicator }, () => dataUrl);
 

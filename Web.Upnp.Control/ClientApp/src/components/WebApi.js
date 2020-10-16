@@ -1,13 +1,13 @@
 ﻿import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch } from "./HttpFetch";
 
 const controlBaseUrl = "/api/upnpcontrol/";
-const discoverBaseUrl = "/api/discovery/";
+const devices = "/api/devices";
 const browseBaseUrl = "/api/browse/";
 const playlistBaseUrl = "/api/playlist/";
 
 export default class {
 
-    static discover = (category) => new HttpFetch(`${discoverBaseUrl}${category}`);
+    static devices = (category, id) => new HttpFetch(`${devices}${id ? `/${id}` : ""}${category ? "?category=" + category : ""}`);
 
     static browse = (deviceId) => ({
         get: (id = "") => new BrowseFetch(`${browseBaseUrl}${deviceId}/${id}`),
