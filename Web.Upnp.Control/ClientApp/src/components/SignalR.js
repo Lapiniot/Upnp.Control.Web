@@ -38,9 +38,7 @@ class SignalRConnection extends React.Component {
         return <React.Fragment>
             {this.state.error && <div className="alert bg-danger text-white text-center m-3" role="alert">
                 {this.state.error}
-                <button type="button" className="btn-close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" className="btn-close" data-dismiss="alert" aria-label="Close" />
             </div>}
             <SignalRContext.Provider value={this.hub}>{this.props.children}</SignalRContext.Provider>
         </React.Fragment>

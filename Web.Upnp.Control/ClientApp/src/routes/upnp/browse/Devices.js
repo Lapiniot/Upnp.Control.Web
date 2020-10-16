@@ -8,7 +8,7 @@ import DeviceIcon from "../../common/DeviceIcon";
 import ServicesList from "../../common/DeviceServiceList";
 import DeviceList from "../../common/DeviceList";
 
-function UpnpDevice({ "data-source": d, "data-row-id": id }) {
+function UpnpDevice({ "data-source": d}) {
 
     const isMediaServer = d.services && d.services.some(
         s => s.type.startsWith("urn:schemas-upnp-org:service:ContentDirectory:") ||
@@ -24,7 +24,7 @@ function UpnpDevice({ "data-source": d, "data-row-id": id }) {
         </div>
         <div className="card-body">
             <DeviceInfo data-source={d} />
-            <ServicesList data-source={d.services} data-row-id={id} />
+            <ServicesList data-source={d.services} data-row-id={d.udn} />
         </div>
         <div className="card-footer no-decoration d-flex gap-2">
             <NavLink to={d.url} glyph="download">Metadata</NavLink>
