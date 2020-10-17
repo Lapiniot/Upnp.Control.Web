@@ -8,7 +8,7 @@ import DeviceIcon from "../../common/DeviceIcon";
 import ServicesList from "../../common/DeviceServiceList";
 import DeviceList from "../../common/DeviceList";
 
-function UpnpDevice({ "data-source": d}) {
+function UpnpDevice({ "data-source": d }) {
 
     const isMediaServer = d.services && d.services.some(
         s => s.type.startsWith("urn:schemas-upnp-org:service:ContentDirectory:") ||
@@ -33,8 +33,8 @@ function UpnpDevice({ "data-source": d}) {
     </div>;
 }
 
-const dataUrl = $api.devices("upnp").url();
+const devicesFetch = $api.devices("upnp").fetch;
 
-const UpnpDevices = withDataFetch(DeviceList, { template: LoadIndicator }, () => dataUrl);
+const UpnpDevices = withDataFetch(DeviceList, { template: LoadIndicator }, () => devicesFetch);
 
 export default props => <UpnpDevices itemTemplate={UpnpDevice} {...props} />;

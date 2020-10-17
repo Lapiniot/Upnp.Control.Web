@@ -1,24 +1,36 @@
 import React from "react";
 
-export function withDataFetch(Component, loadIndicatorConfig = {}, dataUrlBuilder = props => props.dataUrl) {
+export function withMemoKey(func, key) {
+    let wrapper = (...args) => func(...args);
+    wrapper.key = key;
+    return wrapper;
+}
+
+const defaultFetchBuilder = (dataUrl) => (withMemoKey(() => window.fetch(dataUrl), dataUrl));
+
+export function withDataFetch(Component, loadIndicatorConfig = {}, fetchPromiseFactoryBuilder = defaultFetchBuilder) {
     return class extends React.Component {
         constructor(props) {
             super(props);
-            this.state = { loading: true, dataContext: null, dataUrl: null };
+            this.state = { loading: true, dataContext: null, fetchPromiseFactory: null };
             const { template: Template = "div", text = "Loading...", usePreloader = true, ...other } = loadIndicatorConfig;
             this.preloader = usePreloader && <Template {...other}>{text}</Template>;
         }
 
         static getDerivedStateFromProps(props, state) {
-            const dataUrl = dataUrlBuilder(props);
-            return state.dataUrl !== dataUrl
-                ? { dataUrl, dataContext: null, loading: true, error: null }
+            const promiseFactory = fetchPromiseFactoryBuilder(props);
+            const fromStatePromiseFactory = state.fetchPromiseFactory;
+            const shouldFetchNewData = ((!promiseFactory?.key || !fromStatePromiseFactory?.key) && fromStatePromiseFactory !== promiseFactory)
+                || promiseFactory.key !== fromStatePromiseFactory.key;
+
+            return shouldFetchNewData
+                ? { fetchPromiseFactory: promiseFactory, dataContext: null, loading: true, error: null }
                 : null;
         }
 
         async fetchData() {
             try {
-                const response = await window.fetch(this.state.dataUrl);
+                const response = await this.state.fetchPromiseFactory();
                 const data = await response.json();
                 this.setState({ loading: false, dataContext: { source: data, reload: this.reload }, error: null });
             } catch (e) {
@@ -28,7 +40,7 @@ export function withDataFetch(Component, loadIndicatorConfig = {}, dataUrlBuilde
         }
 
         componentDidUpdate(_, prevState) {
-            if (prevState.dataUrl !== this.state.dataUrl) {
+            if (prevState.fetchPromiseFactory !== this.state.fetchPromiseFactory) {
                 this.fetchData();
             }
         }

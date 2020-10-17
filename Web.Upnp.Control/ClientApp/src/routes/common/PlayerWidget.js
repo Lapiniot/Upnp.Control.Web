@@ -1,5 +1,5 @@
 import React from "react";
-import { withDataFetch } from "../../components/DataFetch";
+import { withDataFetch, withMemoKey } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
 import { mergeClassNames as merge } from "../../components/Extensions";
 import $api from "../../components/WebApi";
@@ -145,4 +145,6 @@ class PlayerCore extends React.Component {
     }
 }
 
-export default withDataFetch(PlayerCore, { usePreloader: false }, ({ udn }) => $api.control(udn).state(true).url());
+const fetchPromiseFactoryBuilder = ({ udn }) => withMemoKey($api.control(udn).state(true).fetch, udn);
+
+export default withDataFetch(PlayerCore, { usePreloader: false }, fetchPromiseFactoryBuilder);

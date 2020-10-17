@@ -1,14 +1,8 @@
-import { withDataFetch } from "../../components/DataFetch";
+import { withDataFetch, withMemoKey } from "../../components/DataFetch";
 import withNavigation from "./Navigator";
 import LoadIndicator from "../../components/LoadIndicator";
 import $api from "../../components/WebApi";
 import $config from "./Config";
-
-const defaultUrlBuilder = ({ device, id, p, s }) => {
-    const size = parseInt(s) || $config.pageSize;
-    const page = parseInt(p) || 1;
-    return $api.browse(device).get(id).withParents().take(size).skip((page - 1) * size).url();
-};
 
 export class DIDLUtils {
     static getKind(upnpClassName) {
@@ -25,6 +19,17 @@ export class DIDLUtils {
     }
 }
 
-export function withBrowser(BrowserComponent, usePreloader = true, dataUrlBuilder = defaultUrlBuilder) {
-    return withNavigation(withDataFetch(BrowserComponent, { template: LoadIndicator, usePreloader }, dataUrlBuilder));
+export function fromBaseQuery(baseFetchQuery) {
+    return ({ device, id, p, s }) => {
+        const size = parseInt(s) || $config.pageSize;
+        const page = parseInt(p) || 1;
+        const key = `${device}!${id ?? ""}!${p ?? ""}!${s ?? ""}`;
+        return withMemoKey(baseFetchQuery(device, id).take(size).skip((page - 1) * size).fetch, key);
+    }
+}
+
+const defaultQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id).withParents());
+
+export function withBrowser(BrowserComponent, usePreloader = true, builder = defaultQueryBuilder) {
+    return withNavigation(withDataFetch(BrowserComponent, { template: LoadIndicator, usePreloader }, builder));
 }

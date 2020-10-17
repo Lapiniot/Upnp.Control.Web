@@ -3,7 +3,7 @@ import $api from "../../../components/WebApi";
 import Modal from "../../../components/Modal";
 import $config from "../../common/Config";
 import { TextValueEditDialog } from "../../../components/Dialogs";
-import { withBrowser } from "../../common/BrowserUtils";
+import { withBrowser, fromBaseQuery } from "../../common/BrowserUtils";
 import BrowserDialog from "../../common/BrowserDialog";
 import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
@@ -241,9 +241,6 @@ const MainCellTemplate = ({ data, context: { ctrl, active, parents, state }, ind
     </div>;
 };
 
-export default withBrowser(PlaylistManagerCore, false,
-    ({ device, id, p, s }) => {
-        const page = parseInt(p) || 1;
-        const size = parseInt(s) || $config.playlist.pageSize;
-        return $api.browse(device).get(id || "PL:").withParents().withResource().withVendor().take(size).skip((page - 1) * size).url();
-    });
+const browsePlylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id || "PL:").withParents().withResource().withVendor());
+
+export default withBrowser(PlaylistManagerCore, false, browsePlylistsQueryBuilder);
