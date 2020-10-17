@@ -31,5 +31,5 @@ export function fromBaseQuery(baseFetchQuery) {
 const defaultQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id).withParents());
 
 export function withBrowser(BrowserComponent, usePreloader = true, builder = defaultQueryBuilder) {
-    return withNavigation(withDataFetch(BrowserComponent, { template: LoadIndicator, usePreloader }, builder));
+    return withNavigation(withDataFetch(BrowserComponent, builder, { template: LoadIndicator, usePreloader }));
 }

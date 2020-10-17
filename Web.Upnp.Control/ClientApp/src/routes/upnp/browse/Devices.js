@@ -35,6 +35,6 @@ function UpnpDevice({ "data-source": d }) {
 
 const devicesFetch = $api.devices("upnp").fetch;
 
-const UpnpDevices = withDataFetch(DeviceList, { template: LoadIndicator }, () => devicesFetch);
+const UpnpDevices = withDataFetch(DeviceList, () => devicesFetch, { usePreloader: false });
 
 export default props => <UpnpDevices itemTemplate={UpnpDevice} {...props} />;

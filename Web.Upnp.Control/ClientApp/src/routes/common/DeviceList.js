@@ -1,5 +1,7 @@
 ﻿import React from "react";
+import "bootstrap/js/src/alert";
 import { SignalRListener } from "../../components/SignalR";
+import Loader from "../../components/LoadIndicator";
 
 export default class extends React.Component {
     constructor(props) {
@@ -7,15 +9,27 @@ export default class extends React.Component {
         this.handlers = new Map([
             ["SsdpDiscoveryEvent", this.onDiscoveryEvent]
         ]);
+        this.alerts = [];
     }
 
-    onDiscoveryEvent = () => {
+    onDiscoveryEvent = (device, message) => {
         const reload = this.props.dataContext?.reload;
-        if (typeof reload === "function") reload();
+        if (typeof reload === "function") {
+            this.alerts[device] = message;
+            reload();
+        }
     }
 
     render() {
-        const { dataContext: { source: data }, itemTemplate: Item } = this.props;
+        const { dataContext, itemTemplate: Item } = this.props;
+
+        const alerts = Object.entries(this.alerts).map(e => {
+            return <div className={`alert ${e[1] === "appeared" ? "alert-success" : "alert-warning"} alert-dismissible fade show mx-3 my-2`} role="alert">
+                {e[0]}
+                <button type="button" className="btn-close" data-dismiss="alert" aria-label="Close" />
+            </div>
+        });
+
         return <>
             <svg className="d-none" aria-hidden="true" focusable="false" role="img">
                 <symbol id="upnp-renderer" viewBox="0 0 640 512">
@@ -27,9 +41,14 @@ export default class extends React.Component {
                 </symbol>
             </svg>
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
-            <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-                {[data.map(item => <Item key={item.udn} data-source={item} />)]}
-            </div>
+            {dataContext?.source
+                ? <>
+                    {alerts}
+                    <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
+                        {[dataContext.source.map(item => <Item key={item.udn} data-source={item} />)]}
+                    </div>
+                </>
+                : <Loader>Loading...</Loader>}
         </>
     }
 }

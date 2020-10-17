@@ -28,6 +28,6 @@ function UmiDevice({ "data-source": { icons, name, type, description, udn } }) {
 
 const devicesFetch = $api.devices("umi").fetch;
 
-const UmiDeviceList = withDataFetch(DeviceList, { template: LoadIndicator }, () => devicesFetch);
+const UmiDeviceList = withDataFetch(DeviceList, () => devicesFetch, { usePreloader: false });
 
 export default props => <UmiDeviceList itemTemplate={UmiDevice} {...props} />;

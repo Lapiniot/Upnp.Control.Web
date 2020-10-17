@@ -147,4 +147,4 @@ class PlayerCore extends React.Component {
 
 const fetchPromiseFactoryBuilder = ({ udn }) => withMemoKey($api.control(udn).state(true).fetch, udn);
 
-export default withDataFetch(PlayerCore, { usePreloader: false }, fetchPromiseFactoryBuilder);
+export default withDataFetch(PlayerCore, fetchPromiseFactoryBuilder, { usePreloader: false });

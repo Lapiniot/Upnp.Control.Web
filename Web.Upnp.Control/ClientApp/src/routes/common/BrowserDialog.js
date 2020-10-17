@@ -65,7 +65,7 @@ const MediaSourceList = withDataFetch(({ dataContext: { source: data } }) =>
                 <DeviceIcon icon={icons.find(icon => icon.w <= 48)} alt={name} service={type} />
                 {name}{description && ` (${description})`}
             </RouteLink>)}
-    </ul>, { template: LoadIndicator }, () => serversFetch);
+    </ul>, () => serversFetch, { template: LoadIndicator });
 
 const BrowserView = ({ dataContext, match, p: page, s: size,
     dataContext: { source: { total, result: { length: fetched }, parents } }, ...other }) =>
