@@ -8,12 +8,13 @@ export function withMemoKey(func, key) {
 
 const defaultFetchBuilder = (dataUrl) => (withMemoKey(() => window.fetch(dataUrl), dataUrl));
 
-export function withDataFetch(Component, loadIndicatorConfig = {}, fetchPromiseFactoryBuilder = defaultFetchBuilder) {
+export function withDataFetch(Component, fetchPromiseFactoryBuilder = defaultFetchBuilder,
+    { template: Template = "div", text = "Loading...", usePreloader = true, ...other } = {}) {
+
     return class extends React.Component {
         constructor(props) {
             super(props);
             this.state = { loading: true, dataContext: null, fetchPromiseFactory: null };
-            const { template: Template = "div", text = "Loading...", usePreloader = true, ...other } = loadIndicatorConfig;
             this.preloader = usePreloader && <Template {...other}>{text}</Template>;
         }
 
@@ -35,7 +36,7 @@ export function withDataFetch(Component, loadIndicatorConfig = {}, fetchPromiseF
                 this.setState({ loading: false, dataContext: { source: data, reload: this.reload }, error: null });
             } catch (e) {
                 console.error(e);
-                this.setState({ loading: false, dataContext: null, error: e });
+                this.setState({ loading: false, error: e });
             }
         }
 
@@ -49,7 +50,7 @@ export function withDataFetch(Component, loadIndicatorConfig = {}, fetchPromiseF
             this.fetchData();
         }
 
-        reload = () => this.setState({ loading: true, dataContext: null }, this.fetchData);
+        reload = () => this.setState({ loading: true, error: null }, this.fetchData);
 
         render() {
             return this.state.loading && this.preloader
