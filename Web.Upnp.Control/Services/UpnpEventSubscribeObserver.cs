@@ -46,11 +46,11 @@ namespace Web.Upnp.Control.Services
 
             switch(e)
             {
-                case UpnpDeviceAppearedEvent dae when dae.Services.Any(predicate):
-                    SubscribeToEvents(dae.DeviceId, dae.Services);
+                case UpnpDeviceAppearedEvent dae when dae.Device.Services.Any(predicate):
+                    SubscribeToEvents(dae.DeviceId, dae.Device.Services);
                     break;
-                case UpnpDeviceUpdatedEvent due when due.Services.Any(predicate):
-                    var _ = RenewSubscriptionsAsync(due.DeviceId, due.Services);
+                case UpnpDeviceUpdatedEvent due when due.Device.Services.Any(predicate):
+                    var _ = RenewSubscriptionsAsync(due.DeviceId, due.Device.Services);
                     break;
                 case UpnpDeviceDisappearedEvent dde:
                     repository.Remove(dde.DeviceId, out var subscriptions);

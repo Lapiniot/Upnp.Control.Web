@@ -26,13 +26,14 @@ namespace Web.Upnp.Control.Services
 
         public void OnNext(UpnpDiscoveryEvent e)
         {
-            if(e is UpnpDeviceAppearedEvent)
+            switch(e)
             {
-                _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, "appeared");
-            }
-            else if(e is UpnpDeviceDisappearedEvent)
-            {
-                _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, "disappeared");
+                case UpnpDeviceAppearedEvent dae:
+                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new { Type = "appeared", Info = dae.Device });
+                    break;
+                case UpnpDeviceDisappearedEvent dde:
+                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new { Type = "disappeared", Info = dde.Device });
+                    break;
             }
         }
 
