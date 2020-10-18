@@ -96,7 +96,8 @@ namespace Web.Upnp.Control.Services
                         var desc = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
 
                         device = new Device(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
-                            desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10))
+                            desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10),
+                            desc.ManufacturerUri, desc.ModelUri, desc.PresentationUri)
                         {
                             BootId = reply.BootId,
                             ConfigId = reply.ConfigId,

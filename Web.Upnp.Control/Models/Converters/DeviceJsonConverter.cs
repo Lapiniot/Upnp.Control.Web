@@ -19,9 +19,12 @@ namespace Web.Upnp.Control.Models.Converters
             writer.WriteString("type", value.DeviceType);
             writer.WriteString("name", value.FriendlyName);
             writer.WriteString("maker", value.Manufacturer);
+            if(value.ManufacturerUri is { AbsoluteUri: { } makerUrl }) writer.WriteString("makerUrl", makerUrl);
             writer.WriteString("description", value.Description);
             writer.WriteString("model", value.ModelName);
+            if(value.ModelUri is { AbsoluteUri: { } modelUrl }) writer.WriteString("modelUrl", modelUrl);
             writer.WriteString("modelNumber", value.ModelNumber);
+            if(value.PresentationUri is { AbsoluteUri: { } presentationUrl }) writer.WriteString("presentUrl", presentationUrl);
 
             var serviceConverter = (JsonConverter<Service>)options.GetConverter(typeof(Service));
 
