@@ -17,7 +17,7 @@ function UpnpDevice({ "data-source": d }) {
         <div className="card-header d-flex">
             <DeviceIcon service={d.type} icons={d.icons} />
             <div>
-                <h5 className="card-title">{d.name}</h5>
+                <h5 className="card-title">{d.presentUrl ? <NavLink to={d.presentUrl}>{d.name}</NavLink> : d.name}</h5>
                 <h6 className="card-subtitle">{d.description}</h6>
             </div>
         </div>
