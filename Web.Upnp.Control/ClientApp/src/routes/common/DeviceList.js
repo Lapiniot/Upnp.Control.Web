@@ -3,32 +3,42 @@ import "bootstrap/js/src/alert";
 import { SignalRListener } from "../../components/SignalR";
 import Loader from "../../components/LoadIndicator";
 
+function DiscoveryAlert({ type, name, description, onDismiss = () => { } }) {
+    const appeared = type === "appeared";
+    return <div className={`alert ${appeared ? "alert-success" : "alert-warning"} alert-dismissible fade show m-3 d-flex justify-content-center`} role="alert">
+        <h6>{name}&nbsp;({description}){appeared ? " appeared on the network" : " disappeared from the network"}</h6>
+        <button type="button" className="btn-close" data-dismiss="alert" aria-label="Close" onClick={onDismiss} />
+    </div>;
+}
+
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.handlers = new Map([
-            ["SsdpDiscoveryEvent", this.onDiscoveryEvent]
-        ]);
-        this.alerts = [];
+        this.handlers = new Map([["SsdpDiscoveryEvent", this.onDiscoveryEvent]]);
+        this.state = { alerts: new Map() };
     }
 
     onDiscoveryEvent = (device, message) => {
+        this.showAlert(device, message);
         const reload = this.props.dataContext?.reload;
-        if (typeof reload === "function") {
-            this.alerts[device] = message;
-            reload();
-        }
+        if (typeof reload === "function") reload();
+    }
+
+    showAlert = (device, message) => {
+        this.state.alerts.set(device, message);
+        this.setState({ alerts: this.state.alerts });
+    }
+
+    dismissAlert = key => {
+        this.state.alerts.delete(key);
+        this.setState({ alerts: this.state.alerts });
     }
 
     render() {
         const { dataContext, itemTemplate: Item } = this.props;
 
-        const alerts = Object.entries(this.alerts).map(e => {
-            return <div className={`alert ${e[1] === "appeared" ? "alert-success" : "alert-warning"} alert-dismissible fade show mx-3 my-2`} role="alert">
-                {e[0]}
-                <button type="button" className="btn-close" data-dismiss="alert" aria-label="Close" />
-            </div>
-        });
+        const alerts = Array.from(this.state.alerts).map(({ 0: key, 1: { type, info: { name, description } } }) =>
+            <DiscoveryAlert key={key} type={type} name={name} description={description} onDismiss={() => this.dismissAlert(key)} />);
 
         return <>
             <svg className="d-none" aria-hidden="true" focusable="false" role="img">

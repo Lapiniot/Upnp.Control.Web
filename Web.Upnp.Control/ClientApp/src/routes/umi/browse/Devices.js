@@ -1,6 +1,5 @@
 ﻿import React from "react";
 import $api from "../../../components/WebApi";
-import LoadIndicator from "../../../components/LoadIndicator";
 import { RouteLink } from "../../../components/NavLink";
 import { withDataFetch } from "../../../components/DataFetch";
 import DeviceList from "../../common/DeviceList";
