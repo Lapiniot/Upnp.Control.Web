@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ using static IoT.Protocol.Upnp.Services.BrowseMode;
 namespace Web.Upnp.Control.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/{deviceId}")]
+    [Route("api/devices/{deviceId}")]
     [Produces("application/json")]
     public class BrowseController : ControllerBase
     {
@@ -23,7 +24,7 @@ namespace Web.Upnp.Control.Controllers
             this.factory = factory;
         }
 
-        [HttpGet("{*path}")]
+        [HttpGet("items/{*path}")]
         public async Task GetContentAsync(string deviceId, string path = "0", [FromQuery] uint take = 50, [FromQuery] uint skip = 0,
             [FromQuery] bool withParents = false,
             [FromQuery(Name = "resource")] bool? withResource = false,
@@ -48,7 +49,7 @@ namespace Web.Upnp.Control.Controllers
             }
         }
 
-        [HttpGet("metadata/{path?}")]
+        [HttpGet("item-metadata/{path?}")]
         public async Task<object> GetMetadataAsync(string deviceId, string path = "0", CancellationToken cancellationToken = default)
         {
             var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
@@ -56,11 +57,11 @@ namespace Web.Upnp.Control.Controllers
             using(service.Target)
             {
                 var result = await service.BrowseAsync(path, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
-                return new {Total = int.Parse(result["TotalMatches"]), Result = DIDLXmlParser.Parse(result["Result"])};
+                return new { Total = int.Parse(result["TotalMatches"]), Result = DIDLXmlParser.Parse(result["Result"]) };
             }
         }
 
-        [HttpGet("parents/{path?}")]
+        [HttpGet("item-parents/{path?}")]
         public async Task<object> GetParentsAsync(string deviceId, string path, CancellationToken cancellationToken = default)
         {
             var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
@@ -75,17 +76,27 @@ namespace Web.Upnp.Control.Controllers
         {
             var parents = new List<Item>();
 
-            while(path != "-1")
+            int errorLimit = 1;
+            
+            while(path != "-1" && errorLimit > 0)
             {
-                var metadataResult = await service.BrowseAsync(path, mode: BrowseMetadata, filter: filter, cancellationToken: cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    var metadataResult = await service.BrowseAsync(path, mode: BrowseMetadata, filter: filter, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                var metadata = DIDLXmlParser.Parse(metadataResult["Result"]).FirstOrDefault();
+                    var metadata = DIDLXmlParser.Parse(metadataResult["Result"]).FirstOrDefault();
 
-                if(metadata == null) break;
+                    if(metadata == null) break;
 
-                parents.Add(metadata);
+                    parents.Add(metadata);
 
-                path = metadata.ParentId;
+                    path = metadata.ParentId;
+                }
+                catch(SoapException se) when(se.Code == 701)
+                {
+                    path = "0";
+                    errorLimit--;
+                }
             }
 
             return parents;

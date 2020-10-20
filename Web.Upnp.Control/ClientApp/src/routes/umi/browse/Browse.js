@@ -11,7 +11,7 @@ const Browser = withBrowser(BrowserCore);
 export default ({ match: { path } }) =>
     <Switch>
         <Route path={path} exact render={props => <Devices {...props} />} />
-        <Route path={`${path}/:device/:id*`} render={props => props.match.params.id !== "-1"
+        <Route path={`${path}/:device/:id(.*)*`} render={props => props.match.params.id !== "-1"
             ? <Browser {...props} />
             : <Redirect to={path} />} />
     </Switch>;

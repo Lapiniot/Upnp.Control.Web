@@ -2,7 +2,6 @@
 
 const controlBaseUrl = "/api/upnpcontrol/";
 const devices = "/api/devices";
-const browseBaseUrl = "/api/browse/";
 const playlistBaseUrl = "/api/playlist/";
 
 export default class {
@@ -10,9 +9,9 @@ export default class {
     static devices = (category, id) => new HttpFetch(`${devices}${id ? `/${id}` : ""}${category ? "?category=" + category : ""}`);
 
     static browse = (deviceId) => ({
-        get: (id = "") => new BrowseFetch(`${browseBaseUrl}${deviceId}/${id}`),
-        parents: id => new HttpFetch(`${browseBaseUrl}parents/${deviceId}/${id}`),
-        metadata: id => new HttpFetch(`${browseBaseUrl}metadata/${deviceId}/${id}`)
+        get: (id = "") => new BrowseFetch(`${devices}/${deviceId}/items/${id}`),
+        parents: id => new HttpFetch(`${devices}/${deviceId}/item-parents/${id}`),
+        metadata: id => new HttpFetch(`${devices}/${deviceId}/item-metadata/${id}`)
     });
 
     static playlist = (deviceId) => ({
