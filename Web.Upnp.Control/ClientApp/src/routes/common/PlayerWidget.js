@@ -91,7 +91,7 @@ class PlayerCore extends React.Component {
 
     next = () => this.ctrl.next().fetch();
 
-    seek = position => this.ctrl.seek(position.toFixed(2)).fetch();
+    seek = position => this.ctrl.seek(position).fetch();
 
     setRepeatAllPlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_ALL).fetch();
 

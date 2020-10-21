@@ -27,7 +27,7 @@ export default class {
         deviceId = encodeURIComponent(deviceId);
         return {
             state: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/state${detailed ? "?detailed" : ""}`),
-            playlistState: () => new JsonFetch(`${devicesBaseUri}/${deviceId}/playlist_state`),
+            playlistState: () => new JsonFetch(`${devicesBaseUri}/${deviceId}/playlist-state`),
             play: id => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing", objectId: id }) }),
             playUri: id => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing", currentUri: id }) }),
             pause: () => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "paused" }) }),
@@ -35,7 +35,8 @@ export default class {
             prev: () => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing-prev" }) }),
             next: () => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing-next" }) }),
             position: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/position${detailed ? "?detailed" : ""}`),
-            seek: position => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/position`, null, { body: position }),
+            seek: position => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/position`, null,
+                { body: JSON.stringify(typeof position === "number" ? { position: position } : { relTime: position }) }),
             setPlayMode: mode => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/play-mode`, null, { body: JSON.stringify(mode) }),
             volume: () => new JsonFetch(`${devicesBaseUri}/${deviceId}/volume`),
             setVolume: volume => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/volume`, null, { body: volume }),

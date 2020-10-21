@@ -21,7 +21,9 @@ using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Routing;
 using Web.Upnp.Control.Services;
 using Web.Upnp.Control.Services.Abstractions;
+using Web.Upnp.Control.Services.Commands;
 using Web.Upnp.Control.Services.Configuration;
+using Web.Upnp.Control.Services.Queries;
 
 namespace Web.Upnp.Control
 {
@@ -53,7 +55,9 @@ namespace Web.Upnp.Control
                         .WithJitter(500, 1000)
                         .Build()))
                 .AddSoapHttpClient()
-                .AddEventSubscribeClient();
+                .AddEventSubscribeClient()
+                .AddQueryServices()
+                .AddCommandServices();
 
             services
                 .AddOptions<UpnpEventOptions>()

@@ -44,7 +44,7 @@ namespace Web.Upnp.Control.Services
             var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null;
             var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null;
 
-            var state = new AVTransportState(map.TryGetValue("TransportState", out value) ? value : null, null,
+            var state = new AVState(map.TryGetValue("TransportState", out value) ? value : null, null,
                 map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : (int?)null, null,
                 map.TryGetValue("CurrentPlayMode", out value) ? value : null)
             {
@@ -55,7 +55,7 @@ namespace Web.Upnp.Control.Services
                 NextTrackMetadata = next
             };
 
-            var position = new AVPositionInfo(map.TryGetValue("CurrentTrack", out value) ? value : null,
+            var position = new AVPosition(map.TryGetValue("CurrentTrack", out value) ? value : null,
                 map.TryGetValue("CurrentTrackDuration", out value) ? value : null,
                 map.TryGetValue("RelativeTimePosition", out value) ? value : null);
 

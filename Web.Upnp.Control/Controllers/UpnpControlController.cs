@@ -1,15 +1,9 @@
-using System;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using IoT.Device.Xiaomi.Umi.Services;
-using IoT.Protocol.Upnp.DIDL;
-using IoT.Protocol.Upnp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
-using static IoT.Protocol.Upnp.Services.BrowseMode;
 
 namespace Web.Upnp.Control.Controllers
 {
@@ -17,205 +11,107 @@ namespace Web.Upnp.Control.Controllers
     [Route("api/devices/{deviceId}")]
     public class UpnpControlController : ControllerBase
     {
-        private readonly IUpnpServiceFactory factory;
-
-        public UpnpControlController(IUpnpServiceFactory factory)
-        {
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        }
+        #region AVTransport state related
 
         [HttpGet("state")]
         [Produces("application/json")]
-        public async Task<AVTransportState> GetStateAsync(string deviceId, CancellationToken cancellationToken, [FromQuery] bool? detailed = false)
+        public Task<AVState> GetStateAsync([FromServices] IAsyncQuery<AVGetStateQueryParams, AVState> query, string deviceId, CancellationToken cancellationToken, [FromQuery] bool? detailed = false)
         {
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
-            var actions = await avt.GetCurrentTransportActionsAsync(0, cancellationToken).ConfigureAwait(false);
-            var transport = await avt.GetTransportInfoAsync(0, cancellationToken).ConfigureAwait(false);
-
-            if(detailed != false)
-            {
-                var media = await avt.GetMediaInfoAsync(0, cancellationToken).ConfigureAwait(false);
-                var settings = await avt.GetTransportSettingsAsync(0, cancellationToken).ConfigureAwait(false);
-                return new AVTransportState(transport.TryGetValue("CurrentTransportState", out var value) ? value : null,
-                    transport.TryGetValue("CurrentTransportStatus", out value) ? value : null,
-                    media.TryGetValue("NrTracks", out value) && int.TryParse(value, out var numTracks) ? numTracks : 0,
-                    media.TryGetValue("PlayMedium", out value) ? value : null,
-                    settings.TryGetValue("PlayMode", out value) ? value : null)
-                {
-                    Actions = actions.TryGetValue("Actions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-                    CurrentTrackMetadata = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null,
-                    NextTrackMetadata = detailed != false && media.TryGetValue("NextURIMetaData", out value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null
-                };
-            }
-            else
-            {
-                return new AVTransportState(transport.TryGetValue("CurrentTransportState", out var value) ? value : null,
-                    transport.TryGetValue("CurrentTransportStatus", out value) ? value : null, null, null, null)
-                {
-                    Actions = actions.TryGetValue("Actions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null
-                };
-            }
+            return query.ExecuteAsync(new AVGetStateQueryParams(deviceId, detailed), cancellationToken);
         }
 
         [HttpPut("state")]
         [Consumes("application/json")]
-        public async Task SetStateAsync(string deviceId, AVPlaybackStateParams @params, CancellationToken cancellationToken)
+        public Task SetStateAsync([FromServices] IAsyncCommand<AVSetStateCommandParams> command, string deviceId, AVStateParams @params, CancellationToken cancellationToken)
         {
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
-
-            switch(@params.State)
-            {
-                case "playing":
-                    switch(@params)
-                    {
-                        case { ObjectId: { } objectId }:
-                            await PlayItemAsync(deviceId, objectId, cancellationToken).ConfigureAwait(false);
-                            break;
-                        case { CurrentUri: { } uri }:
-                            await PlayUriAsync(deviceId, uri, cancellationToken).ConfigureAwait(false);
-                            break;
-                        default:
-                            await avt.PlayAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-                            break;
-                    }
-                    break;
-                case "stopped":
-                    await avt.StopAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-                    break;
-                case "paused":
-                    await avt.PauseAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-                    break;
-                case "playing-next":
-                    await avt.NextAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-                    break;
-                case "playing-prev":
-                    await avt.PreviousAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-                    break;
-            }
+            return command.ExecuteAsync(new AVSetStateCommandParams(deviceId, @params), cancellationToken);
         }
 
-        [HttpGet("playlist-state")]
-        [Produces("application/json")]
-        public async Task GetPlaylistStateAsync(string deviceId, CancellationToken cancellationToken)
-        {
-            var sps = await factory.GetServiceAsync<SystemPropertiesService>(deviceId).ConfigureAwait(false);
-            var value = await sps.GetStringAsync("fastCall?command=state_playlists", cancellationToken).ConfigureAwait(false);
-            await HttpContext.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes(value), cancellationToken).ConfigureAwait(false);
-            await HttpContext.Response.BodyWriter.CompleteAsync().ConfigureAwait(false);
-        }
+        #endregion
+
+        #region AVTransport position related
 
         [HttpGet("position")]
         [Produces("application/json")]
-        public async Task<AVPositionInfo> GetPositionAsync(string deviceId, CancellationToken cancellationToken, bool? detailed = false)
+        public Task<AVPosition> GetPositionAsync([FromServices] IAsyncQuery<AVGetPositionQueryParams, AVPosition> query, string deviceId, CancellationToken cancellationToken, bool? detailed = false)
         {
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
-            var info = await avt.GetPositionInfoAsync(0, cancellationToken).ConfigureAwait(false);
-            return new AVPositionInfo(info.TryGetValue("Track", out var value) ? value : null, info.TryGetValue("TrackDuration", out value) ? value : null,
-                info.TryGetValue("RelTime", out value) ? value : null)
-            {
-                Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLXmlParser.Parse(value).FirstOrDefault() : null
-            };
+            return query.ExecuteAsync(new AVGetPositionQueryParams(deviceId, detailed), cancellationToken);
         }
 
         [HttpPut("position")]
         [Consumes("application/json")]
-        public async Task SeekAsync(string deviceId, [FromBody] double position, CancellationToken cancellationToken)
+        public Task SeekAsync([FromServices] IAsyncCommand<AVSetPositionCommandParams> command, string deviceId, AVPositionParams @params, CancellationToken cancellationToken)
         {
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
-            var info = await avt.GetPositionInfoAsync(0, cancellationToken).ConfigureAwait(false);
-            if(info.TryGetValue("TrackDuration", out var value) && TimeSpan.TryParse(value, out var duration))
-            {
-                var absTime = duration * position;
-                await avt.SeekAsync(target: absTime.ToString("hh\\:mm\\:ss")).ConfigureAwait(false);
-            }
-            else
-            {
-                throw new InvalidOperationException("Operation is not supported in the current state");
-            }
+            return command.ExecuteAsync(new AVSetPositionCommandParams(deviceId, @params), cancellationToken);
         }
 
-        [HttpPut("position-time")]
-        public async Task SeekAsync(string deviceId, TimeSpan time, CancellationToken cancellationToken)
-        {
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
-            await avt.SeekAsync(target: time.ToString("hh\\:mm\\:ss")).ConfigureAwait(false);
-        }
+        #endregion
 
-        public async Task PlayItemAsync(string deviceId, string id, CancellationToken cancellationToken)
-        {
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
-
-            if(!string.IsNullOrWhiteSpace(id))
-            {
-                var cd = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
-                var result = await cd.BrowseAsync(id, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
-                var item = DIDLXmlParser.Parse(result["Result"]).FirstOrDefault();
-                if(!(item is { Resource: { Url: { } resUrl } })) throw new InvalidOperationException();
-                await avt.SetAVTransportUriAsync(currentUri: resUrl, cancellationToken: cancellationToken).ConfigureAwait(false);
-            }
-
-            await avt.PlayAsync(0, "1", cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task PlayUriAsync(string deviceId, Uri uri, CancellationToken cancellationToken)
-        {
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
-            await avt.SetAVTransportUriAsync(0, uri.AbsoluteUri, null, cancellationToken).ConfigureAwait(false);
-            await avt.PlayAsync(0, "1", cancellationToken).ConfigureAwait(false);
-        }
+        #region AVTransport play mode related
 
         [HttpGet("play-mode")]
         [Produces("application/json")]
-        public async Task GetPlayModeAsync(string deviceId, [FromBody] string mode, CancellationToken cancellationToken)
+        public Task<string> GetPlayModeAsync([FromServices] IAsyncQuery<AVGetPlayModeQueryParams, string> query, string deviceId, CancellationToken cancellationToken)
         {
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
-            await avt.SetPlayModeAsync(0, mode, cancellationToken).ConfigureAwait(false);
+            return query.ExecuteAsync(new AVGetPlayModeQueryParams(deviceId), cancellationToken);
         }
 
         [HttpPut("play-mode")]
         [Consumes("application/json")]
-        public async Task SetPlayModeAsync(string deviceId, [FromBody] string mode, CancellationToken cancellationToken)
+        public Task SetPlayModeAsync([FromServices] IAsyncCommand<AVSetPlayModeCommandParams> command, string deviceId, [FromBody] string mode, CancellationToken cancellationToken)
         {
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
-            await avt.SetPlayModeAsync(0, mode, cancellationToken).ConfigureAwait(false);
+            return command.ExecuteAsync(new AVSetPlayModeCommandParams(deviceId, mode), cancellationToken);
         }
+
+        #endregion
+
+        #region RenderingControl volume related
 
         [HttpGet("volume")]
         [Produces("application/json")]
-        public async Task<RCVolumeState> GetVolumeAsync(string deviceId, CancellationToken cancellationToken)
+        public Task<RCVolumeState> GetVolumeAsync([FromServices] IAsyncQuery<RCGetVolumeQueryParams, RCVolumeState> query, string deviceId, CancellationToken cancellationToken, bool? detailed = false)
         {
-            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
-            var rv = await service.GetVolumeAsync(0, cancellationToken);
-            var rm = await service.GetMuteAsync(0, cancellationToken);
-
-            return new RCVolumeState(
-                rv.TryGetValue("CurrentVolume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
-                rm.TryGetValue("CurrentMute", out v) && bool.TryParse(v, out var muted) ? muted : null);
+            return query.ExecuteAsync(new RCGetVolumeQueryParams(deviceId, detailed), cancellationToken);
         }
 
         [HttpPut("volume")]
         [Consumes("application/json")]
-        public async Task SetVolumeAsync(string deviceId, [FromBody] uint volume, CancellationToken cancellationToken)
+        public Task SetVolumeAsync([FromServices] IAsyncCommand<RCSetVolumeCommandParams> command, string deviceId, [FromBody] uint volume, CancellationToken cancellationToken)
         {
-            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
-            await service.SetVolumeAsync(0, volume, cancellationToken);
+            return command.ExecuteAsync(new RCSetVolumeCommandParams(deviceId, volume), cancellationToken);
         }
+
+        #endregion
+
+        #region RenderingControl mute related
 
         [HttpGet("mute")]
         [Produces("application/json")]
-        public async Task<bool?> GetMuteAsync(string deviceId, CancellationToken cancellationToken)
+        public Task<bool?> GetMuteAsync([FromServices] IAsyncQuery<RCGetMuteQueryParams, bool?> query, string deviceId, CancellationToken cancellationToken)
         {
-            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
-            var result = await service.GetMuteAsync(0, cancellationToken);
-            return result.TryGetValue("CurrentMute", out var value) && bool.TryParse(value, out var muted) ? muted : null;
+            return query.ExecuteAsync(new RCGetMuteQueryParams(deviceId), cancellationToken);
         }
 
         [HttpPut("mute")]
         [Consumes("application/json")]
-        public async Task SetMuteAsync(string deviceId, [FromBody] bool mute, CancellationToken cancellationToken)
+        public Task SetMuteAsync([FromServices] IAsyncCommand<RCSetMuteCommandParams> command, string deviceId, [FromBody] bool muted, CancellationToken cancellationToken)
         {
-            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
-            await service.SetMuteAsync(0, mute, cancellationToken);
+            return command.ExecuteAsync(new RCSetMuteCommandParams(deviceId, muted), cancellationToken);
         }
+
+        #endregion
+
+        #region SystemProperties playlist state related
+
+        [HttpGet("playlist-state")]
+        [Produces("application/json")]
+        public async Task GetPlaylistStateAsync([FromServices] IAsyncQuery<SysPropsGetPlaylistStateQueryParams, string> query, string deviceId, CancellationToken cancellationToken)
+        {
+            string content = await query.ExecuteAsync(new SysPropsGetPlaylistStateQueryParams(deviceId), cancellationToken).ConfigureAwait(false);
+            await HttpContext.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes(content), cancellationToken).ConfigureAwait(false);
+            await HttpContext.Response.BodyWriter.CompleteAsync().ConfigureAwait(false);
+        }
+
+        #endregion
     }
 }
