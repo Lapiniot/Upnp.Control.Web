@@ -1,3 +1,4 @@
+using System;
 using IoT.Protocol.Upnp.DIDL;
 
 namespace Web.Upnp.Control.Models
@@ -15,6 +16,8 @@ namespace Web.Upnp.Control.Models
     {
         public Item Current { get; init; }
     }
+
+    public record AVPlaybackStateParams(string State, string ObjectId, Uri CurrentUri);
 
     public record RCVolumeState(uint? Volume, bool? Muted);
 }
