@@ -14,7 +14,9 @@ namespace Web.Upnp.Control.Services.Queries
                 .AddTransient<IAsyncQuery<AVGetPlayModeQueryParams, string>, AVGetPlayModeQuery>()
                 .AddTransient<IAsyncQuery<RCGetVolumeQueryParams, RCVolumeState>, RCGetVolumeQuery>()
                 .AddTransient<IAsyncQuery<RCGetMuteQueryParams, bool?>, RCGetMuteQuery>()
-                .AddTransient<IAsyncQuery<SysPropsGetPlaylistStateQueryParams, string>, SysPropsGetPlaylistStateQuery>();
+                .AddTransient<IAsyncQuery<SysPropsGetPlaylistStateQueryParams, string>, SysPropsGetPlaylistStateQuery>()
+                .AddTransient<IAsyncQuery<GetDeviceQueryParams, Device>, GetDeviceQuery>()
+                .AddTransient<IAsyncEnumerableQuery<GetDevicesQueryParams, Device>, GetDeviceQuery>();
         }
     }
 }

@@ -3,6 +3,10 @@ using IoT.Protocol.Upnp.DIDL;
 
 namespace Web.Upnp.Control.Models
 {
+    public record GetDevicesQueryParams(string Category);
+
+    public record GetDeviceQueryParams(string DeviceId);
+
     public record AVState(string State, string Status, int? Tracks, string Medium, string PlayMode)
     {
         public Item CurrentTrackMetadata { get; init; }
