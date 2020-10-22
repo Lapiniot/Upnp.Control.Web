@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using IoT.Protocol.Upnp.DIDL;
 
 namespace Web.Upnp.Control.Models
@@ -6,6 +7,12 @@ namespace Web.Upnp.Control.Models
     public record GetDevicesQueryParams(string Category);
 
     public record GetDeviceQueryParams(string DeviceId);
+
+    public record GetContentQueryParams(string DeviceId, string Path, GetContentOptions Options);
+
+    public record GetContentOptions(bool? WithParents, uint Take = 50, uint Skip = 0);
+
+    public record GetContentResult(int Total, IEnumerable<Item> Items, IEnumerable<Item> Parents);
 
     public record AVState(string State, string Status, int? Tracks, string Medium, string PlayMode)
     {

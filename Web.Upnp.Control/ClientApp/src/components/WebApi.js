@@ -8,9 +8,7 @@ export default class {
     static devices = (category, id) => new HttpFetch(`${devicesBaseUri}${id ? `/${id}` : ""}${category ? "?category=" + category : ""}`);
 
     static browse = (deviceId) => ({
-        get: (id = "") => new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${id}`),
-        parents: id => new HttpFetch(`${devicesBaseUri}/${deviceId}/item-parents/${id}`),
-        metadata: id => new HttpFetch(`${devicesBaseUri}/${deviceId}/item-metadata/${id}`)
+        get: (id = "") => new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${id}`)
     });
 
     static playlist = (deviceId) => ({
@@ -53,9 +51,9 @@ class BrowseFetch extends HttpFetch {
 
     withParents = () => { return new BrowseFetch(this.path, { ...this.query, withParents: true }); };
 
-    withResource = () => { return new BrowseFetch(this.path, { ...this.query, resource: true }); };
+    withResource = () => { return new BrowseFetch(this.path, { ...this.query, withResourceProps: true }); };
 
-    withVendor = () => { return new BrowseFetch(this.path, { ...this.query, vendor: true }); };
+    withVendor = () => { return new BrowseFetch(this.path, { ...this.query, withVendorProps: true }); };
 
     take = (count) => { return new BrowseFetch(this.path, { ...this.query, take: count }); };
 
