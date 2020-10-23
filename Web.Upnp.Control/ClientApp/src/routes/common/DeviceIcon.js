@@ -16,6 +16,6 @@ function getOptimalIcon(icons, preferredSize = 48) {
 
 function getFallbackIcon(service) {
     return service?.startsWith("urn:schemas-upnp-org:device:MediaRenderer:")
-        ? "#upnp-renderer"
-        : "#upnp-server";
+        ? "device-icon.svg#upnp-renderer"
+        : "device-icon.svg#upnp-server";
 }

@@ -62,7 +62,7 @@ const MediaSourceList = withDataFetch(({ dataContext: { source: data } }) =>
     <ul className="list-group list-group-flush">
         {data.map(({ udn, name, type, description, icons }, i) =>
             <RouteLink key={`dev-${i}`} to={`/sources/${udn}`} className="list-group-item list-group-item-action">
-                <DeviceIcon icon={icons.find(icon => icon.w <= 48)} alt={name} service={type} />
+                <DeviceIcon icons={icons} service={type} />
                 {name}{description && ` (${description})`}
             </RouteLink>)}
     </ul>, () => serversFetch, { template: LoadIndicator });
