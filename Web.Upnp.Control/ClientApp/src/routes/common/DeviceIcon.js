@@ -1,12 +1,9 @@
 import React from "react";
 
-export default ({ icons = [], service, alt = "" }) => {
+export default ({ icons = [], service, alt }) => {
     const icon = getOptimalIcon(icons);
-    return icon
-        ? <img src={icon?.url} className="upnp-dev-icon" alt={alt} />
-        : <svg className="upnp-dev-icon">
-            <use href={getFallbackIcon(service)} />
-        </svg>;
+    const attr = icon ? { src: icon.url } : { src: getFallbackIcon(service), style: { objectFit: "unset" } };
+    return <img {...attr} className="upnp-dev-icon" alt={alt} />;
 }
 
 function getOptimalIcon(icons, preferredSize = 48) {
