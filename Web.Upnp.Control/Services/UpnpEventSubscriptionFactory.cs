@@ -25,35 +25,43 @@ namespace Web.Upnp.Control.Services
 
         private async Task StartSubscriptionLoopAsync(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken cancellationToken)
         {
-            var (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
-            logger.LogInformation($"Successfully subscribed to events from {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
-            logger.LogInformation($"Starting refresh loop for session: {sid}.");
             try
             {
-                while(!cancellationToken.IsCancellationRequested)
+                var (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
+                logger.LogInformation($"Successfully subscribed to events from {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
+                logger.LogInformation($"Starting refresh loop for session: {sid}.");
+                try
                 {
-                    try
+                    while(!cancellationToken.IsCancellationRequested)
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(seconds - 5), cancellationToken).ConfigureAwait(false);
-                        logger.LogInformation($"Refreshing subscription for session: {sid}.");
-                        (sid, seconds) = await subscribeClient.RenewAsync(subscribeUri, sid, timeout, cancellationToken).ConfigureAwait(false);
-                        logger.LogInformation($"Successfully refreshed subscription for session: {sid}. Timeout: {seconds} seconds.");
+                        try
+                        {
+                            await Task.Delay(TimeSpan.FromSeconds(seconds - 5), cancellationToken).ConfigureAwait(false);
+                            logger.LogInformation($"Refreshing subscription for session: {sid}.");
+                            (sid, seconds) = await subscribeClient.RenewAsync(subscribeUri, sid, timeout, cancellationToken).ConfigureAwait(false);
+                            logger.LogInformation($"Successfully refreshed subscription for session: {sid}. Timeout: {seconds} seconds.");
+                        }
+                        catch(HttpRequestException hre)
+                        {
+                            logger.LogWarning($"Failed to refresh subscription for {sid}. {hre.Message}");
+                            logger.LogWarning($"Requesting new subscription session at {subscribeUri}.");
+                            (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
+                            logger.LogInformation($"Successfully requested new subscription for {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
+                        }
+                        catch(OperationCanceledException) { }
                     }
-                    catch(HttpRequestException hre)
-                    {
-                        logger.LogWarning($"Failed to refresh subscription for {sid}. {hre.Message}");
-                        logger.LogWarning($"Requesting new subscription session at {subscribeUri}.");
-                        (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
-                        logger.LogInformation($"Successfully requested new subscription for {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
-                    }
-                    catch(OperationCanceledException) { }
+                }
+                finally
+                {
+                    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                    await subscribeClient.UnsubscribeAsync(subscribeUri, sid, cts.Token).ConfigureAwait(false);
+                    logger.LogInformation($"Successfully cancelled subscription for SID: {sid}.");
                 }
             }
-            finally
+            catch(Exception ex)
             {
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-                await subscribeClient.UnsubscribeAsync(subscribeUri, sid, cts.Token).ConfigureAwait(false);
-                logger.LogInformation($"Successfully cancelled subscription for SID: {sid}.");
+                logger.LogError(ex, $"Breaking error in the session loop for {subscribeUri}");
+                throw;
             }
         }
     }
