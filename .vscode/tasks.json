@@ -38,25 +38,37 @@
         },
         {
             "label": "Publish (self-contained)",
-            "command": "dotnet publish -c $CONFIG -r ${input:rid}",
+            "command": "dotnet publish -c $CONFIG -r $RUNTIMEID",
             "detail": "Runs dotnet publish command",
             "type": "shell",
             "group": "build",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "CONFIG": "Release",
+                    "RUNTIMEID": "${input:rid}"
+                }
+            },
         },
         {
             "label": "Deploy (remote SSH)",
             "detail": "Starts deployment to remote server via rsync over SSH",
             "dependsOn": [
-                "Publish"
+                "Publish (self-contained)"
             ],
             "type": "shell",
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "FRAMEWORK": "net5.0",
+                    "CONFIG": "Release",
+                    "RUNTIMEID": "${input:rid}"
+                }
             },
             "osx": {
-                "command": "rsync -r -v --delete -e ssh ./Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/publish/ ${input:remote-url}"
+                "command": "rsync -r -v --delete -e ssh ./Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/$RUNTIMEID/publish/ ${input:remote-url}"
             }
         },
         {
