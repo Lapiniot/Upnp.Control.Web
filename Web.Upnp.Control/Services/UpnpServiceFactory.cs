@@ -38,11 +38,7 @@ namespace Web.Upnp.Control.Services
 
         public async Task<TService> GetServiceAsync<TService>(string deviceId, string schema = null) where TService : SoapActionInvoker
         {
-            var device = await context.UpnpDevices
-                .Include(d => d.Services)
-                .Where(d => d.Udn == deviceId)
-                .FirstAsync()
-                .ConfigureAwait(false);
+            var device = await context.UpnpDevices.FindAsync(new[] { deviceId }).ConfigureAwait(false);
 
             schema ??= Cache.GetOrAdd(typeof(TService), ServiceSchemaAttribute.GetSchema);
 
