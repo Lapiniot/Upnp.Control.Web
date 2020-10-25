@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "options": {
         "env": {
-            "FRAMEWORK": "netcoreapp3.1",
+            "FRAMEWORK": "net5.0",
             "CONFIG": "Release"
         }
     },
@@ -31,6 +31,14 @@
         {
             "label": "Publish",
             "command": "dotnet publish -c $CONFIG",
+            "detail": "Runs dotnet publish command",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Publish (self-contained)",
+            "command": "dotnet publish -c $CONFIG -r ${input:rid}",
             "detail": "Runs dotnet publish command",
             "type": "shell",
             "group": "build",
@@ -103,6 +111,9 @@
             "options": [
                 "win10-x64",
                 "osx-x64",
+                "ubuntu-x64",
+                "debian-x64",
+                "ubuntu-arm64",
                 "debian-arm64"
             ],
             "default": "osx-x64"
