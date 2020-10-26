@@ -41,15 +41,33 @@ export default class extends React.Component {
 
         const row = event.currentTarget;
         const id = row.dataset.id;
-        if (event.ctrlKey || event.metaKey) {
+
+        if (event.ctrlKey || event.metaKey) { // selective multi-selection
             const cancelled = !this.selection.select(id, !this.selection.selected(id), { device: this.props.device, id: this.props.id });
             this.onSelectionChanged(cancelled);
         }
-        else
-            this.setState({ focusItem: id });
+        else if (event.shiftKey) { // range multi-selection
+            const selectionStart = Math.max(this.selectables.indexOf(this.focusedItem), 0);
+            const selectionEnd = this.selectables.indexOf(id);
+            const range = this.selectables.slice(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd) + 1);
+            this.selection.reset();
+            const cancelled = !this.selection.selectMany(range, true, { device: this.props.device, id: this.props.id });
+            this.onSelectionChanged(cancelled);
+        }
+        else // single item selection
+        {
+            this.focusedItem = id;
+            this.selection.reset();
+            const cancelled = !this.selection.select(id, true, { device: this.props.device, id: this.props.id });
+            this.onSelectionChanged(cancelled);
+        }
     }
 
-    clearFocus = () => this.setState({ focusItem: undefined });
+    clearFocus = () => {
+        this.focusedItem = null;
+        const cancelled = !this.selection.selectMany(this.selectables, false, { device: this.props.device, id: this.props.id });
+        this.onSelectionChanged(cancelled);
+    }
 
     onSelectionChanged = (cancelled) => {
         if (!cancelled) this.setState({ selection: true });
@@ -81,9 +99,8 @@ export default class extends React.Component {
                         </div>}
                     {[items.map((e, index) => {
                         const selected = this.selection.selected(e.id);
-                        const focused = this.state.focusItem === e.id;
                         const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
-                        return <div key={`bws.${index}`} data-id={e.id} data-selected={selected || focused} data-active={active} onClick={this.onClick} onDoubleClick={e.container ? navigate : null}>
+                        return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} data-active={active} onClick={this.onClick} onDoubleClick={e.container ? navigate : null}>
                             <div className="x-table-cell-min">
                                 <input type="checkbox" onChange={this.onSelect} checked={selected} disabled={!filter(e)} />
                             </div>
