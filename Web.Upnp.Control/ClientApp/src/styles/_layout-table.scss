@@ -9,6 +9,8 @@
     --bs-x-table-active-bg: #{$table-active-bg};
     --bs-x-table-hover-color: #{$table-hover-color};
     --bs-x-table-hover-bg: #{$table-hover-bg};
+    --bs-x-table-selected-bg: #{$link-color};
+    --bs-x-table-selected-color: white;
 
     display: table;
     width: 100%;
@@ -44,9 +46,14 @@
             background-color: var(--bs-x-table-bg);
             background-image: linear-gradient(var(--bs-x-table-accent-bg), var(--bs-x-table-accent-bg));
 
+            &[data-active="true"] {
+                --bs-x-table-accent-bg: var(--bs-x-table-active-bg) !important;
+                color: var(--bs-x-table-active-color);
+            }
+
             &[data-selected="true"] {
-                background-color: $link-color !important;
-                color: $white !important;
+                --bs-x-table-accent-bg: var(--bs-x-table-selected-bg) !important;
+                color: var(--bs-x-table-selected-color) !important;
             }
 
             & > div {
