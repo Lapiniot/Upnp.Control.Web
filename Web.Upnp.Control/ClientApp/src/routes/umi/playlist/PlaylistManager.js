@@ -198,8 +198,16 @@ export class PlaylistManagerCore extends React.Component {
                     filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection} />
             </SignalRListener>
             {!data && <LoadIndicator />}
-            <Pagination {...match} className="position-sticky sticky-bottom shadow-sm"
-                count={fetched} total={total} current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
+            <div className="position-sticky sticky-bottom">
+                <div className="bg-light text-center text-muted small p-1">{
+                    this.selection.length > 0
+                        ? `${this.selection.length} of ${fetched} selected`
+                        : `${fetched} item${fetched !== 1 ? "s" : ""}`}
+                    , {total} totally available
+                    </div>
+                <Pagination {...match} className="shadow-lg"
+                    count={fetched} total={total} current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
+            </div>
             {this.state.modal && (typeof this.state.modal === "function" ? this.state.modal() : this.state.modal)}
         </div>;
     }
