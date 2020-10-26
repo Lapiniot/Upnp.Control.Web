@@ -20,72 +20,108 @@ export default class extends React.Component {
         }
     }
 
-    onSelect = event => {
-        event.stopPropagation();
-        const checkbox = event.target;
+    componentDidMount() {
+        document.addEventListener('keydown', this.onKeyDown);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    onCheckboxChanged = e => {
+        e.stopPropagation();
+        const checkbox = e.target;
         const id = checkbox.parentElement.parentElement.dataset.id;
         const cancelled = !this.selection.select(id, checkbox.checked, { device: this.props.device, id: this.props.id });
-        this.onSelectionChanged(cancelled);
+        this.notifySelectionChanged(cancelled);
     };
 
-    onSelectAll = event => {
-        const checkbox = event.target;
+    onCheckboxAllChanged = e => {
+        const checkbox = e.target;
         const cancelled = !this.selection.selectMany(this.selectables, checkbox.checked, { device: this.props.device, id: this.props.id });
-        this.onSelectionChanged(cancelled);
+        this.notifySelectionChanged(cancelled);
     };
 
-    onClick = event => {
-        event.stopPropagation();
+    onRowMouseDown = e => {
+        e.stopPropagation();
 
-        if (event.target.type === "checkbox") return;
+        if (e.target.type === "checkbox") return;
 
-        const row = event.currentTarget;
+        const row = e.currentTarget;
         const id = row.dataset.id;
 
-        if (event.ctrlKey || event.metaKey) { // selective multi-selection
-            const cancelled = !this.selection.select(id, !this.selection.selected(id), { device: this.props.device, id: this.props.id });
-            this.onSelectionChanged(cancelled);
+        if (e.ctrlKey || e.metaKey) {
+            // selective multi-selection
+            this.toggleSelection(id);
         }
-        else if (event.shiftKey) { // range multi-selection
+        else if (e.shiftKey) {
+            e.preventDefault();
+            // range multi-selection
             const selectionStart = Math.max(this.selectables.indexOf(this.focusedItem), 0);
             const selectionEnd = this.selectables.indexOf(id);
-            const range = this.selectables.slice(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd) + 1);
-            this.selection.reset();
-            const cancelled = !this.selection.selectMany(range, true, { device: this.props.device, id: this.props.id });
-            this.onSelectionChanged(cancelled);
+            this.selectRange(selectionStart, selectionEnd);
         }
         else // single item selection
         {
             this.focusedItem = id;
             this.selection.reset();
             const cancelled = !this.selection.select(id, true, { device: this.props.device, id: this.props.id });
-            this.onSelectionChanged(cancelled);
+            this.notifySelectionChanged(cancelled);
         }
     }
 
-    clearFocus = () => {
-        this.focusedItem = null;
-        const cancelled = !this.selection.selectMany(this.selectables, false, { device: this.props.device, id: this.props.id });
-        this.onSelectionChanged(cancelled);
+    onContainerMouseDown = e => {
+        if (e.target === e.currentTarget) {
+            this.toggleSelectionAll(false);
+        }
     }
 
-    onSelectionChanged = (cancelled) => {
+    onKeyDown = e => {
+        if (!e.cancelBubble && (e.metaKey || e.ctrlKey) && e.code === "KeyA") {
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleSelectionAll(true);
+        }
+    }
+
+    notifySelectionChanged = (cancelled) => {
         if (!cancelled) this.setState({ selection: true });
     }
 
+    selectRange(selectionStart, selectionEnd) {
+        const range = this.selectables.slice(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd) + 1);
+        this.selection.reset();
+        const cancelled = !this.selection.selectMany(range, true, { device: this.props.device, id: this.props.id });
+        this.notifySelectionChanged(cancelled);
+    }
+
+    toggleSelection(id) {
+        const cancelled = !this.selection.select(id, !this.selection.selected(id), { device: this.props.device, id: this.props.id });
+        this.notifySelectionChanged(cancelled);
+    }
+
+    toggleSelectionAll(state) {
+        this.focusedItem = null;
+        const details = { device: this.props.device, id: this.props.id };
+        const cancelled = state ?
+            !this.selection.selectMany(this.selectables, state, details) :
+            !this.selection.clear(details);
+        this.notifySelectionChanged(cancelled);
+    }
+
     render() {
-        const { navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext } = this.props;
+        const { navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext, useCheckboxes = true, selectOnClick = true } = this.props;
         const { source: { result: items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.selectables = items.filter(filter).map(i => i.id);
-        const allSelected = this.selection.all(this.selectables);
-        return <div className="h-100" onClick={this.clearFocus}>
+        return <div className="h-100" onMouseDown={selectOnClick && this.onContainerMouseDown}>
             <div className="x-table x-table-sm x-table-hover-link x-table-striped">
                 <div className="position-sticky sticky-top bg-light">
                     <div>
-                        <div className="x-table-cell-min">
-                            <input type="checkbox" id="select_all" onChange={this.onSelectAll}
-                                checked={allSelected} disabled={this.selectables.length === 0} />
-                        </div>
+                        {useCheckboxes &&
+                            <div className="x-table-cell-min">
+                                <input type="checkbox" id="select_all" onChange={this.onCheckboxAllChanged}
+                                    checked={this.selection.all(this.selectables)} disabled={this.selectables.length === 0} />
+                            </div>}
                         <div>Name</div>
                         <div className="x-table-cell-min">Kind</div>
                     </div>
@@ -93,17 +129,18 @@ export default class extends React.Component {
                 <div>
                     {parents && parents.length > 0 &&
                         <div data-id={parents[0].parentId} onDoubleClick={navigate}>
-                            <div>&nbsp;</div>
+                            {useCheckboxes && <div>&nbsp;</div>}
                             <div>...</div>
                             <div>Parent</div>
                         </div>}
                     {[items.map((e, index) => {
                         const selected = this.selection.selected(e.id);
                         const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
-                        return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} data-active={active} onClick={this.onClick} onDoubleClick={e.container ? navigate : null}>
-                            <div className="x-table-cell-min">
-                                <input type="checkbox" onChange={this.onSelect} checked={selected} disabled={!filter(e)} />
-                            </div>
+                        const canBeSelected = selectOnClick && filter(e);
+                        return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} data-active={active} onMouseDown={canBeSelected && this.onRowMouseDown} onDoubleClick={e.container ? navigate : null}>
+                            {useCheckboxes && <div className="x-table-cell-min">
+                                <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
+                            </div>}
                             <MainCellTemplate data={e} index={index} context={cellContext} />
                             <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
                         </div>;
