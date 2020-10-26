@@ -233,7 +233,7 @@ const MainCellTemplate = ({ data, context: { ctrl, active, parents, state }, ind
                     <i className="m-auto fas fa-lg fa-play-circle" />
                 </div>}
         </div>
-        <div className={isActive ? "text-primary" : null}>
+        <div>
             {data.title}
             {data.creator && <small>&nbsp;&bull;&nbsp;{data.creator}</small>}
             {data.album && <small>&nbsp;&bull;&nbsp;{data.album}</small>}
