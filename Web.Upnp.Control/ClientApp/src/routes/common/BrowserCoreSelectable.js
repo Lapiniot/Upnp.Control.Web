@@ -123,6 +123,8 @@ export default class extends React.Component {
                                     checked={this.selection.all(this.selectables)} disabled={this.selectables.length === 0} />
                             </div>}
                         <div>Name</div>
+                        <div className="x-table-cell-min">Size</div>
+                        <div className="x-table-cell-min">Duration</div>
                         <div className="x-table-cell-min">Kind</div>
                     </div>
                 </div>
@@ -131,6 +133,8 @@ export default class extends React.Component {
                         <div data-id={parents[0].parentId} onDoubleClick={navigate}>
                             {useCheckboxes && <div>&nbsp;</div>}
                             <div>...</div>
+                            <div>&nbsp;</div>
+                            <div>&nbsp;</div>
                             <div>Parent</div>
                         </div>}
                     {[items.map((e, index) => {
@@ -142,6 +146,8 @@ export default class extends React.Component {
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
                             </div>}
                             <MainCellTemplate data={e} index={index} context={cellContext} />
+                            <div className="small text-nowrap text-right">{utils.formatSize(e.res.size)}</div>
+                            <div className="small">{utils.formatTime(e.res.duration)}</div>
                             <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
                         </div>;
                     })]}

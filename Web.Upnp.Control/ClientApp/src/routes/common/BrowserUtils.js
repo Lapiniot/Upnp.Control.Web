@@ -17,6 +17,19 @@ export class DIDLUtils {
         else
             return kind;
     }
+
+    static formatTime(timeStr = "--") {
+        return timeStr.startsWith("00:") ? timeStr.substring(3) : timeStr;
+    }
+
+    static formatSize(size) {
+        if (typeof size !== "number") return "--";
+        if (size < 1024) return `${size} bytes`;
+        if (size < 1048576) return `${Math.round(size / 1024)} KB`;
+        if (size < 1073741824) return `${Math.round(size / 1048576)} MB`;
+        if (size < 1099511627776) return `${Math.round(size / 1073741824)} GB`;
+        return "--";
+    }
 }
 
 export function fromBaseQuery(baseFetchQuery) {
