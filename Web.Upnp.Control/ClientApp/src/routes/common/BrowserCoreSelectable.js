@@ -124,7 +124,7 @@ export default class extends React.Component {
                             </div>}
                         <div>Name</div>
                         <div className="x-table-cell-min">Size</div>
-                        <div className="x-table-cell-min">Duration</div>
+                        <div className="x-table-cell-min">Time</div>
                         <div className="x-table-cell-min">Kind</div>
                     </div>
                 </div>
