@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink as RNavLink } from "react-router-dom";
-import { mergeClassNames as merge } from "./Extensions"
+import { mergeClassNames as merge } from "./Extensions";
 
 const LinkTemplate = ({ type: Tag, className, active, disabled, glyph, title, children, ...other }) =>
     <Tag className={merge`${className} ${active && "active"} ${disabled && "disabled"}`} {...other}>
