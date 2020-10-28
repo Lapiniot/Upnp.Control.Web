@@ -114,18 +114,18 @@ export default class extends React.Component {
         const { source: { result: items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.selectables = items.filter(filter).map(i => i.id);
         return <div className="h-100" onMouseDown={selectOnClick && this.onContainerMouseDown}>
-            <div className="x-table x-table-sm x-table-hover-link x-table-striped">
+            <div className="auto-table table-compact table-hover-link table-striped">
                 <div className="position-sticky sticky-top bg-light">
                     <div>
                         {useCheckboxes &&
-                            <div className="x-table-cell-min">
+                            <div className="cell-min">
                                 <input type="checkbox" id="select_all" onChange={this.onCheckboxAllChanged}
                                     checked={this.selection.all(this.selectables)} disabled={this.selectables.length === 0} />
                             </div>}
                         <div>Name</div>
-                        <div className="x-table-cell-min">Size</div>
-                        <div className="x-table-cell-min">Time</div>
-                        <div className="x-table-cell-min">Kind</div>
+                        <div className="cell-min">Size</div>
+                        <div className="cell-min">Time</div>
+                        <div className="cell-min">Kind</div>
                     </div>
                 </div>
                 <div>
@@ -142,7 +142,7 @@ export default class extends React.Component {
                         const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
                         const canBeSelected = selectOnClick && filter(e);
                         return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} data-active={active} onMouseDown={canBeSelected && this.onRowMouseDown} onDoubleClick={e.container ? navigate : null}>
-                            {useCheckboxes && <div className="x-table-cell-min">
+                            {useCheckboxes && <div>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
                             </div>}
                             <MainCellTemplate data={e} index={index} context={cellContext} />

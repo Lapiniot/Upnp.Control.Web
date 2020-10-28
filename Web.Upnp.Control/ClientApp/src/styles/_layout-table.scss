@@ -1,16 +1,16 @@
-﻿$x-table-striped-order: even;
+﻿$auto-table-striped-order: even;
 
-.x-table {
-    --bs-x-table-bg: #{$table-bg};
-    --bs-x-table-accent-bg: transparent;
-    --bs-x-table-striped-color: #{$table-striped-color};
-    --bs-x-table-striped-bg: #{$table-striped-bg};
-    --bs-x-table-active-color: #{$table-active-color};
-    --bs-x-table-active-bg: #{$table-active-bg};
-    --bs-x-table-hover-color: #{$table-hover-color};
-    --bs-x-table-hover-bg: #{$table-hover-bg};
-    --bs-x-table-selected-bg: #{$link-color};
-    --bs-x-table-selected-color: white;
+.auto-table {
+    --bs-auto-table-bg: #{$table-bg};
+    --bs-auto-table-accent-bg: transparent;
+    --bs-auto-table-striped-color: #{$table-striped-color};
+    --bs-auto-table-striped-bg: #{$table-striped-bg};
+    --bs-auto-table-active-color: #{$table-active-color};
+    --bs-auto-table-active-bg: #{$table-active-bg};
+    --bs-auto-table-hover-color: #{$table-hover-color};
+    --bs-auto-table-hover-bg: #{$table-hover-bg};
+    --bs-auto-table-selected-bg: #{$link-color};
+    --bs-auto-table-selected-color: white;
 
     display: table;
     width: 100%;
@@ -51,17 +51,17 @@
 
         & > div {
             display: table-row;
-            background-color: var(--bs-x-table-bg);
-            background-image: linear-gradient(var(--bs-x-table-accent-bg), var(--bs-x-table-accent-bg));
+            background-color: var(--bs-auto-table-bg);
+            background-image: linear-gradient(var(--bs-auto-table-accent-bg), var(--bs-auto-table-accent-bg));
 
             &[data-active="true"] {
-                --bs-x-table-accent-bg: var(--bs-x-table-active-bg) !important;
-                color: var(--bs-x-table-active-color);
+                --bs-auto-table-accent-bg: var(--bs-auto-table-active-bg) !important;
+                color: var(--bs-auto-table-active-color);
             }
 
             &[data-selected="true"] {
-                --bs-x-table-accent-bg: var(--bs-x-table-selected-bg) !important;
-                color: var(--bs-x-table-selected-color) !important;
+                --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
+                color: var(--bs-auto-table-selected-color) !important;
             }
 
             & > div {
@@ -70,7 +70,7 @@
                 padding: $table-cell-padding-y $table-cell-padding-x;
                 border-top: $table-border-width solid $table-border-color;
 
-                &.x-table-cell-min {
+                &.cell-min {
                     width: 1px;
                 }
             }
@@ -85,7 +85,7 @@
         }
     }
 
-    &.x-table-sm {
+    &.table-compact {
         & > div {
             & > div {
                 & > div {
@@ -103,31 +103,31 @@
         }
     }
 
-    &.x-table-striped {
+    &.table-striped {
         & > div.table-caption:first-of-type ~ :nth-of-type(3),
         & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
-            & > :nth-of-type(#{$x-table-striped-order}) {
-                --bs-x-table-accent-bg: var(--bs-x-table-striped-bg);
-                color: var(--bs-x-table-striped-color);
+            & > :nth-of-type(#{$auto-table-striped-order}) {
+                --bs-auto-table-accent-bg: var(--bs-auto-table-striped-bg);
+                color: var(--bs-auto-table-striped-color);
             }
         }
     }
 
-    &.x-table-hover {
+    &.table-hover {
         & > div.table-caption:first-of-type ~ :nth-of-type(3),
         & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
             & > :hover {
-                --bs-x-table-accent-bg: var(--bs-x-table-hover-bg);
-                color: var(--bs-x-table-hover-color);
+                --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
+                color: var(--bs-auto-table-hover-color);
             }
         }
     }
 
-    &.x-table-hover-link {
+    &.table-hover-link {
         & > div.table-caption:first-of-type ~ :nth-of-type(3),
         & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
             & > :hover {
-                --bs-x-table-accent-bg: var(--bs-x-table-hover-bg);
+                --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
                 color: $link-hover-color;
                 text-decoration: none;
                 cursor: default;

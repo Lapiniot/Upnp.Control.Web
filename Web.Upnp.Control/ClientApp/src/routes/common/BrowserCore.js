@@ -9,11 +9,11 @@ export default function (props) {
     const { dataContext: { source: { total = 0, parents = [], result: items = [] } = {} } = {}, match, navigate, p: page, s: size } = props;
     return <div>
         <Breadcrumb items={parents} {...match} />
-        <div className="x-table x-table-sm x-table-hover-link x-table-striped">
+        <div className="auto-table table-compact table-hover-link table-striped">
             <div className="bg-light">
                 <div>
                     <div>Name</div>
-                    <div className="x-table-cell-min">Kind</div>
+                    <div className="cell-min">Kind</div>
                 </div>
             </div>
             <div>
