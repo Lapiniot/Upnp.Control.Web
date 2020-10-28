@@ -25,7 +25,15 @@
         display: table-row-group;
         border-top: (2 * $table-border-width) solid $table-border-color;
 
-        &:first-child {
+        &.table-caption:first-of-type {
+            display: table-caption;
+            color: $table-caption-color;
+            padding: $table-cell-padding-y $table-cell-padding-x;
+            caption-side: top;
+        }
+
+        &:not(.table-caption):first-of-type,
+        &.table-caption:first-of-type + div {
             display: table-header-group;
             border-bottom: (2 * $table-border-width) solid $table-border-color;
 
@@ -59,7 +67,7 @@
             & > div {
                 display: table-cell;
                 vertical-align: middle;
-                padding: $table-cell-padding-x $table-cell-padding-y;
+                padding: $table-cell-padding-y $table-cell-padding-x;
                 border-top: $table-border-width solid $table-border-color;
 
                 &.x-table-cell-min {
@@ -81,7 +89,7 @@
         & > div {
             & > div {
                 & > div {
-                    padding: $table-cell-padding-x-sm $table-cell-padding-y-sm;
+                    padding: $table-cell-padding-y-sm $table-cell-padding-x-sm;
                 }
 
                 & > div:first-child {
@@ -96,7 +104,8 @@
     }
 
     &.x-table-striped {
-        & > :nth-of-type(2) {
+        & > div.table-caption:first-of-type ~ :nth-of-type(3),
+        & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
             & > :nth-of-type(#{$x-table-striped-order}) {
                 --bs-x-table-accent-bg: var(--bs-x-table-striped-bg);
                 color: var(--bs-x-table-striped-color);
@@ -105,7 +114,8 @@
     }
 
     &.x-table-hover {
-        & > :nth-of-type(2) {
+        & > div.table-caption:first-of-type ~ :nth-of-type(3),
+        & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
             & > :hover {
                 --bs-x-table-accent-bg: var(--bs-x-table-hover-bg);
                 color: var(--bs-x-table-hover-color);
@@ -114,7 +124,8 @@
     }
 
     &.x-table-hover-link {
-        & > :nth-of-type(2) {
+        & > div.table-caption:first-of-type ~ :nth-of-type(3),
+        & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
             & > :hover {
                 --bs-x-table-accent-bg: var(--bs-x-table-hover-bg);
                 color: $link-hover-color;
