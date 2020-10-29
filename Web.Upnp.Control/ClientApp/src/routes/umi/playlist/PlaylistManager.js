@@ -134,7 +134,7 @@ export class PlaylistManagerCore extends React.Component {
                         <Modal.Button key="close" text="Close" className="btn-secondary" dismiss />,
                         <Modal.Button key="add" className="btn-primary" icon="plus" disabled={b.selection.none()}
                             onClick={() => this.addItems(...b.getSelectionData()).then(b.selection.clear).then(this.reload)}>
-                            Add{b.selection.any() && <span className="badge badge-light ml-1">{b.selection.length}</span>}
+                            Add{b.selection.any() && <span className="badge ml-1">{b.selection.length}</span>}
                         </Modal.Button>
                     ]}
                 </BrowserDialog>
@@ -249,6 +249,6 @@ const MainCellTemplate = ({ data, context: { ctrl, active, parents, state }, ind
     </div>;
 };
 
-const browsePlylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id || "PL:").withParents().withResource().withVendor());
+const browsePlaylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id || "PL:").withParents().withResource().withVendor());
 
-export default withBrowser(PlaylistManagerCore, false, browsePlylistsQueryBuilder);
+export default withBrowser(PlaylistManagerCore, false, browsePlaylistsQueryBuilder);

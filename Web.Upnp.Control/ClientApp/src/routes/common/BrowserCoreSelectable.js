@@ -21,11 +21,11 @@ export default class extends React.Component {
     }
 
     componentDidMount() {
-        document.addEventListener('keydown', this.onKeyDown);
+        document.addEventListener("keydown", this.onKeyDown);
     }
 
     componentWillUnmount() {
-        document.removeEventListener('keydown', this.onKeyDown)
+        document.removeEventListener("keydown", this.onKeyDown)
     }
 
     onCheckboxChanged = e => {

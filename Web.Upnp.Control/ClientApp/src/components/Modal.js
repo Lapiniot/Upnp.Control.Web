@@ -64,7 +64,7 @@ export default class Modal extends React.Component {
     static Header = ({ className, children, ...other }) =>
         <div className={merge`modal-header ${className}`} {...other}>
             <h5 className="modal-title">{children}</h5>
-            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" />
+            <button type="button" className="btn-close" data-dismiss="modal" aria-label="Close" />
         </div>;
 
     static Body = ({ className, children, ...other }) => <div className={merge`modal-body ${className}`} {...other}>{children}</div>;

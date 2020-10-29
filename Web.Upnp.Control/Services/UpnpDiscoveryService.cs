@@ -143,7 +143,7 @@ namespace Web.Upnp.Control.Services
             logger.Log(logLevel, sb.ToString());
         }
 
-        private string ExtractUdn(string usn)
+        private static string ExtractUdn(string usn)
         {
             var i1 = usn.IndexOf(':');
             if(i1 < 0) return usn;
