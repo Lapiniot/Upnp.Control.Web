@@ -3,7 +3,7 @@ import AlbumArt from "./AlbumArt";
 import SelectionService from "../../components/SelectionService";
 import { DIDLUtils as utils } from "./BrowserUtils";
 
-export default class extends React.Component {
+export default class MediaBrowser extends React.Component {
     constructor(props) {
         super(props);
         this.state = { modal: null };
@@ -109,12 +109,25 @@ export default class extends React.Component {
         this.notifySelectionChanged(cancelled);
     }
 
+    static Header({ children, className }) {
+        return <div className={`table-caption${className ? ` ${className}` : ""}`}>{children}</div>;
+    }
+
+    static Footer({ children }) {
+        return <div>{children}</div>;
+    }
+
     render() {
-        const { navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext, useCheckboxes = true, selectOnClick = true } = this.props;
+        const { navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
+            useCheckboxes = true, selectOnClick = true } = this.props;
         const { source: { result: items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.selectables = items.filter(filter).map(i => i.id);
+        const children = React.Children.toArray(this.props.children);
+        const header = children.find(c => c.type === MediaBrowser.Header);
+        const footer = children.find(c => c.type === MediaBrowser.Footer);
         return <div className="h-100" onMouseDown={selectOnClick && this.onContainerMouseDown}>
             <div className="auto-table table-compact table-hover-link table-striped">
+                {header}
                 <div className="position-sticky sticky-top bg-light">
                     <div>
                         {useCheckboxes &&
@@ -152,6 +165,7 @@ export default class extends React.Component {
                         </div>;
                     })]}
                 </div>
+                {footer}
             </div>
         </div>;
     }
