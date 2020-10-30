@@ -25,6 +25,7 @@
         display: table-row-group;
         border-top: (2 * $table-border-width) solid $table-border-color;
 
+        /* Table caption */
         &.table-caption:first-of-type {
             display: table-caption;
             color: $table-caption-color;
@@ -32,6 +33,7 @@
             caption-side: top;
         }
 
+        /* Table header */
         &:not(.table-caption):first-of-type,
         &.table-caption:first-of-type + div {
             display: table-header-group;
@@ -49,7 +51,8 @@
             }
         }
 
-        & > div {
+        /* Table body */
+        &:not(.table-caption) > div {
             display: table-row;
             background-color: var(--bs-auto-table-bg);
             background-image: linear-gradient(var(--bs-auto-table-accent-bg), var(--bs-auto-table-accent-bg));
@@ -82,6 +85,10 @@
             & > div:last-child {
                 padding-right: 2 * $table-cell-padding-x;
             }
+        }
+
+        &.table-footer:last-of-type {
+            display: table-footer-group;
         }
     }
 
