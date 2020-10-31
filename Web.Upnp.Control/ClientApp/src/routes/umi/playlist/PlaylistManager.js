@@ -185,19 +185,21 @@ export class PlaylistManagerCore extends React.Component {
             { key: "item-remove", title: "Remove items", glyph: "trash", onClick: this.onRemoveItems, disabled: disabled }];
         return <div className="d-flex flex-column h-100">
             <SignalRListener handlers={this.handlers}>
-                <BrowserCore dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext}
-                    filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection}>
-                    <BrowserCore.Header className="p-0">
-                        <div className="d-flex flex-column">
-                            <Toolbar className="px-2 py-1 bg-light border-1 border-secondary border-bottom">
-                                <Toolbar.Group>
-                                    {toolbar.map(i => <Toolbar.Button {...i} />)}
-                                </Toolbar.Group>
-                            </Toolbar>
-                            <Breadcrumb items={parents} {...match} />
-                        </div>
-                    </BrowserCore.Header>
-                </BrowserCore>
+                <div>
+                    <BrowserCore dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext}
+                        filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection}>
+                        <BrowserCore.Header className="p-0">
+                            <div className="d-flex flex-column">
+                                <Toolbar className="px-2 py-1 bg-light border-1 border-secondary border-bottom">
+                                    <Toolbar.Group>
+                                        {toolbar.map(i => <Toolbar.Button {...i} />)}
+                                    </Toolbar.Group>
+                                </Toolbar>
+                                <Breadcrumb items={parents} {...match} />
+                            </div>
+                        </BrowserCore.Header>
+                    </BrowserCore>
+                </div>
             </SignalRListener>
             {!data && <LoadIndicator />}
             <div className="sticky-bottom">

@@ -118,55 +118,54 @@ export default class MediaBrowser extends React.Component {
     }
 
     render() {
-        const { navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
+        const { className, navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
             useCheckboxes = true, selectOnClick = true } = this.props;
         const { source: { result: items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.selectables = items.filter(filter).map(i => i.id);
         const children = React.Children.toArray(this.props.children);
         const header = children.find(c => c.type === MediaBrowser.Header);
         const footer = children.find(c => c.type === MediaBrowser.Footer);
-        return <div className="h-100" onMouseDown={selectOnClick && this.onContainerMouseDown}>
-            <div className="auto-table table-compact table-hover-link table-striped">
-                {header}
-                <div className="position-sticky sticky-top bg-light">
-                    <div>
-                        {useCheckboxes &&
-                            <div className="cell-min">
-                                <input type="checkbox" id="select_all" onChange={this.onCheckboxAllChanged}
-                                    checked={this.selection.all(this.selectables)} disabled={this.selectables.length === 0} />
-                            </div>}
-                        <div>Name</div>
-                        <div className="cell-min">Size</div>
-                        <div className="cell-min">Time</div>
-                        <div className="cell-min">Kind</div>
-                    </div>
-                </div>
+        return <div className={`auto-table table-compact table-hover-link table-striped${className ? ` ${className}` : ""}`}
+            onMouseDown={selectOnClick && this.onContainerMouseDown}>
+            {header}
+            <div>
                 <div>
-                    {parents && parents.length > 0 &&
-                        <div data-id={parents[0].parentId} onDoubleClick={navigate}>
-                            {useCheckboxes && <div>&nbsp;</div>}
-                            <div>...</div>
-                            <div>&nbsp;</div>
-                            <div>&nbsp;</div>
-                            <div>Parent</div>
+                    {useCheckboxes &&
+                        <div className="cell-min">
+                            <input type="checkbox" id="select_all" onChange={this.onCheckboxAllChanged}
+                                checked={this.selection.all(this.selectables)} disabled={this.selectables.length === 0} />
                         </div>}
-                    {[items.map((e, index) => {
-                        const selected = this.selection.selected(e.id);
-                        const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
-                        const canBeSelected = selectOnClick && filter(e);
-                        return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} data-active={active} onMouseDown={canBeSelected && this.onRowMouseDown} onDoubleClick={e.container ? navigate : null}>
-                            {useCheckboxes && <div>
-                                <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
-                            </div>}
-                            <MainCellTemplate data={e} index={index} context={cellContext} />
-                            <div className="small text-nowrap text-right">{utils.formatSize(e.res.size)}</div>
-                            <div className="small">{utils.formatTime(e.res.duration)}</div>
-                            <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
-                        </div>;
-                    })]}
+                    <div>Name</div>
+                    <div className="cell-min">Size</div>
+                    <div className="cell-min">Time</div>
+                    <div className="cell-min">Kind</div>
                 </div>
-                {footer}
             </div>
+            <div>
+                {parents && parents.length > 0 &&
+                    <div data-id={parents[0].parentId} onDoubleClick={navigate}>
+                        {useCheckboxes && <div>&nbsp;</div>}
+                        <div>...</div>
+                        <div>&nbsp;</div>
+                        <div>&nbsp;</div>
+                        <div>Parent</div>
+                    </div>}
+                {[items.map((e, index) => {
+                    const selected = this.selection.selected(e.id);
+                    const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
+                    const canBeSelected = selectOnClick && filter(e);
+                    return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} data-active={active} onMouseDown={canBeSelected && this.onRowMouseDown} onDoubleClick={e.container ? navigate : null}>
+                        {useCheckboxes && <div>
+                            <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
+                        </div>}
+                        <MainCellTemplate data={e} index={index} context={cellContext} />
+                        <div className="small text-nowrap text-right">{utils.formatSize(e.res.size)}</div>
+                        <div className="small">{utils.formatTime(e.res.duration)}</div>
+                        <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
+                    </div>;
+                })]}
+            </div>
+            {footer}
         </div>;
     }
 }
