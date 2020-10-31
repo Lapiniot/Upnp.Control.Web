@@ -176,36 +176,38 @@ export class PlaylistManagerCore extends React.Component {
                     ? d => d.vendor["mi:playlistType"] === "aux"
                     : d => d.res.url === this.state.playlist)
         };
+        const toolbar = id === "PL:"
+            ? [{ key: "pl-create", title: "Create", glyph: "plus", onClick: this.onCreate },
+            { key: "pl-delete", title: "Delete", glyph: "trash", onClick: this.onDelete, disabled: disabled },
+            { key: "pl-rename", title: "Rename", glyph: "edit", onClick: this.onRename, disabled: disabled },
+            { key: "pl-copy", title: "Copy", glyph: "copy", onClick: this.onCopy, disabled: disabled }]
+            : [{ key: "item-add", title: "Add items", glyph: "plus", onClick: this.onAddItems },
+            { key: "item-remove", title: "Remove items", glyph: "trash", onClick: this.onRemoveItems, disabled: disabled }];
         return <div className="d-flex flex-column h-100">
-            <div className="position-sticky sticky-top">
-                <Breadcrumb items={parents} {...match} />
-                <Toolbar className="px-2 py-1 bg-light shadow-sm">
-                    {id === "PL:"
-                        ? <Toolbar.Group>
-                            <Toolbar.Button title="Create" glyph="plus" onClick={this.onCreate} />
-                            <Toolbar.Button title="Delete" glyph="trash" onClick={this.onDelete} disabled={disabled} />
-                            <Toolbar.Button title="Rename" glyph="edit" onClick={this.onRename} disabled={disabled} />
-                            <Toolbar.Button title="Copy" glyph="copy" onClick={this.onCopy} disabled={disabled} />
-                        </Toolbar.Group>
-                        : <Toolbar.Group>
-                            <Toolbar.Button title="Add items" glyph="plus" onClick={this.onAddItems} />
-                            <Toolbar.Button title="Remove items" glyph="trash" onClick={this.onRemoveItems} disabled={disabled} />
-                        </Toolbar.Group>}
-                </Toolbar>
-            </div>
             <SignalRListener handlers={this.handlers}>
                 <BrowserCore dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext}
-                    filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection} />
+                    filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection}>
+                    <BrowserCore.Header className="p-0">
+                        <div className="d-flex flex-column">
+                            <Toolbar className="px-2 py-1 bg-light border-1 border-secondary border-bottom">
+                                <Toolbar.Group>
+                                    {toolbar.map(i => <Toolbar.Button {...i} />)}
+                                </Toolbar.Group>
+                            </Toolbar>
+                            <Breadcrumb items={parents} {...match} />
+                        </div>
+                    </BrowserCore.Header>
+                </BrowserCore>
             </SignalRListener>
             {!data && <LoadIndicator />}
-            <div className="position-sticky sticky-bottom">
+            <div className="sticky-bottom">
                 <div className="bg-light text-center text-muted small p-1">{
                     this.selection.length > 0
                         ? `${this.selection.length} of ${fetched} selected`
                         : `${fetched} item${fetched !== 1 ? "s" : ""}`}
                     , {total} totally available
                     </div>
-                <Pagination {...match} className="shadow-lg"
+                <Pagination {...match} className="border-1 border-secondary border-top"
                     count={fetched} total={total} current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
             </div>
             {this.state.modal && (typeof this.state.modal === "function" ? this.state.modal() : this.state.modal)}

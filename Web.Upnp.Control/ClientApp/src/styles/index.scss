@@ -94,11 +94,13 @@ $generate-grid-layout-responsive-styles: false;
 }
 
 .sticky-bottom {
+    position: sticky;
     bottom: 0;
     z-index: $zindex-sticky;
 }
 
 .sticky-left {
+    position: sticky;
     top: 0 !important;
     height: 100vh;
     z-index: $zindex-sticky;
