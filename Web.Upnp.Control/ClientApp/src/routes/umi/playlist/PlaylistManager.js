@@ -8,7 +8,7 @@ import BrowserDialog from "../../common/BrowserDialog";
 import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
-import BrowserCore from "../../common/BrowserCoreSelectable";
+import Browser from "../../common/BrowserCore";
 import AlbumArt from "../../common/AlbumArt";
 import LoadIndicator from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
@@ -186,9 +186,9 @@ export class PlaylistManagerCore extends React.Component {
         return <div className="d-flex flex-column h-100">
             <SignalRListener handlers={this.handlers}>
                 <div className="flex-grow-1">
-                    <BrowserCore dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext}
+                    <Browser dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext}
                         filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection}>
-                        <BrowserCore.Header className="p-0">
+                        <Browser.Header className="p-0">
                             <div className="d-flex flex-column">
                                 <Toolbar className="px-2 py-1 bg-light border-1 border-secondary border-bottom">
                                     <Toolbar.Group>
@@ -197,8 +197,8 @@ export class PlaylistManagerCore extends React.Component {
                                 </Toolbar>
                                 <Breadcrumb items={parents} {...match} />
                             </div>
-                        </BrowserCore.Header>
-                    </BrowserCore>
+                        </Browser.Header>
+                    </Browser>
                 </div>
             </SignalRListener>
             {!data && <LoadIndicator />}

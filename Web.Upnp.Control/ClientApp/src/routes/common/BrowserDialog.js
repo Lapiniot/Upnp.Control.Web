@@ -8,7 +8,7 @@ import { RouteLink } from "../../components/NavLink";
 import { withDataFetch } from "../../components/DataFetch";
 import { withBrowser } from "./BrowserUtils";
 import Breadcrumb from "../common/Breadcrumb";
-import BrowserCoreSelectable from "./BrowserCoreSelectable";
+import BrowserCore from "./BrowserCore";
 import $api from "../../components/WebApi";
 import $config from "../common/Config";
 import SelectionService from "../../components/SelectionService";
@@ -71,7 +71,7 @@ const BrowserView = ({ dataContext, match, p: page, s: size,
     dataContext: { source: { total, result: { length: fetched }, parents } }, ...other }) =>
     <div>
         <Breadcrumb items={parents} {...match} />
-        <BrowserCoreSelectable dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} {...other} />
+        <BrowserCore dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} {...other} />
         <Pagination {...match} className="position-sticky sticky-bottom" count={fetched} total={total}
             current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
     </div>;
