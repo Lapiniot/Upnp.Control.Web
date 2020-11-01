@@ -52,6 +52,12 @@
                     font-weight: $headings-font-weight;
                 }
             }
+
+            &.sticky-header > div > div {
+                position: sticky;
+                top: 0;
+                z-index: $zindex-sticky;
+            }
         }
 
         /* Table row */

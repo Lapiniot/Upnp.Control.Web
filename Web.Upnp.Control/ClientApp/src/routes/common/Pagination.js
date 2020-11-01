@@ -5,7 +5,7 @@ import { mergeClassNames as merge } from "../../components/Extensions.js";
 const PageLink = ({ current, title, url, ...other }) => current
     ? <li className="page-item active" {...other}>
           <span className="page-link">
-              {title}<span className="sr-only">(current)</span>
+              {title}<span className="visually-hidden">(current)</span>
           </span>
       </li>
     : <li className="page-item" {...other}>
@@ -15,7 +15,7 @@ const PageLink = ({ current, title, url, ...other }) => current
 const RelativePageLink = ({ enabled, title, url, label, ...other }) => enabled
     ? <li className="page-item" {...other}>
           <NavLink to={url} className="page-link" aria-label={label}>
-              <span aria-hidden="true">{title}</span><span className="sr-only">{label}</span>
+              <span aria-hidden="true">{title}</span><span className="visually-hidden">{label}</span>
           </NavLink>
       </li>
     : <li className="page-item disabled" {...other}>

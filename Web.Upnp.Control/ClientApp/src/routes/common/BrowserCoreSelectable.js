@@ -9,6 +9,11 @@ export default class MediaBrowser extends React.Component {
         this.state = { modal: null };
         this.filter = props.filter;
         this.selection = props.selection || new SelectionService();
+        this.tableRef = React.createRef();
+        this.resizeObserver = new ResizeObserver(e => {
+            const caption = e[0].target;
+            this.adjustStickyElements(caption, caption.nextSibling.firstChild.childNodes);
+        });
     }
 
     componentDidUpdate(prevProps) {
@@ -22,10 +27,34 @@ export default class MediaBrowser extends React.Component {
 
     componentDidMount() {
         document.addEventListener("keydown", this.onKeyDown);
+
+        const scope = this.tableRef.current;
+        const caption = scope.querySelector("div.table-caption:first-of-type");
+
+        if (caption) {
+            this.resizeObserver.observe(caption);
+        }
+        else {
+            const headers = scope.querySelectorAll(`div:nth-of-type(${caption ? 2 : 1}) > div > div`);
+            this.adjustStickyElements(caption, headers);
+        }
     }
 
     componentWillUnmount() {
-        document.removeEventListener("keydown", this.onKeyDown)
+        document.removeEventListener("keydown", this.onKeyDown);
+        this.resizeObserver.disconnect();
+    }
+
+    adjustStickyElements(caption, headers) {
+        if (caption) {
+            const rect = caption.getBoundingClientRect();
+            const captionBottom = rect.bottom + "px";
+            caption.style.top = `${rect.top}px`;
+            headers.forEach(header => { header.style.top = captionBottom; });
+        }
+        else {
+            headers.forEach(header => { header.style.top = `${header.getBoundingClientRect().top}px`; });
+        }
     }
 
     onCheckboxChanged = e => {
@@ -110,7 +139,7 @@ export default class MediaBrowser extends React.Component {
     }
 
     static Header({ children, className }) {
-        return <div className={`table-caption${className ? ` ${className}` : ""}`}>{children}</div>;
+        return <div className={`table-caption sticky-top${className ? ` ${className}` : ""}`}>{children}</div>;
     }
 
     static Footer({ children }) {
@@ -126,9 +155,9 @@ export default class MediaBrowser extends React.Component {
         const header = children.find(c => c.type === MediaBrowser.Header);
         const footer = children.find(c => c.type === MediaBrowser.Footer);
         return <div className={`auto-table table-compact table-hover-link table-striped${className ? ` ${className}` : ""}`}
-            onMouseDown={selectOnClick && this.onContainerMouseDown}>
+            onMouseDown={selectOnClick && this.onContainerMouseDown} ref={this.tableRef}>
             {header}
-            <div>
+            <div className="sticky-header">
                 <div>
                     {useCheckboxes &&
                         <div className="cell-min">
@@ -154,7 +183,7 @@ export default class MediaBrowser extends React.Component {
                     const selected = this.selection.selected(e.id);
                     const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
                     const canBeSelected = selectOnClick && filter(e);
-                    return <div key={`bws.${index}`} data-id={e.id} data-selected={selected} data-active={active} onMouseDown={canBeSelected && this.onRowMouseDown} onDoubleClick={e.container ? navigate : null}>
+                    return <div key={e.id} data-id={e.id} data-selected={selected} data-active={active} onMouseDown={canBeSelected && this.onRowMouseDown} onDoubleClick={e.container ? navigate : null}>
                         {useCheckboxes && <div>
                             <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
                         </div>}
