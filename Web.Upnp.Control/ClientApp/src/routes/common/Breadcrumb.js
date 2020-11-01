@@ -8,8 +8,8 @@ const BreadcrumbItem = ({ active, title, url }) => active
         <NavLink to={url}>{title}</NavLink>
     </li>;
 
-export default ({ items = [], path, params }) =>
-    <nav aria-label="breadcrumb">
+export default ({ items = [], path, params, className }) =>
+    <nav aria-label="breadcrumb" className={className}>
         <ol className="breadcrumb my-0 p-1 px-2 bg-gradient">
             {reversemap(items, ({ title, id }, i) => <BreadcrumbItem key={i} title={title !== "" ? title : "..."} url={generatePath(path, { ...params, id })} active={i === 0} />)}
             &nbsp;

@@ -12,7 +12,7 @@ export default function (props) {
         <div className="flex-grow-1">
             <BrowserCore dataContext={data} navigate={navigate}>
                 <BrowserCore.Header className="p-0">
-                    <Breadcrumb items={parents} {...match} />
+                    <Breadcrumb items={parents} path={match.path} params={match.params} />
                 </BrowserCore.Header>
             </BrowserCore>
         </div>

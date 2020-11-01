@@ -51,13 +51,12 @@ export default class MediaBrowser extends React.Component {
 
     adjustStickyElements(caption, headers) {
         if (caption) {
-            const rect = caption.getBoundingClientRect();
-            const captionBottom = rect.bottom + "px";
-            caption.style.top = `${rect.top}px`;
+            const captionBottom = `${caption.offsetTop + caption.offsetHeight}px`;
+            caption.style.top = `${caption.offsetTop}px`;
             if (headers) headers.forEach(header => { header.style.top = captionBottom; });
         }
         else if (headers) {
-            headers.forEach(header => { header.style.top = `${header.getBoundingClientRect().top}px`; });
+            headers.forEach(header => { header.style.top = `${header.offsetTop}px`; });
         }
     }
 
@@ -158,7 +157,7 @@ export default class MediaBrowser extends React.Component {
         const children = React.Children.toArray(this.props.children);
         const header = children.find(c => c.type === MediaBrowser.Header);
         const footer = children.find(c => c.type === MediaBrowser.Footer);
-        return <div className="h-100" onMouseDown={selectOnClick && this.onContainerMouseDown}>
+        return <div className="h-100" onMouseDown={selectOnClick ? this.onContainerMouseDown : undefined}>
             <div className={`auto-table table-compact table-hover-link table-striped${className ? ` ${className}` : ""}`} ref={this.tableRef}>
                 {header}
                 <div className={stickyColumnHeaders && "sticky-header"}>
@@ -187,7 +186,8 @@ export default class MediaBrowser extends React.Component {
                         const selected = this.selection.selected(e.id);
                         const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
                         const canBeSelected = selectOnClick && filter(e);
-                        return <div key={e.id} data-id={e.id} data-selected={selected} data-active={active} onMouseDown={canBeSelected && this.onRowMouseDown} onDoubleClick={e.container ? navigate : null}>
+                        return <div key={e.id} data-id={e.id} data-selected={selected} data-active={active}
+                            onMouseDown={canBeSelected ? this.onRowMouseDown : undefined} onDoubleClick={e.container ? navigate : null}>
                             {useCheckboxes && <div>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
                             </div>}

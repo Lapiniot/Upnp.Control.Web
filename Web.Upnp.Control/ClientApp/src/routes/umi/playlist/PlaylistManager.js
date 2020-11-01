@@ -195,7 +195,7 @@ export class PlaylistManagerCore extends React.Component {
                                         {toolbar.map(i => <Toolbar.Button {...i} />)}
                                     </Toolbar.Group>
                                 </Toolbar>
-                                <Breadcrumb items={parents} {...match} />
+                                <Breadcrumb items={parents} path={match.path} params={match.params} />
                             </div>
                         </Browser.Header>
                     </Browser>
