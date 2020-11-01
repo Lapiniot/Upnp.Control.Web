@@ -14,7 +14,7 @@ export function withDataFetch(Component, fetchPromiseFactoryBuilder = defaultFet
     return class extends React.Component {
         constructor(props) {
             super(props);
-            this.state = { loading: true, dataContext: null, fetchPromiseFactory: null };
+            this.state = { fetching: true, dataContext: null, fetchPromiseFactory: null };
             this.preloader = usePreloader && <Template {...other}>{text}</Template>;
         }
 
@@ -25,7 +25,7 @@ export function withDataFetch(Component, fetchPromiseFactoryBuilder = defaultFet
                 || promiseFactory.key !== fromStatePromiseFactory.key;
 
             return shouldFetchNewData
-                ? { fetchPromiseFactory: promiseFactory, dataContext: null, loading: true, error: null }
+                ? { fetchPromiseFactory: promiseFactory, fetching: true, error: null }
                 : null;
         }
 
@@ -33,10 +33,10 @@ export function withDataFetch(Component, fetchPromiseFactoryBuilder = defaultFet
             try {
                 const response = await this.state.fetchPromiseFactory();
                 const data = await response.json();
-                this.setState({ loading: false, dataContext: { source: data, reload: this.reload }, error: null });
+                this.setState({ fetching: false, dataContext: { source: data, reload: this.reload }, error: null });
             } catch (e) {
                 console.error(e);
-                this.setState({ loading: false, error: e });
+                this.setState({ fetching: false, error: e });
             }
         }
 
@@ -50,12 +50,12 @@ export function withDataFetch(Component, fetchPromiseFactoryBuilder = defaultFet
             this.fetchData();
         }
 
-        reload = () => this.setState({ loading: true, error: null }, this.fetchData);
+        reload = () => this.setState({ fetching: true, error: null }, this.fetchData);
 
         render() {
-            return this.state.loading && this.preloader
+            return this.state.fetching && this.preloader
                 ? this.preloader
-                : <Component dataContext={this.state.dataContext} {...this.props} loading={this.state.loading} error={this.state.error} />;
+                : <Component dataContext={this.state.dataContext} {...this.props} fetching={this.state.fetching} error={this.state.error} />;
         }
     };
 }
