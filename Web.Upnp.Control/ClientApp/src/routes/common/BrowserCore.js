@@ -113,7 +113,6 @@ export default class MediaBrowser extends React.Component {
     onKeyDown = e => {
         if (!e.cancelBubble && (e.metaKey || e.ctrlKey) && e.code === "KeyA") {
             e.preventDefault();
-            e.stopPropagation();
             this.toggleSelectionAll(true);
         }
     }

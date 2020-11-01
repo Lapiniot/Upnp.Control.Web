@@ -134,7 +134,7 @@ export class PlaylistManagerCore extends React.Component {
                         <Modal.Button key="close" text="Close" className="btn-secondary" dismiss />,
                         <Modal.Button key="add" className="btn-primary" icon="plus" disabled={b.selection.none()}
                             onClick={() => this.addItems(...b.getSelectionData()).then(b.selection.clear).then(this.reload)}>
-                            Add{b.selection.any() && <span className="badge ml-1">{b.selection.length}</span>}
+                            Add{b.selection.any() && <span className="badge ml-1 bg-secondary">{b.selection.length}</span>}
                         </Modal.Button>
                     ]}
                 </BrowserDialog>
