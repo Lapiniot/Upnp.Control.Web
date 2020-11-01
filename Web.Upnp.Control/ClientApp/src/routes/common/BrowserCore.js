@@ -10,10 +10,7 @@ export default class MediaBrowser extends React.Component {
         this.filter = props.filter;
         this.selection = props.selection || new SelectionService();
         this.tableRef = React.createRef();
-        this.resizeObserver = new ResizeObserver(e => {
-            const caption = e[0].target;
-            this.adjustStickyElements(caption, caption.nextSibling.firstChild.childNodes);
-        });
+        this.resizeObserver = new ResizeObserver(this.onCaptionResized);
     }
 
     componentDidUpdate(prevProps) {
@@ -46,14 +43,20 @@ export default class MediaBrowser extends React.Component {
         this.resizeObserver.disconnect();
     }
 
+    onCaptionResized = entries => {
+        const caption = entries[0].target;
+        const headers = caption.nextSibling.firstChild.childNodes;
+        this.adjustStickyElements(caption, headers);
+    }
+
     adjustStickyElements(caption, headers) {
         if (caption) {
             const rect = caption.getBoundingClientRect();
             const captionBottom = rect.bottom + "px";
             caption.style.top = `${rect.top}px`;
-            headers.forEach(header => { header.style.top = captionBottom; });
+            if (headers) headers.forEach(header => { header.style.top = captionBottom; });
         }
-        else {
+        else if (headers) {
             headers.forEach(header => { header.style.top = `${header.getBoundingClientRect().top}px`; });
         }
     }
@@ -139,8 +142,8 @@ export default class MediaBrowser extends React.Component {
         this.notifySelectionChanged(cancelled);
     }
 
-    static Header({ children, className }) {
-        return <div className={`table-caption sticky-top${className ? ` ${className}` : ""}`}>{children}</div>;
+    static Header({ children, className, sticky = true }) {
+        return <div className={`table-caption${sticky ? " sticky-top" : ""}${className ? ` ${className}` : ""}`}>{children}</div>;
     }
 
     static Footer({ children }) {
@@ -149,7 +152,7 @@ export default class MediaBrowser extends React.Component {
 
     render() {
         const { className, navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
-            useCheckboxes = true, selectOnClick = true } = this.props;
+            useCheckboxes = true, selectOnClick = true, stickyColumnHeaders = true } = this.props;
         const { source: { result: items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.selectables = items.filter(filter).map(i => i.id);
         const children = React.Children.toArray(this.props.children);
@@ -158,7 +161,7 @@ export default class MediaBrowser extends React.Component {
         return <div className="h-100" onMouseDown={selectOnClick && this.onContainerMouseDown}>
             <div className={`auto-table table-compact table-hover-link table-striped${className ? ` ${className}` : ""}`} ref={this.tableRef}>
                 {header}
-                <div className="sticky-header">
+                <div className={stickyColumnHeaders && "sticky-header"}>
                     <div>
                         {useCheckboxes &&
                             <div className="cell-min">

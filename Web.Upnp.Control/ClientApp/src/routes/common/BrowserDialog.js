@@ -71,7 +71,7 @@ const BrowserView = ({ dataContext, match, p: page, s: size,
     dataContext: { source: { total, result: { length: fetched }, parents } }, ...other }) =>
     <div>
         <Breadcrumb items={parents} {...match} />
-        <BrowserCore dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} {...other} />
+        <BrowserCore dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} {...other} stickyColumnHeaders={false} />
         <Pagination {...match} className="position-sticky sticky-bottom" count={fetched} total={total}
             current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
     </div>;
