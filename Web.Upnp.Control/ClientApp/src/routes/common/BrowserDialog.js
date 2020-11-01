@@ -2,15 +2,12 @@ import React from "react";
 import { MemoryRouter, Switch, Route, Redirect } from "react-router-dom";
 import Modal from "../../components/Modal";
 import LoadIndicator from "../../components/LoadIndicator";
-import Pagination from "./Pagination";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
 import { withDataFetch } from "../../components/DataFetch";
 import { withBrowser } from "./BrowserUtils";
-import Breadcrumb from "../common/Breadcrumb";
-import BrowserCore from "./BrowserCore";
+import BrowserCore from "./Browser";
 import $api from "../../components/WebApi";
-import $config from "../common/Config";
 import SelectionService from "../../components/SelectionService";
 
 export default class BrowserDialog extends React.Component {
@@ -67,16 +64,10 @@ const MediaSourceList = withDataFetch(({ dataContext: { source: data } }) =>
             </RouteLink>)}
     </ul>, () => serversFetch, { template: LoadIndicator });
 
-const BrowserView = ({ dataContext, match, p: page, s: size,
-    dataContext: { source: { total, result: { length: fetched }, parents } }, ...other }) =>
-    <div>
-        <BrowserCore dataContext={dataContext} filter={i => i.class.endsWith(".musicTrack")} {...other}>
-            <BrowserCore.Header className="p-0">
-                <Breadcrumb items={parents} path={match.path} params={match.params} />
-            </BrowserCore.Header>
-        </BrowserCore>
-        <Pagination {...match} className="sticky-bottom" count={fetched} total={total}
-            current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
-    </div>;
+function isMusicTrack(item) {
+    return item.class.endsWith(".musicTrack");
+}
 
-const Browser = withBrowser(BrowserView);
+const BrowserView = (props) => <BrowserCore {...props} filter={isMusicTrack} />
+
+const Browser = withBrowser(BrowserView, false);

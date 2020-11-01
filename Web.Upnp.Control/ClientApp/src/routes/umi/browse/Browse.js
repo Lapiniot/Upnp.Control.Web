@@ -4,7 +4,7 @@ import { withBrowser } from "../../common/BrowserUtils";
 import BrowserView from "../../common/Browser";
 import Devices from "./Devices";
 
-const Browser = withBrowser(BrowserView);
+const Browser = withBrowser(BrowserView, false);
 
 /***** Handles all /umi/browse routes *****/
 

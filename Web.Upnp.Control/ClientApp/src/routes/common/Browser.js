@@ -6,11 +6,11 @@ import LoadIndicator from "../../components/LoadIndicator";
 import $config from "./Config";
 
 export default function (props) {
-    const { dataContext: data, match, navigate, s: size, p: page } = props;
+    const { dataContext: data, match, s: size, p: page } = props;
     const { source: { total = 0, result: { length: fetched = 0 } = {}, parents } = {} } = data || {};
     return <div className="d-flex flex-column h-100">
         <div className="flex-grow-1">
-            <BrowserCore dataContext={data} navigate={navigate}>
+            <BrowserCore {...props}>
                 <BrowserCore.Header className="p-0">
                     <Breadcrumb items={parents} path={match.path} params={match.params} />
                 </BrowserCore.Header>
