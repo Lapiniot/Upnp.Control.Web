@@ -23,7 +23,7 @@ export default class MediaBrowser extends React.Component {
     }
 
     componentDidMount() {
-        document.addEventListener("keydown", this.onKeyDown);
+        document.addEventListener("keydown", this.onKeyDown, this.props.captureKeyboardEvents === true);
 
         const scope = this.tableRef.current;
         const caption = scope.querySelector("div.table-caption:first-of-type");
@@ -51,12 +51,14 @@ export default class MediaBrowser extends React.Component {
 
     adjustStickyElements(caption, headers) {
         if (caption) {
-            const captionBottom = `${caption.offsetTop + caption.offsetHeight}px`;
-            caption.style.top = `${caption.offsetTop}px`;
+            const rect = caption.getBoundingClientRect();
+            const top = Math.min(rect.top, caption.offsetTop);
+            const captionBottom = `${top + rect.height}px`;
+            caption.style.top = `${top}px`;
             if (headers) headers.forEach(header => { header.style.top = captionBottom; });
         }
         else if (headers) {
-            headers.forEach(header => { header.style.top = `${header.offsetTop}px`; });
+            headers.forEach(h => { h.style.top = `${Math.min(h.getBoundingClientRect().top, h.offsetTop)}px`; });
         }
     }
 
