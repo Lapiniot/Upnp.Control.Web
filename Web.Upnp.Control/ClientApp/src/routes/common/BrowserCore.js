@@ -32,6 +32,7 @@ export default class MediaBrowser extends React.Component {
         const caption = scope.querySelector("div.table-caption:first-of-type");
 
         if (caption) {
+            this.resizeObserver.disconnect();
             this.resizeObserver.observe(caption);
         }
         else {
@@ -154,47 +155,48 @@ export default class MediaBrowser extends React.Component {
         const children = React.Children.toArray(this.props.children);
         const header = children.find(c => c.type === MediaBrowser.Header);
         const footer = children.find(c => c.type === MediaBrowser.Footer);
-        return <div className={`auto-table table-compact table-hover-link table-striped${className ? ` ${className}` : ""}`}
-            onMouseDown={selectOnClick && this.onContainerMouseDown} ref={this.tableRef}>
-            {header}
-            <div className="sticky-header">
-                <div>
-                    {useCheckboxes &&
-                        <div className="cell-min">
-                            <input type="checkbox" id="select_all" onChange={this.onCheckboxAllChanged}
-                                checked={this.selection.all(this.selectables)} disabled={this.selectables.length === 0} />
-                        </div>}
-                    <div>Name</div>
-                    <div className="cell-min">Size</div>
-                    <div className="cell-min">Time</div>
-                    <div className="cell-min">Kind</div>
+        return <div className="h-100" onMouseDown={selectOnClick && this.onContainerMouseDown}>
+            <div className={`auto-table table-compact table-hover-link table-striped${className ? ` ${className}` : ""}`} ref={this.tableRef}>
+                {header}
+                <div className="sticky-header">
+                    <div>
+                        {useCheckboxes &&
+                            <div className="cell-min">
+                                <input type="checkbox" id="select_all" onChange={this.onCheckboxAllChanged}
+                                    checked={this.selection.all(this.selectables)} disabled={this.selectables.length === 0} />
+                            </div>}
+                        <div>Name</div>
+                        <div className="cell-min">Size</div>
+                        <div className="cell-min">Time</div>
+                        <div className="cell-min">Kind</div>
+                    </div>
                 </div>
-            </div>
-            <div>
-                {parents && parents.length > 0 &&
-                    <div data-id={parents[0].parentId} onDoubleClick={navigate}>
-                        {useCheckboxes && <div>&nbsp;</div>}
-                        <div>...</div>
-                        <div>&nbsp;</div>
-                        <div>&nbsp;</div>
-                        <div>Parent</div>
-                    </div>}
-                {[items.map((e, index) => {
-                    const selected = this.selection.selected(e.id);
-                    const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
-                    const canBeSelected = selectOnClick && filter(e);
-                    return <div key={e.id} data-id={e.id} data-selected={selected} data-active={active} onMouseDown={canBeSelected && this.onRowMouseDown} onDoubleClick={e.container ? navigate : null}>
-                        {useCheckboxes && <div>
-                            <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
+                <div>
+                    {parents && parents.length > 0 &&
+                        <div data-id={parents[0].parentId} onDoubleClick={navigate}>
+                            {useCheckboxes && <div>&nbsp;</div>}
+                            <div>...</div>
+                            <div>&nbsp;</div>
+                            <div>&nbsp;</div>
+                            <div>Parent</div>
                         </div>}
-                        <MainCellTemplate data={e} index={index} context={cellContext} />
-                        <div className="small text-nowrap text-right">{utils.formatSize(e.res?.size)}</div>
-                        <div className="small">{utils.formatTime(e.res?.duration)}</div>
-                        <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
-                    </div>;
-                })]}
+                    {[items.map((e, index) => {
+                        const selected = this.selection.selected(e.id);
+                        const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
+                        const canBeSelected = selectOnClick && filter(e);
+                        return <div key={e.id} data-id={e.id} data-selected={selected} data-active={active} onMouseDown={canBeSelected && this.onRowMouseDown} onDoubleClick={e.container ? navigate : null}>
+                            {useCheckboxes && <div>
+                                <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
+                            </div>}
+                            <MainCellTemplate data={e} index={index} context={cellContext} />
+                            <div className="small text-nowrap text-right">{utils.formatSize(e.res?.size)}</div>
+                            <div className="small">{utils.formatTime(e.res?.duration)}</div>
+                            <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
+                        </div>;
+                    })]}
+                </div>
+                {footer}
             </div>
-            {footer}
         </div>;
     }
 }
