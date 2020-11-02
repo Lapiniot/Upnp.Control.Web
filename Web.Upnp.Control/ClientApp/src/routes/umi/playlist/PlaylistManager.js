@@ -163,7 +163,7 @@ export class PlaylistManagerCore extends React.Component {
 
     render() {
 
-        const { dataContext: data, match, navigate, id, s: size, p: page } = this.props;
+        const { dataContext: data, match, navigate, id, s: size, p: page, fetching } = this.props;
         const { source: { total = 0, result: { length: fetched = 0 } = {}, parents } = {} } = data || {};
         const disabled = this.selection.none();
         const cellContext = {
@@ -186,8 +186,9 @@ export class PlaylistManagerCore extends React.Component {
         return <div className="d-flex flex-column h-100">
             <SignalRListener handlers={this.handlers}>
                 <div className="flex-grow-1">
-                    <Browser dataContext={data} cellTemplate={MainCellTemplate} cellContext={cellContext}
-                        filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection}>
+                    <Browser dataContext={!fetching ? data : null} cellTemplate={MainCellTemplate} cellContext={cellContext}
+                        filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection}
+                        useCheckboxes selectOnClick>
                         <Browser.Header className="p-0">
                             <div className="d-flex flex-column">
                                 <Toolbar className="px-2 py-1 bg-light border-1 border-secondary border-bottom">
@@ -201,7 +202,7 @@ export class PlaylistManagerCore extends React.Component {
                     </Browser>
                 </div>
             </SignalRListener>
-            {!data && <LoadIndicator />}
+            {fetching && <LoadIndicator />}
             <div className="sticky-bottom">
                 <div className="bg-light text-center text-muted small p-1">{
                     this.selection.length > 0

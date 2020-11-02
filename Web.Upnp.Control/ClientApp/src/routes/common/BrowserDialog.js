@@ -68,6 +68,6 @@ function isMusicTrack(item) {
     return item.class.endsWith(".musicTrack");
 }
 
-const BrowserView = (props) => <BrowserCore {...props} filter={isMusicTrack} captureKeyboardEvents={true} />
+const BrowserView = (props) => <BrowserCore {...props} filter={isMusicTrack} captureKeyboardEvents useCheckboxes selectOnClick />
 
 const Browser = withBrowser(BrowserView, false);

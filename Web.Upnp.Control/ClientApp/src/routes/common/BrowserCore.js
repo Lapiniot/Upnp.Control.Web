@@ -113,6 +113,7 @@ export default class MediaBrowser extends React.Component {
     onKeyDown = e => {
         if (!e.cancelBubble && (e.metaKey || e.ctrlKey) && e.code === "KeyA") {
             e.preventDefault();
+            e.stopPropagation();
             this.toggleSelectionAll(true);
         }
     }
@@ -151,8 +152,8 @@ export default class MediaBrowser extends React.Component {
     }
 
     render() {
-        const { className, navigate, filter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
-            useCheckboxes = true, selectOnClick = true, stickyColumnHeaders = true } = this.props;
+        const { className, navigate, filter = () => false, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
+            useCheckboxes = false, selectOnClick = false, stickyColumnHeaders = true } = this.props;
         const { source: { result: items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.selectables = items.filter(filter).map(i => i.id);
         const children = React.Children.toArray(this.props.children);
