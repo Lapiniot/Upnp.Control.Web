@@ -83,6 +83,8 @@ namespace Web.Upnp.Control
             services.AddResponseCaching();
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
             services.AddImageLoaderProxyMiddleware();
+
+            services.AddSwaggerGen();
         }
 
         private static void ConfigureJsonSerializer(JsonSerializerOptions options, IEnumerable<JsonConverter> converters)
@@ -103,16 +105,24 @@ namespace Web.Upnp.Control
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting()
-                .UseEndpoints(endpoints =>
-                {
-                    endpoints.MapDefaultControllerRoute();
-                    endpoints.MapHub<UpnpEventsHub>("/upnpevents", o => o.Transports = HttpTransportType.WebSockets);
-                    endpoints.MapImageLoaderProxy("/proxy/{*url}");
-                })
-                //.UseHttpsRedirection()
-                .UseStaticFiles()
-                .UseResponseCaching();
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "UPnP Control API V1");
+            });
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapHub<UpnpEventsHub>("/upnpevents", o => o.Transports = HttpTransportType.WebSockets);
+                endpoints.MapImageLoaderProxy("/proxy/{*url}");
+            });
+
+            //app.UseHttpsRedirection()
+            app.UseStaticFiles();
+            app.UseResponseCaching();
 
             app.UseSpaStaticFiles();
             app.UseSpa(spa =>

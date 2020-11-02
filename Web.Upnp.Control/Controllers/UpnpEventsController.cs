@@ -12,6 +12,7 @@ using Web.Upnp.Control.Routing;
 
 namespace Web.Upnp.Control.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [Route("api/events/{deviceId}")]
     [Consumes("application/xml", "text/xml")]
