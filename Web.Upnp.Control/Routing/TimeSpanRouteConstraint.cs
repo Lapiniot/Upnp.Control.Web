@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Web.Upnp.Control.Routing
 {
-    internal class TimeSpanRouteConstraint : IRouteConstraint
+    public class TimeSpanRouteConstraint : IRouteConstraint
     {
         public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)
         {

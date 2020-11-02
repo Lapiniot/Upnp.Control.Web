@@ -55,4 +55,14 @@ namespace Web.Upnp.Control.Models
     public record RCGetMuteQueryParams(string DeviceId);
 
     public record RCSetMuteCommandParams(string DeviceId, bool muted);
+
+    public record CMGetProtocolInfoParams(string DeviceId);
+
+    public record CMProtocolInfo(IEnumerable<string> Source, IEnumerable<string> Sink);
+
+    public record CMGetConnectionsParams(string DeviceId);
+
+    public record CMGetConnectionInfoParams(string DeviceId, string ConnectionId);
+
+    public record CMConnectionInfo(string RcsID, string AVTransportID, string PeerConnectionID, string Direction, string Status);
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 
@@ -17,7 +18,10 @@ namespace Web.Upnp.Control.Services.Queries
                 .AddTransient<IAsyncQuery<SysPropsGetPlaylistStateQueryParams, string>, SysPropsGetPlaylistStateQuery>()
                 .AddTransient<IAsyncQuery<GetDeviceQueryParams, Device>, GetDeviceQuery>()
                 .AddTransient<IAsyncQuery<GetContentQueryParams, GetContentResult>, GetContentQuery>()
-                .AddTransient<IAsyncEnumerableQuery<GetDevicesQueryParams, Device>, GetDeviceQuery>();
+                .AddTransient<IAsyncEnumerableQuery<GetDevicesQueryParams, Device>, GetDeviceQuery>()
+                .AddTransient<IAsyncQuery<CMGetProtocolInfoParams, CMProtocolInfo>, CMGetProtocolInfoQuery>()
+                .AddTransient<IAsyncQuery<CMGetConnectionsParams, IEnumerable<string>>, CMGetConnectionsQuery>()
+                .AddTransient<IAsyncQuery<CMGetConnectionInfoParams, CMConnectionInfo>, CMGetConnectionInfoQuery>();
         }
     }
 }
