@@ -15,7 +15,7 @@ using static IoT.Protocol.Upnp.Services.BrowseMode;
 namespace Web.Upnp.Control.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/{deviceId}")]
+    [Route("api/devices/{deviceId}/playlists")]
     [Produces("application/json")]
     public class PlaylistController : ControllerBase
     {
@@ -24,6 +24,24 @@ namespace Web.Upnp.Control.Controllers
         public PlaylistController(IUpnpServiceFactory factory)
         {
             this.factory = factory;
+        }
+
+        [HttpPost]
+        public async Task<IDictionary<string, string>> CreateAsync(string deviceId, [FromBody] string title, CancellationToken cancellationToken)
+        {
+            var service = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
+
+            return await service.CreateAsync(title: title, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+
+        [HttpPut("{playlistId}")]
+        public async Task<IDictionary<string, string>> UpdateAsync(string deviceId, string playlistId, [FromBody] string title, CancellationToken cancellationToken)
+        {
+            var service = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
+
+            var result = await service.RenameAsync(objectId: playlistId, title: title, cancellationToken: cancellationToken).ConfigureAwait(false);
+
+            return await service.RenameAsync(objectId: playlistId, title: title, updateId: result["NewUpdateID"], cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         [HttpDelete]
@@ -44,25 +62,8 @@ namespace Web.Upnp.Control.Controllers
             return result;
         }
 
-        [HttpPost]
-        public async Task<IDictionary<string, string>> CreateAsync(string deviceId, [FromBody] Playlist playlist, CancellationToken cancellationToken)
-        {
-            var pls = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
-
-            return await pls.CreateAsync(title: playlist.Title, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        [HttpPut]
-        public async Task<IDictionary<string, string>> UpdateAsync(string deviceId, [FromBody] Playlist playlist, CancellationToken cancellationToken)
-        {
-            var plService = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
-
-            var result = await plService.RenameAsync(objectId: playlist.Id, title: playlist.Title, cancellationToken: cancellationToken).ConfigureAwait(false);
-            return await plService.RenameAsync(objectId: playlist.Id, title: playlist.Title, updateId: result["NewUpdateID"], cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        [HttpPut("{id}/add")]
-        public async Task<IDictionary<string, string>> AddAsync(string deviceId, string id, [FromBody] MediaSource media, CancellationToken cancellationToken)
+        [HttpPut("{playlistId}/items")]
+        public async Task<IDictionary<string, string>> AddItemsAsync(string deviceId, string playlistId, [FromBody] MediaSource media, CancellationToken cancellationToken)
         {
             var playlistService = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
             var sourceContentDirectoryService = await factory.GetServiceAsync<ContentDirectoryService>(media.DeviceId).ConfigureAwait(false);
@@ -89,22 +90,22 @@ namespace Web.Upnp.Control.Controllers
                 }
             }
 
-            var updateId = await GetUpdateIdAsync(contentDirectoryService, id, cancellationToken).ConfigureAwait(false);
+            var updateId = await GetUpdateIdAsync(contentDirectoryService, playlistId, cancellationToken).ConfigureAwait(false);
 
             Debug.Assert(xdoc != null, nameof(xdoc) + " != null");
 
-            return await playlistService.AddUriAsync(objectId: id, updateId: updateId, enqueuedUriMetaData: xdoc.ToString(), cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await playlistService.AddUriAsync(objectId: playlistId, updateId: updateId, enqueuedUriMetaData: xdoc.ToString(), cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        [HttpDelete("{id}/remove")]
-        public async Task<IDictionary<string, string>> RemoveAsync(string deviceId, string id, [FromBody] string[] ids, CancellationToken cancellationToken)
+        [HttpDelete("{playlistId}/items")]
+        public async Task<IDictionary<string, string>> RemoveItemsAsync(string deviceId, string playlistId, [FromBody] string[] ids, CancellationToken cancellationToken)
         {
             var pls = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
             var cds = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
-            var updateId = await GetUpdateIdAsync(cds, id, cancellationToken).ConfigureAwait(false);
-            var indices = await GetItemIndices(cds, id, ids, cancellationToken).ConfigureAwait(false);
-            return await pls.RemoveItemsAsync(objectId: id, updateId: updateId, indices: indices, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var updateId = await GetUpdateIdAsync(cds, playlistId, cancellationToken).ConfigureAwait(false);
+            var indices = await GetItemIndices(cds, playlistId, ids, cancellationToken).ConfigureAwait(false);
+            return await pls.RemoveItemsAsync(objectId: playlistId, updateId: updateId, indices: indices, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         private static async Task<string> GetUpdateIdAsync(ContentDirectoryService cdtService, string id, CancellationToken cancellationToken)
