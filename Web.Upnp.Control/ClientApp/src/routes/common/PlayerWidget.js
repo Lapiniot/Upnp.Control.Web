@@ -5,6 +5,7 @@ import { mergeClassNames as merge } from "../../components/Extensions";
 import $api from "../../components/WebApi";
 import Progress from "./Progress";
 import Slider from "../../components/Slider";
+import $c from "../common/Config";
 
 const PM_REPEAT_SHUFFLE = "REPEAT_SHUFFLE";
 const PM_REPEAT_ALL = "REPEAT_ALL";
@@ -72,8 +73,8 @@ class PlayerCore extends React.Component {
         try {
             const { 0: { relTime, duration }, 1: { volume, muted } } =
                 await Promise.all([
-                    await (await this.ctrl.position().fetch()).json(),
-                    await (await this.ctrl.volume().fetch()).json()]);
+                    await (await this.ctrl.position().fetch($c.timeout)).json(),
+                    await (await this.ctrl.volume(true).fetch($c.timeout)).json()]);
 
             this.setState({ time: relTime, duration, volume, muted });
         } catch (error) {
@@ -81,25 +82,25 @@ class PlayerCore extends React.Component {
         }
     }
 
-    play = () => this.ctrl.play().fetch();
+    play = () => this.ctrl.play().fetch($c.timeout);
 
-    pause = () => this.ctrl.pause().fetch();
+    pause = () => this.ctrl.pause().fetch($c.timeout);
 
-    stop = () => this.ctrl.stop().fetch();
+    stop = () => this.ctrl.stop().fetch($c.timeout);
 
-    prev = () => this.ctrl.prev().fetch();
+    prev = () => this.ctrl.prev().fetch($c.timeout);
 
-    next = () => this.ctrl.next().fetch();
+    next = () => this.ctrl.next().fetch($c.timeout);
 
-    seek = position => this.ctrl.seek(position).fetch();
+    seek = position => this.ctrl.seek(position).fetch($c.timeout);
 
-    setRepeatAllPlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_ALL).fetch();
+    setRepeatAllPlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_ALL).fetch($c.timeout);
 
-    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_SHUFFLE).fetch();
+    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_SHUFFLE).fetch($c.timeout);
 
-    toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch();
+    toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($c.timeout);
 
-    changeVolume = volume => this.ctrl.setVolume(Math.round(volume * 100)).fetch();
+    changeVolume = volume => this.ctrl.setVolume(Math.round(volume * 100)).fetch($c.timeout);
 
     render() {
         const { actions = [], current, next, playbackState, playMode, time, duration, volume = 0, muted = false } = this.state;
@@ -145,6 +146,6 @@ class PlayerCore extends React.Component {
     }
 }
 
-const fetchPromiseFactoryBuilder = ({ udn }) => withMemoKey($api.control(udn).state(true).fetch, udn);
+const fetchPromiseFactoryBuilder = ({ udn }) => withMemoKey($api.control(udn).state(true).withTimeout($c.timeout).fetch, udn);
 
 export default withDataFetch(PlayerCore, fetchPromiseFactoryBuilder, { usePreloader: false });
