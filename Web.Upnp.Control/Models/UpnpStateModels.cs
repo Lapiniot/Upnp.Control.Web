@@ -40,7 +40,7 @@ namespace Web.Upnp.Control.Models
 
     public record AVSetPositionCommandParams(string DeviceId, AVPositionParams Position);
 
-    public record AVGetPositionQueryParams(string DeviceId, bool? detailed);
+    public record AVGetPositionQueryParams(string DeviceId, bool? Detailed);
 
     public record AVGetPlayModeQueryParams(string DeviceId);
 
@@ -48,13 +48,13 @@ namespace Web.Upnp.Control.Models
 
     public record SysPropsGetPlaylistStateQueryParams(string DeviceId);
 
-    public record RCGetVolumeQueryParams(string DeviceId, bool? detailed);
+    public record RCGetVolumeQueryParams(string DeviceId, bool? Detailed);
 
-    public record RCSetVolumeCommandParams(string DeviceId, uint volume);
+    public record RCSetVolumeCommandParams(string DeviceId, uint Volume);
 
     public record RCGetMuteQueryParams(string DeviceId);
 
-    public record RCSetMuteCommandParams(string DeviceId, bool muted);
+    public record RCSetMuteCommandParams(string DeviceId, bool Muted);
 
     public record CMGetProtocolInfoParams(string DeviceId);
 

@@ -36,7 +36,7 @@ export default class {
             seek: position => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/position`, null,
                 { body: JSON.stringify(typeof position === "number" ? { position: position } : { relTime: position }) }),
             setPlayMode: mode => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/play-mode`, null, { body: JSON.stringify(mode) }),
-            volume: () => new JsonFetch(`${devicesBaseUri}/${deviceId}/volume`),
+            volume: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/volume${detailed ? "?detailed" : ""}`),
             setVolume: volume => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/volume`, null, { body: volume }),
             getMute: () => new JsonFetch(`${devicesBaseUri}/${deviceId}/mute`),
             setMute: mute => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/mute`, null, { body: mute })
