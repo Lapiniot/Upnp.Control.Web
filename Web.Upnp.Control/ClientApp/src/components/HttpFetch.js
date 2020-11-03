@@ -10,13 +10,38 @@
     }
 }
 
+async function fetch(url, init, timeout) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeout);
+    try {
+        return await window.fetch(url, { ...init, signal: controller.signal });
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 export class HttpFetch extends UrlBuilder {
     constructor(path, query, init) {
         super(path, query);
         this.init = { method: "GET", ...init };
     }
 
-    fetch = () => { return window.fetch(this.url(), this.init); }
+    fetch = (requestTimeout) => {
+        const timeout = requestTimeout ?? this.timeout;
+        if (typeof timeout === "number" && timeout > 0) {
+            return fetch(this.url(), this.init, timeout);
+        }
+        else {
+            return window.fetch(this.url(), this.init);
+        }
+    }
+
+    withTimeout(timeout) {
+        const { constructor } = this;
+        let instance = new (constructor[Symbol.species] ?? constructor)(this.path, this.query, this.init);
+        instance.timeout = timeout;
+        return instance;
+    }
 }
 
 export class HttpPost extends HttpFetch {
