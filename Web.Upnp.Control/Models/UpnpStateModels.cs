@@ -65,4 +65,14 @@ namespace Web.Upnp.Control.Models
     public record CMGetConnectionInfoParams(string DeviceId, string ConnectionId);
 
     public record CMConnectionInfo(string RcsID, string AVTransportID, string PeerConnectionID, string Direction, string Status);
+
+    public record PLCreateParams(string DeviceId, string Title);
+
+    public record PLUpdateParams(string DeviceId, string PlaylistId, string Title);
+
+    public record PLRemoveParams(string DeviceId, IEnumerable<string> PlaylistIds);
+
+    public record PLAddItemsParams(string DeviceId, string PlaylistId, string SourceDeviceId, IEnumerable<string> SourceItemIds);
+
+    public record PLRemoveItemsParams(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
 }

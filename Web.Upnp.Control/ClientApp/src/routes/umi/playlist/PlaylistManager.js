@@ -97,7 +97,7 @@ export class PlaylistManagerCore extends React.Component {
         const values = this.props.dataContext.source.result.filter(e => ids.includes(e.id));
 
         this.setState({
-            modal: <Modal id="remove_confirm" title="Do you want to delete playlist?" onDismiss={this.resetModal} immediate>
+            modal: <Modal id="remove_confirm" title="Do you want to delete playlist(s)?" onDismiss={this.resetModal} immediate>
                 <ul className="list-unstyled">
                     {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
                 </ul>

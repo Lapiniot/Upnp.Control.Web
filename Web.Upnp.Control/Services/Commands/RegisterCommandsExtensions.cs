@@ -13,7 +13,12 @@ namespace Web.Upnp.Control.Services.Commands
                 .AddTransient<IAsyncCommand<AVSetPositionCommandParams>, AVSetPositionCommand>()
                 .AddTransient<IAsyncCommand<AVSetPlayModeCommandParams>, AVSetPlayModeCommand>()
                 .AddTransient<IAsyncCommand<RCSetVolumeCommandParams>, RCSetVolumeCommand>()
-                .AddTransient<IAsyncCommand<RCSetMuteCommandParams>, RCSetMuteCommand>();
+                .AddTransient<IAsyncCommand<RCSetMuteCommandParams>, RCSetMuteCommand>()
+                .AddTransient<IAsyncCommand<PLCreateParams>, PLCreateCommand>()
+                .AddTransient<IAsyncCommand<PLUpdateParams>, PLUpdateCommand>()
+                .AddTransient<IAsyncCommand<PLRemoveParams>, PLRemoveCommand>()
+                .AddTransient<IAsyncCommand<PLAddItemsParams>, PLAddItemsCommand>()
+                .AddTransient<IAsyncCommand<PLRemoveItemsParams>, PLRemoveItemsCommand>();
         }
     }
 }
