@@ -57,7 +57,9 @@ namespace Web.Upnp.Control.Models.Converters
             if(value.Vendor is { Count: > 0 } vendor)
             {
                 writer.WriteStartObject("vendor");
-                foreach(var (k, v) in vendor) writer.WriteString(k, v);
+                foreach(var (k, v) in vendor)
+                    if(!string.IsNullOrWhiteSpace(v))
+                        writer.WriteString(k, v);
                 writer.WriteEndObject();
             }
 

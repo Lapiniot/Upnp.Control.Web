@@ -177,7 +177,7 @@ export default class MediaBrowser extends React.Component {
                 </div>
                 <div>
                     {parents && parents.length > 0 &&
-                        <div data-id={parents[0].parentId} onDoubleClick={navigate}>
+                        <div data-id={parents[1]?.id ?? -1} onDoubleClick={navigate}>
                             {useCheckboxes && <div>&nbsp;</div>}
                             <div>...</div>
                             <div>&nbsp;</div>
