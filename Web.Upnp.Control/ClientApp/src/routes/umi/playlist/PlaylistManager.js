@@ -94,7 +94,7 @@ export class PlaylistManagerCore extends React.Component {
     onDelete = () => {
 
         const ids = [...this.selection.keys];
-        const values = this.props.dataContext.source.result.filter(e => ids.includes(e.id));
+        const values = this.props.dataContext.source.items.filter(e => ids.includes(e.id));
 
         this.setState({
             modal: <Modal id="remove_confirm" title="Do you want to delete playlist(s)?" onDismiss={this.resetModal} immediate>
@@ -111,7 +111,7 @@ export class PlaylistManagerCore extends React.Component {
 
     onRename = () => {
         const id = this.selection.keys.next().value;
-        const title = this.props.dataContext.source.result.find(e => e.id === id).title;
+        const title = this.props.dataContext.source.items.find(e => e.id === id).title;
         const input = React.createRef();
 
         this.setState({
@@ -143,7 +143,7 @@ export class PlaylistManagerCore extends React.Component {
 
     onRemoveItems = () => {
         const ids = [...this.selection.keys];
-        const values = this.props.dataContext.source.result.filter(e => ids.includes(e.id));
+        const values = this.props.dataContext.source.items.filter(e => ids.includes(e.id));
 
         this.setState({
             modal:
@@ -164,7 +164,7 @@ export class PlaylistManagerCore extends React.Component {
     render() {
 
         const { dataContext: data, match, navigate, id, s: size, p: page, fetching } = this.props;
-        const { source: { total = 0, result: { length: fetched = 0 } = {}, parents } = {} } = data || {};
+        const { source: { total = 0, items: { length: fetched = 0 } = {}, parents } = {} } = data || {};
         const disabled = this.selection.none();
         const cellContext = {
             ctrl: this.ctrl,

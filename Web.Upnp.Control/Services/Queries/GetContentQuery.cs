@@ -12,7 +12,7 @@ using static IoT.Protocol.Upnp.Services.BrowseMode;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class GetContentQuery : IAsyncQuery<GetContentQueryParams, GetContentResult>
+    public class GetContentQuery : IAsyncQuery<CDGetContentQueryParams, GetContentResult>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -21,14 +21,16 @@ namespace Web.Upnp.Control.Services.Queries
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task<GetContentResult> ExecuteAsync(GetContentQueryParams queryParameters, CancellationToken cancellationToken)
+        public async Task<GetContentResult> ExecuteAsync(CDGetContentQueryParams queryParameters, CancellationToken cancellationToken)
         {
-            var (deviceId, path, (withParents, take, skip)) = queryParameters;
+            var (deviceId, path, (withParents, withResource, withVendor, take, skip)) = queryParameters;
+
             path ??= "0";
 
             var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
             var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
+
             var parents = withParents != false ? await GetParentsAsync(service, path, "id,title,parentId,res", cancellationToken).ConfigureAwait(false) : null;
 
             var items = DIDLXmlParser.Parse(result["Result"]);

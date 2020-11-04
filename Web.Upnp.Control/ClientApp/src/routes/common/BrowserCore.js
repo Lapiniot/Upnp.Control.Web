@@ -154,7 +154,7 @@ export default class MediaBrowser extends React.Component {
     render() {
         const { className, navigate, filter = () => false, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
             useCheckboxes = false, selectOnClick = false, stickyColumnHeaders = true } = this.props;
-        const { source: { result: items = [], parents = [] } = {} } = this.props.dataContext || {};
+        const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.selectables = items.filter(filter).map(i => i.id);
         const children = React.Children.toArray(this.props.children);
         const header = children.find(c => c.type === MediaBrowser.Header);

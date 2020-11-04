@@ -17,7 +17,7 @@ namespace Web.Upnp.Control.Services.Queries
                 .AddTransient<IAsyncQuery<RCGetMuteQueryParams, bool?>, RCGetMuteQuery>()
                 .AddTransient<IAsyncQuery<SysPropsGetPlaylistStateQueryParams, string>, SysPropsGetPlaylistStateQuery>()
                 .AddTransient<IAsyncQuery<GetDeviceQueryParams, Device>, GetDeviceQuery>()
-                .AddTransient<IAsyncQuery<GetContentQueryParams, GetContentResult>, GetContentQuery>()
+                .AddTransient<IAsyncQuery<CDGetContentQueryParams, GetContentResult>, GetContentQuery>()
                 .AddTransient<IAsyncEnumerableQuery<GetDevicesQueryParams, Device>, GetDeviceQuery>()
                 .AddTransient<IAsyncQuery<CMGetProtocolInfoParams, CMProtocolInfo>, CMGetProtocolInfoQuery>()
                 .AddTransient<IAsyncQuery<CMGetConnectionsParams, IEnumerable<string>>, CMGetConnectionsQuery>()

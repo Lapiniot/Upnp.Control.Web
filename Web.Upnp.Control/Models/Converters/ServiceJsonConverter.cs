@@ -8,7 +8,7 @@ namespace Web.Upnp.Control.Models.Converters
     {
         public override Service Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override void Write(Utf8JsonWriter writer, Service value, JsonSerializerOptions options)

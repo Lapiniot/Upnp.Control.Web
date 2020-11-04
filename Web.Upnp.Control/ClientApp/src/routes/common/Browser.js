@@ -7,7 +7,7 @@ import $config from "./Config";
 
 export default function (props) {
     const { dataContext: data, match, s: size, p: page } = props;
-    const { source: { total = 0, result: { length: fetched = 0 } = {}, parents } = {} } = data || {};
+    const { source: { total = 0, items: { length: fetched = 0 } = {}, parents } = {} } = data || {};
     return <div className="d-flex flex-column h-100">
         <div className="flex-grow-1">
             <BrowserCore {...props}>

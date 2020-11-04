@@ -8,9 +8,9 @@ namespace Web.Upnp.Control.Models
 
     public record GetDeviceQueryParams(string DeviceId);
 
-    public record GetContentQueryParams(string DeviceId, string Path, GetContentOptions Options);
+    public record CDGetContentQueryParams(string DeviceId, string Path, GetContentOptions Options);
 
-    public record GetContentOptions(bool? WithParents, uint Take = 50, uint Skip = 0);
+    public record GetContentOptions(bool? WithParents, bool? WithResourceProps, bool? WithVendorProps, uint Take = 50, uint Skip = 0);
 
     public record GetContentResult(int Total, IEnumerable<Item> Items, IEnumerable<Item> Parents);
 
