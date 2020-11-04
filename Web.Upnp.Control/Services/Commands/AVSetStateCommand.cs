@@ -63,7 +63,7 @@ namespace Web.Upnp.Control.Services.Commands
             {
                 var cd = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
                 var result = await cd.BrowseAsync(id, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
-                var item = DIDLXmlParser.Parse(result["Result"]).FirstOrDefault();
+                var item = DIDLXmlParser.Parse(result["Result"], true, false).FirstOrDefault();
                 if(!(item is { Resource: { Url: { } resUrl } })) throw new InvalidOperationException();
                 await avt.SetAVTransportUriAsync(currentUri: resUrl, cancellationToken: cancellationToken).ConfigureAwait(false);
             }

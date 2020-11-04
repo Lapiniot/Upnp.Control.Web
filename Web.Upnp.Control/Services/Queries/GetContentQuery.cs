@@ -31,14 +31,15 @@ namespace Web.Upnp.Control.Services.Queries
 
             var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            var parents = withParents != false ? await GetParentsAsync(service, path, "id,title,parentId,res", cancellationToken).ConfigureAwait(false) : null;
+            var parents = withParents != false ? await GetParentsAsync(service, path, "id,title,parentId,res", withResource == true, withVendor == true, cancellationToken).ConfigureAwait(false) : null;
 
-            var items = DIDLXmlParser.Parse(result["Result"]);
+            var items = DIDLXmlParser.Parse(result["Result"], withResource == true, withVendor == true);
 
             return new GetContentResult(int.Parse(result["TotalMatches"]), items, parents);
         }
 
-        private static async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string path = "0", string filter = "*", CancellationToken cancellationToken = default)
+        private static async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string path, string filter,
+            bool withResource, bool withVendor, CancellationToken cancellationToken)
         {
             var parents = new List<Item>();
 
@@ -50,7 +51,7 @@ namespace Web.Upnp.Control.Services.Queries
                 {
                     var metadataResult = await service.BrowseAsync(path, mode: BrowseMetadata, filter: filter, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                    var metadata = DIDLXmlParser.Parse(metadataResult["Result"]).FirstOrDefault();
+                    var metadata = DIDLXmlParser.Parse(metadataResult["Result"], withResource, withVendor).FirstOrDefault();
 
                     if(metadata == null) break;
 

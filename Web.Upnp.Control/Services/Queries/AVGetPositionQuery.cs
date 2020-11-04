@@ -27,7 +27,7 @@ namespace Web.Upnp.Control.Services.Queries
                 info.TryGetValue("TrackDuration", out value) ? value : null,
                 info.TryGetValue("RelTime", out value) ? value : null)
             {
-                Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLXmlParser.Parse(value).FirstOrDefault() : null
+                Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null
             };
         }
     }

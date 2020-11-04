@@ -34,7 +34,7 @@ namespace Web.Upnp.Control.Services.Commands
         protected static async Task<int[]> GetItemIndices(ContentDirectoryService service, string parentId, IEnumerable<string> ids, CancellationToken cancellationToken)
         {
             var data = await service.BrowseAsync(parentId, count: uint.MaxValue, cancellationToken: cancellationToken).ConfigureAwait(false);
-            var playlists = DIDLXmlParser.Parse(data["Result"]);
+            var playlists = DIDLXmlParser.Parse(data["Result"], false, false);
             var map = playlists.Select((p, index) => (p.Id, index)).ToDictionary(p => p.Id, p => p.index + 1);
             return ids.Select(id => map[id]).ToArray();
         }
