@@ -1,4 +1,5 @@
 ﻿import React from "react";
+//import Tooltip from "bootstrap/js/dist/tooltip";
 import AlbumArt from "./AlbumArt";
 import SelectionService from "../../components/SelectionService";
 import { DIDLUtils as utils } from "./BrowserUtils";
@@ -20,6 +21,12 @@ export default class MediaBrowser extends React.Component {
         if (prevProps.selection !== this.props.selection) {
             this.selection = this.props.selection || new SelectionService();
         }
+
+        /*const options = {
+            delay: 1000, html: true, placement: "bottom",
+            template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner text-left" style="hyphens: auto"></div></div>'
+        };
+        this.tableRef.current.querySelectorAll("[data-toggle='tooltip']").forEach(e => new Tooltip(e, options));*/
     }
 
     componentDidMount() {
@@ -206,8 +213,8 @@ export default class MediaBrowser extends React.Component {
     }
 }
 
-const CellTemplate = ({ data: { class: itemClass, albumArts, title, creator, album } }) =>
-    <div className="d-flex align-items-center">
+const CellTemplate = ({ data: { class: itemClass, albumArts, title, creator, album, res } }) =>
+    <div className="d-flex align-items-center" title={utils.formatMediaInfo(res)}>
         <AlbumArt itemClass={itemClass} albumArts={albumArts} className="mr-2" />
         <div>
             {title}

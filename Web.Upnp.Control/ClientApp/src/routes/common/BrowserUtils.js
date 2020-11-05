@@ -30,6 +30,17 @@ export class DIDLUtils {
         if (size < 1099511627776) return `${Math.round(size / 1073741824)} GB`;
         return "--";
     }
+
+    static formatMediaInfo(data, separator = "\r") {
+        if (typeof data !== "object") return;
+        let lines = [];
+        if (data.proto) lines.push(data.proto.split(":")[2]);
+        if (data.resolution) lines.push(`Resolution: ${data.resolution}`);
+        if (data.bitrate) lines.push(`Bitrate: ${Math.round(data.bitrate / 1000)} kbps`);
+        if (data.sampleFrequency) lines.push(`Sample freq.: ${data.sampleFrequency}`);
+        if (data.nrAudioChannels) lines.push(`Channels: ${data.nrAudioChannels}`);
+        return lines.join(separator);
+    }
 }
 
 export function fromBaseQuery(baseFetchQuery) {

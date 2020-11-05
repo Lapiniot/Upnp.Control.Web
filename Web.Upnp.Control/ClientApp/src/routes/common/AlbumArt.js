@@ -10,6 +10,6 @@ function getIconClass(itemClass) {
     return "fa-folder";
 }
 
-export default ({ itemClass, albumArts, className }) => albumArts && albumArts.length > 0
-    ? <img src={`/proxy/${albumArts[0]}`} className={merge`album-art ${className}`} alt="" />
-    : <i className={merge`album-art ${className} fas ${getIconClass(itemClass)}`} />;
+export default ({ itemClass, albumArts, className, ...other }) => albumArts && albumArts.length > 0
+    ? <img src={`/proxy/${albumArts[0]}`} className={merge`album-art ${className}`} alt="" {...other} />
+    : <i className={merge`album-art ${className} fas ${getIconClass(itemClass)}`} {...other} />;
