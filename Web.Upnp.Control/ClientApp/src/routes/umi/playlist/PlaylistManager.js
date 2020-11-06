@@ -9,10 +9,10 @@ import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
 import Browser from "../../common/BrowserCore";
-import AlbumArt from "../../common/AlbumArt";
 import LoadIndicator from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
 import { SignalRListener } from "../../../components/SignalR";
+import MainCell from "./CellTemplate";
 
 export class PlaylistManagerCore extends React.Component {
 
@@ -183,7 +183,7 @@ export class PlaylistManagerCore extends React.Component {
         return <div className="d-flex flex-column h-100">
             <SignalRListener handlers={this.handlers}>
                 <div className="flex-grow-1">
-                    <Browser dataContext={!fetching ? data : null} cellTemplate={MainCellTemplate} cellContext={cellContext}
+                    <Browser dataContext={!fetching ? data : null} cellTemplate={MainCell} cellContext={cellContext}
                         filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection}
                         useCheckboxes selectOnClick>
                         <Browser.Header className="p-0">
@@ -214,42 +214,6 @@ export class PlaylistManagerCore extends React.Component {
         </div>;
     }
 }
-
-const MainCellTemplate = ({ data, context: { ctrl, active, parents, state }, index }) => {
-    const isActive = active(data, index);
-    return <div className="d-flex align-items-center">
-        <div className="d-inline-block stack mr-1">
-            <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
-            {isActive
-                ? state === "PLAYING"
-                    ? <React.Fragment key="active-playing">
-                        <div className="stack-layer d-flex">
-                            <i className="m-auto fas fa-lg fa-volume-up animate-pulse" />
-                        </div>
-                        <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.pause().fetch}>
-                            <i className="m-auto fas fa-lg fa-pause-circle" />
-                        </div>
-                    </React.Fragment>
-                    : <React.Fragment key="active-paused">
-                        <div className="stack-layer d-flex">
-                            <i className="m-auto fas fa-lg fa-volume-off text-muted" />
-                        </div>
-                        <div className="stack-layer stack-layer-hover d-flex" onClick={ctrl.play().fetch}>
-                            <i className="m-auto fas fa-lg fa-play-circle" />
-                        </div>
-                    </React.Fragment>
-                : <div className="stack-layer stack-layer-hover d-flex"
-                    onClick={ctrl.playUri(parents[0].url ? `${parents[0].url}#tracknr=${index + 1},play` : data.res.url).fetch}>
-                    <i className="m-auto fas fa-lg fa-play-circle" />
-                </div>}
-        </div>
-        <div>
-            {data.title}
-            {data.creator && <small>&nbsp;&bull;&nbsp;{data.creator}</small>}
-            {data.album && <small>&nbsp;&bull;&nbsp;{data.album}</small>}
-        </div>
-    </div>;
-};
 
 const browsePlaylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id || "PL:").withParents().withResource().withVendor());
 
