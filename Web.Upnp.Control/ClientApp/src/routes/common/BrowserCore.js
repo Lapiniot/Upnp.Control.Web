@@ -104,6 +104,8 @@ export default class MediaBrowser extends React.Component {
         }
         else // single item selection
         {
+            if (this.selection.one() && this.selection.selected(id)) return;
+
             this.focusedItem = id;
             this.selection.reset();
             const cancelled = !this.selection.select(id, true, { device: this.props.device, id: this.props.id });

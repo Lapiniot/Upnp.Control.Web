@@ -31,7 +31,7 @@ export class PlaylistManagerCore extends React.Component {
         if (prevProps.device !== this.props.device) {
             this.ctrl = $api.control(this.props.device);
         }
-        if (prevProps.device !== this.props.device || prevProps.id != this.props.id) {
+        if (prevProps.device !== this.props.device || prevProps.id !== this.props.id) {
             this.selection.reset();
         }
     }
