@@ -112,7 +112,7 @@ export default class MediaBrowser extends React.Component {
     }
 
     onContainerMouseDown = e => {
-        if (e.target === e.currentTarget) {
+        if (e.target === e.currentTarget && this.selection.any()) {
             this.toggleSelectionAll(false);
         }
     }
