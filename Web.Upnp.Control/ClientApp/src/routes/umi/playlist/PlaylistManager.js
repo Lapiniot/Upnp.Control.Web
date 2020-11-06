@@ -81,17 +81,15 @@ export class PlaylistManagerCore extends React.Component {
 
     removeItems = (ids) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch();
 
-    onCreate = () => {
-        const input = React.createRef();
+    onAdd = () => {
         this.setState({
-            modal:
-                <TextValueEditDialog id="create_confirm" inputRef={input} title="Create new playlist" label="Name" confirmText="Create"
-                    defaultValue="New Playlist" onConfirm={() => this.createPlaylist(input.current.value).then(this.reload)}
-                    onDismiss={this.resetModal} immediate />
+            modal: <TextValueEditDialog id="create_confirm" title="Create new playlist" label="Name" confirmText="Create"
+                defaultValue="New Playlist" onConfirm={value => this.createPlaylist(value).then(this.reload)}
+                onDismiss={this.resetModal} immediate />
         });
     }
 
-    onDelete = () => {
+    onRemove = () => {
 
         const ids = [...this.selection.keys];
         const values = this.props.dataContext.source.items.filter(e => ids.includes(e.id));
@@ -112,11 +110,10 @@ export class PlaylistManagerCore extends React.Component {
     onRename = () => {
         const id = this.selection.keys.next().value;
         const title = this.props.dataContext.source.items.find(e => e.id === id).title;
-        const input = React.createRef();
 
         this.setState({
-            modal: <TextValueEditDialog id="rename_confirm" inputRef={input} title="Rename playlist" label="Name" confirmText="Rename"
-                defaultValue={title} onConfirm={() => this.renamePlaylist(id, input.current.value).then(this.reload)}
+            modal: <TextValueEditDialog id="rename_confirm" title="Rename playlist" label="Name" confirmText="Rename"
+                defaultValue={title} onConfirm={value => this.renamePlaylist(id, value).then(this.reload)}
                 onDismiss={this.resetModal} immediate />
         });
     }
@@ -177,8 +174,8 @@ export class PlaylistManagerCore extends React.Component {
                     : d => d.res.url === this.state.playlist)
         };
         const toolbar = id === "PL:"
-            ? [{ key: "pl-create", title: "Create", glyph: "plus", onClick: this.onCreate },
-            { key: "pl-delete", title: "Delete", glyph: "trash", onClick: this.onDelete, disabled: disabled },
+            ? [{ key: "pl-create", title: "Create", glyph: "plus", onClick: this.onAdd },
+            { key: "pl-delete", title: "Delete", glyph: "trash", onClick: this.onRemove, disabled: disabled },
             { key: "pl-rename", title: "Rename", glyph: "edit", onClick: this.onRename, disabled: disabled },
             { key: "pl-copy", title: "Copy", glyph: "copy", onClick: this.onCopy, disabled: disabled }]
             : [{ key: "item-add", title: "Add items", glyph: "plus", onClick: this.onAddItems },
