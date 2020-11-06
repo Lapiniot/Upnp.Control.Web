@@ -1,13 +1,10 @@
-﻿import React from "react";
-import { withDataFetch } from "../../../components/DataFetch";
-import $api from "../../../components/WebApi";
-import { NavLink, RouteLink } from "../../../components/NavLink";
-import DeviceInfo from "../../common/DeviceInfo";
-import DeviceIcon from "../../common/DeviceIcon";
-import ServicesList from "../../common/DeviceServiceList";
-import DeviceList from "../../common/DeviceList";
+import React from "react";
+import DeviceIcon from "./DeviceIcon";
+import DeviceInfo from "./DeviceInfo";
+import ServicesList from "./DeviceServiceList";
+import { NavLink, RouteLink } from "../../components/NavLink";
 
-function UpnpDevice({ "data-source": d }) {
+export default function Device({ "data-source": d }) {
 
     const isMediaServer = d.services && d.services.some(
         s => s.type.startsWith("urn:schemas-upnp-org:service:ContentDirectory:") ||
@@ -27,13 +24,7 @@ function UpnpDevice({ "data-source": d }) {
         </div>
         <div className="card-footer no-decoration d-flex gap-2">
             <NavLink to={d.url} glyph="download">Metadata</NavLink>
-            {isMediaServer && <RouteLink to={`/upnp/browse/${d.udn}`} glyph="folder">Browse</RouteLink>}
+            {isMediaServer && <RouteLink to={`/upnp/${d.udn}/browse`} glyph="folder">Browse</RouteLink>}
         </div>
     </div>;
 }
-
-const devicesFetch = $api.devices("upnp").fetch;
-
-const UpnpDevices = withDataFetch(DeviceList, () => devicesFetch, { usePreloader: false });
-
-export default props => <UpnpDevices itemTemplate={UpnpDevice} {...props} />;
