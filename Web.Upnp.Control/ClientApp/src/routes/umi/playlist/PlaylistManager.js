@@ -31,7 +31,7 @@ export class PlaylistManagerCore extends React.Component {
         if (prevProps.device !== this.props.device) {
             this.ctrl = $api.control(this.props.device);
         }
-        if (prevProps.dataContext !== this.props.dataContext) {
+        if (prevProps.device !== this.props.device || prevProps.id != this.props.id) {
             this.selection.reset();
         }
     }
@@ -101,7 +101,7 @@ export class PlaylistManagerCore extends React.Component {
                 </ul>
                 <Modal.Footer>
                     <Modal.Button text="Cancel" className="btn-secondary" dismiss />
-                    <Modal.Button text="Delete" className="btn-danger" icon="trash" onClick={() => this.removePlaylist(ids).then(this.reload)} dismiss />
+                    <Modal.Button text="Delete" className="btn-danger" icon="trash" onClick={() => this.removePlaylist(ids).then(this.selection.reset).then(this.reload)} dismiss />
                 </Modal.Footer>
             </Modal>
         });
@@ -176,7 +176,7 @@ export class PlaylistManagerCore extends React.Component {
         const toolbar = id === "PL:"
             ? [{ key: "pl-create", title: "Create", glyph: "plus", onClick: this.onAdd },
             { key: "pl-delete", title: "Delete", glyph: "trash", onClick: this.onRemove, disabled: disabled },
-            { key: "pl-rename", title: "Rename", glyph: "edit", onClick: this.onRename, disabled: disabled },
+            { key: "pl-rename", title: "Rename", glyph: "edit", onClick: this.onRename, disabled: !this.selection.one() },
             { key: "pl-copy", title: "Copy", glyph: "copy", onClick: this.onCopy, disabled: disabled }]
             : [{ key: "item-add", title: "Add items", glyph: "plus", onClick: this.onAddItems },
             { key: "item-remove", title: "Remove items", glyph: "trash", onClick: this.onRemoveItems, disabled: disabled }];
