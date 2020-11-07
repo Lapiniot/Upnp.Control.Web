@@ -1,11 +1,9 @@
 ﻿import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { withBrowser } from "../../common/BrowserUtils";
-import BrowserView from "../../common/Browser";
+import { withBrowser } from "./BrowserUtils";
+import BrowserView from "./Browser";
 
 const Browser = withBrowser(BrowserView, false);
-
-/***** Handles all /upnp/browse routes *****/
 
 export default ({ match: { path } }) => <Switch>
     <Route path={`${path}/-1`} render={() => <Redirect to="/upnp" />} />
