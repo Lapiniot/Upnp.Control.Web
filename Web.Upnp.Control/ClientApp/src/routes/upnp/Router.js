@@ -4,7 +4,7 @@ import Browser from "./browse/Browse";
 import DeviceList from "../common/DeviceList";
 import $api from "../../components/WebApi";
 import { withDataFetch, withMemoKey } from "../../components/DataFetch";
-import DeviceCard from "../common/Device";
+import DeviceCard from "../common/Device.Upnp";
 
 function DeviceContainer({ dataContext: { source } }) {
     return <div className="d-flex m-3 justify-content-center"><DeviceCard data-source={source} /></div>;

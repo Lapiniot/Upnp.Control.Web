@@ -2,16 +2,12 @@
 import { Switch, Route, Redirect } from "react-router-dom";
 import { withBrowser } from "../../common/BrowserUtils";
 import BrowserView from "../../common/Browser";
-import Devices from "./Devices";
 
 const Browser = withBrowser(BrowserView, false);
 
-/***** Handles all /umi/browse routes *****/
+/***** Handles all /upnp/browse routes *****/
 
-export default ({ match: { path } }) =>
-    <Switch>
-        <Route path={path} exact render={props => <Devices {...props} />} />
-        <Route path={`${path}/:device/:id(.*)*`} render={props => props.match.params.id !== "-1"
-            ? <Browser {...props} />
-            : <Redirect to={path} />} />
-    </Switch>;
+export default ({ match: { path } }) => <Switch>
+    <Route path={`${path}/-1`} render={() => <Redirect to="/umi" />} />
+    <Route path={`${path}/:id(.*)*`} render={props => <Browser {...props} />} />
+</Switch>;
