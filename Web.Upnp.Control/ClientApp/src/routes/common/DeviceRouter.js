@@ -7,7 +7,7 @@ import { withDataFetch, withMemoKey } from "../../components/DataFetch";
 import DeviceCard from "./Device.Upnp";
 
 function DeviceContainer({ dataContext: { source }, itemTemplate: Template }) {
-    return <div className="d-flex m-3 justify-content-center">
+    return <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
         <Template data-source={source} />
     </div>;
 }
