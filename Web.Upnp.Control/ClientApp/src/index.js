@@ -12,6 +12,7 @@ import { SignalRConnection } from "./components/SignalR";
 import HomePage from "./routes/home/Home";
 import UpnpPage from "./routes/upnp/Router";
 import UmiPage from "./routes/umi/Router";
+import PlayersPage from "./routes/renderers/Router";
 import SettingsPage from "./routes/settings/Settings";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
@@ -26,8 +27,9 @@ ReactDOM.render(
                         <h5 className="navbar-brand mx-0">UPnP Controller</h5>
                         <nav className="navbar-nav">
                             <RouteLink to="/" exact glyph="home" className="nav-item nav-link">Home</RouteLink>
-                            <RouteLink to="/umi" glyph="music" className="nav-item nav-link">Network Speakers</RouteLink>
                             <RouteLink to="/upnp" glyph="server" className="nav-item nav-link">UPnP devices</RouteLink>
+                            <RouteLink to="/players" glyph="tv" className="nav-item nav-link">Network Players</RouteLink>
+                            <RouteLink to="/umi" glyph="music" className="nav-item nav-link">Xiaomi Speakers</RouteLink>
                             <RouteLink to="/settings" glyph="cog" className="nav-item nav-link">Settings</RouteLink>
                         </nav>
                     </div>
@@ -38,6 +40,7 @@ ReactDOM.render(
                             <Route exact path="/" component={HomePage} />
                             <Route path="/upnp" component={UpnpPage} />
                             <Route path="/umi" component={UmiPage} />
+                            <Route path="/players" component={PlayersPage} />
                             <Route path="/settings" component={SettingsPage} />
                             <Route path="*" render={() => <div className="m-2 text-danger">
                                 <h3>404 - Not Found</h3>
