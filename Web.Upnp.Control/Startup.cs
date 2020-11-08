@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Policies;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp;
@@ -88,7 +90,12 @@ namespace Web.Upnp.Control
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
             services.AddImageLoaderProxyMiddleware();
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
         }
 
         private static void ConfigureJsonSerializer(JsonSerializerOptions options, IEnumerable<JsonConverter> converters)

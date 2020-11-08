@@ -21,6 +21,8 @@
         <InvariantGlobalization>true</InvariantGlobalization>
         <UseSystemResourceKeys>true</UseSystemResourceKeys>
         <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
