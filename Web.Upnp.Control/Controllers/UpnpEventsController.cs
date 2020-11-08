@@ -28,14 +28,8 @@ namespace Web.Upnp.Control.Controllers
             this.observers = observers?.ToArray() ?? Array.Empty<IObserver<UpnpEvent>>();
         }
 
-        [HttpNotify("[action]/{service}")]
-        public Task NotifyAsync(string deviceId, string service)
-        {
-            return Task.CompletedTask;
-        }
-
         [HttpNotify("notify/rc")]
-        public Task NotifyRenderingControlAsync(string deviceId, [FromHeader(Name = "SID")] string sid)
+        public Task NotifyRenderingControlAsync(string deviceId)
         {
             return ProcessRequestStreamAsync<UpnpRenderingControlPropertyChangedevent>(HttpContext.Request.Body, deviceId);
         }

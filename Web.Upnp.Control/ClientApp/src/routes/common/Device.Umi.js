@@ -1,6 +1,5 @@
 import React from "react";
 import { RouteLink } from "../../components/NavLink";
-import DeviceIcon from "./DeviceIcon";
 import PlayerWidget from "./PlayerWidget";
 
 export default function UmiDevice({ "data-source": { icons, name, type, description, udn } }) {
