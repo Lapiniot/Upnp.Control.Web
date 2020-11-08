@@ -94,6 +94,23 @@ $generate-grid-layout-responsive-styles: false;
     font-size: 0.6rem;
 }
 
+%line-clamp-base {
+    display: -webkit-inline-box;
+    -webkit-box-orient: vertical;
+}
+
+@mixin line-clamp($lines) {
+    .lines-#{$lines} {
+        @extend %line-clamp-base;
+        -webkit-line-clamp: #{$lines};
+        line-clamp: #{$lines};
+    }
+}
+
+@for $lines from 1 through 3 {
+    @include line-clamp($lines);
+}
+
 .sticky-bottom {
     position: sticky;
     bottom: 0;
@@ -207,13 +224,13 @@ $album-art-sizes: (
     & > :nth-of-type(odd) {
         justify-self: end;
         color: $text-muted;
-        
+
         &::after {
             content: ":";
         }
     }
 
-    & > :nth-of-type(even){
+    & > :nth-of-type(even) {
         overflow: hidden;
         text-overflow: ellipsis;
     }
