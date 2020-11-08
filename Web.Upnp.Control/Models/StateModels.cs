@@ -28,6 +28,8 @@ namespace Web.Upnp.Control.Models
         public Item Current { get; init; }
     }
 
+    public record AVStateMessage(AVState State, AVPosition Position, IReadOnlyDictionary<string, string> VendorProps);
+
     public record RCVolumeState(uint? Volume, bool? Muted);
 
     public record AVStateParams(string State, string ObjectId, Uri CurrentUri);

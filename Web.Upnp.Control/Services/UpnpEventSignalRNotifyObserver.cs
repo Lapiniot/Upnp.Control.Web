@@ -58,8 +58,8 @@ namespace Web.Upnp.Control.Services
             var position = new AVPosition(map.TryGetValue("CurrentTrack", out value) ? value : null,
                 map.TryGetValue("CurrentTrackDuration", out value) ? value : null,
                 map.TryGetValue("RelativeTimePosition", out value) ? value : null);
-
-            var _ = hub.Clients.All.AVTransportEvent(avtEvent.DeviceId, new { state, position, avtEvent.VendorProperties });
+                
+            var _ = hub.Clients.All.AVTransportEvent(avtEvent.DeviceId, new AVStateMessage(state, position, avtEvent.VendorProperties));
         }
 
         private void NotifyRenderingControlEvent(UpnpRenderingControlPropertyChangedevent rce)
