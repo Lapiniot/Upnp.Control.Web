@@ -11,7 +11,7 @@ export default class Progress extends React.Component {
     }
 
     render() {
-        const { time, duration, running, onChangeRequested } = this.props;
+        const { time, duration, running, onChangeRequested, className } = this.props;
         const total = parseMilliseconds(duration);
         const current = parseMilliseconds(time);
 
@@ -32,7 +32,7 @@ export default class Progress extends React.Component {
 
         this.spin ^= 0x01;
 
-        return <div className="d-flex flex-wrap justify-content-between user-select-none">
+        return <div className={`d-flex flex-wrap justify-content-between user-select-none${className ? ` ${className}` : ""}`}>
             <Timer className="text-tiny" current={current / 1000} total={total / 1000} running={running} />
             <small className="text-tiny">{formatTime(total / 1000)}</small>
             <Slider progress={progress} className="flex-basis-100" style={style} onChangeRequested={onChangeRequested} />
