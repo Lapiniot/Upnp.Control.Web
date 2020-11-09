@@ -126,7 +126,7 @@ class PlayerCore extends React.Component {
                     {current &&
                         <div className="d-flex flex-wrap justify-content-center flex-grow-1 overflow-hidden mx-2">
                             <h6 className="text-center text-truncate flex-basis-100 m-0">{title}</h6>
-                            <small className="m-0 text-center lines-2">{`${creator}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album}`}</small>
+                            {(creator || album) && <small className="m-0 text-center lines-2">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
                         </div>}
                     <div className="d-flex position-relative flex-nowrap">
                         <div className="hover-container">
