@@ -275,12 +275,12 @@ a.no-decoration,
     z-index: $zindex-modal;
     width: 100%;
     height: 100%;
-    backdrop-filter: brightness(0.8);
+    backdrop-filter: brightness(0.7);
 }
 
 .vp-center {
     position: sticky;
-    top: 50vh;
+    top: calc(min(50%, 50vh));
     transform: translate3d(0, -50%, 0);
 }
 

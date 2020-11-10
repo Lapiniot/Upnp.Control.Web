@@ -1,9 +1,15 @@
 ﻿import React from "react";
 
-export default ({ children, ...others }) =>
-    <div className="h-100 d-flex flex-fill justify-content-center align-items-center" {...others}>
-        <div className="spinner-border mr-1 text-secondary" role="status">
-            <span className="visually-hidden">Loading...</span>
-        </div>
+export default function LoadIndicator({ children, className, ...others }) {
+    return <div className={`d-inline-flex justify-content-center align-items-center${className ? ` ${className}` : ""}`} {...others}>
+        <span className="visually-hidden" role="status">Loading...</span>
+        <i className="fas fa-compact-disc fa-spin fa-3x" />
         {children}
-    </div>;
+    </div>
+}
+
+export function LoadIndicatorOverlay({ children = "Loading..." }) {
+    return <div className="backdrop text-center">
+        <LoadIndicator className="vp-center flex-column">{children}</LoadIndicator>
+    </div>
+}

@@ -9,7 +9,7 @@ import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
 import Browser from "../../common/BrowserCore";
-import LoadIndicator from "../../../components/LoadIndicator";
+import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
 import { SignalRListener } from "../../../components/SignalR";
 import MainCell from "./CellTemplate";
@@ -177,17 +177,24 @@ export class PlaylistManagerCore extends React.Component {
                     ? d => d.vendor["mi:playlistType"] === "aux"
                     : d => d.res.url === this.state.playlist)
         };
-        const toolbar = id === "PL:"
-            ? [{ key: "pl-create", title: "Create", glyph: "plus", onClick: this.onAdd },
-            { key: "pl-delete", title: "Delete", glyph: "trash", onClick: this.onRemove, disabled: disabled },
-            { key: "pl-rename", title: "Rename", glyph: "edit", onClick: this.onRename, disabled: !this.selection.one() },
-            { key: "pl-copy", title: "Copy", glyph: "copy", onClick: this.onCopy, disabled: disabled }]
-            : [{ key: "item-add", title: "Add items", glyph: "plus", onClick: this.onAddItems },
-            { key: "item-remove", title: "Remove items", glyph: "trash", onClick: this.onRemoveItems, disabled: disabled }];
-        return <div className="d-flex flex-column h-100">
+
+        const toolbar = id === "PL:" ?
+            [
+                { key: "pl-create", title: "Create", glyph: "plus", onClick: this.onAdd },
+                { key: "pl-delete", title: "Delete", glyph: "trash", onClick: this.onRemove, disabled: disabled },
+                { key: "pl-rename", title: "Rename", glyph: "edit", onClick: this.onRename, disabled: !this.selection.one() },
+                { key: "pl-copy", title: "Copy", glyph: "copy", onClick: this.onCopy, disabled: disabled }
+            ] :
+            [
+                { key: "item-add", title: "Add items", glyph: "plus", onClick: this.onAddItems },
+                { key: "item-remove", title: "Remove items", glyph: "trash", onClick: this.onRemoveItems, disabled: disabled }
+            ];
+
+        return <div className="d-flex flex-column h-100 position-relative">
+            {fetching && <LoadIndicatorOverlay />}
             <div className="flex-grow-1">
                 <SignalRListener handlers={this.handlers}>
-                    <Browser dataContext={!fetching ? data : null} cellTemplate={MainCell} cellContext={cellContext}
+                    <Browser dataContext={data} cellTemplate={MainCell} cellContext={cellContext}
                         filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection}
                         useCheckboxes selectOnClick>
                         <Browser.Header className="p-0">
@@ -203,7 +210,6 @@ export class PlaylistManagerCore extends React.Component {
                     </Browser>
                 </SignalRListener>
             </div>
-            {fetching && <LoadIndicator />}
             <div className="sticky-bottom">
                 <div className="bg-light text-center text-muted small p-1">{
                     this.selection.length > 0

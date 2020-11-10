@@ -1,6 +1,6 @@
 import { withDataFetch, withMemoKey } from "../../components/DataFetch";
 import withNavigation from "./Navigator";
-import LoadIndicator from "../../components/LoadIndicator";
+import {LoadIndicatorOverlay} from "../../components/LoadIndicator";
 import $api from "../../components/WebApi";
 import $config from "./Config";
 
@@ -55,5 +55,5 @@ export function fromBaseQuery(baseFetchQuery) {
 const defaultQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id).withParents().withResource());
 
 export function withBrowser(BrowserComponent, usePreloader = true, builder = defaultQueryBuilder) {
-    return withNavigation(withDataFetch(BrowserComponent, builder, { template: LoadIndicator, usePreloader }));
+    return withNavigation(withDataFetch(BrowserComponent, builder, { template: LoadIndicatorOverlay, usePreloader }));
 }

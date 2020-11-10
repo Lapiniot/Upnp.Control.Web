@@ -1,7 +1,7 @@
 import React from "react";
 import { MemoryRouter, Switch, Route, Redirect } from "react-router-dom";
 import Modal from "../../components/Modal";
-import LoadIndicator from "../../components/LoadIndicator";
+import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
 import { withDataFetch } from "../../components/DataFetch";
@@ -55,19 +55,23 @@ export default class BrowserDialog extends React.Component {
 
 const serversFetch = $api.devices("servers").fetch;
 
-const MediaSourceList = withDataFetch(({ dataContext: { source: data } }) =>
-    <ul className="list-group list-group-flush">
-        {data.map(({ udn, name, type, description, icons }, i) =>
-            <RouteLink key={`dev-${i}`} to={`/sources/${udn}`} className="list-group-item list-group-item-action">
-                <DeviceIcon icons={icons} service={type} />
-                {name}{description && ` (${description})`}
-            </RouteLink>)}
-    </ul>, () => serversFetch, { template: LoadIndicator });
+const MediaSourceList = withDataFetch(({ dataContext: { source: data }, fetching }) =>
+    <div>
+        {fetching
+            ? <LoadIndicatorOverlay />
+            : <ul className="list-group list-group-flush">
+                {data.map(({ udn, name, type, description, icons }, i) =>
+                    <RouteLink key={`dev-${i}`} to={`/sources/${udn}`} className="list-group-item list-group-item-action">
+                        <DeviceIcon icons={icons} service={type} />
+                        {name}{description && ` (${description})`}
+                    </RouteLink>)}
+            </ul>}
+    </div>, () => serversFetch, { usePreloader: true });
 
 function isMusicTrack(item) {
     return item.class.endsWith(".musicTrack");
 }
 
-const BrowserView = (props) => <BrowserCore {...props} filter={isMusicTrack} captureKeyboardEvents useCheckboxes selectOnClick />
+const BrowserView = (props) => <BrowserCore {...props} filter={isMusicTrack} captureKeyboardEvents useCheckboxes selectOnClick />;
 
 const Browser = withBrowser(BrowserView, false);

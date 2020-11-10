@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import "bootstrap/js/src/alert";
 import { SignalRListener } from "../../components/SignalR";
-import Loader from "../../components/LoadIndicator";
+import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 
 function DiscoveryAlert({ type, name, description, onDismiss = () => { } }) {
     const appeared = type === "appeared";
@@ -35,21 +35,19 @@ export default class extends React.Component {
     }
 
     render() {
-        const { dataContext, itemTemplate: Item } = this.props;
+        const { dataContext, itemTemplate: Item, fetching } = this.props;
 
         const alerts = Array.from(this.state.alerts).map(({ 0: key, 1: { type, info: { name, description } } }) =>
             <DiscoveryAlert key={key} type={type} name={name} description={description} onDismiss={() => this.dismissAlert(key)} />);
 
-        return <>
-            <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
-            {dataContext?.source
-                ? <>
+        return <div className="position-relative w-100 h-100">
+            {fetching ? <LoadIndicatorOverlay />
+                : <SignalRListener handlers={this.handlers}>
                     {alerts}
                     <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
                         {[dataContext.source.map(item => <Item key={item.udn} data-source={item} />)]}
                     </div>
-                </>
-                : <Loader>Loading...</Loader>}
-        </>
+                </SignalRListener>}
+        </div>
     }
 }
