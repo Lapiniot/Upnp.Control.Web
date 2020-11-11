@@ -5,7 +5,9 @@ import PlayerWidget from "./PlayerWidget";
 export default function UmiDevice({ "data-source": { icons, name, type, description, udn } }) {
     return <div className="card">
         <div className="card-header d-flex flex-row">
-            <img src="device-icon.svg#music-player" className="upnp-dev-icon" alt="" style={{ objectFit: "unset" }} />
+            <svg className="upnp-dev-icon" style={{ objectFit: "unset" }}>
+                <use href="icons.svg#s-music-player" />
+            </svg>
             <div>
                 <h5 className="card-title">{name}</h5>
                 <h6 className="card-subtitle">{description}</h6>
