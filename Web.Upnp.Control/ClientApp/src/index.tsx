@@ -14,8 +14,8 @@ import UmiPage from "./routes/umi/Router";
 import PlayersPage from "./routes/renderers/Router";
 import SettingsPage from "./routes/settings/Settings";
 
-const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
-const container = document.getElementById("root-view");
+const baseUrl: string = document.getElementsByTagName("base")[0].getAttribute("href") as string;
+const container: HTMLElement = document.getElementById("root-view") as HTMLElement;
 
 ReactDOM.render(
     <BrowserRouter basename={baseUrl}>
@@ -50,5 +50,4 @@ ReactDOM.render(
                 </main>
             </div>
         </div>
-    </BrowserRouter>,
-    container);
+    </BrowserRouter>, container);
