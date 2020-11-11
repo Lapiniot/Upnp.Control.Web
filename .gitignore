@@ -12,3 +12,4 @@ Web.Upnp.Control/*.db
 Web.Upnp.Control/*.db3
 Web.Upnp.Control/*.sqlite
 Web.Upnp.Control/*.sqlite3
+Web.Upnp.Control/ClientApp/src/react-app-env.d.ts
