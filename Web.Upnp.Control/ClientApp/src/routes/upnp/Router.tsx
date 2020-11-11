@@ -1,4 +1,4 @@
 ﻿import React from "react";
-import DeviceRouter from "../common/DeviceRouter";
+import DeviceRouter, { DeviceRouterProps } from "../common/DeviceRouter";
 
-export default (props: any) => <DeviceRouter {...props} category="upnp" />
+export default (props: DeviceRouterProps) => <DeviceRouter {...props} />
