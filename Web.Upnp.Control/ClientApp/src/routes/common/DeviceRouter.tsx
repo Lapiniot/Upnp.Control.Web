@@ -6,11 +6,11 @@ import DeviceList from "./DeviceList";
 import $api from "../../components/WebApi";
 import { withDataFetch, withMemoKey } from "../../components/DataFetch";
 import DeviceCard from "./Device.Upnp";
+import { DataFetchProps, DataSourceProps, UpnpDevice } from "./Types";
 
-interface DeviceContainerProps {
-    dataContext: { source: object };
-    itemTemplate: ElementType<{ "data-source": object }>
-}
+type DeviceContainerProps = DataFetchProps<UpnpDevice, { itemTemplate: ElementType<DataSourceProps<UpnpDevice>> }>
+
+export type DeviceRouterProps = PropsWithChildren<{ category?: string, deviceTemplate?: ElementType }> & RouteComponentProps<{}>
 
 function DeviceContainer({ dataContext: { source }, itemTemplate: Template }: DeviceContainerProps) {
     return <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
@@ -22,11 +22,6 @@ const Device = withDataFetch(DeviceContainer, ({ match: { params: { device } }, 
     withMemoKey($api.devices(category, device).fetch, `${category}|${device}`), { usePreloader: true });
 const Devices = withDataFetch(DeviceList, ({ category }) =>
     withMemoKey($api.devices(category).fetch, category), { usePreloader: false });
-
-export interface DeviceRouterProps extends
-    PropsWithChildren<{ category?: string, deviceTemplate?: ElementType<any> }>,
-    RouteComponentProps<{}> {
-}
 
 export default ({ match: { path }, deviceTemplate = DeviceCard, category = "upnp", children }: DeviceRouterProps) => <Switch>
     {children}

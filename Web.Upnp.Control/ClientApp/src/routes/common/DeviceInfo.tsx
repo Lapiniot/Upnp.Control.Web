@@ -1,7 +1,8 @@
 import React from "react";
 import { NavLink } from "../../components/NavLink";
+import { DataSourceProps, UpnpDevice } from "./Types";
 
-export default function ({ "data-source": { udn, type, maker, makerUrl, model, modelUrl, modelNumber } }) {
+export default function ({ "data-source": { udn, type, maker, makerUrl, model, modelUrl, modelNumber } }: DataSourceProps<UpnpDevice>) {
     return <div className="grid-form mb-2">
         <div>UDN</div>
         <div>{udn}</div>

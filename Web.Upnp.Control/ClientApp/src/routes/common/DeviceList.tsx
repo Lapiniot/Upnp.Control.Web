@@ -1,9 +1,17 @@
-﻿import React from "react";
+﻿import React, { ElementType, ReactElement } from "react";
 import "bootstrap/js/src/alert";
 import { SignalRListener } from "../../components/SignalR";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
+import { DataFetchProps, UpnpDevice } from "./Types";
 
-function DiscoveryAlert({ type, name, description, onDismiss = () => { } }) {
+type AlertProps = {
+    type: string;
+    name: string;
+    description: string;
+    onDismiss?: () => void | undefined;
+};
+
+function DiscoveryAlert({ type, name, description, onDismiss }: AlertProps) {
     const appeared = type === "appeared";
     return <div className={`alert ${appeared ? "alert-success" : "alert-warning"} alert-dismissible fade show m-3 d-flex justify-content-center`} role="alert">
         <h6>{name}&nbsp;({description}){appeared ? " appeared on the network" : " disappeared from the network"}</h6>
@@ -11,25 +19,35 @@ function DiscoveryAlert({ type, name, description, onDismiss = () => { } }) {
     </div>;
 }
 
-export default class extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handlers = new Map([["SsdpDiscoveryEvent", this.onDiscoveryEvent]]);
-        this.state = { alerts: new Map() };
-    }
+interface DiscoveryMessage {
+    type: string;
+    info: UpnpDevice;
+}
 
-    onDiscoveryEvent = (device, message) => {
+type DeviceListProps = DataFetchProps<UpnpDevice[], { itemTemplate: ElementType }>
+
+type DeviceListState = {
+    alerts: Map<string, DiscoveryMessage>
+}
+
+export default class extends React.Component<DeviceListProps, DeviceListState> {
+
+    onDiscoveryEvent = (device: string, message: DiscoveryMessage) => {
         this.showAlert(device, message);
         const reload = this.props.dataContext?.reload;
         if (typeof reload === "function") reload();
     }
 
-    showAlert = (device, message) => {
+    handlers: Map<string, any> = new Map([["SsdpDiscoveryEvent", this.onDiscoveryEvent]]);
+
+    state: DeviceListState = { alerts: new Map() };
+
+    showAlert = (device: string, message: DiscoveryMessage) => {
         this.state.alerts.set(device, message);
         this.setState({ alerts: this.state.alerts });
     }
 
-    dismissAlert = key => {
+    dismissAlert = (key: string) => {
         this.state.alerts.delete(key);
         this.setState({ alerts: this.state.alerts });
     }
