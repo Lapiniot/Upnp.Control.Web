@@ -6,21 +6,21 @@ import DeviceList from "./DeviceList";
 import $api from "../../components/WebApi";
 import { withDataFetch, withMemoKey } from "../../components/DataFetch";
 import DeviceCard from "./Device.Upnp";
-import { DataFetchProps, DataSourceProps, UpnpDevice } from "./Types";
+import { DataSourceProps, UpnpDevice } from "./Types";
 
-type DeviceContainerProps = DataFetchProps<UpnpDevice, { itemTemplate: ElementType<DataSourceProps<UpnpDevice>> }>
+type TemplatedComponentProps = { itemTemplate: ElementType<DataSourceProps<UpnpDevice>>; };
 
-export type DeviceRouterProps = PropsWithChildren<{ category?: string, deviceTemplate?: ElementType }> & RouteComponentProps<{}>
+type DeviceRouterProps = PropsWithChildren<{ category?: string, deviceTemplate?: ElementType<DataSourceProps<UpnpDevice>> }> & RouteComponentProps<{ device?: string }>
 
-function DeviceContainer({ dataContext: { source }, itemTemplate: Template }: DeviceContainerProps) {
+function DeviceContainer({ dataContext, itemTemplate: Template }: any) {
     return <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-        <Template data-source={source} />
+        <Template data-source={dataContext?.source ?? null} />
     </div>;
 }
 
-const Device = withDataFetch(DeviceContainer, ({ match: { params: { device } }, category }) =>
+const Device = withDataFetch<any>(DeviceContainer, ({ match: { params: { device } }, category }) =>
     withMemoKey($api.devices(category, device).fetch, `${category}|${device}`), { usePreloader: true });
-const Devices = withDataFetch(DeviceList, ({ category }) =>
+const Devices = withDataFetch<any>(DeviceList as any, ({ category }) =>
     withMemoKey($api.devices(category).fetch, category), { usePreloader: false });
 
 export default ({ match: { path }, deviceTemplate = DeviceCard, category = "upnp", children }: DeviceRouterProps) => <Switch>

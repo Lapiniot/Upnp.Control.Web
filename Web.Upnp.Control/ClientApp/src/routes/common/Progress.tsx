@@ -1,14 +1,18 @@
-import React from "react";
+import React, { HTMLProps } from "react";
 import { parseMilliseconds, formatTime } from "../../components/Extensions";
 import Timer from "../../components/Timer";
-import Slider from "../../components/Slider";
+import Slider, { SliderChangeHandler, SliderCSSProperties } from "../../components/Slider";
 
-export default class Progress extends React.Component {
+type ProgressProps = HTMLProps<HTMLDivElement> & {
+    time: string;
+    duration: string;
+    running: boolean;
+    onChangeRequested: SliderChangeHandler
+};
 
-    constructor(props) {
-        super(props);
-        this.spin = 0;
-    }
+export default class Progress extends React.Component<ProgressProps> {
+
+    spin = 0;
 
     render() {
         const { time, duration, running, onChangeRequested, className } = this.props;
@@ -21,7 +25,7 @@ export default class Progress extends React.Component {
 
         // we constantly switch between animations with same settings, but different names 'slider-run0' and
         // 'slider-run1' e.g. - this is a trick in order to apply new animation resetting running one
-        const style = running
+        const style: SliderCSSProperties = running
             ? {
                 "--slider-animation-duration": `${total - current}ms`,
                 "--slider-animation-name": `slider-run${this.spin}`

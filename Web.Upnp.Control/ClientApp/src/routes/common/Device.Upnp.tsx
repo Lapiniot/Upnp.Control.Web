@@ -3,12 +3,12 @@ import DeviceIcon from "./DeviceIcon";
 import DeviceInfo from "./DeviceInfo";
 import ServicesList from "./DeviceServiceList";
 import { NavLink, RouteLink } from "../../components/NavLink";
+import { DataSourceProps, Services, UpnpDevice } from "./Types";
 
-export default function Device({ "data-source": d }) {
+export default function Device({ "data-source": d }: DataSourceProps<UpnpDevice>) {
 
     const isMediaServer = d.services && d.services.some(
-        s => s.type.startsWith("urn:schemas-upnp-org:service:ContentDirectory:") ||
-            s.type.startsWith("urn:xiaomi-com:service:Playlist:"));
+        s => s.type.startsWith(Services.ContentDirectory) || s.type.startsWith(Services.UmiPlaylist));
 
     return <div className="card">
         <div className="card-header d-flex">

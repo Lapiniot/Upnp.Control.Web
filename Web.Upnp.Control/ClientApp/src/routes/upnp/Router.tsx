@@ -1,4 +1,5 @@
 ﻿import React from "react";
-import DeviceRouter, { DeviceRouterProps } from "../common/DeviceRouter";
+import { RouteComponentProps } from "react-router";
+import DeviceRouter from "../common/DeviceRouter";
 
-export default (props: DeviceRouterProps) => <DeviceRouter {...props} />
+export default (props: RouteComponentProps) => <DeviceRouter {...props} />

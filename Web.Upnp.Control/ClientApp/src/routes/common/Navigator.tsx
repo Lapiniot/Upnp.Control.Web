@@ -1,13 +1,14 @@
-import React from "react";
+import React, { ElementType, EventHandler, UIEvent } from "react";
+import { RouteComponentProps } from "react-router";
 import { generatePath } from "../../components/Extensions";
 
-export default function(Component) {
-    return class extends React.Component {
-        navigateHandler = ({ currentTarget: { dataset } }) => {
+export default function (Component: ElementType) {
+    return class extends React.Component<RouteComponentProps<{ [key: string]: string }>> {
+        navigateHandler: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset } }) => {
             this.navigateToItem(dataset);
         }
 
-        navigateToItem = (data) => {
+        navigateToItem = (data: {}) => {
             const { match: { path, params }, history } = this.props;
             history.push(generatePath(path, { ...params, ...data }));
         }

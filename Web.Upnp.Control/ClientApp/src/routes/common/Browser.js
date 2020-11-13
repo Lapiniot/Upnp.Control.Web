@@ -17,9 +17,10 @@ export default function (props) {
                 </BrowserCore.Header>
             </BrowserCore>
         </div>
-        <div className="sticky-bottom">
-            <Pagination {...match} className="border-1 border-secondary border-top"
-                count={fetched} total={total} current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
-        </div>
+        {total !== 0 && fetched !== total &&
+            <div className="sticky-bottom">
+                <Pagination baseUrl={match.url} className="border-1 border-secondary border-top"
+                    total={total} current={parseInt(page) || 1} pageSize={parseInt(size) || $config.pageSize} />
+            </div>}
     </div>;
 }

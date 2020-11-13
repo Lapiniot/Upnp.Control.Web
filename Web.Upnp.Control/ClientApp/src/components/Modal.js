@@ -1,6 +1,5 @@
 import BootstrapModal from "bootstrap/js/dist/modal";
 import React from "react";
-import { mergeClassNames as merge } from "./Extensions";
 
 export default class Modal extends React.Component {
 
@@ -48,7 +47,7 @@ export default class Modal extends React.Component {
             });
 
         return <div className="modal fade" id={id} tabIndex="-1" role="dialog" aria-labelledby={area.label} aria-hidden="true" {...other}>
-            <div className={merge`modal-dialog modal-dialog-centered ${className}`} role="document">
+            <div className={`modal-dialog modal-dialog-centered${className ? ` ${className}` : ""}`} role="document">
                 <div className="modal-content">
                     {!!header ? header : <Modal.Header>{title}</Modal.Header>}
                     {!!body ? body : <Modal.Body>{children}</Modal.Body>}
@@ -59,15 +58,15 @@ export default class Modal extends React.Component {
     }
 
     static Button = ({ dismiss, text, className, icon, children, ...other }) =>
-        <button type="button" className={merge`btn ${className}`} data-dismiss={dismiss ? "modal" : null} {...other}>{icon && <i className={`mr-2 fas fa-${icon}`} />}{text}{children}</button>;
+        <button type="button" className={`btn${className ? ` ${className}` : ""}`} data-dismiss={dismiss ? "modal" : null} {...other}>{icon && <i className={`mr-2 fas fa-${icon}`} />}{text}{children}</button>;
 
     static Header = ({ className, children, ...other }) =>
-        <div className={merge`modal-header ${className}`} {...other}>
+        <div className={`modal-header${className ? ` ${className}` : ""}`} {...other}>
             <h5 className="modal-title">{children}</h5>
             <button type="button" className="btn-close" data-dismiss="modal" aria-label="Close" />
         </div>;
 
-    static Body = ({ className, children, ...other }) => <div className={merge`modal-body ${className}`} {...other}>{children}</div>;
+    static Body = ({ className, children, ...other }) => <div className={`modal-body${className ? ` ${className}` : ""}`} {...other}>{children}</div>;
 
-    static Footer = ({ className, children, ...other }) => <div className={merge`modal-footer ${className}`} {...other}>{children}</div>;
+    static Footer = ({ className, children, ...other }) => <div className={`modal-footer${className ? ` ${className}` : ""}`} {...other}>{children}</div>;
 };

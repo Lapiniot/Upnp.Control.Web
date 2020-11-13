@@ -1,8 +1,9 @@
 import React from "react";
 import { RouteLink } from "../../components/NavLink";
 import PlayerWidget from "./PlayerWidget";
+import { DataSourceProps, UpnpDevice } from "./Types";
 
-export default function UmiDevice({ "data-source": { icons, name, type, description, udn } }) {
+export default function UmiDevice({ "data-source": { name, description, udn } }: DataSourceProps<UpnpDevice>) {
     return <div className="card">
         <div className="card-header d-flex flex-row">
             <svg className="upnp-dev-icon" style={{ objectFit: "unset" }}>

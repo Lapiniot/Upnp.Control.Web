@@ -43,7 +43,7 @@ export default class {
     }
 }
 
-class BrowseFetch extends HttpFetch {
+export class BrowseFetch extends HttpFetch {
     constructor(path, query = {}) {
         super(path, query);
     }

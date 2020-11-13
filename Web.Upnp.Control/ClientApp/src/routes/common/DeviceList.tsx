@@ -2,7 +2,8 @@
 import "bootstrap/js/src/alert";
 import { SignalRListener } from "../../components/SignalR";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { DataFetchProps, UpnpDevice } from "./Types";
+import { DataSourceProps, UpnpDevice } from "./Types";
+import { DataFetchProps } from "../../components/DataFetch";
 
 type AlertProps = {
     type: string;
@@ -24,11 +25,11 @@ interface DiscoveryMessage {
     info: UpnpDevice;
 }
 
-type DeviceListProps = DataFetchProps<UpnpDevice[], { itemTemplate: ElementType }>
-
 type DeviceListState = {
     alerts: Map<string, DiscoveryMessage>
 }
+
+type DeviceListProps = DataFetchProps<UpnpDevice[], { itemTemplate: ElementType<DataSourceProps<UpnpDevice>> }>;
 
 export default class extends React.Component<DeviceListProps, DeviceListState> {
 
@@ -59,7 +60,8 @@ export default class extends React.Component<DeviceListProps, DeviceListState> {
             <DiscoveryAlert key={key} type={type} name={name} description={description} onDismiss={() => this.dismissAlert(key)} />);
 
         return <div className="position-relative w-100 h-100">
-            {fetching ? <LoadIndicatorOverlay />
+            {fetching || !dataContext?.source
+                ? <LoadIndicatorOverlay />
                 : <SignalRListener handlers={this.handlers}>
                     {alerts}
                     <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">

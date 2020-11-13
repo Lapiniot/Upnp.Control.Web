@@ -217,8 +217,9 @@ export class PlaylistManagerCore extends React.Component {
                         : `${fetched} item${fetched !== 1 ? "s" : ""}`}
                     , {total} totally available
                     </div>
-                <Pagination {...match} className="border-1 border-secondary border-top"
-                    count={fetched} total={total} current={parseInt(page) || 1} size={parseInt(size) || $config.pageSize} />
+                {total !== 0 && fetched !== total &&
+                    <Pagination baseUrl={match.url} className="border-1 border-secondary border-top"
+                        total={total} current={parseInt(page) || 1} pageSize={parseInt(size) || $config.pageSize} />}
             </div>
             {this.state.modal}
         </div>;

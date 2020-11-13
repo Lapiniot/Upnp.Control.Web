@@ -1,7 +1,6 @@
 import React from "react";
 import { withDataFetch, withMemoKey } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
-import { mergeClassNames as merge } from "../../components/Extensions";
 import $api from "../../components/WebApi";
 import Progress from "./Progress";
 import Slider from "../../components/Slider";
@@ -15,7 +14,7 @@ const ST_PLAYING = "PLAYING";
 
 function Button(props) {
     const { className, glyph, children, active, ...other } = props;
-    return <button type="button" className={merge`btn no-outline p-1 ${className} ${active && "text-primary"}`} {...other}>
+    return <button type="button" className={`btn no-outline p-1${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
         {glyph && <i className={`fas fa-${glyph}`} />}{children}
     </button>
 }
