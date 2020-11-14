@@ -10,7 +10,8 @@ import { DataSourceProps, UpnpDevice } from "./Types";
 
 type TemplatedComponentProps = { itemTemplate: ElementType<DataSourceProps<UpnpDevice>>; };
 
-type DeviceRouterProps = PropsWithChildren<{ category?: string, deviceTemplate?: ElementType<DataSourceProps<UpnpDevice>> }> & RouteComponentProps<{ device?: string }>
+type DeviceRouterProps = PropsWithChildren<{ deviceTemplate?: ElementType<DataSourceProps<UpnpDevice>> }>
+    & RouteComponentProps<{ category: string; device?: string }>
 
 function DeviceContainer({ dataContext, itemTemplate: Template }: any) {
     return <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
@@ -23,7 +24,7 @@ const Device = withDataFetch<any>(DeviceContainer, ({ match: { params: { device 
 const Devices = withDataFetch<any>(DeviceList as any, ({ category }) =>
     withMemoKey($api.devices(category).fetch, category), { usePreloader: false });
 
-export default ({ match: { path }, deviceTemplate = DeviceCard, category = "upnp", children }: DeviceRouterProps) => <Switch>
+export default ({ match: { path, params: { category } }, deviceTemplate = DeviceCard, children }: DeviceRouterProps) => <Switch>
     {children}
     <Route path={`${path}/:device/browse`} render={props => <Browser {...props} />} />
     <Route path={`${path}/:device`} exact render={props => <Device category={category} itemTemplate={deviceTemplate} {...props} />} />
