@@ -1,11 +1,11 @@
-import React, { ElementType } from "react";
+import React, { ComponentType, ElementType } from "react";
 
 interface FunctionWithKey {
     (...args: any[]): any;
     key?: string;
 }
 
-type DataFetchParams = {
+type PreloaderProps = {
     template?: ElementType;
     text?: string;
     usePreloader?: boolean;
@@ -37,14 +37,17 @@ export function withMemoKey(func: (...args: any[]) => any, key: string) {
 
 type DataFetchPromiseFactoryBuilder<Props> = (props: Props) => FunctionWithKey;
 
-export function withDataFetch<Props, T = {}>(Component: ElementType<DataFetchProps<T>>, builder: DataFetchPromiseFactoryBuilder<Props>,
-    { template: Template = "div", text = "Loading...", usePreloader = true, ...other }: DataFetchParams = {}): ElementType<Props> {
+export function withDataFetch<Props = {}, T = {}>(
+    Component: ComponentType<DataFetchProps<T, Props>>,
+    builder: DataFetchPromiseFactoryBuilder<Props>,
+    { template: Template = "div", text = "Loading...", usePreloader = true }: PreloaderProps = {}
+): ComponentType<Props> {
 
     return class extends React.Component<Props, DataFetchState> {
 
         state = { fetching: true, dataContext: null, fetchPromiseFactory: null, error: null }
 
-        preloader = usePreloader && <Template {...other}>{text}</Template>;
+        preloader = usePreloader && <Template>{text}</Template>;
 
         static getDerivedStateFromProps(props: Props, state: DataFetchState) {
             const promiseFactory = builder(props);
@@ -71,7 +74,7 @@ export function withDataFetch<Props, T = {}>(Component: ElementType<DataFetchPro
             }
         }
 
-        componentDidUpdate(_: any, prevState: DataFetchState) {
+        componentDidUpdate(_: Props, prevState: DataFetchState) {
             if (prevState.fetchPromiseFactory !== this.state.fetchPromiseFactory) {
                 this.fetchData();
             }

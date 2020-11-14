@@ -1,4 +1,4 @@
-﻿import React, { ElementType, ReactElement } from "react";
+﻿import React, { ComponentType } from "react";
 import "bootstrap/js/src/alert";
 import { SignalRListener } from "../../components/SignalR";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
@@ -29,9 +29,16 @@ type DeviceListState = {
     alerts: Map<string, DiscoveryMessage>
 }
 
-type DeviceListProps = DataFetchProps<UpnpDevice[], { itemTemplate: ElementType<DataSourceProps<UpnpDevice>> }>;
+export type TemplatedDataComponentProps<T = any, P = {}> = P & { itemTemplate: ComponentType<DataSourceProps<T>> }
 
-export default class extends React.Component<DeviceListProps, DeviceListState> {
+export function DeviceContainer({ itemTemplate: Template, dataContext }
+    : DataFetchProps<UpnpDevice, TemplatedDataComponentProps<UpnpDevice>>) {
+    return <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
+        {dataContext?.source && <Template data-source={dataContext.source} />}
+    </div>;
+}
+
+export class DeviceListContainer extends React.Component<DataFetchProps<UpnpDevice[], TemplatedDataComponentProps<UpnpDevice>>, DeviceListState> {
 
     onDiscoveryEvent = (device: string, message: DiscoveryMessage) => {
         this.showAlert(device, message);

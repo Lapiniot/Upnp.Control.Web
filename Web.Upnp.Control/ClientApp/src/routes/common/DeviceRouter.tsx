@@ -1,28 +1,23 @@
-﻿import React, { ElementType, PropsWithChildren, ReactNode } from "react";
+﻿import React, { ComponentType, PropsWithChildren } from "react";
 import { Switch, Route } from "react-router-dom"
 import { RouteComponentProps } from "react-router";
 import Browser from "./BrowseRouter";
-import DeviceList from "./DeviceList";
 import $api from "../../components/WebApi";
 import { withDataFetch, withMemoKey } from "../../components/DataFetch";
 import DeviceCard from "./Device.Upnp";
 import { DataSourceProps, UpnpDevice } from "./Types";
+import { DeviceContainer, DeviceListContainer, TemplatedDataComponentProps } from "./DeviceList";
 
-type TemplatedComponentProps = { itemTemplate: ElementType<DataSourceProps<UpnpDevice>>; };
-
-type DeviceRouterProps = PropsWithChildren<{ deviceTemplate?: ElementType<DataSourceProps<UpnpDevice>> }>
+type DeviceRouterProps = PropsWithChildren<{ deviceTemplate?: ComponentType<DataSourceProps<UpnpDevice>> }>
     & RouteComponentProps<{ category: string; device?: string }>
 
-function DeviceContainer({ dataContext, itemTemplate: Template }: any) {
-    return <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-        <Template data-source={dataContext?.source ?? null} />
-    </div>;
-}
+type DeviceContainerProps = TemplatedDataComponentProps<UpnpDevice> & { category?: string; } & RouteComponentProps<{ device: string; }>;
+type DeviceListContainerProps = TemplatedDataComponentProps<UpnpDevice> & { category?: string; };
 
-const Device = withDataFetch<any>(DeviceContainer, ({ match: { params: { device } }, category }) =>
+const Device = withDataFetch<DeviceContainerProps, UpnpDevice>(DeviceContainer, ({ match: { params: { device } }, category }) =>
     withMemoKey($api.devices(category, device).fetch, `${category}|${device}`), { usePreloader: true });
-const Devices = withDataFetch<any>(DeviceList as any, ({ category }) =>
-    withMemoKey($api.devices(category).fetch, category), { usePreloader: false });
+const Devices = withDataFetch<DeviceListContainerProps, UpnpDevice[]>(DeviceListContainer, ({ category }) =>
+    withMemoKey($api.devices(category).fetch, category as string), { usePreloader: false });
 
 export default ({ match: { path, params: { category } }, deviceTemplate = DeviceCard, children }: DeviceRouterProps) => <Switch>
     {children}
