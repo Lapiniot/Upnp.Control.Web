@@ -1,7 +1,7 @@
 import BootstrapModal from "bootstrap/js/dist/modal";
 import React, { HTMLAttributes, PropsWithChildren, ReactElement, ReactNode } from "react";
 
-type ModalProps = PropsWithChildren<{
+export type ModalProps<P = {}> = PropsWithChildren<P & {
     immediate?: boolean;
     onDismiss: EventListener;
     onShown: EventListener;
