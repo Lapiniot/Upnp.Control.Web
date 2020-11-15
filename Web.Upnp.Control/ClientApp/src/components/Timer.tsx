@@ -1,11 +1,12 @@
-import React from "react";
+import React, { HTMLAttributes, RefObject } from "react";
 import { formatTime } from "./Extensions";
 
-export default class extends React.Component {
-    constructor(props) {
-        super(props);
-        this.nativeRef = React.createRef();
-    }
+type TimerProps = { running: boolean; current: number; }
+
+export default class extends React.Component<TimerProps & HTMLAttributes<HTMLTimeElement>> {
+    nativeRef: RefObject<HTMLElement> = React.createRef();
+    current: number = 0;
+    interval: NodeJS.Timeout | null = null;
 
     componentDidMount() {
         if (this.props.running)
@@ -37,11 +38,13 @@ export default class extends React.Component {
 
     update = () => {
         this.current += 1;
-        this.nativeRef.current.textContent = formatTime(this.current);
+        if (this.nativeRef?.current) {
+            this.nativeRef.current.textContent = formatTime(this.current);
+        }
     }
 
     render() {
-        const { current, running, total, ...other } = this.props;
-        return <small {...other} ref={this.nativeRef}>{formatTime(current)}</small>;
+        const { current, running, ...other } = this.props;
+        return <time {...other} ref={this.nativeRef}>{formatTime(current)}</time>;
     }
 }

@@ -1,9 +1,9 @@
-import React, { HTMLProps } from "react";
+import React, { HTMLAttributes } from "react";
 import { parseMilliseconds, formatTime } from "../../components/Extensions";
 import Timer from "../../components/Timer";
 import Slider, { SliderChangeHandler, SliderCSSProperties } from "../../components/Slider";
 
-type ProgressProps = HTMLProps<HTMLDivElement> & {
+type ProgressProps = HTMLAttributes<HTMLDivElement> & {
     time: string;
     duration: string;
     running: boolean;
@@ -15,7 +15,7 @@ export default class Progress extends React.Component<ProgressProps> {
     spin = 0;
 
     render() {
-        const { time, duration, running, onChangeRequested, className } = this.props;
+        const { time, duration, running, onChangeRequested, className, ...other } = this.props;
         const total = parseMilliseconds(duration);
         const current = parseMilliseconds(time);
 
@@ -36,9 +36,9 @@ export default class Progress extends React.Component<ProgressProps> {
 
         this.spin ^= 0x01;
 
-        return <div className={`d-flex flex-wrap justify-content-between user-select-none${className ? ` ${className}` : ""}`}>
-            <Timer className="text-tiny" current={current / 1000} total={total / 1000} running={running} />
-            <small className="text-tiny">{formatTime(total / 1000)}</small>
+        return <div className={`d-flex flex-wrap justify-content-between user-select-none${className ? ` ${className}` : ""}`} {...other}>
+            <Timer className="text-tiny" current={current / 1000} running={running} />
+            <time className="text-tiny">{formatTime(total / 1000)}</time>
             <Slider progress={progress} className="flex-basis-100" style={style} onChangeRequested={onChangeRequested} />
         </div>;
     }
