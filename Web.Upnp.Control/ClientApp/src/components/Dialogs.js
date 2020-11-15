@@ -11,8 +11,8 @@ export function TextValueEditDialog({ id, title, label, defaultValue, confirmTex
                 placeholder="[provide value]" aria-label={label} aria-describedby="basic-addon1" />
         </div>
         <Modal.Footer>
-            <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
-            <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={() => onConfirm(inputRef.current.value)} dismiss />
+            <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>
+            <Modal.Button key="confirm" className="btn-primary" onClick={() => onConfirm(inputRef.current.value)} dismiss>{confirmText}</Modal.Button>
         </Modal.Footer>
     </Modal>;
 }
@@ -21,8 +21,8 @@ export function ConfirmationDialog({ id, title, confirmText = "OK", onConfirm, c
     return <Modal id={id} title={title} {...other}>
         {children}
         <Modal.Footer>
-            <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
-            <Modal.Button key="confirm" text={confirmText} className="btn-primary" onClick={onConfirm} dismiss />
+            <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>
+            <Modal.Button key="confirm" className="btn-primary" onClick={onConfirm} dismiss>{confirmText}</Modal.Button>
         </Modal.Footer>
     </Modal>;
 }

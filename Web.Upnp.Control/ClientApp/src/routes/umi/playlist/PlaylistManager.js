@@ -96,8 +96,8 @@ export class PlaylistManagerCore extends React.Component {
                     {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
                 </ul>
                 <Modal.Footer>
-                    <Modal.Button text="Cancel" className="btn-secondary" dismiss />
-                    <Modal.Button text="Delete" className="btn-danger" icon="trash" onClick={() => this.removePlaylist(ids).then(this.selection.reset).then(this.reload)} dismiss />
+                    <Modal.Button className="btn-secondary" dismiss>Cancel</Modal.Button>
+                    <Modal.Button className="btn-danger" icon="trash" onClick={() => this.removePlaylist(ids).then(this.selection.reset).then(this.reload)} dismiss>Delete</Modal.Button>
                 </Modal.Footer>
             </Modal>
         });
@@ -124,7 +124,7 @@ export class PlaylistManagerCore extends React.Component {
                             onClick={b.selection.clear}>
                             Clear selection
                         </button>,
-                        <Modal.Button key="close" text="Close" className="btn-secondary" dismiss />,
+                        <Modal.Button key="close" className="btn-secondary" dismiss>Close</Modal.Button>,
                         <Modal.Button key="add" className="btn-primary" icon="plus" disabled={b.selection.none()}
                             onClick={() => this.addItems(...b.getSelectionData()).then(b.selection.clear).then(this.reload)}>
                             Add{b.selection.any() && <span className="badge ml-1 bg-secondary">{b.selection.length}</span>}
@@ -145,8 +145,8 @@ export class PlaylistManagerCore extends React.Component {
                         {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
                     </ul>
                     <Modal.Footer>
-                        <Modal.Button text="Cancel" className="btn-secondary" dismiss />
-                        <Modal.Button text="Remove" className="btn-danger" icon="trash" onClick={() => this.removeItems(ids).then(this.reload)} dismiss />
+                        <Modal.Button className="btn-secondary" dismiss>Cancel</Modal.Button>
+                        <Modal.Button className="btn-danger" icon="trash" onClick={() => this.removeItems(ids).then(this.reload)} dismiss>Remove</Modal.Button>
                     </Modal.Footer>
                 </Modal>
         });

@@ -45,8 +45,8 @@ export default class BrowserDialog extends React.Component {
             <Modal.Footer>
                 {(typeof (this.props.children) === "function" ? this.props.children(this) : this.props.children) ||
                     <React.Fragment>
-                        <Modal.Button key="confirm" text={confirmText} className="btn-primary" disabled={this.selection.any()} onClick={this.confirm} dismiss />
-                        <Modal.Button key="cancel" text="Cancel" className="btn-secondary" dismiss />
+                        <Modal.Button key="confirm" className="btn-primary" disabled={this.selection.any()} onClick={this.confirm} dismiss>{confirmText}</Modal.Button>
+                        <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>
                     </React.Fragment>}
             </Modal.Footer>
         </Modal>;
