@@ -1,16 +1,23 @@
 import * as signalR from "@microsoft/signalr";
 import React from "react";
 
-const SignalRContext = React.createContext();
+export type SignalRMessageHandler = (...args: any) => void;
+type SignalRConnectionProps = { hubUrl: string }
+type SignalRListenerProps = { handlers: Iterable<[string, SignalRMessageHandler]> }
 
-class SignalRConnection extends React.Component {
-    constructor(props) {
+const SignalRContext = React.createContext<signalR.HubConnection | null>(null);
+
+export class SignalRConnection extends React.Component<SignalRConnectionProps, { connected: boolean; error: Error | string | null; }> {
+
+    hub: signalR.HubConnection;
+    state = { error: null, connected: false };
+
+    constructor(props: SignalRConnectionProps) {
         super(props);
         this.hub = new signalR.HubConnectionBuilder()
             .withUrl(props.hubUrl)
             .withAutomaticReconnect([2, 4, 8, 16, 32, 64])
             .build();
-        this.state = { error: null, connected: false };
     }
 
     async componentDidMount() {
@@ -45,7 +52,8 @@ class SignalRConnection extends React.Component {
     }
 }
 
-class SignalRListener extends React.Component {
+export class SignalRListener extends React.Component<SignalRListenerProps> {
+
     static contextType = SignalRContext;
 
     componentDidMount() {
@@ -62,15 +70,13 @@ class SignalRListener extends React.Component {
         });
     }
 
-    foreach(func) {
-        if (this.props.handlers && typeof this.props.handlers[Symbol.iterator] === "function") {
-            for (let [event, handler] of this.props.handlers) func(event, handler)
-        }
+    foreach(func: (key: string, handler: SignalRMessageHandler) => void) {
+
+        for (let [key, handler] of this.props.handlers)
+            func(key, handler);
     }
 
     render() {
         return this.props.children;
     }
 }
-
-export { SignalRContext, SignalRConnection, SignalRListener };
