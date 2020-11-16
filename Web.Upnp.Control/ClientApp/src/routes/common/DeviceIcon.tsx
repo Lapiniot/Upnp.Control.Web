@@ -13,5 +13,5 @@ function getFallbackIcon(service: string): string {
 export default ({ icons = [], service }: { icons: Icon[], service: string }) => {
     const icon = getOptimalIcon(icons);
     const attr: object = icon ? { src: icon.url } : { src: getFallbackIcon(service), style: { objectFit: "unset" } };
-    return <img {...attr} className="upnp-dev-icon" />;
+    return <img {...attr} className="upnp-dev-icon" alt="" />;
 }
