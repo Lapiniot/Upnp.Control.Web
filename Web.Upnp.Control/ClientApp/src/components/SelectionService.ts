@@ -1,10 +1,8 @@
 export default class SelectionService extends EventTarget {
-    constructor() {
-        super();
-        this.map = new Map();
-    }
 
-    static createEvent = detail => new CustomEvent("changed", { detail: detail, cancelable: true });
+    map = new Map<string, boolean>();
+
+    static createEvent = (detail: any) => new CustomEvent("changed", { detail: detail, cancelable: true });
 
     any = () => { return this.map.size > 0; }
 
@@ -12,21 +10,21 @@ export default class SelectionService extends EventTarget {
 
     none = () => { return this.map.size === 0; }
 
-    select = (key, state = true, detail = null) => {
+    select = (key: string, state = true, detail = null) => {
         state ? this.map.set(key, true) : this.map.delete(key);
         return this.dispatchEvent(SelectionService.createEvent(detail));
     };
 
-    selectMany = (keys, state = true, detail = null) => {
+    selectMany = (keys: string[], state = true, detail = null) => {
         keys.forEach(state ? key => this.map.set(key, true) : key => this.map.delete(key));
         return this.dispatchEvent(SelectionService.createEvent(detail));
     };
 
-    selected = key => { return this.map.has(key) && this.map.get(key); }
+    selected = (key: string) => { return this.map.has(key) && this.map.get(key); }
 
-    all = keys => { return keys.length > 0 && keys.every(this.selected); }
+    all = (keys: string[]) => { return keys.length > 0 && keys.every(this.selected); }
 
-    clear = detail => {
+    clear = (detail: any) => {
         this.map.clear();
         return this.dispatchEvent(SelectionService.createEvent(detail));
     };

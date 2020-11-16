@@ -15,9 +15,9 @@ type DeviceContainerProps = TemplatedDataComponentProps<UpnpDevice> & { category
 type DeviceListContainerProps = TemplatedDataComponentProps<UpnpDevice> & { category?: string; };
 
 const Device = withDataFetch<DeviceContainerProps, UpnpDevice>(DeviceContainer, ({ match: { params: { device } }, category }) =>
-    withMemoKey($api.devices(category, device).fetch, `${category}|${device}`), { usePreloader: true });
+    withMemoKey($api.devices(category as string, device).fetch, `${category}|${device}`), { usePreloader: true });
 const Devices = withDataFetch<DeviceListContainerProps, UpnpDevice[]>(DeviceListContainer, ({ category }) =>
-    withMemoKey($api.devices(category).fetch, category as string), { usePreloader: false });
+    withMemoKey($api.devices(category as string).fetch, category as string), { usePreloader: false });
 
 export default ({ match: { path, params: { category } }, deviceTemplate = DeviceCard, children }: DeviceRouterProps) => <Switch>
     {children}

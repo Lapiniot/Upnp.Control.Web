@@ -1,6 +1,6 @@
 ﻿import React, { ComponentType } from "react";
 import "bootstrap/js/src/alert";
-import { SignalRListener } from "../../components/SignalR";
+import { SignalRListener, SignalRMessageHandler } from "../../components/SignalR";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { DataSourceProps, UpnpDevice } from "./Types";
 import { DataFetchProps } from "../../components/DataFetch";
@@ -46,7 +46,7 @@ export class DeviceListContainer extends React.Component<DataFetchProps<UpnpDevi
         if (typeof reload === "function") reload();
     }
 
-    handlers: Map<string, any> = new Map([["SsdpDiscoveryEvent", this.onDiscoveryEvent]]);
+    handlers: Map<string, SignalRMessageHandler> = new Map([["SsdpDiscoveryEvent", this.onDiscoveryEvent]]);
 
     state: DeviceListState = { alerts: new Map() };
 

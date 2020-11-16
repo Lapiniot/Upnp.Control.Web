@@ -1,5 +1,11 @@
-﻿export class UrlBuilder {
-    constructor(path, query) {
+﻿export type RequestQuery = { [key: string]: any } | undefined | null;
+
+export class UrlBuilder {
+
+    path;
+    query;
+
+    constructor(path: string, query?: RequestQuery) {
         this.path = path;
         this.query = query;
     }
@@ -10,7 +16,7 @@
     }
 }
 
-async function fetch(url, init, timeout) {
+async function fetch(url: string, init?: RequestInit, timeout?: number) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeout);
     try {
@@ -21,12 +27,16 @@ async function fetch(url, init, timeout) {
 }
 
 export class HttpFetch extends UrlBuilder {
-    constructor(path, query, init) {
+
+    init?: RequestInit;
+    timeout?: number;
+
+    constructor(path: string, query?: RequestQuery, init?: RequestInit) {
         super(path, query);
         this.init = { method: "GET", ...init };
     }
 
-    fetch = (requestTimeout) => {
+    fetch = (requestTimeout: number) => {
         const timeout = requestTimeout ?? this.timeout;
         if (typeof timeout === "number" && timeout > 0) {
             return fetch(this.url(), this.init, timeout);
@@ -36,60 +46,61 @@ export class HttpFetch extends UrlBuilder {
         }
     }
 
-    withTimeout(timeout) {
+    withTimeout(timeout: number) {
         const { constructor } = this;
-        let instance = new (constructor[Symbol.species] ?? constructor)(this.path, this.query, this.init);
+        const speciesConstructor = (<any>constructor)[Symbol.species];
+        let instance = new (speciesConstructor ?? constructor)(this.path, this.query, this.init);
         instance.timeout = timeout;
         return instance;
     }
 }
 
 export class HttpPost extends HttpFetch {
-    constructor(path, query, init) {
+    constructor(path: string, query: RequestQuery, init: RequestInit) {
         super(path, query, { ...init, method: "POST" });
     }
 }
 
 export class HttpPut extends HttpFetch {
-    constructor(path, query, init) {
+    constructor(path: string, query: RequestQuery, init: RequestInit) {
         super(path, query, { ...init, method: "PUT" });
     }
 }
 
 export class HttpDelete extends HttpFetch {
-    constructor(path, query, init) {
+    constructor(path: string, query: RequestQuery, init: RequestInit) {
         super(path, query, { ...init, method: "DELETE" });
     }
 }
 
 export class JsonFetch extends HttpFetch {
-    constructor(path, query, init = {}) {
-        const { headers, ...other } = init;
+    constructor(path: string, query?: RequestQuery, init?: RequestInit) {
+        const { headers, ...other } = init ?? {};
         super(path, query, { headers: { ...headers, "Accept": "application/json" }, ...other });
     }
 }
 
 export class JsonWithBodyFetch extends JsonFetch {
-    constructor(path, query, init = {}) {
+    constructor(path: string, query: RequestQuery, init: RequestInit = {}) {
         const { headers, ...other } = init;
         super(path, query, { headers: { ...headers, "Content-Type": "application/json" }, ...other });
     }
 }
 
 export class JsonPostFetch extends JsonWithBodyFetch {
-    constructor(path, query, init = {}) {
+    constructor(path: string, query: RequestQuery, init: RequestInit = {}) {
         super(path, query, { ...init, method: "POST" });
     }
 }
 
 export class JsonPutFetch extends JsonWithBodyFetch {
-    constructor(path, query, init) {
+    constructor(path: string, query: RequestQuery, init: RequestInit) {
         super(path, query, { ...init, method: "PUT" });
     }
 }
 
 export class JsonDeleteFetch extends JsonWithBodyFetch {
-    constructor(path, query, init) {
+    constructor(path: string, query: RequestQuery, init: RequestInit) {
         super(path, query, { ...init, method: "DELETE" });
     }
 }
