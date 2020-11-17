@@ -7,7 +7,7 @@ export function reversemap<T, R>(array: T[], fn: (currentValue: T, index: number
 
 const pathRegex = new RegExp(":([\\w]+)[^/]*", "g");
 
-export function generatePath<Params extends { [key: string]: string }>(path: string, params: Params): string {
+export function generatePath<Params extends { [K in keyof any]: any }>(path: string, params: Params): string {
     return path.replace(pathRegex, (_, name) => params[name]);
 }
 
