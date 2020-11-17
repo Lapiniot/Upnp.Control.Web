@@ -8,7 +8,7 @@ function getIconByClass(itemClass: string) {
     return "s-folder";
 }
 
-type AlbumArtProps = HTMLAttributes<any> & { itemClass: string, albumArts: string[] };
+type AlbumArtProps = HTMLAttributes<HTMLOrSVGElement> & { itemClass: string, albumArts?: string[] };
 
 export default ({ itemClass, albumArts, className, ...other }: AlbumArtProps) => {
     const cls = `album-art${className ? ` ${className}` : ""}`;

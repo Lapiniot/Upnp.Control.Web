@@ -10,12 +10,12 @@ export default class SelectionService extends EventTarget {
 
     none = () => { return this.map.size === 0; }
 
-    select = (key: string, state = true, detail = null) => {
+    select = (key: string, state: boolean = true, detail: any = null) => {
         state ? this.map.set(key, true) : this.map.delete(key);
         return this.dispatchEvent(SelectionService.createEvent(detail));
     };
 
-    selectMany = (keys: string[], state = true, detail = null) => {
+    selectMany = (keys: string[], state: boolean = true, detail: any = null) => {
         keys.forEach(state ? key => this.map.set(key, true) : key => this.map.delete(key));
         return this.dispatchEvent(SelectionService.createEvent(detail));
     };

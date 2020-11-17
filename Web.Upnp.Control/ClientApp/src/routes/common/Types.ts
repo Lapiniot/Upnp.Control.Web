@@ -29,11 +29,25 @@ export type UpnpService = {
 
 export type DIDLResource = {
     proto: string;
-    resolution: string;
-    bitrate: number;
-    sampleFrequency: number;
-    nrAudioChannels: number;
+    url: string;
+    size?: number;
+    duration?: string;
+    resolution?: string;
+    bitrate?: number;
+    sampleFrequency?: number;
+    nrAudioChannels?: number;
 };
+
+export type DIDLItem = {
+    id: string;
+    class: string;
+    title: string;
+    container?: boolean;
+    creator?: string;
+    album?: string;
+    albumArts?: string[];
+    res?: DIDLResource;
+}
 
 export enum Services {
     MediaRenderer = "urn:schemas-upnp-org:device:MediaRenderer",

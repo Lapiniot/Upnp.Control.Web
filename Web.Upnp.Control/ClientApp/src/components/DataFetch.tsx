@@ -35,7 +35,7 @@ export function withMemoKey(func: (...args: any[]) => any, key: string) {
     return wrapper;
 }
 
-type DataFetchPromiseFactoryBuilder<Props> = (props: Props) => FunctionWithKey;
+type DataFetchPromiseFactoryBuilder<Props> = (props: Props) => FunctionWithKey | undefined;
 
 export function withDataFetch<Props = {}, T = {}>(
     Component: ComponentType<DataFetchProps<T, Props>>,

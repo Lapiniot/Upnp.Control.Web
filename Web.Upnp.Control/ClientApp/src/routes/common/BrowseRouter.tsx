@@ -5,7 +5,16 @@ import BrowserView from "./Browser";
 
 const Browser = withBrowser(BrowserView, false);
 
-export default ({ match: { path } }: RouteComponentProps) => <Switch>
+type DeviceRouteParams = {
+    category: string;
+    device: string;
+};
+
+type DeviceBrowseRouteParams = DeviceRouteParams & {
+    id?: string;
+};
+
+export default ({ match: { path } }: RouteComponentProps<DeviceRouteParams>) => <Switch>
     <Route path={`${path}/-1`} render={() => <Redirect to="/upnp" />} />
-    <Route path={`${path}/:id(.*)*`} render={props => <Browser {...props} />} />
+    <Route path={`${path}/:id(.*)*`} render={(props: RouteComponentProps<DeviceBrowseRouteParams>) => <Browser {...props} />} />
 </Switch>;
