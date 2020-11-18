@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.1",
-        "@microsoft/signalr": "^3.1.9",
+        "@microsoft/signalr": "^5.0.0",
         "bootstrap": "^5.0.0-alpha3",
         "react": "^17.0.1",
         "react-dom": "^17.0.1",
