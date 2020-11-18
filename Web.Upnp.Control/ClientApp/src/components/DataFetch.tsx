@@ -16,7 +16,7 @@ export type DataContext<T = {}> = {
     reload: () => void;
 }
 
-export type DataFetchProps<T = {}, P = {}> = P & {
+export type DataFetchProps<T = {}> = {
     dataContext: DataContext<T> | null;
     fetching: boolean;
     error: Error | null;

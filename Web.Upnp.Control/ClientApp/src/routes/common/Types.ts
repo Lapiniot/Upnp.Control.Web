@@ -49,6 +49,12 @@ export type DIDLItem = {
     res?: DIDLResource;
 }
 
+export type BrowseFetchResult = {
+    total: number;
+    items: DIDLItem[];
+    parents?: DIDLItem[];
+};
+
 export enum Services {
     MediaRenderer = "urn:schemas-upnp-org:device:MediaRenderer",
     ContentDirectory = "urn:schemas-upnp-org:service:ContentDirectory",

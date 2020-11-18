@@ -4,10 +4,18 @@ import Pagination from "./Pagination";
 import BrowserCore from "./BrowserCore";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $config from "./Config";
+import { DataFetchProps } from "../../components/DataFetch";
+import { RouteComponentProps } from "react-router";
+import { BrowseFetchResult, DIDLItem } from "./Types";
 
-export default function (props) {
+type PropsType = DataFetchProps<BrowseFetchResult> & RouteComponentProps & {
+    s: string;
+    p: string;
+};
+
+export default function (props: PropsType) {
     const { dataContext: data, match, s: size, p: page, fetching } = props;
-    const { source: { total = 0, items: { length: fetched = 0 } = {}, parents } = {} } = data || {};
+    const { source: { total = 0, items: { length: fetched = 0 } = {}, parents = undefined } = {} } = data || {};
     return <div className="d-flex flex-column h-100 position-relative">
         {fetching && <LoadIndicatorOverlay />}
         <div className="flex-grow-1">
