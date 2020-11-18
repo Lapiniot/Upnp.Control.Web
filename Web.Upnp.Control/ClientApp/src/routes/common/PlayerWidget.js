@@ -72,8 +72,8 @@ class PlayerCore extends React.Component {
         try {
             const { 0: { relTime, duration }, 1: { volume, muted } } =
                 await Promise.all([
-                    await (await this.ctrl.position().fetch($c.timeout)).json(),
-                    await (await this.ctrl.volume(true).fetch($c.timeout)).json()]);
+                    await this.ctrl.position().jsonFetch($c.timeout),
+                    await this.ctrl.volume(true).json($c.timeout)]);
 
             this.setState({ time: relTime, duration, volume, muted });
         } catch (error) {
@@ -81,25 +81,25 @@ class PlayerCore extends React.Component {
         }
     }
 
-    play = () => this.ctrl.play().fetch($c.timeout);
+    play = () => this.ctrl.play().jsonFetch($c.timeout);
 
-    pause = () => this.ctrl.pause().fetch($c.timeout);
+    pause = () => this.ctrl.pause().jsonFetch($c.timeout);
 
-    stop = () => this.ctrl.stop().fetch($c.timeout);
+    stop = () => this.ctrl.stop().jsonFetch($c.timeout);
 
-    prev = () => this.ctrl.prev().fetch($c.timeout);
+    prev = () => this.ctrl.prev().jsonFetch($c.timeout);
 
-    next = () => this.ctrl.next().fetch($c.timeout);
+    next = () => this.ctrl.next().jsonFetch($c.timeout);
 
-    seek = position => this.ctrl.seek(position).fetch($c.timeout);
+    seek = position => this.ctrl.seek(position).jsonFetch($c.timeout);
 
-    setRepeatAllPlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_ALL).fetch($c.timeout);
+    setRepeatAllPlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_ALL).jsonFetch($c.timeout);
 
-    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_SHUFFLE).fetch($c.timeout);
+    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_SHUFFLE).jsonFetch($c.timeout);
 
-    toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($c.timeout);
+    toggleMute = () => this.ctrl.setMute(!this.state.muted).jsonFetch($c.timeout);
 
-    changeVolume = volume => this.ctrl.setVolume(Math.round(volume * 100)).fetch($c.timeout);
+    changeVolume = volume => this.ctrl.setVolume(Math.round(volume * 100)).jsonFetch($c.timeout);
 
     render() {
         const { actions = [], current, next, playbackState, playMode, time, duration, volume = 0, muted = false } = this.state;
@@ -143,6 +143,6 @@ class PlayerCore extends React.Component {
     }
 }
 
-const fetchPromiseFactoryBuilder = ({ udn }) => withMemoKey($api.control(udn).state(true).withTimeout($c.timeout).fetch, udn);
+const fetchPromiseFactoryBuilder = ({ udn }) => withMemoKey($api.control(udn).state(true).withTimeout($c.timeout).jsonFetch, udn);
 
 export default withDataFetch(PlayerCore, fetchPromiseFactoryBuilder, { usePreloader: false });

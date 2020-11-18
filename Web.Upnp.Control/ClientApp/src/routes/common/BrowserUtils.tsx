@@ -59,7 +59,7 @@ export function fromBaseQuery(baseFetchQuery: FetchFunction) {
         const size = parse(s) ?? $config.pageSize;
         const page = parse(p) ?? 1;
         const key = `${device}!${id ?? ""}!${p ?? ""}!${s ?? ""}`;
-        return withMemoKey(baseFetchQuery(device as string, id as string).take(size).skip((page - 1) * size).fetch, key);
+        return withMemoKey(baseFetchQuery(device as string, id as string).take(size).skip((page - 1) * size).jsonFetch, key);
     }
 }
 

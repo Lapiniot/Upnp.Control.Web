@@ -53,7 +53,7 @@ export default class BrowserDialog extends React.Component {
     }
 };
 
-const serversFetch = $api.devices("servers").fetch;
+const serversFetch = $api.devices("servers").jsonFetch;
 
 const MediaSourceList = withDataFetch(({ dataContext: { source: data }, fetching }) =>
     <div>

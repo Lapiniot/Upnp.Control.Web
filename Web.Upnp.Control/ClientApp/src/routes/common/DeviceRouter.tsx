@@ -6,22 +6,17 @@ import $api from "../../components/WebApi";
 import { withDataFetch, withMemoKey } from "../../components/DataFetch";
 import DeviceCard from "./Device.Upnp";
 import { DataSourceProps, UpnpDevice } from "./Types";
-import { DeviceContainer, DeviceListContainer, TemplatedDataComponentProps } from "./DeviceList";
+import { DeviceContainer, DeviceListContainer } from "./DeviceList";
 
 type DeviceRouterProps = PropsWithChildren<{ deviceTemplate?: ComponentType<DataSourceProps<UpnpDevice>> }>
     & RouteComponentProps<{ category: string; device?: string }>
 
-type DeviceContainerProps = TemplatedDataComponentProps<UpnpDevice> & { category?: string; } & RouteComponentProps<{ device: string; }>;
-type DeviceListContainerProps = TemplatedDataComponentProps<UpnpDevice> & { category?: string; };
-
-const Device = withDataFetch<DeviceContainerProps, UpnpDevice>(DeviceContainer, ({ match: { params: { device } }, category }) =>
-    withMemoKey($api.devices(category as string, device).fetch, `${category}|${device}`), { usePreloader: true });
-const Devices = withDataFetch<DeviceListContainerProps, UpnpDevice[]>(DeviceListContainer, ({ category }) =>
-    withMemoKey($api.devices(category as string).fetch, category as string), { usePreloader: false });
+const Device = withDataFetch(DeviceContainer, ({ device, category }) => withMemoKey($api.devices(category as string, device).jsonFetch, `${category}|${device}`), { usePreloader: true });
+const Devices = withDataFetch(DeviceListContainer, ({ category }) => withMemoKey($api.devices(category as string).jsonFetch, category as string), { usePreloader: false });
 
 export default ({ match: { path, params: { category } }, deviceTemplate = DeviceCard, children }: DeviceRouterProps) => <Switch>
     {children}
     <Route path={`${path}/:device/browse`} render={props => <Browser {...props} />} />
-    <Route path={`${path}/:device`} exact render={props => <Device category={category} itemTemplate={deviceTemplate} {...props} />} />
-    <Route path={path} exact render={props => <Devices category={category} itemTemplate={deviceTemplate} {...props} />} />
+    <Route path={`${path}/:device`} exact render={({ match: { params: { device } } }: RouteComponentProps<{ category: string; device: string }>) => <Device category={category} itemTemplate={deviceTemplate} device={device} />} />
+    <Route path={path} exact render={() => <Devices category={category} itemTemplate={deviceTemplate} />} />
 </Switch>

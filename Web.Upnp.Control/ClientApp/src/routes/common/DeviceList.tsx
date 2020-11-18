@@ -31,14 +31,13 @@ type DeviceListState = {
 
 export type TemplatedDataComponentProps<T = any, P = {}> = P & { itemTemplate: ComponentType<DataSourceProps<T>> }
 
-export function DeviceContainer({ itemTemplate: Template, dataContext }
-    : DataFetchProps<UpnpDevice, TemplatedDataComponentProps<UpnpDevice>>) {
+export function DeviceContainer({ itemTemplate: Template, dataContext }: DataFetchProps<UpnpDevice, TemplatedDataComponentProps<UpnpDevice> & { category: string; device: string }>) {
     return <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
         {dataContext?.source && <Template data-source={dataContext.source} />}
     </div>;
 }
 
-export class DeviceListContainer extends React.Component<DataFetchProps<UpnpDevice[], TemplatedDataComponentProps<UpnpDevice>>, DeviceListState> {
+export class DeviceListContainer extends React.Component<DataFetchProps<UpnpDevice[], TemplatedDataComponentProps<UpnpDevice> & { category: string }>, DeviceListState> {
 
     onDiscoveryEvent = (device: string, message: DiscoveryMessage) => {
         this.showAlert(device, message);

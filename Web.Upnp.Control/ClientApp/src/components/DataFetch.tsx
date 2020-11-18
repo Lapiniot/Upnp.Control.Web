@@ -35,21 +35,20 @@ export function withMemoKey(func: (...args: any[]) => any, key: string) {
     return wrapper;
 }
 
-type DataFetchPromiseFactoryBuilder<Props> = (props: Props) => FunctionWithKey | undefined;
+type DataFetchPromiseFactoryBuilder<P> = (props: P) => FunctionWithKey | undefined;
 
-export function withDataFetch<Props = {}, T = {}>(
-    Component: ComponentType<DataFetchProps<T, Props>>,
-    builder: DataFetchPromiseFactoryBuilder<Props>,
-    { template: Template = "div", text = "Loading...", usePreloader = true }: PreloaderProps = {}
-): ComponentType<Props> {
+export function withDataFetch<P extends DataFetchProps<D>, D>(Component: ComponentType<P>, builder: DataFetchPromiseFactoryBuilder<Omit<P, keyof DataFetchProps<D>>>,
+    { template: Template = "div", text = "Loading...", usePreloader = true }: PreloaderProps = {}) {
 
-    return class extends React.Component<Props, DataFetchState> {
+    type ConstructedProps = Omit<P, keyof DataFetchProps<D>>;
+
+    return class extends React.Component<ConstructedProps, DataFetchState> {
 
         state = { fetching: true, dataContext: null, fetchPromiseFactory: null, error: null }
 
         preloader = usePreloader && <Template>{text}</Template>;
 
-        static getDerivedStateFromProps(props: Props, state: DataFetchState) {
+        static getDerivedStateFromProps(props: ConstructedProps, state: DataFetchState) {
             const promiseFactory = builder(props);
             const fromStatePromiseFactory = state.fetchPromiseFactory;
             const shouldFetchNewData = ((!promiseFactory?.key || !fromStatePromiseFactory?.key) && fromStatePromiseFactory !== promiseFactory)
@@ -61,11 +60,10 @@ export function withDataFetch<Props = {}, T = {}>(
         }
 
         async fetchData() {
-            const fetch: FunctionWithKey = this.state.fetchPromiseFactory as unknown as FunctionWithKey;
+            const fetch = this.state.fetchPromiseFactory;
             if (fetch) {
                 try {
-                    const response = await fetch();
-                    const data = await response.json();
+                    const data = await (fetch as () => Promise<D>)();
                     this.setState({ fetching: false, dataContext: { source: data, reload: this.reload }, error: null });
                 } catch (e) {
                     console.error(e);
@@ -74,7 +72,7 @@ export function withDataFetch<Props = {}, T = {}>(
             }
         }
 
-        componentDidUpdate(_: Props, prevState: DataFetchState) {
+        componentDidUpdate(_: ConstructedProps, prevState: DataFetchState) {
             if (prevState.fetchPromiseFactory !== this.state.fetchPromiseFactory) {
                 this.fetchData();
             }
@@ -89,7 +87,7 @@ export function withDataFetch<Props = {}, T = {}>(
         render() {
             return this.state.fetching && this.preloader
                 ? this.preloader
-                : <Component {...this.props} dataContext={this.state.dataContext} fetching={this.state.fetching} error={this.state.error} />;
+                : <Component {...(this.props as unknown as P)} dataContext={this.state.dataContext} fetching={this.state.fetching} error={this.state.error} />;
         }
     };
 }
