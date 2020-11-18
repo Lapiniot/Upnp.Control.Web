@@ -6,11 +6,13 @@ import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $config from "./Config";
 import { DataFetchProps } from "../../components/DataFetch";
 import { RouteComponentProps } from "react-router";
-import { BrowseFetchResult, DIDLItem } from "./Types";
+import { BrowseFetchResult } from "./Types";
+import { NavigatorProps } from "./Navigator";
 
-type PropsType = DataFetchProps<BrowseFetchResult> & RouteComponentProps & {
-    s: string;
-    p: string;
+type PropsType = DataFetchProps<BrowseFetchResult> & RouteComponentProps & NavigatorProps & {
+    device: string;
+    s?: string;
+    p?: string;
 };
 
 export default function (props: PropsType) {
@@ -28,7 +30,8 @@ export default function (props: PropsType) {
         {total !== 0 && fetched !== total &&
             <div className="sticky-bottom">
                 <Pagination baseUrl={match.url} className="border-1 border-secondary border-top"
-                    total={total} current={parseInt(page) || 1} pageSize={parseInt(size) || $config.pageSize} />
+                    total={total} current={typeof page === "string" ? parseInt(page) : 1}
+                    pageSize={size === "string" ? parseInt(size) : $config.pageSize} />
             </div>}
     </div>;
 }

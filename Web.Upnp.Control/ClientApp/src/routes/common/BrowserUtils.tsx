@@ -23,7 +23,7 @@ export class DIDLUtils {
         return timeStr.startsWith("00:") ? timeStr.substring(3) : timeStr;
     }
 
-    static formatSize(size: number): string {
+    static formatSize(size: number | undefined): string {
         if (typeof size !== "number") return "--";
         if (size < 1024) return `${size} bytes`;
         if (size < 1048576) return `${Math.round(size / 1024)} KB`;
@@ -32,7 +32,7 @@ export class DIDLUtils {
         return "--";
     }
 
-    static formatMediaInfo(data: DIDLResource, separator = "\r"): string | null {
+    static formatMediaInfo(data?: DIDLResource, separator = "\r"): string | null {
         if (!data) return null;
         let lines = [];
         if (data.proto) lines.push(data.proto.split(":")[2]);
