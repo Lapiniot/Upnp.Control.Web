@@ -6,7 +6,6 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-
     public class PLRemoveCommand : PLCommandBase, IAsyncCommand<PLRemoveParams>
     {
         public PLRemoveCommand(IUpnpServiceFactory factory) : base(factory) {}
@@ -23,7 +22,7 @@ namespace Web.Upnp.Control.Services.Commands
 
             if(result["LengthChange"] == "0")
             {
-                result = await service.DeleteAsync(updateId: result["NewUpdateID"], indices: indices, cancellationToken: cancellationToken).ConfigureAwait(false);
+                await service.DeleteAsync(updateId: result["NewUpdateID"], indices: indices, cancellationToken: cancellationToken).ConfigureAwait(false);
             }
         }
     }

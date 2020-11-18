@@ -12,12 +12,12 @@ namespace Web.Upnp.Control.Services.Commands
 {
     public abstract class PLCommandBase
     {
-        protected IUpnpServiceFactory Factory { get; }
-
         protected PLCommandBase(IUpnpServiceFactory factory)
         {
-            this.Factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            Factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
+
+        protected IUpnpServiceFactory Factory { get; }
 
         protected async Task<int[]> GetItemIndices(string deviceId, string parentId, IEnumerable<string> ids, CancellationToken cancellationToken)
         {

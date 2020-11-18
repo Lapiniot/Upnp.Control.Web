@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Models.Converters;
@@ -24,7 +25,6 @@ using Web.Upnp.Control.Routing;
 using Web.Upnp.Control.Services;
 using Web.Upnp.Control.Services.Abstractions;
 using Web.Upnp.Control.Services.Commands;
-using Web.Upnp.Control.Services.Configuration;
 using Web.Upnp.Control.Services.Queries;
 
 namespace Web.Upnp.Control
@@ -43,7 +43,7 @@ namespace Web.Upnp.Control
         {
             services
                 //.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
-                .AddDbContext<UpnpDbContext>(o => o.UseSqlite("Data Source=upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)))
+                .AddDbContext<UpnpDbContext>(builder => builder.UseSqlite("Data Source=upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)))
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
                 .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
@@ -51,7 +51,7 @@ namespace Web.Upnp.Control
                 .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
                 .AddTransient<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
                 .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
-                .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => new SsdpEventEnumerator(UpnpServices.RootDevice,
+                .AddTransient<IAsyncEnumerable<SsdpReply>>(_ => new SsdpEventEnumerator(UpnpServices.RootDevice,
                     new RepeatPolicyBuilder()
                         .WithExponentialInterval(2, 180)
                         .WithJitter(500, 1000)
@@ -118,10 +118,7 @@ namespace Web.Upnp.Control
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "UPnP Control API V1");
-            });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UPnP Control API V1"));
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>

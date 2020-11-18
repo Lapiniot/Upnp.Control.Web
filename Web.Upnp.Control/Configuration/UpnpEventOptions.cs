@@ -1,6 +1,6 @@
 using System;
 
-namespace Web.Upnp.Control.Services.Configuration
+namespace Web.Upnp.Control.Configuration
 {
     public record UpnpEventOptions
     {

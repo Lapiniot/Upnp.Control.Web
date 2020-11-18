@@ -35,7 +35,7 @@ namespace Web.Upnp.Control.Controllers
         /// </summary>
         /// <param name="query">Query implementation</param>
         /// <param name="id">Device id</param>
-        /// <param name="cancellationToken">Request cancelllation token</param>
+        /// <param name="cancellationToken">Request cancellation token</param>
         /// <returns>Device information</returns>
         [HttpGet("{id}")]
         [Produces("application/json")]

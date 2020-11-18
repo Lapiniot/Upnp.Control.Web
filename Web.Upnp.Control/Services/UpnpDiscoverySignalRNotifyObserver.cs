@@ -16,23 +16,19 @@ namespace Web.Upnp.Control.Services
 
         #region Implementation of IObserver<UpnpDiscoveryEvent>
 
-        public void OnCompleted()
-        {
-        }
+        public void OnCompleted() {}
 
-        public void OnError(Exception error)
-        {
-        }
+        public void OnError(Exception error) {}
 
         public void OnNext(UpnpDiscoveryEvent e)
         {
             switch(e)
             {
                 case UpnpDeviceAppearedEvent dae:
-                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new { Type = "appeared", Info = dae.Device });
+                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new {Type = "appeared", Info = dae.Device});
                     break;
                 case UpnpDeviceDisappearedEvent dde:
-                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new { Type = "disappeared", Info = dde.Device });
+                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new {Type = "disappeared", Info = dde.Device});
                     break;
             }
         }

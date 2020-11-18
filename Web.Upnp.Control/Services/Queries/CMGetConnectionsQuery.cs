@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace Web.Upnp.Control.Services.Queries
 
         public CMGetConnectionsQuery(IUpnpServiceFactory factory)
         {
-            this.factory = factory ?? throw new System.ArgumentNullException(nameof(factory));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public async Task<IEnumerable<string>> ExecuteAsync(CMGetConnectionsParams queryParameters, CancellationToken cancellationToken)

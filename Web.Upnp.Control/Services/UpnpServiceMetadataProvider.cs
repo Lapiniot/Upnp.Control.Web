@@ -19,7 +19,7 @@ namespace Web.Upnp.Control.Services
         public async Task<UpnpDeviceDescription> GetDescriptionAsync(Uri location, CancellationToken cancellationToken)
         {
             using var response = await client.GetAsync(location, cancellationToken).ConfigureAwait(false);
-            await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             return UpnpDeviceDescription.ParseXml(stream, location);
         }
     }

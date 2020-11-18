@@ -17,28 +17,24 @@ namespace Web.Upnp.Control.Services
             this.hub = hub ?? throw new ArgumentNullException(nameof(hub));
         }
 
-        public void OnCompleted()
-        {
-        }
+        public void OnCompleted() {}
 
-        public void OnError(Exception error)
-        {
-        }
+        public void OnError(Exception error) {}
 
         public void OnNext(UpnpEvent value)
         {
             switch(value)
             {
-                case UpnpAVTransportPropertyChangedevent avte:
-                    NotifyAVTransportEvent(avte);
+                case UpnpAVTransportPropertyChangedEvent avt:
+                    NotifyAVTransportEvent(avt);
                     break;
-                case UpnpRenderingControlPropertyChangedevent rce:
+                case UpnpRenderingControlPropertyChangedEvent rce:
                     NotifyRenderingControlEvent(rce);
                     break;
             }
         }
 
-        private void NotifyAVTransportEvent(UpnpAVTransportPropertyChangedevent avtEvent)
+        private void NotifyAVTransportEvent(UpnpPropertyChangedEvent avtEvent)
         {
             var map = avtEvent.Properties;
             var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null;
@@ -58,15 +54,15 @@ namespace Web.Upnp.Control.Services
             var position = new AVPosition(map.TryGetValue("CurrentTrack", out value) ? value : null,
                 map.TryGetValue("CurrentTrackDuration", out value) ? value : null,
                 map.TryGetValue("RelativeTimePosition", out value) ? value : null);
-                
+
             var _ = hub.Clients.All.AVTransportEvent(avtEvent.DeviceId, new AVStateMessage(state, position, avtEvent.VendorProperties));
         }
 
-        private void NotifyRenderingControlEvent(UpnpRenderingControlPropertyChangedevent rce)
+        private void NotifyRenderingControlEvent(UpnpPropertyChangedEvent rce)
         {
             var _ = hub.Clients.All.RenderingControlEvent(rce.DeviceId, new RCVolumeState(
                 rce.Properties.TryGetValue("Volume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
-                rce.Properties.TryGetValue("Mute", out v) ? (v == "1" || v == "true" || v == "True") : null));
+                rce.Properties.TryGetValue("Mute", out v) ? v == "1" || v == "true" || v == "True" : null));
         }
     }
 }

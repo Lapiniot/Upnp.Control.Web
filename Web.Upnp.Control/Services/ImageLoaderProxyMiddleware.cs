@@ -20,7 +20,7 @@ namespace Web.Upnp.Control.Services
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var originalUri = new Uri((string)context.GetRouteValue("url"));
+            var originalUri = new Uri(context.GetRouteValue("url") as string ?? throw new InvalidOperationException());
             var response = await client.GetAsync(originalUri, context.Request.Headers, context.RequestAborted).ConfigureAwait(false);
             var content = response.Content;
 

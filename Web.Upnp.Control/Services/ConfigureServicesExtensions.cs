@@ -21,7 +21,7 @@ namespace Web.Upnp.Control.Services
                     UseProxy = false,
                     Proxy = null,
                     UseCookies = false,
-                    CookieContainer = null,
+                    CookieContainer = null!,
                     AllowAutoRedirect = false
                 });
 
@@ -36,7 +36,7 @@ namespace Web.Upnp.Control.Services
                 .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
                 {
                     Proxy = null,
-                    CookieContainer = null,
+                    CookieContainer = null!,
                     UseProxy = false,
                     UseCookies = false,
                     AllowAutoRedirect = false

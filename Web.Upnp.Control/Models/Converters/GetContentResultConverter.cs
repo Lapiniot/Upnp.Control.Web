@@ -36,15 +36,17 @@ namespace Web.Upnp.Control.Models.Converters
                     default: throw new NotSupportedException("Not supported DIDL item type");
                 }
             }
+
             writer.WriteEndArray();
 
-            if(value.Parents is { } parents)
+            if(value.Parents is {} parents)
             {
                 writer.WriteStartArray("parents");
-                foreach(Container parent in parents)
+                foreach(var item in parents)
                 {
-                    containerConverter.Write(writer, parent, options);
+                    if(item is Container container) containerConverter.Write(writer, container, options);
                 }
+
                 writer.WriteEndArray();
             }
 

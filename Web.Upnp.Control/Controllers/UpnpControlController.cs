@@ -11,6 +11,19 @@ namespace Web.Upnp.Control.Controllers
     [Route("api/devices/{deviceId}")]
     public class UpnpControlController : ControllerBase
     {
+        #region SystemProperties playlist state related
+
+        [HttpGet("playlist-state")]
+        [Produces("application/json")]
+        public async Task GetPlaylistStateAsync([FromServices] IAsyncQuery<SysPropsGetPlaylistStateQueryParams, string> query, string deviceId, CancellationToken cancellationToken)
+        {
+            var content = await query.ExecuteAsync(new SysPropsGetPlaylistStateQueryParams(deviceId), cancellationToken).ConfigureAwait(false);
+            await HttpContext.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes(content), cancellationToken).ConfigureAwait(false);
+            await HttpContext.Response.BodyWriter.CompleteAsync().ConfigureAwait(false);
+        }
+
+        #endregion
+
         #region AVTransport state related
 
         [HttpGet("state")]
@@ -97,19 +110,6 @@ namespace Web.Upnp.Control.Controllers
         public Task SetMuteAsync([FromServices] IAsyncCommand<RCSetMuteCommandParams> command, string deviceId, [FromBody] bool muted, CancellationToken cancellationToken)
         {
             return command.ExecuteAsync(new RCSetMuteCommandParams(deviceId, muted), cancellationToken);
-        }
-
-        #endregion
-
-        #region SystemProperties playlist state related
-
-        [HttpGet("playlist-state")]
-        [Produces("application/json")]
-        public async Task GetPlaylistStateAsync([FromServices] IAsyncQuery<SysPropsGetPlaylistStateQueryParams, string> query, string deviceId, CancellationToken cancellationToken)
-        {
-            string content = await query.ExecuteAsync(new SysPropsGetPlaylistStateQueryParams(deviceId), cancellationToken).ConfigureAwait(false);
-            await HttpContext.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes(content), cancellationToken).ConfigureAwait(false);
-            await HttpContext.Response.BodyWriter.CompleteAsync().ConfigureAwait(false);
         }
 
         #endregion

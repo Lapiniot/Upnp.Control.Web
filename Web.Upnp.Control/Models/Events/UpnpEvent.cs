@@ -5,7 +5,7 @@ namespace Web.Upnp.Control.Models.Events
     public abstract record UpnpEvent
     {
         public string DeviceId { get; init; }
-    };
+    }
 
     public record UpnpPropertyChangedEvent : UpnpEvent
     {
@@ -13,7 +13,7 @@ namespace Web.Upnp.Control.Models.Events
         public IReadOnlyDictionary<string, string> VendorProperties { get; init; }
     }
 
-    public record UpnpAVTransportPropertyChangedevent : UpnpPropertyChangedEvent { }
+    public record UpnpAVTransportPropertyChangedEvent : UpnpPropertyChangedEvent {}
 
-    public record UpnpRenderingControlPropertyChangedevent : UpnpPropertyChangedEvent { }
+    public record UpnpRenderingControlPropertyChangedEvent : UpnpPropertyChangedEvent {}
 }

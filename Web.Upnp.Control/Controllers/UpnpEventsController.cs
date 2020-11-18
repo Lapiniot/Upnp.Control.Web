@@ -20,7 +20,7 @@ namespace Web.Upnp.Control.Controllers
     {
         private readonly ILogger<UpnpEventsController> logger;
         private readonly IEnumerable<IObserver<UpnpEvent>> observers;
-        private readonly XmlReaderSettings settings = new XmlReaderSettings { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
+        private readonly XmlReaderSettings settings = new() {Async = true, IgnoreComments = true, IgnoreWhitespace = true};
 
         public UpnpEventsController(ILogger<UpnpEventsController> logger, IEnumerable<IObserver<UpnpEvent>> observers)
         {
@@ -31,13 +31,13 @@ namespace Web.Upnp.Control.Controllers
         [HttpNotify("notify/rc")]
         public Task NotifyRenderingControlAsync(string deviceId)
         {
-            return ProcessRequestStreamAsync<UpnpRenderingControlPropertyChangedevent>(HttpContext.Request.Body, deviceId);
+            return ProcessRequestStreamAsync<UpnpRenderingControlPropertyChangedEvent>(HttpContext.Request.Body, deviceId);
         }
 
         [HttpNotify("notify/avt")]
         public Task NotifyAVTransportAsync(string deviceId)
         {
-            return ProcessRequestStreamAsync<UpnpAVTransportPropertyChangedevent>(HttpContext.Request.Body, deviceId);
+            return ProcessRequestStreamAsync<UpnpAVTransportPropertyChangedEvent>(HttpContext.Request.Body, deviceId);
         }
 
         private async Task ProcessRequestStreamAsync<T>(Stream stream, string deviceId) where T : UpnpPropertyChangedEvent, new()
@@ -59,7 +59,7 @@ namespace Web.Upnp.Control.Controllers
             IReadOnlyDictionary<string, string> vendorProperties)
             where T : UpnpPropertyChangedEvent, new()
         {
-            var @event = new T() { DeviceId = deviceId, Properties = properties, VendorProperties = vendorProperties };
+            var @event = new T {DeviceId = deviceId, Properties = properties, VendorProperties = vendorProperties};
 
             foreach(var observer in observers)
             {

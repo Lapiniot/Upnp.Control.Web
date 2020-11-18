@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using IoT.Device.Xiaomi.Umi.Services;
@@ -12,7 +13,7 @@ namespace Web.Upnp.Control.Services.Queries
 
         public SysPropsGetPlaylistStateQuery(IUpnpServiceFactory factory)
         {
-            this.factory = factory ?? throw new System.ArgumentNullException(nameof(factory));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public async Task<string> ExecuteAsync(SysPropsGetPlaylistStateQueryParams queryParameters, CancellationToken cancellationToken)

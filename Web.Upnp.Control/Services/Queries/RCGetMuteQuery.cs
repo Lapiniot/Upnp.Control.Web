@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using IoT.Protocol.Upnp.Services;
@@ -12,7 +13,7 @@ namespace Web.Upnp.Control.Services.Queries
 
         public RCGetMuteQuery(IUpnpServiceFactory factory)
         {
-            this.factory = factory ?? throw new System.ArgumentNullException(nameof(factory));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public async Task<bool?> ExecuteAsync(RCGetMuteQueryParams queryParameters, CancellationToken cancellationToken)

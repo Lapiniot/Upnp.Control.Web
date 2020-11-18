@@ -22,8 +22,8 @@ namespace Web.Upnp.Control.Services
         private const string RootDevice = "upnp:rootdevice";
         private readonly ILogger<UpnpDiscoveryService> logger;
         private readonly IUpnpServiceMetadataProvider metadataProvider;
-        private readonly IServiceProvider services;
         private readonly IObserver<UpnpDiscoveryEvent>[] observers;
+        private readonly IServiceProvider services;
 
         public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger,
             IUpnpServiceMetadataProvider metadataProvider, IEnumerable<IObserver<UpnpDiscoveryEvent>> observers = null)
@@ -63,7 +63,7 @@ namespace Web.Upnp.Control.Services
 
                             if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
                             {
-                                var existing = await context.FindAsync<Device>(new[] { udn }, stoppingToken).ConfigureAwait(false);
+                                var existing = await context.FindAsync<Device>(new object[] {udn}, stoppingToken).ConfigureAwait(false);
                                 if(existing != null)
                                 {
                                     context.Remove(existing);
@@ -79,7 +79,7 @@ namespace Web.Upnp.Control.Services
                             continue;
                         }
 
-                        var device = await context.FindAsync<Device>(new[] { udn }, stoppingToken).ConfigureAwait(false);
+                        var device = await context.FindAsync<Device>(new object[] {udn}, stoppingToken).ConfigureAwait(false);
 
                         if(device != null)
                         {
@@ -118,9 +118,7 @@ namespace Web.Upnp.Control.Services
                     }
                 }
             }
-            catch(OperationCanceledException)
-            {
-            }
+            catch(OperationCanceledException) {}
             catch(Exception ex)
             {
                 logger.LogError(ex, "Error discovering UPnP devices and services!");
@@ -133,13 +131,14 @@ namespace Web.Upnp.Control.Services
 
         private void DebugDump(SsdpReply reply, LogLevel logLevel)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendLine();
             sb.AppendLine($"***** {reply.StartLine} *****");
-            foreach(var item in reply)
+            foreach(var (key, value) in reply)
             {
-                sb.AppendLine($"{item.Key}: {item.Value}");
+                sb.AppendLine($"{key}: {value}");
             }
+
             logger.Log(logLevel, sb.ToString());
         }
 
@@ -148,8 +147,7 @@ namespace Web.Upnp.Control.Services
             var i1 = usn.IndexOf(':');
             if(i1 < 0) return usn;
             var i2 = usn.IndexOf(':', ++i1);
-            if(i2 < 0) return usn[i1..];
-            return usn[i1..i2];
+            return i2 < 0 ? usn[i1..] : usn[i1..i2];
         }
 
         private void Notify(UpnpDiscoveryEvent discoveryEvent)

@@ -28,20 +28,20 @@ namespace Web.Upnp.Control.Services.Commands
 
                 var xml = data["Result"];
 
-                if(xdoc == null)
+                switch(xdoc)
                 {
-                    xdoc = XDocument.Parse(xml);
-                }
-                else
-                {
-                    var x = XDocument.Parse(xml);
-                    xdoc.Root.Add(x.Root.Elements());
+                    case null:
+                        xdoc = XDocument.Parse(xml);
+                        break;
+                    case {Root: {} root} when XDocument.Parse(xml) is {Root: {} itemRoot}:
+                        root.Add(itemRoot.Elements());
+                        break;
                 }
             }
 
             var updateId = await GetUpdateIdAsync(targetCDService, playlistId, cancellationToken).ConfigureAwait(false);
 
-            await playlistService.AddUriAsync(objectId: playlistId, updateId: updateId, enqueuedUriMetaData: xdoc.ToString(), cancellationToken: cancellationToken).ConfigureAwait(false);
+            await playlistService.AddUriAsync(objectId: playlistId, updateId: updateId, enqueuedUriMetaData: xdoc?.ToString(), cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

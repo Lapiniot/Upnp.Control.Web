@@ -8,7 +8,7 @@ namespace Web.Upnp.Control.Services
 {
     internal class InMemorySubscriptionsRepository : IUpnpSubscriptionsRepository
     {
-        private readonly Dictionary<string, List<IAsyncCancelable>> storage = new Dictionary<string, List<IAsyncCancelable>>();
+        private readonly Dictionary<string, List<IAsyncCancelable>> storage;
 
         public InMemorySubscriptionsRepository()
         {
@@ -63,11 +63,9 @@ namespace Web.Upnp.Control.Services
                     sessions = list;
                     return true;
                 }
-                else
-                {
-                    sessions = null;
-                    return false;
-                }
+
+                sessions = null;
+                return false;
             }
         }
     }

@@ -17,7 +17,7 @@ namespace Web.Upnp.Control.Services.HttpClients
         public static IPAddress FindExternalIPv4Address(this IEnumerable<NetworkInterface> interfaces)
         {
             return interfaces.FirstOrDefault(i => i.Supports(NetworkInterfaceComponent.IPv4))?
-                .GetIPProperties().UnicastAddresses?.FirstOrDefault(a => a.Address.AddressFamily == AddressFamily.InterNetwork)
+                .GetIPProperties().UnicastAddresses.FirstOrDefault(a => a.Address.AddressFamily == AddressFamily.InterNetwork)
                 ?.Address;
         }
 

@@ -27,7 +27,7 @@ namespace Web.Upnp.Control.Services.Commands
                 if(info.TryGetValue("TrackDuration", out var value) && TimeSpan.TryParse(value, out var duration))
                 {
                     var absTime = duration * position.Value;
-                    await avt.SeekAsync(target: absTime.ToString("hh\\:mm\\:ss")).ConfigureAwait(false);
+                    await avt.SeekAsync(target: absTime.ToString("hh\\:mm\\:ss"), cancellationToken: cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -36,7 +36,7 @@ namespace Web.Upnp.Control.Services.Commands
             }
             else if(time != null)
             {
-                await avt.SeekAsync(target: time.Value.ToString("hh\\:mm\\:ss")).ConfigureAwait(false);
+                await avt.SeekAsync(target: time.Value.ToString("hh\\:mm\\:ss"), cancellationToken: cancellationToken).ConfigureAwait(false);
             }
             else
             {

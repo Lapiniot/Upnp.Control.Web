@@ -81,12 +81,12 @@ namespace Web.Upnp.Control.Services.HttpClients
 
             if(ipv4.Length <= 0) throw new InvalidOperationException("Cannot find suitable IP address for callback URI");
 
-            if(ipv4.FirstOrDefault(a => !a.Endpoint.Address.Equals(IPAddress.Any)) is { Address: { } address })
+            if(ipv4.FirstOrDefault(a => !a.Endpoint.Address.Equals(IPAddress.Any)) is {Address: {} address})
             {
                 return address;
             }
 
-            if(!(ipv4.FirstOrDefault(a => a.Endpoint.Address.Equals(IPAddress.Any)) is { Endpoint: { Port: var port }, Address: { Scheme: var scheme } }))
+            if(!(ipv4.FirstOrDefault(a => a.Endpoint.Address.Equals(IPAddress.Any)) is {Endpoint: {Port: var port}, Address: {Scheme: var scheme}}))
             {
                 throw new InvalidOperationException("Cannot find suitable IP address for callback URI");
             }

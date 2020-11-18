@@ -6,19 +6,19 @@ using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Services.Abstractions;
-using Web.Upnp.Control.Services.Configuration;
 
 namespace Web.Upnp.Control.Services
 {
     public sealed class UpnpEventSubscribeObserver : IObserver<UpnpDiscoveryEvent>, IAsyncDisposable
     {
-        private readonly IUpnpSubscriptionsRepository repository;
         private readonly IUpnpEventSubscriptionFactory factory;
-        private readonly IOptionsMonitor<UpnpEventOptions> optionsMonitor;
         private readonly ILogger<UpnpEventSubscribeObserver> logger;
+        private readonly IOptionsMonitor<UpnpEventOptions> optionsMonitor;
+        private readonly IUpnpSubscriptionsRepository repository;
 
         public UpnpEventSubscribeObserver(ILogger<UpnpEventSubscribeObserver> logger,
             IUpnpSubscriptionsRepository repository, IUpnpEventSubscriptionFactory factory,
@@ -29,37 +29,6 @@ namespace Web.Upnp.Control.Services
             this.optionsMonitor = optionsMonitor ?? throw new ArgumentNullException(nameof(optionsMonitor));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
-        #region Implementation of IObserver<UpnpDiscoveryEvent>
-
-        public void OnCompleted()
-        {
-        }
-
-        public void OnError(Exception error)
-        {
-        }
-
-        public void OnNext(UpnpDiscoveryEvent e)
-        {
-            Func<Service, bool> predicate = s => s.ServiceType == PlaylistService.ServiceSchema;
-
-            switch(e)
-            {
-                case UpnpDeviceAppearedEvent dae when dae.Device.Services.Any(predicate):
-                    SubscribeToEvents(dae.DeviceId, dae.Device.Services);
-                    break;
-                case UpnpDeviceUpdatedEvent due when due.Device.Services.Any(predicate):
-                    var _ = RenewSubscriptionsAsync(due.DeviceId, due.Device.Services);
-                    break;
-                case UpnpDeviceDisappearedEvent dde:
-                    repository.Remove(dde.DeviceId, out var subscriptions);
-                    _ = TerminateAsync(subscriptions);
-                    break;
-            }
-        }
-
-        #endregion
 
         #region Implementation of IAsyncDisposable
 
@@ -88,7 +57,7 @@ namespace Web.Upnp.Control.Services
 
         private async Task RenewSubscriptionsAsync(string deviceId, ICollection<Service> services)
         {
-            var sessions = repository.Get(udn: deviceId);
+            var sessions = repository.Get(deviceId).ToList();
 
             if(!sessions.Any() || sessions.Any(s => s.IsCompleted))
             {
@@ -107,9 +76,39 @@ namespace Web.Upnp.Control.Services
                 }
                 catch(Exception exception)
                 {
-                    logger.LogError(exception, "Error terminating maintanance worker for UPnP event subscription");
+                    logger.LogError(exception, "Error terminating maintenance worker for UPnP event subscription");
                 }
             }
         }
+
+        #region Implementation of IObserver<UpnpDiscoveryEvent>
+
+        public void OnCompleted() {}
+
+        public void OnError(Exception error) {}
+
+        public void OnNext(UpnpDiscoveryEvent e)
+        {
+            switch(e)
+            {
+                case UpnpDeviceAppearedEvent dae when dae.Device.Services.Any(IsUmiDevice):
+                    SubscribeToEvents(dae.DeviceId, dae.Device.Services);
+                    break;
+                case UpnpDeviceUpdatedEvent due when due.Device.Services.Any(IsUmiDevice):
+                    _ = RenewSubscriptionsAsync(due.DeviceId, due.Device.Services);
+                    break;
+                case UpnpDeviceDisappearedEvent dde:
+                    repository.Remove(dde.DeviceId, out var subscriptions);
+                    _ = TerminateAsync(subscriptions);
+                    break;
+            }
+        }
+
+        private static bool IsUmiDevice(Service s)
+        {
+            return s.ServiceType == PlaylistService.ServiceSchema;
+        }
+
+        #endregion
     }
 }

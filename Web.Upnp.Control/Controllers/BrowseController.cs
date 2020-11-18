@@ -1,7 +1,5 @@
-﻿using System.Text.Json;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;

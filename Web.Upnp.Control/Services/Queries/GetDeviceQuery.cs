@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
+using IoT.Device.Xiaomi.Umi.Services;
+using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
-using IoT.Device.Xiaomi.Umi.Services;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
 using static IoT.Protocol.Upnp.UpnpServices;
 
 namespace Web.Upnp.Control.Services.Queries
@@ -23,11 +23,12 @@ namespace Web.Upnp.Control.Services.Queries
             {"servers", d => d.DeviceType == MediaServer || d.Services.Any(s => s.ServiceType == ContentDirectory || s.ServiceType == PlaylistService.ServiceSchema)},
             {"renderers", d => d.DeviceType == MediaRenderer || d.Services.Any(s => s.ServiceType == MediaRenderer)}
         };
+
         private readonly UpnpDbContext context;
 
         public GetDeviceQuery(UpnpDbContext context)
         {
-            this.context = context ?? throw new System.ArgumentNullException(nameof(context));
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async IAsyncEnumerable<Device> ExecuteAsync(GetDevicesQueryParams queryParameters,

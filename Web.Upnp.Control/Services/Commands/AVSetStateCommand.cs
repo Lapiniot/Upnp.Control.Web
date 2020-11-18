@@ -16,7 +16,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public AVSetStateCommand(IUpnpServiceFactory factory)
         {
-            this.factory = factory ?? throw new System.ArgumentNullException(nameof(factory));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public async Task ExecuteAsync(AVSetStateCommandParams commandParameters, CancellationToken cancellationToken)
@@ -29,16 +29,17 @@ namespace Web.Upnp.Control.Services.Commands
                 case "playing":
                     switch(state)
                     {
-                        case { ObjectId: { } objectId }:
+                        case {ObjectId: {} objectId}:
                             await PlayItemAsync(deviceId, objectId, cancellationToken).ConfigureAwait(false);
                             break;
-                        case { CurrentUri: { } uri }:
+                        case {CurrentUri: {} uri}:
                             await PlayUriAsync(deviceId, uri, cancellationToken).ConfigureAwait(false);
                             break;
                         default:
                             await avt.PlayAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
                             break;
                     }
+
                     break;
                 case "stopped":
                     await avt.StopAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -64,7 +65,7 @@ namespace Web.Upnp.Control.Services.Commands
                 var cd = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
                 var result = await cd.BrowseAsync(id, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
                 var item = DIDLXmlParser.Parse(result["Result"], true, false).FirstOrDefault();
-                if(!(item is { Resource: { Url: { } resUrl } })) throw new InvalidOperationException();
+                if(!(item is {Resource: {Url: {} resUrl}})) throw new InvalidOperationException();
                 await avt.SetAVTransportUriAsync(currentUri: resUrl, cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 

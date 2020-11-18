@@ -1,9 +1,9 @@
-using System.Threading;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Web.Upnp.Control.Services.Abstractions
 {
-    public interface IAsyncEnumerableQuery<TParams, TOutput>
+    public interface IAsyncEnumerableQuery<in TParams, out TOutput>
     {
         IAsyncEnumerable<TOutput> ExecuteAsync(TParams queryParameters, CancellationToken cancellationToken);
     }

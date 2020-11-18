@@ -31,7 +31,9 @@ namespace Web.Upnp.Control.Services.Queries
 
             var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            var parents = withParents != false ? await GetParentsAsync(service, path, "id,title,parentId,res", withResource == true, withVendor == true, cancellationToken).ConfigureAwait(false) : null;
+            var parents = withParents != false
+                ? await GetParentsAsync(service, path, "id,title,parentId,res", withResource == true, withVendor == true, cancellationToken).ConfigureAwait(false)
+                : null;
 
             var items = DIDLXmlParser.Parse(result["Result"], withResource == true, withVendor == true);
 
@@ -43,7 +45,7 @@ namespace Web.Upnp.Control.Services.Queries
         {
             var parents = new List<Item>();
 
-            int errorLimit = 1;
+            var errorLimit = 1;
 
             while(path != "-1" && errorLimit > 0)
             {

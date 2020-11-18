@@ -23,47 +23,51 @@ namespace Web.Upnp.Control.Models.Converters
             if(value.Date != null) writer.WriteString("date", value.Date.ToString());
             if(value.Genre != null) writer.WriteString("genre", value.Genre);
             if(value.Description != null) writer.WriteString("description", value.Description);
-            if(value.TrackNumber is { } track) writer.WriteNumber("track", track);
+            if(value.TrackNumber is {} track) writer.WriteNumber("track", track);
 
-            if(value.Artists is { Count: > 0 } artists)
+            if(value.Artists is {Count: > 0} artists)
             {
                 writer.WriteStartArray("artists");
                 foreach(var artist in artists) writer.WriteStringValue(artist);
                 writer.WriteEndArray();
             }
 
-            if(value.Authors is { Count: > 0 } authors)
+            if(value.Authors is {Count: > 0} authors)
             {
                 writer.WriteStartArray("authors");
                 foreach(var author in authors) writer.WriteStringValue(author);
                 writer.WriteEndArray();
             }
 
-            if(value.Genres is { Count: > 0 } genres)
+            if(value.Genres is {Count: > 0} genres)
             {
                 writer.WriteStartArray("genres");
                 foreach(var genre in genres) writer.WriteStringValue(genre);
                 writer.WriteEndArray();
-
             }
 
-            if(value.AlbumArts is { Count: > 0 } albumArts)
+            if(value.AlbumArts is {Count: > 0} albumArts)
             {
                 writer.WriteStartArray("albumArts");
                 foreach(var art in albumArts) writer.WriteStringValue(art);
                 writer.WriteEndArray();
             }
 
-            if(value.Vendor is { Count: > 0 } vendor)
+            if(value.Vendor is {Count: > 0} vendor)
             {
                 writer.WriteStartObject("vendor");
                 foreach(var (k, v) in vendor)
+                {
                     if(!string.IsNullOrWhiteSpace(v))
+                    {
                         writer.WriteString(k, v);
+                    }
+                }
+
                 writer.WriteEndObject();
             }
 
-            if(value.Resource is { } res)
+            if(value.Resource is {} res)
             {
                 var resourceConverter = (JsonConverter<Resource>)options.GetConverter(typeof(Resource));
                 writer.WritePropertyName("res");

@@ -19,12 +19,15 @@ namespace Web.Upnp.Control.Models.Converters
 
             writer.WriteString("url", value.Url);
             writer.WriteString("proto", value.Protocol);
-            if(value.Size is { } size) writer.WriteNumber("size", size);
-            if(value.Duration is { } duration) writer.WriteString("duration", duration.ToString(
-                 duration.Days == 0 ? (duration.Hours == 0 ? @"mm\:ss" : @"hh\:mm\:ss") : @"d\.hh\:mm\:ss",
-                 CultureInfo.InvariantCulture));
+            if(value.Size is {} size) writer.WriteNumber("size", size);
+            if(value.Duration is {} duration)
+            {
+                writer.WriteString("duration", duration.ToString(
+                    duration.Days == 0 ? duration.Hours == 0 ? @"mm\:ss" : @"hh\:mm\:ss" : @"d\.hh\:mm\:ss",
+                    CultureInfo.InvariantCulture));
+            }
 
-            if(value.Attributes is { Count: > 0 })
+            if(value.Attributes is {Count: > 0})
             {
                 foreach(var (k, v) in value.Attributes) writer.WriteString(k, v);
             }

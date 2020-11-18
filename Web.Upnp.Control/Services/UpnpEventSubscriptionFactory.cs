@@ -12,7 +12,7 @@ namespace Web.Upnp.Control.Services
         private readonly ILogger logger;
         private readonly IEventSubscribeClient subscribeClient;
 
-        public UpnpEventSubscriptionFactory(IEventSubscribeClient subscribeClient, ILogger<UpnpEventSubscriptionFactory> logger)
+        public UpnpEventSubscriptionFactory(IEventSubscribeClient subscribeClient, ILogger logger)
         {
             this.subscribeClient = subscribeClient;
             this.logger = logger;
@@ -48,7 +48,7 @@ namespace Web.Upnp.Control.Services
                             (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
                             logger.LogInformation($"Successfully requested new subscription for {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
                         }
-                        catch(OperationCanceledException) { }
+                        catch(OperationCanceledException) {}
                     }
                 }
                 finally

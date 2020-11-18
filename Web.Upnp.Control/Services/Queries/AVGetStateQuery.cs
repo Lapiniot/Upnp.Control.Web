@@ -15,7 +15,7 @@ namespace Web.Upnp.Control.Services.Queries
 
         public AVGetStateQuery(IUpnpServiceFactory factory)
         {
-            this.factory = factory ?? throw new System.ArgumentNullException(nameof(factory));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public async Task<AVState> ExecuteAsync(AVGetStateQueryParams queryParameters, CancellationToken cancellationToken)
