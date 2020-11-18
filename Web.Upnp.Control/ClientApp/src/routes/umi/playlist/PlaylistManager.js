@@ -66,15 +66,15 @@ export class PlaylistManagerCore extends React.Component {
 
     reload = () => { this.props.dataContext.reload(); }
 
-    renamePlaylist = (id, title) => $api.playlist(this.props.device).rename(id, title).jsonFetch();
+    renamePlaylist = (id, title) => $api.playlist(this.props.device).rename(id, title).fetch();
 
-    createPlaylist = (title) => $api.playlist(this.props.device).create(title).jsonFetch();
+    createPlaylist = (title) => $api.playlist(this.props.device).create(title).fetch();
 
-    removePlaylist = (ids) => $api.playlist(this.props.device).delete(ids).jsonFetch();
+    removePlaylist = (ids) => $api.playlist(this.props.device).delete(ids).fetch();
 
-    addItems = (device, ids) => $api.playlist(this.props.device).addItems(this.props.id, device, ids).jsonFetch();
+    addItems = (device, ids) => $api.playlist(this.props.device).fetch(this.props.id, device, ids).jsonFetch();
 
-    removeItems = (ids) => $api.playlist(this.props.device).removeItems(this.props.id, ids).jsonFetch();
+    removeItems = (ids) => $api.playlist(this.props.device).fetch(this.props.id, ids).jsonFetch();
 
     onAdd = () => {
         this.setState({
@@ -153,11 +153,11 @@ export class PlaylistManagerCore extends React.Component {
 
     onCopy = () => { alert("not implemented yet"); };
 
-    play = () => this.ctrl.play().jsonFetch();
+    play = () => this.ctrl.play().fetch();
 
-    pause = () => this.ctrl.pause().jsonFetch();
+    pause = () => this.ctrl.pause().fetch();
 
-    playUrl = ({ currentTarget: { dataset: { playUrl } } }) => this.ctrl.playUri(playUrl).jsonFetch();
+    playUrl = ({ currentTarget: { dataset: { playUrl } } }) => this.ctrl.playUri(playUrl).fetch();
 
     render() {
 

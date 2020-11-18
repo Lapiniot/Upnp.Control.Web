@@ -73,7 +73,7 @@ class PlayerCore extends React.Component {
             const { 0: { relTime, duration }, 1: { volume, muted } } =
                 await Promise.all([
                     await this.ctrl.position().jsonFetch($c.timeout),
-                    await this.ctrl.volume(true).json($c.timeout)]);
+                    await this.ctrl.volume(true).jsonFetch($c.timeout)]);
 
             this.setState({ time: relTime, duration, volume, muted });
         } catch (error) {
@@ -81,25 +81,25 @@ class PlayerCore extends React.Component {
         }
     }
 
-    play = () => this.ctrl.play().jsonFetch($c.timeout);
+    play = () => this.ctrl.play().fetch($c.timeout);
 
-    pause = () => this.ctrl.pause().jsonFetch($c.timeout);
+    pause = () => this.ctrl.pause().fetch($c.timeout);
 
-    stop = () => this.ctrl.stop().jsonFetch($c.timeout);
+    stop = () => this.ctrl.stop().fetch($c.timeout);
 
-    prev = () => this.ctrl.prev().jsonFetch($c.timeout);
+    prev = () => this.ctrl.prev().fetch($c.timeout);
 
-    next = () => this.ctrl.next().jsonFetch($c.timeout);
+    next = () => this.ctrl.next().fetch($c.timeout);
 
-    seek = position => this.ctrl.seek(position).jsonFetch($c.timeout);
+    seek = position => this.ctrl.seek(position).fetch($c.timeout);
 
-    setRepeatAllPlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_ALL).jsonFetch($c.timeout);
+    setRepeatAllPlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_ALL).fetch($c.timeout);
 
-    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_SHUFFLE).jsonFetch($c.timeout);
+    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_SHUFFLE).fetch($c.timeout);
 
-    toggleMute = () => this.ctrl.setMute(!this.state.muted).jsonFetch($c.timeout);
+    toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($c.timeout);
 
-    changeVolume = volume => this.ctrl.setVolume(Math.round(volume * 100)).jsonFetch($c.timeout);
+    changeVolume = volume => this.ctrl.setVolume(Math.round(volume * 100)).fetch($c.timeout);
 
     render() {
         const { actions = [], current, next, playbackState, playMode, time, duration, volume = 0, muted = false } = this.state;
