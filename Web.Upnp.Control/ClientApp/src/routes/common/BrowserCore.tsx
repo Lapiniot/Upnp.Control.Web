@@ -1,4 +1,4 @@
-﻿import React, { ChangeEventHandler, ElementType, EventHandler, HTMLAttributes, MouseEventHandler, PropsWithChildren, ReactElement } from "react";
+﻿import React, { ChangeEventHandler, ElementType, HTMLAttributes, MouseEventHandler, PropsWithChildren, ReactElement } from "react";
 //import Tooltip from "bootstrap/js/dist/tooltip";
 import AlbumArt from "./AlbumArt";
 import SelectionService from "../../components/SelectionService";
@@ -101,41 +101,41 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
         this.notifySelectionChanged(cancelled);
     };
 
-    onRowMouseDown: MouseEventHandler<HTMLElement> = e => {
-        if ((e.target as HTMLInputElement)?.type === "checkbox") return;
-
-        const row = e.currentTarget;
-        const id = row.dataset.id;
-
-        if (!id || !this.selectables) return;
-
-        e.stopPropagation();
-
-        if (e.ctrlKey || e.metaKey) {
-            // selective multi-selection
-            this.toggleSelection(id);
-        }
-        else if (e.shiftKey) {
-            e.preventDefault();
-            // range multi-selection
-            const selectionStart = Math.max(this.selectables.indexOf(this.focusedItem ?? ""), 0);
-            const selectionEnd = this.selectables.indexOf(id);
-            this.selectRange(selectionStart, selectionEnd);
-        }
-        else // single item selection
-        {
-            if (this.selection.one() && this.selection.selected(id)) return;
-
-            this.focusedItem = id;
-            this.selection.reset();
-            const cancelled = !this.selection.select(id, true, { device: this.props.device, id: this.props.id });
-            this.notifySelectionChanged(cancelled);
-        }
-    }
-
-    onContainerMouseDown: MouseEventHandler = e => {
+    onContainerMouseDown: MouseEventHandler<HTMLElement> = e => {
         if (e.target === e.currentTarget && this.selection.any()) {
             this.toggleSelectionAll(false);
+        } else {
+            if ((e.target as HTMLInputElement)?.type === "checkbox") return;
+
+            const row = (e.target as HTMLElement)?.closest<HTMLElement>("div[data-selectable=\"1\"]");
+            if (!row) return;
+
+            const id = row.dataset.id;
+
+            if (!id || !this.selectables) return;
+
+            e.stopPropagation();
+
+            if (e.ctrlKey || e.metaKey) {
+                // selective multi-selection
+                this.toggleSelection(id);
+            }
+            else if (e.shiftKey) {
+                e.preventDefault();
+                // range multi-selection
+                const selectionStart = Math.max(this.selectables.indexOf(this.focusedItem ?? ""), 0);
+                const selectionEnd = this.selectables.indexOf(id);
+                this.selectRange(selectionStart, selectionEnd);
+            }
+            else // single item selection
+            {
+                if (this.selection.one() && this.selection.selected(id)) return;
+
+                this.focusedItem = id;
+                this.selection.reset();
+                const cancelled = !this.selection.select(id, true, { device: this.props.device, id: this.props.id });
+                this.notifySelectionChanged(cancelled);
+            }
         }
     }
 
@@ -218,8 +218,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
                         const selected = this.selection.selected(e.id);
                         const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
                         const canBeSelected = selectOnClick && filter(e);
-                        return <div key={e.id} data-id={e.id} data-selected={selected} data-active={active}
-                            onMouseDown={canBeSelected ? this.onRowMouseDown : undefined}
+                        return <div key={e.id} data-id={e.id} data-selectable={canBeSelected ? 1 : undefined} data-selected={selected} data-active={active}
                             onDoubleClick={e.container ? navigate : undefined}>
                             {useCheckboxes && <div>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
