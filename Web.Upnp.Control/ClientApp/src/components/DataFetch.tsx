@@ -22,6 +22,9 @@ export type DataFetchProps<T = {}> = {
     error: Error | null;
 }
 
+export type DataContextTypeOf<T extends DataFetchProps<unknown>> =
+    T extends DataFetchProps<infer U> ? U : never;
+
 type DataFetchState = {
     fetching: boolean;
     dataContext: DataContext | null;
@@ -37,10 +40,11 @@ export function withMemoKey(func: (...args: any[]) => any, key: string) {
 
 type DataFetchPromiseFactoryBuilder<P> = (props: P) => FunctionWithKey | undefined;
 
-export function withDataFetch<P extends DataFetchProps<D>, D>(Component: ComponentType<P>, builder: DataFetchPromiseFactoryBuilder<Omit<P, keyof DataFetchProps<D>>>,
+export function withDataFetch<P extends DataFetchProps, Params = {}>(Component: ComponentType<P>,
+    builder: DataFetchPromiseFactoryBuilder<Omit<P, keyof DataFetchProps> & Params>,
     { template: Template = "div", text = "Loading...", usePreloader = true }: PreloaderProps = {}) {
 
-    type ConstructedProps = Omit<P, keyof DataFetchProps<D>>;
+    type ConstructedProps = Omit<P, keyof DataFetchProps> & Params;
 
     return class extends React.Component<ConstructedProps, DataFetchState> {
 
@@ -63,7 +67,7 @@ export function withDataFetch<P extends DataFetchProps<D>, D>(Component: Compone
             const fetch = this.state.fetchPromiseFactory;
             if (fetch) {
                 try {
-                    const data = await (fetch as () => Promise<D>)();
+                    const data = await (fetch as () => Promise<any>)();
                     this.setState({ fetching: false, dataContext: { source: data, reload: this.reload }, error: null });
                 } catch (e) {
                     console.error(e);
