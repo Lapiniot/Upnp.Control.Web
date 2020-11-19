@@ -1,6 +1,8 @@
+using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
+using System.Xml;
 using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp.Services;
 using Web.Upnp.Control.Models;
@@ -11,7 +13,13 @@ namespace Web.Upnp.Control.Services.Commands
 {
     public class PLAddItemsCommand : PLCommandBase, IAsyncCommand<PLAddItemsParams>
     {
-        public PLAddItemsCommand(IUpnpServiceFactory factory) : base(factory) {}
+        private const string XmlnsNamespace = "http://www.w3.org/2000/xmlns/";
+        private const string DIDLLiteNamespace = "urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/";
+        private const string DCNamespace = "http://purl.org/dc/elements/1.1/";
+        private const string UPNPNamespace = "urn:schemas-upnp-org:metadata-1-0/upnp/";
+        private const string DLNANamespace = "urn:schemas-dlna-org:metadata-1-0/";
+
+        public PLAddItemsCommand(IUpnpServiceFactory factory) : base(factory) { }
 
         public async Task ExecuteAsync(PLAddItemsParams commandParameters, CancellationToken cancellationToken)
         {
@@ -20,28 +28,35 @@ namespace Web.Upnp.Control.Services.Commands
             var targetCDService = await Factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
             var sourceCDService = await Factory.GetServiceAsync<ContentDirectoryService>(sourceDeviceId).ConfigureAwait(false);
 
-            XDocument xdoc = null;
+            var sb = new StringBuilder();
 
-            foreach(var item in sourceItems)
+            using(var writer = XmlWriter.Create(sb, new XmlWriterSettings() { OmitXmlDeclaration = true }))
             {
-                var data = await sourceCDService.BrowseAsync(item, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
+                writer.WriteStartElement("DIDL-Lite", DIDLLiteNamespace);
+                writer.WriteAttributeString("dc", XmlnsNamespace, DCNamespace);
+                writer.WriteAttributeString("upnp", XmlnsNamespace, UPNPNamespace);
+                writer.WriteAttributeString("dlna", XmlnsNamespace, DLNANamespace);
 
-                var xml = data["Result"];
-
-                switch(xdoc)
+                foreach(var item in sourceItems)
                 {
-                    case null:
-                        xdoc = XDocument.Parse(xml);
-                        break;
-                    case {Root: {} root} when XDocument.Parse(xml) is {Root: {} itemRoot}:
-                        root.Add(itemRoot.Elements());
-                        break;
+                    var data = await sourceCDService.BrowseAsync(item, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                    using(var input = new StringReader(data["Result"]))
+                    using(var reader = XmlReader.Create(input))
+                    {
+                        if(!reader.ReadToDescendant("DIDL-Lite") || reader.NamespaceURI != DIDLLiteNamespace) continue;
+                        if(!reader.ReadToDescendant("item") || reader.NamespaceURI != DIDLLiteNamespace) continue;
+                        writer.WriteNode(reader, true);
+                    }
                 }
+
+                writer.WriteEndElement();
+                writer.Flush();
             }
 
             var updateId = await GetUpdateIdAsync(targetCDService, playlistId, cancellationToken).ConfigureAwait(false);
 
-            await playlistService.AddUriAsync(objectId: playlistId, updateId: updateId, enqueuedUriMetaData: xdoc?.ToString(), cancellationToken: cancellationToken).ConfigureAwait(false);
+            await playlistService.AddUriAsync(objectId: playlistId, updateId: updateId, enqueuedUriMetaData: sb.ToString(), cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }
