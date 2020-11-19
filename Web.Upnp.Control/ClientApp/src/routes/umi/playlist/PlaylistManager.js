@@ -72,9 +72,9 @@ export class PlaylistManagerCore extends React.Component {
 
     removePlaylist = (ids) => $api.playlist(this.props.device).delete(ids).fetch();
 
-    addItems = (device, ids) => $api.playlist(this.props.device).fetch(this.props.id, device, ids).jsonFetch();
+    addItems = (device, ids) => $api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch();
 
-    removeItems = (ids) => $api.playlist(this.props.device).fetch(this.props.id, ids).jsonFetch();
+    removeItems = (ids) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch();
 
     onAdd = () => {
         this.setState({
