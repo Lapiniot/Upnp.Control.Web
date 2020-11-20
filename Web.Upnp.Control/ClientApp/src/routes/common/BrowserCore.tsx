@@ -9,7 +9,7 @@ import { DataFetchProps } from "../../components/DataFetch";
 
 type ModeFlags = "captureKeyboardEvents" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
 
-type MediaBrowserProps = {
+export type MediaBrowserProps = {
     filter?: (item: DIDLItem) => boolean;
     selection?: SelectionService;
     cellTemplate?: ElementType;

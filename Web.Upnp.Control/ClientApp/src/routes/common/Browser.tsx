@@ -1,7 +1,7 @@
-import React from "react";
+import React, { ForwardedRef, HTMLAttributes } from "react";
 import Breadcrumb from "./Breadcrumb";
 import Pagination from "./Pagination";
-import BrowserCore from "./BrowserCore";
+import BrowserCore, { MediaBrowserProps } from "./BrowserCore";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $config from "./Config";
 import { DataFetchProps } from "../../components/DataFetch";
@@ -9,11 +9,19 @@ import { RouteComponentProps } from "react-router";
 import { BrowseFetchResult } from "./Types";
 import { NavigatorProps } from "./Navigator";
 
-type PropsType = DataFetchProps<BrowseFetchResult> & RouteComponentProps & NavigatorProps & {
+type FetchProps = {
     device: string;
+    id?: string;
     s?: string;
     p?: string;
 };
+
+type PropsType = MediaBrowserProps &
+    DataFetchProps<BrowseFetchResult> &
+    HTMLAttributes<HTMLDivElement> &
+    NavigatorProps &
+    RouteComponentProps<FetchProps> &
+    FetchProps
 
 export default function (props: PropsType) {
     const { dataContext: data, match, s: size, p: page, fetching } = props;
