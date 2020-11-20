@@ -14,7 +14,7 @@ export type MediaBrowserProps = {
     selection?: SelectionService;
     cellTemplate?: ElementType;
     cellContext?: any;
-} & { [K in ModeFlags]?: boolean } & { device: string; id?: string }
+} & { [K in ModeFlags]?: boolean }
 
 type MediaBrowserState = {}
 
@@ -91,13 +91,13 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
         const checkbox = e.target;
         const id = checkbox.parentElement?.parentElement?.dataset?.id;
         if (!id) return;
-        const cancelled = !this.selection.select(id, checkbox.checked, { device: this.props.device, id: this.props.id });
+        const cancelled = !this.selection.select(id, checkbox.checked);
         this.notifySelectionChanged(cancelled);
     };
 
     onCheckboxAllChanged: ChangeEventHandler<HTMLInputElement> = e => {
         const checkbox = e.target;
-        const cancelled = !this.selection.selectMany(this.selectables ?? [], checkbox.checked, { device: this.props.device, id: this.props.id });
+        const cancelled = !this.selection.selectMany(this.selectables ?? [], checkbox.checked);
         this.notifySelectionChanged(cancelled);
     };
 
@@ -133,7 +133,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
 
                 this.focusedItem = id;
                 this.selection.reset();
-                const cancelled = !this.selection.select(id, true, { device: this.props.device, id: this.props.id });
+                const cancelled = !this.selection.select(id, true);
                 this.notifySelectionChanged(cancelled);
             }
         }
@@ -155,21 +155,20 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
     selectRange(selectionStart: number, selectionEnd: number) {
         const range = this.selectables?.slice(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd) + 1);
         this.selection.reset();
-        const cancelled = !this.selection.selectMany(range ?? [], true, { device: this.props.device, id: this.props.id });
+        const cancelled = !this.selection.selectMany(range ?? [], true);
         this.notifySelectionChanged(cancelled);
     }
 
     toggleSelection(id: string) {
-        const cancelled = !this.selection.select(id, !this.selection.selected(id), { device: this.props.device, id: this.props.id });
+        const cancelled = !this.selection.select(id, !this.selection.selected(id));
         this.notifySelectionChanged(cancelled);
     }
 
     toggleSelectionAll(state: boolean) {
         this.focusedItem = null;
-        const details = { device: this.props.device, id: this.props.id };
         const cancelled = state ?
-            !this.selection.selectMany(this.selectables ?? [], state, details) :
-            !this.selection.clear(details);
+            !this.selection.selectMany(this.selectables ?? [], state) :
+            !this.selection.clear();
         this.notifySelectionChanged(cancelled);
     }
 

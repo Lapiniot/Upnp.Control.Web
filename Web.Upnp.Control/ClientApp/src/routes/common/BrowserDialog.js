@@ -17,17 +17,20 @@ export default class BrowserDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = { selection: { keys: [] } };
+        this.browserRef = React.createRef();
         this.selection = new SelectionService();
         this.selection.addEventListener("changed", e => {
-            const { target: selection, detail: { device } = {} } = e;
+            const { target: selection } = e;
             e.preventDefault();
-            this.setState({ selection: selection, device: device });
+            this.setState({ selection: selection });
         });
     }
 
     confirm = () => { return !!this.props.onConfirm && this.props.onConfirm(this.state.selection); }
 
-    getSelectionData = () => { return [this.state.device, Array.from(this.state.selection.keys)]; }
+    getSelectionData = () => {
+        return [this.browserRef.current.props.match.params.device, Array.from(this.state.selection.keys)];
+    }
 
     render() {
         const { id, title, confirmText = "OK", ...other } = this.props;
@@ -37,7 +40,7 @@ export default class BrowserDialog extends React.Component {
                     <Switch>
                         <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
                         <Route path={"/sources/:device/:id(.*)?"} render={props => props.match.params.id !== "-1"
-                            ? <Browser selection={this.selection} {...props} />
+                            ? <Browser selection={this.selection} {...props} ref={this.browserRef} />
                             : <Redirect to="/sources" />} />
                     </Switch>
                 </MemoryRouter>
