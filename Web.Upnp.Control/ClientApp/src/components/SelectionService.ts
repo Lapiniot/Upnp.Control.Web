@@ -24,7 +24,7 @@ export default class SelectionService extends EventTarget {
 
     all = (keys: string[]) => { return keys.length > 0 && keys.every(this.selected); }
 
-    clear = (detail: any) => {
+    clear = (detail?: any) => {
         this.map.clear();
         return this.dispatchEvent(SelectionService.createEvent(detail));
     };
