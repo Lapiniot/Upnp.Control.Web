@@ -65,6 +65,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
     componentWillUnmount() {
         document.removeEventListener("keydown", this.onKeyDown);
         this.resizeObserver.disconnect();
+        this.selection.clear();
     }
 
     onCaptionResized: ResizeObserverCallback = entries => {
