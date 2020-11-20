@@ -1,11 +1,11 @@
 import BootstrapModal from "bootstrap/js/dist/modal";
-import React, { HTMLAttributes, PropsWithChildren, ReactElement, ReactNode } from "react";
+import React, { ButtonHTMLAttributes, HTMLAttributes, PropsWithChildren, ReactElement, ReactNode } from "react";
 
 export type ModalProps<P = {}> = PropsWithChildren<P & {
     immediate?: boolean;
-    onDismiss: EventListener;
-    onShown: EventListener;
-    buttons: ReactNode;
+    onDismiss?: EventListener;
+    onShown?: EventListener;
+    buttons?: ReactNode;
 } & HTMLAttributes<HTMLDivElement>>;
 
 export default class Modal extends React.Component<ModalProps> {
@@ -73,7 +73,7 @@ export default class Modal extends React.Component<ModalProps> {
     }
 
     static Button = ({ dismiss, className, icon, children, ...other }:
-        PropsWithChildren<{ dismiss?: boolean; icon?: string } & HTMLAttributes<HTMLButtonElement>>) =>
+        PropsWithChildren<{ dismiss?: boolean; icon?: string } & ButtonHTMLAttributes<HTMLButtonElement>>) =>
         <button type="button" className={`btn${className ? ` ${className}` : ""}`} data-dismiss={dismiss ? "modal" : null} {...other}>
             {icon && <i className={`mr-2 fas fa-${icon}`} />}{children}
         </button>;

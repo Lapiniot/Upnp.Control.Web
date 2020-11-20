@@ -9,7 +9,7 @@ import { DataFetchProps } from "../../components/DataFetch";
 
 type ModeFlags = "captureKeyboardEvents" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
 
-export type MediaBrowserProps = {
+export type BrowserCoreProps = {
     filter?: (item: DIDLItem) => boolean;
     selection?: SelectionService;
     cellTemplate?: ElementType;
@@ -18,7 +18,7 @@ export type MediaBrowserProps = {
 
 type MediaBrowserState = {}
 
-type PropsType = MediaBrowserProps & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
+type PropsType = BrowserCoreProps & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
 
 export default class MediaBrowser extends React.Component<PropsType, MediaBrowserState> {
     state = { modal: null };

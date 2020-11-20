@@ -1,35 +1,38 @@
-import React from "react";
+import React, { HTMLAttributes } from "react";
 import { MemoryRouter, Switch, Route, Redirect } from "react-router-dom";
 import Modal from "../../components/Modal";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
-import { withDataFetch } from "../../components/DataFetch";
+import { DataFetchProps, withDataFetch } from "../../components/DataFetch";
 import { withBrowser } from "./BrowserUtils";
 import BrowserCore from "./Browser";
 import $api from "../../components/WebApi";
 import SelectionService from "../../components/SelectionService";
+import { DIDLItem, UpnpDevice } from "./Types";
 
-export default class BrowserDialog extends React.Component {
+export type BrowserDialogProps = HTMLAttributes<HTMLDivElement> & {
+    confirmText?: string;
+    onConfirm: (selection: string[]) => void;
+};
+
+export default class BrowserDialog extends React.Component<BrowserDialogProps, { selection: any }> {
 
     displayName = BrowserDialog.name;
+    browserRef = React.createRef<any>();
+    selection;
 
-    constructor(props) {
+    constructor(props: BrowserDialogProps) {
         super(props);
         this.state = { selection: { keys: [] } };
-        this.browserRef = React.createRef();
         this.selection = new SelectionService();
-        this.selection.addEventListener("changed", e => {
-            const { target: selection } = e;
-            e.preventDefault();
-            this.setState({ selection: selection });
-        });
+        this.selection.addEventListener("changed", e => this.setState({ selection: e.target }));
     }
 
-    confirm = () => { return !!this.props.onConfirm && this.props.onConfirm(this.state.selection); }
+    confirm = () => { return !!this.props.onConfirm && this.props.onConfirm(Array.from(this.selection.keys)); }
 
     getSelectionData = () => {
-        return [this.browserRef.current.props.match.params.device, Array.from(this.state.selection.keys)];
+        return [this.browserRef?.current?.props.match.params.device, Array.from(this.state.selection.keys)];
     }
 
     render() {
@@ -40,7 +43,8 @@ export default class BrowserDialog extends React.Component {
                     <Switch>
                         <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
                         <Route path={"/sources/:device/:id(.*)?"} render={props => props.match.params.id !== "-1"
-                            ? <Browser selection={this.selection} {...props} ref={this.browserRef} />
+                            ? <Browser selection={this.selection} {...props} ref={this.browserRef} filter={isMusicTrack}
+                                captureKeyboardEvents useCheckboxes selectOnClick />
                             : <Redirect to="/sources" />} />
                     </Switch>
                 </MemoryRouter>
@@ -58,12 +62,12 @@ export default class BrowserDialog extends React.Component {
 
 const serversFetch = $api.devices("servers").jsonFetch;
 
-const MediaSourceList = withDataFetch(({ dataContext: { source: data }, fetching }) =>
+const MediaSourceList = withDataFetch(({ dataContext: ctx, fetching }: DataFetchProps<UpnpDevice[]>) =>
     <div>
         {fetching
             ? <LoadIndicatorOverlay />
             : <ul className="list-group list-group-flush">
-                {data.map(({ udn, name, type, description, icons }, i) =>
+                {ctx?.source?.map(({ udn, name, type, description, icons }, i) =>
                     <RouteLink key={`dev-${i}`} to={`/sources/${udn}`} className="list-group-item list-group-item-action">
                         <DeviceIcon icons={icons} service={type} />
                         {name}{description && ` (${description})`}
@@ -71,10 +75,8 @@ const MediaSourceList = withDataFetch(({ dataContext: { source: data }, fetching
             </ul>}
     </div>, () => serversFetch, { usePreloader: true });
 
-function isMusicTrack(item) {
+function isMusicTrack(item: DIDLItem) {
     return item.class.endsWith(".musicTrack");
 }
 
-const BrowserView = (props) => <BrowserCore {...props} filter={isMusicTrack} captureKeyboardEvents useCheckboxes selectOnClick />;
-
-const Browser = withBrowser(BrowserView, false);
+const Browser = withBrowser(BrowserCore, false);

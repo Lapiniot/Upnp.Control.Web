@@ -1,7 +1,7 @@
 import React, { ForwardedRef, HTMLAttributes } from "react";
 import Breadcrumb from "./Breadcrumb";
 import Pagination from "./Pagination";
-import BrowserCore, { MediaBrowserProps } from "./BrowserCore";
+import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $config from "./Config";
 import { DataFetchProps } from "../../components/DataFetch";
@@ -16,14 +16,14 @@ type FetchProps = {
     p?: string;
 };
 
-type PropsType = MediaBrowserProps &
+export type BrowserProps = BrowserCoreProps &
     DataFetchProps<BrowseFetchResult> &
     HTMLAttributes<HTMLDivElement> &
     NavigatorProps &
     RouteComponentProps<FetchProps> &
     FetchProps
 
-export default function (props: PropsType) {
+export default function (props: BrowserProps) {
     const { dataContext: data, match, s: size, p: page, fetching } = props;
     const { source: { total = 0, items: { length: fetched = 0 } = {}, parents = undefined } = {} } = data || {};
     return <div className="d-flex flex-column h-100 position-relative">
