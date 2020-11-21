@@ -42,10 +42,10 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
                         <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
-                        <Route path={"/sources/:device/:id(.*)?"} render={props => props.match.params.id !== "-1"
-                            ? <Browser selection={this.selection} {...props} ref={this.browserRef} filter={isMusicTrack}
-                                captureKeyboardEvents useCheckboxes selectOnClick />
-                            : <Redirect to="/sources" />} />
+                        <Route path={"/sources/:device/-1"} exact render={() => <Redirect to="/sources" />} />
+                        <Route path={"/sources/:device/:id(.*)?"} render={props =>
+                            <Browser {...props} selection={this.selection} ref={this.browserRef} filter={isMusicTrack}
+                                captureKeyboardEvents useCheckboxes selectOnClick />} />
                     </Switch>
                 </MemoryRouter>
             </Modal.Body>
