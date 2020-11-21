@@ -16,5 +16,5 @@ type DeviceBrowseRouteParams = DeviceRouteParams & {
 
 export default ({ match: { path } }: RouteComponentProps<DeviceRouteParams>) => <Switch>
     <Route path={`${path}/-1`} render={() => <Redirect to="/upnp" />} />
-    <Route path={`${path}/:id(.*)*`} render={(props: RouteComponentProps<DeviceBrowseRouteParams>) => <Browser history={props.history} location={props.location} match={props.match} />} />
+    <Route path={`${path}/:id(.*)*`} render={(props: RouteComponentProps<DeviceBrowseRouteParams>) => <Browser {...props} />} />
 </Switch>;
