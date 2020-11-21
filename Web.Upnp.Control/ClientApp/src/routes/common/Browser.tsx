@@ -10,8 +10,6 @@ import { BrowseFetchResult } from "./Types";
 import { NavigatorProps } from "./Navigator";
 
 type FetchProps = {
-    device: string;
-    id?: string;
     s?: string;
     p?: string;
 };
