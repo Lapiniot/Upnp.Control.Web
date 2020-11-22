@@ -6,7 +6,7 @@ export type NavigatorProps = { navigate: EventHandler<UIEvent<HTMLElement>> }
 
 type InjectedProps<Params> = NavigatorProps & Params;
 
-export default function withNavigator<Params extends { [K in keyof Params]?: any }, P extends InjectedProps<Params>>(Component: ComponentType<P>) {
+export default function withNavigator<P extends InjectedProps<Params>, Params extends { [K in keyof Params]?: any }>(Component: ComponentType<P>) {
 
     type ConstructedProps = Omit<P, keyof InjectedProps<Params>> & RouteComponentProps<Params>;
 
