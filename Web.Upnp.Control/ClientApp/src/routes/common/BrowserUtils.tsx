@@ -1,11 +1,10 @@
-import { withDataFetch, withMemoKey } from "../../components/DataFetch";
-import withNavigation from "./Navigator";
+import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
+import withNavigation, { NavigatorProps } from "./Navigator";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $api, { BrowseFetch } from "../../components/WebApi";
 import $config from "./Config";
 import { DIDLResource } from "./Types";
 import { ComponentType } from "react";
-import { BrowserProps } from "./Browser";
 
 export class DIDLUtils {
     static getKind(upnpClassName: string): string {
@@ -57,7 +56,7 @@ function parse(value: string | number | undefined): number | undefined {
 }
 
 type FetchProps = {
-    device?: string;
+    device: string;
     id?: string;
     p?: string;
     s?: string;
@@ -74,7 +73,7 @@ export function fromBaseQuery(baseFetchQuery: FetchFunction) {
 
 const defaultQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id).withParents().withResource());
 
-export function withBrowser(BrowserComponent: ComponentType<BrowserProps>, usePreloader = true, builder = defaultQueryBuilder) {
-    return withNavigation(
-        withDataFetch(BrowserComponent, builder, { template: LoadIndicatorOverlay, usePreloader }));
+export function withBrowser<P extends DataFetchProps & NavigatorProps>(BrowserComponent: ComponentType<P>, usePreloader = true, builder = defaultQueryBuilder) {
+    return withNavigation<Omit<P, keyof DataFetchProps> & FetchProps, FetchProps>(
+        withDataFetch<P, FetchProps>(BrowserComponent, builder, { template: LoadIndicatorOverlay, usePreloader }));
 }
