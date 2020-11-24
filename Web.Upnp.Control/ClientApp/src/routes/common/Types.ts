@@ -46,6 +46,7 @@ export type DIDLItem = {
     creator?: string;
     album?: string;
     albumArts?: string[];
+    artists?: string[];
     res?: DIDLResource;
 }
 

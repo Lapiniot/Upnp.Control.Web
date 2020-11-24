@@ -11,7 +11,7 @@ export type SliderCSSProperties = CSSProperties & {
 type SliderProps = HTMLProps<HTMLDivElement> & {
     progress: number;
     onChangeRequested: SliderChangeHandler;
-    style: SliderCSSProperties;
+    style?: SliderCSSProperties;
 }
 
 export default class extends React.Component<SliderProps> {

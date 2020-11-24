@@ -1,10 +1,11 @@
-import React from "react";
-import { withDataFetch, withMemoKey } from "../../components/DataFetch";
+import React, { ButtonHTMLAttributes, PropsWithChildren } from "react";
+import { DataContext, DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
 import $api from "../../components/WebApi";
 import Progress from "./Progress";
 import Slider from "../../components/Slider";
-import $c from "../common/Config";
+import $c from "./Config";
+import { DIDLItem } from "./Types";
 
 const PM_REPEAT_SHUFFLE = "REPEAT_SHUFFLE";
 const PM_REPEAT_ALL = "REPEAT_ALL";
@@ -12,24 +13,62 @@ const PM_REPEAT_ALL = "REPEAT_ALL";
 const ST_TRANSITIONING = "TRANSITIONING";
 const ST_PLAYING = "PLAYING";
 
-function Button(props) {
+function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }>) {
     const { className, glyph, children, active, ...other } = props;
     return <button type="button" className={`btn no-outline p-1${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
         {glyph && <i className={`fas fa-${glyph}`} />}{children}
     </button>
 }
 
-class PlayerCore extends React.Component {
-    constructor(props) {
+type AVState = {
+    actions?: string[];
+    currentTrackMetadata?: DIDLItem;
+    nextTrackMetadata?: DIDLItem;
+    state?: string;
+    playMode: string;
+};
+
+type PlayerProps = {
+    udn: string;
+} & DataFetchProps<AVState>
+
+type RCState = {
+    volume?: number;
+    muted?: boolean;
+};
+
+type PlayerState = {
+    dataContext?: DataContext<AVState>;
+    actions?: string[];
+    current?: DIDLItem;
+    next?: DIDLItem;
+    playbackState?: string;
+    playMode?: string;
+    progress?: number;
+    time?: string;
+    duration?: string;
+} & RCState
+
+type AVPositionState = {
+    relTime?: string;
+    duration?: string;
+};
+
+class PlayerCore extends React.Component<PlayerProps, PlayerState> {
+
+    handlers;
+    ctrl;
+
+    constructor(props: PlayerProps) {
         super(props);
-        this.handlers = new Map([
+        this.handlers = new Map<string, (...args: any[]) => void>([
             ["AVTransportEvent", this.onAVTransportEvent],
             ["RenderingControlEvent", this.onRenderingControlEvent]]);
-        this.state = { actions: [], current: null, next: null, playbackState: null, dataContext: null, progress: 0, volume: 0, muted: false };
         this.ctrl = $api.control(this.props.udn);
+        this.state = {}
     }
 
-    static getDerivedStateFromProps(props, prevState) {
+    static getDerivedStateFromProps(props: PlayerProps, prevState: PlayerState) {
         return (props.dataContext !== prevState.dataContext && props.dataContext)
             ? {
                 dataContext: props.dataContext,
@@ -42,27 +81,27 @@ class PlayerCore extends React.Component {
             : null;
     }
 
-    onAVTransportEvent = (device, { state: { actions, currentTrackMetadata: current, nextTrackMetadata: next, state, playMode }, position }) => {
+    onAVTransportEvent = (device: string, { state, position }: { state: AVState; position: AVPositionState }) => {
         if (device === this.props.udn) {
             this.setState({
-                actions,
-                current,
-                next,
-                playMode,
-                playbackState: state,
+                actions: state.actions,
+                current: state.currentTrackMetadata,
+                next: state.nextTrackMetadata,
+                playMode: state.playMode,
+                playbackState: state.state,
                 time: position.relTime,
                 duration: position.duration
             });
         }
     }
 
-    onRenderingControlEvent = (device, state) => {
+    onRenderingControlEvent = (device: string, state: RCState) => {
         if (device === this.props.udn) {
             this.setState(state);
         }
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: PlayerProps) {
         if (prevProps.udn !== this.props.udn) {
             this.ctrl = $api.control(this.props.udn);
         }
@@ -91,7 +130,7 @@ class PlayerCore extends React.Component {
 
     next = () => this.ctrl.next().fetch($c.timeout);
 
-    seek = position => this.ctrl.seek(position).fetch($c.timeout);
+    seek = (position: number) => this.ctrl.seek(position).fetch($c.timeout);
 
     setRepeatAllPlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_ALL).fetch($c.timeout);
 
@@ -99,7 +138,7 @@ class PlayerCore extends React.Component {
 
     toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($c.timeout);
 
-    changeVolume = volume => this.ctrl.setVolume(Math.round(volume * 100)).fetch($c.timeout);
+    changeVolume = (volume: number) => this.ctrl.setVolume(Math.round(volume * 100)).fetch($c.timeout);
 
     render() {
         const { actions = [], current, next, playbackState, playMode, time, duration, volume = 0, muted = false } = this.state;
@@ -116,7 +155,7 @@ class PlayerCore extends React.Component {
             <i data-fa-symbol="volume-up" className="fas fa-volume-up" />
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
             <div className="d-flex flex-column">
-                <Progress className="mb-2" time={time} duration={duration} running={playbackState === ST_PLAYING} onChangeRequested={this.seek} />
+                {time && duration && <Progress className="mb-2" time={time} duration={duration} running={playbackState === ST_PLAYING} onChangeRequested={this.seek} />}
                 <div className="d-flex align-items-center flex-nowrap">
                     <Button title="Prev" glyph="step-backward" className="py-0" onClick={this.prev} disabled={!actions.includes("Previous")} />
                     {actions.includes("Play") && <Button title="Play" glyph="play-circle" className="fa-2x" onClick={this.play} />}
@@ -143,6 +182,6 @@ class PlayerCore extends React.Component {
     }
 }
 
-const fetchPromiseFactoryBuilder = ({ udn }) => withMemoKey($api.control(udn).state(true).withTimeout($c.timeout).jsonFetch, udn);
+const fetchPromiseFactoryBuilder = ({ udn }: { udn: string }) => withMemoKey($api.control(udn as string).state(true).withTimeout($c.timeout).jsonFetch, udn);
 
 export default withDataFetch(PlayerCore, fetchPromiseFactoryBuilder, { usePreloader: false });
