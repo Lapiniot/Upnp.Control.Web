@@ -1,9 +1,25 @@
-import React from "react";
+import React, { EventHandler, UIEvent } from "react";
 import AlbumArt from "../../common/AlbumArt";
+import { DIDLItem, PlaybackState } from "../../common/Types";
 
-export default function ({ data, context: { active, parents, state, play, pause, playUrl }, index }) {
+type CellContext = {
+    active: (item: DIDLItem, index: number) => boolean;
+    parents: DIDLItem[];
+    state: PlaybackState;
+    play: EventHandler<UIEvent<HTMLDivElement>>;
+    pause: EventHandler<UIEvent<HTMLDivElement>>;
+    playUrl: EventHandler<UIEvent<HTMLDivElement>>;
+}
+
+type CellTemplateProps = {
+    data: DIDLItem;
+    context: CellContext;
+    index: number;
+}
+
+export default function ({ data, context: { active, parents, state, play, pause, playUrl }, index }: CellTemplateProps) {
     const isActive = active(data, index);
-    const url = parents[0]?.res?.url ? `${parents[0].res.url}#tracknr=${index + 1},play` : `${data.res.url}#play`;
+    const url = parents[0]?.res?.url ? `${parents[0].res.url}#tracknr=${index + 1},play` : `${data?.res?.url}#play`;
     return <div className="d-flex align-items-center">
         <div className="d-inline-block stack mr-1">
             <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
