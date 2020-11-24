@@ -1,4 +1,5 @@
-﻿import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch, RequestQuery } from "./HttpFetch";
+﻿import { PlaybackMode } from "../routes/common/Types";
+import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch, RequestQuery } from "./HttpFetch";
 
 const baseUri = "/api/devices";
 
@@ -13,7 +14,7 @@ export interface ControlApiProvider {
     next: () => JsonPutFetch;
     position: (detailed?: boolean) => JsonFetch;
     seek: (position: number | string) => JsonPutFetch;
-    setPlayMode: (mode: string) => JsonPutFetch;
+    setPlayMode: (mode: PlaybackMode) => JsonPutFetch;
     volume: (detailed?: boolean) => JsonFetch;
     setVolume: (volume: number) => JsonPutFetch;
     getMute: () => JsonFetch;

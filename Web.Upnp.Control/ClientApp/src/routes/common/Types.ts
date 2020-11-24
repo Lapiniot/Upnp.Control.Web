@@ -3,7 +3,7 @@ export type Icon = {
     h: number;
     url: string;
     mime?: string;
-};
+}
 
 export type UpnpDevice = {
     udn: string;
@@ -19,13 +19,13 @@ export type UpnpDevice = {
     presentUrl?: string;
     services: UpnpService[];
     icons: Icon[];
-};
+}
 
 export type UpnpService = {
     usn: string;
     url: string;
     type: string;
-};
+}
 
 export type DIDLResource = {
     proto: string;
@@ -36,7 +36,7 @@ export type DIDLResource = {
     bitrate?: number;
     sampleFrequency?: number;
     nrAudioChannels?: number;
-};
+}
 
 export type DIDLItem = {
     id: string;
@@ -54,15 +54,44 @@ export type BrowseFetchResult = {
     total: number;
     items: DIDLItem[];
     parents?: DIDLItem[];
-};
+}
+
+export type PlaybackState = "STOPPED" | "PLAYING" | "TRANSITIONING" | "PAUSED_PLAYBACK" | "PAUSED_RECORDING" | "RECORDING" | "NO_MEDIA_PRESENT" | "CUSTOM"
+
+export type PlaybackStatus = "OK" | "ERROR_OCCURRED" | "CUSTOM"
+
+export type PlaybackMode = "NORMAL" | "SHUFFLE" | "REPEAT_SHUFFLE" | "REPEAT_TRACK" | "REPEAT_ONE" | "REPEAT_ALL" | "RANDOM"
+
+export type AVState = {
+    state: PlaybackState;
+    actions: string[];
+    current?: DIDLItem | null;
+    next?: DIDLItem | null;
+    status?: PlaybackStatus;
+    tracks?: number | null;
+    medium?: string | null;
+    playMode?: PlaybackMode;
+    currentTrack?: string | null;
+    currentTrackUri?: string | null;
+}
+
+export type AVPositionState = {
+    relTime: string;
+    duration: string;
+}
+
+export type RCState = {
+    volume: number;
+    muted?: boolean;
+}
 
 export enum Services {
     MediaRenderer = "urn:schemas-upnp-org:device:MediaRenderer",
     ContentDirectory = "urn:schemas-upnp-org:service:ContentDirectory",
     UmiPlaylist = "urn:xiaomi-com:service:Playlist"
-};
+}
 
 export type DataSourceProps<T = {}, P = {}> = P & {
     "data-source": T;
     "data-row-id"?: string | number
-};
+}

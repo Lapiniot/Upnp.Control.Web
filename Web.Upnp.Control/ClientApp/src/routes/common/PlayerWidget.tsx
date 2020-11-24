@@ -5,13 +5,7 @@ import $api from "../../components/WebApi";
 import Progress from "./Progress";
 import Slider from "../../components/Slider";
 import $c from "./Config";
-import { DIDLItem } from "./Types";
-
-const PM_REPEAT_SHUFFLE = "REPEAT_SHUFFLE";
-const PM_REPEAT_ALL = "REPEAT_ALL";
-
-const ST_TRANSITIONING = "TRANSITIONING";
-const ST_PLAYING = "PLAYING";
+import { AVPositionState, AVState, RCState } from "./Types";
 
 function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }>) {
     const { className, glyph, children, active, ...other } = props;
@@ -20,39 +14,9 @@ function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>
     </button>
 }
 
-type AVState = {
-    actions?: string[];
-    currentTrackMetadata?: DIDLItem;
-    nextTrackMetadata?: DIDLItem;
-    state?: string;
-    playMode: string;
-};
+type PlayerProps = { udn: string; } & DataFetchProps<AVState>
 
-type PlayerProps = {
-    udn: string;
-} & DataFetchProps<AVState>
-
-type RCState = {
-    volume?: number;
-    muted?: boolean;
-};
-
-type PlayerState = {
-    dataContext?: DataContext<AVState>;
-    actions?: string[];
-    current?: DIDLItem;
-    next?: DIDLItem;
-    playbackState?: string;
-    playMode?: string;
-    progress?: number;
-    time?: string;
-    duration?: string;
-} & RCState
-
-type AVPositionState = {
-    relTime?: string;
-    duration?: string;
-};
+type PlayerState = { dataContext?: DataContext<AVState> } & Partial<AVState> & Partial<RCState> & Partial<AVPositionState>
 
 class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
@@ -68,30 +32,15 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
         this.state = {}
     }
 
-    static getDerivedStateFromProps(props: PlayerProps, prevState: PlayerState) {
-        return (props.dataContext !== prevState.dataContext && props.dataContext)
-            ? {
-                dataContext: props.dataContext,
-                actions: props.dataContext.source.actions,
-                current: props.dataContext.source.currentTrackMetadata,
-                next: props.dataContext.source.nextTrackMetadata,
-                playbackState: props.dataContext.source.state,
-                playMode: props.dataContext.source.playMode
-            }
+    static getDerivedStateFromProps({ dataContext }: PlayerProps, prevState: PlayerState) {
+        return (dataContext !== prevState.dataContext && dataContext)
+            ? { dataContext, ...(dataContext?.source) }
             : null;
     }
 
     onAVTransportEvent = (device: string, { state, position }: { state: AVState; position: AVPositionState }) => {
         if (device === this.props.udn) {
-            this.setState({
-                actions: state.actions,
-                current: state.currentTrackMetadata,
-                next: state.nextTrackMetadata,
-                playMode: state.playMode,
-                playbackState: state.state,
-                time: position.relTime,
-                duration: position.duration
-            });
+            this.setState({ ...state, ...position });
         }
     }
 
@@ -109,12 +58,11 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
     async componentDidMount() {
         try {
-            const { 0: { relTime, duration }, 1: { volume, muted } } =
-                await Promise.all([
-                    await this.ctrl.position().jsonFetch($c.timeout),
-                    await this.ctrl.volume(true).jsonFetch($c.timeout)]);
+            const r = await Promise.all([
+                await this.ctrl.position().jsonFetch($c.timeout),
+                await this.ctrl.volume(true).jsonFetch($c.timeout)]);
 
-            this.setState({ time: relTime, duration, volume, muted });
+            this.setState({ ...r[0], ...r[1] });
         } catch (error) {
             console.error(error);
         }
@@ -132,18 +80,18 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
     seek = (position: number) => this.ctrl.seek(position).fetch($c.timeout);
 
-    setRepeatAllPlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_ALL).fetch($c.timeout);
+    setRepeatAllPlayMode = () => this.ctrl.setPlayMode("REPEAT_ALL").fetch($c.timeout);
 
-    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode(PM_REPEAT_SHUFFLE).fetch($c.timeout);
+    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode("REPEAT_SHUFFLE").fetch($c.timeout);
 
     toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($c.timeout);
 
     changeVolume = (volume: number) => this.ctrl.setVolume(Math.round(volume * 100)).fetch($c.timeout);
 
     render() {
-        const { actions = [], current, next, playbackState, playMode, time, duration, volume = 0, muted = false } = this.state;
+        const { actions = [], current, next, state, playMode, relTime, duration, volume = 0, muted = false } = this.state;
         const { title, album, creator } = current || {};
-        const transitioning = playbackState === ST_TRANSITIONING;
+        const transitioning = state === "TRANSITIONING";
         const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
         const volumeStr = muted ? "Muted" : `${volume}%`;
         const volumeIcon = muted ? "volume-mute" : volume > 50 ? "volume-up" : volume > 20 ? "volume-down" : "volume-off";
@@ -155,7 +103,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
             <i data-fa-symbol="volume-up" className="fas fa-volume-up" />
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
             <div className="d-flex flex-column">
-                {time && duration && <Progress className="mb-2" time={time} duration={duration} running={playbackState === ST_PLAYING} onChangeRequested={this.seek} />}
+                {relTime && duration && <Progress className="mb-2" time={relTime} duration={duration} running={state === "PLAYING"} onChangeRequested={this.seek} />}
                 <div className="d-flex align-items-center flex-nowrap">
                     <Button title="Prev" glyph="step-backward" className="py-0" onClick={this.prev} disabled={!actions.includes("Previous")} />
                     {actions.includes("Play") && <Button title="Play" glyph="play-circle" className="fa-2x" onClick={this.play} />}
@@ -173,8 +121,8 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                             </Button>
                             <Slider progress={volume / 100} className="hover-activated position-absolute w-100 px-1" onChangeRequested={this.changeVolume} />
                         </div>
-                        <Button title="shuffle play mode" glyph="random" active={playMode === PM_REPEAT_SHUFFLE} onClick={this.setRepeatShufflePlayMode} />
-                        <Button title="repeat all play mode" glyph="retweet" active={playMode === PM_REPEAT_ALL} onClick={this.setRepeatAllPlayMode} />
+                        <Button title="shuffle play mode" glyph="random" active={playMode === "REPEAT_SHUFFLE"} onClick={this.setRepeatShufflePlayMode} />
+                        <Button title="repeat all play mode" glyph="retweet" active={playMode === "REPEAT_ALL"} onClick={this.setRepeatAllPlayMode} />
                     </div>
                 </div>
             </div>

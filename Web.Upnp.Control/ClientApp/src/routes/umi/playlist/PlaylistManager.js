@@ -38,7 +38,7 @@ export class PlaylistManagerCore extends React.Component {
 
     async componentDidMount() {
         try {
-            const { actions, currentTrackMetadata: current, state, medium } = await this.ctrl.state(true).jsonFetch();
+            const { actions, current, state, medium } = await this.ctrl.state(true).jsonFetch();
             if (medium === "X-MI-AUX") {
                 this.setState({ actions, current, playbackState: state, playlist: "aux", track: null });
             } else {
@@ -53,7 +53,7 @@ export class PlaylistManagerCore extends React.Component {
         }
     }
 
-    onAVTransportEvent = (device, { state: { actions, currentTrackMetadata: current, currentTrack: track, state } = {},
+    onAVTransportEvent = (device, { state: { actions, current, currentTrack: track, state } = {},
         vendorProps: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = {} }) => {
         if (device === this.props.device) {
             this.setState({ actions, current, playbackState: state, playlist: transport === "AUX" ? "aux" : playlist, track: parseInt(track) });

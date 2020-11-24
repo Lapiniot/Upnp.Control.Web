@@ -45,10 +45,10 @@ namespace Web.Upnp.Control.Services
                 map.TryGetValue("CurrentPlayMode", out value) ? value : null)
             {
                 Actions = map.TryGetValue("CurrentTransportActions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-                CurrentTrackMetadata = current,
+                Current = current,
+                Next = next,
                 CurrentTrack = map.TryGetValue("CurrentTrack", out value) ? value : null,
                 CurrentTrackUri = map.TryGetValue("CurrentTrackURI", out value) ? value : null,
-                NextTrackMetadata = next
             };
 
             var position = new AVPosition(map.TryGetValue("CurrentTrack", out value) ? value : null,
