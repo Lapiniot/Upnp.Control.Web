@@ -21,7 +21,8 @@
         "IoT.Device/IoT.Protocol/System.Common/System.Common.CommandLine": true,
         "IoT.Device/IoT.Protocol/System.Common/System.Common.Configuration": true,
         "IoT.Device/IoT.Protocol/System.Common/System.Common.Tests": true,
-        "**/react-app-env.d.ts": true
+        "**/react-app-env.d.ts": true,
+        "**/.eslintcache": true
     },
     "files.associations": {
         "**/src/components/**/*.js": "javascriptreact",

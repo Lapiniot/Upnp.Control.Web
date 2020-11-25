@@ -1,33 +1,34 @@
 {
-    "compilerOptions": {
-        "target": "ES2020",
-        "allowJs": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "module": "esnext",
-        "moduleResolution": "Node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "jsx": "preserve",
-        "skipLibCheck": false,
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
-        "typeRoots": [
-            "Node",
-            "src/@types"
-        ]
-    },
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.tsx"
+  "compilerOptions": {
+    "target": "ES2020",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react",
+    "skipLibCheck": false,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
     ],
-    "exclude": [
-        "node_modules/**/*.*"
-    ]
+    "typeRoots": [
+      "Node",
+      "src/@types"
+    ],
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules/**/*.*"
+  ]
 }
