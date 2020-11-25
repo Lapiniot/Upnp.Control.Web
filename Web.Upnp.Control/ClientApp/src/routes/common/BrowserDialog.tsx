@@ -1,6 +1,6 @@
 import React, { HTMLAttributes } from "react";
 import { MemoryRouter, Switch, Route, Redirect } from "react-router-dom";
-import Modal from "../../components/Modal";
+import Modal, { ModalProps } from "../../components/Modal";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
@@ -13,8 +13,8 @@ import { DIDLItem, UpnpDevice } from "./Types";
 
 export type BrowserDialogProps = HTMLAttributes<HTMLDivElement> & {
     confirmText?: string;
-    onConfirm: (selection: string[]) => void;
-};
+    onConfirm?: (selection: string[]) => void;
+} & ModalProps
 
 export default class BrowserDialog extends React.Component<BrowserDialogProps, { selection: any }> {
 
@@ -31,8 +31,8 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
 
     confirm = () => { return !!this.props.onConfirm && this.props.onConfirm(Array.from(this.selection.keys)); }
 
-    getSelectionData = () => {
-        return [this.browserRef?.current?.props.match.params.device, Array.from(this.state.selection.keys)];
+    getSelectionData = (): { device: string; keys: string[] } => {
+        return { device: this.browserRef?.current?.props.match.params.device, keys: Array.from(this.state.selection.keys) };
     }
 
     render() {

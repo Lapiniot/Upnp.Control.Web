@@ -36,7 +36,7 @@ export class HttpFetch extends UrlBuilder {
         this.init = { method: "GET", ...init };
     }
 
-    fetch = (requestTimeout: number | undefined) => {
+    fetch = (requestTimeout?: number | undefined) => {
         const timeout = requestTimeout ?? this.timeout;
         if (typeof timeout === "number" && timeout > 0) {
             return fetch(this.url(), this.init, timeout);
@@ -46,7 +46,7 @@ export class HttpFetch extends UrlBuilder {
         }
     }
 
-    jsonFetch = async (requestTimeout: number | undefined): Promise<any> => {
+    jsonFetch = async (requestTimeout?: number | undefined): Promise<any> => {
         const response = await this.fetch(requestTimeout);
         return await response.json();
     }

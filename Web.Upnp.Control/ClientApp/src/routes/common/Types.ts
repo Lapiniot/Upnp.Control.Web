@@ -1,3 +1,7 @@
+export type PropertyBag = {
+    [key: string]: string
+}
+
 export type Icon = {
     w: number;
     h: number;
@@ -42,12 +46,14 @@ export type DIDLItem = {
     id: string;
     class: string;
     title: string;
+    readonly?: boolean;
     container?: boolean;
     creator?: string;
     album?: string;
     albumArts?: string[];
     artists?: string[];
     res?: DIDLResource;
+    vendor?: PropertyBag;
 }
 
 export type BrowseFetchResult = {

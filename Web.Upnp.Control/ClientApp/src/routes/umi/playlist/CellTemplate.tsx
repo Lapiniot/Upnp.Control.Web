@@ -2,10 +2,10 @@ import React, { EventHandler, UIEvent } from "react";
 import AlbumArt from "../../common/AlbumArt";
 import { DIDLItem, PlaybackState } from "../../common/Types";
 
-type CellContext = {
+export type CellContext = {
     active: (item: DIDLItem, index: number) => boolean;
     parents: DIDLItem[];
-    state: PlaybackState;
+    state: PlaybackState | undefined;
     play: EventHandler<UIEvent<HTMLDivElement>>;
     pause: EventHandler<UIEvent<HTMLDivElement>>;
     playUrl: EventHandler<UIEvent<HTMLDivElement>>;

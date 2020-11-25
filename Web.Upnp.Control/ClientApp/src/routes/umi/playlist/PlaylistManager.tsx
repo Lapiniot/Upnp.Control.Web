@@ -1,4 +1,4 @@
-import React from "react";
+import React, { EventHandler, HTMLAttributes, ReactNode, UIEvent } from "react";
 import $api from "../../../components/WebApi";
 import Modal from "../../../components/Modal";
 import $config from "../../common/Config";
@@ -12,22 +12,48 @@ import Browser from "../../common/BrowserCore";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
 import { SignalRListener } from "../../../components/SignalR";
-import MainCell from "./CellTemplate";
+import MainCell, { CellContext } from "./CellTemplate";
+import { AVState, BrowseFetchResult, DIDLItem, PropertyBag } from "../../common/Types";
+import { DataFetchProps } from "../../../components/DataFetch";
+import { NavigatorProps } from "../../common/Navigator";
+import { RouteComponentProps } from "react-router";
 
-export class PlaylistManagerCore extends React.Component {
+type RouteParams = {
+    device: string;
+    id: string;
+    s?: string;
+    p?: string;
+};
+
+type PlaylistManagerProps = RouteParams &
+    DataFetchProps<BrowseFetchResult> &
+    HTMLAttributes<HTMLDivElement> &
+    NavigatorProps &
+    RouteComponentProps;
+
+type PlaylistManagerState = {
+    modal: ReactNode;
+    selection: SelectionService;
+    playlist?: string;
+} & Partial<AVState>;
+
+export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
+    selection;
+    handlers;
+    ctrl;
 
-    constructor(props) {
+    constructor(props: PlaylistManagerProps) {
         super(props);
         this.selection = new SelectionService();
         this.selection.addEventListener("changed", () => this.setState({ selection: this.selection }));
-        this.handlers = new Map([["AVTransportEvent", this.onAVTransportEvent]]);
+        this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
         this.state = { modal: null, selection: this.selection };
         this.ctrl = $api.control(this.props.device);
     }
 
-    async componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps: PlaylistManagerProps) {
         if (prevProps.device !== this.props.device) {
             this.ctrl = $api.control(this.props.device);
         }
@@ -38,43 +64,43 @@ export class PlaylistManagerCore extends React.Component {
 
     async componentDidMount() {
         try {
-            const { actions, current, state, medium } = await this.ctrl.state(true).jsonFetch();
-            if (medium === "X-MI-AUX") {
-                this.setState({ actions, current, playbackState: state, playlist: "aux", track: null });
+            const state = await this.ctrl.state(true).jsonFetch();
+            if (state.medium === "X-MI-AUX") {
+                this.setState({ ...state, playlist: "aux" });
             } else {
-                const { 0: { "playlist_transport_uri": playlist }, 1: { track } } = await Promise.all([
+                const { 0: { "playlist_transport_uri": playlist }, 1: { currentTrack } } = await Promise.all([
                     await this.ctrl.playlistState().jsonFetch(),
                     await this.ctrl.position().jsonFetch()
                 ]);
-                this.setState({ actions, current, playbackState: state, playlist, track: parseInt(track) });
+                this.setState({ ...state, playlist, currentTrack });
             }
         } catch (e) {
             console.error(e);
         }
     }
 
-    onAVTransportEvent = (device, { state: { actions, current, currentTrack: track, state } = {},
-        vendorProps: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = {} }) => {
+    onAVTransportEvent = (device: string, { state, vendorProps: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = {} }:
+        { state: AVState, vendorProps: PropertyBag }) => {
         if (device === this.props.device) {
-            this.setState({ actions, current, playbackState: state, playlist: transport === "AUX" ? "aux" : playlist, track: parseInt(track) });
+            this.setState({ ...state, playlist: transport === "AUX" ? "aux" : playlist });
         }
     }
 
-    static isEditable = (item) => !item.readonly;
+    static isEditable = (item: DIDLItem) => !item.readonly;
 
     resetModal = () => { this.setState({ modal: null }); }
 
-    reload = () => { this.props.dataContext.reload(); }
+    reload = () => { if (this.props.dataContext) this.props.dataContext.reload(); }
 
-    renamePlaylist = (id, title) => $api.playlist(this.props.device).rename(id, title).fetch();
+    renamePlaylist = (id: string, title: string) => $api.playlist(this.props.device).rename(id, title).fetch();
 
-    createPlaylist = (title) => $api.playlist(this.props.device).create(title).fetch();
+    createPlaylist = (title: string) => $api.playlist(this.props.device).create(title).fetch();
 
-    removePlaylist = (ids) => $api.playlist(this.props.device).delete(ids).fetch();
+    removePlaylist = (ids: string[]) => $api.playlist(this.props.device).delete(ids).fetch();
 
-    addItems = (device, ids) => $api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch();
+    addItems = (device: string, ids: string[]) => $api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch();
 
-    removeItems = (ids) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch();
+    removeItems = (ids: string[]) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch();
 
     onAdd = () => {
         this.setState({
@@ -87,7 +113,8 @@ export class PlaylistManagerCore extends React.Component {
     onRemove = () => {
 
         const ids = [...this.selection.keys];
-        const values = this.props.dataContext.source.items.filter(e => ids.includes(e.id));
+        const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
+        if (!values) return;
 
         this.setState({
             modal: <Modal id="remove-confirm" title="Do you want to delete playlist(s)?" onDismiss={this.resetModal} immediate>
@@ -104,7 +131,8 @@ export class PlaylistManagerCore extends React.Component {
 
     onRename = () => {
         const id = this.selection.keys.next().value;
-        const title = this.props.dataContext.source.items.find(e => e.id === id).title;
+        const title = this.props.dataContext?.source.items.find(e => e.id === id)?.title;
+        if (!title) return;
 
         this.setState({
             modal: <TextValueEditDialog id="rename-confirm" title="Rename playlist" label="Name" confirmText="Rename"
@@ -115,27 +143,25 @@ export class PlaylistManagerCore extends React.Component {
 
     onAddItems = () => {
         this.setState({
-            modal:
-                <BrowserDialog id="add-items-confirm" title="Select items to add" className="modal-lg modal-vh-80" onDismiss={this.resetModal} immediate>
-                    {b => [
-                        b.selection.any() &&
-                        <button type="button" key="counter" className="btn btn-link text-decoration-none mr-auto px-0"
-                            onClick={b.selection.clear}>
-                            Clear selection
-                        </button>,
-                        <Modal.Button key="close" className="btn-secondary" dismiss>Close</Modal.Button>,
-                        <Modal.Button key="add" className="btn-primary" icon="plus" disabled={b.selection.none()}
-                            onClick={() => this.addItems(...b.getSelectionData()).then(b.selection.clear).then(this.reload)}>
-                            Add{b.selection.any() && <span className="badge ml-1 bg-secondary">{b.selection.length}</span>}
-                        </Modal.Button>
-                    ]}
-                </BrowserDialog>
+            modal: <BrowserDialog id="add-items-confirm" title="Select items to add" className="modal-lg modal-vh-80" onDismiss={this.resetModal} immediate>
+                {(b: BrowserDialog) => {
+                    const { device, keys } = b.getSelectionData();
+                    return [b.selection.any() &&
+                        <button type="button" key="counter" className="btn btn-link text-decoration-none mr-auto px-0" onClick={b.selection.clear}>Clear selection</button>,
+                    <Modal.Button key="close" className="btn-secondary" dismiss>Close</Modal.Button>,
+                    <Modal.Button key="add" className="btn-primary" icon="plus" disabled={b.selection.none()}
+                        onClick={() => this.addItems(device, keys).then(b.selection.clear).then(this.reload)}>
+                        Add{b.selection.any() && <span className="badge ml-1 bg-secondary">{b.selection.length}</span>}
+                    </Modal.Button>]
+                }}
+            </BrowserDialog>
         });
     }
 
     onRemoveItems = () => {
         const ids = [...this.selection.keys];
-        const values = this.props.dataContext.source.items.filter(e => ids.includes(e.id));
+        const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
+        if (!values) return;
 
         this.setState({
             modal:
@@ -153,28 +179,29 @@ export class PlaylistManagerCore extends React.Component {
 
     onCopy = () => { alert("not implemented yet"); };
 
-    play = () => this.ctrl.play().fetch();
+    play: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.play().fetch();
 
-    pause = () => this.ctrl.pause().fetch();
+    pause: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.pause().fetch();
 
-    playUrl = ({ currentTarget: { dataset: { playUrl } } }) => this.ctrl.playUri(playUrl).fetch();
+    playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { playUrl } } }) => this.ctrl.playUri(playUrl as string).fetch();
 
     render() {
 
-        const { dataContext: data, match, navigate, id, s: size, p: page, fetching } = this.props;
-        const { source: { total = 0, items: { length: fetched = 0 } = {}, parents } = {} } = data || {};
+        const { dataContext: data, match, navigate, id, s: size, p: page, fetching, error } = this.props;
+        const { source: { total = 0, items: { length: fetched = 0 } = {}, parents = [] } = {} } = data || {};
         const disabled = this.selection.none();
-        const cellContext = {
+        const track = this.state.currentTrack ? parseInt(this.state.currentTrack) : -1;
+        const cellContext: CellContext = {
             play: this.play,
             pause: this.pause,
             playUrl: this.playUrl,
-            state: this.state.playbackState,
+            state: this.state.state,
             parents,
             active: id !== "PL:"
-                ? (_, index) => index + 1 === this.state.track
+                ? (_, index) => index + 1 === track
                 : (this.state.playlist === "aux"
-                    ? d => d.vendor["mi:playlistType"] === "aux"
-                    : d => d.res.url === this.state.playlist)
+                    ? d => d.vendor?.["mi:playlistType"] === "aux"
+                    : d => d.res?.url === this.state.playlist)
         };
 
         const toolbar = id === "PL:" ?
@@ -193,7 +220,7 @@ export class PlaylistManagerCore extends React.Component {
             {fetching && <LoadIndicatorOverlay />}
             <div className="flex-grow-1">
                 <SignalRListener handlers={this.handlers}>
-                    <Browser dataContext={data} cellTemplate={MainCell} cellContext={cellContext}
+                    <Browser dataContext={data} fetching={fetching} error={error} cellTemplate={MainCell} cellContext={cellContext}
                         filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection}
                         useCheckboxes selectOnClick>
                         <Browser.Header className="p-0">
@@ -218,7 +245,7 @@ export class PlaylistManagerCore extends React.Component {
                     </div>
                 {total !== 0 && fetched !== total &&
                     <Pagination baseUrl={match.url} className="border-1 border-secondary border-top"
-                        total={total} current={parseInt(page) || 1} pageSize={parseInt(size) || $config.pageSize} />}
+                        total={total} current={page ? parseInt(page) : 1} pageSize={size ? parseInt(size) : $config.pageSize} />}
             </div>
             {this.state.modal}
         </div>;

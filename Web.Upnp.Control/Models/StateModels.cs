@@ -23,7 +23,7 @@ namespace Web.Upnp.Control.Models
         public string CurrentTrackUri { get; init; }
     }
 
-    public record AVPosition(string Track, string Duration, string RelTime)
+    public record AVPosition(string CurrentTrack, string Duration, string RelTime)
     {
         public Item Current { get; init; }
     }
