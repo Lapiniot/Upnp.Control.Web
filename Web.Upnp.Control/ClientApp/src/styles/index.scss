@@ -2,7 +2,7 @@
 $breadcrumb-divider: quote("\276f");
 $breadcrumb-item-padding-x: 0.25rem !default;
 $breadcrumb-border-radius: 0 !default;
-$generate-album-art-sizes: false;
+$generate-album-art-sizes: true;
 $generate-grid-layout-responsive-styles: false;
 
 // Configuration
@@ -156,11 +156,11 @@ $generate-grid-layout-responsive-styles: false;
 $album-art-size-base: 2rem;
 
 $album-art-sizes: (
-    "xs": 0.5,
+    //"xs": 0.5,
     "sm": 0.75,
-    "md": 1.25,
-    "lg": 1.75,
-    "xl": 2,
+    //"md": 1.25,
+    //"lg": 1.75,
+    //"xl": 2,
 );
 
 .album-art {
@@ -190,12 +190,6 @@ $album-art-sizes: (
     @each $name, $size in $album-art-sizes {
         .album-art-#{$name} {
             @include album-art($size * $album-art-size-base);
-        }
-    }
-
-    @for $i from 2 through 5 {
-        .album-art-#{$i}x {
-            @include album-art($i * $album-art-size-base);
         }
     }
 }

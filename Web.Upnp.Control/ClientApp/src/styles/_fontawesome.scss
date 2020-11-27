@@ -165,3 +165,15 @@ $fa-font-path: "../webfonts";
 .#{$fa-css-prefix}-compact-disc:before {
     content: fa-content($fa-var-compact-disc);
 }
+
+.#{$fa-css-prefix}-caret-right:before {
+    content: fa-content($fa-var-caret-right);
+}
+
+.#{$fa-css-prefix}-caret-down:before {
+    content: fa-content($fa-var-caret-down);
+}
+
+.#{$fa-css-prefix}-ellipsis-v:before {
+    content: fa-content($fa-var-ellipsis-v);
+}
