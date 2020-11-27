@@ -8,7 +8,7 @@ type LinkProps = PropsWithChildren<{
 }>
 
 function BuildClass(className: string | undefined, active: boolean | undefined, disabled: boolean | undefined) {
-    return `${className ? className : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`.trim();
+    return `nav-link ${className ? ` ${className}` : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`;
 }
 
 const LinkTemplate = ({ component: Tag, className, active, disabled, glyph, children, ...other }:

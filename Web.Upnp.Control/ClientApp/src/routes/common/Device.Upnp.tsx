@@ -14,7 +14,7 @@ export default function Device({ "data-source": d }: DataSourceProps<UpnpDevice>
         <div className="card-header d-flex">
             <DeviceIcon service={d.type} icons={d.icons} />
             <div>
-                <h5 className="card-title">{d.presentUrl ? <NavLink to={d.presentUrl}>{d.name}</NavLink> : d.name}</h5>
+                <h5 className="card-title">{d.presentUrl ? <NavLink to={d.presentUrl} className="p-0">{d.name}</NavLink> : d.name}</h5>
                 <h6 className="card-subtitle">{d.description}</h6>
             </div>
         </div>
@@ -23,8 +23,8 @@ export default function Device({ "data-source": d }: DataSourceProps<UpnpDevice>
             <ServicesList data-source={d.services} data-row-id={d.udn} />
         </div>
         <div className="card-footer no-decoration d-flex gap-2">
-            <NavLink to={d.url} glyph="download">Metadata</NavLink>
-            {isMediaServer && <RouteLink to={`/upnp/${d.udn}/browse`} glyph="folder">Browse</RouteLink>}
+            <NavLink to={d.url} glyph="download" className="p-0">Metadata</NavLink>
+            {isMediaServer && <RouteLink to={`/upnp/${d.udn}/browse`} glyph="folder" className="p-0">Browse</RouteLink>}
         </div>
     </div>;
 }

@@ -9,9 +9,9 @@ export default function ({ "data-source": { udn, type, maker, makerUrl, model, m
         <div>Type</div>
         <div>{type}</div>
         <div>Maker</div>
-        <div>{makerUrl ? <NavLink to={makerUrl}>{maker}</NavLink> : maker}</div>
+        <div>{makerUrl ? <NavLink to={makerUrl} className="p-0">{maker}</NavLink> : maker}</div>
         <div>Model</div>
-        <div>{modelUrl ? <NavLink to={modelUrl}>{model}</NavLink> : model}</div>
+        <div>{modelUrl ? <NavLink to={modelUrl} className="p-0">{model}</NavLink> : model}</div>
         <div>Model #</div>
         <div>{modelNumber}</div>
     </div>;
