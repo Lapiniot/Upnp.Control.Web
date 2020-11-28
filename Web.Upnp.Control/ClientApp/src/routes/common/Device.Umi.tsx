@@ -26,7 +26,7 @@ function Menu({ dataContext: d, device }: HTMLAttributes<HTMLDivElement> & DataF
             <i className="fas fa-caret-right fa-lg" /><span className="visually-hidden">Toggle Dropdown</span>
         </a>
         <ul className="dropdown-menu" data-device={device}>
-            {d?.source.items.map(i => <li>
+            {d?.source.items.map(i => <li key={i.id}>
                 <a className="dropdown-item" href="#" data-play-url={i.res?.url + "#play"} onClick={playUrlHandler}>
                     <AlbumArt itemClass={i.class} albumArts={i.albumArts} className="album-art-sm mr-1 align-middle" />{i.title}</a>
             </li>)}
