@@ -91,10 +91,10 @@ namespace Web.Upnp.Control.Services
         {
             switch(e)
             {
-                case UpnpDeviceAppearedEvent dae when dae.Device.Services.Any(IsUmiDevice):
+                case UpnpDeviceAppearedEvent dae when IsRenderer(dae.Device):
                     SubscribeToEvents(dae.DeviceId, dae.Device.Services);
                     break;
-                case UpnpDeviceUpdatedEvent due when due.Device.Services.Any(IsUmiDevice):
+                case UpnpDeviceUpdatedEvent due when IsRenderer(due.Device):
                     _ = RenewSubscriptionsAsync(due.DeviceId, due.Device.Services);
                     break;
                 case UpnpDeviceDisappearedEvent dde:
@@ -104,9 +104,10 @@ namespace Web.Upnp.Control.Services
             }
         }
 
-        private static bool IsUmiDevice(Service s)
+        private static bool IsRenderer(Device device)
         {
-            return s.ServiceType == PlaylistService.ServiceSchema;
+            return device.DeviceType == UpnpServices.MediaRenderer ||
+                device.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema);
         }
 
         #endregion
