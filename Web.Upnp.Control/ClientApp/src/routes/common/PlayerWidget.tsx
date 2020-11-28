@@ -95,6 +95,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
         const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
         const volumeStr = muted ? "Muted" : `${volume}%`;
         const volumeIcon = muted ? "volume-mute" : volume > 50 ? "volume-up" : volume > 20 ? "volume-down" : "volume-off";
+        const disabled = !state;
 
         return <React.Fragment>
             <i data-fa-symbol="volume-mute" className="fas fa-volume-mute" />
@@ -106,23 +107,24 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                 {relTime && duration && <Progress className="mb-2" time={relTime} duration={duration} running={state === "PLAYING"} onChangeRequested={this.seek} />}
                 <div className="d-flex align-items-center flex-nowrap">
                     <Button title="Prev" glyph="step-backward" className="py-0" onClick={this.prev} disabled={!actions.includes("Previous")} />
-                    {actions.includes("Play") && <Button title="Play" glyph="play-circle" className="fa-2x" onClick={this.play} />}
+                    {(disabled || actions.includes("Play")) && <Button title="Play" glyph="play-circle" className="fa-2x" onClick={this.play} disabled={disabled} />}
                     {(actions.includes("Pause") || transitioning) && <Button title="Pause" glyph="pause-circle" className="fa-2x" onClick={this.pause} disabled={transitioning} />}
                     <Button title={nextTitle} glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
-                    {current &&
-                        <div className="d-flex flex-wrap justify-content-center flex-grow-1 overflow-hidden mx-2">
+                    <div className="d-flex flex-wrap justify-content-center flex-grow-1 overflow-hidden mx-2">
+                        {current ? <>
                             <h6 className="text-center text-truncate flex-basis-100 m-0">{title}</h6>
                             {(creator || album) && <small className="m-0 text-center lines-2">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
-                        </div>}
+                        </> : <h6 className="text-center text-truncate flex-basis-100 m-0">[No media]</h6>}
+                    </div>
                     <div className="d-flex position-relative flex-nowrap">
                         <div className="hover-container">
-                            <Button title={volumeStr} onClick={this.toggleMute}>
+                            <Button title={volumeStr} onClick={this.toggleMute} disabled={disabled}>
                                 <svg className="svg-inline--fa fa-w-16"><use href={`#${volumeIcon}`} /></svg>
                             </Button>
-                            <Slider progress={volume / 100} className="hover-activated position-absolute w-100 px-1" onChangeRequested={this.changeVolume} />
+                            {!disabled && <Slider progress={volume / 100} className="hover-activated position-absolute w-100 px-1" onChangeRequested={this.changeVolume} />}
                         </div>
-                        <Button title="shuffle play mode" glyph="random" active={playMode === "REPEAT_SHUFFLE"} onClick={this.setRepeatShufflePlayMode} />
-                        <Button title="repeat all play mode" glyph="retweet" active={playMode === "REPEAT_ALL"} onClick={this.setRepeatAllPlayMode} />
+                        <Button title="shuffle play mode" glyph="random" active={playMode === "REPEAT_SHUFFLE"} onClick={this.setRepeatShufflePlayMode} disabled={disabled} />
+                        <Button title="repeat all play mode" glyph="retweet" active={playMode === "REPEAT_ALL"} onClick={this.setRepeatAllPlayMode} disabled={disabled} />
                     </div>
                 </div>
             </div>
