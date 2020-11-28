@@ -4,7 +4,8 @@ import DeviceIcon from "./DeviceIcon";
 import PlayerWidget from "./PlayerWidget";
 import { DataSourceProps, UpnpDevice } from "./Types";
 
-export default function RendererDevice({ "data-source": { name, description, udn, type, icons } }: DataSourceProps<UpnpDevice>) {
+export default function RendererDevice({ "data-source": { name, description, udn, type, icons }, category = "renderers" }:
+    DataSourceProps<UpnpDevice> & { category?: string }) {
     return <div className="card">
         <div className="card-header d-flex flex-row">
             <DeviceIcon service={type} icons={icons} />
@@ -17,7 +18,7 @@ export default function RendererDevice({ "data-source": { name, description, udn
             <PlayerWidget udn={udn} />
         </div>
         <div className="card-footer no-decoration d-flex gap-2">
-            <RouteLink to={`/upnp/${udn}/browse`} glyph="stream" className="p-0" disabled>Open media</RouteLink>
+            <RouteLink to={`/${category}/${udn}/browse`} glyph="stream" className="p-0" disabled>Open media</RouteLink>
         </div>
     </div>;
 }

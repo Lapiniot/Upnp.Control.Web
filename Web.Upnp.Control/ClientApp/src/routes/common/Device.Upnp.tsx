@@ -5,7 +5,7 @@ import ServicesList from "./DeviceServiceList";
 import { NavLink, RouteLink } from "../../components/NavLink";
 import { DataSourceProps, Services, UpnpDevice } from "./Types";
 
-export default function Device({ "data-source": d }: DataSourceProps<UpnpDevice>) {
+export default function Device({ "data-source": d, category = "upnp" }: DataSourceProps<UpnpDevice> & { category?: string }) {
 
     const isMediaServer = d.services && d.services.some(
         s => s.type.startsWith(Services.ContentDirectory) || s.type.startsWith(Services.UmiPlaylist));
@@ -24,7 +24,7 @@ export default function Device({ "data-source": d }: DataSourceProps<UpnpDevice>
         </div>
         <div className="card-footer no-decoration d-flex gap-2">
             <NavLink to={d.url} glyph="download" className="p-0">Metadata</NavLink>
-            {isMediaServer && <RouteLink to={`/upnp/${d.udn}/browse`} glyph="folder" className="p-0">Browse</RouteLink>}
+            {isMediaServer && <RouteLink to={`/${category}/${d.udn}/browse`} glyph="folder" className="p-0">Browse</RouteLink>}
         </div>
     </div>;
 }

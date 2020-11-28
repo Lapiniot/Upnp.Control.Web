@@ -38,7 +38,7 @@ const builder = fromBaseQuery((device) => $api.browse(device).get("PL:").withRes
 
 const PlaylistMenu = withDataFetch(Menu, builder, { template: MicroLoader });
 
-export default function UmiDevice({ "data-source": { name, description, udn } }: DataSourceProps<UpnpDevice>) {
+export default function UmiDevice({ "data-source": { name, description, udn }, category = "umi" }: DataSourceProps<UpnpDevice> & { category?: string }) {
     return <div className="card">
         <div className="card-header d-flex flex-row">
             <svg className="upnp-dev-icon" style={{ objectFit: "unset" }}>
@@ -53,8 +53,8 @@ export default function UmiDevice({ "data-source": { name, description, udn } }:
             <PlayerWidget udn={udn} />
         </div>
         <div className="card-footer d-flex align-items-center gap-2 no-decoration">
-            <RouteLink to={`/umi/${udn}/browse`} glyph="folder" className="p-0 btn-link" title="Browse content">Browse</RouteLink>
-            <RouteLink to={`/umi/${udn}/playlists/PL:`} glyph="list-alt" className="p-0" title="Manage playlists">Playlists</RouteLink>
+            <RouteLink to={`/${category}/${udn}/browse`} glyph="folder" className="p-0 btn-link" title="Browse content">Browse</RouteLink>
+            <RouteLink to={`/${category}/${udn}/playlists/PL:`} glyph="list-alt" className="p-0" title="Manage playlists">Playlists</RouteLink>
             <PlaylistMenu device={udn} />
         </div>
     </div>;

@@ -29,15 +29,23 @@ type DeviceListState = {
     alerts: Map<string, DiscoveryMessage>
 }
 
-export type TemplatedDataComponentProps<T = any, P = {}> = P & { itemTemplate: ComponentType<DataSourceProps<T>> }
+type CategoryParams = {
+    category?: string;
+}
 
-export function DeviceContainer({ itemTemplate: Template, dataContext }: DataFetchProps<UpnpDevice> & TemplatedDataComponentProps<UpnpDevice>) {
+export type TemplatedDataComponentProps<T = any, P = {}> = { itemTemplate: ComponentType<DataSourceProps<T> & P> }
+
+type DeviceContainerProps = DataFetchProps<UpnpDevice> & TemplatedDataComponentProps<UpnpDevice, CategoryParams> & CategoryParams;
+
+export function DeviceContainer({ itemTemplate: Template, dataContext, category }: DeviceContainerProps) {
     return <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-        {dataContext?.source && <Template data-source={dataContext.source} />}
+        {dataContext?.source && <Template data-source={dataContext.source} category={category} />}
     </div>;
 }
 
-export class DeviceListContainer extends React.Component<DataFetchProps<UpnpDevice[]> & TemplatedDataComponentProps<UpnpDevice>, DeviceListState> {
+type DeviceListContainerProps = DataFetchProps<UpnpDevice[]> & TemplatedDataComponentProps<UpnpDevice, CategoryParams> & CategoryParams;
+
+export class DeviceListContainer extends React.Component<DeviceListContainerProps, DeviceListState> {
 
     onDiscoveryEvent = (device: string, message: DiscoveryMessage) => {
         this.showAlert(device, message);
@@ -60,7 +68,7 @@ export class DeviceListContainer extends React.Component<DataFetchProps<UpnpDevi
     }
 
     render() {
-        const { dataContext, itemTemplate: Item, fetching } = this.props;
+        const { dataContext, itemTemplate: Item, fetching, category } = this.props;
 
         const alerts = Array.from(this.state.alerts).map(({ 0: key, 1: { type, info: { name, description } } }) =>
             <DiscoveryAlert key={key} type={type} name={name} description={description} onDismiss={() => this.dismissAlert(key)} />);
@@ -71,7 +79,7 @@ export class DeviceListContainer extends React.Component<DataFetchProps<UpnpDevi
                 : <SignalRListener handlers={this.handlers}>
                     {alerts}
                     <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-                        {[dataContext.source.map(item => <Item key={item.udn} data-source={item} />)]}
+                        {[dataContext.source.map(item => <Item key={item.udn} data-source={item} category={category} />)]}
                     </div>
                 </SignalRListener>}
         </div>
