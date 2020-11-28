@@ -5,7 +5,6 @@ const baseUri = "/api/devices";
 
 export interface ControlApiProvider {
     state: (detailed?: boolean) => JsonFetch;
-    playlistState: () => JsonFetch;
     play: (id?: string) => JsonPutFetch;
     playUri: (id: string) => JsonPutFetch;
     pause: () => JsonPutFetch;
@@ -22,6 +21,7 @@ export interface ControlApiProvider {
 }
 
 export interface PlaylistApiProvider {
+    state: () => JsonFetch;
     create: (title: string) => JsonPostFetch;
     rename: (id: string, title: string) => JsonPutFetch;
     delete: (ids: string[]) => JsonDeleteFetch;
@@ -39,6 +39,7 @@ export default class {
     });
 
     static playlist = (deviceId: string): PlaylistApiProvider => ({
+        state: () => new JsonFetch(`${baseUri}/${deviceId}/playlists/state`),
         create: (title: string) => new JsonPostFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(title) }),
         rename: (id: string, title: string) => new JsonPutFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { body: JSON.stringify(title) }),
         delete: (ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(ids) }),
@@ -52,7 +53,6 @@ export default class {
         deviceId = encodeURIComponent(deviceId);
         return {
             state: (detailed = false) => new JsonFetch(`${baseUri}/${deviceId}/state${detailed ? "?detailed" : ""}`),
-            playlistState: () => new JsonFetch(`${baseUri}/${deviceId}/playlist-state`),
             play: (id?: string) => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing", objectId: id }) }),
             playUri: (id: string) => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing", currentUri: id }) }),
             pause: () => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "paused" }) }),

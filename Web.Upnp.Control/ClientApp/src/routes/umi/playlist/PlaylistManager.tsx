@@ -43,6 +43,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     selection;
     handlers;
     ctrl;
+    pls;
 
     constructor(props: PlaylistManagerProps) {
         super(props);
@@ -51,11 +52,13 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
         this.state = { modal: null, selection: this.selection };
         this.ctrl = $api.control(this.props.device);
+        this.pls = $api.playlist(this.props.device);
     }
 
     async componentDidUpdate(prevProps: PlaylistManagerProps) {
         if (prevProps.device !== this.props.device) {
             this.ctrl = $api.control(this.props.device);
+            this.pls = $api.playlist(this.props.device);
         }
         if (prevProps.device !== this.props.device || prevProps.id !== this.props.id) {
             this.selection.reset();
@@ -69,7 +72,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 this.setState({ ...state, playlist: "aux" });
             } else {
                 const { 0: { "playlist_transport_uri": playlist }, 1: { currentTrack } } = await Promise.all([
-                    await this.ctrl.playlistState().jsonFetch(),
+                    await this.pls.state().jsonFetch(),
                     await this.ctrl.position().jsonFetch()
                 ]);
                 this.setState({ ...state, playlist, currentTrack });
