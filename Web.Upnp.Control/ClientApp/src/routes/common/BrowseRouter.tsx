@@ -11,6 +11,6 @@ type DeviceRouteParams = {
 };
 
 export default ({ match: { path, params: { category } } }: RouteComponentProps<DeviceRouteParams>) => <Switch>
-    <Route path={`${path}/(-1|0)`} render={() => <Redirect to={`/${category}`} />} />
+    <Route path={`${path}/-1`} exact render={() => <Redirect to={`/${category}`} />} />
     <Route path={`${path}/:id(.*)*`} render={props => <Browser {...props} />} />
 </Switch>;
