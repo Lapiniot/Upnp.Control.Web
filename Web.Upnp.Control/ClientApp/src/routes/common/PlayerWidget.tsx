@@ -107,8 +107,10 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                 {relTime && duration && <Progress className="mb-2" time={relTime} duration={duration} running={state === "PLAYING"} onChangeRequested={this.seek} />}
                 <div className="d-flex align-items-center flex-nowrap">
                     <Button title="Prev" glyph="step-backward" className="py-0" onClick={this.prev} disabled={!actions.includes("Previous")} />
-                    {(disabled || actions.includes("Play")) && <Button title="Play" glyph="play-circle" className="fa-2x" onClick={this.play} disabled={disabled} />}
-                    {(actions.includes("Pause") || transitioning) && <Button title="Pause" glyph="pause-circle" className="fa-2x" onClick={this.pause} disabled={transitioning} />}
+                    {(disabled || (state === "STOPPED" || state === "PAUSED_PLAYBACK")) &&
+                        <Button title="Play" glyph="play-circle" className="fa-2x" onClick={this.play} disabled={disabled} />}
+                    {(transitioning || state === "PLAYING") &&
+                        <Button title="Pause" glyph="pause-circle" className="fa-2x" onClick={this.pause} disabled={transitioning} />}
                     <Button title={nextTitle} glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
                     <div className="d-flex flex-wrap justify-content-center flex-grow-1 overflow-hidden mx-2">
                         {current ? <>
