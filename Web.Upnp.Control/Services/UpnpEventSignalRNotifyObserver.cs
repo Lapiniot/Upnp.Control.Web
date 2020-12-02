@@ -37,8 +37,8 @@ namespace Web.Upnp.Control.Services
         private void NotifyAVTransportEvent(UpnpPropertyChangedEvent avtEvent)
         {
             var map = avtEvent.Properties;
-            var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null;
-            var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.ParseLoose(value).FirstOrDefault() : null;
+            var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
+            var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
 
             var state = new AVState(map.TryGetValue("TransportState", out value) ? value : null, null,
                 map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : (int?)null, null,
