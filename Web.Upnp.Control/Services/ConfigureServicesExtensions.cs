@@ -13,11 +13,11 @@ namespace Web.Upnp.Control.Services
     {
         public static IServiceCollection AddSoapHttpClient(this IServiceCollection services)
         {
-            services.AddHttpClient<HttpSoapClient>(c => c.DefaultRequestHeaders.Add("Accept-Encoding", "gzip,deflate"))
+            services.AddHttpClient<HttpSoapClient>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5))
                 .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
                 {
-                    AutomaticDecompression = GZip | Deflate,
+                    AutomaticDecompression = All,
                     UseProxy = false,
                     Proxy = null,
                     UseCookies = false,

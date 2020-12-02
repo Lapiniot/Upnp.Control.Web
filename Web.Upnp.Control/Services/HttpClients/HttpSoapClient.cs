@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 
 namespace Web.Upnp.Control.Services.HttpClients
 {
@@ -8,6 +9,7 @@ namespace Web.Upnp.Control.Services.HttpClients
         {
             Client = client;
             client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip,deflate");
+            client.DefaultRequestVersion = new Version(1, 1);
         }
 
         public HttpClient Client { get; }

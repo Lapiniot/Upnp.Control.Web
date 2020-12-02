@@ -14,3 +14,6 @@ Web.Upnp.Control/*.sqlite
 Web.Upnp.Control/*.sqlite3
 Web.Upnp.Control/ClientApp/src/react-app-env.d.ts
 Web.Upnp.Control/ClientApp/.eslintcache
+Web.Upnp.Control/upnp.db3-shm
+.gitignore
+Web.Upnp.Control/upnp.db3-wal
