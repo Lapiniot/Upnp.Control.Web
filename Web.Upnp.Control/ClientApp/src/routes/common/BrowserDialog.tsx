@@ -9,12 +9,19 @@ import { withBrowser } from "./BrowserUtils";
 import BrowserCore from "./Browser";
 import $api from "../../components/WebApi";
 import SelectionService from "../../components/SelectionService";
-import { DIDLItem, UpnpDevice } from "./Types";
+import { UpnpDevice } from "./Types";
+import { BrowserCoreProps } from "./BrowserCore";
 
 export type BrowserDialogProps = HTMLAttributes<HTMLDivElement> & {
+    browserProps?: BrowserCoreProps;
     confirmText?: string;
-    onConfirm?: (selection: string[]) => void;
+    onConfirm?: (selection: BrowseResult) => void;
 } & ModalProps
+
+export type BrowseResult = {
+    device: string;
+    keys: string[];
+};
 
 export default class BrowserDialog extends React.Component<BrowserDialogProps, { selection: any }> {
 
@@ -29,31 +36,29 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
         this.selection.addEventListener("changed", e => this.setState({ selection: e.target }));
     }
 
-    confirm = () => { return !!this.props.onConfirm && this.props.onConfirm(Array.from(this.selection.keys)); }
+    confirm = () => { return !!this.props.onConfirm && this.props.onConfirm(this.getSelectionData()); }
 
-    getSelectionData = (): { device: string; keys: string[] } => {
+    getSelectionData = (): BrowseResult => {
         return { device: this.browserRef?.current?.props.match.params.device, keys: Array.from(this.state.selection.keys) };
     }
 
     render() {
-        const { id, title, confirmText = "OK", ...other } = this.props;
+        const { id, title, confirmText = "OK", browserProps = {}, ...other } = this.props;
         return <Modal id={id} title={title} {...other} data-keyboard={true}>
             <Modal.Body className="p-0 d-flex flex-column">
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
                         <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
                         <Route path={"/sources/:device/-1"} exact render={() => <Redirect to="/sources" />} />
-                        <Route path={"/sources/:device/:id(.*)?"} render={props =>
-                            <Browser {...props} selection={this.selection} ref={this.browserRef} filter={isMusicTrack}
-                                captureKeyboardEvents useCheckboxes selectOnClick />} />
+                        <Route path={"/sources/:device/:id(.*)?"} render={props => <Browser {...props} {...browserProps} selection={this.selection} ref={this.browserRef} />} />
                     </Switch>
                 </MemoryRouter>
             </Modal.Body>
             <Modal.Footer>
                 {(typeof (this.props.children) === "function" ? this.props.children(this) : this.props.children) ||
                     <React.Fragment>
-                        <Modal.Button key="confirm" className="btn-primary" disabled={this.selection.any()} onClick={this.confirm} dismiss>{confirmText}</Modal.Button>
                         <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>
+                        <Modal.Button key="confirm" className="btn-primary" disabled={!this.selection.any()} onClick={this.confirm} dismiss>{confirmText}</Modal.Button>
                     </React.Fragment>}
             </Modal.Footer>
         </Modal>;
@@ -74,9 +79,5 @@ const MediaSourceList = withDataFetch(({ dataContext: ctx, fetching }: DataFetch
                     </RouteLink>)}
             </ul>}
     </div>, () => serversFetch, { usePreloader: true });
-
-function isMusicTrack(item: DIDLItem) {
-    return item.class.endsWith(".musicTrack");
-}
 
 const Browser = withBrowser(BrowserCore, false);

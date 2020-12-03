@@ -3,7 +3,7 @@ import withNavigation, { NavigatorProps } from "./Navigator";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $api, { BrowseFetch } from "../../components/WebApi";
 import $config from "./Config";
-import { DIDLResource } from "./Types";
+import { DIDLItem, DIDLResource } from "./Types";
 import { ComponentType } from "react";
 
 export class DIDLUtils {
@@ -42,6 +42,18 @@ export class DIDLUtils {
         if (data.sampleFrequency) lines.push(`Sample freq.: ${data.sampleFrequency}`);
         if (data.nrAudioChannels) lines.push(`Channels: ${data.nrAudioChannels}`);
         return lines.join(separator);
+    }
+
+    static isContainer(item: DIDLItem) {
+        return item.container;
+    }
+
+    static isMediaItem(item: DIDLItem) {
+        return !item.container;
+    }
+
+    static isMusicTrack(item: DIDLItem) {
+        return item.class.endsWith(".musicTrack");
     }
 }
 

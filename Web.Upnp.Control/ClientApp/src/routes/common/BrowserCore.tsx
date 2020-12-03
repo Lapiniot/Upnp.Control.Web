@@ -7,7 +7,7 @@ import { BrowseFetchResult, DIDLItem } from "./Types";
 import { NavigatorProps } from "./Navigator";
 import { DataFetchProps } from "../../components/DataFetch";
 
-type ModeFlags = "captureKeyboardEvents" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
+type ModeFlags = "multiSelect" | "runsInDialog" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
 
 export type BrowserCoreProps = {
     filter?: (item: DIDLItem) => boolean;
@@ -47,7 +47,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
     }
 
     componentDidMount() {
-        document.addEventListener("keydown", this.onKeyDown, this.props.captureKeyboardEvents === true);
+        document.addEventListener("keydown", this.onKeyDown, this.props.runsInDialog === true);
 
         const scope = this.tableRef.current;
         const caption = scope?.querySelector<HTMLDivElement>("div.table-caption:first-of-type");
@@ -117,11 +117,13 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
 
             e.stopPropagation();
 
-            if (e.ctrlKey || e.metaKey) {
+            const multiSelect = this.props.multiSelect;
+
+            if (multiSelect && (e.ctrlKey || e.metaKey)) {
                 // selective multi-selection
                 this.toggleSelection(id);
             }
-            else if (e.shiftKey) {
+            else if (multiSelect && e.shiftKey) {
                 e.preventDefault();
                 // range multi-selection
                 const selectionStart = Math.max(this.selectables.indexOf(this.focusedItem ?? ""), 0);
@@ -142,7 +144,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
 
     onKeyDown: EventListener = e => {
         const ke = e as KeyboardEvent;
-        if (!e.cancelBubble && (ke.metaKey || ke.ctrlKey) && ke.code === "KeyA") {
+        if (this.props.multiSelect && !e.cancelBubble && (ke.metaKey || ke.ctrlKey) && ke.code === "KeyA") {
             e.preventDefault();
             e.stopPropagation();
             this.toggleSelectionAll(true);

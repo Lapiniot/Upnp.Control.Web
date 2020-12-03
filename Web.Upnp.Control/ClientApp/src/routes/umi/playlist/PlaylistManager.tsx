@@ -3,12 +3,12 @@ import $api from "../../../components/WebApi";
 import Modal from "../../../components/Modal";
 import $config from "../../common/Config";
 import { TextValueEditDialog } from "../../../components/Dialogs";
-import { withBrowser, fromBaseQuery } from "../../common/BrowserUtils";
+import { withBrowser, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils";
 import BrowserDialog from "../../common/BrowserDialog";
 import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
-import Browser from "../../common/BrowserCore";
+import Browser, { BrowserCoreProps } from "../../common/BrowserCore";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
 import { SignalRListener } from "../../../components/SignalR";
@@ -36,6 +36,14 @@ type PlaylistManagerState = {
     selection: SelectionService;
     playlist?: string;
 } & Partial<AVState>;
+
+const browserProps: BrowserCoreProps = {
+    filter: DIDLUtils.isMusicTrack,
+    multiSelect: true,
+    selectOnClick: true,
+    useCheckboxes: true,
+    runsInDialog: true
+}
 
 export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
 
@@ -146,7 +154,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     onAddItems = () => {
         this.setState({
-            modal: <BrowserDialog id="add-items-confirm" title="Select items to add" className="modal-lg modal-vh-80" onDismiss={this.resetModal} immediate>
+            modal: <BrowserDialog id="add-items-confirm" title="Select items to add" className="modal-lg modal-vh-80"
+                onDismiss={this.resetModal} browserProps={browserProps} immediate>
                 {(b: BrowserDialog) => {
                     const { device, keys } = b.getSelectionData();
                     return [b.selection.any() &&
