@@ -11,6 +11,7 @@ export type ModalProps<P = {}> = PropsWithChildren<P & {
 export default class Modal extends React.Component<ModalProps> {
 
     displayName = Modal.name;
+    modal: BootstrapModal | null = null;
 
     componentDidMount() {
         const { onDismiss, onShown } = this.props;
@@ -23,9 +24,9 @@ export default class Modal extends React.Component<ModalProps> {
         if (typeof onShown === "function")
             target.addEventListener("shown.bs.modal", onShown);
 
-        const modal = new BootstrapModal(target);
-        if (this.props.immediate)
-            modal.show();
+        this.modal = new BootstrapModal(target);
+        if (this.props.immediate && this.modal)
+            this.modal.show();
     }
 
     componentWillUnmount() {
@@ -39,9 +40,11 @@ export default class Modal extends React.Component<ModalProps> {
         if (typeof onShown === "function")
             target.removeEventListener("shown.bs.modal", onShown);
 
-        const modal = BootstrapModal.getInstance(target);
-        modal.dispose();
+        if (this.modal)
+            this.modal.dispose();
     }
+
+    dismiss = () => this.modal?.hide()
 
     render() {
 
