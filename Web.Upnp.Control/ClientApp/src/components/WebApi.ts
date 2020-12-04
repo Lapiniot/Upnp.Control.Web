@@ -5,7 +5,7 @@ const baseUri = "/api/devices";
 
 export interface ControlApiProvider {
     state: (detailed?: boolean) => JsonFetch;
-    play: (id?: string) => JsonPutFetch;
+    play: (id?: string, sourceDevice?: string) => JsonPutFetch;
     playUri: (id: string) => JsonPutFetch;
     pause: () => JsonPutFetch;
     stop: () => JsonPutFetch;
@@ -53,7 +53,8 @@ export default class {
         deviceId = encodeURIComponent(deviceId);
         return {
             state: (detailed = false) => new JsonFetch(`${baseUri}/${deviceId}/state${detailed ? "?detailed" : ""}`),
-            play: (id?: string) => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing", objectId: id }) }),
+            play: (id?: string, sourceDevice?: string) => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null,
+                { body: JSON.stringify({ state: "playing", objectId: id, sourceDevice }) }),
             playUri: (id: string) => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing", currentUri: id }) }),
             pause: () => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "paused" }) }),
             stop: () => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "stopped" }) }),

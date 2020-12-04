@@ -29,10 +29,10 @@ namespace Web.Upnp.Control.Services.Commands
                 case "playing":
                     switch(state)
                     {
-                        case {ObjectId: {} objectId}:
-                            await PlayItemAsync(deviceId, objectId, cancellationToken).ConfigureAwait(false);
+                        case { ObjectId: { } objectId, SourceDevice: var source }:
+                            await PlayItemAsync(deviceId, source, objectId, cancellationToken).ConfigureAwait(false);
                             break;
-                        case {CurrentUri: {} uri}:
+                        case { CurrentUri: { } uri }:
                             await PlayUriAsync(deviceId, uri, cancellationToken).ConfigureAwait(false);
                             break;
                         default:
@@ -56,17 +56,20 @@ namespace Web.Upnp.Control.Services.Commands
             }
         }
 
-        public async Task PlayItemAsync(string deviceId, string id, CancellationToken cancellationToken)
+        private async Task PlayItemAsync(string targetDevice, string sourceDevice, string id, CancellationToken cancellationToken)
         {
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            var avt = await factory.GetServiceAsync<AVTransportService>(targetDevice).ConfigureAwait(false);
+
+            sourceDevice ??= targetDevice;
 
             if(!string.IsNullOrWhiteSpace(id))
             {
-                var cd = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
+                var cd = await factory.GetServiceAsync<ContentDirectoryService>(sourceDevice).ConfigureAwait(false);
                 var result = await cd.BrowseAsync(id, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
-                var item = DIDLXmlParser.Parse(result["Result"], true, false).FirstOrDefault();
-                if(!(item is {Resource: {Url: {} resUrl}})) throw new InvalidOperationException();
-                await avt.SetAVTransportUriAsync(currentUri: resUrl, cancellationToken: cancellationToken).ConfigureAwait(false);
+                string metadata = result["Result"];
+                var item = DIDLXmlParser.Parse(metadata, true, false).FirstOrDefault();
+                if(!(item is { Resource: { Url: { } resUrl } })) throw new InvalidOperationException();
+                await avt.SetAVTransportUriAsync(0, resUrl, metadata, cancellationToken).ConfigureAwait(false);
             }
 
             await avt.PlayAsync(0, "1", cancellationToken).ConfigureAwait(false);

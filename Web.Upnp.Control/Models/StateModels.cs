@@ -32,7 +32,7 @@ namespace Web.Upnp.Control.Models
 
     public record RCVolumeState(uint? Volume, bool? Muted);
 
-    public record AVStateParams(string State, string ObjectId, Uri CurrentUri);
+    public record AVStateParams(string State, string ObjectId, string SourceDevice, Uri CurrentUri);
 
     public record AVSetStateCommandParams(string DeviceId, AVStateParams State);
 
