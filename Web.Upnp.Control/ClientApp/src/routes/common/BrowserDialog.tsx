@@ -43,7 +43,7 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
     }
 
     render() {
-        const { id, title, confirmText = "OK", browserProps = {}, ...other } = this.props;
+        const { id, title, confirmText = "OK", onConfirm, browserProps = {}, ...other } = this.props;
         return <Modal id={id} title={title} {...other} data-keyboard={true}>
             <Modal.Body className="p-0 d-flex flex-column">
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
