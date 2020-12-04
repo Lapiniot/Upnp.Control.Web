@@ -243,7 +243,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
 }
 
 const CellTemplate = ({ data: { class: itemClass, albumArts, title, creator, album, res } }: { data: DIDLItem }) =>
-    <div className="d-flex align-items-center" title={utils.formatMediaInfo(res) ?? undefined}>
+    <div className="d-flex align-items-center text-wrap" title={utils.formatMediaInfo(res) ?? undefined}>
         <AlbumArt itemClass={itemClass} albumArts={albumArts} className="mr-2" />
         <div>
             {title}
