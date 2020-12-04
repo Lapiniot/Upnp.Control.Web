@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import WebApi from "../../components/WebApi";
 import { BrowserCoreProps } from "./BrowserCore";
 import BrowserDialog, { BrowseResult } from "./BrowserDialog";
 import { DIDLUtils } from "./BrowserUtils";
@@ -26,7 +27,12 @@ export default class RenderDevice extends React.Component<RenderDeviceProps, Ren
     }
 
     playMedia = (data: BrowseResult) => {
-        this.resetModal();
+        const deviceId = this.props["data-source"]?.udn;
+        const { keys: { 0: objectId }, device: source } = data;
+
+        if (!deviceId || !source || !objectId) return;
+
+        return WebApi.control(deviceId).play(objectId, source).fetch();
     }
 
     browse = () => {
@@ -39,7 +45,7 @@ export default class RenderDevice extends React.Component<RenderDeviceProps, Ren
 
     render() {
 
-        const { "data-source": { name, description, udn, type, icons }, category = "renderers" } = this.props;
+        const { "data-source": { name, description, udn, type, icons } } = this.props;
 
         return <div className="card">
             <div className="card-header d-flex flex-row">
