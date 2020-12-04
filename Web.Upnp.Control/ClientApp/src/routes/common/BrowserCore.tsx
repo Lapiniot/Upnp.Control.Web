@@ -11,6 +11,7 @@ type ModeFlags = "multiSelect" | "runsInDialog" | "useCheckboxes" | "selectOnCli
 
 export type BrowserCoreProps = {
     filter?: (item: DIDLItem) => boolean;
+    open?: (id: string) => boolean;
     selection?: SelectionService;
     cellTemplate?: ElementType;
     cellContext?: any;
@@ -175,6 +176,9 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
         this.notifySelectionChanged(cancelled);
     }
 
+    open: MouseEventHandler<HTMLDivElement> = ({ currentTarget: { dataset: { selectable, id } } }) =>
+        this.props.open ? selectable && this.props.open(id as string) : undefined;
+
     static Header({ className, sticky = true, ...other }: PropsWithChildren<HTMLAttributes<HTMLDivElement>> & { sticky?: boolean }) {
         return <div className={`table-caption${sticky ? " sticky-top" : ""}${className ? ` ${className}` : ""}`} {...other} />;
     }
@@ -221,7 +225,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
                         const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
                         const canBeSelected = selectOnClick && filter(e);
                         return <div key={e.id} data-id={e.id} data-selectable={canBeSelected ? 1 : undefined} data-selected={selected} data-active={active}
-                            onDoubleClick={e.container ? navigate : undefined}>
+                            onDoubleClick={e.container ? navigate : this.open}>
                             {useCheckboxes && <div>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
                             </div>}
