@@ -77,6 +77,7 @@ $generate-grid-layout-responsive-styles: false;
 }
 
 @import "fontawesome";
+@import "text-utils";
 @import "layout-grid";
 @import "layout-table";
 @import "spoiler";
@@ -89,27 +90,6 @@ $generate-grid-layout-responsive-styles: false;
 
 .flex-basis-0 {
     flex-basis: 0;
-}
-
-.text-tiny {
-    font-size: 0.6rem;
-}
-
-%line-clamp-base {
-    display: -webkit-inline-box;
-    -webkit-box-orient: vertical;
-}
-
-@mixin line-clamp($lines) {
-    .lines-#{$lines} {
-        @extend %line-clamp-base;
-        -webkit-line-clamp: #{$lines};
-        line-clamp: #{$lines};
-    }
-}
-
-@for $lines from 1 through 3 {
-    @include line-clamp($lines);
 }
 
 .sticky-bottom {
@@ -164,9 +144,10 @@ $album-art-sizes: (
 );
 
 .album-art {
-    display: inline-block;
-    width: $album-art-size-base !important;
-    height: $album-art-size-base !important;
+    width: $album-art-size-base;
+    min-width: $album-art-size-base;
+    height: $album-art-size-base;
+    min-height: $album-art-size-base;
     line-height: $album-art-size-base;
     text-align: center;
     vertical-align: middle !important;
@@ -183,7 +164,9 @@ $album-art-sizes: (
 @mixin album-art($size) {
     @extend .album-art;
     width: $size !important;
+    min-width: $size !important;
     height: $size !important;
+    min-height: $size !important;
 }
 
 @if $generate-album-art-sizes {

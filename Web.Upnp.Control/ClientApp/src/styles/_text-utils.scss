@@ -1,0 +1,20 @@
+.text-tiny {
+    font-size: 0.6rem;
+}
+
+%line-clamp-base {
+    display: -webkit-inline-box;
+    -webkit-box-orient: vertical;
+}
+
+@mixin line-clamp($lines) {
+    .lines-#{$lines} {
+        @extend %line-clamp-base;
+        -webkit-line-clamp: #{$lines};
+        line-clamp: #{$lines};
+    }
+}
+
+@for $lines from 1 through 3 {
+    @include line-clamp($lines);
+}
