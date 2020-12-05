@@ -33,7 +33,7 @@ ReactDOM.render(
                         </nav>
                     </div>
                 </div>
-                <main className="col">
+                <main className="col d-flex flex-column">
                     <SignalRConnection hubUrl="/upnpevents">
                         <Switch>
                             <Route exact path="/" component={HomePage} />

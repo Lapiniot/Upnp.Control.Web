@@ -24,9 +24,9 @@ export type BrowserProps = BrowserCoreProps &
 export default function (props: BrowserProps) {
     const { dataContext: data, match, s: size, p: page, fetching } = props;
     const { source: { total = 0, items: { length: fetched = 0 } = {}, parents = undefined } = {} } = data || {};
-    return <div className="d-flex flex-column h-100 position-relative">
+    return <div className="d-flex flex-column flex-basis-100 position-relative">
         {fetching && <LoadIndicatorOverlay />}
-        <div className="flex-grow-1">
+        <div className="flex-basis-100">
             <BrowserCore {...props}>
                 <BrowserCore.Header className="p-0">
                     <Breadcrumb items={parents} path={match.path} params={match.params} />
