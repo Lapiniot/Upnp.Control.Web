@@ -197,6 +197,16 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { playUrl } } }) => this.ctrl.playUri(playUrl as string).fetch();
 
+    open = (id: string) => {
+        const index = this.props.dataContext?.source.items.findIndex(i => i.id === id) ?? -1;
+        const url = this.props.dataContext?.source?.parents?.[0].res?.url;
+        if (index >= 0 && url) {
+            const playUrl = `${url}#tracknr=${index + 1},play`;
+            this.ctrl.playUri(playUrl).fetch();
+        }
+        return false;
+    }
+
     render() {
 
         const { dataContext: data, match, navigate, id, s: size, p: page, fetching, error } = this.props;
@@ -233,7 +243,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <div className="flex-grow-1">
                 <SignalRListener handlers={this.handlers}>
                     <Browser dataContext={data} fetching={fetching} error={error} cellTemplate={MainCell} cellContext={cellContext}
-                        filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection}
+                        filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection} open={this.open}
                         useCheckboxes selectOnClick>
                         <Browser.Header className="p-0">
                             <div className="d-flex flex-column">
