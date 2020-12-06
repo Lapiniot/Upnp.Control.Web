@@ -29,5 +29,6 @@
         "**/src/routes/**/*.js": "javascriptreact",
         "**/src/index.js": "javascriptreact",
         "**/src/styles/**/*.scss": "scss"
-    }
+    },
+    "typescript.tsdk": "./Web.Upnp.Control/Web.Upnp.Control/ClientApp/node_modules/typescript/lib"
 }
