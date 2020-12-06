@@ -26,18 +26,15 @@ export default function (props: BrowserProps) {
     const { source: { total = 0, items: { length: fetched = 0 } = {}, parents = undefined } = {} } = data || {};
     return <div className="d-flex flex-column flex-basis-100 position-relative">
         {fetching && <LoadIndicatorOverlay />}
-        <div className="flex-basis-100">
-            <BrowserCore {...props}>
-                <BrowserCore.Header className="p-0">
-                    <Breadcrumb items={parents} path={match.path} params={match.params} />
-                </BrowserCore.Header>
-            </BrowserCore>
-        </div>
+        <BrowserCore {...props}>
+            <BrowserCore.Header className="p-0">
+                <Breadcrumb items={parents} path={match.path} params={match.params} />
+            </BrowserCore.Header>
+        </BrowserCore>
         {total !== 0 && fetched !== total &&
-            <div className="sticky-bottom">
-                <Pagination baseUrl={match.url} className="border-1 border-secondary border-top"
-                    total={total} current={typeof page === "string" ? parseInt(page) : 1}
-                    pageSize={size === "string" ? parseInt(size) : $config.pageSize} />
-            </div>}
+            <Pagination baseUrl={match.url} className="border-1 border-secondary border-top sticky-bottom"
+                total={total} current={typeof page === "string" ? parseInt(page) : 1}
+                pageSize={size === "string" ? parseInt(size) : $config.pageSize} />
+        }
     </div>;
 }

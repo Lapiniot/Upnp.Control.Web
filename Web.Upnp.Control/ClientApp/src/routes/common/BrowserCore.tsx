@@ -195,8 +195,8 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
         const children = React.Children.toArray(this.props.children);
         const header = children.find(c => (c as ReactElement)?.type === MediaBrowser.Header);
         const footer = children.find(c => (c as ReactElement)?.type === MediaBrowser.Footer);
-        return <div className="h-100" onMouseDown={selectOnClick ? this.onContainerMouseDown : undefined}>
-            <div className={`auto-table table-compact table-hover-link table-striped${className ? ` ${className}` : ""}`} ref={this.tableRef}>
+        return <div className={`d-flex flex-grow-1${className ? ` ${className}` : ""}`} onMouseDown={selectOnClick ? this.onContainerMouseDown : undefined}>
+            <div className="auto-table table-compact table-hover-link table-striped w-100 mw-100" ref={this.tableRef}>
                 {header}
                 <div className={stickyColumnHeaders ? "sticky-header" : undefined}>
                     <div>
@@ -243,7 +243,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
 }
 
 const CellTemplate = ({ data: { class: itemClass, albumArts, title, creator, album, res } }: { data: DIDLItem }) =>
-    <div className="d-flex align-items-center text-wrap" title={utils.formatMediaInfo(res) ?? undefined}>
+    <div className="d-flex align-items-center text-break" title={utils.formatMediaInfo(res) ?? undefined}>
         <AlbumArt itemClass={itemClass} albumArts={albumArts} className="mr-2" />
         <div>
             {title}
