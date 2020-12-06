@@ -201,14 +201,14 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
                 <div className={stickyColumnHeaders ? "sticky-header" : undefined}>
                     <div>
                         {useCheckboxes &&
-                            <div className="cell-min">
+                            <div>
                                 <input type="checkbox" id="select_all" onChange={this.onCheckboxAllChanged}
                                     checked={this.selection.all(this.selectables)} disabled={this.selectables.length === 0} />
                             </div>}
-                        <div>Name</div>
-                        <div className="cell-min">Size</div>
-                        <div className="cell-min">Time</div>
-                        <div className="cell-min">Kind</div>
+                        <div className="w-100">Name</div>
+                        <div>Size</div>
+                        <div>Time</div>
+                        <div>Kind</div>
                     </div>
                 </div>
                 <div>
@@ -229,8 +229,8 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
                             {useCheckboxes && <div>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
                             </div>}
-                            <MainCellTemplate data={e} index={index} context={cellContext} />
-                            <div className="small text-nowrap text-right">{utils.formatSize(e.res?.size)}</div>
+                            <div className="mw-1"><MainCellTemplate data={e} index={index} context={cellContext} /></div>
+                            <div className="small text-right">{utils.formatSize(e.res?.size)}</div>
                             <div className="small">{utils.formatTime(e.res?.duration)}</div>
                             <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
                         </div>;
@@ -243,11 +243,11 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
 }
 
 const CellTemplate = ({ data: { class: itemClass, albumArts, title, creator, album, res } }: { data: DIDLItem }) =>
-    <div className="d-flex align-items-center text-break" title={utils.formatMediaInfo(res) ?? undefined}>
+    <div className="d-flex align-items-center" title={utils.formatMediaInfo(res) ?? undefined}>
         <AlbumArt itemClass={itemClass} albumArts={albumArts} className="mr-2" />
-        <div>
+        <span className="text-truncate">
             {title}
-            {creator && <small>&nbsp;&bull;&nbsp;{creator}</small>}
-            {album && <small>&nbsp;&bull;&nbsp;{album}</small>}
-        </div>
-    </div>;
+            {creator && <>&nbsp;&bull;&nbsp;<small>{creator}</small></>}
+            {album && <>&nbsp;&bull;&nbsp;<small>{album}</small></>}
+        </span>
+    </div>

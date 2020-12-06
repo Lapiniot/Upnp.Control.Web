@@ -79,11 +79,12 @@
             & > div {
                 display: table-cell;
                 vertical-align: middle;
+                white-space: nowrap;
                 padding: $table-cell-padding-y $table-cell-padding-x;
                 border-top: $table-border-width solid $table-border-color;
 
-                &.cell-min {
-                    width: 1px;
+                &.mw-1 {
+                    max-width: 1px;
                 }
             }
 

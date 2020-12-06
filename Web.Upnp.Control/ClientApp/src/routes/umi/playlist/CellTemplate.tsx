@@ -17,12 +17,12 @@ type CellTemplateProps = {
     index: number;
 }
 
-export default function ({ data, context: { active, parents, state, play, pause, playUrl }, index }: CellTemplateProps) {
-    const isActive = active(data, index);
-    const url = parents[0]?.res?.url ? `${parents[0].res.url}#tracknr=${index + 1},play` : `${data?.res?.url}#play`;
+export default function ({ data: d, context: { active, parents, state, play, pause, playUrl }, index }: CellTemplateProps) {
+    const isActive = active(d, index);
+    const url = parents[0]?.res?.url ? `${parents[0].res.url}#tracknr=${index + 1},play` : `${d?.res?.url}#play`;
     return <div className="d-flex align-items-center">
         <div className="d-inline-block stack mr-1">
-            <AlbumArt itemClass={data.class} albumArts={data.albumArts} />
+            <AlbumArt itemClass={d.class} albumArts={d.albumArts} />
             {isActive
                 ? state === "PLAYING"
                     ? <React.Fragment key="active-playing">
@@ -45,10 +45,10 @@ export default function ({ data, context: { active, parents, state, play, pause,
                     <i className="m-auto fas fa-lg fa-play-circle" />
                 </div>}
         </div>
-        <div>
-            {data.title}
-            {data.creator && <small>&nbsp;&bull;&nbsp;{data.creator}</small>}
-            {data.album && <small>&nbsp;&bull;&nbsp;{data.album}</small>}
-        </div>
+        <span className="text-truncate">
+            {d.title}
+            {d.creator && <>&nbsp;&bull;&nbsp;<small>{d.creator}</small></>}
+            {d.album && <>&nbsp;&bull;&nbsp;<small>{d.album}</small></>}
+        </span>
     </div>;
 }
