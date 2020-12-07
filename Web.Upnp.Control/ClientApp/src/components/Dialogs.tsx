@@ -13,9 +13,7 @@ export function TextValueEditDialog({ id, title, label, defaultValue, confirmTex
     onChanged, onConfirm, inputRef = React.createRef(), ...other }: TextValueEditDialogProps) {
     return <Modal id={id} title={title} {...other}>
         <div className="input-group mb-3">
-            <div className="input-group-prepend">
-                <span className="input-group-text" id="basic-addon1">{label}</span>
-            </div>
+            <span className="input-group-text" id="basic-addon1">{label}</span>
             <input ref={inputRef} type="text" onChange={onChanged} className="form-control" defaultValue={defaultValue}
                 placeholder="[provide value]" aria-label={label} aria-describedby="basic-addon1" />
         </div>
