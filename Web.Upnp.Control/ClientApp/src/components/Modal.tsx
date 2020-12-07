@@ -1,12 +1,14 @@
 import BootstrapModal from "bootstrap/js/dist/modal";
 import React, { ButtonHTMLAttributes, HTMLAttributes, PropsWithChildren, ReactElement, ReactNode } from "react";
 
-export type ModalProps<P = {}> = PropsWithChildren<P & {
-    immediate?: boolean;
-    onDismiss?: EventListener;
-    onShown?: EventListener;
-    buttons?: ReactNode;
-} & HTMLAttributes<HTMLDivElement>>;
+export type ModalProps<P = {}> = PropsWithChildren<P &
+    HTMLAttributes<HTMLDivElement> & {
+        id: string;
+        immediate?: boolean;
+        onDismiss?: EventListener;
+        onShown?: EventListener;
+        buttons?: ReactNode;
+    }>
 
 export default class Modal extends React.Component<ModalProps> {
 
