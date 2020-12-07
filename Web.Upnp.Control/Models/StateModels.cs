@@ -74,7 +74,9 @@ namespace Web.Upnp.Control.Models
 
     public record PLRemoveParams(string DeviceId, IEnumerable<string> PlaylistIds);
 
-    public record PLAddItemsParams(string DeviceId, string PlaylistId, string SourceDeviceId, IEnumerable<string> SourceItemIds);
+    public record PLAddItemsParams(string DeviceId, string PlaylistId, MediaSource Source);
 
     public record PLRemoveItemsParams(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
+
+    public record MediaSource(string DeviceId, IEnumerable<string> Items, string MediaUrl, string Title);
 }

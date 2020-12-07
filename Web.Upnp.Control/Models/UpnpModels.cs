@@ -12,4 +12,8 @@ namespace Web.Upnp.Control.Models
         public ICollection<Icon> Icons { get; init; }
         public ICollection<Service> Services { get; init; }
     }
+
+    public record Service(string UniqueServiceName, string ServiceType, Uri MetadataUrl, Uri ControlUrl, Uri EventsUrl);
+
+    public record Icon(int Width, int Height, Uri Url, string Mime);
 }

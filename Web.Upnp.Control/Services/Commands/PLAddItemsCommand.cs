@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,12 +22,62 @@ namespace Web.Upnp.Control.Services.Commands
         private const string DCNamespace = "http://purl.org/dc/elements/1.1/";
         private const string UPNPNamespace = "urn:schemas-upnp-org:metadata-1-0/upnp/";
         private const string DLNANamespace = "urn:schemas-dlna-org:metadata-1-0/";
+        private const string MissingArgumentErrorFormat = "{0} must be provided";
+        private readonly IHttpClientFactory httpClientFactory;
 
-        public PLAddItemsCommand(IUpnpServiceFactory factory) : base(factory) { }
-
-        public async Task ExecuteAsync(PLAddItemsParams commandParameters, CancellationToken cancellationToken)
+        public PLAddItemsCommand(IUpnpServiceFactory factory, IHttpClientFactory httpClientFactory) : base(factory)
         {
-            var (deviceId, playlistId, sourceDeviceId, sourceItems) = commandParameters;
+            this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+        }
+
+        public Task ExecuteAsync(PLAddItemsParams commandParameters, CancellationToken cancellationToken)
+        {
+            return commandParameters switch
+            {
+                { DeviceId: null or "" } => throw new ArgumentException(string.Format(MissingArgumentErrorFormat, nameof(PLAddItemsParams.DeviceId))),
+                { PlaylistId: null or "" } => throw new ArgumentException(string.Format(MissingArgumentErrorFormat, nameof(PLAddItemsParams.PlaylistId))),
+                { Source: { MediaUrl: { } url, Title: var title }, DeviceId: var deviceId, PlaylistId: var playlistId } =>
+                    AddUrlAsync(deviceId, playlistId, url, title, cancellationToken),
+                { Source: { DeviceId: { } source, Items: { } ids }, DeviceId: var deviceId, PlaylistId: var playlistId } =>
+                    AddItemsAsync(deviceId, playlistId, source, ids, cancellationToken),
+                _ => throw new ArgumentException("Either source deviceId or mediaUrl must be provided")
+            };
+        }
+
+        private async Task AddUrlAsync(string deviceId, string playlistId, string mediaUrl, string title, CancellationToken cancellationToken)
+        {
+            var playlistService = await Factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
+            var targetCDService = await Factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
+
+            var updateId = await GetUpdateIdAsync(targetCDService, playlistId, cancellationToken).ConfigureAwait(false);
+
+            var client = httpClientFactory.CreateClient();
+            using var request = new HttpRequestMessage(HttpMethod.Head, mediaUrl);
+            using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            var length = response.Content.Headers.ContentLength;
+
+            var sb = new StringBuilder();
+
+            using var writer = XmlWriter.Create(sb, new XmlWriterSettings() { OmitXmlDeclaration = true });
+            writer.WriteStartElement("DIDL-Lite", DIDLLiteNamespace);
+            writer.WriteAttributeString("dc", XmlnsNamespace, DCNamespace);
+            writer.WriteAttributeString("upnp", XmlnsNamespace, UPNPNamespace);
+            writer.WriteAttributeString("dlna", XmlnsNamespace, DLNANamespace);
+            writer.WriteStartElement("item");
+            writer.WriteElementString("title", DCNamespace, title);
+            writer.WriteElementString("class", UPNPNamespace, "object.item.audioItem.musicTrack");
+            writer.WriteStartElement("res");
+            if(length is not null) writer.WriteAttributeString("size", length.Value.ToString(CultureInfo.InvariantCulture));
+            writer.WriteAttributeString("protocolInfo", "http-get:*:audio/mpegurl:*");
+            writer.WriteValue(mediaUrl);
+            writer.WriteEndDocument();
+            writer.Flush();
+
+            await playlistService.AddUriAsync(0, playlistId, updateId, mediaUrl, sb.ToString(), cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task AddItemsAsync(string deviceId, string playlistId, string sourceDeviceId, IEnumerable<string> sourceItems, CancellationToken cancellationToken)
+        {
             var playlistService = await Factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
             var targetCDService = await Factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
             var sourceCDService = await Factory.GetServiceAsync<ContentDirectoryService>(sourceDeviceId).ConfigureAwait(false);

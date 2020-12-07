@@ -51,7 +51,7 @@ namespace Web.Upnp.Control.Controllers
         public Task AddItemsAsync([FromServices] IAsyncCommand<PLAddItemsParams> command,
             string deviceId, string playlistId, [FromBody] MediaSource source, CancellationToken cancellationToken)
         {
-            return command.ExecuteAsync(new PLAddItemsParams(deviceId, playlistId, source.DeviceId, source.Items), cancellationToken);
+            return command.ExecuteAsync(new PLAddItemsParams(deviceId, playlistId, source), cancellationToken);
         }
 
         [HttpDelete("{playlistId}/items")]
