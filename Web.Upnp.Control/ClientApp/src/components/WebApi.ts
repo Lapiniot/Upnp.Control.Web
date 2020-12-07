@@ -27,6 +27,7 @@ export interface PlaylistApiProvider {
     delete: (ids: string[]) => JsonDeleteFetch;
     copy: (id: string) => JsonFetch;
     addItems: (id: string, sourceDevice: string, sourceIds: string[]) => JsonPutFetch;
+    addUrl: (id: string, mediaUrl: string, title?: string) => JsonPutFetch;
     removeItems: (id: string, ids: string[]) => JsonDeleteFetch;
 }
 
@@ -46,6 +47,8 @@ export default class {
         copy: (id: string) => new JsonFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { method: "COPY" }),
         addItems: (id: string, sourceDevice: string, sourceIds: string[]) => new JsonPutFetch(`${baseUri}/${deviceId}/playlists/${id}/items`,
             null, { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds }) }),
+        addUrl: (id: string, mediaUrl: string, title?: string) => new JsonPutFetch(`${baseUri}/${deviceId}/playlists/${id}/items`,
+            null, { body: JSON.stringify({ mediaUrl, title }) }),
         removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null, { body: JSON.stringify(ids) })
     });
 
