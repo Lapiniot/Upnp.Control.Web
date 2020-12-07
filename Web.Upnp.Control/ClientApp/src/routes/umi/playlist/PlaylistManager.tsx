@@ -111,6 +111,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     addItems = (device: string, ids: string[]) => $api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch();
 
+    addUrl = (url: string, title: string) => $api.playlist(this.props.device).addUrl(this.props.id, url, title).fetch();
+
     removeItems = (ids: string[]) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch();
 
     onAdd = () => {
@@ -167,6 +169,31 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     </Modal.Button>]
                 }}
             </BrowserDialog>
+        });
+    }
+
+    onAddUrl = () => {
+        const urlInputRef = React.createRef<HTMLInputElement>();
+        const titleInputRef = React.createRef<HTMLInputElement>();
+        const addUrl = () => this.addUrl(urlInputRef.current?.value as string, titleInputRef.current?.value as string).then(this.reload);
+        const style = { width: "60px" };
+
+        this.setState({
+            modal:
+                <Modal id="add-url-confirm" title="Provide external media url to be added to playlist" onDismiss={this.resetModal} immediate>
+                    <div className="input-group mb-3">
+                        <span className="input-group-text text-right d-inline" id="basic-addon1" style={style}>Url</span>
+                        <input ref={urlInputRef} type="text" className="form-control" placeholder="[provide value]" aria-label="Url" aria-describedby="basic-addon1" />
+                    </div>
+                    <div className="input-group mb-3">
+                        <span className="input-group-text text-right d-inline" id="basic-addon2" style={style}>Title</span>
+                        <input ref={titleInputRef} type="text" className="form-control" placeholder="[provide value]" aria-label="Title" aria-describedby="basic-addon2" />
+                    </div>
+                    <Modal.Footer>
+                        <Modal.Button className="btn-secondary" dismiss>Cancel</Modal.Button>
+                        <Modal.Button className="btn-primary" icon="plus" onClick={addUrl} dismiss>Add</Modal.Button>
+                    </Modal.Footer>
+                </Modal>
         });
     }
 
@@ -235,6 +262,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             ] :
             [
                 { key: "item-add", title: "Add items", glyph: "plus", onClick: this.onAddItems },
+                { key: "url-add", title: "Add stream url", glyph: "stream", onClick: this.onAddUrl },
                 { key: "item-remove", title: "Remove items", glyph: "trash", onClick: this.onRemoveItems, disabled: disabled }
             ];
 
