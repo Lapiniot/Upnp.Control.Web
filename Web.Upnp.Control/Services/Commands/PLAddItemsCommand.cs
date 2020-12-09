@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using System.Xml;
 using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp.Services;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 using static IoT.Protocol.Upnp.Services.BrowseMode;
@@ -24,10 +27,13 @@ namespace Web.Upnp.Control.Services.Commands
         private const string DLNANamespace = "urn:schemas-dlna-org:metadata-1-0/";
         private const string MissingArgumentErrorFormat = "{0} must be provided";
         private readonly IHttpClientFactory httpClientFactory;
+        private readonly IServerAddressesFeature serverAddresses;
 
-        public PLAddItemsCommand(IUpnpServiceFactory factory, IHttpClientFactory httpClientFactory) : base(factory)
+        public PLAddItemsCommand(IUpnpServiceFactory factory, IHttpClientFactory httpClientFactory, IServer server) : base(factory)
         {
             this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            this.serverAddresses = server.Features.Get<IServerAddressesFeature>() ??
+                throw new InvalidOperationException("Get server addresses feature is not available");
         }
 
         public Task ExecuteAsync(PLAddItemsParams commandParameters, CancellationToken cancellationToken)
@@ -52,11 +58,18 @@ namespace Web.Upnp.Control.Services.Commands
             var updateId = await GetUpdateIdAsync(targetCDService, playlistId, cancellationToken).ConfigureAwait(false);
 
             var client = httpClientFactory.CreateClient();
-            using var request = new HttpRequestMessage(HttpMethod.Head, mediaUrl);
+            using var request = new HttpRequestMessage(HttpMethod.Get, mediaUrl);
             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
             var length = response.Content.Headers.ContentLength;
+            var contentType = response.Content.Headers.ContentType;
 
             var sb = new StringBuilder();
+
+            var url = new UriBuilder(HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses))
+            {
+                Path = $"/dlna-proxy/{mediaUrl}",
+                Query = "?chunked&strip-icy-metadata&add-dlna-metadata"
+            };
 
             using var writer = XmlWriter.Create(sb, new XmlWriterSettings() { OmitXmlDeclaration = true });
             writer.WriteStartElement("DIDL-Lite", DIDLLiteNamespace);
@@ -68,8 +81,8 @@ namespace Web.Upnp.Control.Services.Commands
             writer.WriteElementString("class", UPNPNamespace, "object.item.audioItem.musicTrack");
             writer.WriteStartElement("res");
             if(length is not null) writer.WriteAttributeString("size", length.Value.ToString(CultureInfo.InvariantCulture));
-            writer.WriteAttributeString("protocolInfo", "http-get:*:audio/mpegurl:*");
-            writer.WriteValue(mediaUrl);
+            writer.WriteAttributeString("protocolInfo", $"http-get:*:{(contentType?.MediaType ?? "audio/mpegurl")}:*");
+            writer.WriteValue(url.Uri.AbsoluteUri);
             writer.WriteEndDocument();
             writer.Flush();
 
