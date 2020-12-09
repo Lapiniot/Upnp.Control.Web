@@ -1,13 +1,11 @@
 using System;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.HttpClients
@@ -28,7 +26,7 @@ namespace Web.Upnp.Control.Services.HttpClients
         {
             if(!deliveryUri.IsAbsoluteUri)
             {
-                deliveryUri = new Uri(bindingAddress ??= ResolveExternalBindingAddress(), deliveryUri);
+                deliveryUri = new Uri(bindingAddress ??= HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses), deliveryUri);
             }
 
             using var request = new HttpRequestMessage(new HttpMethod("SUBSCRIBE"), subscribeUri)
@@ -64,38 +62,6 @@ namespace Web.Upnp.Control.Services.HttpClients
 
             using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
-        }
-
-        private Uri ResolveExternalBindingAddress()
-        {
-            var addresses = serverAddresses.Addresses.Select(a =>
-                    Uri.TryCreate(a, UriKind.Absolute, out var uri) && IPEndPoint.TryParse(uri.Authority, out var ep) && !IPAddress.IsLoopback(ep.Address)
-                        ? (Address: uri, Endpoint: ep)
-                        : (uri, null))
-                .Where(a => a.Endpoint != null)
-                .ToArray();
-
-            if(addresses.Length == 0) throw new InvalidOperationException("Server is not listening on any of external interface addresses");
-
-            var ipv4 = addresses.Where(a => a.Endpoint.AddressFamily == AddressFamily.InterNetwork).ToArray();
-
-            if(ipv4.Length <= 0) throw new InvalidOperationException("Cannot find suitable IP address for callback URI");
-
-            if(ipv4.FirstOrDefault(a => !a.Endpoint.Address.Equals(IPAddress.Any)) is {Address: {} address})
-            {
-                return address;
-            }
-
-            if(!(ipv4.FirstOrDefault(a => a.Endpoint.Address.Equals(IPAddress.Any)) is {Endpoint: {Port: var port}, Address: {Scheme: var scheme}}))
-            {
-                throw new InvalidOperationException("Cannot find suitable IP address for callback URI");
-            }
-
-            var ipv4Address = NetworkInterface.GetAllNetworkInterfaces().GetActiveExternalInterfaces().FindExternalIPv4Address();
-
-            if(ipv4Address == null) throw new InvalidOperationException("Cannot find suitable IP address for callback URI");
-
-            return new Uri($"{scheme}://{ipv4Address}:{port}");
         }
     }
 }
