@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Web.Upnp.Control.Services.Abstractions;
 using Web.Upnp.Control.Services.HttpClients;
+using Web.Upnp.Control.Services.Middleware;
 using static System.Net.DecompressionMethods;
 
 namespace Web.Upnp.Control.Services
