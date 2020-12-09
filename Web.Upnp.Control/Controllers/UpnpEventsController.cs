@@ -7,8 +7,8 @@ using System.Xml;
 using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Web.Upnp.Control.Infrastructure.Routing;
 using Web.Upnp.Control.Models.Events;
-using Web.Upnp.Control.Routing;
 
 namespace Web.Upnp.Control.Controllers
 {

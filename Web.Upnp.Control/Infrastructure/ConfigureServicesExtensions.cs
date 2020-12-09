@@ -3,12 +3,12 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Web.Upnp.Control.Infrastructure.HttpClients;
+using Web.Upnp.Control.Infrastructure.Middleware;
 using Web.Upnp.Control.Services.Abstractions;
-using Web.Upnp.Control.Services.HttpClients;
-using Web.Upnp.Control.Services.Middleware;
 using static System.Net.DecompressionMethods;
 
-namespace Web.Upnp.Control.Services
+namespace Web.Upnp.Control.Infrastructure
 {
     public static class ConfigureServicesExtensions
     {

@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace Web.Upnp.Control.Services.HttpClients
+namespace Web.Upnp.Control.Infrastructure.HttpClients
 {
     public class ImageLoaderProxyClient
     {

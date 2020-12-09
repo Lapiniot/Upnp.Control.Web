@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace Web.Upnp.Control.Services
+namespace Web.Upnp.Control.Infrastructure
 {
     public class RequestCancelledExceptionFilter : ExceptionFilterAttribute
     {

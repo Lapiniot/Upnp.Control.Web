@@ -1,6 +1,6 @@
-﻿using Web.Upnp.Control.Services.HttpClients;
+﻿using Web.Upnp.Control.Infrastructure.HttpClients;
 
-namespace Web.Upnp.Control.Services.Middleware
+namespace Web.Upnp.Control.Infrastructure.Middleware
 {
     public class ImageLoaderProxyMiddleware : ProxyMiddleware
     {

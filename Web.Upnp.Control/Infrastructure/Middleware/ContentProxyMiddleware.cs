@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 
-namespace Web.Upnp.Control.Services.Middleware
+namespace Web.Upnp.Control.Infrastructure.Middleware
 {
     public class ContentProxyMiddleware : ProxyMiddleware
     {

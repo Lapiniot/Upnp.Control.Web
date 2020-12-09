@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
 
-namespace Web.Upnp.Control.Services.Middleware
+namespace Web.Upnp.Control.Infrastructure.Middleware
 {
     public abstract class ProxyMiddleware : IMiddleware
     {

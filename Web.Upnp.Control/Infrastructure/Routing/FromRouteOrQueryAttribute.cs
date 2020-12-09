@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Web.Upnp.Control.Routing
+namespace Web.Upnp.Control.Infrastructure.Routing
 {
     public class FromRouteOrQueryAttribute : Attribute, IBindingSourceMetadata, IModelNameProvider
     {

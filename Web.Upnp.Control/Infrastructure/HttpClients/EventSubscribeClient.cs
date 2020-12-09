@@ -5,10 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
-using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Services.Abstractions;
 
-namespace Web.Upnp.Control.Services.HttpClients
+namespace Web.Upnp.Control.Infrastructure.HttpClients
 {
     public class EventSubscribeClient : IEventSubscribeClient
     {

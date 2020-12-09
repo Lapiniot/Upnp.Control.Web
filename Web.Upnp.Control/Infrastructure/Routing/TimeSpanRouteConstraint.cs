@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Web.Upnp.Control.Routing
+namespace Web.Upnp.Control.Infrastructure.Routing
 {
     public class TimeSpanRouteConstraint : IRouteConstraint
     {
