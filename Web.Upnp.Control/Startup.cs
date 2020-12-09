@@ -89,6 +89,7 @@ namespace Web.Upnp.Control
             services.AddResponseCaching();
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
             services.AddImageLoaderProxyMiddleware();
+            services.AddContentProxyMiddleware();
 
             services.AddSwaggerGen(c =>
             {
@@ -126,6 +127,7 @@ namespace Web.Upnp.Control
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapHub<UpnpEventsHub>("/upnpevents", o => o.Transports = HttpTransportType.WebSockets);
                 endpoints.MapImageLoaderProxy("/proxy/{*url}");
+                endpoints.MapContentProxy("/dlna-proxy/{*url}");
             });
 
             //app.UseHttpsRedirection()

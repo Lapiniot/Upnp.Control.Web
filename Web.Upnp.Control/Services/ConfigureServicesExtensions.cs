@@ -60,6 +60,11 @@ namespace Web.Upnp.Control.Services
             return services.AddTransient<ImageLoaderProxyMiddleware>();
         }
 
+        public static IServiceCollection AddContentProxyMiddleware(this IServiceCollection services)
+        {
+            return services.AddTransient<ContentProxyMiddleware>();
+        }
+
         public static IEndpointConventionBuilder MapImageLoaderProxy(this IEndpointRouteBuilder routeBuilder, string route)
         {
             return routeBuilder.Map(route, routeBuilder
@@ -67,6 +72,15 @@ namespace Web.Upnp.Control.Services
                     .UseMiddleware<ImageLoaderProxyMiddleware>()
                     .Build())
                 .WithDisplayName("Image Loader Proxy Middleware");
+        }
+
+        public static IEndpointConventionBuilder MapContentProxy(this IEndpointRouteBuilder routeBuilder, string route)
+        {
+            return routeBuilder.Map(route, routeBuilder
+                    .CreateApplicationBuilder()
+                    .UseMiddleware<ContentProxyMiddleware>()
+                    .Build())
+                .WithDisplayName("Content Proxy Middleware");
         }
     }
 }
