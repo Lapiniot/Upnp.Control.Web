@@ -67,8 +67,8 @@ namespace Web.Upnp.Control.Services.Commands
 
             var url = new UriBuilder(HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses))
             {
-                Path = $"/dlna-proxy/{mediaUrl}",
-                Query = "?chunked&strip-icy-metadata&add-dlna-metadata"
+                Path = $"/dlna-proxy/{Uri.EscapeDataString(mediaUrl)}",
+                Query = "?no-length&strip-icy-metadata&add-dlna-metadata"
             };
 
             using var writer = XmlWriter.Create(sb, new XmlWriterSettings() { OmitXmlDeclaration = true });
