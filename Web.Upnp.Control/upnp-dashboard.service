@@ -6,10 +6,11 @@ After=network-online.target
 [Service]
 Type=notify
 WorkingDirectory=/var/www/upnp-dashboard
-ExecStart=/usr/bin/dotnet Web.Upnp.Control.dll
+ExecStart=/var/www/upnp-dashboard/Web.Upnp.Control
 Restart=always
 RestartSec=10
-User=www-data
+User=upnp-dashboard
+Group=upnp-dashboard
 KillSignal=SIGINT
 SyslogIdentifier=upnp-dashboard
 Environment=ASPNETCORE_ENVIRONMENT=Production

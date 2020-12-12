@@ -67,9 +67,18 @@
                     "RUNTIMEID": "${input:rid}"
                 }
             },
-            "osx": {
-                "command": "rsync -r -v --delete -e ssh ./Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/$RUNTIMEID/publish/ ${input:remote-url}"
-            }
+            "command": "rsync",
+            "args": [
+                "--rsync-path",
+                "sudo -u upnp-dashboard rsync",
+                "--recursive",
+                "--verbose",
+                "--progress",
+                "--delete",
+                "--rsh=ssh",
+                "./Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/$RUNTIMEID/publish/",
+                "${input:remote-url}"
+            ]
         },
         {
             "label": "npm: install - Web.Upnp.Control",
