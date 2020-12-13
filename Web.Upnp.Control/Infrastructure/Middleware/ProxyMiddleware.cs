@@ -8,19 +8,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
 {
     public abstract class ProxyMiddleware : IMiddleware
     {
-        protected uint BufferSize;
+        protected int BufferSize;
         private readonly HttpClient client;
+        private readonly ILogger<ProxyMiddleware> logger;
 
-        protected ProxyMiddleware(HttpClient client)
+        protected ProxyMiddleware(HttpClient client, ILogger<ProxyMiddleware> logger)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
-            BufferSize = 4 * 1024;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            BufferSize = 16 * 1024;
         }
 
         #region Implementation of IMiddleware
@@ -112,10 +115,12 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
                 if(bytes == 0) break;
 
                 await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
+
+                logger.LogInformation($"{bytes} bytes flushed to the client.");
             }
         }
 
-        protected async Task PreBufferContentAsync(Stream source, PipeWriter writer, uint count, CancellationToken cancellationToken)
+        protected async Task PreBufferContentAsync(Stream source, PipeWriter writer, int count, CancellationToken cancellationToken)
         {
             if(count == 0) return;
 
@@ -130,6 +135,8 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             }
 
             writer.Advance(available);
+
+            logger.LogInformation($"{available} initial bytes prebuffered and are ready to be sent to the client");
         }
     }
 }

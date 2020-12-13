@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Logging;
 using static System.StringComparison;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
@@ -14,15 +15,21 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
         private const string OptionNoLength = "no-length";
         private const string OptionStipIcyMetadata = "strip-icy-metadata";
         private const string OptionAddDlnaMetadata = "add-dlna-metadata";
+        private readonly ILogger<ProxyMiddleware> logger;
 
-        public ContentProxyMiddleware(HttpClient client) : base(client)
+        public ContentProxyMiddleware(HttpClient client, ILogger<ProxyMiddleware> logger) : base(client, logger)
         {
-            BufferSize = 4 * 1024;
+            this.logger = logger;
         }
 
         protected override void CopyHeaders(HttpResponseMessage responseMessage, HttpContext context)
         {
             base.CopyHeaders(responseMessage, context);
+
+            context.Response.Headers.Remove("Expires");
+            context.Response.Headers["Server"] = "UPnP Controller DLNA proxy";
+            context.Response.Headers["Pragma"] = "no-cache";
+            context.Response.Headers["Cache-Control"] = "no-cache";
 
             if(responseMessage.StatusCode >= HttpStatusCode.BadRequest) return;
 
@@ -55,7 +62,8 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
                 headers.Add("Accept-Ranges", "none");
                 headers.Add("transferMode.dlna.org", "Streaming");
                 headers.Add("realTimeInfo.dlna.org", "DLNA.ORG_TLAG=*");
-                headers.Add("contentFeatures.dlna.org", "DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000");
+                headers.Add("contentFeatures.dlna.org", "*");
+                //headers.Add("contentFeatures.dlna.org", "DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000");
             }
         }
 
