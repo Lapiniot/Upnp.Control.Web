@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": ".NET Core Launch (DLNA Proxy)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "Build",
+            "program": "./bin/Debug/net5.0/Web.Upnp.DlnaProxy.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Web.Upnp.DlnaProxy",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
             "name": ".NET Core Launch (web)",
             "type": "coreclr",
             "request": "launch",
@@ -26,6 +37,15 @@
             "logging": {
                 "moduleLoad": false
             }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch both",
+            "configurations": [
+                ".NET Core Launch (DLNA Proxy)",
+                ".NET Core Launch (web)"
+            ]
         }
     ]
 }

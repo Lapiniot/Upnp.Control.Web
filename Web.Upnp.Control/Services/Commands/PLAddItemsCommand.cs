@@ -57,20 +57,21 @@ namespace Web.Upnp.Control.Services.Commands
 
             var updateId = await GetUpdateIdAsync(targetCDService, playlistId, cancellationToken).ConfigureAwait(false);
 
-            var client = httpClientFactory.CreateClient();
+            /*var client = httpClientFactory.CreateClient();
             using var request = new HttpRequestMessage(HttpMethod.Get, mediaUrl);
             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
             var length = response.Content.Headers.ContentLength;
             var contentType = response.Content.Headers.ContentType;
 
-            var sb = new StringBuilder();
+            
 
             var url = new UriBuilder(HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses))
             {
                 Path = $"/dlna-proxy/{Uri.EscapeDataString(mediaUrl)}",
                 Query = "?no-length&strip-icy-metadata&add-dlna-metadata"
-            };
+            };*/
 
+            var sb = new StringBuilder();
             using var writer = XmlWriter.Create(sb, new XmlWriterSettings() { OmitXmlDeclaration = true });
             writer.WriteStartElement("DIDL-Lite", DIDLLiteNamespace);
             writer.WriteAttributeString("dc", XmlnsNamespace, DCNamespace);
@@ -80,9 +81,10 @@ namespace Web.Upnp.Control.Services.Commands
             writer.WriteElementString("title", DCNamespace, title);
             writer.WriteElementString("class", UPNPNamespace, "object.item.audioItem.musicTrack");
             writer.WriteStartElement("res");
-            if(length is not null) writer.WriteAttributeString("size", length.Value.ToString(CultureInfo.InvariantCulture));
-            writer.WriteAttributeString("protocolInfo", $"http-get:*:{(contentType?.MediaType ?? "audio/mpegurl")}:*");
-            writer.WriteValue(url.Uri.AbsoluteUri);
+            //if(length is not null) writer.WriteAttributeString("size", length.Value.ToString(CultureInfo.InvariantCulture));
+            //writer.WriteAttributeString("protocolInfo", $"http-get:*:{(contentType?.MediaType ?? "audio/mpegurl")}:*");
+            writer.WriteAttributeString("protocolInfo", $"http-get:*:audio/mpegurl:*");
+            writer.WriteValue(mediaUrl);
             writer.WriteEndDocument();
             writer.Flush();
 
