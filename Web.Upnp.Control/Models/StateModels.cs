@@ -78,5 +78,5 @@ namespace Web.Upnp.Control.Models
 
     public record PLRemoveItemsParams(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
 
-    public record MediaSource(string DeviceId, IEnumerable<string> Items, string MediaUrl, string Title);
+    public record MediaSource(string DeviceId, IEnumerable<string> Items, string MediaUrl, string Title, bool? UseProxy);
 }

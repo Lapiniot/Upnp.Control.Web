@@ -42,34 +42,33 @@ namespace Web.Upnp.Control.Services.Commands
             {
                 { DeviceId: null or "" } => throw new ArgumentException(string.Format(MissingArgumentErrorFormat, nameof(PLAddItemsParams.DeviceId))),
                 { PlaylistId: null or "" } => throw new ArgumentException(string.Format(MissingArgumentErrorFormat, nameof(PLAddItemsParams.PlaylistId))),
-                { Source: { MediaUrl: { } url, Title: var title }, DeviceId: var deviceId, PlaylistId: var playlistId } =>
-                    AddUrlAsync(deviceId, playlistId, url, title, cancellationToken),
+                { Source: { MediaUrl: { } url, Title: var title, UseProxy: var useProxy }, DeviceId: var deviceId, PlaylistId: var playlistId } =>
+                    AddUrlAsync(deviceId, playlistId, url, title, useProxy, cancellationToken),
                 { Source: { DeviceId: { } source, Items: { } ids }, DeviceId: var deviceId, PlaylistId: var playlistId } =>
                     AddItemsAsync(deviceId, playlistId, source, ids, cancellationToken),
                 _ => throw new ArgumentException("Either source deviceId or mediaUrl must be provided")
             };
         }
 
-        private async Task AddUrlAsync(string deviceId, string playlistId, string mediaUrl, string title, CancellationToken cancellationToken)
+        private async Task AddUrlAsync(string deviceId, string playlistId, string mediaUrl, string title, bool? useProxy, CancellationToken cancellationToken)
         {
             var playlistService = await Factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
             var targetCDService = await Factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
             var updateId = await GetUpdateIdAsync(targetCDService, playlistId, cancellationToken).ConfigureAwait(false);
 
-            /*var client = httpClientFactory.CreateClient();
+            var client = httpClientFactory.CreateClient();
             using var request = new HttpRequestMessage(HttpMethod.Get, mediaUrl);
             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
             var length = response.Content.Headers.ContentLength;
             var contentType = response.Content.Headers.ContentType;
 
-            
-
-            var url = new UriBuilder(HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses))
-            {
-                Path = $"/dlna-proxy/{Uri.EscapeDataString(mediaUrl)}",
-                Query = "?no-length&strip-icy-metadata&add-dlna-metadata"
-            };*/
+            var url = useProxy != true ? mediaUrl
+                : new UriBuilder(HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses))
+                {
+                    Path = $"/dlna-proxy/{Uri.EscapeUriString(mediaUrl)}",
+                    Query = "?no-length&strip-icy-metadata&add-dlna-metadata"
+                }.Uri.AbsoluteUri;
 
             var sb = new StringBuilder();
             using var writer = XmlWriter.Create(sb, new XmlWriterSettings() { OmitXmlDeclaration = true });
@@ -81,10 +80,9 @@ namespace Web.Upnp.Control.Services.Commands
             writer.WriteElementString("title", DCNamespace, title);
             writer.WriteElementString("class", UPNPNamespace, "object.item.audioItem.musicTrack");
             writer.WriteStartElement("res");
-            //if(length is not null) writer.WriteAttributeString("size", length.Value.ToString(CultureInfo.InvariantCulture));
-            //writer.WriteAttributeString("protocolInfo", $"http-get:*:{(contentType?.MediaType ?? "audio/mpegurl")}:*");
-            writer.WriteAttributeString("protocolInfo", $"http-get:*:audio/mpegurl:*");
-            writer.WriteValue(mediaUrl);
+            if(length is not null) writer.WriteAttributeString("size", length.Value.ToString(CultureInfo.InvariantCulture));
+            writer.WriteAttributeString("protocolInfo", $"http-get:*:{(contentType?.MediaType ?? "audio/mpegurl")}:*");
+            writer.WriteValue(url);
             writer.WriteEndDocument();
             writer.Flush();
 
