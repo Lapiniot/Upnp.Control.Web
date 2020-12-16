@@ -7,18 +7,18 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class RCGetMuteQuery : IAsyncQuery<RCGetMuteQueryParams, bool?>
+    public class RCGetMuteQueryHandler : IAsyncQueryHandler<RCGetMuteQuery, bool?>
     {
         private readonly IUpnpServiceFactory factory;
 
-        public RCGetMuteQuery(IUpnpServiceFactory factory)
+        public RCGetMuteQueryHandler(IUpnpServiceFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task<bool?> ExecuteAsync(RCGetMuteQueryParams queryParameters, CancellationToken cancellationToken)
+        public async Task<bool?> ExecuteAsync(RCGetMuteQuery query, CancellationToken cancellationToken)
         {
-            var service = await factory.GetServiceAsync<RenderingControlService>(queryParameters.DeviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<RenderingControlService>(query.DeviceId).ConfigureAwait(false);
             var result = await service.GetMuteAsync(0, cancellationToken).ConfigureAwait(false);
             return result.TryGetValue("CurrentMute", out var value) && bool.TryParse(value, out var muted) ? muted : null;
         }

@@ -9,16 +9,16 @@ namespace Web.Upnp.Control.Services.Commands
         public static IServiceCollection AddCommandServices(this IServiceCollection services)
         {
             return services
-                .AddTransient<IAsyncCommand<AVSetStateCommandParams>, AVSetStateCommand>()
-                .AddTransient<IAsyncCommand<AVSetPositionCommandParams>, AVSetPositionCommand>()
-                .AddTransient<IAsyncCommand<AVSetPlayModeCommandParams>, AVSetPlayModeCommand>()
-                .AddTransient<IAsyncCommand<RCSetVolumeCommandParams>, RCSetVolumeCommand>()
-                .AddTransient<IAsyncCommand<RCSetMuteCommandParams>, RCSetMuteCommand>()
-                .AddTransient<IAsyncCommand<PLCreateParams>, PLCreateCommand>()
-                .AddTransient<IAsyncCommand<PLUpdateParams>, PLUpdateCommand>()
-                .AddTransient<IAsyncCommand<PLRemoveParams>, PLRemoveCommand>()
-                .AddTransient<IAsyncCommand<PLAddItemsParams>, PLAddItemsCommand>()
-                .AddTransient<IAsyncCommand<PLRemoveItemsParams>, PLRemoveItemsCommand>();
+                .AddTransient<IAsyncCommandHandler<AVSetStateCommand>, AVSetStateCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<AVSetPositionCommand>, AVSetPositionCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<AVSetPlayModeCommand>, AVSetPlayModeCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<RCSetVolumeCommand>, RCSetVolumeCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<RCSetMuteCommand>, RCSetMuteCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<PLCreateCommand>, PLCreateCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<PLUpdateCommand>, PLUpdateCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<PLRemoveCommand>, PLRemoveCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<PLAddItemsCommand>, PLAddItemsCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<PLRemoveItemsCommand>, PLRemoveItemsCommandHandler>();
         }
     }
 }

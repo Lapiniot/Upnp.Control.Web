@@ -10,18 +10,18 @@ using static IoT.Protocol.Upnp.Services.BrowseMode;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class AVSetStateCommand : IAsyncCommand<AVSetStateCommandParams>
+    public class AVSetStateCommandHandler : IAsyncCommandHandler<AVSetStateCommand>
     {
         private readonly IUpnpServiceFactory factory;
 
-        public AVSetStateCommand(IUpnpServiceFactory factory)
+        public AVSetStateCommandHandler(IUpnpServiceFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task ExecuteAsync(AVSetStateCommandParams commandParameters, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(AVSetStateCommand command, CancellationToken cancellationToken)
         {
-            var (deviceId, state) = commandParameters;
+            var (deviceId, state) = command;
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
 
             switch(state.State)

@@ -9,18 +9,18 @@ using static System.StringSplitOptions;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class CMGetConnectionsQuery : IAsyncQuery<CMGetConnectionsParams, IEnumerable<string>>
+    public class CMGetConnectionsQueryHandler : IAsyncQueryHandler<CMGetConnectionsQuery, IEnumerable<string>>
     {
         private readonly IUpnpServiceFactory factory;
 
-        public CMGetConnectionsQuery(IUpnpServiceFactory factory)
+        public CMGetConnectionsQueryHandler(IUpnpServiceFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task<IEnumerable<string>> ExecuteAsync(CMGetConnectionsParams queryParameters, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> ExecuteAsync(CMGetConnectionsQuery query, CancellationToken cancellationToken)
         {
-            var service = await factory.GetServiceAsync<ConnectionManagerService>(queryParameters.DeviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<ConnectionManagerService>(query.DeviceId).ConfigureAwait(false);
             var result = await service.GetCurrentConnectionIDsAsync(cancellationToken).ConfigureAwait(false);
             return result["ConnectionIDs"].Split(',', RemoveEmptyEntries | TrimEntries);
         }

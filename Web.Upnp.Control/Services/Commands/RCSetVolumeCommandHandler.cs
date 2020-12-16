@@ -7,20 +7,20 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class RCSetMuteCommand : IAsyncCommand<RCSetMuteCommandParams>
+    public class RCSetVolumeCommandHandler : IAsyncCommandHandler<RCSetVolumeCommand>
     {
         private readonly IUpnpServiceFactory factory;
 
-        public RCSetMuteCommand(IUpnpServiceFactory factory)
+        public RCSetVolumeCommandHandler(IUpnpServiceFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task ExecuteAsync(RCSetMuteCommandParams commandParameters, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(RCSetVolumeCommand command, CancellationToken cancellationToken)
         {
-            var (deviceId, mute) = commandParameters;
+            var (deviceId, volume) = command;
             var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
-            await service.SetMuteAsync(0, mute, cancellationToken).ConfigureAwait(false);
+            await service.SetVolumeAsync(0, volume, cancellationToken).ConfigureAwait(false);
         }
     }
 }

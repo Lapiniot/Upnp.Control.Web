@@ -10,18 +10,18 @@ namespace Web.Upnp.Control.Services.Queries
         public static IServiceCollection AddQueryServices(this IServiceCollection services)
         {
             return services
-                .AddTransient<IAsyncQuery<AVGetStateQueryParams, AVState>, AVGetStateQuery>()
-                .AddTransient<IAsyncQuery<AVGetPositionQueryParams, AVPosition>, AVGetPositionQuery>()
-                .AddTransient<IAsyncQuery<AVGetPlayModeQueryParams, string>, AVGetPlayModeQuery>()
-                .AddTransient<IAsyncQuery<RCGetVolumeQueryParams, RCVolumeState>, RCGetVolumeQuery>()
-                .AddTransient<IAsyncQuery<RCGetMuteQueryParams, bool?>, RCGetMuteQuery>()
-                .AddTransient<IAsyncQuery<SysPropsGetPlaylistStateQueryParams, string>, SysPropsGetPlaylistStateQuery>()
-                .AddTransient<IAsyncQuery<GetDeviceQueryParams, Device>, GetDeviceQuery>()
-                .AddTransient<IAsyncQuery<CDGetContentQueryParams, GetContentResult>, GetContentQuery>()
-                .AddTransient<IAsyncEnumerableQuery<GetDevicesQueryParams, Device>, GetDeviceQuery>()
-                .AddTransient<IAsyncQuery<CMGetProtocolInfoParams, CMProtocolInfo>, CMGetProtocolInfoQuery>()
-                .AddTransient<IAsyncQuery<CMGetConnectionsParams, IEnumerable<string>>, CMGetConnectionsQuery>()
-                .AddTransient<IAsyncQuery<CMGetConnectionInfoParams, CMConnectionInfo>, CMGetConnectionInfoQuery>();
+                .AddTransient<IAsyncQueryHandler<AVGetStateQuery, AVState>, AVGetStateQueryHandler>()
+                .AddTransient<IAsyncQueryHandler<AVGetPositionQuery, AVPosition>, AVGetPositionQueryHandler>()
+                .AddTransient<IAsyncQueryHandler<AVGetPlayModeQuery, string>, AVGetPlayModeQueryHandler>()
+                .AddTransient<IAsyncQueryHandler<RCGetVolumeQuery, RCVolumeState>, RCGetVolumeQueryHandler>()
+                .AddTransient<IAsyncQueryHandler<RCGetMuteQuery, bool?>, RCGetMuteQueryHandler>()
+                .AddTransient<IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string>, SysPropsGetPlaylistStateQueryHandler>()
+                .AddTransient<IAsyncQueryHandler<GetDeviceQuery, Device>, GetDeviceQueryHandler>()
+                .AddTransient<IAsyncQueryHandler<CDGetContentQuery, ContentResult>, GetContentQueryHandler>()
+                .AddTransient<IAsyncEnumerableQueryHandler<GetDevicesQuery, Device>, GetDeviceQueryHandler>()
+                .AddTransient<IAsyncQueryHandler<CMGetProtocolInfoQuery, CMProtocolInfo>, CMGetProtocolInfoQueryHandler>()
+                .AddTransient<IAsyncQueryHandler<CMGetConnectionsQuery, IEnumerable<string>>, CMGetConnectionsQueryHandler>()
+                .AddTransient<IAsyncQueryHandler<CMGetConnectionInfoQuery, CMConnectionInfo>, CMGetConnectionInfoQueryHandler>();
         }
     }
 }

@@ -75,7 +75,7 @@ namespace Web.Upnp.Control
                 new ResourceJsonConverter(),
                 new ContainerJsonConverter(),
                 new MediaItemJsonConverter(),
-                new GetContentResultConverter()
+                new ContentResultConverter()
             };
 
             services

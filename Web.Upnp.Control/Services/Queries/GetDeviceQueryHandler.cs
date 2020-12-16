@@ -14,7 +14,7 @@ using static IoT.Protocol.Upnp.UpnpServices;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class GetDeviceQuery : IAsyncEnumerableQuery<GetDevicesQueryParams, Device>, IAsyncQuery<GetDeviceQueryParams, Device>
+    public class GetDeviceQueryHandler : IAsyncEnumerableQueryHandler<GetDevicesQuery, Device>, IAsyncQueryHandler<GetDeviceQuery, Device>
     {
         private static readonly IDictionary<string, Expression<Func<Device, bool>>> Filters = new Dictionary<string, Expression<Func<Device, bool>>>
         {
@@ -26,23 +26,22 @@ namespace Web.Upnp.Control.Services.Queries
 
         private readonly UpnpDbContext context;
 
-        public GetDeviceQuery(UpnpDbContext context)
+        public GetDeviceQueryHandler(UpnpDbContext context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async IAsyncEnumerable<Device> ExecuteAsync(GetDevicesQueryParams queryParameters,
-            [EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<Device> ExecuteAsync(GetDevicesQuery query, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            await foreach(var device in GetQuery(queryParameters.Category).AsAsyncEnumerable().WithCancellation(cancellationToken).ConfigureAwait(false))
+            await foreach(var device in GetQuery(query.Category).AsAsyncEnumerable().WithCancellation(cancellationToken).ConfigureAwait(false))
             {
                 yield return device;
             }
         }
 
-        public Task<Device> ExecuteAsync(GetDeviceQueryParams queryParameters, CancellationToken cancellationToken)
+        public Task<Device> ExecuteAsync(GetDeviceQuery query, CancellationToken cancellationToken)
         {
-            return GetQuery("upnp").FirstOrDefaultAsync(d => d.Udn == queryParameters.DeviceId, cancellationToken);
+            return GetQuery("upnp").FirstOrDefaultAsync(d => d.Udn == query.DeviceId, cancellationToken);
         }
 
         private IQueryable<Device> GetQuery(string category)

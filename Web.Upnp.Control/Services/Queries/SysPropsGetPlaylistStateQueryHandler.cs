@@ -7,18 +7,18 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class SysPropsGetPlaylistStateQuery : IAsyncQuery<SysPropsGetPlaylistStateQueryParams, string>
+    public class SysPropsGetPlaylistStateQueryHandler : IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string>
     {
         private readonly IUpnpServiceFactory factory;
 
-        public SysPropsGetPlaylistStateQuery(IUpnpServiceFactory factory)
+        public SysPropsGetPlaylistStateQueryHandler(IUpnpServiceFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task<string> ExecuteAsync(SysPropsGetPlaylistStateQueryParams queryParameters, CancellationToken cancellationToken)
+        public async Task<string> ExecuteAsync(SysPropsGetPlaylistStateQuery query, CancellationToken cancellationToken)
         {
-            var sps = await factory.GetServiceAsync<SystemPropertiesService>(queryParameters.DeviceId).ConfigureAwait(false);
+            var sps = await factory.GetServiceAsync<SystemPropertiesService>(query.DeviceId).ConfigureAwait(false);
             return await sps.GetStringAsync("fastCall?command=state_playlists", cancellationToken).ConfigureAwait(false);
         }
     }

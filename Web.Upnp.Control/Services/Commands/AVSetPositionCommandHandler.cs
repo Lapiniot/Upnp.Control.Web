@@ -7,18 +7,18 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class AVSetPositionCommand : IAsyncCommand<AVSetPositionCommandParams>
+    public class AVSetPositionCommandHandler : IAsyncCommandHandler<AVSetPositionCommand>
     {
         private readonly IUpnpServiceFactory factory;
 
-        public AVSetPositionCommand(IUpnpServiceFactory factory)
+        public AVSetPositionCommandHandler(IUpnpServiceFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task ExecuteAsync(AVSetPositionCommandParams commandParameters, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(AVSetPositionCommand command, CancellationToken cancellationToken)
         {
-            var (deviceId, (position, time)) = commandParameters;
+            var (deviceId, (position, time)) = command;
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
 
             if(position != null)

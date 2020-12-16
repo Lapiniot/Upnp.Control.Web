@@ -16,9 +16,9 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpGet("state")]
         [Produces("application/json")]
-        public async Task GetPlaylistStateAsync([FromServices] IAsyncQuery<SysPropsGetPlaylistStateQueryParams, string> query, string deviceId, CancellationToken cancellationToken)
+        public async Task GetPlaylistStateAsync([FromServices] IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string> handler, string deviceId, CancellationToken cancellationToken)
         {
-            var content = await query.ExecuteAsync(new SysPropsGetPlaylistStateQueryParams(deviceId), cancellationToken).ConfigureAwait(false);
+            var content = await handler.ExecuteAsync(new SysPropsGetPlaylistStateQuery(deviceId), cancellationToken).ConfigureAwait(false);
             HttpContext.Response.Headers.Add("Content-Type", "application/json");
             await HttpContext.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes(content), cancellationToken).ConfigureAwait(false);
             await HttpContext.Response.BodyWriter.CompleteAsync().ConfigureAwait(false);
@@ -27,38 +27,38 @@ namespace Web.Upnp.Control.Controllers
         #endregion
 
         [HttpPost]
-        public Task CreateAsync([FromServices] IAsyncCommand<PLCreateParams> command,
+        public Task CreateAsync([FromServices] IAsyncCommandHandler<PLCreateCommand> handler,
             string deviceId, [FromBody] string title, CancellationToken cancellationToken)
         {
-            return command.ExecuteAsync(new PLCreateParams(deviceId, title), cancellationToken);
+            return handler.ExecuteAsync(new PLCreateCommand(deviceId, title), cancellationToken);
         }
 
         [HttpPut("{playlistId}")]
-        public Task UpdateAsync([FromServices] IAsyncCommand<PLUpdateParams> command,
+        public Task UpdateAsync([FromServices] IAsyncCommandHandler<PLUpdateCommand> handler,
             string deviceId, string playlistId, [FromBody] string title, CancellationToken cancellationToken)
         {
-            return command.ExecuteAsync(new PLUpdateParams(deviceId, playlistId, title), cancellationToken);
+            return handler.ExecuteAsync(new PLUpdateCommand(deviceId, playlistId, title), cancellationToken);
         }
 
         [HttpDelete]
-        public Task RemoveAsync([FromServices] IAsyncCommand<PLRemoveParams> command,
+        public Task RemoveAsync([FromServices] IAsyncCommandHandler<PLRemoveCommand> handler,
             string deviceId, [FromBody] string[] ids, CancellationToken cancellationToken)
         {
-            return command.ExecuteAsync(new PLRemoveParams(deviceId, ids), cancellationToken);
+            return handler.ExecuteAsync(new PLRemoveCommand(deviceId, ids), cancellationToken);
         }
 
         [HttpPut("{playlistId}/items")]
-        public Task AddItemsAsync([FromServices] IAsyncCommand<PLAddItemsParams> command,
+        public Task AddItemsAsync([FromServices] IAsyncCommandHandler<PLAddItemsCommand> handler,
             string deviceId, string playlistId, [FromBody] MediaSource source, CancellationToken cancellationToken)
         {
-            return command.ExecuteAsync(new PLAddItemsParams(deviceId, playlistId, source), cancellationToken);
+            return handler.ExecuteAsync(new PLAddItemsCommand(deviceId, playlistId, source), cancellationToken);
         }
 
         [HttpDelete("{playlistId}/items")]
-        public Task RemoveItemsAsync([FromServices] IAsyncCommand<PLRemoveItemsParams> command,
+        public Task RemoveItemsAsync([FromServices] IAsyncCommandHandler<PLRemoveItemsCommand> handler,
             string deviceId, string playlistId, [FromBody] string[] items, CancellationToken cancellationToken)
         {
-            return command.ExecuteAsync(new PLRemoveItemsParams(deviceId, playlistId, items), cancellationToken);
+            return handler.ExecuteAsync(new PLRemoveItemsCommand(deviceId, playlistId, items), cancellationToken);
         }
     }
 }

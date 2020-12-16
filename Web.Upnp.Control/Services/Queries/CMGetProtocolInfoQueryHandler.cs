@@ -8,18 +8,18 @@ using static System.StringSplitOptions;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class CMGetProtocolInfoQuery : IAsyncQuery<CMGetProtocolInfoParams, CMProtocolInfo>
+    public class CMGetProtocolInfoQueryHandler : IAsyncQueryHandler<CMGetProtocolInfoQuery, CMProtocolInfo>
     {
         private readonly IUpnpServiceFactory factory;
 
-        public CMGetProtocolInfoQuery(IUpnpServiceFactory factory)
+        public CMGetProtocolInfoQueryHandler(IUpnpServiceFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task<CMProtocolInfo> ExecuteAsync(CMGetProtocolInfoParams queryParameters, CancellationToken cancellationToken)
+        public async Task<CMProtocolInfo> ExecuteAsync(CMGetProtocolInfoQuery query, CancellationToken cancellationToken)
         {
-            var service = await factory.GetServiceAsync<ConnectionManagerService>(queryParameters.DeviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<ConnectionManagerService>(query.DeviceId).ConfigureAwait(false);
             var result = await service.GetProtocolInfoAsync(cancellationToken).ConfigureAwait(false);
             return new CMProtocolInfo(
                 result.TryGetValue("Source", out var value) ? value.Split(',', TrimEntries | RemoveEmptyEntries) : null,

@@ -12,18 +12,18 @@ using static IoT.Protocol.Upnp.Services.BrowseMode;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class GetContentQuery : IAsyncQuery<CDGetContentQueryParams, GetContentResult>
+    public class GetContentQueryHandler : IAsyncQueryHandler<CDGetContentQuery, ContentResult>
     {
         private readonly IUpnpServiceFactory factory;
 
-        public GetContentQuery(IUpnpServiceFactory factory)
+        public GetContentQueryHandler(IUpnpServiceFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task<GetContentResult> ExecuteAsync(CDGetContentQueryParams queryParameters, CancellationToken cancellationToken)
+        public async Task<ContentResult> ExecuteAsync(CDGetContentQuery query, CancellationToken cancellationToken)
         {
-            var (deviceId, path, (withParents, withResource, withVendor, take, skip)) = queryParameters;
+            var (deviceId, path, (withParents, withResource, withVendor, take, skip)) = query;
 
             path ??= "0";
 
@@ -37,7 +37,7 @@ namespace Web.Upnp.Control.Services.Queries
 
             var items = DIDLXmlParser.Parse(result["Result"], withResource == true, withVendor == true);
 
-            return new GetContentResult(int.Parse(result["TotalMatches"]), items, parents);
+            return new ContentResult(int.Parse(result["TotalMatches"]), items, parents);
         }
 
         private static async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string path, string filter,

@@ -9,18 +9,18 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class AVGetStateQuery : IAsyncQuery<AVGetStateQueryParams, AVState>
+    public class AVGetStateQueryHandler : IAsyncQueryHandler<AVGetStateQuery, AVState>
     {
         private readonly IUpnpServiceFactory factory;
 
-        public AVGetStateQuery(IUpnpServiceFactory factory)
+        public AVGetStateQueryHandler(IUpnpServiceFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task<AVState> ExecuteAsync(AVGetStateQueryParams queryParameters, CancellationToken cancellationToken)
+        public async Task<AVState> ExecuteAsync(AVGetStateQuery query, CancellationToken cancellationToken)
         {
-            var (deviceId, detailed) = queryParameters;
+            var (deviceId, detailed) = query;
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
             var actions = await avt.GetCurrentTransportActionsAsync(0, cancellationToken).ConfigureAwait(false);
             var transport = await avt.GetTransportInfoAsync(0, cancellationToken).ConfigureAwait(false);

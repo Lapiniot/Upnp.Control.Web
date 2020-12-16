@@ -12,10 +12,10 @@ namespace Web.Upnp.Control.Controllers
     public class BrowseController : ControllerBase
     {
         [HttpGet("items/{*path}")]
-        public Task<GetContentResult> GetContentAsync([FromServices] IAsyncQuery<CDGetContentQueryParams, GetContentResult> query,
+        public Task<Models.ContentResult> GetContentAsync([FromServices] IAsyncQueryHandler<CDGetContentQuery, Models.ContentResult> handler,
             string deviceId, string path, [FromQuery] GetContentOptions options, CancellationToken cancellationToken = default)
         {
-            return query.ExecuteAsync(new CDGetContentQueryParams(deviceId, path, options), cancellationToken);
+            return handler.ExecuteAsync(new CDGetContentQuery(deviceId, path, options), cancellationToken);
         }
     }
 }

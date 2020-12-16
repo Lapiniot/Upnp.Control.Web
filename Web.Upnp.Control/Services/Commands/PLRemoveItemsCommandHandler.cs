@@ -7,13 +7,13 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class PLRemoveItemsCommand : PLCommandBase, IAsyncCommand<PLRemoveItemsParams>
+    public class PLRemoveItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLRemoveItemsCommand>
     {
-        public PLRemoveItemsCommand(IUpnpServiceFactory factory) : base(factory) {}
+        public PLRemoveItemsCommandHandler(IUpnpServiceFactory factory) : base(factory) { }
 
-        public async Task ExecuteAsync(PLRemoveItemsParams commandParameters, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(PLRemoveItemsCommand command, CancellationToken cancellationToken)
         {
-            var (deviceId, playlistId, items) = commandParameters;
+            var (deviceId, playlistId, items) = command;
 
             var pls = await Factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
             var cds = await Factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);

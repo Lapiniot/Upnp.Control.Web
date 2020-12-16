@@ -4,15 +4,15 @@ using IoT.Protocol.Upnp.DIDL;
 
 namespace Web.Upnp.Control.Models
 {
-    public record GetDevicesQueryParams(string Category);
+    public record GetDevicesQuery(string Category);
 
-    public record GetDeviceQueryParams(string DeviceId);
+    public record GetDeviceQuery(string DeviceId);
 
-    public record CDGetContentQueryParams(string DeviceId, string Path, GetContentOptions Options);
+    public record CDGetContentQuery(string DeviceId, string Path, GetContentOptions Options);
 
     public record GetContentOptions(bool? WithParents, bool? WithResourceProps, bool? WithVendorProps, uint Take = 50, uint Skip = 0);
 
-    public record GetContentResult(int Total, IEnumerable<Item> Items, IEnumerable<Item> Parents);
+    public record ContentResult(int Total, IEnumerable<Item> Items, IEnumerable<Item> Parents);
 
     public record AVState(string State, string Status, int? Tracks, string Medium, string PlayMode)
     {
@@ -34,49 +34,49 @@ namespace Web.Upnp.Control.Models
 
     public record AVStateParams(string State, string ObjectId, string SourceDevice, Uri CurrentUri);
 
-    public record AVSetStateCommandParams(string DeviceId, AVStateParams State);
+    public record AVSetStateCommand(string DeviceId, AVStateParams State);
 
-    public record AVGetStateQueryParams(string DeviceId, bool? Detailed);
+    public record AVGetStateQuery(string DeviceId, bool? Detailed);
 
     public record AVPositionParams(double? Position, TimeSpan? RelTime);
 
-    public record AVSetPositionCommandParams(string DeviceId, AVPositionParams Position);
+    public record AVSetPositionCommand(string DeviceId, AVPositionParams Position);
 
-    public record AVGetPositionQueryParams(string DeviceId, bool? Detailed);
+    public record AVGetPositionQuery(string DeviceId, bool? Detailed);
 
-    public record AVGetPlayModeQueryParams(string DeviceId);
+    public record AVGetPlayModeQuery(string DeviceId);
 
-    public record AVSetPlayModeCommandParams(string DeviceId, string PlayMode);
+    public record AVSetPlayModeCommand(string DeviceId, string PlayMode);
 
-    public record SysPropsGetPlaylistStateQueryParams(string DeviceId);
+    public record SysPropsGetPlaylistStateQuery(string DeviceId);
 
-    public record RCGetVolumeQueryParams(string DeviceId, bool? Detailed);
+    public record RCGetVolumeQuery(string DeviceId, bool? Detailed);
 
-    public record RCSetVolumeCommandParams(string DeviceId, uint Volume);
+    public record RCSetVolumeCommand(string DeviceId, uint Volume);
 
-    public record RCGetMuteQueryParams(string DeviceId);
+    public record RCGetMuteQuery(string DeviceId);
 
-    public record RCSetMuteCommandParams(string DeviceId, bool Muted);
+    public record RCSetMuteCommand(string DeviceId, bool Muted);
 
-    public record CMGetProtocolInfoParams(string DeviceId);
+    public record CMGetProtocolInfoQuery(string DeviceId);
 
     public record CMProtocolInfo(IEnumerable<string> Source, IEnumerable<string> Sink);
 
-    public record CMGetConnectionsParams(string DeviceId);
+    public record CMGetConnectionsQuery(string DeviceId);
 
-    public record CMGetConnectionInfoParams(string DeviceId, string ConnectionId);
+    public record CMGetConnectionInfoQuery(string DeviceId, string ConnectionId);
 
     public record CMConnectionInfo(string RcsID, string AVTransportID, string PeerConnectionID, string Direction, string Status);
 
-    public record PLCreateParams(string DeviceId, string Title);
+    public record PLCreateCommand(string DeviceId, string Title);
 
-    public record PLUpdateParams(string DeviceId, string PlaylistId, string Title);
+    public record PLUpdateCommand(string DeviceId, string PlaylistId, string Title);
 
-    public record PLRemoveParams(string DeviceId, IEnumerable<string> PlaylistIds);
+    public record PLRemoveCommand(string DeviceId, IEnumerable<string> PlaylistIds);
 
-    public record PLAddItemsParams(string DeviceId, string PlaylistId, MediaSource Source);
+    public record PLAddItemsCommand(string DeviceId, string PlaylistId, MediaSource Source);
 
-    public record PLRemoveItemsParams(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
+    public record PLRemoveItemsCommand(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
 
     public record MediaSource(string DeviceId, IEnumerable<string> Items, string MediaUrl, string Title, bool? UseProxy);
 }
