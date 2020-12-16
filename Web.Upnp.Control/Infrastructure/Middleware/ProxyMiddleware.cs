@@ -59,11 +59,14 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
         #endregion
 
+        protected Uri GetTargetUri(HttpContext context)
+        {
+            return new Uri(Uri.UnescapeDataString(context.GetRouteValue("url") as string ?? throw new InvalidOperationException()));
+        }
+
         protected virtual HttpRequestMessage CreateRequestMessage(HttpContext context, HttpMethod method)
         {
-            var originalUri = new Uri(Uri.UnescapeDataString(context.GetRouteValue("url") as string ?? throw new InvalidOperationException()));
-
-            var requestMessage = new HttpRequestMessage(method, originalUri);
+            var requestMessage = new HttpRequestMessage(method, GetTargetUri(context));
 
             foreach(var (k, v) in context.Request.Headers)
             {
@@ -100,43 +103,34 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
             using(var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false))
             {
-                await CopyContentAsync(stream, writer, cancellationToken).ConfigureAwait(false);
+                await CopyContentAsync(stream, writer, BufferSize, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        protected async Task CopyContentAsync(Stream source, PipeWriter writer, CancellationToken cancellationToken)
+        protected async Task CopyContentAsync(Stream source, PipeWriter writer, int chunkSize, CancellationToken cancellationToken)
         {
             while(!cancellationToken.IsCancellationRequested)
             {
-                var buffer = writer.GetMemory((int)BufferSize);
-                var bytes = await source.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
-                writer.Advance(bytes);
+                var available = 0;
+                var buffer = writer.GetMemory(chunkSize);
 
-                if(bytes == 0) break;
+                while(available < chunkSize)
+                {
+                    var bytes = await source.ReadAsync(buffer.Slice(available), cancellationToken).ConfigureAwait(false);
+                    if(bytes == 0) break;
+                    available += bytes;
+                }
+
+                writer.Advance(available);
+
+                logger.LogInformation($"{available} bytes prebuffered and are ready to be sent to the client");
 
                 await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
 
-                logger.LogInformation($"{bytes} bytes flushed to the client.");
+                logger.LogInformation($"{available} bytes flushed to the client.");
+
+                if(available < chunkSize) break;
             }
-        }
-
-        protected async Task PreBufferContentAsync(Stream source, PipeWriter writer, int count, CancellationToken cancellationToken)
-        {
-            if(count == 0) return;
-
-            var available = 0;
-            var buffer = writer.GetMemory((int)count);
-
-            while(available < count)
-            {
-                var bytes = await source.ReadAsync(buffer.Slice(available), cancellationToken).ConfigureAwait(false);
-                if(bytes == 0) break;
-                available += bytes;
-            }
-
-            writer.Advance(available);
-
-            logger.LogInformation($"{available} initial bytes prebuffered and are ready to be sent to the client");
         }
     }
 }

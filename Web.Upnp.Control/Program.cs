@@ -11,7 +11,10 @@ namespace Web.Upnp.Control
         public static Task Main(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder.UseStartup<Startup>())
+                .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
+                    .UseStartup<Startup>()
+                    .UseKestrel()
+                    .UseSockets())
                 .ConfigureServices(services => services.AddHostedService<UpnpDiscoveryService>())
                 .UseWindowsService()
                 .UseSystemd()

@@ -1,9 +1,7 @@
 using System.Net;
 using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
 using static System.StringComparison;
 
@@ -20,6 +18,19 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
         public ContentProxyMiddleware(HttpClient client, ILogger<ProxyMiddleware> logger) : base(client, logger)
         {
             this.logger = logger;
+        }
+
+        protected override HttpRequestMessage CreateRequestMessage(HttpContext context, HttpMethod method)
+        {
+            return new HttpRequestMessage(context.Request.Method == "HEAD" ? HttpMethod.Head : HttpMethod.Get, GetTargetUri(context))
+            {
+                Headers =
+                {
+                    CacheControl = new CacheControlHeaderValue() { NoCache = true, NoStore = true },
+                    ConnectionClose = true,
+                    UserAgent = { new ProductInfoHeaderValue("Mozilla", "5.0"), new ProductInfoHeaderValue("UPnP-Controller-DLNA-Proxy", "1.0") }
+                }
+            };
         }
 
         protected override void CopyHeaders(HttpResponseMessage responseMessage, HttpContext context)
@@ -64,30 +75,6 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
                 headers.Add("realTimeInfo.dlna.org", "DLNA.ORG_TLAG=*");
                 headers.Add("contentFeatures.dlna.org", "*");
                 //headers.Add("contentFeatures.dlna.org", "DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000");
-            }
-        }
-
-        protected override async Task CopyContentAsync(HttpResponseMessage responseMessage, HttpContext context, CancellationToken cancellationToken)
-        {
-            var httpResponseBodyFeature = context.Features.Get<IHttpResponseBodyFeature>();
-            httpResponseBodyFeature?.DisableBuffering();
-
-            using(var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false))
-            {
-                var writer = context.Response.BodyWriter;
-
-                // prebuffer some content from the source stream into the writer's memory before starting actual response to the client
-                await PreBufferContentAsync(stream, writer, 16 * BufferSize, cancellationToken).ConfigureAwait(false);
-
-                // start providing response and flush headers to the client
-                await context.Response.StartAsync(cancellationToken);
-
-                // flush prebuffered data to the client
-                await writer.FlushAsync(cancellationToken);
-
-                // continue to transfer content from source stream in a normal way (read 
-                // available bytes up to BufferSize and flush to client immidiately)
-                await CopyContentAsync(stream, writer, cancellationToken).ConfigureAwait(false);
             }
         }
 
