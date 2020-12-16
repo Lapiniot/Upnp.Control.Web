@@ -79,14 +79,14 @@ export default class Modal extends React.Component<ModalProps> {
 
     static Button = ({ dismiss, className, icon, children, ...other }:
         PropsWithChildren<{ dismiss?: boolean; icon?: string } & ButtonHTMLAttributes<HTMLButtonElement>>) =>
-        <button type="button" className={`btn${className ? ` ${className}` : ""}`} data-dismiss={dismiss ? "modal" : null} {...other}>
-            {icon && <i className={`mr-2 fas fa-${icon}`} />}{children}
+        <button type="button" className={`btn${className ? ` ${className}` : ""}`} data-bs-dismiss={dismiss ? "modal" : null} {...other}>
+            {icon && <i className={`me-2 fas fa-${icon}`} />}{children}
         </button>;
 
     static Header = ({ className, children, ...other }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) =>
         <div className={`modal-header${className ? ` ${className}` : ""}`} {...other}>
             <h5 className="modal-title">{children}</h5>
-            <button type="button" className="btn-close" data-dismiss="modal" aria-label="Close" />
+            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
         </div>;
 
     static Body = ({ className, ...other }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) =>

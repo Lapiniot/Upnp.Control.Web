@@ -161,11 +161,11 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 {(b: BrowserDialog) => {
                     const { device, keys } = b.getSelectionData();
                     return [b.selection.any() &&
-                        <button type="button" key="counter" className="btn btn-link text-decoration-none mr-auto px-0" onClick={b.selection.clear}>Clear selection</button>,
+                        <button type="button" key="counter" className="btn btn-link text-decoration-none me-auto px-0" onClick={b.selection.clear}>Clear selection</button>,
                     <Modal.Button key="close" className="btn-secondary" dismiss>Close</Modal.Button>,
                     <Modal.Button key="add" className="btn-primary" icon="plus" disabled={b.selection.none()}
                         onClick={() => this.addItems(device, keys).then(b.selection.clear).then(this.reload)}>
-                        Add{b.selection.any() && <span className="badge ml-1 bg-secondary">{b.selection.length}</span>}
+                        Add{b.selection.any() && <span className="badge ms-1 bg-secondary">{b.selection.length}</span>}
                     </Modal.Button>]
                 }}
             </BrowserDialog>

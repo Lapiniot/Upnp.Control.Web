@@ -21,7 +21,7 @@ export default function ({ data: d, context: { active, parents, state, play, pau
     const isActive = active(d, index);
     const url = parents[0]?.res?.url ? `${parents[0].res.url}#tracknr=${index + 1},play` : `${d?.res?.url}#play`;
     return <div className="d-flex align-items-center">
-        <div className="d-inline-block stack mr-1">
+        <div className="d-inline-block stack me-1">
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} />
             {isActive
                 ? state === "PLAYING"

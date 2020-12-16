@@ -16,7 +16,7 @@ function DiscoveryAlert({ type, name, description, onDismiss }: AlertProps) {
     const appeared = type === "appeared";
     return <div className={`alert ${appeared ? "alert-success" : "alert-warning"} alert-dismissible fade show m-3 d-flex justify-content-center`} role="alert">
         <h6>{name}&nbsp;({description}){appeared ? " appeared on the network" : " disappeared from the network"}</h6>
-        <button type="button" className="btn-close" data-dismiss="alert" aria-label="Close" onClick={onDismiss} />
+        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={onDismiss} />
     </div>;
 }
 

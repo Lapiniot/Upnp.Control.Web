@@ -14,7 +14,7 @@ function BuildClass(className: string | undefined, active: boolean | undefined, 
 const LinkTemplate = ({ component: Tag, className, active, disabled, glyph, children, ...other }:
     LinkProps & HTMLAttributes<HTMLElement> & { component: ElementType }) =>
     <Tag className={BuildClass(className, active, disabled)} {...other}>
-        {glyph && <i className={`fas fa-fw fa-${glyph} mr-1`} />}{children}
+        {glyph && <i className={`fas fa-fw fa-${glyph} me-1`} />}{children}
     </Tag>;
 
 

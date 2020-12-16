@@ -44,7 +44,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
             delay: 1000, html: true, placement: "bottom",
             template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner text-left" style="hyphens: auto"></div></div>'
         };
-        this.tableRef.current.querySelectorAll("[data-toggle='tooltip']").forEach(e => new Tooltip(e, options));*/
+        this.tableRef.current.querySelectorAll("[data-bs-toggle='tooltip']").forEach(e => new Tooltip(e, options));*/
     }
 
     componentDidMount() {
@@ -244,7 +244,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
 
 const CellTemplate = ({ data: { class: itemClass, albumArts, title, creator, album, res } }: { data: DIDLItem }) =>
     <div className="d-flex align-items-center" title={utils.formatMediaInfo(res) ?? undefined}>
-        <AlbumArt itemClass={itemClass} albumArts={albumArts} className="mr-2" />
+        <AlbumArt itemClass={itemClass} albumArts={albumArts} className="me-2" />
         <span className="text-truncate">
             {title}
             {creator && <>&nbsp;&bull;&nbsp;<small>{creator}</small></>}
