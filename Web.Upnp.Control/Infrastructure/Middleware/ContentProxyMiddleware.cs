@@ -1,7 +1,11 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
 using static System.StringComparison;
 
@@ -38,9 +42,10 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             base.CopyHeaders(responseMessage, context);
 
             context.Response.Headers.Remove("Expires");
-            context.Response.Headers["Server"] = "UPnP Controller DLNA proxy";
+            context.Response.Headers["Server"] = "UPnP Controller DLNA Proxy";
             context.Response.Headers["Pragma"] = "no-cache";
             context.Response.Headers["Cache-Control"] = "no-cache";
+            context.Response.Headers["Date"] = DateTimeOffset.UtcNow.ToString("r");
 
             if(responseMessage.StatusCode >= HttpStatusCode.BadRequest) return;
 
@@ -76,6 +81,11 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
                 headers.Add("contentFeatures.dlna.org", "*");
                 //headers.Add("contentFeatures.dlna.org", "DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000");
             }
+        }
+        protected override Task CopyContentAsync(HttpResponseMessage responseMessage, HttpContext context, CancellationToken cancellationToken)
+        {
+            context.Features.Get<IHttpResponseBodyFeature>().DisableBuffering();
+            return base.CopyContentAsync(responseMessage, context, cancellationToken);
         }
 
         private static bool HasOptionEnabled(HttpContext context, string name)
