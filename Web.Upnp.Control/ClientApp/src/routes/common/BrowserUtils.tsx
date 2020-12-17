@@ -38,7 +38,7 @@ export class DIDLUtils {
         let lines = [];
         if (data.proto) lines.push(data.proto.split(":")[2]);
         if (data.resolution) lines.push(`Resolution: ${data.resolution}`);
-        if (data.bitrate) lines.push(`Bitrate: ${Math.round(data.bitrate / 1000)} kbps`);
+        if (data.bitrate) lines.push(`Bitrate: ${Math.round(data.bitrate * 8 / 1000)} kbps`);
         if (data.sampleFrequency) lines.push(`Sample freq.: ${data.sampleFrequency}`);
         if (data.nrAudioChannels) lines.push(`Channels: ${data.nrAudioChannels}`);
         return lines.join(separator);
