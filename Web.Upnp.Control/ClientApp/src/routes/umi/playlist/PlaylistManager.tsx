@@ -2,11 +2,9 @@ import React, { EventHandler, HTMLAttributes, ReactNode, UIEvent } from "react";
 import { RouteComponentProps } from "react-router";
 import { AVState, BrowseFetchResult, DIDLItem, PropertyBag } from "../../common/Types";
 import $api from "../../../components/WebApi";
-import Modal from "../../../components/Modal";
 import $config from "../../common/Config";
 import { TextValueEditDialog } from "../../../components/Dialogs";
 import { withBrowser, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils";
-import BrowserDialog from "../../common/BrowserDialog";
 import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
@@ -17,6 +15,9 @@ import { SignalRListener } from "../../../components/SignalR";
 import MainCell, { CellContext } from "./CellTemplate";
 import { DataFetchProps } from "../../../components/DataFetch";
 import { NavigatorProps } from "../../common/Navigator";
+import { AddUrlModalDialog } from "./dialogs/AddUrlModalDialog";
+import { AddItemsModalDialog } from "./dialogs/AddItemsModalDialog";
+import { RemoveItemsModalDialog } from "./dialogs/RemoveItemsModalDialog";
 
 type RouteParams = {
     device: string;
@@ -103,23 +104,22 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     reload = () => { if (this.props.dataContext) this.props.dataContext.reload(); }
 
-    renamePlaylist = (id: string, title: string) => $api.playlist(this.props.device).rename(id, title).fetch();
+    renamePlaylist = (id: string, title: string) => $api.playlist(this.props.device).rename(id, title).fetch().then(this.reload);
 
-    createPlaylist = (title: string) => $api.playlist(this.props.device).create(title).fetch();
+    createPlaylist = (title: string) => $api.playlist(this.props.device).create(title).fetch().then(this.reload);
 
-    removePlaylist = (ids: string[]) => $api.playlist(this.props.device).delete(ids).fetch();
+    removePlaylist = (ids: string[]) => $api.playlist(this.props.device).delete(ids).fetch().then(this.selection.reset).then(this.reload);
 
-    addItems = (device: string, ids: string[]) => $api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch();
+    addItems = (device: string, ids: string[]) => $api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch().then(this.reload);
 
-    addUrl = (url: string, title?: string, useProxy?: boolean) => $api.playlist(this.props.device).addUrl(this.props.id, url, title, useProxy).fetch();
+    addUrl = (url: string, title?: string, useProxy?: boolean) => $api.playlist(this.props.device).addUrl(this.props.id, url, title, useProxy).fetch().then(this.reload);
 
-    removeItems = (ids: string[]) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch();
+    removeItems = (ids: string[]) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset).then(this.reload);
 
     onAdd = () => {
         this.setState({
-            modal: <TextValueEditDialog id="create-confirm" title="Create new playlist" label="Name" confirmText="Create"
-                defaultValue="New Playlist" onConfirm={value => this.createPlaylist(value).then(this.reload)}
-                onDismiss={this.resetModal} immediate />
+            modal: <TextValueEditDialog id="create-dialog" title="Create new playlist" label="Name" confirmText="Create"
+                defaultValue="New Playlist" onConfirm={this.createPlaylist} onDismiss={this.resetModal} immediate />
         });
     }
 
@@ -127,99 +127,43 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
         const ids = [...this.selection.keys];
         const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
-        if (!values) return;
+        const onRemove = () => this.removePlaylist(ids);
 
         this.setState({
-            modal: <Modal id="remove-confirm" title="Do you want to delete playlist(s)?" onDismiss={this.resetModal} immediate>
+            modal: <RemoveItemsModalDialog id="remove-dialog" title="Do you want to delete playlist(s)?" onDismiss={this.resetModal} onRemove={onRemove}>
                 <ul className="list-unstyled">
-                    {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
+                    {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
                 </ul>
-                <Modal.Footer>
-                    <Modal.Button className="btn-secondary" dismiss>Cancel</Modal.Button>
-                    <Modal.Button className="btn-danger" icon="trash" onClick={() => this.removePlaylist(ids).then(this.selection.reset).then(this.reload)} dismiss>Delete</Modal.Button>
-                </Modal.Footer>
-            </Modal>
+            </RemoveItemsModalDialog>
         });
     }
 
     onRename = () => {
         const id = this.selection.keys.next().value;
         const title = this.props.dataContext?.source.items.find(e => e.id === id)?.title;
-        if (!title) return;
+        const onRename = (value: string) => this.renamePlaylist(id, value);
 
         this.setState({
             modal: <TextValueEditDialog id="rename-confirm" title="Rename playlist" label="Name" confirmText="Rename"
-                defaultValue={title} onConfirm={value => this.renamePlaylist(id, value).then(this.reload)}
-                onDismiss={this.resetModal} immediate />
+                defaultValue={title} onConfirm={onRename} onDismiss={this.resetModal} immediate />
         });
     }
 
-    onAddItems = () => {
-        this.setState({
-            modal: <BrowserDialog id="add-items-confirm" title="Select items to add" className="modal-lg modal-vh-80"
-                onDismiss={this.resetModal} browserProps={browserProps} immediate>
-                {(b: BrowserDialog) => {
-                    const { device, keys } = b.getSelectionData();
-                    return [b.selection.any() &&
-                        <button type="button" key="counter" className="btn btn-link text-decoration-none me-auto px-0" onClick={b.selection.clear}>Clear selection</button>,
-                    <Modal.Button key="close" className="btn-secondary" dismiss>Close</Modal.Button>,
-                    <Modal.Button key="add" className="btn-primary" icon="plus" disabled={b.selection.none()}
-                        onClick={() => this.addItems(device, keys).then(b.selection.clear).then(this.reload)}>
-                        Add{b.selection.any() && <span className="badge ms-1 bg-secondary">{b.selection.length}</span>}
-                    </Modal.Button>]
-                }}
-            </BrowserDialog>
-        });
-    }
+    onAddItems = () => this.setState({ modal: <AddItemsModalDialog id="add-items-dialog" onDismiss={this.resetModal} onAdd={this.addItems} browserProps={browserProps} /> });
 
-    onAddUrl = () => {
-        const urlRef = React.createRef<HTMLInputElement>();
-        const titleRef = React.createRef<HTMLInputElement>();
-        const proxyRef = React.createRef<HTMLInputElement>();
-
-        const addUrl = () => this.addUrl(urlRef.current?.value as string, titleRef.current?.value as string, proxyRef.current?.checked).then(this.reload);
-        
-        const style = { width: "60px" };
-
-        this.setState({
-            modal:
-                <Modal id="add-url-confirm" title="Provide external media url to be added to playlist" onDismiss={this.resetModal} immediate>
-                    <div className="input-group mb-3">
-                        <span className="input-group-text text-right d-inline" id="basic-addon1" style={style}>Url</span>
-                        <input ref={urlRef} type="text" className="form-control" placeholder="[provide value]" aria-label="Url" aria-describedby="basic-addon1" />
-                    </div>
-                    <div className="input-group mb-3">
-                        <span className="input-group-text text-right d-inline" id="basic-addon2" style={style}>Title</span>
-                        <input ref={titleRef} type="text" className="form-control" placeholder="[provide value]" aria-label="Title" aria-describedby="basic-addon2" />
-                    </div>
-                    <div className="form-check form-switch">
-                        <input ref={proxyRef} className="form-check-input" type="checkbox" id="use-dlna-proxy" defaultChecked />
-                        <label className="form-check-label" htmlFor="use-dlna-proxy">Use DLNA proxy for live stream</label>
-                    </div>
-                    <Modal.Footer>
-                        <Modal.Button className="btn-secondary" dismiss>Cancel</Modal.Button>
-                        <Modal.Button className="btn-primary" icon="plus" onClick={addUrl} dismiss>Add</Modal.Button>
-                    </Modal.Footer>
-                </Modal>
-        });
-    }
+    onAddUrl = () => this.setState({ modal: <AddUrlModalDialog id="add-url-dialog" onDismiss={this.resetModal} onAdd={this.addUrl} /> });
 
     onRemoveItems = () => {
         const ids = [...this.selection.keys];
         const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
-        if (!values) return;
+        const onRemove = () => this.removeItems(ids);
 
         this.setState({
-            modal:
-                <Modal id="remove-items-confirm" title="Do you want to remove items from playlist?" className="modal-vh-80" onDismiss={this.resetModal} immediate>
-                    <ul className="list-unstyled">
-                        {[values.map((e, i) => <li key={i}>{e.title}</li>)]}
-                    </ul>
-                    <Modal.Footer>
-                        <Modal.Button className="btn-secondary" dismiss>Cancel</Modal.Button>
-                        <Modal.Button className="btn-danger" icon="trash" onClick={() => this.removeItems(ids).then(this.reload)} dismiss>Remove</Modal.Button>
-                    </Modal.Footer>
-                </Modal>
+            modal: <RemoveItemsModalDialog id="remove-items-dialog" onDismiss={this.resetModal} onRemove={onRemove}>
+                <ul className="list-unstyled">
+                    {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
+                </ul>
+            </RemoveItemsModalDialog>
         });
     }
 
@@ -269,7 +213,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             ] :
             [
                 { key: "item-add", title: "Add items", glyph: "plus", onClick: this.onAddItems },
-                { key: "url-add", title: "Add stream url", glyph: "stream", onClick: this.onAddUrl },
+                { key: "url-add", title: "Add stream url", glyph: "broadcast-tower", onClick: this.onAddUrl },
+                { key: "playlist-file-add", title: "Add from playlist file", glyph: "list", onClick: this.onAddUrl },
                 { key: "item-remove", title: "Remove items", glyph: "trash", onClick: this.onRemoveItems, disabled: disabled }
             ];
 
