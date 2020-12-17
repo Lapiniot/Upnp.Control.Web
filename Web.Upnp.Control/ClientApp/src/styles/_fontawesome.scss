@@ -86,6 +86,10 @@ $fa-font-path: "../webfonts";
     content: fa-content($fa-var-list-alt);
 }
 
+.#{$fa-css-prefix}-list:before {
+    content: fa-content($fa-var-list);
+}
+
 .#{$fa-css-prefix}-plus:before {
     content: fa-content($fa-var-plus);
 }
@@ -160,6 +164,10 @@ $fa-font-path: "../webfonts";
 
 .#{$fa-css-prefix}-stream:before {
     content: fa-content($fa-var-stream);
+}
+
+.#{$fa-css-prefix}-broadcast-tower:before {
+    content: fa-content($fa-var-broadcast-tower);
 }
 
 .#{$fa-css-prefix}-compact-disc:before {
