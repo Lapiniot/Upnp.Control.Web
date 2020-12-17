@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -60,8 +61,13 @@ namespace Web.Upnp.Control.Services.Commands
             var client = httpClientFactory.CreateClient();
             using var request = new HttpRequestMessage(HttpMethod.Get, mediaUrl);
             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+
             var length = response.Content.Headers.ContentLength;
             var contentType = response.Content.Headers.ContentType;
+            int? br = response.Headers.TryGetValues("icy-br", out var values) && int.TryParse(values.First(), out var v) ? v * 128 : null;
+            var name = response.Headers.TryGetValues("icy-name", out values) ? values.First() : null;
+            var description = response.Headers.TryGetValues("icy-description", out values) ? values.First() : null;
+            var genre = response.Headers.TryGetValues("icy-genre", out values) ? values.First() : null;
 
             var url = useProxy != true ? mediaUrl
                 : new UriBuilder(HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses))
@@ -77,10 +83,13 @@ namespace Web.Upnp.Control.Services.Commands
             writer.WriteAttributeString("upnp", XmlnsNamespace, UPNPNamespace);
             writer.WriteAttributeString("dlna", XmlnsNamespace, DLNANamespace);
             writer.WriteStartElement("item");
-            writer.WriteElementString("title", DCNamespace, title);
+            writer.WriteElementString("title", DCNamespace, !string.IsNullOrEmpty(title) ? title : (name ?? "Unknown"));
+            if(!string.IsNullOrEmpty(description)) writer.WriteElementString("description", DCNamespace, description);
+            if(!string.IsNullOrEmpty(genre)) writer.WriteElementString("genre", UPNPNamespace, genre);
             writer.WriteElementString("class", UPNPNamespace, "object.item.audioItem.musicTrack");
             writer.WriteStartElement("res");
             if(length is not null) writer.WriteAttributeString("size", length.Value.ToString(CultureInfo.InvariantCulture));
+            if(br is not null) writer.WriteAttributeString("bitrate", br.Value.ToString(CultureInfo.InvariantCulture));
             writer.WriteAttributeString("protocolInfo", $"http-get:*:{(contentType?.MediaType ?? "audio/mpegurl")}:*");
             writer.WriteValue(url);
             writer.WriteEndDocument();
