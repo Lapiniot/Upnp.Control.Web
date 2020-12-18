@@ -18,6 +18,7 @@ namespace Web.Upnp.Control.Services.Commands
                 .AddTransient<IAsyncCommandHandler<PLUpdateCommand>, PLUpdateCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLRemoveCommand>, PLRemoveCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLAddItemsCommand>, PLAddItemsCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<PLAddFeedCommand>, PLAddFeedsCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLRemoveItemsCommand>, PLRemoveItemsCommandHandler>();
         }
     }

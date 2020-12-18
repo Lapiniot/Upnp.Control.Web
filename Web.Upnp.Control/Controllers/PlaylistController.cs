@@ -1,6 +1,7 @@
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
@@ -47,11 +48,20 @@ namespace Web.Upnp.Control.Controllers
             return handler.ExecuteAsync(new PLRemoveCommand(deviceId, ids), cancellationToken);
         }
 
-        [HttpPut("{playlistId}/items")]
+        [HttpPost("{playlistId}/items")]
+        [Consumes("application/json")]
         public Task AddItemsAsync([FromServices] IAsyncCommandHandler<PLAddItemsCommand> handler,
             string deviceId, string playlistId, [FromBody] MediaSource source, CancellationToken cancellationToken)
         {
             return handler.ExecuteAsync(new PLAddItemsCommand(deviceId, playlistId, source), cancellationToken);
+        }
+
+        [HttpPost("{playlistId}/items")]
+        [Consumes("multipart/form-data")]
+        public Task AddFeedsAsync([FromServices] IAsyncCommandHandler<PLAddFeedCommand> handler,
+            string deviceId, string playlistId, [FromForm] FeedSource source, CancellationToken cancellationToken = default)
+        {
+            return handler.ExecuteAsync(new PLAddFeedCommand(deviceId, playlistId, source), cancellationToken);
         }
 
         [HttpDelete("{playlistId}/items")]

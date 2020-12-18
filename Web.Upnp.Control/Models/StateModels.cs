@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IoT.Protocol.Upnp.DIDL;
+using Microsoft.AspNetCore.Http;
 
 namespace Web.Upnp.Control.Models
 {
@@ -76,7 +77,11 @@ namespace Web.Upnp.Control.Models
 
     public record PLAddItemsCommand(string DeviceId, string PlaylistId, MediaSource Source);
 
+    public record PLAddFeedCommand(string DeviceId, string PlaylistId, FeedSource Source);
+
     public record PLRemoveItemsCommand(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
 
     public record MediaSource(string DeviceId, IEnumerable<string> Items, string MediaUrl, string Title, bool? UseProxy);
+
+    public record FeedSource(IEnumerable<IFormFile> files, bool? UseProxy);
 }

@@ -1,5 +1,5 @@
 ﻿import { PlaybackMode } from "../routes/common/Types";
-import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch, RequestQuery } from "./HttpFetch";
+import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch, RequestQuery, HttpPost } from "./HttpFetch";
 
 const baseUri = "/api/devices";
 
@@ -26,8 +26,9 @@ export interface PlaylistApiProvider {
     rename: (id: string, title: string) => JsonPutFetch;
     delete: (ids: string[]) => JsonDeleteFetch;
     copy: (id: string) => JsonFetch;
-    addItems: (id: string, sourceDevice: string, sourceIds: string[]) => JsonPutFetch;
-    addUrl: (id: string, mediaUrl: string, title?: string, useProxy?: boolean) => JsonPutFetch;
+    addItems: (id: string, sourceDevice: string, sourceIds: string[]) => JsonPostFetch;
+    addUrl: (id: string, mediaUrl: string, title?: string, useProxy?: boolean) => JsonPostFetch;
+    uploadPlaylistFile: (id: string, files: FileList, useProxy?: boolean) => HttpPost;
     removeItems: (id: string, ids: string[]) => JsonDeleteFetch;
 }
 
@@ -45,11 +46,21 @@ export default class {
         rename: (id: string, title: string) => new JsonPutFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { body: JSON.stringify(title) }),
         delete: (ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(ids) }),
         copy: (id: string) => new JsonFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { method: "COPY" }),
-        addItems: (id: string, sourceDevice: string, sourceIds: string[]) => new JsonPutFetch(`${baseUri}/${deviceId}/playlists/${id}/items`,
-            null, { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds }) }),
-        addUrl: (id: string, mediaUrl: string, title?: string, useProxy?: boolean) => new JsonPutFetch(`${baseUri}/${deviceId}/playlists/${id}/items`,
-            null, { body: JSON.stringify({ mediaUrl, title, useProxy }) }),
-        removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null, { body: JSON.stringify(ids) })
+        addItems: (id: string, sourceDevice: string, sourceIds: string[]) =>
+            new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null,
+                { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds }) }),
+        addUrl: (id: string, mediaUrl: string, title?: string, useProxy?: boolean) =>
+            new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null,
+                { body: JSON.stringify({ mediaUrl, title, useProxy }) }),
+        uploadPlaylistFile: (id: string, files: FileList, useProxy?: boolean) => {
+            const formData = new FormData();
+            formData.append("useProxy", useProxy ? "true" : "false");
+            for (let i = 0; i < files.length; i++) {
+                formData.append("files", files[i]);
+            }
+            return new HttpPost(`${baseUri}/${deviceId}/playlists/${id}/items`, null, { body: formData })
+        },
+        removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists/${id}/items1`, null, { body: JSON.stringify(ids) })
     });
 
     static control = (deviceId: string): ControlApiProvider => {
