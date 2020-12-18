@@ -1,14 +1,13 @@
 import BootstrapModal from "bootstrap/js/dist/modal";
-import React, { ButtonHTMLAttributes, HTMLAttributes, PropsWithChildren, ReactElement, ReactNode } from "react";
+import React, { ButtonHTMLAttributes, FormEventHandler, HTMLAttributes, PropsWithChildren, ReactElement, ReactNode } from "react";
 
-export type ModalProps<P = {}> = PropsWithChildren<P &
-    HTMLAttributes<HTMLDivElement> & {
-        id: string;
-        immediate?: boolean;
-        onDismiss?: EventListener;
-        onShown?: EventListener;
-        buttons?: ReactNode;
-    }>
+export type ModalProps<P = {}> = PropsWithChildren<P> & Omit<HTMLAttributes<HTMLDivElement>, "onSubmit"> & {
+    id: string;
+    immediate?: boolean;
+    onDismiss?: EventListener;
+    onShown?: EventListener;
+    onSubmit?: (data: FormData) => boolean;
+}
 
 export default class Modal extends React.Component<ModalProps> {
 
@@ -46,11 +45,26 @@ export default class Modal extends React.Component<ModalProps> {
             this.modal.dispose();
     }
 
+    onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+        const form = e.currentTarget;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (form.checkValidity()) {
+            if (this.props.onSubmit?.(new FormData(form))) {
+                this.dismiss();
+            }
+        }
+
+        form.classList.add("was-validated");
+    }
+
     dismiss = () => this.modal?.hide()
 
     render() {
 
-        const { id, title, className, immediate, onDismiss, onShown, buttons, ...other } = this.props;
+        const { id, title, className, immediate, onDismiss, onShown, onSubmit, ...other } = this.props;
 
         let header, body, footer;
         const children: ReactNode[] = [];
@@ -69,12 +83,17 @@ export default class Modal extends React.Component<ModalProps> {
         return <div className="modal fade" id={id} tabIndex={-1} role="dialog" aria-hidden="true" {...other}>
             <div className={`modal-dialog modal-dialog-centered${className ? ` ${className}` : ""}`} role="document">
                 <div className="modal-content">
-                    {header ? header : <Modal.Header>{title}</Modal.Header>}
-                    {body ? body : <Modal.Body>{children}</Modal.Body>}
-                    {footer ? footer : <Modal.Footer>{buttons}</Modal.Footer>}
+                    <form action="#" noValidate onSubmit={this.onSubmit}>
+                        {header ? header : <Modal.Header>{title}</Modal.Header>}
+                        {body ? body : <Modal.Body>{children}</Modal.Body>}
+                        {footer ? footer : <Modal.Footer>
+                            <Modal.Button className="btn-secondary" dismiss>Cancel</Modal.Button>
+                            <Modal.Button className="btn-primary" type="submit" name="action" value="ok">OK</Modal.Button>
+                        </Modal.Footer>}
+                    </form>
                 </div>
             </div>
-        </div>;
+        </div >;
     }
 
     static Button = ({ dismiss, className, icon, children, ...other }:
