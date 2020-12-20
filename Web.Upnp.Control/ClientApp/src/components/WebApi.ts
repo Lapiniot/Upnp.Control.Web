@@ -28,7 +28,7 @@ export interface PlaylistApiProvider {
     copy: (id: string) => JsonFetch;
     addItems: (id: string, sourceDevice: string, sourceIds: string[]) => JsonPostFetch;
     addUrl: (id: string, mediaUrl: string, title?: string, useProxy?: boolean) => JsonPostFetch;
-    uploadPlaylistFile: (id: string, files: FileList, useProxy?: boolean) => HttpPost;
+    addPlaylistFile: (id: string, data: FormData) => HttpPost;
     removeItems: (id: string, ids: string[]) => JsonDeleteFetch;
 }
 
@@ -49,18 +49,11 @@ export default class {
         addItems: (id: string, sourceDevice: string, sourceIds: string[]) =>
             new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null,
                 { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds }) }),
-        addUrl: (id: string, mediaUrl: string, title?: string, useProxy?: boolean) =>
-            new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null,
-                { body: JSON.stringify({ mediaUrl, title, useProxy }) }),
-        uploadPlaylistFile: (id: string, files: FileList, useProxy?: boolean) => {
-            const formData = new FormData();
-            formData.append("useProxy", useProxy ? "true" : "false");
-            for (let i = 0; i < files.length; i++) {
-                formData.append("files", files[i]);
-            }
-            return new HttpPost(`${baseUri}/${deviceId}/playlists/${id}/items`, null, { body: formData })
-        },
-        removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists/${id}/items1`, null, { body: JSON.stringify(ids) })
+        addUrl: (id: string, url: string, title?: string, useProxy?: boolean) =>
+            new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null,
+                { body: JSON.stringify({ url, title, useProxy }) }),
+        addPlaylistFile: (id: string, data: FormData) => new HttpPost(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null, { body: data }),
+        removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null, { body: JSON.stringify(ids) })
     });
 
     static control = (deviceId: string): ControlApiProvider => {

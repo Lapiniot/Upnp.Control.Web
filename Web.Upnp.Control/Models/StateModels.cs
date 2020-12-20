@@ -77,11 +77,15 @@ namespace Web.Upnp.Control.Models
 
     public record PLAddItemsCommand(string DeviceId, string PlaylistId, MediaSource Source);
 
-    public record PLAddFeedCommand(string DeviceId, string PlaylistId, FeedSource Source);
+    public record PLAddFeedUrlCommand(string DeviceId, string PlaylistId, FeedUrlSource Source);
+
+    public record PLAddPlaylistFilesCommand(string DeviceId, string PlaylistId, PlaylistFilesSource Source);
 
     public record PLRemoveItemsCommand(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
 
-    public record MediaSource(string DeviceId, IEnumerable<string> Items, string MediaUrl, string Title, bool? UseProxy);
+    public record MediaSource(string DeviceId, IEnumerable<string> Items);
 
-    public record FeedSource(IEnumerable<IFormFile> files, bool? UseProxy);
+    public record PlaylistFilesSource(IEnumerable<IFormFile> Files, bool? UseProxy);
+
+    public record FeedUrlSource(Uri Url, string Title, bool? UseProxy);
 }

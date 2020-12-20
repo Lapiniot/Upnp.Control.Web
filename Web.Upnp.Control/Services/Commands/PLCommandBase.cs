@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Web.Upnp.Control.Services.Abstractions;
@@ -12,6 +15,13 @@ namespace Web.Upnp.Control.Services.Commands
 {
     public abstract class PLCommandBase
     {
+        protected const string XmlnsNamespace = "http://www.w3.org/2000/xmlns/";
+        protected const string DIDLLiteNamespace = "urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/";
+        protected const string DCNamespace = "http://purl.org/dc/elements/1.1/";
+        protected const string UPNPNamespace = "urn:schemas-upnp-org:metadata-1-0/upnp/";
+        protected const string DLNANamespace = "urn:schemas-dlna-org:metadata-1-0/";
+        protected const string MissingArgumentErrorFormat = "{0} must be provided";
+
         protected PLCommandBase(IUpnpServiceFactory factory)
         {
             Factory = factory ?? throw new ArgumentNullException(nameof(factory));
@@ -42,6 +52,32 @@ namespace Web.Upnp.Control.Services.Commands
         protected static async Task<string> GetUpdateIdAsync(ContentDirectoryService service, string itemId, CancellationToken cancellationToken)
         {
             return (await service.BrowseAsync(itemId, mode: BrowseMetadata, filter: "id", cancellationToken: cancellationToken).ConfigureAwait(false))["UpdateID"];
+        }
+
+        protected static XmlWriter CreateDidlXmlWriter(StringBuilder sb)
+        {
+            var writer = XmlWriter.Create(sb, new XmlWriterSettings() { OmitXmlDeclaration = true, WriteEndDocumentOnClose = true });
+            writer.WriteStartElement("DIDL-Lite", DIDLLiteNamespace);
+            writer.WriteAttributeString("dc", XmlnsNamespace, DCNamespace);
+            writer.WriteAttributeString("upnp", XmlnsNamespace, UPNPNamespace);
+            writer.WriteAttributeString("dlna", XmlnsNamespace, DLNANamespace);
+            return writer;
+        }
+
+        protected static void WriteItem(XmlWriter writer, string title, string description, string genre, string url, long? length, string contentType, int? br)
+        {
+            writer.WriteStartElement("item");
+            writer.WriteElementString("title", DCNamespace, title);
+            if(!string.IsNullOrEmpty(description)) writer.WriteElementString("description", DCNamespace, description);
+            if(!string.IsNullOrEmpty(genre)) writer.WriteElementString("genre", UPNPNamespace, genre);
+            writer.WriteElementString("class", UPNPNamespace, "object.item.audioItem.musicTrack");
+            writer.WriteStartElement("res");
+            if(length is not null) writer.WriteAttributeString("size", length.Value.ToString(CultureInfo.InvariantCulture));
+            if(br is not null) writer.WriteAttributeString("bitrate", br.Value.ToString(CultureInfo.InvariantCulture));
+            writer.WriteAttributeString("protocolInfo", $"http-get:*:{(contentType ?? "audio/mpegurl")}:*");
+            writer.WriteValue(url);
+            writer.WriteEndElement();
+            writer.WriteEndElement();
         }
     }
 }
