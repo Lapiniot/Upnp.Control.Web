@@ -18,6 +18,7 @@ import { NavigatorProps } from "../../common/Navigator";
 import { AddUrlModalDialog } from "./dialogs/AddUrlModalDialog";
 import { AddItemsModalDialog } from "./dialogs/AddItemsModalDialog";
 import { RemoveItemsModalDialog } from "./dialogs/RemoveItemsModalDialog";
+import { UploadPlaylistModalDialog } from "./dialogs/UploadPlaylistModalDialog";
 
 type RouteParams = {
     device: string;
@@ -114,6 +115,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     addUrl = (url: string, title?: string, useProxy?: boolean) => $api.playlist(this.props.device).addUrl(this.props.id, url, title, useProxy).fetch().then(this.reload);
 
+    addPlaylists = (data: FormData) => $api.playlist(this.props.device).addPlaylistFile(this.props.id, data).fetch().then(this.reload);
+
     removeItems = (ids: string[]) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset).then(this.reload);
 
     onAdd = () => {
@@ -152,6 +155,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     onAddItems = () => this.setState({ modal: <AddItemsModalDialog id="add-items-dialog" onDismiss={this.resetModal} onAdd={this.addItems} browserProps={browserProps} /> });
 
     onAddUrl = () => this.setState({ modal: <AddUrlModalDialog id="add-url-dialog" onDismiss={this.resetModal} onAdd={this.addUrl} /> });
+
+    onUploadPlaylist = () => this.setState({ modal: <UploadPlaylistModalDialog id="upload-playlist-dialog" onDismiss={this.resetModal} onAdd={this.addPlaylists} /> });
 
     onRemoveItems = () => {
         const ids = [...this.selection.keys];
@@ -214,7 +219,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             [
                 { key: "item-add", title: "Add items", glyph: "plus", onClick: this.onAddItems },
                 { key: "url-add", title: "Add stream url", glyph: "broadcast-tower", onClick: this.onAddUrl },
-                { key: "playlist-file-add", title: "Add from playlist file", glyph: "list", onClick: this.onAddUrl },
+                { key: "playlist-file-add", title: "Add from playlist file", glyph: "list", onClick: this.onUploadPlaylist },
                 { key: "item-remove", title: "Remove items", glyph: "trash", onClick: this.onRemoveItems, disabled: disabled }
             ];
 
