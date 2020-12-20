@@ -4,24 +4,33 @@ import Modal, { ModalProps } from "./Modal";
 type TextValueEditDialogProps = PropsWithRef<ModalProps<{
     label: string;
     confirmText?: string;
-    inputRef?: RefObject<HTMLInputElement>;
+    required?: boolean;
     onConfirm?: (value: string) => void;
     onChanged?: ChangeEventHandler<HTMLInputElement>;
 }>>;
 
-export function TextValueEditDialog({ id, title, label, defaultValue, confirmText = "OK",
-    onChanged, onConfirm, inputRef = React.createRef(), ...other }: TextValueEditDialogProps) {
-    return <Modal id={id} title={title} {...other}>
-        <div className="input-group mb-3">
-            <span className="input-group-text" id="basic-addon1">{label}</span>
-            <input ref={inputRef} type="text" onChange={onChanged} className="form-control" defaultValue={defaultValue}
-                placeholder="[provide value]" aria-label={label} aria-describedby="basic-addon1" />
-        </div>
-        <Modal.Footer>
-            <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>
-            <Modal.Button key="confirm" className="btn-primary" onClick={() => onConfirm?.(inputRef?.current?.value as string)} dismiss>{confirmText}</Modal.Button>
-        </Modal.Footer>
-    </Modal>;
+export class TextValueEditDialog extends React.Component<TextValueEditDialogProps> {
+
+    onSubmit = (data: FormData) => {
+        this.props?.onConfirm?.(data.get("text-input") as string);
+        return true;
+    }
+
+    render() {
+        const { id, title, label, defaultValue, confirmText = "OK", required = true, onChanged, onConfirm, ...other } = this.props;
+        return <Modal id={id} title={title} {...other} onSubmit={this.onSubmit}>
+            <div className="input-group has-validation mb-3">
+                <span className="input-group-text" id="basic-addon1">{label}</span>
+                <input type="text" name="text-input" onChange={onChanged} className="form-control" defaultValue={defaultValue}
+                    placeholder="[provide value]" aria-label={label} aria-describedby="basic-addon1" required={required} />
+                <div className="invalid-tooltip">Non-empty value is required</div>
+            </div>
+            <Modal.Footer>
+                <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>
+                <Modal.Button key="confirm" className="btn-primary" type="submit">{confirmText}</Modal.Button>
+            </Modal.Footer>
+        </Modal>;
+    }
 }
 
 type ConfirmationDialogProps = ModalProps<{
