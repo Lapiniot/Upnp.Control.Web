@@ -16,6 +16,7 @@ export function parseMilliseconds(time: string): number {
 }
 
 export function formatTime(seconds: number): string {
+    if (!Number.isFinite(seconds)) return "--:--";
     let h = Math.floor(seconds / 3600);
     let m = Math.floor((seconds % 3600) / 60);
     let s = (seconds % 3600) % 60;

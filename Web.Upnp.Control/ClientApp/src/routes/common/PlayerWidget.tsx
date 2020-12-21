@@ -2,7 +2,7 @@ import React, { ButtonHTMLAttributes, PropsWithChildren } from "react";
 import { DataContext, DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
 import $api from "../../components/WebApi";
-import Progress from "./Progress";
+import SeekBar from "./SeekBar";
 import Slider from "../../components/Slider";
 import $c from "./Config";
 import { AVPositionState, AVState, RCState } from "./Types";
@@ -89,7 +89,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
     changeVolume = (volume: number) => this.ctrl.setVolume(Math.round(volume * 100)).fetch($c.timeout);
 
     render() {
-        const { actions = [], current, next, state, playMode, relTime, duration, volume = 0, muted = false } = this.state;
+        const { actions = [], current, next, state, playMode, relTime, duration, medium, volume = 0, muted = false } = this.state;
         const { title, album, creator } = current || {};
         const transitioning = state === "TRANSITIONING";
         const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
@@ -104,7 +104,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
             <i data-fa-symbol="volume-up" className="fas fa-volume-up" />
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
             <div className="d-flex flex-column">
-                {relTime && duration && <Progress className="mb-2" time={relTime} duration={duration} running={state === "PLAYING"} onChangeRequested={this.seek} />}
+                <SeekBar className="mb-2" time={relTime as string} duration={duration as string} running={state === "PLAYING"} onChangeRequested={this.seek} />
                 <div className="d-flex align-items-center flex-nowrap">
                     <Button title="Prev" glyph="step-backward" className="py-0" onClick={this.prev} disabled={!actions.includes("Previous")} />
                     {(disabled || (state === "STOPPED" || state === "PAUSED_PLAYBACK")) &&

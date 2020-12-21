@@ -9,13 +9,13 @@ export default class extends React.Component<TimerProps & HTMLAttributes<HTMLTim
     interval: NodeJS.Timeout | null = null;
 
     componentDidMount() {
-        if (this.props.running)
+        if (this.props.running && Number.isFinite(this.props.current))
             this.start();
     }
 
     componentDidUpdate() {
         this.stop();
-        if (this.props.running) {
+        if (this.props.running && Number.isFinite(this.props.current)) {
             this.start();
         }
     }

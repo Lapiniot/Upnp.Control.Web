@@ -28,15 +28,13 @@ export default class extends React.Component<SliderProps> {
     };
 
     render() {
-        const { progress, style = {} as SliderCSSProperties, onChangeRequested, ...other } = this.props;
+        const { progress, style = {} as SliderCSSProperties, onChangeRequested, readOnly, ...other } = this.props;
         style["--slider-progress"] = progress;
 
-        return <div onClick={this.clickHandler} role="button" {...other}>
-            <div className="slider" style={style}>
-                <div className="slider-line" />
-                <div className="slider-ticker">
-                    <div />
-                </div>
+        return <div onClick={!readOnly ? this.clickHandler : undefined} role="button" {...other}>
+            <div className="slider-track" style={style}>
+                <div className="slider-indicator" />
+                <div className="slider-thumb"><div /></div>
             </div>
         </div>;
     }
