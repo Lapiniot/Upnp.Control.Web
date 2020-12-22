@@ -24,9 +24,9 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             this.logger = logger;
         }
 
-        protected override HttpRequestMessage CreateRequestMessage(HttpContext context, HttpMethod method)
+        protected override HttpRequestMessage CreateRequestMessage(HttpContext context, Uri requestUri, HttpMethod method)
         {
-            return new HttpRequestMessage(context.Request.Method == "HEAD" ? HttpMethod.Head : HttpMethod.Get, GetTargetUri(context))
+            return new HttpRequestMessage(context.Request.Method == "HEAD" ? HttpMethod.Head : HttpMethod.Get, requestUri)
             {
                 Headers =
                 {

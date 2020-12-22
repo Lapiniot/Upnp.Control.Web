@@ -30,31 +30,52 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var cancellationToken = context.RequestAborted;
+            var id = context.Connection.Id;
 
-            var method = context.Request.Method;
-
-            if(method != "GET" && method != "HEAD")
+            try
             {
-                context.Response.StatusCode = 405;
+                var requestUri = GetTargetUri(context);
+                var method = context.Request.Method;
+
+                logger.LogStartRequest(id, method, requestUri);
+
+                var cancellationToken = context.RequestAborted;
+
+                if(method != "GET" && method != "HEAD")
+                {
+                    logger.LogUnsupportedMethod(id, method);
+
+                    context.Response.StatusCode = 405;
+                    await context.Response.CompleteAsync().ConfigureAwait(false);
+                    return;
+                }
+
+                using var requestMessage = CreateRequestMessage(context, requestUri, method == "GET" ? HttpMethod.Get : HttpMethod.Head);
+
+                using var responseMessage = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+
+                context.Response.StatusCode = (int)responseMessage.StatusCode;
+
+                CopyHeaders(responseMessage, context);
+
+                if(method == "GET")
+                {
+                    await CopyContentAsync(responseMessage, context, cancellationToken).ConfigureAwait(false);
+                }
+
                 await context.Response.CompleteAsync().ConfigureAwait(false);
-                return;
+
+                logger.LogCompleted(id);
             }
-
-            using var requestMessage = CreateRequestMessage(context, method == "GET" ? HttpMethod.Get : HttpMethod.Head);
-
-            using var responseMessage = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-
-            context.Response.StatusCode = (int)responseMessage.StatusCode;
-
-            CopyHeaders(responseMessage, context);
-
-            if(method == "GET")
+            catch(OperationCanceledException)
             {
-                await CopyContentAsync(responseMessage, context, cancellationToken).ConfigureAwait(false);
+                logger.LogAborted(id);
             }
-
-            await context.Response.CompleteAsync().ConfigureAwait(false);
+            catch(Exception exception)
+            {
+                logger.LogError(id, exception);
+                throw;
+            }
         }
 
         #endregion
@@ -64,9 +85,9 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             return new Uri(Uri.UnescapeDataString(context.GetRouteValue("url") as string ?? throw new InvalidOperationException()));
         }
 
-        protected virtual HttpRequestMessage CreateRequestMessage(HttpContext context, HttpMethod method)
+        protected virtual HttpRequestMessage CreateRequestMessage(HttpContext context, Uri requestUri, HttpMethod method)
         {
-            var requestMessage = new HttpRequestMessage(method, GetTargetUri(context));
+            var requestMessage = new HttpRequestMessage(method, requestUri);
 
             foreach(var (k, v) in context.Request.Headers)
             {
@@ -99,16 +120,17 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
                 await context.Response.StartAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            var writer = context.Response.BodyWriter;
-
             using(var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false))
             {
-                await CopyContentAsync(stream, writer, BufferSize, cancellationToken).ConfigureAwait(false);
+                await CopyContentAsync(stream, context, BufferSize, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        protected async Task CopyContentAsync(Stream source, PipeWriter writer, int chunkSize, CancellationToken cancellationToken)
+        protected async Task CopyContentAsync(Stream source, HttpContext context, int chunkSize, CancellationToken cancellationToken)
         {
+            var id = context.Connection.Id;
+            var writer = context.Response.BodyWriter;
+
             while(!cancellationToken.IsCancellationRequested)
             {
                 var available = 0;
@@ -123,14 +145,16 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
                 writer.Advance(available);
 
-                logger.LogInformation($"{available} bytes prebuffered and are ready to be sent to the client");
+                logger.LogBuffered(id, available);
 
                 await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
 
-                logger.LogInformation($"{available} bytes flushed to the client.");
+                logger.LogFlushed(id, available);
 
                 if(available < chunkSize) break;
             }
+
+            logger.LogDone(id);
         }
     }
 }
