@@ -42,7 +42,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
 
         /*const options = {
             delay: 1000, html: true, placement: "bottom",
-            template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner text-left" style="hyphens: auto"></div></div>'
+            template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner text-start" style="hyphens: auto"></div></div>'
         };
         this.tableRef.current.querySelectorAll("[data-bs-toggle='tooltip']").forEach(e => new Tooltip(e, options));*/
     }
@@ -230,7 +230,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
                             </div>}
                             <div className="mw-1"><MainCellTemplate data={e} index={index} context={cellContext} /></div>
-                            <div className="small text-right">{utils.formatSize(e.res?.size)}</div>
+                            <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
                             <div className="small">{utils.formatTime(e.res?.duration)}</div>
                             <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
                         </div>;

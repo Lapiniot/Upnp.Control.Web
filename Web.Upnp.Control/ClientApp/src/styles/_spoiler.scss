@@ -5,7 +5,7 @@
     border: $border-width solid $border-color;
     overflow: hidden;
 
-    & > [data-toggle="collapse"] {
+    & > [data-bs-toggle="collapse"] {
         text-align: left;
         box-shadow: none !important;
 
