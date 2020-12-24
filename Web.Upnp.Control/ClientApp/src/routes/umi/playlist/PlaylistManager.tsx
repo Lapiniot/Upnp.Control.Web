@@ -232,7 +232,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         useCheckboxes selectOnClick>
                         <Browser.Header className="p-0">
                             <div className="d-flex flex-column">
-                                <Toolbar className="px-2 py-1 bg-light border-1 border-secondary border-bottom">
+                                <Toolbar className="px-2 py-1 bg-light border-bottom">
                                     <Toolbar.Group>
                                         {toolbar.map(i => <Toolbar.Button {...i} />)}
                                     </Toolbar.Group>
@@ -244,14 +244,14 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 </SignalRListener>
             </div>
             <div className="sticky-bottom">
-                <div className="bg-light text-center text-muted small p-1">{
+                <div className="bg-light text-center text-muted small p-1 border-top">{
                     this.selection.length > 0
                         ? `${this.selection.length} of ${fetched} selected`
                         : `${fetched} item${fetched !== 1 ? "s" : ""}`}
                     , {total} totally available
                     </div>
                 {total !== 0 && fetched !== total &&
-                    <Pagination baseUrl={match.url} className="border-1 border-secondary border-top"
+                    <Pagination baseUrl={match.url} className="border-top"
                         total={total} current={page ? parseInt(page) : 1} pageSize={size ? parseInt(size) : $config.pageSize} />}
             </div>
             {this.state.modal}

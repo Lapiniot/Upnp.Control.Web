@@ -73,15 +73,13 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
         const alerts = Array.from(this.state.alerts).map(({ 0: key, 1: { type, info: { name, description } } }) =>
             <DiscoveryAlert key={key} type={type} name={name} description={description} onDismiss={() => this.dismissAlert(key)} />);
 
-        return <div className="position-relative w-100 h-100">
-            {fetching || !dataContext?.source
-                ? <LoadIndicatorOverlay />
-                : <SignalRListener handlers={this.handlers}>
-                    {alerts}
-                    <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-                        {[dataContext.source.map(item => <Item key={item.udn} data-source={item} category={category} />)]}
-                    </div>
-                </SignalRListener>}
-        </div>
+        return fetching || !dataContext?.source
+            ? <LoadIndicatorOverlay />
+            : <SignalRListener handlers={this.handlers}>
+                {alerts}
+                <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
+                    {[dataContext.source.map(item => <Item key={item.udn} data-source={item} category={category} />)]}
+                </div>
+            </SignalRListener>
     }
 }
