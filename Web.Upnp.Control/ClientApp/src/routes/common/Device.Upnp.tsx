@@ -10,7 +10,7 @@ export default function Device({ "data-source": d, category = "upnp" }: DataSour
     const isMediaServer = d.services && d.services.some(
         s => s.type.startsWith(Services.ContentDirectory) || s.type.startsWith(Services.UmiPlaylist));
 
-    return <div className="card">
+    return <div className="card shadow">
         <div className="card-header d-flex">
             <DeviceIcon service={d.type} icons={d.icons} />
             <div>

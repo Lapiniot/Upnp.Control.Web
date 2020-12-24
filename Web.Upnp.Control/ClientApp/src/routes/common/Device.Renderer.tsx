@@ -47,7 +47,7 @@ export default class RenderDevice extends React.Component<RenderDeviceProps, Ren
 
         const { "data-source": { name, description, udn, type, icons } } = this.props;
 
-        return <div className="card">
+        return <div className="card shadow">
             <div className="card-header d-flex flex-row">
                 <DeviceIcon service={type} icons={icons} />
                 <div>

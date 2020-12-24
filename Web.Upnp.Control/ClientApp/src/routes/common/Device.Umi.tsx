@@ -39,7 +39,7 @@ const builder = fromBaseQuery((device) => $api.browse(device).get("PL:").withRes
 const PlaylistMenu = withDataFetch(Menu, builder, { template: MicroLoader });
 
 export default function UmiDevice({ "data-source": { name, description, udn }, category = "umi" }: DataSourceProps<UpnpDevice> & { category?: string }) {
-    return <div className="card">
+    return <div className="card shadow">
         <div className="card-header d-flex flex-row">
             <svg className="upnp-dev-icon" style={{ objectFit: "unset" }}>
                 <use href="icons.svg#s-music-player" />
