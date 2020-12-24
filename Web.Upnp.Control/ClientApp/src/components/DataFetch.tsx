@@ -13,7 +13,7 @@ type PreloaderProps = {
 
 export type DataContext<T = {}> = {
     source: T;
-    reload: () => void;
+    reload: (state?: {}) => void;
 }
 
 export type DataFetchProps<T = {}> = {
@@ -80,7 +80,7 @@ export function withDataFetch<P extends DataFetchProps, Params = {}>(Component: 
             this.fetchData();
         }
 
-        reload = () => this.setState({ fetching: true, error: null }, this.fetchData);
+        reload = (state?: {}) => this.setState({ fetching: true, error: null, ...state }, this.fetchData);
 
         render() {
             return this.state.fetching && this.preloader
