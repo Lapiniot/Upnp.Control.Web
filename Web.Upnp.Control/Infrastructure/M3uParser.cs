@@ -5,16 +5,17 @@ using System.Collections.Generic;
 using System.IO.Pipelines;
 using System.Memory;
 using System.Text;
-using static System.Text.Encoding;
 
 namespace Web.Upnp.Control.Infrastructure
 {
     public class M3uParser : ByteSequenceParser<(string Path, string Info, int Duration)>
     {
         private static byte[] EXTINF = new byte[] { 0x45, 0x58, 0x54, 0x49, 0x4E, 0x46, 0x3A };
+        private Encoding encoding;
 
-        public M3uParser(PipeReader reader) : base(reader)
+        public M3uParser(PipeReader reader, Encoding encoding = null) : base(reader)
         {
+            this.encoding = encoding ?? Encoding.UTF8;
         }
 
         protected override IEnumerable<ParseResult> Parse(ReadResult result)
@@ -48,11 +49,11 @@ namespace Web.Upnp.Control.Infrastructure
                     reader.AdvancePast(0x20);
                     if(!(reader.TryReadTo(out ReadOnlySpan<byte> span, 0x2C) && Utf8Parser.TryParse(span, out int duration, out _))) continue;
                     if(!lineReader.TryReadLine(out line, !isCompleted)) break;
-                    track = (UTF8.GetString(line), UTF8.GetString(reader.UnreadSequence), duration);
+                    track = (encoding.GetString(line), encoding.GetString(reader.UnreadSequence), duration);
                 }
                 else
                 {
-                    track = (UTF8.GetString(line), null, -1);
+                    track = (encoding.GetString(line), null, -1);
                 }
 
                 consumed = lineReader.Consumed;

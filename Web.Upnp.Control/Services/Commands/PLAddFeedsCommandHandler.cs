@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Pipelines;
 using System.Linq;
 using System.Net.Http;
@@ -13,6 +14,8 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
@@ -27,12 +30,14 @@ namespace Web.Upnp.Control.Services.Commands
         private readonly IServerAddressesFeature serverAddresses;
         private readonly IHttpClientFactory clientFactory;
         private readonly ILogger<PLAddFeedsCommandHandler> logger;
+        private readonly IOptionsSnapshot<PlaylistOptions> options;
 
         public PLAddFeedsCommandHandler(IUpnpServiceFactory factory, IHttpClientFactory clientFactory,
-            IServer server, ILogger<PLAddFeedsCommandHandler> logger) : base(factory)
+            IServer server, ILogger<PLAddFeedsCommandHandler> logger, IOptionsSnapshot<PlaylistOptions> options) : base(factory)
         {
             this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
             serverAddresses = server.Features.Get<IServerAddressesFeature>() ?? throw new InvalidOperationException("Get server addresses feature is not available");
         }
 
@@ -94,7 +99,8 @@ namespace Web.Upnp.Control.Services.Commands
                         using var stream = item.OpenReadStream();
                         await using var reader = new StreamPipeReader(stream);
                         reader.Start();
-                        await foreach(var (path, info, _) in new M3uParser(reader).ConfigureAwait(false).WithCancellation(cancellationToken))
+                        var encoding = Path.GetExtension(item.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
+                        await foreach(var (path, info, _) in new M3uParser(reader, encoding).ConfigureAwait(false).WithCancellation(cancellationToken))
                         {
                             await AppendFeedItemAsyc(writer, client, new Uri(path), info, useProxy, cancellationToken).ConfigureAwait(false);
                         }
