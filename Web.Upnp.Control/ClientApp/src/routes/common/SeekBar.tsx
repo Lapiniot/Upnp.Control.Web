@@ -37,7 +37,7 @@ export default class SeekBar extends React.Component<PositionProps> {
         const current = parseMilliseconds(time);
 
         const progress = total > 0 ? current / total : 0;
-        const infinite = !Number.isFinite(current) || !Number.isFinite(total) || total < current;
+        const infinite = !Number.isFinite(current) || !Number.isFinite(total) || total === 0;
 
         return <div className={`d-flex flex-wrap justify-content-between user-select-none${className ? ` ${className}` : ""}`} {...other}>
             <Timer className="text-tiny" current={current / 1000} running={running} />
