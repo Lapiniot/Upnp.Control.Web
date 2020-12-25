@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +11,8 @@ namespace Web.Upnp.Control
     {
         public static Task Main(string[] args)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
                     .UseStartup<Startup>()

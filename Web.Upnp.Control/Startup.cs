@@ -62,9 +62,8 @@ namespace Web.Upnp.Control
                 .AddQueryServices()
                 .AddCommandServices();
 
-            services
-                .AddOptions<UpnpEventOptions>()
-                .BindConfiguration("UpnpEventSubscriptions");
+            services.AddOptions<UpnpEventOptions>().BindConfiguration("UpnpEventSubscriptions");
+            services.AddOptions<PlaylistOptions>().BindConfiguration("Playlists");
 
             var customConverters = new JsonConverter[]
             {
