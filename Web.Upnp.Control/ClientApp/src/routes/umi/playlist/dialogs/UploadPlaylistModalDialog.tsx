@@ -14,7 +14,7 @@ export class UploadPlaylistModalDialog extends React.Component<ModalProps & { on
         const { onAdd, ...other } = this.props;
         return <Modal title="Upload playlist file" onSubmit={this.onSubmit} immediate {...other}>
             <div className="input-group has-validation mb-3">
-                <input className="form-control" type="file" name="files" accept=".m3u, .m3u8" multiple required />
+                <input className="form-control" type="file" name="files" accept=".m3u,.m3u8" multiple required />
                 <div className="invalid-tooltip">Please select at least one playlist file</div>
             </div>
             <div className="form-check form-switch">
