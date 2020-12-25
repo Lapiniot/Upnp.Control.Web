@@ -1,12 +1,12 @@
 import React, { HTMLAttributes } from "react";
-import { parseMilliseconds, formatTime } from "../../components/Extensions";
+import { formatTime } from "../../components/Extensions";
 import Timer from "../../components/Timer";
 import Slider, { SliderChangeHandler, SliderCSSProperties } from "../../components/Slider";
 import { Progress } from "../../components/Progress";
 
 type PositionProps = HTMLAttributes<HTMLDivElement> & {
-    time: string;
-    duration: string;
+    time: number;
+    duration: number;
     running: boolean;
     onChangeRequested: SliderChangeHandler
 };
@@ -33,17 +33,15 @@ export default class SeekBar extends React.Component<PositionProps> {
 
     render() {
         const { time, duration, running, onChangeRequested, className, ...other } = this.props;
-        const total = parseMilliseconds(duration);
-        const current = parseMilliseconds(time);
 
-        const progress = total > 0 ? current / total : 0;
-        const infinite = !Number.isFinite(current) || !Number.isFinite(total) || total === 0;
+        const progress = duration > 0 ? time / duration : 0;
+        const infinite = !Number.isFinite(time) || !Number.isFinite(duration) || duration === 0;
 
         return <div className={`d-flex flex-wrap justify-content-between user-select-none${className ? ` ${className}` : ""}`} {...other}>
-            <Timer className="text-tiny" current={current / 1000} running={running} />
-            <time className="text-tiny">{formatTime(!infinite ? total / 1000 : Infinity)}</time>
+            <Timer className="text-tiny" current={time / 1000} running={running} />
+            <time className="text-tiny">{formatTime(!infinite ? duration / 1000 : Infinity)}</time>
             {!infinite
-                ? <Slider progress={progress} className="flex-basis-100" style={this.getSliderStyle(running, current, total)} onChangeRequested={onChangeRequested} />
+                ? <Slider progress={progress} className="flex-basis-100" style={this.getSliderStyle(running, time, duration)} onChangeRequested={onChangeRequested} />
                 : <Progress infinite={running} className="flex-basis-100" />}
         </div>;
     }
