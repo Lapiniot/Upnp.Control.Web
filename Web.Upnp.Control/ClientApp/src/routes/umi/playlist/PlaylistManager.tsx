@@ -19,6 +19,7 @@ import { AddUrlModalDialog } from "./dialogs/AddUrlModalDialog";
 import { AddItemsModalDialog } from "./dialogs/AddItemsModalDialog";
 import { RemoveItemsModalDialog } from "./dialogs/RemoveItemsModalDialog";
 import { UploadPlaylistModalDialog } from "./dialogs/UploadPlaylistModalDialog";
+import { DropTarget } from "../../../components/DropTarget";
 
 type RouteParams = {
     device: string;
@@ -46,6 +47,8 @@ const browserProps: BrowserCoreProps = {
     useCheckboxes: true,
     runsInDialog: true
 }
+
+const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"];
 
 export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
 
@@ -172,6 +175,15 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         });
     }
 
+    onDropFiles = (files: FileList, element: HTMLElement) => {
+        const data = new FormData();
+        for (let file of files)
+            data.append("files", file);
+        data.append("useProxy", "true");
+        $api.playlist(this.props.device).addPlaylistFile(this.props.id, data).fetch().then(this.reload);
+        return true;
+    }
+
     onCopy = () => { alert("not implemented yet"); };
 
     play: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.play().fetch();
@@ -223,7 +235,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 { key: "item-remove", title: "Remove items", glyph: "trash", onClick: this.onRemoveItems, disabled: disabled }
             ];
 
-        return <div className="d-flex flex-column h-100 position-relative">
+        return <DropTarget className="d-flex flex-column h-100" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
             {fetching && <LoadIndicatorOverlay />}
             <div className="flex-grow-1">
                 <SignalRListener handlers={this.handlers}>
@@ -255,7 +267,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         total={total} current={page ? parseInt(page) : 1} pageSize={size ? parseInt(size) : $config.pageSize} />}
             </div>
             {this.state.modal}
-        </div>;
+        </DropTarget>;
     }
 }
 
