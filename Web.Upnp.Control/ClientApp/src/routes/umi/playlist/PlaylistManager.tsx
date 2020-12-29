@@ -175,7 +175,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         });
     }
 
-    onDropFiles = (files: FileList, element: HTMLElement) => {
+    onDropFiles = (files: Iterable<File>, element: HTMLElement) => {
         $api.playlist(this.props.device).createFromFiles(files, null, false, true).fetch().then(this.reload);
         return true;
     }

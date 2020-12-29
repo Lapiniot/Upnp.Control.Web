@@ -23,13 +23,13 @@ export interface ControlApiProvider {
 export interface PlaylistApiProvider {
     state: () => JsonFetch;
     create: (title: string) => JsonPostFetch;
-    createFromFiles: (files: FileList, title?: string | null, merge?: boolean, useProxy?: boolean) => HttpPost;
+    createFromFiles: (data: Iterable<File> | FormData, title?: string | null, merge?: boolean, useProxy?: boolean) => HttpPost;
     rename: (id: string, title: string) => JsonPutFetch;
     delete: (ids: string[]) => JsonDeleteFetch;
     copy: (id: string) => JsonFetch;
     addItems: (id: string, sourceDevice: string, sourceIds: string[]) => JsonPostFetch;
     addUrl: (id: string, mediaUrl: string, title?: string, useProxy?: boolean) => JsonPostFetch;
-    addFromFiles: (id: string, data: FormData) => HttpPost;
+    addFromFiles: (id: string, data: Iterable<File> | FormData, useProxy?: boolean) => HttpPost;
     removeItems: (id: string, ids: string[]) => JsonDeleteFetch;
 }
 
@@ -44,13 +44,18 @@ export default class {
     static playlist = (deviceId: string): PlaylistApiProvider => ({
         state: () => new JsonFetch(`${baseUri}/${deviceId}/playlists/state`),
         create: (title: string) => new JsonPostFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(title) }),
-        createFromFiles: (files: FileList, title?: string | null, merge?: boolean, useProxy?: boolean) => {
-            const data = new FormData();
-            for (let file of files) data.append("files", file);
-            if (title) data.set("title", title);
-            if (merge) data.set("merge", merge.toString());
-            if (useProxy) data.set("useProxy", useProxy.toString());
-            return new HttpPost(`${baseUri}/${deviceId}/playlists`, null, { body: data });
+        createFromFiles: (data: Iterable<File> | FormData, title?: string | null, merge?: boolean, useProxy?: boolean) => {
+            const url = `${baseUri}/${deviceId}/playlists`;
+
+            if (data instanceof FormData) {
+                return new HttpPost(url, null, { body: data });
+            }
+
+            const formData = createFormData(data, useProxy);
+            if (title) formData.set("title", title);
+            if (merge) formData.set("merge", merge.toString());
+
+            return new HttpPost(url, null, { body: formData });
         },
         rename: (id: string, title: string) => new JsonPutFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { body: JSON.stringify(title) }),
         delete: (ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(ids) }),
@@ -61,7 +66,10 @@ export default class {
         addUrl: (id: string, url: string, title?: string, useProxy?: boolean) =>
             new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null,
                 { body: JSON.stringify({ url, title, useProxy }) }),
-        addFromFiles: (id: string, data: FormData) => new HttpPost(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null, { body: data }),
+        addFromFiles: (id: string, data: Iterable<File> | FormData, useProxy?: boolean) => {
+            return new HttpPost(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null,
+                { body: data instanceof FormData ? data : createFormData(data, useProxy) });
+        },
         removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null, { body: JSON.stringify(ids) })
     });
 
@@ -103,3 +111,10 @@ export class BrowseFetch extends HttpFetch {
 
     skip = (count: number) => { return new BrowseFetch(this.path, { ...this.query, skip: count }); };
 };
+
+function createFormData(files: Iterable<File>, useProxy: boolean | undefined) {
+    const data = new FormData();
+    for (let file of files) data.append("files", file);
+    if (useProxy) data.set("useProxy", useProxy.toString());
+    return data;
+}

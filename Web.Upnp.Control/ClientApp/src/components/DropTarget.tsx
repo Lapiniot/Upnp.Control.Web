@@ -4,7 +4,7 @@ import { Indicator } from "./LoadIndicator";
 
 type DropTargetProps = Omit<HTMLAttributes<HTMLDivElement>, "onDrop"> & {
     acceptedTypes?: string[];
-    onDrop: (files: FileList, target: HTMLElement) => boolean;
+    onDrop: (files: Iterable<File>, target: HTMLElement) => boolean;
 };
 
 type DropTargetState = {
@@ -22,10 +22,15 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
         this.setState({ dragging: false, acceptable: false });
     }
 
+    isAcceptable = (item: DataTransferItem | File) =>
+        item instanceof DataTransferItem && item.kind === "file" && (!this.props.acceptedTypes || this.props.acceptedTypes.includes(item.type)) ||
+        item instanceof File && (!this.props.acceptedTypes || this.props.acceptedTypes.includes(item.type));
+
     #drop = (e: DragEvent<HTMLDivElement>) => {
         try {
             const element = e.target as HTMLElement;
-            if (this.props.onDrop(e.dataTransfer.files, element)) {
+            const filtered = Array.from(e.dataTransfer.files).filter(this.isAcceptable);
+            if (this.props.onDrop(filtered, element)) {
                 e.stopPropagation();
                 e.preventDefault();
             }
@@ -37,7 +42,7 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
 
     #enter = (e: DragEvent<HTMLDivElement>) => {
         if (++this.counter === 1) {
-            const acceptable = Array.from(e.dataTransfer.items).some(i => i.kind === "file" && (!this.props.acceptedTypes || this.props.acceptedTypes.includes(i.type)));
+            const acceptable = Array.from(e.dataTransfer.items).some(this.isAcceptable);
             this.setState({ dragging: true, acceptable: acceptable });
         }
 
@@ -59,7 +64,7 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
     }
 
     render() {
-        const { children, ...other } = this.props;
+        const { children, acceptedTypes, onDrop, ...other } = this.props;
         const { dragging, acceptable } = this.state;
         const color = acceptable ? "primary" : "secondary";
 
