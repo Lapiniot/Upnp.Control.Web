@@ -34,6 +34,15 @@ namespace Web.Upnp.Control.Controllers
             return handler.ExecuteAsync(new PLCreateCommand(deviceId, title), cancellationToken);
         }
 
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public Task CreateAsync([FromServices] IAsyncCommandHandler<PLCreateFromFilesCommand> handler,
+            string deviceId, [FromForm] PlaylistFilesSource source, [FromForm] string title, [FromForm] bool? merge,
+            CancellationToken cancellationToken)
+        {
+            return handler.ExecuteAsync(new PLCreateFromFilesCommand(deviceId, source, title, merge), cancellationToken);
+        }
+
         [HttpPut("{playlistId}")]
         public Task UpdateAsync([FromServices] IAsyncCommandHandler<PLUpdateCommand> handler,
             string deviceId, string playlistId, [FromBody] string title, CancellationToken cancellationToken)

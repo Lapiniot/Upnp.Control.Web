@@ -71,6 +71,8 @@ namespace Web.Upnp.Control.Models
 
     public record PLCreateCommand(string DeviceId, string Title);
 
+    public record PLCreateFromFilesCommand(string DeviceId, PlaylistFilesSource Source, string Title, bool? Merge);
+
     public record PLUpdateCommand(string DeviceId, string PlaylistId, string Title);
 
     public record PLRemoveCommand(string DeviceId, IEnumerable<string> PlaylistIds);

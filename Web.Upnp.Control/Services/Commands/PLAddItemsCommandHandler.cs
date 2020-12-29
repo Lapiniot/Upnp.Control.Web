@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp.Services;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
@@ -31,19 +30,12 @@ namespace Web.Upnp.Control.Services.Commands
 
         private async Task AddItemsAsync(string deviceId, string playlistId, string sourceDeviceId, IEnumerable<string> sourceItems, CancellationToken cancellationToken)
         {
-            var playlistService = await Factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
-            var targetCDService = await Factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
-            var sourceCDService = await Factory.GetServiceAsync<ContentDirectoryService>(sourceDeviceId).ConfigureAwait(false);
+            var sourceCDService = await GetServiceAsync<ContentDirectoryService>(sourceDeviceId).ConfigureAwait(false);
 
             var sb = new StringBuilder();
 
-            using(var writer = XmlWriter.Create(sb, new XmlWriterSettings() { OmitXmlDeclaration = true }))
+            using(var writer = CreateDidlXmlWriter(sb))
             {
-                writer.WriteStartElement("DIDL-Lite", DIDLLiteNamespace);
-                writer.WriteAttributeString("dc", XmlnsNamespace, DCNamespace);
-                writer.WriteAttributeString("upnp", XmlnsNamespace, UPNPNamespace);
-                writer.WriteAttributeString("dlna", XmlnsNamespace, DLNANamespace);
-
                 foreach(var item in sourceItems)
                 {
                     var data = await sourceCDService.BrowseAsync(item, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -56,14 +48,9 @@ namespace Web.Upnp.Control.Services.Commands
                         writer.WriteNode(reader, true);
                     }
                 }
-
-                writer.WriteEndElement();
-                writer.Flush();
             }
 
-            var updateId = await GetUpdateIdAsync(targetCDService, playlistId, cancellationToken).ConfigureAwait(false);
-
-            await playlistService.AddUriAsync(objectId: playlistId, updateId: updateId, enqueuedUriMetaData: sb.ToString(), cancellationToken: cancellationToken).ConfigureAwait(false);
+            await AddItemAsync(deviceId, playlistId, sb.ToString(), cancellationToken).ConfigureAwait(false);
         }
     }
 }

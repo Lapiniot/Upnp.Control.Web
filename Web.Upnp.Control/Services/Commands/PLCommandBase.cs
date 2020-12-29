@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using IoT.Device.Xiaomi.Umi.Services;
+using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Web.Upnp.Control.Services.Abstractions;
@@ -22,22 +24,27 @@ namespace Web.Upnp.Control.Services.Commands
         protected const string DLNANamespace = "urn:schemas-dlna-org:metadata-1-0/";
         protected const string MissingArgumentErrorFormat = "{0} must be provided";
 
-        protected PLCommandBase(IUpnpServiceFactory factory)
+        protected PLCommandBase(IUpnpServiceFactory serviceFactory)
         {
-            Factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.serviceFactory = serviceFactory ?? throw new ArgumentNullException(nameof(serviceFactory));
         }
 
-        protected IUpnpServiceFactory Factory { get; }
+        private IUpnpServiceFactory serviceFactory { get; }
+
+        protected Task<T> GetServiceAsync<T>(string deviceId) where T : SoapActionInvoker
+        {
+            return serviceFactory.GetServiceAsync<T>(deviceId);
+        }
 
         protected async Task<int[]> GetItemIndices(string deviceId, string parentId, IEnumerable<string> ids, CancellationToken cancellationToken)
         {
-            var service = await Factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
+            var service = await GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
             return await GetItemIndices(service, parentId, ids, cancellationToken).ConfigureAwait(false);
         }
 
         protected async Task<string> GetUpdateIdAsync(string deviceId, string itemId, CancellationToken cancellationToken)
         {
-            var service = await Factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
+            var service = await GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
             return await GetUpdateIdAsync(service, itemId, cancellationToken).ConfigureAwait(false);
         }
 
@@ -78,6 +85,21 @@ namespace Web.Upnp.Control.Services.Commands
             writer.WriteValue(url);
             writer.WriteEndElement();
             writer.WriteEndElement();
+        }
+
+        protected async Task CreatePlaylistAsync(string deviceId, string title, string contentMetadata, CancellationToken cancellationToken)
+        {
+            var service = await GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
+            var result = await service.CreateAsync(title: title, cancellationToken: cancellationToken).ConfigureAwait(false);
+            await service.AddUriAsync(objectId: result["AssignedObjectID"], enqueuedUriMetaData: contentMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+
+        protected async Task AddItemAsync(string deviceId, string playlistId, string metadata, CancellationToken cancellationToken)
+        {
+            var playlistService = await GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
+            var targetCDService = await GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
+            var updateId = await GetUpdateIdAsync(targetCDService, playlistId, cancellationToken).ConfigureAwait(false);
+            await playlistService.AddUriAsync(0, playlistId, updateId, null, metadata, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

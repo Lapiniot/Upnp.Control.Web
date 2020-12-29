@@ -15,6 +15,7 @@ namespace Web.Upnp.Control.Services.Commands
                 .AddTransient<IAsyncCommandHandler<RCSetVolumeCommand>, RCSetVolumeCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<RCSetMuteCommand>, RCSetMuteCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLCreateCommand>, PLCreateCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<PLCreateFromFilesCommand>, PLCreateFromFilesCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLUpdateCommand>, PLUpdateCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLRemoveCommand>, PLRemoveCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLAddItemsCommand>, PLAddItemsCommandHandler>()
