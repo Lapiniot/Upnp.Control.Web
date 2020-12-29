@@ -118,7 +118,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     addUrl = (url: string, title?: string, useProxy?: boolean) => $api.playlist(this.props.device).addUrl(this.props.id, url, title, useProxy).fetch().then(this.reload);
 
-    addPlaylists = (data: FormData) => $api.playlist(this.props.device).addPlaylistFile(this.props.id, data).fetch().then(this.reload);
+    addPlaylists = (data: FormData) => $api.playlist(this.props.device).addFromFiles(this.props.id, data).fetch().then(this.reload);
 
     removeItems = (ids: string[]) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset).then(this.reload);
 
@@ -176,11 +176,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 
     onDropFiles = (files: FileList, element: HTMLElement) => {
-        const data = new FormData();
-        for (let file of files)
-            data.append("files", file);
-        data.append("useProxy", "true");
-        $api.playlist(this.props.device).addPlaylistFile(this.props.id, data).fetch().then(this.reload);
+        $api.playlist(this.props.device).createFromFiles(files, null, false, true).fetch().then(this.reload);
         return true;
     }
 

@@ -23,12 +23,13 @@ export interface ControlApiProvider {
 export interface PlaylistApiProvider {
     state: () => JsonFetch;
     create: (title: string) => JsonPostFetch;
+    createFromFiles: (files: FileList, title?: string | null, merge?: boolean, useProxy?: boolean) => HttpPost;
     rename: (id: string, title: string) => JsonPutFetch;
     delete: (ids: string[]) => JsonDeleteFetch;
     copy: (id: string) => JsonFetch;
     addItems: (id: string, sourceDevice: string, sourceIds: string[]) => JsonPostFetch;
     addUrl: (id: string, mediaUrl: string, title?: string, useProxy?: boolean) => JsonPostFetch;
-    addPlaylistFile: (id: string, data: FormData) => HttpPost;
+    addFromFiles: (id: string, data: FormData) => HttpPost;
     removeItems: (id: string, ids: string[]) => JsonDeleteFetch;
 }
 
@@ -43,6 +44,14 @@ export default class {
     static playlist = (deviceId: string): PlaylistApiProvider => ({
         state: () => new JsonFetch(`${baseUri}/${deviceId}/playlists/state`),
         create: (title: string) => new JsonPostFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(title) }),
+        createFromFiles: (files: FileList, title?: string | null, merge?: boolean, useProxy?: boolean) => {
+            const data = new FormData();
+            for (let file of files) data.append("files", file);
+            if (title) data.set("title", title);
+            if (merge) data.set("merge", merge.toString());
+            if (useProxy) data.set("useProxy", useProxy.toString());
+            return new HttpPost(`${baseUri}/${deviceId}/playlists`, null, { body: data });
+        },
         rename: (id: string, title: string) => new JsonPutFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { body: JSON.stringify(title) }),
         delete: (ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(ids) }),
         copy: (id: string) => new JsonFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { method: "COPY" }),
@@ -52,7 +61,7 @@ export default class {
         addUrl: (id: string, url: string, title?: string, useProxy?: boolean) =>
             new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null,
                 { body: JSON.stringify({ url, title, useProxy }) }),
-        addPlaylistFile: (id: string, data: FormData) => new HttpPost(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null, { body: data }),
+        addFromFiles: (id: string, data: FormData) => new HttpPost(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null, { body: data }),
         removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null, { body: JSON.stringify(ids) })
     });
 
