@@ -14,13 +14,6 @@ export function LoadIndicator({ children = "Loading...", ...others }: HTMLAttrib
     </Indicator>
 }
 
-export function DropTargetIndicator({ children = "Drop files here", ...others }: HTMLAttributes<HTMLDivElement>) {
-    return <Indicator {...others}>
-        <i className="fas fa-upload fa-3x" />
-        {children}
-    </Indicator>
-}
-
 export function LoadIndicatorOverlay({ children }: PropsWithChildren<{}>) {
     return <div className="backdrop text-center">
         <LoadIndicator className="vp-center flex-column">{children}</LoadIndicator>

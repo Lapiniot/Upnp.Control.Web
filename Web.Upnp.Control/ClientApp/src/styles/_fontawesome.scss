@@ -189,3 +189,11 @@ $fa-font-path: "../webfonts";
 .#{$fa-css-prefix}-ellipsis-v:before {
     content: fa-content($fa-var-ellipsis-v);
 }
+
+.#{$fa-css-prefix}-meh:before {
+    content: fa-content($fa-var-meh);
+}
+
+.#{$fa-css-prefix}-poo:before {
+    content: fa-content($fa-var-poo);
+}

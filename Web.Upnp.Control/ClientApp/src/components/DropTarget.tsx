@@ -1,6 +1,6 @@
 import React from "react";
 import { DragEvent, HTMLAttributes } from "react";
-import { DropTargetIndicator } from "./LoadIndicator";
+import { Indicator } from "./LoadIndicator";
 
 type DropTargetProps = Omit<HTMLAttributes<HTMLDivElement>, "onDrop"> & {
     acceptedTypes?: string[];
@@ -64,13 +64,11 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
         const color = acceptable ? "primary" : "secondary";
 
         return <div {...other} onDragEnter={this.#enter} onDragLeave={this.#leave} onDragOver={this.#over} onDrop={this.#drop}>
-            {dragging && <div className={`backdrop text-center border border-3 border-${color} backdrop-${color}`}>
-                <DropTargetIndicator className={`vp-center flex-column text-${acceptable ? "white" : "white-50"}`}>
-                    {acceptable
-                        ? <p className="text-bolder">Drop playlist files here</p>
-                        : <p className="text-bolder">Only playlist files (.m3u, .m3u8) are supported</p>
-                    }
-                </DropTargetIndicator>
+            {dragging && <div className={`backdrop text-center border border-2 border-${color} backdrop-${color}`}>
+                <Indicator className={`vp-center flex-column text-${acceptable ? "white" : "white-50"}`}>
+                    <i className={`fa fa-${acceptable ? "upload" : "poo"} fa-3x`} />
+                    <p className="text-bolder">{acceptable ? "Drop playlist files here" : "Only playlist files (.m3u, .m3u8) are supported"}</p>
+                </Indicator>
             </div>}
             {children}
         </div>;
