@@ -154,9 +154,13 @@ $album-art-sizes: (
     // This renders in case of image download error
     &:after {
         content: "?";
+        position: absolute;
+        top: 0;
+        width: 100%;
         display: block;
         color: orangered;
         border: 1px dashed orangered;
+        background-color: whitesmoke;
         font-weight: bolder;
     }
 }
