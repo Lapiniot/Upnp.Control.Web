@@ -55,7 +55,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         protected async Task AppendFeedItemAsync(XmlWriter writer, Uri mediaUrl, string title, bool? useProxy, CancellationToken cancellationToken)
         {
-            using var request = new HttpRequestMessage(HttpMethod.Get, mediaUrl);
+            using var request = new HttpRequestMessage(HttpMethod.Get, mediaUrl) { Headers = { { "Icy-MetaData", "1" } } };
             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
             var length = response.Content.Headers.ContentLength;
@@ -64,6 +64,7 @@ namespace Web.Upnp.Control.Services.Commands
             title = string.IsNullOrWhiteSpace(title) ? (response.Headers.TryGetValues("icy-name", out values) ? values.First() : mediaUrl.ToString()) : title;
             var description = response.Headers.TryGetValues("icy-description", out values) ? values.First() : null;
             var genre = response.Headers.TryGetValues("icy-genre", out values) ? values.First() : null;
+            useProxy ??= response.Headers.TryGetValues("icy-metaint", out _);
 
             var url = useProxy != true ? mediaUrl
                 : new UriBuilder(BindingUri)
