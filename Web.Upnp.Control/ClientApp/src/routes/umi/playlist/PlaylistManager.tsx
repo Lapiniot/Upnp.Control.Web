@@ -186,7 +186,15 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     pause: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.pause().fetch();
 
-    playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { playUrl } } }) => this.ctrl.playUri(playUrl as string).fetch();
+    playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { playIndex = "0" } } }) => {
+        const index = parseInt(playIndex);
+        const { dataContext, s, p } = this.props;
+        const { items = [], parents = [] } = dataContext?.source ?? {};
+        const url = parents[0]?.res?.url
+            ? `${parents[0].res.url}#tracknr=${(p ? parseInt(p) - 1 : 0) * (s ? parseInt(s) : $config.pageSize) + index + 1},play`
+            : `${items[index]?.res?.url}#play`;
+        return this.ctrl.playUri(url).fetch();
+    }
 
     open = (id: string) => {
         const index = this.props.dataContext?.source.items.findIndex(i => i.id === id) ?? -1;
@@ -200,21 +208,24 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     render() {
 
-        const { dataContext: data, match, navigate, id, s: size, p: page, fetching, error } = this.props;
-        const { source: { total = 0, items: { length: fetched = 0 } = {}, parents = [] } = {} } = data || {};
+        const { dataContext: data, match, navigate, id, s, p, fetching, error } = this.props;
+        const { source: { total = 0, items = [], parents = [] } = {} } = data || {};
+        const { state, playlist, currentTrack } = this.state;
+        const size = s ? parseInt(s) : $config.pageSize;
+        const page = p ? parseInt(p) : 1;
+        const fetched = items.length;
         const disabled = this.selection.none();
-        const track = this.state.currentTrack ? parseInt(this.state.currentTrack) : -1;
+        const activeIndex = id === "PL:"
+            ? playlist === "aux" ? items.findIndex(i => i.vendor?.["mi:playlistType"] === "aux") : items.findIndex(i => i.res?.url === playlist)
+            : currentTrack && playlist === parents[0]?.res?.url ? parseInt(currentTrack) - size * (page - 1) - 1 : -1;
+
         const cellContext: CellContext = {
             play: this.play,
             pause: this.pause,
             playUrl: this.playUrl,
-            state: this.state.state,
+            state,
             parents,
-            active: id !== "PL:"
-                ? (_, index) => index + 1 === track
-                : (this.state.playlist === "aux"
-                    ? d => d.vendor?.["mi:playlistType"] === "aux"
-                    : d => d.res?.url === this.state.playlist)
+            activeIndex
         };
 
         const toolbar = id === "PL:" ?
@@ -259,8 +270,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     , {total} totally available
                     </div>
                 {total !== 0 && fetched !== total &&
-                    <Pagination baseUrl={match.url} className="border-top"
-                        total={total} current={page ? parseInt(page) : 1} pageSize={size ? parseInt(size) : $config.pageSize} />}
+                    <Pagination baseUrl={match.url} className="border-top" total={total} current={page} pageSize={size} />}
             </div>
             {this.state.modal}
         </DropTarget>;

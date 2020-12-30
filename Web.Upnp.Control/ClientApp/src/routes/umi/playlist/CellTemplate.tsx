@@ -3,7 +3,7 @@ import AlbumArt from "../../common/AlbumArt";
 import { DIDLItem, PlaybackState } from "../../common/Types";
 
 export type CellContext = {
-    active: (item: DIDLItem, index: number) => boolean;
+    activeIndex: number;
     parents: DIDLItem[];
     state: PlaybackState | undefined;
     play: EventHandler<UIEvent<HTMLDivElement>>;
@@ -17,13 +17,11 @@ type CellTemplateProps = {
     index: number;
 }
 
-export default function ({ data: d, context: { active, parents, state, play, pause, playUrl }, index }: CellTemplateProps) {
-    const isActive = active(d, index);
-    const url = parents[0]?.res?.url ? `${parents[0].res.url}#tracknr=${index + 1},play` : `${d?.res?.url}#play`;
+export default function ({ data: d, context: { activeIndex, state, play, pause, playUrl }, index }: CellTemplateProps) {
     return <div className="d-flex align-items-center">
         <div className="d-inline-block stack me-1">
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} />
-            {isActive
+            {index === activeIndex
                 ? state === "PLAYING"
                     ? <React.Fragment key="active-playing">
                         <div className="stack-layer d-flex">
@@ -41,7 +39,7 @@ export default function ({ data: d, context: { active, parents, state, play, pau
                             <i className="m-auto fas fa-lg fa-play-circle" />
                         </div>
                     </React.Fragment>
-                : <div className="stack-layer stack-layer-hover d-flex" onClick={playUrl} data-play-url={url}>
+                : <div className="stack-layer stack-layer-hover d-flex" onClick={playUrl} data-play-index={index}>
                     <i className="m-auto fas fa-lg fa-play-circle" />
                 </div>}
         </div>
