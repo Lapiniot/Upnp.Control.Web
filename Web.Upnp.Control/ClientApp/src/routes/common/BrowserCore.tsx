@@ -10,7 +10,8 @@ import { DataFetchProps } from "../../components/DataFetch";
 type ModeFlags = "multiSelect" | "runsInDialog" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
 
 export type BrowserCoreProps = {
-    filter?: (item: DIDLItem) => boolean;
+    selectionFilter?: (item: DIDLItem) => boolean;
+    navigationFilter?: (item: DIDLItem) => boolean;
     open?: (id: string) => boolean;
     selection?: SelectionService;
     cellTemplate?: ElementType;
@@ -188,10 +189,10 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
     }
 
     render() {
-        const { className, navigate, filter = () => false, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
+        const { className, navigate, selectionFilter = () => false, navigationFilter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
             useCheckboxes = false, selectOnClick = false, stickyColumnHeaders = true } = this.props;
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
-        this.selectables = items.filter(filter).map(i => i.id);
+        this.selectables = items.filter(selectionFilter).map(i => i.id);
         const children = React.Children.toArray(this.props.children);
         const header = children.find(c => (c as ReactElement)?.type === MediaBrowser.Header);
         const footer = children.find(c => (c as ReactElement)?.type === MediaBrowser.Footer);
@@ -223,11 +224,11 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
                     {[items.map((e, index) => {
                         const selected = this.selection.selected(e.id);
                         const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
-                        const canBeSelected = selectOnClick && filter(e);
-                        return <div key={e.id} data-id={e.id} data-selectable={canBeSelected ? 1 : undefined} data-selected={selected} data-active={active}
-                            onDoubleClick={e.container ? navigate : this.open}>
+                        const selectable = selectionFilter(e);
+                        return <div key={e.id} data-id={e.id} data-selectable={selectOnClick && selectable ? 1 : undefined} data-selected={selected} data-active={active}
+                            onDoubleClick={e.container && navigationFilter(e) ? navigate : this.open}>
                             {useCheckboxes && <div>
-                                <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!filter(e)} />
+                                <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!selectable} />
                             </div>}
                             <div className="mw-1"><MainCellTemplate data={e} index={index} context={cellContext} /></div>
                             <div className="small text-end">{utils.formatSize(e.res?.size)}</div>

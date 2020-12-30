@@ -41,7 +41,7 @@ type PlaylistManagerState = {
 } & Partial<AVState>;
 
 const browserProps: BrowserCoreProps = {
-    filter: DIDLUtils.isMusicTrack,
+    selectionFilter: DIDLUtils.isMusicTrack,
     multiSelect: true,
     selectOnClick: true,
     useCheckboxes: true,
@@ -102,7 +102,13 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         }
     }
 
-    static isEditable = (item: DIDLItem) => !item.readonly;
+    static isEditable = (item: DIDLItem) => {
+        if (item.readonly) return false;
+        const type = item?.vendor?.["mi:playlistType"];
+        return type !== "aux" && type !== "usb";
+    }
+
+    static isNavigable = (item: DIDLItem) => item?.vendor?.["mi:playlistType"] !== "aux";
 
     resetModal = () => { this.setState({ modal: null }); }
 
@@ -250,7 +256,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <div className="flex-grow-1">
                 <SignalRListener handlers={this.handlers}>
                     <Browser dataContext={data} fetching={fetching} error={error} cellTemplate={MainCell} cellContext={cellContext}
-                        filter={PlaylistManagerCore.isEditable} navigate={navigate} selection={this.selection} open={this.open}
+                        selectionFilter={PlaylistManagerCore.isEditable} selection={this.selection}
+                        navigationFilter={PlaylistManagerCore.isNavigable} navigate={navigate} open={this.open}
                         useCheckboxes selectOnClick>
                         <Browser.Header className="p-0">
                             <div className="d-flex flex-column">

@@ -14,7 +14,7 @@ type RenderDeviceProps = DataSourceProps<UpnpDevice> & {
 type RenderDeviceState = { modal?: ReactNode | null }
 
 const browserProps: BrowserCoreProps = {
-    filter: DIDLUtils.isMediaItem,
+    selectionFilter: DIDLUtils.isMediaItem,
     selectOnClick: true
 }
 
