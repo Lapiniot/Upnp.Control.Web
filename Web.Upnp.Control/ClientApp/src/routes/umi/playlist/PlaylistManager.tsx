@@ -253,25 +253,23 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
         return <DropTarget className="d-flex flex-column h-100" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
             {fetching && <LoadIndicatorOverlay />}
-            <div className="flex-grow-1">
-                <SignalRListener handlers={this.handlers}>
-                    <Browser dataContext={data} fetching={fetching} error={error} cellTemplate={MainCell} cellContext={cellContext}
-                        selectionFilter={PlaylistManagerCore.isEditable} selection={this.selection}
-                        navigationFilter={PlaylistManagerCore.isNavigable} navigate={navigate} open={this.open}
-                        useCheckboxes selectOnClick>
-                        <Browser.Header className="p-0">
-                            <div className="d-flex flex-column">
-                                <Toolbar className="px-2 py-1 bg-light border-bottom">
-                                    <Toolbar.Group>
-                                        {toolbar.map(i => <Toolbar.Button {...i} />)}
-                                    </Toolbar.Group>
-                                </Toolbar>
-                                <Breadcrumb items={parents} path={match.path} params={match.params} />
-                            </div>
-                        </Browser.Header>
-                    </Browser>
-                </SignalRListener>
-            </div>
+            <SignalRListener handlers={this.handlers}>
+                <Browser dataContext={data} fetching={fetching} error={error} cellTemplate={MainCell} cellContext={cellContext}
+                    selectionFilter={PlaylistManagerCore.isEditable} selection={this.selection}
+                    navigationFilter={PlaylistManagerCore.isNavigable} navigate={navigate} open={this.open}
+                    useCheckboxes selectOnClick multiSelect>
+                    <Browser.Header className="p-0">
+                        <div className="d-flex flex-column">
+                            <Toolbar className="px-2 py-1 bg-light border-bottom">
+                                <Toolbar.Group>
+                                    {toolbar.map(i => <Toolbar.Button {...i} />)}
+                                </Toolbar.Group>
+                            </Toolbar>
+                            <Breadcrumb items={parents} path={match.path} params={match.params} />
+                        </div>
+                    </Browser.Header>
+                </Browser>
+            </SignalRListener>
             <div className="sticky-bottom">
                 <div className="bg-light text-center text-muted small p-1 border-top">{
                     this.selection.length > 0
