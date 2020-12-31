@@ -71,7 +71,7 @@ namespace Web.Upnp.Control.Services.Commands
             return writer;
         }
 
-        protected static void WriteItem(XmlWriter writer, string title, string description, string genre, string url, long? length, string contentType, int? br)
+        protected static void WriteItem(XmlWriter writer, string title, string description, string genre, Uri url, long? length, string contentType, int? br)
         {
             writer.WriteStartElement("item");
             writer.WriteElementString("title", DCNamespace, title);
@@ -82,7 +82,7 @@ namespace Web.Upnp.Control.Services.Commands
             if(length is not null) writer.WriteAttributeString("size", length.Value.ToString(CultureInfo.InvariantCulture));
             if(br is not null) writer.WriteAttributeString("bitrate", br.Value.ToString(CultureInfo.InvariantCulture));
             writer.WriteAttributeString("protocolInfo", $"http-get:*:{(contentType ?? "audio/mpegurl")}:*");
-            writer.WriteValue(url);
+            writer.WriteValue(url.AbsoluteUri);
             writer.WriteEndElement();
             writer.WriteEndElement();
         }

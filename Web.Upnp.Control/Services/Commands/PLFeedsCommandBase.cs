@@ -55,25 +55,40 @@ namespace Web.Upnp.Control.Services.Commands
 
         protected async Task AppendFeedItemAsync(XmlWriter writer, Uri mediaUrl, string title, bool? useProxy, CancellationToken cancellationToken)
         {
-            using var request = new HttpRequestMessage(HttpMethod.Get, mediaUrl) { Headers = { { "Icy-MetaData", "1" } } };
-            using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                using var request = new HttpRequestMessage(HttpMethod.Get, mediaUrl) { Headers = { { "Icy-MetaData", "1" } } };
+                using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+                var length = response.Content.Headers.ContentLength;
+                var contentType = response.Content.Headers.ContentType;
+                int? br = response.Headers.TryGetValues("icy-br", out var values) && int.TryParse(values.First(), out var v) ? v * 128 : null;
+                title = string.IsNullOrWhiteSpace(title) ? (response.Headers.TryGetValues("icy-name", out values) ? values.First() : mediaUrl.ToString()) : title;
+                var description = response.Headers.TryGetValues("icy-description", out values) ? values.First() : null;
+                var genre = response.Headers.TryGetValues("icy-genre", out values) ? values.First() : null;
+                useProxy ??= response.Headers.TryGetValues("icy-metaint", out _);
+                var url = useProxy != true ? mediaUrl : GetProxyUri(mediaUrl);
+                
+                WriteItem(writer, title, description, genre, url, length, contentType?.MediaType, br);
+            }
+            catch(HttpRequestException exception)
+            {
+                logger.LogWarning(exception, "Media feed test request failed");
+                
+                title = !string.IsNullOrWhiteSpace(title) ? title : mediaUrl.ToString();
+                var url = useProxy == false ? mediaUrl : GetProxyUri(mediaUrl);
+                
+                WriteItem(writer, title, null, null, url, null, null, null);
+            }
+        }
 
-            var length = response.Content.Headers.ContentLength;
-            var contentType = response.Content.Headers.ContentType;
-            int? br = response.Headers.TryGetValues("icy-br", out var values) && int.TryParse(values.First(), out var v) ? v * 128 : null;
-            title = string.IsNullOrWhiteSpace(title) ? (response.Headers.TryGetValues("icy-name", out values) ? values.First() : mediaUrl.ToString()) : title;
-            var description = response.Headers.TryGetValues("icy-description", out values) ? values.First() : null;
-            var genre = response.Headers.TryGetValues("icy-genre", out values) ? values.First() : null;
-            useProxy ??= response.Headers.TryGetValues("icy-metaint", out _);
-
-            var url = useProxy != true ? mediaUrl
-                : new UriBuilder(BindingUri)
-                {
-                    Path = $"/dlna-proxy/{Uri.EscapeUriString(mediaUrl.AbsoluteUri)}",
-                    Query = "?no-length&strip-icy-metadata&add-dlna-metadata"
-                }.Uri;
-
-            WriteItem(writer, title, description, genre, url.AbsoluteUri, length, contentType?.MediaType, br);
+        private Uri GetProxyUri(Uri mediaUrl)
+        {
+            return new UriBuilder(BindingUri)
+            {
+                Path = $"/dlna-proxy/{Uri.EscapeUriString(mediaUrl.AbsoluteUri)}",
+                Query = "?no-length&strip-icy-metadata&add-dlna-metadata"
+            }.Uri;
         }
 
         protected async Task<string> GetMetadataAsync(IEnumerable<IFormFile> files, bool? useProxy, CancellationToken cancellationToken)

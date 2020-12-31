@@ -48,6 +48,7 @@ namespace Web.Upnp.Control.Infrastructure
                     if(!reader.IsNext(EXTINF, true)) continue;
                     reader.AdvancePast(0x20);
                     if(!(reader.TryReadTo(out ReadOnlySpan<byte> span, 0x2C) && Utf8Parser.TryParse(span, out int duration, out _))) continue;
+                    reader.AdvancePast(0x20);
                     if(!lineReader.TryReadLine(out line, !isCompleted)) break;
                     track = (encoding.GetString(line), encoding.GetString(reader.UnreadSequence), duration);
                 }
