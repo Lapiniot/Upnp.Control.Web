@@ -112,21 +112,21 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     resetModal = () => { this.setState({ modal: null }); }
 
-    reload = () => { if (this.props.dataContext) this.props.dataContext.reload(); }
+    reload = (action?: () => Promise<any>) => this.props.dataContext ? this.props.dataContext.reload(action) : Promise.resolve(null);
 
-    renamePlaylist = (id: string, title: string) => $api.playlist(this.props.device).rename(id, title).fetch().then(this.reload);
+    renamePlaylist = (id: string, title: string) => this.reload($api.playlist(this.props.device).rename(id, title).fetch);
 
-    createPlaylist = (title: string) => $api.playlist(this.props.device).create(title).fetch().then(this.reload);
+    createPlaylist = (title: string) => this.reload($api.playlist(this.props.device).create(title).fetch);
 
-    removePlaylist = (ids: string[]) => $api.playlist(this.props.device).delete(ids).fetch().then(this.selection.reset).then(this.reload);
+    removePlaylist = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).delete(ids).fetch().then(this.selection.reset));
 
-    addItems = (device: string, ids: string[]) => $api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch().then(this.reload);
+    addItems = (device: string, ids: string[]) => this.reload($api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch);
 
-    addUrl = (url: string, title?: string, useProxy?: boolean) => $api.playlist(this.props.device).addUrl(this.props.id, url, title, useProxy).fetch().then(this.reload);
+    addUrl = (url: string, title?: string, useProxy?: boolean) => this.reload($api.playlist(this.props.device).addUrl(this.props.id, url, title, useProxy).fetch);
 
-    addPlaylists = (data: FormData) => $api.playlist(this.props.device).addFromFiles(this.props.id, data).fetch().then(this.reload);
+    addPlaylists = (data: FormData) => this.reload($api.playlist(this.props.device).addFromFiles(this.props.id, data).fetch);
 
-    removeItems = (ids: string[]) => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset).then(this.reload);
+    removeItems = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset));
 
     onAdd = () => {
         this.setState({
@@ -185,7 +185,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const request = this.props.id === "PL:"
             ? $api.playlist(this.props.device).createFromFiles(files, null, false)
             : $api.playlist(this.props.device).addFromFiles(this.props.id, files);
-        request.fetch().then(this.reload);
+        this.reload(request.fetch);
         return true;
     }
 

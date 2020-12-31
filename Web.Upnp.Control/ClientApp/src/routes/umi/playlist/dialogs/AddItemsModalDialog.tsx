@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "../../../../components/Modal";
 import BrowserDialog, { BrowserDialogProps } from "../../../common/BrowserDialog";
 
-export function AddItemsModalDialog({ onAdd, ...other }: BrowserDialogProps & { onAdd: (device: string, keys: string[]) => Promise<void>; }) {
+export function AddItemsModalDialog({ onAdd, ...other }: BrowserDialogProps & { onAdd: (device: string, keys: string[]) => Promise<any> }) {
     return <BrowserDialog title="Select items to add" className="modal-lg modal-vh-80" immediate {...other}>
         {(b: BrowserDialog) => {
             const { device, keys } = b.getSelectionData();

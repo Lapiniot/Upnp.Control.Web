@@ -35,7 +35,7 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
     onDiscoveryEvent = (device: string, message: DiscoveryMessage) => {
         const reload = this.props.dataContext?.reload;
         if (typeof reload === "function") {
-            reload({ alerts: this.state.alerts.set(device, message) });
+            reload(null, { alerts: this.state.alerts.set(device, message) });
         }
     }
 
