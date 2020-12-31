@@ -1,12 +1,12 @@
 import React, { HTMLAttributes } from "react";
 import "bootstrap/js/dist/dropdown";
-import { RouteLink } from "../../components/NavLink";
 import PlayerWidget from "./PlayerWidget";
 import { BrowseFetchResult, DataSourceProps, UpnpDevice } from "./Types";
-import { fromBaseQuery } from "./BrowserUtils";
 import $api from "../../components/WebApi";
-import { DataFetchProps, withDataFetch } from "../../components/DataFetch";
+import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import AlbumArt from "./AlbumArt";
+import { BrowseContentAction, DeviceActionProps, ManagePlaylistsAction } from "./Device.Actions";
+import { DeviceCard } from "./DeviceCard";
 
 function MicroLoader() {
     return <span><i className="fas fa-spinner fa-spin" /></span>
@@ -20,7 +20,7 @@ function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     return false;
 }
 
-function Menu({ dataContext: d, device }: HTMLAttributes<HTMLDivElement> & DataFetchProps<BrowseFetchResult> & { device?: string }) {
+function Menu({ dataContext: d, device }: HTMLAttributes<HTMLDivElement> & DataFetchProps<BrowseFetchResult> & DeviceActionProps) {
     return <div className="btn-group dropend">
         <a href="#" className="nav-link p-0 px-1" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
             <i className="fas fa-caret-right fa-lg" /><span className="visually-hidden">Toggle Dropdown</span>
@@ -34,28 +34,14 @@ function Menu({ dataContext: d, device }: HTMLAttributes<HTMLDivElement> & DataF
     </div>
 }
 
-const builder = fromBaseQuery((device) => $api.browse(device).get("PL:").withResource().withVendor());
+const builder = ({ device: { udn } }: { device: UpnpDevice }) => withMemoKey($api.browse(udn).get("PL:").withResource().withVendor().jsonFetch, udn);
 
 const PlaylistMenu = withDataFetch(Menu, builder, { template: MicroLoader });
 
-export default function UmiDevice({ "data-source": { name, description, udn }, category = "umi" }: DataSourceProps<UpnpDevice> & { category?: string }) {
-    return <div className="card shadow">
-        <div className="card-header d-flex flex-row">
-            <svg className="upnp-dev-icon" style={{ objectFit: "unset" }}>
-                <use href="icons.svg#s-music-player" />
-            </svg>
-            <div>
-                <h5 className="card-title">{name}</h5>
-                <h6 className="card-subtitle">{description}</h6>
-            </div>
-        </div>
-        <div className="card-body">
-            <PlayerWidget udn={udn} />
-        </div>
-        <div className="card-footer d-flex align-items-center gap-2 no-decoration">
-            <RouteLink to={`/${category}/${udn}/browse`} glyph="folder" className="p-0 btn-link" title="Browse content">Browse</RouteLink>
-            <RouteLink to={`/${category}/${udn}/playlists/PL:`} glyph="list-alt" className="p-0" title="Manage playlists">Playlists</RouteLink>
-            <PlaylistMenu device={udn} />
-        </div>
-    </div>;
+const umiActions = [BrowseContentAction, ManagePlaylistsAction, PlaylistMenu];
+
+export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
+    return <DeviceCard {...props} actions={umiActions}>
+        <PlayerWidget udn={props["data-source"].udn} />
+    </DeviceCard>;
 }
