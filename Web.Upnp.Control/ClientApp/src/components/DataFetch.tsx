@@ -11,9 +11,11 @@ type PreloaderProps = {
     usePreloader?: boolean;
 }
 
+type ReloadFunc<T> = (action?: (() => Promise<any>) | null, state?: {}) => Promise<T>;
+
 export type DataContext<T = {}> = {
     source: T;
-    reload: (state?: {}) => void;
+    reload: ReloadFunc<T>;
 }
 
 export type DataFetchProps<T = {}> = {
@@ -35,7 +37,7 @@ export function withMemoKey(func: (...args: any[]) => any, key: string) {
     return wrapper;
 }
 
-export function withDataFetch<P extends DataFetchProps, Params = {}>(Component: ComponentType<P>,
+export function withDataFetch<P extends DataFetchProps<T>, Params = {}, T = {}>(Component: ComponentType<P>,
     builder: (props: Omit<P, keyof DataFetchProps> & Params) => FunctionWithKey | null,
     { template: Template = "div", text = "Loading...", usePreloader = true }: PreloaderProps = {}) {
 
@@ -50,7 +52,7 @@ export function withDataFetch<P extends DataFetchProps, Params = {}>(Component: 
             this.state = { fetching: true, dataContext: null, fetch: builder(props), error: null }
         }
 
-        async fetchData() {
+        fetchData = async () => {
             const fetch = this.state.fetch;
 
             if (!fetch) return;
@@ -58,9 +60,11 @@ export function withDataFetch<P extends DataFetchProps, Params = {}>(Component: 
             try {
                 const data = await fetch();
                 this.setState({ fetching: false, dataContext: { source: data, reload: this.reload }, error: null });
+                return data;
             } catch (e) {
                 console.error(e);
                 this.setState({ fetching: false, error: e });
+                throw e;
             }
         }
 
@@ -80,7 +84,15 @@ export function withDataFetch<P extends DataFetchProps, Params = {}>(Component: 
             this.fetchData();
         }
 
-        reload = (state?: {}) => this.setState({ fetching: true, error: null, ...state }, this.fetchData);
+        reload: ReloadFunc<T> = (action?: (() => Promise<any>) | null, state?: {}) => {
+            return new Promise<T>((resolve, reject) =>
+                this.setState({ fetching: true, error: null, ...state },
+                    () => (action ? action().then(this.fetchData) : this.fetchData())
+                        .then(resolve)
+                        .catch(reject)
+                )
+            );
+        }
 
         render() {
             return this.state.fetching && this.preloader
