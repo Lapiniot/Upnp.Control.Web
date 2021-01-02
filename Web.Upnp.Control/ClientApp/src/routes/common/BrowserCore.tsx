@@ -105,12 +105,15 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
     };
 
     onContainerMouseDown: MouseEventHandler<HTMLElement> = e => {
-        if (e.target === e.currentTarget && this.selection.any()) {
+
+        const target = e.target as HTMLElement;
+
+        if (target === e.currentTarget && this.selection.any()) {
             this.toggleSelectionAll(false);
         } else {
-            if ((e.target as HTMLInputElement)?.type === "checkbox") return;
+            if (target instanceof HTMLInputElement || target.closest("button")) return;
 
-            const row = (e.target as HTMLElement)?.closest<HTMLElement>("div[data-selectable=\"1\"]");
+            const row = target.closest<HTMLElement>("div[data-selectable=\"1\"]");
             if (!row) return;
 
             const id = row.dataset.id;
@@ -196,7 +199,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
         const children = React.Children.toArray(this.props.children);
         const header = children.find(c => (c as ReactElement)?.type === MediaBrowser.Header);
         const footer = children.find(c => (c as ReactElement)?.type === MediaBrowser.Footer);
-        return <div className={`d-flex flex-grow-1${className ? ` ${className}` : ""}`} onMouseDown={selectOnClick ? this.onContainerMouseDown : undefined}>
+        return <div className={`d-flex flex-grow-1 flex-column${className ? ` ${className}` : ""}`} onMouseDown={selectOnClick ? this.onContainerMouseDown : undefined}>
             <div className="auto-table table-compact table-hover-link table-striped w-100 mw-100" ref={this.tableRef}>
                 {header}
                 <div className={stickyColumnHeaders ? "sticky-header" : undefined}>
