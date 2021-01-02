@@ -13,3 +13,9 @@ export function PlayerSvgSymbols() {
         <i data-fa-symbol="retweet" className="fas fa-retweet" />
     </>;
 }
+
+export function PlaylistSvgSymbols() {
+    return <>
+        <i data-fa-symbol="ellipsis-v" className="fas fa-ellipsis-v" />
+    </>;
+}

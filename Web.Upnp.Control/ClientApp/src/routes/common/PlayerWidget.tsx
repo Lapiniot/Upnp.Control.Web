@@ -7,12 +7,12 @@ import Slider from "../../components/Slider";
 import $c from "./Config";
 import { AVPositionState, AVState, RCState } from "./Types";
 import { parseMilliseconds } from "../../components/Extensions";
-import { PlayerSvgSymbols } from "./PlayerSvgSymbols";
+import { PlayerSvgSymbols } from "./SvgSymbols";
 
 function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }>) {
     const { className, glyph, children, active, ...other } = props;
     return <button type="button" className={`btn no-outline p-1${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
-        {glyph && <svg className="svg-inline--fa fa-w-16"><use href={`#${glyph}`} /></svg>}{children}
+        {glyph && <svg><use href={`#${glyph}`} /></svg>}{children}
     </button>
 }
 
@@ -100,7 +100,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
         const currentTime = parseMilliseconds(relTime as string);
         const totalTime = parseMilliseconds(duration as string);
-        
+
         const button = state === "STOPPED" || state === "PAUSED_PLAYBACK"
             ? { title: "Play", glyph: "play-circle", onClick: this.play }
             : state === "PLAYING"

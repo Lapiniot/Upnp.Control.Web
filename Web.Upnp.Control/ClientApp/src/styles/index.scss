@@ -239,6 +239,14 @@ input[type="checkbox"].chk-no-label {
     }
 }
 
+button.btn > svg:first-child {
+    display: inline-block;
+    height: 1em;
+    width: 1em;
+    overflow: visible;
+    vertical-align: -0.125em;
+}
+
 .no-outline {
     &:focus,
     &:active {
