@@ -1,10 +1,10 @@
-import React from "react";
-import { OpenMediaAction } from "./Device.Actions";
+import React, { ComponentType } from "react";
+import { DeviceActionProps, OpenMediaAction } from "./Device.Actions";
 import { DeviceCard } from "./DeviceCard";
 import PlayerWidget from "./PlayerWidget";
 import { DataSourceProps, UpnpDevice } from "./Types";
 
-const rendererActions = [OpenMediaAction];
+const rendererActions: [string, ComponentType<DeviceActionProps>][] = [["open", OpenMediaAction]];
 
 export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
     return <DeviceCard {...props} actions={rendererActions}>

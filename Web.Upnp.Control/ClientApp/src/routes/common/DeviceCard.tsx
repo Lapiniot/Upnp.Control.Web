@@ -6,7 +6,7 @@ import { DeviceActionProps } from "./Device.Actions";
 
 export type DeviceProps = PropsWithChildren<DataSourceProps<UpnpDevice> & {
     category?: string;
-    actions?: ComponentType<DeviceActionProps>[]
+    actions?: [string, ComponentType<DeviceActionProps>][]
 }>
 
 export function DeviceCard({ "data-source": d, category, children, actions }: DeviceProps) {
@@ -22,7 +22,7 @@ export function DeviceCard({ "data-source": d, category, children, actions }: De
             {children}
         </div>
         <div className="card-footer no-decoration d-flex gap-2">
-            {actions?.map(ActionWidget => <ActionWidget device={d} category={category} />)}
+            {actions?.map(({ 0: key, 1: ActionWidget }) => <ActionWidget key={key} device={d} category={category} />)}
         </div>
     </div>;
 }

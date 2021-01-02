@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from "react";
+import React, { ComponentType, HTMLAttributes } from "react";
 import "bootstrap/js/dist/dropdown";
 import PlayerWidget from "./PlayerWidget";
 import { BrowseFetchResult, DataSourceProps, UpnpDevice } from "./Types";
@@ -38,7 +38,8 @@ const builder = ({ device: { udn } }: { device: UpnpDevice }) => withMemoKey($ap
 
 const PlaylistMenu = withDataFetch(Menu, builder, { template: MicroLoader });
 
-const umiActions = [BrowseContentAction, ManagePlaylistsAction, PlaylistMenu];
+const umiActions: [string, ComponentType<DeviceActionProps>][] =
+    [["browse", BrowseContentAction], ["playlists", ManagePlaylistsAction], ["quick-playlist", PlaylistMenu]];
 
 export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
     return <DeviceCard {...props} actions={umiActions}>
