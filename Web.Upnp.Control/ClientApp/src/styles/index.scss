@@ -324,3 +324,21 @@ a.no-decoration,
         }
     }
 }
+
+a.nav-link {
+    & > svg,
+    & > img {
+        &:first-child {
+            margin-right: map-get($spacers, 1);
+        }
+    }
+}
+
+nav.navbar-nav > a.nav-link {
+    & > svg,
+    & > img {
+        &:first-child() {
+            margin-right: map-get($spacers, 3);
+        }
+    }
+}
