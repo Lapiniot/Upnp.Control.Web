@@ -6,6 +6,7 @@ import { DIDLUtils as utils } from "./BrowserUtils";
 import { BrowseFetchResult, DIDLItem } from "./Types";
 import { NavigatorProps } from "./Navigator";
 import { DataFetchProps } from "../../components/DataFetch";
+import { DropdownMenu, DropdownMenuProps } from "../../components/DropdownMenu";
 
 type ModeFlags = "multiSelect" | "runsInDialog" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
 
@@ -191,6 +192,10 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
         return <div {...props} />;
     }
 
+    static ContextMenu({ children, ...other }: DropdownMenuProps) {
+        return <DropdownMenu {...other}>{children}</DropdownMenu>
+    }
+
     render() {
         const { className, navigate, selectionFilter = () => false, navigationFilter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
             useCheckboxes = false, selectOnClick = false, stickyColumnHeaders = true } = this.props;
@@ -199,6 +204,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
         const children = React.Children.toArray(this.props.children);
         const header = children.find(c => (c as ReactElement)?.type === MediaBrowser.Header);
         const footer = children.find(c => (c as ReactElement)?.type === MediaBrowser.Footer);
+        const contextMenu = children.find(c => (c as ReactElement)?.type === MediaBrowser.ContextMenu);
         return <div className={`d-flex flex-grow-1 flex-column${className ? ` ${className}` : ""}`} onMouseDown={selectOnClick ? this.onContainerMouseDown : undefined}>
             <div className="auto-table table-compact table-hover-link table-striped w-100 mw-100" ref={this.tableRef}>
                 {header}
@@ -240,6 +246,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
                         </div>;
                     })]}
                 </div>
+                {contextMenu}
                 {footer}
             </div>
         </div>;
