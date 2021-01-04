@@ -1,5 +1,4 @@
 import React, { ComponentType, HTMLAttributes } from "react";
-import "bootstrap/js/dist/dropdown";
 import PlayerWidget from "./PlayerWidget";
 import { BrowseFetchResult, DataSourceProps, UpnpDevice } from "./Types";
 import $api from "../../components/WebApi";
@@ -7,6 +6,7 @@ import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/Dat
 import AlbumArt from "./AlbumArt";
 import { BrowseContentAction, DeviceActionProps, ManagePlaylistsAction } from "./Device.Actions";
 import { DeviceCard } from "./DeviceCard";
+import { DropdownMenu } from "../../components/DropdownMenu";
 
 function MicroLoader() {
     return <span><i className="fas fa-spinner fa-spin" /></span>
@@ -17,20 +17,21 @@ function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     const device = e.currentTarget.parentElement?.parentElement?.dataset["device"];
     if (device && url) $api.control(device).playUri(url).fetch();
     e.preventDefault();
+    e.stopPropagation();
     return false;
 }
 
 function Menu({ dataContext: d, device }: HTMLAttributes<HTMLDivElement> & DataFetchProps<BrowseFetchResult> & DeviceActionProps) {
-    return <div className="btn-group dropend">
-        <a href="#" className="nav-link p-0 px-1" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
+    return <div className="btn-group">
+        <a href="#0" className="nav-link p-0 px-1" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
             <i className="fas fa-caret-right fa-lg" /><span className="visually-hidden">Toggle Dropdown</span>
         </a>
-        <ul className="dropdown-menu" data-device={device}>
+        <DropdownMenu data-device={device.udn} placement="right-start">
             {d?.source.items.map(i => <li key={i.id}>
                 <a className="dropdown-item" href="#" data-play-url={i.res?.url + "#play"} onClick={playUrlHandler}>
                     <AlbumArt itemClass={i.class} albumArts={i.albumArts} className="album-art-sm me-1 align-middle" />{i.title}</a>
             </li>)}
-        </ul>
+        </DropdownMenu>
     </div>
 }
 
