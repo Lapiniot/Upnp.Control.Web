@@ -48,5 +48,8 @@ export default function ({ data: d, context: { activeIndex, state, play, pause, 
             {d.creator && <>&nbsp;&bull;&nbsp;<small>{d.creator}</small></>}
             {d.album && <>&nbsp;&bull;&nbsp;<small>{d.album}</small></>}
         </span>
+        <button className="btn btn-round" data-menu-toggle-for={d.id} data-bs-toggle="dropdown">
+            <svg><use href="#ellipsis-v" /></svg>
+        </button>
     </div>;
 }

@@ -51,6 +51,18 @@ const browserProps: BrowserCoreProps = {
 
 const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"];
 
+type PlaylistAction = "create" | "add-items" | "add-url" | "add-files" | "rename" | "delete" | "copy";
+
+type ItemAction = "remove";
+
+type PlaybackAction = "play" | "pause" | "stop";
+
+type Action = PlaylistAction | ItemAction | PlaybackAction;
+
+type MenuItem = [Action | string, string | undefined, string | undefined, boolean | undefined];
+
+type ToolbarItem = [Action, string | undefined, string | undefined, () => void, boolean | undefined];
+
 export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
@@ -113,34 +125,32 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     resetModal = () => { this.setState({ modal: null }); }
 
+    //#region API calls wrapped with UI indication and automatic data reload
+
     reload = (action?: () => Promise<any>) => this.props.dataContext ? this.props.dataContext.reload(action) : Promise.resolve(null);
 
-    renamePlaylist = (id: string, title: string) => this.reload($api.playlist(this.props.device).rename(id, title).fetch);
+    rename = (id: string, title: string) => this.reload($api.playlist(this.props.device).rename(id, title).fetch);
 
-    createPlaylist = (title: string) => this.reload($api.playlist(this.props.device).create(title).fetch);
+    create = (title: string) => this.reload($api.playlist(this.props.device).create(title).fetch);
 
-    removePlaylist = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).delete(ids).fetch().then(this.selection.reset));
+    remove = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).delete(ids).fetch().then(this.selection.reset));
 
-    addItems = (device: string, ids: string[]) => this.reload($api.playlist(this.props.device).addItems(this.props.id, device, ids).fetch);
+    addItems = (id: string, device: string, ids: string[]) => this.reload($api.playlist(this.props.device).addItems(id, device, ids).fetch);
 
-    addUrl = (url: string, title?: string, useProxy?: boolean) => this.reload($api.playlist(this.props.device).addUrl(this.props.id, url, title, useProxy).fetch);
+    addUrl = (id: string, url: string, title?: string, useProxy?: boolean) => this.reload($api.playlist(this.props.device).addUrl(id, url, title, useProxy).fetch);
 
-    addPlaylists = (data: FormData) => this.reload($api.playlist(this.props.device).addFromFiles(this.props.id, data).fetch);
+    addFiles = (id: string, data: FormData) => this.reload($api.playlist(this.props.device).addFromFiles(id, data).fetch);
 
     removeItems = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset));
 
-    onAdd = () => {
-        this.setState({
-            modal: <TextValueEditDialog id="create-dialog" title="Create new playlist" label="Name" confirmText="Create"
-                defaultValue="New Playlist" onConfirm={this.createPlaylist} onDismiss={this.resetModal} immediate />
-        });
-    }
+    //#endregion
 
-    onRemove = () => {
+    //#region Action UI modal state triggers
 
-        const ids = [...this.selection.keys];
+    private removePlaylist = (ids: string[]) => {
+
         const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
-        const onRemove = () => this.removePlaylist(ids);
+        const onRemove = () => this.remove(ids);
 
         this.setState({
             modal: <RemoveItemsModalDialog id="remove-dialog" title="Do you want to delete playlist(s)?" onDismiss={this.resetModal} onRemove={onRemove}>
@@ -151,10 +161,9 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         });
     }
 
-    onRename = () => {
-        const id = this.selection.keys.next().value;
+    private renamePlaylist = (id: string) => {
         const title = this.props.dataContext?.source.items.find(e => e.id === id)?.title;
-        const onRename = (value: string) => this.renamePlaylist(id, value);
+        const onRename = (value: string) => this.rename(id, value);
 
         this.setState({
             modal: <TextValueEditDialog id="rename-confirm" title="Rename playlist" label="Name" confirmText="Rename"
@@ -162,14 +171,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         });
     }
 
-    onAddItems = () => this.setState({ modal: <AddItemsModalDialog id="add-items-dialog" onDismiss={this.resetModal} onAdd={this.addItems} browserProps={browserProps} /> });
-
-    onAddUrl = () => this.setState({ modal: <AddUrlModalDialog id="add-url-dialog" onDismiss={this.resetModal} onAdd={this.addUrl} /> });
-
-    onUploadPlaylist = () => this.setState({ modal: <UploadPlaylistModalDialog id="upload-playlist-dialog" onDismiss={this.resetModal} onAdd={this.addPlaylists} /> });
-
-    onRemoveItems = () => {
-        const ids = [...this.selection.keys];
+    private removePlaylistItems = (ids: string[]) => {
         const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
         const onRemove = () => this.removeItems(ids);
 
@@ -182,6 +184,45 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         });
     }
 
+    private addPlaylistItems = (id: string) => {
+        const addItems = (device: string, ids: string[]) => this.addItems(id, device, ids);
+        return this.setState({ modal: <AddItemsModalDialog id="add-items-dialog" onDismiss={this.resetModal} onAdd={addItems} browserProps={browserProps} /> });
+    }
+
+    private addPlaylistUrl = (id: string) => {
+        const addUrl = (url: string, title?: string, useProxy?: boolean) => this.addUrl(id, url, title, useProxy);
+        return this.setState({ modal: <AddUrlModalDialog id="add-url-dialog" onDismiss={this.resetModal} onAdd={addUrl} /> });
+    }
+
+    private addPlaylistFiles = (id: string) => {
+        const addFiles = (data: FormData) => this.addFiles(id, data);
+        return this.setState({ modal: <UploadPlaylistModalDialog id="upload-playlist-dialog" onDismiss={this.resetModal} onAdd={addFiles} /> });
+    }
+
+    //#endregion
+
+    //#region Toolbar button click handlers 
+
+    addClickHandler = () => this.setState({ modal: <TextValueEditDialog id="create-dialog" title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirm={this.create} onDismiss={this.resetModal} immediate /> });
+
+    removeClickHandler = () => this.removePlaylist([...this.selection.keys]);
+
+    renameClickHandler = () => this.renamePlaylist(this.selection.keys.next().value);
+
+    copyClickHandler = () => { alert("not implemented yet"); };
+
+    addItemsClickHandler = () => this.addPlaylistItems(this.props.id);
+
+    addUrlClickHandler = () => this.addPlaylistUrl(this.props.id);
+
+    uploadPlaylistClickHandler = () => this.addPlaylistFiles(this.props.id);
+
+    removeItemsClickHandler = () => this.removePlaylistItems([...this.selection.keys]);
+
+    //#endregion
+
+    //#region Drag&Drop handler
+
     onDropFiles = (files: Iterable<File>) => {
         const request = this.props.id === "PL:"
             ? $api.playlist(this.props.device).createFromFiles(files, null, false)
@@ -190,7 +231,9 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         return true;
     }
 
-    onCopy = () => { alert("not implemented yet"); };
+    //#endregion
+
+    //#region Playback related row event handlers
 
     play: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.play().fetch();
 
@@ -216,6 +259,61 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         return false;
     }
 
+    //#endregion
+
+    //#region Context menu select handler
+
+    menuSelectHandler = (item: HTMLElement, anchor?: HTMLElement) => {
+        const id = anchor?.dataset["menuToggleFor"];
+        if (!id) return;
+
+        switch (item.dataset["action"] as Action) {
+            case "add-items": this.addPlaylistItems(id); break;
+            case "add-url": this.addPlaylistUrl(id); break;
+            case "add-files": this.addPlaylistFiles(id); break;
+            case "delete": this.removePlaylist([id]); break;
+            case "rename": this.renamePlaylist(id); break;
+            case "copy": break;
+            case "remove": this.removePlaylistItems([id]); break;
+        }
+    }
+
+    //#endregion
+
+    private getToolbarConfig = (): ToolbarItem[] => {
+        const disabled = this.selection.none();
+        return this.props.id === "PL:" ?
+            [
+                ["create", "Create", "plus", this.addClickHandler, undefined],
+                ["delete", "Delete", "trash", this.removeClickHandler, disabled],
+                ["rename", "Rename", "edit", this.renameClickHandler, !this.selection.one()],
+                ["copy", "Copy", "copy", this.copyClickHandler, disabled]
+            ] :
+            [
+                ["add-items", "Add items", "plus", this.addItemsClickHandler, undefined],
+                ["add-url", "Add stream url", "broadcast-tower", this.addUrlClickHandler, undefined],
+                ["add-files", "Add from playlist file", "list", this.uploadPlaylistClickHandler, undefined],
+                ["remove", "Remove items", "trash", this.removeItemsClickHandler, disabled]
+            ];
+    }
+
+    private getMenuConfig = (): MenuItem[] => this.props.id === "PL:" ?
+        [
+            ["add-items", "Add items", "plus", undefined],
+            ["add-url", "Add stream url", "broadcast-tower", undefined],
+            ["add-files", "Add playlist file", "list", undefined],
+            ["divider", undefined, undefined, undefined],
+            ["rename", "Rename", "edit", undefined],
+            ["delete", "Delete", "trash", undefined],
+            ["copy", "Copy", "copy", true]
+        ] :
+        [
+            ["remove", "Remove item", "trash", undefined],
+            ["divider", undefined, undefined, undefined],
+            ["play", "Play", "play", true],
+        ];
+
+
     render() {
 
         const { dataContext: data, match, navigate, id, s, p, fetching, error } = this.props;
@@ -224,7 +322,6 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const size = s ? parseInt(s) : $config.pageSize;
         const page = p ? parseInt(p) : 1;
         const fetched = items.length;
-        const disabled = this.selection.none();
         const activeIndex = id === "PL:"
             ? playlist === "aux" ? items.findIndex(i => i.vendor?.["mi:playlistType"] === "aux") : items.findIndex(i => i.res?.url === playlist)
             : currentTrack && playlist === parents[0]?.res?.url ? parseInt(currentTrack) - size * (page - 1) - 1 : -1;
@@ -238,20 +335,6 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             activeIndex
         };
 
-        const toolbar = id === "PL:" ?
-            [
-                { key: "pl-create", title: "Create", glyph: "plus", onClick: this.onAdd },
-                { key: "pl-delete", title: "Delete", glyph: "trash", onClick: this.onRemove, disabled: disabled },
-                { key: "pl-rename", title: "Rename", glyph: "edit", onClick: this.onRename, disabled: !this.selection.one() },
-                { key: "pl-copy", title: "Copy", glyph: "copy", onClick: this.onCopy, disabled: disabled }
-            ] :
-            [
-                { key: "item-add", title: "Add items", glyph: "plus", onClick: this.onAddItems },
-                { key: "url-add", title: "Add stream url", glyph: "broadcast-tower", onClick: this.onAddUrl },
-                { key: "playlist-file-add", title: "Add from playlist file", glyph: "list", onClick: this.onUploadPlaylist },
-                { key: "item-remove", title: "Remove items", glyph: "trash", onClick: this.onRemoveItems, disabled: disabled }
-            ];
-
         return <DropTarget className="d-flex flex-column h-100" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
             <PlaylistSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
@@ -264,12 +347,21 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         <div className="d-flex flex-column">
                             <Toolbar className="px-2 py-1 bg-light border-bottom">
                                 <Toolbar.Group>
-                                    {toolbar.map(i => <Toolbar.Button {...i} className="btn-round" />)}
+                                    {this.getToolbarConfig().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round" />)}
                                 </Toolbar.Group>
                             </Toolbar>
                             <Breadcrumb items={parents} path={match.path} params={match.params} />
                         </div>
                     </Browser.Header>
+                    <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler}>
+                        {this.getMenuConfig().map(i => <li key={i[0]}>
+                            {i[1] || i[2]
+                                ? <button data-action={i[0]} disabled={i[3]} className="dropdown-item">
+                                    {i[2] && <svg><use href={`#${i[2]}`}></use></svg>}{i[1]}
+                                </button>
+                                : <hr className="dropdown-divider mx-2"></hr>}
+                        </li>)}
+                    </Browser.ContextMenu>
                 </Browser>
             </SignalRListener>
             <div className="sticky-bottom">
@@ -283,7 +375,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <Pagination baseUrl={match.url} className="border-top" total={total} current={page} pageSize={size} />}
             </div>
             {this.state.modal}
-        </DropTarget>;
+        </DropTarget >;
     }
 }
 
