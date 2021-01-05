@@ -6,7 +6,7 @@ const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
 const TOGGLE_ITEM_SELECTOR = "[data-bs-toggle='dropdown']";
 
-export type DropdownMenuProps = HTMLAttributes<HTMLUListElement> & {
+export type DropdownMenuProps = Omit<HTMLAttributes<HTMLUListElement>, "onSelect"> & {
     placement?: Placement;
     onSelect?: (item: HTMLElement, anchor?: HTMLElement) => void;
 };
