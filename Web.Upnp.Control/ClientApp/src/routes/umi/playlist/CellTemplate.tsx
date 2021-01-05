@@ -27,19 +27,19 @@ export default function ({ data: d, context: { activeIndex, state, play, pause, 
                         <div className="stack-layer d-flex">
                             <i className="m-auto fas fa-lg fa-volume-up animate-pulse" />
                         </div>
-                        <div className="stack-layer stack-layer-hover d-flex" onClick={pause}>
+                        <div className="stack-layer d-flex stack-layer-hover" onClick={pause}>
                             <i className="m-auto fas fa-lg fa-pause-circle" />
                         </div>
                     </React.Fragment>
                     : <React.Fragment key="active-paused">
                         <div className="stack-layer d-flex">
-                            <i className="m-auto fas fa-lg fa-volume-off text-muted" />
+                            <i className="m-auto fas fa-lg fa-volume-off" />
                         </div>
-                        <div className="stack-layer stack-layer-hover d-flex" onClick={play}>
+                        <div className="stack-layer d-flex stack-layer-hover" onClick={play}>
                             <i className="m-auto fas fa-lg fa-play-circle" />
                         </div>
                     </React.Fragment>
-                : <div className="stack-layer stack-layer-hover d-flex" onClick={playUrl} data-play-index={index}>
+                : <div className="stack-layer d-flex stack-layer-hover" onClick={playUrl} data-play-index={index}>
                     <i className="m-auto fas fa-lg fa-play-circle" />
                 </div>}
         </div>

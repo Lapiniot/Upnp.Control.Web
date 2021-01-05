@@ -15,7 +15,8 @@
     }
 }
 
-nav.navbar-nav > a.nav-link {
+nav.navbar-nav > a.nav-link,
+.dropdown-item {
     & > svg,
     & > img {
         &:first-child() {
