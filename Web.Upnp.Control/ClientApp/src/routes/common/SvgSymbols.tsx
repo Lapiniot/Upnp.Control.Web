@@ -17,5 +17,14 @@ export function PlayerSvgSymbols() {
 export function PlaylistSvgSymbols() {
     return <>
         <i data-fa-symbol="ellipsis-v" className="fas fa-ellipsis-v" />
+        <i data-fa-symbol="plus" className="fas fa-plus" />
+        <i data-fa-symbol="trash" className="fas fa-trash" />
+        <i data-fa-symbol="edit" className="fas fa-edit" />
+        <i data-fa-symbol="copy" className="fas fa-copy" />
+        <i data-fa-symbol="broadcast-tower" className="fas fa-broadcast-tower" />
+        <i data-fa-symbol="list" className="fas fa-list" />
+        <i data-fa-symbol="play" className="fas fa-play" />
+        <i data-fa-symbol="pause" className="fas fa-pause" />
+        <i data-fa-symbol="stop" className="fas fa-stop" />
     </>;
 }

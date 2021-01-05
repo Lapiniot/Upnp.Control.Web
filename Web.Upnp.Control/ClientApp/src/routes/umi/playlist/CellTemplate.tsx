@@ -6,9 +6,9 @@ export type CellContext = {
     activeIndex: number;
     parents: DIDLItem[];
     state: PlaybackState | undefined;
-    play: EventHandler<UIEvent<HTMLDivElement>>;
-    pause: EventHandler<UIEvent<HTMLDivElement>>;
-    playUrl: EventHandler<UIEvent<HTMLDivElement>>;
+    play?: EventHandler<UIEvent<HTMLDivElement>>;
+    pause?: EventHandler<UIEvent<HTMLDivElement>>;
+    playUrl?: EventHandler<UIEvent<HTMLDivElement>>;
 }
 
 type CellTemplateProps = {
@@ -43,7 +43,7 @@ export default function ({ data: d, context: { activeIndex, state, play, pause, 
                     <i className="m-auto fas fa-lg fa-play-circle" />
                 </div>}
         </div>
-        <span className="text-truncate">
+        <span className="text-truncate flex-basis-100">
             {d.title}
             {d.creator && <>&nbsp;&bull;&nbsp;<small>{d.creator}</small></>}
             {d.album && <>&nbsp;&bull;&nbsp;<small>{d.album}</small></>}

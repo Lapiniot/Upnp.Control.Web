@@ -20,6 +20,7 @@ import { AddItemsModalDialog } from "./dialogs/AddItemsModalDialog";
 import { RemoveItemsModalDialog } from "./dialogs/RemoveItemsModalDialog";
 import { UploadPlaylistModalDialog } from "./dialogs/UploadPlaylistModalDialog";
 import { DropTarget } from "../../../components/DropTarget";
+import { PlaylistSvgSymbols } from "../../common/SvgSymbols";
 
 type RouteParams = {
     device: string;
@@ -252,6 +253,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             ];
 
         return <DropTarget className="d-flex flex-column h-100" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
+            <PlaylistSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
             <SignalRListener handlers={this.handlers}>
                 <Browser dataContext={data} fetching={fetching} error={error} cellTemplate={MainCell} cellContext={cellContext}
@@ -262,7 +264,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         <div className="d-flex flex-column">
                             <Toolbar className="px-2 py-1 bg-light border-bottom">
                                 <Toolbar.Group>
-                                    {toolbar.map(i => <Toolbar.Button {...i} />)}
+                                    {toolbar.map(i => <Toolbar.Button {...i} className="btn-round" />)}
                                 </Toolbar.Group>
                             </Toolbar>
                             <Breadcrumb items={parents} path={match.path} params={match.params} />

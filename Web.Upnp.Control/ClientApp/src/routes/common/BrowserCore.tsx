@@ -205,7 +205,7 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
         const header = children.find(c => (c as ReactElement)?.type === MediaBrowser.Header);
         const footer = children.find(c => (c as ReactElement)?.type === MediaBrowser.Footer);
         const contextMenu = children.find(c => (c as ReactElement)?.type === MediaBrowser.ContextMenu);
-        return <div className={`d-flex flex-grow-1 flex-column${className ? ` ${className}` : ""}`} onMouseDown={selectOnClick ? this.onContainerMouseDown : undefined}>
+        return <div className={`d-flex flex-grow-1 flex-column${className ? ` ${className}` : ""}`} onClick={selectOnClick ? this.onContainerMouseDown : undefined}>
             <div className="auto-table table-compact table-hover-link table-striped w-100 mw-100" ref={this.tableRef}>
                 {header}
                 <div className={stickyColumnHeaders ? "sticky-header" : undefined}>
