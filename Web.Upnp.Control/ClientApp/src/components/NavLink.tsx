@@ -1,11 +1,11 @@
-import React, { AnchorHTMLAttributes, ElementType, HTMLAttributes, PropsWithChildren } from "react";
+import React, { AnchorHTMLAttributes, ElementType, HTMLAttributes } from "react";
 import { NavLink as RNavLink, NavLinkProps } from "react-router-dom";
 
-type LinkProps = PropsWithChildren<{
+type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
     active?: boolean;
     disabled?: boolean;
     glyph?: string
-}>
+}
 
 function BuildClass(className: string | undefined, active: boolean | undefined, disabled: boolean | undefined) {
     return `nav-link ${className ? ` ${className}` : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`;

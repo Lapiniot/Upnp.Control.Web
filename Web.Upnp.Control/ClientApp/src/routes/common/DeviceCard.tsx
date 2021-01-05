@@ -1,16 +1,16 @@
-import React, { ComponentType, PropsWithChildren } from "react";
+import React, { ComponentType, HTMLAttributes } from "react";
 import DeviceIcon from "./DeviceIcon";
 import { NavLink } from "../../components/NavLink";
 import { DataSourceProps, UpnpDevice } from "./Types";
 import { DeviceActionProps } from "./Device.Actions";
 
-export type DeviceProps = PropsWithChildren<DataSourceProps<UpnpDevice> & {
+export type DeviceProps = DataSourceProps<UpnpDevice> & {
     category?: string;
     actions?: [string, ComponentType<DeviceActionProps>][]
-}>
+}
 
-export function DeviceCard({ "data-source": d, category, children, actions }: DeviceProps) {
-    return <div className="card shadow">
+export function DeviceCard({ "data-source": d, category, children, actions, className, ...other }: DeviceProps & HTMLAttributes<HTMLDivElement>) {
+    return <div className={`card shadow${className ? ` ${className}` : ""}`} {...other}>
         <div className="card-header d-flex">
             <DeviceIcon service={d.type} icons={d.icons} />
             <div>

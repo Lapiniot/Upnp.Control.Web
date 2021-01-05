@@ -1,7 +1,7 @@
 import BootstrapModal from "bootstrap/js/dist/modal";
-import React, { ButtonHTMLAttributes, FormEventHandler, HTMLAttributes, PropsWithChildren, ReactElement, ReactNode } from "react";
+import React, { ButtonHTMLAttributes, FormEventHandler, HTMLAttributes, ReactElement, ReactNode } from "react";
 
-export type ModalProps<P = {}> = PropsWithChildren<P> & Omit<HTMLAttributes<HTMLDivElement>, "onSubmit"> & {
+export type ModalProps<P = {}> = Omit<HTMLAttributes<HTMLDivElement>, "onSubmit"> & P & {
     id: string;
     immediate?: boolean;
     onDismiss?: EventListener;
@@ -96,21 +96,20 @@ export default class Modal extends React.Component<ModalProps> {
         </div >;
     }
 
-    static Button = ({ dismiss, className, icon, children, ...other }:
-        PropsWithChildren<{ dismiss?: boolean; icon?: string } & ButtonHTMLAttributes<HTMLButtonElement>>) =>
+    static Button = ({ dismiss, className, icon, children, ...other }: { dismiss?: boolean; icon?: string } & ButtonHTMLAttributes<HTMLButtonElement>) =>
         <button type="button" className={`btn${className ? ` ${className}` : ""}`} data-bs-dismiss={dismiss ? "modal" : null} {...other}>
             {icon && <i className={`me-2 fas fa-${icon}`} />}{children}
         </button>;
 
-    static Header = ({ className, children, ...other }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) =>
+    static Header = ({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) =>
         <div className={`modal-header${className ? ` ${className}` : ""}`} {...other}>
             <h5 className="modal-title">{children}</h5>
             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
         </div>;
 
-    static Body = ({ className, ...other }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) =>
+    static Body = ({ className, ...other }: HTMLAttributes<HTMLDivElement>) =>
         <div className={`modal-body${className ? ` ${className}` : ""}`} {...other}></div>;
 
-    static Footer = ({ className, ...other }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) =>
+    static Footer = ({ className, ...other }: HTMLAttributes<HTMLDivElement>) =>
         <div className={`modal-footer${className ? ` ${className}` : ""}`} {...other}></div>;
 };

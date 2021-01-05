@@ -1,4 +1,4 @@
-﻿import React, { ChangeEventHandler, ElementType, HTMLAttributes, MouseEventHandler, PropsWithChildren, ReactElement } from "react";
+﻿import React, { ChangeEventHandler, ElementType, HTMLAttributes, MouseEventHandler, ReactElement } from "react";
 //import Tooltip from "bootstrap/js/dist/tooltip";
 import AlbumArt from "./AlbumArt";
 import SelectionService from "../../components/SelectionService";
@@ -184,11 +184,11 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
     open: MouseEventHandler<HTMLDivElement> = ({ currentTarget: { dataset: { selectable, id } } }) =>
         this.props.open ? selectable && this.props.open(id as string) : undefined;
 
-    static Header({ className, sticky = true, ...other }: PropsWithChildren<HTMLAttributes<HTMLDivElement>> & { sticky?: boolean }) {
+    static Header({ className, sticky = true, ...other }: HTMLAttributes<HTMLDivElement> & { sticky?: boolean }) {
         return <div className={`table-caption${sticky ? " sticky-top" : ""}${className ? ` ${className}` : ""}`} {...other} />;
     }
 
-    static Footer(props: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
+    static Footer(props: HTMLAttributes<HTMLDivElement>) {
         return <div {...props} />;
     }
 

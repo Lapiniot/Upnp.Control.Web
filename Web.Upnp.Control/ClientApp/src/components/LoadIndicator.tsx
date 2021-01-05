@@ -1,4 +1,4 @@
-﻿import React, { HTMLAttributes, PropsWithChildren } from "react";
+﻿import React, { HTMLAttributes } from "react";
 
 export function Indicator({ children, className, ...others }: HTMLAttributes<HTMLDivElement>) {
     return <div className={`d-inline-flex justify-content-center align-items-center${className ? ` ${className}` : ""}`} {...others}>
@@ -14,8 +14,8 @@ export function LoadIndicator({ children = "Loading...", ...others }: HTMLAttrib
     </Indicator>
 }
 
-export function LoadIndicatorOverlay({ children }: PropsWithChildren<{}>) {
-    return <div className="backdrop text-center">
+export function LoadIndicatorOverlay({ children, className, ...other }: HTMLAttributes<HTMLDivElement>) {
+    return <div className={`backdrop text-center${className ? ` ${className}` : ""}`} {...other}>
         <LoadIndicator className="vp-center flex-column">{children}</LoadIndicator>
     </div>
 }
