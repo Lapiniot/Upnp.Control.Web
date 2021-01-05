@@ -1,4 +1,4 @@
-import { createPopper, Instance as PopperInstance } from "@popperjs/core/lib/popper-lite";
+import { createPopper, Instance as PopperInstance } from "@popperjs/core/lib/popper";
 import { Placement } from "@popperjs/core/lib/enums";
 import React, { HTMLAttributes } from "react";
 
