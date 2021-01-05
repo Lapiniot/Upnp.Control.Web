@@ -11,7 +11,7 @@ import { PlayerSvgSymbols } from "./SvgSymbols";
 
 function Button(props: PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }>) {
     const { className, glyph, children, active, ...other } = props;
-    return <button type="button" className={`btn no-outline p-1${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
+    return <button className={`btn btn-round p-1${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
         {glyph && <svg><use href={`#${glyph}`} /></svg>}{children}
     </button>
 }
@@ -115,7 +115,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
             <div className="d-flex flex-column">
                 <SeekBar className="mb-2" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChangeRequested={this.seek} />
                 <div className="d-flex align-items-center flex-nowrap">
-                    <Button title="Prev" glyph="step-backward" className="py-0" onClick={this.prev} disabled={!actions.includes("Previous")} />
+                    <Button title="Prev" glyph="step-backward" onClick={this.prev} disabled={!actions.includes("Previous")} />
                     <Button className="fa-2x" {...button} />
                     <Button title={nextTitle} glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
                     <div className="d-flex flex-wrap justify-content-center flex-grow-1 overflow-hidden mx-2">
@@ -124,7 +124,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                             {(creator || album) && <small className="m-0 text-center lines-2">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
                         </> : <h6 className="text-center text-truncate flex-basis-100 m-0">[No media]</h6>}
                     </div>
-                    <div className="d-flex position-relative flex-nowrap">
+                    <div className="d-flex position-relative flex-nowrap align-items-center">
                         <div className="hover-container">
                             <Button title={volumeStr} glyph={volumeIcon} onClick={this.toggleMute} disabled={disabled} />
                             {!disabled && <Slider progress={volume / 100} className="hover-activated position-absolute w-100 px-1" onChangeRequested={this.changeVolume} />}
