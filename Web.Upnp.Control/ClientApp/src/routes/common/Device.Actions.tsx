@@ -1,9 +1,8 @@
 import React, { ReactNode } from "react";
 import { NavLink, RouteLink } from "../../components/NavLink";
 import WebApi from "../../components/WebApi";
-import { BrowserCoreProps } from "./BrowserCore";
+import { BrowserCoreProps, RowState } from "./BrowserCore";
 import BrowserDialog, { BrowseResult } from "./BrowserDialog";
-import { DIDLUtils } from "./BrowserUtils";
 import { Services, UpnpDevice } from "./Types";
 
 export type DeviceActionProps = {
@@ -12,8 +11,8 @@ export type DeviceActionProps = {
 };
 
 const browserProps: BrowserCoreProps = {
-    selectionFilter: DIDLUtils.isMediaItem,
-    selectOnClick: true
+    selectOnClick: true,
+    rowState: () => RowState.None
 }
 
 export function BrowseContentAction({ device, category }: DeviceActionProps) {

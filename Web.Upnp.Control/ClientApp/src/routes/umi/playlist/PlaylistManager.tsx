@@ -8,7 +8,7 @@ import { withBrowser, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils
 import Toolbar from "../../../components/Toolbar";
 import Pagination from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
-import Browser, { BrowserCoreProps } from "../../common/BrowserCore";
+import Browser, { BrowserCoreProps, RowState } from "../../common/BrowserCore";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
 import { SignalRListener } from "../../../components/SignalR";
@@ -42,11 +42,11 @@ type PlaylistManagerState = {
 } & Partial<AVState>;
 
 const browserProps: BrowserCoreProps = {
-    selectionFilter: DIDLUtils.isMusicTrack,
     multiSelect: true,
     selectOnClick: true,
     useCheckboxes: true,
-    runsInDialog: true
+    runsInDialog: true,
+    rowState: item => DIDLUtils.isMusicTrack(item) ? RowState.Selectable : RowState.None
 }
 
 const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"];
@@ -62,6 +62,16 @@ type Action = PlaylistAction | ItemAction | PlaybackAction;
 type MenuItem = [Action | string, string | undefined, string | undefined, boolean | undefined];
 
 type ToolbarItem = [Action, string | undefined, string | undefined, () => void, boolean | undefined];
+
+function isReadonly(item: DIDLItem) {
+    if (item.readonly) return true;
+    const type = item?.vendor?.["mi:playlistType"];
+    return type === "aux" || type === "usb";
+}
+
+function isNavigable(item: DIDLItem) {
+    return item?.vendor?.["mi:playlistType"] !== "aux";
+}
 
 export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
 
@@ -114,14 +124,6 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             this.setState({ ...state, playlist: transport === "AUX" ? "aux" : playlist });
         }
     }
-
-    static isEditable = (item: DIDLItem) => {
-        if (item.readonly) return false;
-        const type = item?.vendor?.["mi:playlistType"];
-        return type !== "aux" && type !== "usb";
-    }
-
-    static isNavigable = (item: DIDLItem) => item?.vendor?.["mi:playlistType"] !== "aux";
 
     resetModal = () => { this.setState({ modal: null }); }
 
@@ -330,18 +332,20 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             play: this.play,
             pause: this.pause,
             playUrl: this.playUrl,
-            state,
-            parents,
-            activeIndex
+            state
         };
+
+        const getRowState = (item: DIDLItem, index: number) => RowState.None
+            | (index === activeIndex ? RowState.Active : RowState.None)
+            | (isReadonly(item) ? RowState.Readonly : RowState.Selectable)
+            | (isNavigable(item) ? RowState.Navigable : RowState.None);
 
         return <DropTarget className="d-flex flex-column h-100" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
             <PlaylistSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
             <SignalRListener handlers={this.handlers}>
-                <Browser dataContext={data} fetching={fetching} error={error} cellTemplate={MainCell} cellContext={cellContext}
-                    selectionFilter={PlaylistManagerCore.isEditable} selection={this.selection}
-                    navigationFilter={PlaylistManagerCore.isNavigable} navigate={navigate} open={this.open}
+                <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
+                    selection={this.selection} navigate={navigate} open={this.open} rowState={getRowState}
                     useCheckboxes selectOnClick multiSelect>
                     <Browser.Header className="p-0">
                         <div className="d-flex flex-column">

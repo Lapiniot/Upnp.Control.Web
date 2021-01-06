@@ -1,5 +1,4 @@
-﻿import React, { ChangeEventHandler, ElementType, HTMLAttributes, MouseEventHandler, ReactElement } from "react";
-//import Tooltip from "bootstrap/js/dist/tooltip";
+﻿import React, { ChangeEventHandler, ComponentType, HTMLAttributes, MouseEventHandler, ReactElement } from "react";
 import AlbumArt from "./AlbumArt";
 import SelectionService from "../../components/SelectionService";
 import { DIDLUtils as utils } from "./BrowserUtils";
@@ -10,20 +9,29 @@ import { DropdownMenu, DropdownMenuProps } from "../../components/DropdownMenu";
 
 type ModeFlags = "multiSelect" | "runsInDialog" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
 
-export type BrowserCoreProps = {
-    selectionFilter?: (item: DIDLItem) => boolean;
-    navigationFilter?: (item: DIDLItem) => boolean;
+export enum RowState {
+    None = 0b0,
+    Disabled = 0b1,
+    Active = 0b10,
+    Selectable = 0b100,
+    Selected = 0b1000,
+    Readonly = 0x10000,
+    Navigable = 0x100000,
+}
+
+export type BrowserCoreProps<TContext = {}> = {
+    rowState?: (item: DIDLItem, index: number) => RowState;
     open?: (id: string) => boolean;
     selection?: SelectionService;
-    cellTemplate?: ElementType;
-    cellContext?: any;
+    mainCellTemplate?: ComponentType<{ data: DIDLItem, index: number, rowState: RowState, context?: TContext }>;
+    mainCellContext?: TContext;
 } & { [K in ModeFlags]?: boolean }
 
 type MediaBrowserState = {}
 
-type PropsType = BrowserCoreProps & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
+type PropsType<TContext> = BrowserCoreProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
 
-export default class MediaBrowser extends React.Component<PropsType, MediaBrowserState> {
+export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, MediaBrowserState> {
     state = { modal: null };
     private selection;
     private tableRef = React.createRef<HTMLDivElement>();
@@ -31,22 +39,16 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
     private selectables: string[] | null = null;
     private focusedItem: string | null = null;
 
-    constructor(props: PropsType) {
+    constructor(props: PropsType<P>) {
         super(props);
         this.selection = props.selection || new SelectionService();
         this.resizeObserver = new ResizeObserver(this.onCaptionResized);
     }
 
-    componentDidUpdate(prevProps: PropsType) {
+    componentDidUpdate(prevProps: PropsType<P>) {
         if (prevProps.selection !== this.props.selection) {
             this.selection = this.props.selection || new SelectionService();
         }
-
-        /*const options = {
-            delay: 1000, html: true, placement: "bottom",
-            template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner text-start" style="hyphens: auto"></div></div>'
-        };
-        this.tableRef.current.querySelectorAll("[data-bs-toggle='tooltip']").forEach(e => new Tooltip(e, options));*/
     }
 
     componentDidMount() {
@@ -197,10 +199,11 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
     }
 
     render() {
-        const { className, navigate, selectionFilter = () => false, navigationFilter = () => true, cellTemplate: MainCellTemplate = CellTemplate, cellContext,
+        const { className, navigate, rowState = () => RowState.Navigable, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
             useCheckboxes = false, selectOnClick = false, stickyColumnHeaders = true } = this.props;
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
-        this.selectables = items.filter(selectionFilter).map(i => i.id);
+        const states = items.map(rowState);
+        this.selectables = items.filter((_, i) => states[i] & RowState.Selectable).map(i => i.id);
         const children = React.Children.toArray(this.props.children);
         const header = children.find(c => (c as ReactElement)?.type === MediaBrowser.Header);
         const footer = children.find(c => (c as ReactElement)?.type === MediaBrowser.Footer);
@@ -232,14 +235,14 @@ export default class MediaBrowser extends React.Component<PropsType, MediaBrowse
                         </div>}
                     {[items.map((e, index) => {
                         const selected = this.selection.selected(e.id);
-                        const active = typeof cellContext?.active === "function" && cellContext.active(e, index);
-                        const selectable = selectionFilter(e);
-                        return <div key={e.id} data-id={e.id} data-selectable={selectOnClick && selectable ? 1 : undefined} data-selected={selected} data-active={active}
-                            onDoubleClick={e.container && navigationFilter(e) ? navigate : this.open}>
+                        const selectable = !!(states[index] & RowState.Selectable);
+                        return <div key={e.id} data-id={e.id} data-selectable={selectOnClick && selectable ? 1 : undefined}
+                            data-selected={selected} data-active={!!(states[index] & RowState.Active)}
+                            onDoubleClick={e.container && (states[index] & RowState.Navigable) ? navigate : this.open}>
                             {useCheckboxes && <div>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!selectable} />
                             </div>}
-                            <div className="mw-1"><MainCellTemplate data={e} index={index} context={cellContext} /></div>
+                            <div className="mw-1"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={states[index]} /></div>
                             <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
                             <div className="small">{utils.formatTime(e.res?.duration)}</div>
                             <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>

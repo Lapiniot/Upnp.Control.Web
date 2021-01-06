@@ -1,11 +1,10 @@
 import React, { EventHandler, UIEvent } from "react";
 import AlbumArt from "../../common/AlbumArt";
+import { RowState } from "../../common/BrowserCore";
 import { DIDLItem, PlaybackState } from "../../common/Types";
 
 export type CellContext = {
-    activeIndex: number;
-    parents: DIDLItem[];
-    state: PlaybackState | undefined;
+    state?: PlaybackState;
     play?: EventHandler<UIEvent<HTMLDivElement>>;
     pause?: EventHandler<UIEvent<HTMLDivElement>>;
     playUrl?: EventHandler<UIEvent<HTMLDivElement>>;
@@ -13,15 +12,16 @@ export type CellContext = {
 
 type CellTemplateProps = {
     data: DIDLItem;
-    context: CellContext;
     index: number;
+    rowState: RowState;
+    context?: CellContext;
 }
 
-export default function ({ data: d, context: { activeIndex, state, play, pause, playUrl }, index }: CellTemplateProps) {
+export default function ({ data: d, context: { state, play, pause, playUrl } = {}, index, rowState }: CellTemplateProps) {
     return <div className="d-flex align-items-center">
         <div className="d-inline-block stack me-1">
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} />
-            {index === activeIndex
+            {rowState & RowState.Active
                 ? state === "PLAYING"
                     ? <React.Fragment key="active-playing">
                         <div className="stack-layer d-flex">
@@ -48,7 +48,7 @@ export default function ({ data: d, context: { activeIndex, state, play, pause, 
             {d.creator && <>&nbsp;&bull;&nbsp;<small>{d.creator}</small></>}
             {d.album && <>&nbsp;&bull;&nbsp;<small>{d.album}</small></>}
         </span>
-        <button className="btn btn-round" data-menu-toggle-for={d.id} data-bs-toggle="dropdown">
+        <button className="btn btn-round" data-menu-toggle-for={d.id} data-bs-toggle="dropdown" disabled={!!(rowState & RowState.Readonly)}>
             <svg><use href="#ellipsis-v" /></svg>
         </button>
     </div>;
