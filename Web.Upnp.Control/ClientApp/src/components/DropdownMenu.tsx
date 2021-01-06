@@ -162,8 +162,14 @@ export class DropdownMenu extends React.Component<DropdownMenuProps> {
                 }
                 break;
             case "ArrowUp":
-                // Simply try to select previouse item other then first one
-                this.focusPrev();
+                if (!this.focusEntered()) {
+                    // Focus not yet entered menu, so focus first item
+                    this.query(ENABLED_ITEM_SELECTOR)?.focus();
+                }
+                else {
+                    // Try to select prev item other than forst one
+                    this.focusPrev();
+                }
                 break;
             case "ArrowDown":
                 if (!this.focusEntered()) {
