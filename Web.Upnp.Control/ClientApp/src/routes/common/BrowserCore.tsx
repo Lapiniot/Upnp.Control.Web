@@ -36,7 +36,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     private selection;
     private tableRef = React.createRef<HTMLDivElement>();
     private resizeObserver;
-    private selectables: string[] | null = null;
+    private selectables: string[] = [];
     private focusedItem: string | null = null;
 
     constructor(props: PropsType<P>) {
@@ -128,6 +128,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
             const multiSelect = this.props.multiSelect;
 
             if (multiSelect && (e.ctrlKey || e.metaKey)) {
+                this.focusedItem = id;
                 // selective multi-selection
                 this.toggleSelection(id);
             }
@@ -136,6 +137,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                 // range multi-selection
                 const selectionStart = Math.max(this.selectables.indexOf(this.focusedItem ?? ""), 0);
                 const selectionEnd = this.selectables.indexOf(id);
+                this.focusedItem = id;
                 this.selectRange(selectionStart, selectionEnd);
             }
             else // single item selection
@@ -150,32 +152,70 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         }
     }
 
-    onKeyDown: EventListener = e => {
-        const ke = e as KeyboardEvent;
-        if (this.props.multiSelect && !e.cancelBubble && (ke.metaKey || ke.ctrlKey) && ke.code === "KeyA") {
-            e.preventDefault();
-            e.stopPropagation();
-            this.toggleSelectionAll(true);
+    onKeyDown = (event: KeyboardEvent) => {
+
+        if (!this.selectables?.length) return;
+
+        switch (event.code) {
+            case "KeyA":
+                if (this.props.multiSelect && !event.cancelBubble && (event.metaKey || event.ctrlKey)) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.toggleSelectionAll(true);
+                }
+                break;
+            case "ArrowUp":
+                if (this.focusedItem) {
+                    const current = this.selectables.indexOf(this.focusedItem);
+                    if (current > 0) {
+                        this.selectItem(current - 1, event, false);
+                    }
+                }
+                else {
+                    this.selectItem(0, event, false);
+                }
+                break;
+            case "ArrowDown":
+                if (this.focusedItem) {
+                    const current = this.selectables.indexOf(this.focusedItem);
+                    if (current < this.selectables.length - 1) {
+                        this.selectItem(current + 1, event, false);
+                    }
+                }
+                else {
+                    this.selectItem(0, event, false);
+                }
+                break;
         }
     }
 
-    notifySelectionChanged = (cancelled: boolean) => {
+    private selectItem = (index: number, event: KeyboardEvent, toggle: boolean) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.focusedItem = this.selectables[index];
+        if (!toggle) this.selection.reset();
+        this.notifySelectionChanged(!this.selection.select(this.focusedItem, !toggle || !this.selection.selected(this.focusedItem)));
+        const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-id='${this.focusedItem}']`);
+        row?.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+
+    private notifySelectionChanged = (cancelled: boolean) => {
         if (!cancelled) this.setState({ selection: true });
     }
 
-    selectRange(selectionStart: number, selectionEnd: number) {
+    private selectRange(selectionStart: number, selectionEnd: number) {
         const range = this.selectables?.slice(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd) + 1);
         this.selection.reset();
         const cancelled = !this.selection.selectMany(range ?? [], true);
         this.notifySelectionChanged(cancelled);
     }
 
-    toggleSelection(id: string) {
+    private toggleSelection(id: string) {
         const cancelled = !this.selection.select(id, !this.selection.selected(id));
         this.notifySelectionChanged(cancelled);
     }
 
-    toggleSelectionAll(state: boolean) {
+    private toggleSelectionAll(state: boolean) {
         this.focusedItem = null;
         const cancelled = state ?
             !this.selection.selectMany(this.selectables ?? [], state) :
