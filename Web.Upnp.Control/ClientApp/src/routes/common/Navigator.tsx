@@ -1,8 +1,8 @@
-import React, { ComponentType, EventHandler, UIEvent } from "react";
+import React, { ComponentType } from "react";
 import { RouteComponentProps } from "react-router";
 import { generatePath } from "../../components/Extensions";
 
-export type NavigatorProps = { navigate: EventHandler<UIEvent<HTMLElement>> }
+export type NavigatorProps = { navigate: (data: { [key: string]: string | undefined }) => void }
 
 type InjectedProps<Params> = NavigatorProps & Params;
 
@@ -12,11 +12,7 @@ export default function withNavigator<P extends InjectedProps<Params>, Params ex
 
     return class extends React.Component<ConstructedProps> {
 
-        navigateHandler: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset } }) => {
-            this.navigateToItem(dataset);
-        }
-
-        navigateToItem = (data: DOMStringMap) => {
+        navigateToItem = (data: { [key: string]: string | undefined }) => {
             const { match: { path, params }, history } = this.props;
             history.push(generatePath(path, { ...params, ...data }));
         }
@@ -24,7 +20,7 @@ export default function withNavigator<P extends InjectedProps<Params>, Params ex
         render() {
             const { location: { search }, match: { params: { ...params } } } = this.props;
             new window.URLSearchParams(search).forEach((value, key) => params[key] = value);
-            return <Component {...(this.props as unknown as P)} {...params} navigate={this.navigateHandler} />;
+            return <Component {...(this.props as unknown as P)} {...params} navigate={this.navigateToItem} />;
         }
     };
 }

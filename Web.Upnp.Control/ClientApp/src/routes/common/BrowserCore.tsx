@@ -1,4 +1,4 @@
-﻿import React, { ChangeEventHandler, ComponentType, HTMLAttributes, MouseEventHandler, ReactElement } from "react";
+﻿import React, { ChangeEventHandler, ComponentType, HTMLAttributes, MouseEventHandler, ReactElement, MouseEvent } from "react";
 import AlbumArt from "./AlbumArt";
 import SelectionService from "../../components/SelectionService";
 import { DIDLUtils as utils } from "./BrowserUtils";
@@ -157,6 +157,31 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         if (!this.selectables?.length) return;
 
         switch (event.code) {
+            case "Enter":
+            case "ArrowRight":
+                if (!this.focusedItem) {
+                    if (event.code === "ArrowRight")
+                        this.selectItem(0, event, false);
+                    return;
+                }
+
+                const items = this.props.dataContext?.source.items;
+                if (!items?.length) return;
+                const index = items.findIndex(i => i.id === this.focusedItem);
+                const item = items[index];
+                if (!item) return;
+                const state = this.props.rowState?.(item, index) ?? RowState.Navigable;
+
+                if (item.container && state & RowState.Navigable)
+                    this.props.navigate?.({ id: this.focusedItem });
+                else if (state ^ RowState.Readonly && event.code === "Enter")
+                    this.props.open?.(this.focusedItem);
+                break;
+            case "Backspace":
+            case "ArrowLeft":
+                const parents = this.props.dataContext?.source.parents;
+                this.props.navigate?.({ id: parents?.[1].id ?? "-1" });
+                break;
             case "KeyA":
                 if (this.props.multiSelect && !event.cancelBubble && (event.metaKey || event.ctrlKey)) {
                     event.preventDefault();
@@ -223,6 +248,10 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         this.notifySelectionChanged(cancelled);
     }
 
+    navigateHandler = ({ currentTarget: { dataset } }: MouseEvent<HTMLDivElement>) => {
+        this.props.navigate(dataset);
+    }
+
     open: MouseEventHandler<HTMLDivElement> = ({ currentTarget: { dataset: { selectable, id } } }) =>
         this.props.open ? selectable && this.props.open(id as string) : undefined;
 
@@ -239,7 +268,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     }
 
     render() {
-        const { className, navigate, rowState = () => RowState.Navigable, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
+        const { className, rowState = () => RowState.Navigable, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
             useCheckboxes = false, selectOnClick = false, stickyColumnHeaders = true } = this.props;
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
         const states = items.map(rowState);
@@ -266,7 +295,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                 </div>
                 <div>
                     {parents && parents.length > 0 &&
-                        <div data-id={parents[1]?.id ?? -1} onDoubleClick={navigate}>
+                        <div data-id={parents[1]?.id ?? -1} onDoubleClick={this.navigateHandler}>
                             {useCheckboxes && <div>&nbsp;</div>}
                             <div>...</div>
                             <div>&nbsp;</div>
@@ -278,7 +307,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                         const selectable = !!(states[index] & RowState.Selectable);
                         return <div key={e.id} data-id={e.id} data-selectable={selectOnClick && selectable ? 1 : undefined}
                             data-selected={selected} data-active={!!(states[index] & RowState.Active)}
-                            onDoubleClick={e.container && (states[index] & RowState.Navigable) ? navigate : this.open}>
+                            onDoubleClick={e.container && (states[index] & RowState.Navigable) ? this.navigateHandler : this.open}>
                             {useCheckboxes && <div>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected} disabled={!selectable} />
                             </div>}
