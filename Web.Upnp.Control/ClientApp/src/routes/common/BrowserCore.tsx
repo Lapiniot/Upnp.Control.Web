@@ -55,7 +55,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     }
 
     componentDidMount() {
-        document.addEventListener("keydown", this.onKeyDown, this.props.runsInDialog === true);
+        document.body.addEventListener("keydown", this.onKeyDown, this.props.runsInDialog === true);
 
         const scope = this.tableRef.current;
         const caption = scope?.querySelector<HTMLDivElement>("div.table-caption:first-of-type");
@@ -71,7 +71,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     }
 
     componentWillUnmount() {
-        document.removeEventListener("keydown", this.onKeyDown);
+        document.body.removeEventListener("keydown", this.onKeyDown);
         this.resizeObserver.disconnect();
         this.selection.clear();
     }
@@ -167,6 +167,8 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                         this.selectItem(0, event, false);
                     return;
                 }
+
+                if (event.code === "Enter" && event.target !== event.currentTarget) return;
 
                 const items = this.props.dataContext?.source.items;
                 if (!items?.length) return;
