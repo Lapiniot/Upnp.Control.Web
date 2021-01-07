@@ -21,6 +21,7 @@ import { RemoveItemsModalDialog } from "./dialogs/RemoveItemsModalDialog";
 import { UploadPlaylistModalDialog } from "./dialogs/UploadPlaylistModalDialog";
 import { DropTarget } from "../../../components/DropTarget";
 import { PlaylistSvgSymbols } from "../../common/SvgSymbols";
+import { Portal } from "../../../components/Portal";
 
 type RouteParams = {
     device: string;
@@ -378,7 +379,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 {total !== 0 && fetched !== total &&
                     <Pagination baseUrl={match.url} className="border-top" total={total} current={page} pageSize={size} />}
             </div>
-            {this.state.modal}
+            <Portal selector="#modal-root">{this.state.modal}</Portal>
         </DropTarget >;
     }
 }

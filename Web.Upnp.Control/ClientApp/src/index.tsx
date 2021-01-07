@@ -15,7 +15,7 @@ import RenderersPage from "./routes/renderers/Router";
 import SettingsPage from "./routes/settings/Settings";
 
 const baseUrl: string = document.getElementsByTagName("base")[0].getAttribute("href") as string;
-const container: HTMLElement = document.getElementById("root-view") as HTMLElement;
+const container: HTMLElement = document.getElementById("main-root") as HTMLElement;
 
 ReactDOM.render(
     <BrowserRouter basename={baseUrl}>
