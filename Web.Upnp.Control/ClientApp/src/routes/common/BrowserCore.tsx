@@ -49,6 +49,9 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         if (prevProps.selection !== this.props.selection) {
             this.selection = this.props.selection || new SelectionService();
         }
+        if (prevProps.dataContext?.source !== this.props.dataContext?.source) {
+            this.focusedItem = null;
+        }
     }
 
     componentDidMount() {
