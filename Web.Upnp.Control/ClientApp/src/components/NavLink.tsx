@@ -8,7 +8,7 @@ type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
 }
 
 function BuildClass(className: string | undefined, active: boolean | undefined, disabled: boolean | undefined) {
-    return `nav-link ${className ? ` ${className}` : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`;
+    return `nav-link${className ? ` ${className}` : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`;
 }
 
 const LinkTemplate = ({ component: Tag, className, active, disabled, glyph, children, ...other }:
