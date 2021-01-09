@@ -6,6 +6,7 @@ import { BrowseFetchResult, DIDLItem } from "./Types";
 import { NavigatorProps } from "./Navigator";
 import { DataFetchProps } from "../../components/DataFetch";
 import { DropdownMenu, DropdownMenuProps } from "../../components/DropdownMenu";
+import { EventHint, SelectionTracker } from "../../components/SelectionTracker";
 
 type ModeFlags = "multiSelect" | "runsInDialog" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
 
@@ -36,13 +37,13 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     private selection;
     private tableRef = React.createRef<HTMLDivElement>();
     private resizeObserver;
-    private selectables: string[] = [];
-    private focusedItem: string | null = null;
+    private tracker: SelectionTracker;
 
     constructor(props: PropsType<P>) {
         super(props);
         this.selection = props.selection || new SelectionService();
         this.resizeObserver = new ResizeObserver(this.onCaptionResized);
+        this.tracker = new SelectionTracker([], this.selection, this.selectionChanged);
     }
 
     componentDidUpdate(prevProps: PropsType<P>) {
@@ -50,7 +51,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
             this.selection = this.props.selection || new SelectionService();
         }
         if (prevProps.dataContext?.source !== this.props.dataContext?.source) {
-            this.focusedItem = null;
+            this.tracker.blur();
         }
     }
 
@@ -100,22 +101,22 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         const checkbox = e.target;
         const id = checkbox.parentElement?.parentElement?.dataset?.id;
         if (!id) return;
-        const cancelled = !this.selection.select(id, checkbox.checked);
-        this.notifySelectionChanged(cancelled);
+        this.tracker.set(id, checkbox.checked);
     };
 
     onCheckboxAllChanged: ChangeEventHandler<HTMLInputElement> = e => {
         const checkbox = e.target;
-        const cancelled = !this.selection.selectMany(this.selectables ?? [], checkbox.checked);
-        this.notifySelectionChanged(cancelled);
+        this.tracker.setAll(checkbox.checked);
     };
 
-    onContainerMouseDown: MouseEventHandler<HTMLElement> = e => {
+    private mouseEventHandler = (e: MouseEvent<HTMLDivElement>) => {
 
         const target = e.target as HTMLElement;
 
         if (target === e.currentTarget && this.selection.any()) {
-            this.toggleSelectionAll(false);
+            this.tracker.setAll(false, EventHint.Mouse);
+            e.preventDefault();
+            e.stopPropagation();
         } else {
             if (target instanceof HTMLInputElement || target.closest("button")) return;
 
@@ -124,63 +125,52 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
 
             const id = row.dataset.id;
 
-            if (!id || !this.selectables) return;
+            if (!id || !this.tracker.enabled()) return;
 
-            e.stopPropagation();
+            if (e.type === "mousedown" && (e.shiftKey || e.metaKey || e.ctrlKey)) {
+                if (!this.props.multiSelect) return;
 
-            const multiSelect = this.props.multiSelect;
-
-            if (multiSelect && (e.ctrlKey || e.metaKey)) {
-                this.focusedItem = id;
-                // selective multi-selection
-                this.toggleSelection(id);
+                if (e.ctrlKey || e.metaKey) {
+                    this.tracker.toggle(id, EventHint.Mouse);
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                else if (e.shiftKey) {
+                    this.tracker.expandTo(id);
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
             }
-            else if (multiSelect && e.shiftKey) {
-                e.preventDefault();
-                // range multi-selection
-                const selectionStart = Math.max(this.selectables.indexOf(this.focusedItem ?? ""), 0);
-                const selectionEnd = this.selectables.indexOf(id);
-                this.focusedItem = id;
-                this.selectRange(selectionStart, selectionEnd);
-            }
-            else // single item selection
-            {
-                if (this.selection.one() && this.selection.selected(id)) return;
-
-                this.focusedItem = id;
-                this.selection.reset();
-                const cancelled = !this.selection.select(id, true);
-                this.notifySelectionChanged(cancelled);
+            else if (e.type === "mouseup" && !e.shiftKey && !e.metaKey && !e.ctrlKey) {
+                this.tracker.setOnly(id, true, EventHint.Mouse);
             }
         }
     }
 
-    onKeyDown = (event: KeyboardEvent) => {
+    private onKeyDown = (event: KeyboardEvent) => {
 
-        if (!this.selectables?.length) return;
+        if (!this.tracker.enabled()) return;
 
         switch (event.code) {
             case "Enter":
             case "ArrowRight":
-                if (!this.focusedItem) {
-                    if (event.code === "ArrowRight")
-                        this.selectItem(0, event, false);
+                if (!this.tracker.focused) {
+                    if (event.code === "ArrowRight") this.tracker.selectFirst();
                     return;
                 }
 
                 if (event.code === "Enter" && event.target !== event.currentTarget) return;
 
                 const items = this.props.dataContext?.source.items;
-                if (!items?.length) return;
-                const index = items.findIndex(i => i.id === this.focusedItem);
+                if (!items?.length || !this.tracker.focused) return;
+                const index = items.findIndex(i => i.id === this.tracker.focused);
                 const item = items[index];
                 if (!item) return;
                 const state = this.props.rowState?.(item, index) ?? RowState.Navigable;
-
                 if (item.container && state & RowState.Navigable)
-                    this.props.navigate?.({ id: this.focusedItem });
+                    this.props.navigate?.({ id: this.tracker.focused });
                 else if (state ^ RowState.Readonly && event.code === "Enter")
-                    this.props.open?.(this.focusedItem);
+                    this.props.open?.(this.tracker.focused);
                 break;
             case "Backspace":
             case "ArrowLeft":
@@ -189,76 +179,43 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                 break;
             case "KeyA":
                 if (this.props.multiSelect && !event.cancelBubble && (event.metaKey || event.ctrlKey)) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    this.toggleSelectionAll(true);
+                    this.tracker.setAll(true, EventHint.Keyboard);
                 }
                 break;
             case "ArrowUp":
-                if (this.focusedItem) {
-                    const current = this.selectables.indexOf(this.focusedItem);
-                    if (current > 0) {
-                        this.selectItem(current - 1, event, false);
-                    }
-                }
-                else {
-                    this.selectItem(0, event, false);
-                }
+                if (event.shiftKey)
+                    this.tracker.expandUp(EventHint.Keyboard);
+                else
+                    this.tracker.selectPrev(EventHint.Keyboard);
                 break;
             case "ArrowDown":
-                if (this.focusedItem) {
-                    const current = this.selectables.indexOf(this.focusedItem);
-                    if (current < this.selectables.length - 1) {
-                        this.selectItem(current + 1, event, false);
-                    }
-                }
-                else {
-                    this.selectItem(0, event, false);
-                }
+                if (event.shiftKey)
+                    this.tracker.expandDown(EventHint.Keyboard)
+                else
+                    this.tracker.selectNext(EventHint.Keyboard);
                 break;
+            default: return;
+        }
+
+        event.stopPropagation();
+        event.preventDefault();
+
+        return false;
+    }
+
+    private selectionChanged = (ids: string[], hint: EventHint, handled: boolean) => {
+        if (!handled) this.setState({ selection: true });
+
+        if (hint & EventHint.Keyboard && ids.length === 1) {
+            const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-id='${ids[0]}']`);
+            row?.scrollIntoView({ block: "center", behavior: "smooth" });
         }
     }
 
-    private selectItem = (index: number, event: KeyboardEvent, toggle: boolean) => {
-        event.preventDefault();
-        event.stopPropagation();
-        this.focusedItem = this.selectables[index];
-        if (!toggle) this.selection.reset();
-        this.notifySelectionChanged(!this.selection.select(this.focusedItem, !toggle || !this.selection.selected(this.focusedItem)));
-        const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-id='${this.focusedItem}']`);
-        row?.scrollIntoView({ block: "center", behavior: "smooth" });
-    }
-
-    private notifySelectionChanged = (cancelled: boolean) => {
-        if (!cancelled) this.setState({ selection: true });
-    }
-
-    private selectRange(selectionStart: number, selectionEnd: number) {
-        const range = this.selectables?.slice(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd) + 1);
-        this.selection.reset();
-        const cancelled = !this.selection.selectMany(range ?? [], true);
-        this.notifySelectionChanged(cancelled);
-    }
-
-    private toggleSelection(id: string) {
-        const cancelled = !this.selection.select(id, !this.selection.selected(id));
-        this.notifySelectionChanged(cancelled);
-    }
-
-    private toggleSelectionAll(state: boolean) {
-        this.focusedItem = null;
-        const cancelled = state ?
-            !this.selection.selectMany(this.selectables ?? [], state) :
-            !this.selection.clear();
-        this.notifySelectionChanged(cancelled);
-    }
-
-    navigateHandler = ({ currentTarget: { dataset } }: MouseEvent<HTMLDivElement>) => {
-        this.props.navigate(dataset);
-    }
+    navigateHandler = ({ currentTarget: { dataset } }: MouseEvent<HTMLDivElement>) => this.props.navigate(dataset);
 
     open: MouseEventHandler<HTMLDivElement> = ({ currentTarget: { dataset: { selectable, id } } }) =>
-        this.props.open ? selectable && this.props.open(id as string) : undefined;
+        selectable && this.props.open?.(id as string);
 
     static Header({ className, sticky = true, ...other }: HTMLAttributes<HTMLDivElement> & { sticky?: boolean }) {
         return <div className={`table-caption${sticky ? " sticky-top" : ""}${className ? ` ${className}` : ""}`} {...other} />;
@@ -275,14 +232,19 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     render() {
         const { className, rowState = () => RowState.Navigable, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
             useCheckboxes = false, selectOnClick = false, stickyColumnHeaders = true } = this.props;
+
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
         const states = items.map(rowState);
-        this.selectables = items.filter((_, i) => states[i] & RowState.Selectable).map(i => i.id);
+        this.tracker.setup(items.filter((_, i) => states[i] & RowState.Selectable).map(i => i.id), this.props.selection ?? this.selection);
+
         const children = React.Children.toArray(this.props.children);
         const header = children.find(c => (c as ReactElement)?.type === MediaBrowser.Header);
         const footer = children.find(c => (c as ReactElement)?.type === MediaBrowser.Footer);
         const contextMenu = children.find(c => (c as ReactElement)?.type === MediaBrowser.ContextMenu);
-        return <div className={`d-flex flex-grow-1 flex-column${className ? ` ${className}` : ""}`} onClick={selectOnClick ? this.onContainerMouseDown : undefined}>
+
+        return <div className={`d-flex flex-grow-1 flex-column${className ? ` ${className}` : ""}`}
+            onMouseDown={selectOnClick ? this.mouseEventHandler : undefined}
+            onMouseUp={selectOnClick ? this.mouseEventHandler : undefined}>
             <div className="auto-table table-compact table-hover-link table-striped w-100 mw-100" ref={this.tableRef}>
                 {header}
                 <div className={stickyColumnHeaders ? "sticky-header" : undefined}>
@@ -290,7 +252,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                         {useCheckboxes &&
                             <div>
                                 <input type="checkbox" id="select_all" onChange={this.onCheckboxAllChanged}
-                                    checked={this.selection.all(this.selectables)} disabled={this.selectables.length === 0} />
+                                    checked={this.tracker.allSelected()} disabled={!this.tracker.enabled()} />
                             </div>}
                         <div className="w-100">Name</div>
                         <div>Size</div>
