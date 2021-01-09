@@ -35,10 +35,6 @@ export class SelectionTracker {
         return this.store.all(this.items);
     }
 
-    get focused() {
-        return this.current;
-    }
-
     blur() {
         this.current = null;
     }

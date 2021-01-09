@@ -341,12 +341,14 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             | (isReadonly(item) ? RowState.Readonly : RowState.Selectable)
             | (isNavigable(item) ? RowState.Navigable : RowState.None);
 
+        const states = items.map(getRowState);
+
         return <DropTarget className="d-flex flex-column h-100" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
             <PlaylistSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
             <SignalRListener handlers={this.handlers}>
                 <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
-                    selection={this.selection} navigate={navigate} open={this.open} rowState={getRowState}
+                    selection={this.selection} navigate={navigate} open={this.open} rowState={states}
                     useCheckboxes selectOnClick multiSelect>
                     <Browser.Header className="p-0">
                         <div className="d-flex flex-column">
