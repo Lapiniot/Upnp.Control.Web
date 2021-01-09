@@ -13,8 +13,10 @@ export default class Modal extends React.Component<ModalProps> {
 
     displayName = Modal.name;
     modal: BootstrapModal | null = null;
+    activeElement: Element | null = null;
 
     componentDidMount() {
+        this.activeElement = document.activeElement;
         const { onDismiss, onShown } = this.props;
         const target = document.querySelector(`#${this.props.id}`);
 
@@ -43,6 +45,9 @@ export default class Modal extends React.Component<ModalProps> {
 
         if (this.modal)
             this.modal.dispose();
+
+        if (this.activeElement instanceof HTMLElement)
+            (this.activeElement as HTMLElement).focus();
     }
 
     onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
