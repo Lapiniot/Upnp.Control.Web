@@ -11,6 +11,8 @@
     --bs-auto-table-hover-color: #{$table-hover-color};
     --bs-auto-table-hover-bg: #{$table-hover-bg};
     --bs-auto-table-selected-bg: #{$link-color};
+    --bs-auto-table-focused-marker-color: #{shade-color($link-color, 35%)};
+    --bs-auto-table-focused-marker-size: 0rem;
     --bs-auto-table-selected-color: white;
 
     display: table;
@@ -66,14 +68,21 @@
             background-color: var(--bs-auto-table-bg);
             background-image: linear-gradient(var(--bs-auto-table-accent-bg), var(--bs-auto-table-accent-bg));
 
-            &[data-active="true"] {
+            &[data-active="true"],
+            &.active {
                 --bs-auto-table-accent-bg: var(--bs-auto-table-active-bg) !important;
                 color: var(--bs-auto-table-active-color);
             }
 
-            &[data-selected="true"] {
+            &[data-selected="true"],
+            &.selected,
+            &[data-focused="true"],
+            &.focused,
+            &:focus,
+            &:focus-within {
                 --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
                 color: var(--bs-auto-table-selected-color) !important;
+                outline: none;
             }
 
             & > div {
@@ -93,7 +102,7 @@
             }
 
             & > div:first-child {
-                padding-left: 2 * $table-cell-padding-x;
+                padding-left: calc(#{2 * $table-cell-padding-x} + var(--bs-auto-table-focused-marker-size));
             }
 
             & > div:last-child {
@@ -114,7 +123,7 @@
                 }
 
                 & > div:first-child {
-                    padding-left: 2 * $table-cell-padding-x-sm;
+                    padding-left: calc(#{2 * $table-cell-padding-x-sm} + var(--bs-auto-table-focused-marker-size));
                 }
 
                 & > div:last-child {
@@ -130,6 +139,22 @@
             & > :nth-of-type(#{$auto-table-striped-order}) {
                 --bs-auto-table-accent-bg: var(--bs-auto-table-striped-bg);
                 color: var(--bs-auto-table-striped-color);
+            }
+        }
+    }
+
+    &.table-focus-marker {
+        --bs-auto-table-focused-marker-size: #{map-get($spacers, 1)};
+
+        & > div.table-caption:first-of-type ~ :nth-of-type(3),
+        & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
+            & > div {
+                &[data-focused="true"] > div:first-child,
+                &:focus > div:first-child,
+                &:focus-within > div:first-child {
+                    box-shadow: inset var(--bs-auto-table-focused-marker-size) 0 0
+                        var(--bs-auto-table-focused-marker-color);
+                }
             }
         }
     }
