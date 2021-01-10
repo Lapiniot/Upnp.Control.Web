@@ -2,7 +2,6 @@ import BootstrapModal from "bootstrap/js/dist/modal";
 import React, { ButtonHTMLAttributes, FormEventHandler, HTMLAttributes, ReactElement, ReactNode } from "react";
 
 export type ModalProps<P = {}> = Omit<HTMLAttributes<HTMLDivElement>, "onSubmit"> & P & {
-    id: string;
     immediate?: boolean;
     onDismiss?: EventListener;
     onShown?: EventListener;
@@ -14,40 +13,42 @@ export default class Modal extends React.Component<ModalProps> {
     displayName = Modal.name;
     modal: BootstrapModal | null = null;
     activeElement: Element | null = null;
+    modalRef = React.createRef<HTMLDivElement>();
 
     componentDidMount() {
         this.activeElement = document.activeElement;
-        const { onDismiss, onShown } = this.props;
-        const target = document.querySelector(`#${this.props.id}`);
 
-        if (!target) return;
+        const target = this.modalRef.current;
 
-        if (typeof onDismiss === "function")
-            target.addEventListener("hidden.bs.modal", onDismiss);
-        if (typeof onShown === "function")
-            target.addEventListener("shown.bs.modal", onShown);
-
-        this.modal = new BootstrapModal(target);
-        if (this.props.immediate && this.modal)
-            this.modal.show();
+        if (target) {
+            target.addEventListener("hidden.bs.modal", this.onHidden);
+            target.addEventListener("shown.bs.modal", this.onShown);
+            this.modal = new BootstrapModal(target);
+            if (this.props.immediate)
+                this.modal.show();
+        }
     }
 
     componentWillUnmount() {
-        const { onDismiss, onShown } = this.props;
-        const target = document.querySelector(`#${this.props.id}`);
+        const target = this.modalRef.current;
 
-        if (!target) return;
+        if (target) {
+            target.removeEventListener("hidden.bs.modal", this.onHidden);
+            target.removeEventListener("shown.bs.modal", this.onShown);
+        }
 
-        if (typeof onDismiss === "function")
-            target.removeEventListener("hidden.bs.modal", onDismiss);
-        if (typeof onShown === "function")
-            target.removeEventListener("shown.bs.modal", onShown);
-
-        if (this.modal)
-            this.modal.dispose();
+        this.modal?.dispose();
 
         if (this.activeElement instanceof HTMLElement)
             (this.activeElement as HTMLElement).focus();
+    }
+
+    onHidden: EventListener = (event) => {
+        return this.props.onDismiss?.(event);
+    }
+
+    onShown: EventListener = (event) => {
+        return this.props.onShown?.(event);
     }
 
     onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
@@ -85,7 +86,7 @@ export default class Modal extends React.Component<ModalProps> {
                 else children.push(child);
             });
 
-        return <div className="modal fade" id={id} tabIndex={-1} role="dialog" aria-hidden="true" {...other}>
+        return <div className="modal fade" tabIndex={-1} ref={this.modalRef} role="dialog" aria-hidden="true" {...other}>
             <div className={`modal-dialog modal-dialog-centered${className ? ` ${className}` : ""}`} role="document">
                 <div className="modal-content">
                     <form action="#" noValidate onSubmit={this.onSubmit} className="d-flex flex-column flex-basis-100 overflow-hidden">
@@ -102,14 +103,14 @@ export default class Modal extends React.Component<ModalProps> {
     }
 
     static Button = ({ dismiss, className, icon, children, ...other }: { dismiss?: boolean; icon?: string } & ButtonHTMLAttributes<HTMLButtonElement>) =>
-        <button type="button" className={`btn${className ? ` ${className}` : ""}`} data-bs-dismiss={dismiss ? "modal" : null} {...other}>
+        <button className={`btn${className ? ` ${className}` : ""}`} data-bs-dismiss={dismiss ? "modal" : null} {...other}>
             {icon && <i className={`me-2 fas fa-${icon}`} />}{children}
         </button>;
 
     static Header = ({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) =>
         <div className={`modal-header${className ? ` ${className}` : ""}`} {...other}>
             <h5 className="modal-title">{children}</h5>
-            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+            <button className="btn-close" tabIndex={200} data-bs-dismiss="modal" aria-label="Close" />
         </div>;
 
     static Body = ({ className, ...other }: HTMLAttributes<HTMLDivElement>) =>

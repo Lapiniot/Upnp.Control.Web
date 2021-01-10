@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, PropsWithRef, RefObject } from "react";
+import React, { ChangeEventHandler, PropsWithRef } from "react";
 import Modal, { ModalProps } from "./Modal";
 
 type TextValueEditDialogProps = PropsWithRef<ModalProps<{
