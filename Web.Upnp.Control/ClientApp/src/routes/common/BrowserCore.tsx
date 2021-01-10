@@ -8,7 +8,8 @@ import { DataFetchProps } from "../../components/DataFetch";
 import { DropdownMenu, DropdownMenuProps } from "../../components/DropdownMenu";
 import { EventHint, SelectionTracker } from "../../components/SelectionTracker";
 
-const DATA_SELECTABLE_SELECTOR = "div[data-id]";
+const DATA_ROW_SELECTOR = "div[data-id]";
+const DATA_ROW_FOCUSED_SELECTOR = "div[data-id]:focus";
 
 type ModeFlags = "multiSelect" | "runsInDialog" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
 
@@ -122,26 +123,27 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         } else {
             if (target instanceof HTMLInputElement || target.closest("button")) return;
 
-            const row = target.closest<HTMLElement>(DATA_SELECTABLE_SELECTOR);
+            const row = target.closest<HTMLElement>(DATA_ROW_SELECTOR);
             if (!row) return;
 
             const id = row.dataset.id;
 
             if (!id || !this.tracker.enabled()) return;
 
-            if (e.type === "mousedown" && (e.shiftKey || e.metaKey || e.ctrlKey)) {
-                if (!this.props.multiSelect) return;
-
-                if (e.ctrlKey || e.metaKey) {
+            if (e.shiftKey || e.ctrlKey || e.metaKey) {
+                if (!this.props.multiSelect || e.type !== "mousedown") return;
+                if ((e.ctrlKey || e.metaKey))
                     this.tracker.toggle(id, EventHint.Mouse);
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-                else if (e.shiftKey) {
-                    this.tracker.expandTo(id);
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
+                else
+                    this.tracker.expandTo(id, EventHint.Mouse);
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            else {
+                if (e.type === "mouseup")
+                    this.tracker.setOnly(id, EventHint.Mouse);
+                e.preventDefault();
+                e.stopPropagation();
             }
         }
     }
@@ -153,13 +155,11 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         switch (event.code) {
             case "Enter":
             case "ArrowRight":
-                const focusedRow = this.tableRef.current?.querySelector<HTMLDivElement>("div[data-row-id]:focus");
+                const focusedRow = this.tableRef.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUSED_SELECTOR);
 
                 if (!focusedRow) {
-                    if (event.code === "ArrowRight") {
-                        const row = this.tableRef.current?.querySelector<HTMLDivElement>("div[data-row-id]");
-                        row?.focus();
-                    }
+                    if (event.code === "ArrowRight")
+                        this.tracker.selectFirst();
                     return;
                 }
 
@@ -167,7 +167,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
 
                 const items = this.props.dataContext?.source.items;
                 if (!items) return;
-                const index = items.findIndex(i => i.id === focusedRow.dataset.rowId);
+                const index = items.findIndex(i => i.id === focusedRow.dataset.id);
                 const item = items[index];
                 if (!item) return;
                 const state = this.getRowState(item, index);
@@ -192,45 +192,52 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
             case "ArrowUp":
                 if (event.shiftKey)
                     this.tracker.expandUp(EventHint.Keyboard);
-                else {
-                    const focusedRow = this.tableRef.current?.querySelector<HTMLDivElement>("div[data-row-id]:focus-within");
-                    const prevRow = focusedRow?.previousSibling;
-                    if (prevRow instanceof HTMLDivElement && prevRow.dataset.rowId) {
-                        prevRow.focus();
-                    }
-                }
+                else
+                    this.tracker.movePrev(EventHint.Keyboard);
                 break;
             case "ArrowDown":
                 if (event.shiftKey)
                     this.tracker.expandDown(EventHint.Keyboard)
-                else {
-                    const focusedRow = this.tableRef.current?.querySelector<HTMLDivElement>("div[data-row-id]:focus-within");
-                    const nextRow = focusedRow?.nextSibling;
-                    if (nextRow instanceof HTMLDivElement && nextRow.dataset.rowId) {
-                        nextRow.focus();
-                    }
-                }
+                else
+                    this.tracker.moveNext(EventHint.Keyboard);
+                break;
+            case "Tab":
                 break;
             default: return;
         }
     }
 
     private focusHandler = (event: FocusEvent<HTMLDivElement>) => {
-        const row = event.target.closest<HTMLDivElement>("div[data-row-id]");
-        const id = row?.dataset.rowId;
-        if (id) this.tracker.setOnly(id, true, EventHint.Any);
-    }
-
-    private selectionChanged = (ids: string[], hint: EventHint, handled: boolean) => {
-        if (!handled) this.setState({ selection: true });
-
-        if (hint & EventHint.Keyboard && ids.length === 1) {
-            const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-row-id='${ids[0]}']`);
-            row?.scrollIntoView({ block: "center", behavior: "smooth" });
+        const row = event.target.closest<HTMLDivElement>(DATA_ROW_SELECTOR);
+        if (row) {
+            const id = row.dataset.id;
+            if (id && id !== this.tracker.focus) {
+                // last tracked focused item id doesn't match currently focused row -
+                // thus we came here as a result of focus switch via keyboard Tab or Shift+Tab
+                // which we don't emulate programmatically. So lets synchronize selection with news focus
+                this.tracker.setOnly(id, EventHint.Keyboard);
+            }
         }
     }
 
-    navigateHandler = ({ currentTarget: { dataset } }: MouseEvent<HTMLDivElement>) => this.props.navigate(dataset);
+    private selectionChanged = (ids: string[], focused: string | null, hint: EventHint, handled: boolean) => {
+        if (!handled) this.setState({ selection: true });
+
+        if (focused) {
+            const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-id='${focused}']`);
+            if (!row) return;
+
+            if (!row.matches(":focus-within")) {
+                if (hint & EventHint.Keyboard)
+                    row.scrollIntoView({ block: "center", behavior: "smooth" });
+                row.focus({ preventScroll: true });
+            }
+        }
+    }
+
+    navigateHandler = ({ currentTarget: { dataset } }: MouseEvent<HTMLDivElement>) => {
+        this.props.navigate(dataset);
+    }
 
     open: MouseEventHandler<HTMLDivElement> = ({ currentTarget: { dataset: { id } } }) =>
         this.props.open?.(id as string);
@@ -268,8 +275,8 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         const contextMenu = children.find(c => (c as ReactElement)?.type === MediaBrowser.ContextMenu);
 
         return <div className={`d-flex flex-grow-1 flex-column${className ? ` ${className}` : ""}`}
-            onMouseDown={selectOnClick ? this.mouseEventHandler : undefined}
-            onMouseUp={selectOnClick ? this.mouseEventHandler : undefined}>
+            onMouseDownCapture={selectOnClick ? this.mouseEventHandler : undefined}
+            onMouseUpCapture={selectOnClick ? this.mouseEventHandler : undefined}>
             <div className="auto-table table-compact table-hover-link table-striped table-focus-marker w-100 mw-100"
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {header}
@@ -298,7 +305,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                     {[items.map((e, index) => {
                         const selected = this.selection.selected(e.id);
                         const selectable = !!(states[index] & RowState.Selectable);
-                        return <div key={e.id} tabIndex={0} data-row-id={e.id} data-selected={selected} data-active={!!(states[index] & RowState.Active)}
+                        return <div key={e.id} tabIndex={0} data-id={e.id} data-selected={selected} data-active={!!(states[index] & RowState.Active)}
                             onDoubleClick={e.container && (states[index] & RowState.Navigable) ? this.navigateHandler : this.open}>
                             {useCheckboxes && <div>
                                 <input type="checkbox" tabIndex={-1} onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
