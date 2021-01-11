@@ -84,7 +84,7 @@ export class SelectionTracker {
     set(id: string, state: boolean, hint?: EventHint) {
         if (!this.enabled()) return;
         if (this.store.one() && this.store.selected(id) === state) return;
-        this.onchanged([id], this.current = state ? id : this.current, hint ?? EventHint.None, this.store.select(id, state));
+        this.onchanged([id], this.current = state ? id : null, hint ?? EventHint.None, this.store.select(id, state));
     }
 
     toggle(id: string, hint?: EventHint) {

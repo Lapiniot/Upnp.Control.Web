@@ -10,6 +10,7 @@ import { EventHint, SelectionTracker } from "../../components/SelectionTracker";
 
 const DATA_ROW_SELECTOR = "div[data-id]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-id]:focus";
+const DATA_ROW_FOCUS_WITHIN_SELECTOR = "div[data-id]:focus,div[data-id] :focus";
 
 type ModeFlags = "multiSelect" | "runsInDialog" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
 
@@ -232,6 +233,10 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                     row.scrollIntoView({ block: "center", behavior: "smooth" });
                 row.focus({ preventScroll: true });
             }
+        }
+        else {
+            const element = this.tableRef.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUS_WITHIN_SELECTOR);
+            element?.blur();
         }
     }
 
