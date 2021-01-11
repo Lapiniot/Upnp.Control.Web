@@ -50,7 +50,6 @@ const browserProps: BrowserCoreProps = {
     multiSelect: true,
     selectOnClick: true,
     useCheckboxes: true,
-    runsInDialog: true,
     rowState: item => DIDLUtils.isMusicTrack(item) ? RowState.Selectable : RowState.None
 }
 
@@ -124,7 +123,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     static getDerivedStateFromProps({ dataContext, id, p, s }: PlaylistManagerProps, { data, playlist, currentTrack }: PlaylistManagerState) {
         if (!dataContext || dataContext === data) return null;
-        
+
         const { source: { items, parents } } = dataContext;
         const size = s ? parseInt(s) : $config.pageSize;
         const page = p ? parseInt(p) : 1;
