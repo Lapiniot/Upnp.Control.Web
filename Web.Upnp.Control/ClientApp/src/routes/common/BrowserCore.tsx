@@ -280,8 +280,8 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         const contextMenu = children.find(c => (c as ReactElement)?.type === MediaBrowser.ContextMenu);
 
         return <div className={`d-flex flex-grow-1 flex-column${className ? ` ${className}` : ""}`}
-            onMouseDownCapture={selectOnClick ? this.mouseEventHandler : undefined}
-            onMouseUpCapture={selectOnClick ? this.mouseEventHandler : undefined}>
+            onMouseDown={selectOnClick ? this.mouseEventHandler : undefined}
+            onMouseUp={selectOnClick ? this.mouseEventHandler : undefined}>
             <div className="auto-table table-compact table-hover-link table-striped table-focus-marker w-100 mw-100"
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {header}
