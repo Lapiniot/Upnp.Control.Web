@@ -13,7 +13,7 @@ import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
 import { SignalRListener } from "../../../components/SignalR";
 import MainCell, { CellContext } from "./CellTemplate";
-import { DataFetchProps } from "../../../components/DataFetch";
+import { DataContext, DataFetchProps } from "../../../components/DataFetch";
 import { NavigatorProps } from "../../common/Navigator";
 import { AddUrlModalDialog } from "./dialogs/AddUrlModalDialog";
 import { AddItemsModalDialog } from "./dialogs/AddItemsModalDialog";
@@ -38,8 +38,12 @@ type PlaylistManagerProps = RouteParams &
 
 type PlaylistManagerState = {
     modal: ReactNode;
-    selection: SelectionService;
+    data: DataContext<BrowseFetchResult> | null;
+    selection: string[];
     playlist?: string;
+    rowStates: RowState[];
+    page: number;
+    pageSize: number;
 } & Partial<AVState>;
 
 const browserProps: BrowserCoreProps = {
@@ -77,17 +81,16 @@ function isNavigable(item: DIDLItem) {
 export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
-    selection;
+    selection = new SelectionService();
     handlers;
     ctrl;
     pls;
 
     constructor(props: PlaylistManagerProps) {
         super(props);
-        this.selection = new SelectionService();
-        this.selection.addEventListener("changed", () => this.setState({ selection: this.selection }));
+        this.selection.addEventListener("changed", () => this.setState({ selection: this.getEffectiveSelection() }));
         this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
-        this.state = { modal: null, selection: this.selection };
+        this.state = { modal: null, data: null, selection: [], rowStates: [], page: 1, pageSize: $config.pageSize };
         this.ctrl = $api.control(this.props.device);
         this.pls = $api.playlist(this.props.device);
     }
@@ -117,6 +120,23 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         } catch (e) {
             console.error(e);
         }
+    }
+
+    static getDerivedStateFromProps({ dataContext, id, p, s }: PlaylistManagerProps, { data, playlist, currentTrack }: PlaylistManagerState) {
+        if (!dataContext || dataContext === data) return null;
+        
+        const { source: { items, parents } } = dataContext;
+        const size = s ? parseInt(s) : $config.pageSize;
+        const page = p ? parseInt(p) : 1;
+        const activeIndex = id === "PL:"
+            ? playlist === "aux" ? items.findIndex(i => i.vendor?.["mi:playlistType"] === "aux") : items.findIndex(i => i.res?.url === playlist)
+            : currentTrack && playlist === parents?.[0]?.res?.url ? parseInt(currentTrack) - size * (page - 1) - 1 : -1;
+        const getRowState = (item: DIDLItem, index: number) => RowState.None
+            | (index === activeIndex ? RowState.Active : RowState.None)
+            | (isReadonly(item) ? RowState.Readonly : RowState.Selectable)
+            | (isNavigable(item) ? RowState.Navigable : RowState.None);
+
+        return { data: dataContext, rowStates: items.map(getRowState), page, pageSize: size };
     }
 
     onAVTransportEvent = (device: string, { state, vendorProps: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = {} }:
@@ -208,9 +228,9 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     addClickHandler = () => this.setState({ modal: <TextValueEditDialog id="create-dialog" title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirm={this.create} onDismiss={this.resetModal} immediate /> });
 
-    removeClickHandler = () => this.removePlaylist([...this.selection.keys]);
+    removeClickHandler = () => this.removePlaylist(this.state.selection);
 
-    renameClickHandler = () => this.renamePlaylist(this.selection.keys.next().value);
+    renameClickHandler = () => this.renamePlaylist(this.state.selection[0]);
 
     copyClickHandler = () => { alert("not implemented yet"); };
 
@@ -220,7 +240,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     uploadPlaylistClickHandler = () => this.addPlaylistFiles(this.props.id);
 
-    removeItemsClickHandler = () => this.removePlaylistItems([...this.selection.keys]);
+    removeItemsClickHandler = () => this.removePlaylistItems(this.state.selection);
 
     //#endregion
 
@@ -284,12 +304,12 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     //#endregion
 
     private getToolbarConfig = (): ToolbarItem[] => {
-        const disabled = this.selection.none();
+        const disabled = this.state.selection.length === 0;
         return this.props.id === "PL:" ?
             [
                 ["create", "Create", "plus", this.addClickHandler, undefined],
                 ["delete", "Delete", "trash", this.removeClickHandler, disabled],
-                ["rename", "Rename", "edit", this.renameClickHandler, !this.selection.one()],
+                ["rename", "Rename", "edit", this.renameClickHandler, this.state.selection.length !== 1],
                 ["copy", "Copy", "copy", this.copyClickHandler, disabled]
             ] :
             [
@@ -317,38 +337,32 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         ];
 
 
+    private getEffectiveSelection() {
+        return (this.props.dataContext?.source.items ?? [])
+            .filter((item, index) => this.state.rowStates[index] & RowState.Selectable && this.selection.selected(item.id))
+            .map(item => item.id);
+    }
+
     render() {
 
-        const { dataContext: data, match, navigate, id, s, p, fetching, error } = this.props;
+        const { dataContext: data, match, navigate, fetching, error } = this.props;
         const { source: { total = 0, items = [], parents = [] } = {} } = data || {};
-        const { state, playlist, currentTrack } = this.state;
-        const size = s ? parseInt(s) : $config.pageSize;
-        const page = p ? parseInt(p) : 1;
+
         const fetched = items.length;
-        const activeIndex = id === "PL:"
-            ? playlist === "aux" ? items.findIndex(i => i.vendor?.["mi:playlistType"] === "aux") : items.findIndex(i => i.res?.url === playlist)
-            : currentTrack && playlist === parents[0]?.res?.url ? parseInt(currentTrack) - size * (page - 1) - 1 : -1;
 
         const cellContext: CellContext = {
             play: this.play,
             pause: this.pause,
             playUrl: this.playUrl,
-            state
+            state: this.state.state
         };
-
-        const getRowState = (item: DIDLItem, index: number) => RowState.None
-            | (index === activeIndex ? RowState.Active : RowState.None)
-            | (isReadonly(item) ? RowState.Readonly : RowState.Selectable)
-            | (isNavigable(item) ? RowState.Navigable : RowState.None);
-
-        const states = items.map(getRowState);
 
         return <DropTarget className="d-flex flex-column h-100" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
             <PlaylistSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
             <SignalRListener handlers={this.handlers}>
                 <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
-                    selection={this.selection} navigate={navigate} open={this.open} rowState={states}
+                    selection={this.selection} navigate={navigate} open={this.open} rowState={this.state.rowStates}
                     useCheckboxes selectOnClick multiSelect>
                     <Browser.Header className="p-0">
                         <div className="d-flex flex-column">
@@ -379,7 +393,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     , {total} totally available
                     </div>
                 {total !== 0 && fetched !== total &&
-                    <Pagination baseUrl={match.url} className="border-top" total={total} current={page} pageSize={size} />}
+                    <Pagination baseUrl={match.url} className="border-top" total={total} current={this.state.page} pageSize={this.state.pageSize} />}
             </div>
             <Portal selector="#modal-root">{this.state.modal}</Portal>
         </DropTarget >;
