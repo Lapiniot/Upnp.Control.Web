@@ -13,7 +13,7 @@ import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
 import { SignalRListener } from "../../../components/SignalR";
 import MainCell, { CellContext } from "./CellTemplate";
-import { DataContext, DataFetchProps } from "../../../components/DataFetch";
+import { DataFetchProps } from "../../../components/DataFetch";
 import { NavigatorProps } from "../../common/Navigator";
 import { AddUrlModalDialog } from "./dialogs/AddUrlModalDialog";
 import { AddItemsModalDialog } from "./dialogs/AddItemsModalDialog";
@@ -40,8 +40,6 @@ type PlaylistManagerState = {
     modal: ReactNode;
     selection: string[];
     playlist?: string;
-    page: number;
-    pageSize: number;
 } & Partial<AVState>;
 
 const browserProps: BrowserCoreProps = {
@@ -88,7 +86,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         super(props);
         this.selection.addEventListener("changed", () => this.setState({ selection: this.getEffectiveSelection() }));
         this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
-        this.state = { modal: null, selection: [], page: 1, pageSize: $config.pageSize };
+        this.state = { modal: null, selection: [] };
         this.ctrl = $api.control(this.props.device);
         this.pls = $api.playlist(this.props.device);
     }
@@ -118,12 +116,6 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         } catch (e) {
             console.error(e);
         }
-    }
-
-    static getDerivedStateFromProps({ p, s }: PlaylistManagerProps) {
-        const size = s ? parseInt(s) : $config.pageSize;
-        const page = p ? parseInt(p) : 1;
-        return { page, pageSize: size };
     }
 
     onAVTransportEvent = (device: string, { state, vendorProps: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = {} }:
@@ -332,9 +324,11 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     render() {
 
-        const { dataContext: data, match, navigate, fetching, error, id } = this.props;
-        const { playlist, currentTrack, pageSize, page } = this.state;
+        const { dataContext: data, match, navigate, fetching, error, id, s, p } = this.props;
+        const { playlist, currentTrack } = this.state;
         const { source: { total = 0, items = [], parents = [] } = {} } = data || {};
+        const pageSize = s ? parseInt(s) : $config.pageSize;
+        const page = p ? parseInt(p) : 1;
 
         const fetched = items.length;
 
@@ -392,7 +386,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     , {total} totally available
                     </div>
                 {total !== 0 && fetched !== total &&
-                    <Pagination baseUrl={match.url} className="border-top" total={total} current={this.state.page} pageSize={this.state.pageSize} />}
+                    <Pagination baseUrl={match.url} className="border-top" total={total} current={page} pageSize={pageSize} />}
             </div>
             <Portal selector="#modal-root">{this.state.modal}</Portal>
         </DropTarget >;
