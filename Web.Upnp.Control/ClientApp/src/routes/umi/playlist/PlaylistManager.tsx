@@ -38,10 +38,8 @@ type PlaylistManagerProps = RouteParams &
 
 type PlaylistManagerState = {
     modal: ReactNode;
-    data: DataContext<BrowseFetchResult> | null;
     selection: string[];
     playlist?: string;
-    rowStates: RowState[];
     page: number;
     pageSize: number;
 } & Partial<AVState>;
@@ -81,6 +79,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     displayName = PlaylistManagerCore.name;
     selection = new SelectionService();
+    rowStates: RowState[] = [];
     handlers;
     ctrl;
     pls;
@@ -89,7 +88,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         super(props);
         this.selection.addEventListener("changed", () => this.setState({ selection: this.getEffectiveSelection() }));
         this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
-        this.state = { modal: null, data: null, selection: [], rowStates: [], page: 1, pageSize: $config.pageSize };
+        this.state = { modal: null, selection: [], page: 1, pageSize: $config.pageSize };
         this.ctrl = $api.control(this.props.device);
         this.pls = $api.playlist(this.props.device);
     }
@@ -121,21 +120,10 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         }
     }
 
-    static getDerivedStateFromProps({ dataContext, id, p, s }: PlaylistManagerProps, { data, playlist, currentTrack }: PlaylistManagerState) {
-        if (!dataContext || dataContext === data) return null;
-
-        const { source: { items, parents } } = dataContext;
+    static getDerivedStateFromProps({ p, s }: PlaylistManagerProps) {
         const size = s ? parseInt(s) : $config.pageSize;
         const page = p ? parseInt(p) : 1;
-        const activeIndex = id === "PL:"
-            ? playlist === "aux" ? items.findIndex(i => i.vendor?.["mi:playlistType"] === "aux") : items.findIndex(i => i.res?.url === playlist)
-            : currentTrack && playlist === parents?.[0]?.res?.url ? parseInt(currentTrack) - size * (page - 1) - 1 : -1;
-        const getRowState = (item: DIDLItem, index: number) => RowState.None
-            | (index === activeIndex ? RowState.Active : RowState.None)
-            | (isReadonly(item) ? RowState.Readonly : RowState.Selectable)
-            | (isNavigable(item) ? RowState.Navigable : RowState.None);
-
-        return { data: dataContext, rowStates: items.map(getRowState), page, pageSize: size };
+        return { page, pageSize: size };
     }
 
     onAVTransportEvent = (device: string, { state, vendorProps: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = {} }:
@@ -338,16 +326,28 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private getEffectiveSelection() {
         return (this.props.dataContext?.source.items ?? [])
-            .filter((item, index) => this.state.rowStates[index] & RowState.Selectable && this.selection.selected(item.id))
+            .filter((item, index) => this.rowStates[index] & RowState.Selectable && this.selection.selected(item.id))
             .map(item => item.id);
     }
 
     render() {
 
-        const { dataContext: data, match, navigate, fetching, error } = this.props;
+        const { dataContext: data, match, navigate, fetching, error, id } = this.props;
+        const { playlist, currentTrack, pageSize, page } = this.state;
         const { source: { total = 0, items = [], parents = [] } = {} } = data || {};
 
         const fetched = items.length;
+
+        const activeIndex = id === "PL:"
+            ? playlist === "aux" ? items.findIndex(i => i.vendor?.["mi:playlistType"] === "aux") : items.findIndex(i => i.res?.url === playlist)
+            : currentTrack && playlist === parents?.[0]?.res?.url ? parseInt(currentTrack) - pageSize * (page - 1) - 1 : -1;
+
+        const getRowState = (item: DIDLItem, index: number) => RowState.None
+            | (index === activeIndex ? RowState.Active : RowState.None)
+            | (isReadonly(item) ? RowState.Readonly : RowState.Selectable)
+            | (isNavigable(item) ? RowState.Navigable : RowState.None);
+
+        this.rowStates = items.map(getRowState);
 
         const cellContext: CellContext = {
             play: this.play,
@@ -361,7 +361,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             {fetching && <LoadIndicatorOverlay />}
             <SignalRListener handlers={this.handlers}>
                 <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
-                    selection={this.selection} navigate={navigate} open={this.open} rowState={this.state.rowStates}
+                    selection={this.selection} navigate={navigate} open={this.open} rowState={this.rowStates}
                     useCheckboxes selectOnClick multiSelect>
                     <Browser.Header className="p-0">
                         <div className="d-flex flex-column">
