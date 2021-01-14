@@ -28,6 +28,7 @@ export type BrowserCoreProps<TContext = {}> = {
     rowState?: ((item: DIDLItem, index: number) => RowState) | (RowState[]);
     open?: (id: string) => boolean;
     selection?: SelectionService;
+    selectionChanged?: (ids: string[]) => boolean | undefined | void;
     mainCellTemplate?: ComponentType<{ data: DIDLItem, index: number, rowState: RowState, context?: TContext }>;
     mainCellContext?: TContext;
 } & { [K in ModeFlags]?: boolean }
@@ -42,12 +43,14 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     private tableRef = React.createRef<HTMLDivElement>();
     private resizeObserver;
     private tracker: SelectionTracker;
+    rowStates: RowState[] = [];
 
     constructor(props: PropsType<P>) {
         super(props);
         this.selection = props.selection || new SelectionService();
+        this.selection.addEventListener("changed", this.selectionChangedHandler);
         this.resizeObserver = new ResizeObserver(this.onCaptionResized);
-        this.tracker = new SelectionTracker([], this.selection, this.selectionChanged);
+        this.tracker = new SelectionTracker([], this.selection, this.complexSelectionChanged);
     }
 
     componentDidUpdate(prevProps: PropsType<P>) {
@@ -72,6 +75,22 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         else {
             const headers = scope?.querySelectorAll<HTMLDivElement>(`div:nth-of-type(${caption ? 2 : 1}) > div > div`);
             this.adjustStickyElements(caption ?? undefined, headers);
+        }
+    }
+
+    private selectionFilter = (item: DIDLItem, index: number) => {
+        return (this.rowStates[index] & RowState.Selectable) && this.selection.selected(item.id);
+    }
+
+    private selectionChangedHandler = (event: Event) => {
+        const { selectionChanged, dataContext } = this.props;
+        if (selectionChanged && dataContext) {
+            const { source: { items } = { items: null } } = dataContext;
+            if (items) {
+                if (selectionChanged(items.filter(this.selectionFilter).map(item => item.id)) === false) {
+                    event.preventDefault();
+                }
+            }
         }
     }
 
@@ -220,9 +239,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         }
     }
 
-    private selectionChanged = (ids: string[], focused: string | null, hint: EventHint, handled: boolean) => {
-        if (!handled) this.setState({ selection: true });
-
+    private complexSelectionChanged = (_ids: string[], focused: string | null, hint: EventHint, canceled: boolean) => {
         if (focused) {
             const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-id='${focused}']`);
             if (!row) return;
@@ -237,13 +254,17 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
             const element = this.tableRef.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUS_WITHIN_SELECTOR);
             element?.blur();
         }
+
+        if (!canceled) {
+            this.setState({ selection: true });
+        }
     }
 
-    navigateHandler = ({ currentTarget: { dataset } }: MouseEvent<HTMLDivElement>) => {
+    private navigateHandler = ({ currentTarget: { dataset } }: MouseEvent<HTMLDivElement>) => {
         this.props.navigate(dataset);
     }
 
-    open: MouseEventHandler<HTMLDivElement> = ({ currentTarget: { dataset: { id } } }) =>
+    private open: MouseEventHandler<HTMLDivElement> = ({ currentTarget: { dataset: { id } } }) =>
         this.props.open?.(id as string);
 
     private getRowState(item: DIDLItem, index: number) {
@@ -270,7 +291,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
             useCheckboxes = false, selectOnClick = false, stickyColumnHeaders = true } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
-        const states = typeof rowState === "function" ? items.map(rowState) : rowState;
+        this.rowStates = typeof rowState === "function" ? items.map(rowState) : rowState;
         this.tracker.setup(items.map(i => i.id), this.props.selection ?? this.selection);
 
         const children = React.Children.toArray(this.props.children);
@@ -308,13 +329,13 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                         </div>}
                     {[items.map((e, index) => {
                         const selected = this.selection.selected(e.id);
-                        const selectable = !!(states[index] & RowState.Selectable);
-                        return <div key={e.id} tabIndex={0} data-id={e.id} data-selected={selected} data-active={!!(states[index] & RowState.Active)}
-                            onDoubleClick={e.container && (states[index] & RowState.Navigable) ? this.navigateHandler : this.open}>
+                        const selectable = !!(this.rowStates[index] & RowState.Selectable);
+                        return <div key={e.id} tabIndex={0} data-id={e.id} data-selected={selected} data-active={!!(this.rowStates[index] & RowState.Active)}
+                            onDoubleClick={e.container && (this.rowStates[index] & RowState.Navigable) ? this.navigateHandler : this.open}>
                             {useCheckboxes && <div>
                                 <input type="checkbox" tabIndex={-1} onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
                             </div>}
-                            <div className="mw-1"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={states[index]} /></div>
+                            <div className="mw-1"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.rowStates[index]} /></div>
                             <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
                             <div className="small">{utils.formatTime(e.res?.duration)}</div>
                             <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>

@@ -84,7 +84,6 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     constructor(props: PlaylistManagerProps) {
         super(props);
-        this.selection.addEventListener("changed", () => this.setState({ selection: this.getEffectiveSelection() }));
         this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
         this.state = { modal: null, selection: [] };
         this.ctrl = $api.control(this.props.device);
@@ -125,25 +124,30 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         }
     }
 
-    resetModal = () => { this.setState({ modal: null }); }
+    private selectionChanged = (ids: string[]) => {
+        this.setState({ selection: ids });
+        return false;
+    }
+
+    private resetModal = () => { this.setState({ modal: null }); }
 
     //#region API calls wrapped with UI indication and automatic data reload
 
-    reload = (action?: () => Promise<any>) => this.props.dataContext ? this.props.dataContext.reload(action) : Promise.resolve(null);
+    private reload = (action?: () => Promise<any>) => this.props.dataContext ? this.props.dataContext.reload(action) : Promise.resolve(null);
 
-    rename = (id: string, title: string) => this.reload($api.playlist(this.props.device).rename(id, title).fetch);
+    private rename = (id: string, title: string) => this.reload($api.playlist(this.props.device).rename(id, title).fetch);
 
-    create = (title: string) => this.reload($api.playlist(this.props.device).create(title).fetch);
+    private create = (title: string) => this.reload($api.playlist(this.props.device).create(title).fetch);
 
-    remove = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).delete(ids).fetch().then(this.selection.reset));
+    private remove = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).delete(ids).fetch().then(this.selection.reset));
 
-    addItems = (id: string, device: string, ids: string[]) => this.reload($api.playlist(this.props.device).addItems(id, device, ids).fetch);
+    private addItems = (id: string, device: string, ids: string[]) => this.reload($api.playlist(this.props.device).addItems(id, device, ids).fetch);
 
-    addUrl = (id: string, url: string, title?: string, useProxy?: boolean) => this.reload($api.playlist(this.props.device).addUrl(id, url, title, useProxy).fetch);
+    private addUrl = (id: string, url: string, title?: string, useProxy?: boolean) => this.reload($api.playlist(this.props.device).addUrl(id, url, title, useProxy).fetch);
 
-    addFiles = (id: string, data: FormData) => this.reload($api.playlist(this.props.device).addFromFiles(id, data).fetch);
+    private addFiles = (id: string, data: FormData) => this.reload($api.playlist(this.props.device).addFromFiles(id, data).fetch);
 
-    removeItems = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset));
+    private removeItems = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset));
 
     //#endregion
 
@@ -205,27 +209,27 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     //#region Toolbar button click handlers 
 
-    addClickHandler = () => this.setState({ modal: <TextValueEditDialog id="create-dialog" title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirm={this.create} onDismiss={this.resetModal} immediate /> });
+    private addClickHandler = () => this.setState({ modal: <TextValueEditDialog id="create-dialog" title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirm={this.create} onDismiss={this.resetModal} immediate /> });
 
-    removeClickHandler = () => this.removePlaylist(this.state.selection);
+    private removeClickHandler = () => this.removePlaylist(this.state.selection);
 
-    renameClickHandler = () => this.renamePlaylist(this.state.selection[0]);
+    private renameClickHandler = () => this.renamePlaylist(this.state.selection[0]);
 
-    copyClickHandler = () => { alert("not implemented yet"); };
+    private copyClickHandler = () => { alert("not implemented yet"); };
 
-    addItemsClickHandler = () => this.addPlaylistItems(this.props.id);
+    private addItemsClickHandler = () => this.addPlaylistItems(this.props.id);
 
-    addUrlClickHandler = () => this.addPlaylistUrl(this.props.id);
+    private addUrlClickHandler = () => this.addPlaylistUrl(this.props.id);
 
-    uploadPlaylistClickHandler = () => this.addPlaylistFiles(this.props.id);
+    private uploadPlaylistClickHandler = () => this.addPlaylistFiles(this.props.id);
 
-    removeItemsClickHandler = () => this.removePlaylistItems(this.state.selection);
+    private removeItemsClickHandler = () => this.removePlaylistItems(this.state.selection);
 
     //#endregion
 
     //#region Drag&Drop handler
 
-    onDropFiles = (files: Iterable<File>) => {
+    private onDropFiles = (files: Iterable<File>) => {
         const request = this.props.id === "PL:"
             ? $api.playlist(this.props.device).createFromFiles(files, null, false)
             : $api.playlist(this.props.device).addFromFiles(this.props.id, files);
@@ -237,11 +241,11 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     //#region Playback related row event handlers
 
-    play: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.play().fetch();
+    private play: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.play().fetch();
 
-    pause: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.pause().fetch();
+    private pause: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.pause().fetch();
 
-    playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { playIndex = "0" } } }) => {
+    private playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { playIndex = "0" } } }) => {
         const index = parseInt(playIndex);
         const { dataContext, s, p } = this.props;
         const { items = [], parents = [] } = dataContext?.source ?? {};
@@ -251,7 +255,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         return this.ctrl.playUri(url).fetch();
     }
 
-    open = (id: string) => {
+    private open = (id: string) => {
         const index = this.props.dataContext?.source.items.findIndex(i => i.id === id) ?? -1;
         const url = this.props.dataContext?.source?.parents?.[0].res?.url;
         if (index >= 0 && url) {
@@ -265,7 +269,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     //#region Context menu select handler
 
-    menuSelectHandler = (item: HTMLElement, anchor?: HTMLElement) => {
+    private menuSelectHandler = (item: HTMLElement, anchor?: HTMLElement) => {
         const id = anchor?.dataset["menuToggleFor"];
         if (!id) return;
 
@@ -315,13 +319,6 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             ["play", "Play", "play", true],
         ];
 
-
-    private getEffectiveSelection() {
-        return (this.props.dataContext?.source.items ?? [])
-            .filter((item, index) => this.rowStates[index] & RowState.Selectable && this.selection.selected(item.id))
-            .map(item => item.id);
-    }
-
     render() {
 
         const { dataContext: data, match, navigate, fetching, error, id, s, p } = this.props;
@@ -355,7 +352,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             {fetching && <LoadIndicatorOverlay />}
             <SignalRListener handlers={this.handlers}>
                 <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
-                    selection={this.selection} navigate={navigate} open={this.open} rowState={this.rowStates}
+                    selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.open} rowState={this.rowStates}
                     useCheckboxes selectOnClick multiSelect>
                     <Browser.Header className="p-0">
                         <div className="d-flex flex-column">

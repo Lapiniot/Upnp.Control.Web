@@ -15,7 +15,7 @@ interface SelectionStore {
     clear: () => boolean;
 }
 
-type SelectionChangedCallback = (ids: string[], focused: string | null, hint: EventHint, handled: boolean) => void;
+type SelectionChangedCallback = (ids: string[], focused: string | null, hint: EventHint, canceled: boolean) => void;
 
 export class SelectionTracker {
     private items: string[];
@@ -47,7 +47,7 @@ export class SelectionTracker {
 
     clear(hint?: EventHint) {
         if (!this.enabled()) return;
-        this.onchanged([], this.current = null, hint ?? EventHint.None, this.store.clear());
+        this.onchanged([], this.current = null, hint ?? EventHint.None, !this.store.clear());
     }
 
     setup(selectables?: string[], selection?: SelectionStore) {
@@ -78,25 +78,25 @@ export class SelectionTracker {
     setOnly(id: string, hint?: EventHint) {
         if (!this.enabled() || this.store.one() && this.store.selected(id)) return;
         this.store.reset();
-        this.onchanged([id], this.current = id, hint ?? EventHint.None, this.store.select(id, true));
+        this.onchanged([id], this.current = id, hint ?? EventHint.None, !this.store.select(id, true));
     }
 
     set(id: string, state: boolean, hint?: EventHint) {
         if (!this.enabled()) return;
         if (this.store.one() && this.store.selected(id) === state) return;
-        this.onchanged([id], this.current = state ? id : null, hint ?? EventHint.None, this.store.select(id, state));
+        this.onchanged([id], this.current = state ? id : null, hint ?? EventHint.None, !this.store.select(id, state));
     }
 
     toggle(id: string, hint?: EventHint) {
         if (!this.enabled()) return;
         const state = !this.store.selected(id);
-        this.onchanged([id], this.current = state ? id : null, hint ?? EventHint.None, this.store.select(id, state));
+        this.onchanged([id], this.current = state ? id : null, hint ?? EventHint.None, !this.store.select(id, state));
     }
 
     setAll(state: boolean, hint?: EventHint) {
         if (!this.enabled()) return;
         this.onchanged(this.items, this.current = state ? this.items[this.items.length - 1] : null,
-            hint ?? EventHint.None, state ? this.store.selectMany(this.items, true) : this.store.clear());
+            hint ?? EventHint.None, state ? !this.store.selectMany(this.items, true) : !this.store.clear());
     }
 
     expandTo(id: string, hint?: EventHint) {
@@ -113,7 +113,7 @@ export class SelectionTracker {
             ? (next > current ? this.items.slice(current, next) : this.items.slice(next + 1, current + 1))
             : (next > current ? this.items.slice(current, next + 1) : this.items.slice(next, current + 1));
 
-        this.onchanged(range, this.current = this.items[next], hint ?? EventHint.None, this.store.selectMany(range, !solidRange));
+        this.onchanged(range, this.current = this.items[next], hint ?? EventHint.None, !this.store.selectMany(range, !solidRange));
     }
 
     expandUp(hint?: EventHint) {
@@ -163,14 +163,14 @@ export class SelectionTracker {
         if (index >= 0 && index < this.items.length) {
             this.store.reset();
             const item = this.items[index];
-            this.onchanged([item], this.current = item, hint ?? EventHint.None, this.store.select(item, true));
+            this.onchanged([item], this.current = item, hint ?? EventHint.None, !this.store.select(item, true));
         }
     }
 
     private select(index: number, focused: string, state: boolean, hint?: EventHint) {
         if (index >= 0 && index < this.items.length) {
             const item = this.items[index];
-            this.onchanged([item], focused, hint ?? EventHint.None, this.store.select(item, state));
+            this.onchanged([item], focused, hint ?? EventHint.None, !this.store.select(item, state));
         }
     }
 
