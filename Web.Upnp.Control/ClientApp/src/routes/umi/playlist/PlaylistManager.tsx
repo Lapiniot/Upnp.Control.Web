@@ -46,7 +46,11 @@ const browserProps: BrowserCoreProps = {
     multiSelect: true,
     selectOnClick: true,
     useCheckboxes: true,
-    rowState: item => DIDLUtils.isMusicTrack(item) ? RowState.Selectable : RowState.None
+    rowState: item => item.container
+        ? RowState.Navigable
+        : DIDLUtils.isMusicTrack(item)
+            ? RowState.Selectable
+            : RowState.None
 }
 
 const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"];

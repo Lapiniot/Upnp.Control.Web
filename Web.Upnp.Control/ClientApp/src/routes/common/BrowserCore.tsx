@@ -12,7 +12,7 @@ const DATA_ROW_SELECTOR = "div[data-id]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-id]:focus";
 const DATA_ROW_FOCUS_WITHIN_SELECTOR = "div[data-id]:focus,div[data-id] :focus";
 
-type ModeFlags = "multiSelect" | "useCheckboxes" | "selectOnClick" | "stickyColumnHeaders";
+type ModeFlags = "multiSelect" | "useCheckboxes" | "selectOnClick" | "modalDialogMode" | "stickyColumnHeaders";
 
 export enum RowState {
     None = 0b0,
@@ -169,7 +169,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     }
 
     private onKeyDown = (event: KeyboardEvent) => {
-        if (!this.tracker.enabled() || document.body.classList.contains("modal-open")) return;
+        if (!this.tracker.enabled() || (!this.props.modalDialogMode && document.body.classList.contains("modal-open"))) return;
 
         switch (event.code) {
             case "Enter":
