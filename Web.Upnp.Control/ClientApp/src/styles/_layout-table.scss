@@ -47,6 +47,7 @@
                         border-left: none;
                     }
 
+                    color: $table-color;
                     background-color: var(--bs-auto-table-header-bg);
                     border-top: $table-border-width solid $table-border-color;
                     border-bottom: $table-border-width solid $table-border-color;
