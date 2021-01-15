@@ -227,7 +227,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     }
 
     private focusHandler = (event: FocusEvent<HTMLDivElement>) => {
-        const row = event.target.closest<HTMLDivElement>(DATA_ROW_SELECTOR);
+        const row = event.target.matches(DATA_ROW_SELECTOR) && event.target as HTMLDivElement;
         if (row) {
             const id = row.dataset.id;
             if (id && id !== this.tracker.focus) {
@@ -333,7 +333,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                         return <div key={e.id} tabIndex={0} data-id={e.id} data-selected={selected} data-active={!!(this.rowStates[index] & RowState.Active)}
                             onDoubleClick={e.container && (this.rowStates[index] & RowState.Navigable) ? this.navigateHandler : this.open}>
                             {useCheckboxes && <div>
-                                <input type="checkbox" tabIndex={-1} onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
+                                <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
                             </div>}
                             <div className="mw-1"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.rowStates[index]} /></div>
                             <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
