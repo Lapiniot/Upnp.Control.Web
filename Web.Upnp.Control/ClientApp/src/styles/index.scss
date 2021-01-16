@@ -233,11 +233,6 @@ $album-art-sizes: (
     animation: fade 1.5s ease-in-out infinite;
 }
 
-a.no-decoration,
-.no-decoration > a {
-    text-decoration: none;
-}
-
 .backdrop {
     position: absolute;
     z-index: $zindex-modal;

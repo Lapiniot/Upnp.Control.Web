@@ -21,7 +21,7 @@ export function DeviceCard({ "data-source": d, category, children, actions, clas
         <div className="card-body">
             {children}
         </div>
-        <div className="card-footer no-decoration d-flex gap-2">
+        <div className="card-footer text-decoration-none d-flex gap-2">
             {actions?.map(({ 0: key, 1: ActionWidget }) => <ActionWidget key={key} device={d} category={category} />)}
         </div>
     </div>;
