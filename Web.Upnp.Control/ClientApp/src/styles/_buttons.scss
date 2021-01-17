@@ -63,3 +63,10 @@ nav.navbar-nav > a.nav-link,
         background-image: if($enable-gradients, none, null);
     }
 }
+
+.btn.image-only {
+    & > img,
+    & > svg {
+        margin: 0;
+    }
+}

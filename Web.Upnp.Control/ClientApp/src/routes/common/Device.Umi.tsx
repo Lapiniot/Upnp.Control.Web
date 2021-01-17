@@ -22,17 +22,17 @@ function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
 }
 
 function Menu({ dataContext: d, device }: HTMLAttributes<HTMLDivElement> & DataFetchProps<BrowseFetchResult> & DeviceActionProps) {
-    return <div className="btn-group">
-        <a href="#0" className="nav-link p-0 px-1" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
+    return <>
+        <button className="btn btn-link p-0 image-only" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
             <i className="fas fa-caret-right fa-lg" /><span className="visually-hidden">Toggle Dropdown</span>
-        </a>
+        </button>
         <DropdownMenu data-device={device.udn} placement="right-start">
             {d?.source.items.map(i => <li key={i.id}>
                 <a className="dropdown-item" href="#" data-play-url={i.res?.url + "#play"} onClick={playUrlHandler}>
                     <AlbumArt itemClass={i.class} albumArts={i.albumArts} className="album-art-sm me-1 align-middle" />{i.title}</a>
             </li>)}
         </DropdownMenu>
-    </div>
+    </>
 }
 
 const builder = ({ device: { udn } }: { device: UpnpDevice }) => withMemoKey($api.browse(udn).get("PL:").withResource().withVendor().jsonFetch, udn);
