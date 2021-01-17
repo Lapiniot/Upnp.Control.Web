@@ -6,7 +6,7 @@ import $config from "../../common/Config";
 import { TextValueEditDialog } from "../../../components/Dialogs";
 import { withBrowser, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils";
 import Toolbar from "../../../components/Toolbar";
-import Pagination from "../../common/Pagination";
+import { TablePagination } from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
 import Browser, { BrowserCoreProps, RowState } from "../../common/BrowserCore";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
@@ -379,15 +379,9 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     </Browser.ContextMenu>
                 </Browser>
             </SignalRListener>
-            <div className="sticky-bottom">
-                <div className="bg-light text-center text-muted small p-1 border-top">{
-                    this.selection.length > 0
-                        ? `${this.selection.length} of ${fetched} selected`
-                        : `${fetched} item${fetched !== 1 ? "s" : ""}`}
-                    , {total} totally available
-                    </div>
-                {total !== 0 && fetched !== total &&
-                    <Pagination baseUrl={match.url} className="border-top" total={total} current={page} pageSize={pageSize} />}
+            <div className="sticky-bottom bg-light py-1 px-3 d-flex align-items-center border-top">
+                {this.selection.length > 0 ? <span className="text-muted small">{`${this.selection.length} of ${fetched} selected`}</span> : null}
+                <TablePagination className="ms-auto" location={this.props.location} history={this.props.history} total={total} current={page} pageSize={pageSize} />
             </div>
             <Portal selector="#modal-root">{this.state.modal}</Portal>
         </DropTarget >;
