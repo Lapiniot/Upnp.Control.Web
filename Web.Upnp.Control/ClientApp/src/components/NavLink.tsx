@@ -1,7 +1,8 @@
-import React, { AnchorHTMLAttributes, ElementType, HTMLAttributes } from "react";
+import React, { AnchorHTMLAttributes } from "react";
 import { NavLink as RNavLink, NavLinkProps } from "react-router-dom";
 
-type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
+export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
+    to: string;
     active?: boolean;
     disabled?: boolean;
     glyph?: string
@@ -11,17 +12,15 @@ function BuildClass(className: string | undefined, active: boolean | undefined, 
     return `nav-link${className ? ` ${className}` : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`;
 }
 
-const LinkTemplate = ({ component: Tag, className, active, disabled, glyph, children, ...other }:
-    LinkProps & HTMLAttributes<HTMLElement> & { component: ElementType }) =>
-    <Tag className={BuildClass(className, active, disabled)} {...other}>
+const NavLink = ({ to, glyph, className, active, disabled, children, ...other }: LinkProps) =>
+    <a href={!disabled ? to : undefined} className={BuildClass(className, active, disabled)} {...other}>
         {glyph && <i className={`fas fa-fw fa-${glyph}`} />}{children}
-    </Tag>;
+    </a>;
 
-
-const NavLink = ({ to, ...other }: { to: string } & AnchorHTMLAttributes<HTMLAnchorElement> & LinkProps) =>
-    <LinkTemplate component="a" href={to} {...other} />;
-
-const RouteLink = (props: NavLinkProps & LinkProps) =>
-    <LinkTemplate component={RNavLink} {...props} />;
+const RouteLink = ({ glyph, className, active, disabled, children, ...other }: NavLinkProps & LinkProps) => {
+    return <RNavLink className={BuildClass(className, active, disabled)} {...other}>
+        {glyph && <i className={`fas fa-fw fa-${glyph}`} />}{children}
+    </RNavLink>;
+}
 
 export { NavLink, RouteLink }
