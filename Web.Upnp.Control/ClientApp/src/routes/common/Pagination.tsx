@@ -68,9 +68,9 @@ function noActive() {
 
 const RelativePageLink = ({ title, to, label, children, className, ...other }: LinkProps & { label?: string }) =>
     <RouteLink to={to} aria-label={label} className={`btn btn-round${className ? ` ${className}` : ""}`} isActive={noActive} {...other}>
+        {children}
         {title && <span aria-hidden="true">{title}</span>}
         {label && <span className="visually-hidden">{label}</span>}
-        {children}
     </RouteLink>;
 
 export class TablePagination extends React.Component<PaginationProps & NavigationProps & { pageSizes?: number[] }> {
@@ -101,22 +101,22 @@ export class TablePagination extends React.Component<PaginationProps & Navigatio
             </select>
             <span className="me-4 small text-nowrap">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} of {total}</span>
             <RelativePageLink to={`${pattern}${1}`} label="First" disabled={current === 1}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem">
+                <svg xmlns="http://www.w3.org/2000/svg">
                     <use href="#chevron-bar-left" />
                 </svg>
             </RelativePageLink>
             <RelativePageLink to={`${pattern}${current - 1}`} label="Previous" disabled={current === 1}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem">
+                <svg xmlns="http://www.w3.org/2000/svg">
                     <use href="#chevron-left" />
                 </svg>
             </RelativePageLink>
             <RelativePageLink to={`${pattern}${current + 1}`} label="Next" disabled={current >= pages}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem">
+                <svg xmlns="http://www.w3.org/2000/svg">
                     <use href="#chevron-right" />
                 </svg>
             </RelativePageLink>
             <RelativePageLink to={`${pattern}${pages}`} label="Last" disabled={current >= pages}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem">
+                <svg xmlns="http://www.w3.org/2000/svg">
                     <use href="#chevron-bar-right" />
                 </svg>
             </RelativePageLink>

@@ -9,7 +9,7 @@ export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & 
 }
 
 function BuildClass(className: string | undefined, active: boolean | undefined, disabled: boolean | undefined) {
-    return `nav-link${className ? ` ${className}` : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`;
+    return `${className ? className : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`.trim();
 }
 
 const NavLink = ({ to, glyph, className, active, disabled, children, ...other }: LinkProps) =>

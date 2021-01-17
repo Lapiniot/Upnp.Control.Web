@@ -18,7 +18,7 @@ type BreadcrumbParams = {
 const ItemTemplate = ({ disabled, title, url }: BreadcrumbItemProps) => disabled
     ? <li className="breadcrumb-item active" aria-current="page">{title}</li>
     : <li className="breadcrumb-item text-decoration-none">
-        <NavLink to={url}>{title}</NavLink>
+        <NavLink className="text-decoration-none" to={url}>{title}</NavLink>
     </li>;
 
 export default ({ items = [], path, params, className, disabled }: BreadcrumbParams & HTMLAttributes<HTMLDivElement>) =>

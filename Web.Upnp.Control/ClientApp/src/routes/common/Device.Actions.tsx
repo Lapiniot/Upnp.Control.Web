@@ -18,11 +18,11 @@ const browserProps: BrowserCoreProps = {
 export function BrowseContentAction({ device, category }: DeviceActionProps) {
     const isMediaServer = device.services && device.services.some(
         s => s.type.startsWith(Services.ContentDirectory) || s.type.startsWith(Services.UmiPlaylist));
-    return isMediaServer ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="folder" className="p-0">Browse</RouteLink> : null;
+    return isMediaServer ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="folder" className="p-0 nav-link">Browse</RouteLink> : null;
 }
 
 export function ManagePlaylistsAction({ device, category }: DeviceActionProps) {
-    return <RouteLink to={`/${category}/${device.udn}/playlists/PL:`} glyph="list-alt" className="p-0" title="Manage playlists">Playlists</RouteLink>
+    return <RouteLink to={`/${category}/${device.udn}/playlists/PL:`} glyph="list-alt" className="p-0 nav-link" title="Manage playlists">Playlists</RouteLink>
 }
 
 export function DownloadMetadataAction({ device }: DeviceActionProps) {
