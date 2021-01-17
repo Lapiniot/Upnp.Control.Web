@@ -1,4 +1,4 @@
-import React, { AnchorHTMLAttributes } from "react";
+import { AnchorHTMLAttributes } from "react";
 import { NavLink as RNavLink, NavLinkProps } from "react-router-dom";
 
 export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {

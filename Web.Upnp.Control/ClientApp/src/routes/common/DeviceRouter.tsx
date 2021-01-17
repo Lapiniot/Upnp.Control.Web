@@ -1,4 +1,4 @@
-﻿import React, { ComponentType, PropsWithChildren } from "react";
+﻿import { ComponentType, PropsWithChildren } from "react";
 import { Switch, Route } from "react-router-dom"
 import { RouteComponentProps } from "react-router";
 import Browser from "./BrowseRouter";

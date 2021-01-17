@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from "react";
+import { HTMLAttributes } from "react";
 import { NavLink } from "react-router-dom";
 import { reversemap, generatePath } from "../../components/Extensions";
 

@@ -1,4 +1,4 @@
-import React, { ComponentType, HTMLAttributes } from "react";
+import { ComponentType, HTMLAttributes } from "react";
 import DeviceIcon from "./DeviceIcon";
 import { NavLink } from "../../components/NavLink";
 import { DataSourceProps, UpnpDevice } from "./Types";

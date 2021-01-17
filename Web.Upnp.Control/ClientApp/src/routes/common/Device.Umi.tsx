@@ -1,4 +1,4 @@
-import React, { ComponentType, HTMLAttributes } from "react";
+import { ComponentType, HTMLAttributes } from "react";
 import PlayerWidget from "./PlayerWidget";
 import { BrowseFetchResult, DataSourceProps, UpnpDevice } from "./Types";
 import $api from "../../components/WebApi";

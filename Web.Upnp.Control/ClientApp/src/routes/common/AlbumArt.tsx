@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from "react";
+import { HTMLAttributes } from "react";
 
 function getIconByClass(itemClass: string) {
     if (itemClass.endsWith("musicTrack"))

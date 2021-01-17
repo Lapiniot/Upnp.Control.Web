@@ -1,5 +1,4 @@
-﻿import React from "react";
-import { Redirect, Route, RouteComponentProps } from "react-router";
+﻿import { Redirect, Route, RouteComponentProps } from "react-router";
 import DeviceRouter from "../common/DeviceRouter";
 import { DataSourceProps, Services, UpnpDevice } from "../common/Types";
 import UmiDeviceCard from "../common/Device.Umi";

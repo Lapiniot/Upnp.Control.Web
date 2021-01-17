@@ -1,4 +1,3 @@
-import React from "react";
 import { Icon, Services } from "./Types";
 
 function getOptimalIcon(icons: Icon[], preferredSize: number = 48): Icon | null {

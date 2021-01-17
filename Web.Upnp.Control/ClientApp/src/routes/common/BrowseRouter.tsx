@@ -1,5 +1,4 @@
-﻿import React from "react";
-import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
+﻿import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
 import { withBrowser } from "./BrowserUtils";
 import BrowserView from "./Browser";
 

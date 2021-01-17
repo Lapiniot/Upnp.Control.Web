@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "../../components/NavLink";
 import { DataSourceProps, UpnpDevice } from "./Types";
 

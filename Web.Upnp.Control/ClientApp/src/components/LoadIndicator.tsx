@@ -1,4 +1,4 @@
-﻿import React, { HTMLAttributes } from "react";
+﻿import { HTMLAttributes } from "react";
 
 export function Indicator({ children, className, ...others }: HTMLAttributes<HTMLDivElement>) {
     return <div className={`d-inline-flex justify-content-center align-items-center${className ? ` ${className}` : ""}`} {...others}>

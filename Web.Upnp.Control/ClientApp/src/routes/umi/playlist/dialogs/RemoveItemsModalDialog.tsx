@@ -1,4 +1,3 @@
-import React from "react";
 import Modal, { ModalProps } from "../../../../components/Modal";
 
 export function RemoveItemsModalDialog({ onRemove, children, ...other }: ModalProps & { onRemove: () => void; }) {

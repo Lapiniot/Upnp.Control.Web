@@ -1,5 +1,4 @@
-﻿import React from "react";
-import Spoiler from "../../components/Spoiler";
+﻿import Spoiler from "../../components/Spoiler";
 import { DataSourceProps, UpnpService } from "./Types";
 
 export default function ({ "data-source": data, "data-row-id": rowId }: DataSourceProps<UpnpService[]>) {

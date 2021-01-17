@@ -1,4 +1,3 @@
-import React from "react";
 import Modal from "../../../../components/Modal";
 import BrowserDialog, { BrowserDialogProps } from "../../../common/BrowserDialog";
 

@@ -1,4 +1,4 @@
-import React, { ComponentType } from "react";
+import { ComponentType } from "react";
 import { DeviceActionProps, OpenMediaAction } from "./Device.Actions";
 import { DeviceCard } from "./DeviceCard";
 import PlayerWidget from "./PlayerWidget";

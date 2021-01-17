@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from "react";
+import { HTMLAttributes } from "react";
 import Breadcrumb from "./Breadcrumb";
 import Pagination from "./Pagination";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
