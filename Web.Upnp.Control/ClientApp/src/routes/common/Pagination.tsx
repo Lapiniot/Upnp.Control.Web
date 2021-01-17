@@ -96,7 +96,7 @@ export class TablePagination extends React.Component<PaginationProps & Navigatio
         return <nav aria-label="Page navigation" className={`d-flex flex-shrink-0 align-items-center${className ? ` ${className}` : ""}`} {...other}>
             <PaginationSvgSymbols />
             <label className="text-nowrap small me-2">Items per page</label>
-            <select className="form-select form-select-sm me-4 my-0" aria-label="Items per page" value={pageSize} onChange={this.pageSizeChangedHandler} >
+            <select className="form-select form-select-sm me-4 my-0 w-auto" aria-label="Items per page" value={pageSize} onChange={this.pageSizeChangedHandler} >
                 {pageSizes.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
             <span className="me-4 small text-nowrap">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} of {total}</span>

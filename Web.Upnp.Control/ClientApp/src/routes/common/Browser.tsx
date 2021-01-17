@@ -1,6 +1,6 @@
 import { HTMLAttributes } from "react";
 import Breadcrumb from "./Breadcrumb";
-import Pagination from "./Pagination";
+import { TablePagination } from "./Pagination";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $config from "./Config";
@@ -23,7 +23,7 @@ export type BrowserProps = BrowserCoreProps &
 
 export default function (props: BrowserProps) {
     const { dataContext: data, match, s: size, p: page, fetching } = props;
-    const { source: { total = 0, items: { length: fetched = 0 } = {}, parents = undefined } = {} } = data || {};
+    const { source: { total = 0, parents = undefined } = {} } = data || {};
     return <>
         { fetching && <LoadIndicatorOverlay />}
         <BrowserCore {...props}>
@@ -31,11 +31,9 @@ export default function (props: BrowserProps) {
                 <Breadcrumb items={parents} path={match.path} params={match.params} />
             </BrowserCore.Header>
         </BrowserCore>
-        {
-            total !== 0 && fetched !== total &&
-            <Pagination baseUrl={match.url} className="border-top sticky-bottom"
-                total={total} current={typeof page === "string" ? parseInt(page) : 1}
-                pageSize={size === "string" ? parseInt(size) : $config.pageSize} />
-        }
+        <TablePagination location={props.location} history={props.history}
+            className="bg-light border-top sticky-bottom py-1 px-3 justify-content-end"
+            total={total} current={typeof page === "string" ? parseInt(page) : 1}
+            pageSize={typeof size === "string" ? parseInt(size) : $config.pageSize} />
     </>
 }
