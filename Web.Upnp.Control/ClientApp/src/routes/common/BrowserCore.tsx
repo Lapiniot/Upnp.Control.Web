@@ -199,7 +199,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
             case "Backspace":
             case "ArrowLeft":
                 const parents = this.props.dataContext?.source.parents;
-                this.props.navigate?.({ id: parents?.[1].id ?? "-1" });
+                this.props.navigate?.({ id: parents?.[1]?.id ?? "-1" });
                 break;
             case "KeyA":
                 if (this.props.multiSelect && !event.cancelBubble && (event.metaKey || event.ctrlKey)) {
