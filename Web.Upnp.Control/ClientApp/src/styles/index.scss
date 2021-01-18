@@ -254,12 +254,6 @@ $album-art-sizes: (
     background-color: rgba($danger, 0.5);
 }
 
-.vp-center {
-    position: sticky;
-    top: calc(min(50%, 50vh));
-    transform: translate3d(0, -50%, 0);
-}
-
 .stack {
     position: relative;
 

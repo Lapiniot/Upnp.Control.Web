@@ -22,11 +22,12 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
         this.setState({ dragging: false, acceptable: false });
     }
 
-    isAcceptable = (item: DataTransferItem | File) =>
-        item instanceof DataTransferItem && item.kind === "file" && (!this.props.acceptedTypes || this.props.acceptedTypes.includes(item.type)) ||
+    private isAcceptable = (item: DataTransferItem | File) =>
+        item instanceof DataTransferItem && item.kind === "file" &&
+        (!this.props.acceptedTypes || this.props.acceptedTypes.includes(item.type)) ||
         item instanceof File && (!this.props.acceptedTypes || this.props.acceptedTypes.includes(item.type));
 
-    #drop = (e: DragEvent<HTMLDivElement>) => {
+    private dropHandler = (e: DragEvent<HTMLDivElement>) => {
         try {
             const element = e.target as HTMLElement;
             const filtered = Array.from(e.dataTransfer.files).filter(this.isAcceptable);
@@ -40,7 +41,7 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
         }
     }
 
-    #enter = (e: DragEvent<HTMLDivElement>) => {
+    private dragEnterHandler = (e: DragEvent<HTMLDivElement>) => {
         if (++this.counter === 1) {
             const acceptable = Array.from(e.dataTransfer.items).some(this.isAcceptable);
             this.setState({ dragging: true, acceptable: acceptable });
@@ -51,13 +52,13 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
         e.preventDefault();
     }
 
-    #over = (e: DragEvent<HTMLDivElement>) => {
+    private dragOverHandler = (e: DragEvent<HTMLDivElement>) => {
         e.dataTransfer.dropEffect = this.state.acceptable ? "copy" : "none";
         e.stopPropagation();
         e.preventDefault();
     }
 
-    #leave = (e: DragEvent<HTMLDivElement>) => {
+    private dragLeaveHandler = (e: DragEvent<HTMLDivElement>) => {
         if (--this.counter === 0) this.reset();
         e.stopPropagation();
         e.preventDefault();
@@ -68,14 +69,15 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
         const { dragging, acceptable } = this.state;
         const color = acceptable ? "primary" : "secondary";
 
-        return <div {...other} onDragEnter={this.#enter} onDragLeave={this.#leave} onDragOver={this.#over} onDrop={this.#drop}>
-            {dragging && <div className={`backdrop text-center border border-2 border-${color} backdrop-${color}`}>
-                <Indicator className={`vp-center flex-column text-${acceptable ? "white" : "white-50"}`}>
+        return <div {...other} onDragEnter={this.dragEnterHandler} onDragLeave={this.dragLeaveHandler}
+            onDragOver={this.dragOverHandler} onDrop={this.dropHandler}>
+            {children}
+            {dragging && <div className={`backdrop d-flex border border-2 border-${color} backdrop-${color}`}>
+                <Indicator className={`m-auto flex-column text-${acceptable ? "white" : "white-50"}`}>
                     <i className={`fa fa-${acceptable ? "upload" : "poo"} fa-3x`} />
                     <p className="text-bolder">{acceptable ? "Drop playlist files here" : "Only playlist files (.m3u, .m3u8) are supported"}</p>
                 </Indicator>
             </div>}
-            {children}
         </div>;
     }
 }
