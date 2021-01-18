@@ -21,10 +21,13 @@ const Devices = withDataFetch<DataFetchProps<UpnpDevice[]> & TemplatedDataCompon
     DeviceListContainer, ({ category }) => withMemoKey($api.devices(category).jsonFetch, category as string),
     { usePreloader: false });
 
-export default ({ match: { path, params: { category } }, deviceTemplate = DeviceCard, children }: DeviceRouterProps) => <Switch>
-    {children}
-    <Route path={`${path}/:device/browse`} render={props => <Browser {...props} />} />
-    <Route path={`${path}/:device`} exact render={(props: RouteComponentProps<CategoryParams & DeviceParams>) =>
-        <Device category={category} itemTemplate={deviceTemplate} device={props.match.params.device} />} />
-    <Route path={path} exact render={() => <Devices category={category} itemTemplate={deviceTemplate} />} />
-</Switch>
+export default ({ match: { path, params: { category } }, deviceTemplate = DeviceCard, children }: DeviceRouterProps) =>
+    <div className="h-100 overflow-auto d-flex flex-column">
+        <Switch>
+            {children}
+            <Route path={`${path}/:device/browse`} render={props => <Browser {...props} />} />
+            <Route path={`${path}/:device`} exact render={(props: RouteComponentProps<CategoryParams & DeviceParams>) =>
+                <Device category={category} itemTemplate={deviceTemplate} device={props.match.params.device} />} />
+            <Route path={path} exact render={() => <Devices category={category} itemTemplate={deviceTemplate} />} />
+        </Switch>
+    </div>

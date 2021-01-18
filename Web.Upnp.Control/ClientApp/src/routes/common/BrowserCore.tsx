@@ -301,7 +301,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
 
         return <div className={`d-flex flex-grow-1 flex-column${className ? ` ${className}` : ""}`}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler}>
-            <div className="auto-table table-compact table-hover-link table-striped table-focus-marker w-100 mw-100"
+            <div className="auto-table table-compact table-hover-link table-striped table-focus-marker"
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {header}
                 <div className={stickyColumnHeaders ? "sticky-header" : undefined}>

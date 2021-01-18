@@ -15,7 +15,7 @@ export function LoadIndicator({ children = "Loading...", ...others }: HTMLAttrib
 }
 
 export function LoadIndicatorOverlay({ children, className, ...other }: HTMLAttributes<HTMLDivElement>) {
-    return <div className={`backdrop text-center${className ? ` ${className}` : ""}`} {...other}>
-        <LoadIndicator className="vp-center flex-column">{children}</LoadIndicator>
+    return <div className={`backdrop d-flex justify-content-center${className ? ` ${className}` : ""}`} {...other}>
+        <LoadIndicator className="flex-column">{children}</LoadIndicator>
     </div>
 }
