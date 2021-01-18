@@ -11,7 +11,6 @@ export type DeviceActionProps = {
 };
 
 const browserProps: BrowserCoreProps = {
-    selectOnClick: true,
     rowState: () => RowState.None
 }
 

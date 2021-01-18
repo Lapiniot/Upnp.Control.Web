@@ -12,7 +12,7 @@ const DATA_ROW_SELECTOR = "div[data-id]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-id]:focus";
 const DATA_ROW_FOCUS_WITHIN_SELECTOR = "div[data-id]:focus,div[data-id] :focus";
 
-type ModeFlags = "multiSelect" | "useCheckboxes" | "selectOnClick" | "modalDialogMode" | "stickyColumnHeaders";
+type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode" | "stickyColumnHeaders";
 
 export enum RowState {
     None = 0b0,
@@ -288,7 +288,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
 
     render() {
         const { className, rowState = () => RowState.Navigable, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes = false, selectOnClick = false, stickyColumnHeaders = true } = this.props;
+            useCheckboxes = false, stickyColumnHeaders = true } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.rowStates = typeof rowState === "function" ? items.map(rowState) : rowState;
@@ -300,8 +300,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         const contextMenu = children.find(c => (c as ReactElement)?.type === MediaBrowser.ContextMenu);
 
         return <div className={`d-flex flex-grow-1 flex-column${className ? ` ${className}` : ""}`}
-            onMouseDown={selectOnClick ? this.mouseEventHandler : undefined}
-            onMouseUp={selectOnClick ? this.mouseEventHandler : undefined}>
+            onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler}>
             <div className="auto-table table-compact table-hover-link table-striped table-focus-marker w-100 mw-100"
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {header}
@@ -320,7 +319,8 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                 </div>
                 <div>
                     {parents && parents.length > 0 &&
-                        <div data-id={parents[1]?.id ?? -1} onDoubleClick={this.navigateHandler}>
+                        <div data-id={parents[1]?.id ?? -1} onDoubleClick={this.navigateHandler}
+                            title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ...">
                             {useCheckboxes && <div>&nbsp;</div>}
                             <div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" stroke="currentColor" viewBox="0 0 16 16">

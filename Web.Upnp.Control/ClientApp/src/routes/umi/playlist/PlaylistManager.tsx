@@ -44,7 +44,6 @@ type PlaylistManagerState = {
 
 const browserProps: BrowserCoreProps = {
     multiSelect: true,
-    selectOnClick: true,
     useCheckboxes: true,
     rowState: item => item.container
         ? RowState.Navigable
@@ -357,7 +356,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <SignalRListener handlers={this.handlers}>
                 <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
                     selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.open} rowState={this.rowStates}
-                    useCheckboxes selectOnClick multiSelect>
+                    useCheckboxes multiSelect>
                     <Browser.Header className="p-0">
                         <div className="d-flex flex-column">
                             <Toolbar className="px-2 py-1 bg-light border-bottom">
