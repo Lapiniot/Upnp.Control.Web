@@ -334,7 +334,8 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                     {[items.map((e, index) => {
                         const selected = this.selection.selected(e.id);
                         const selectable = !!(this.rowStates[index] & RowState.Selectable);
-                        return <div key={e.id} tabIndex={0} data-id={e.id} data-selected={selected} data-active={!!(this.rowStates[index] & RowState.Active)}
+                        return <div key={e.id} tabIndex={0} data-id={e.id} data-selected={selected ? selected : undefined}
+                            data-active={this.rowStates[index] & RowState.Active ? true : undefined}
                             onDoubleClick={e.container && (this.rowStates[index] & RowState.Navigable) ? this.navigateHandler : this.open}>
                             {useCheckboxes && <div>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />

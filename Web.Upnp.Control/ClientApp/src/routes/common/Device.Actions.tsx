@@ -11,7 +11,7 @@ export type DeviceActionProps = {
 };
 
 const browserProps: BrowserCoreProps = {
-    rowState: () => RowState.None
+    rowState: () => RowState.Navigable | RowState.Selectable
 }
 
 export function BrowseContentAction({ device, category }: DeviceActionProps) {
