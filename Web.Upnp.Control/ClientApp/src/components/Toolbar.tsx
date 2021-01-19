@@ -5,7 +5,7 @@ export default class Toolbar extends React.Component<HTMLAttributes<HTMLDivEleme
     displayName = Toolbar.name;
 
     static Button = ({ className, glyph, children, visible, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; visible?: boolean }) =>
-        <button className={`btn${className ? ` ${className}` : ""}${visible === false ? " d-none" : ""}`} {...other}>
+        <button type="button" className={`btn${className ? ` ${className}` : ""}${visible === false ? " d-none" : ""}`} {...other}>
             {glyph && <i className={`fas fa-${glyph}`} />}{children}
         </button>;
 

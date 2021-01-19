@@ -11,7 +11,7 @@ import { PlayerSvgSymbols } from "./SvgSymbols";
 
 function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }) {
     const { className, glyph, children, active, ...other } = props;
-    return <button className={`btn btn-round p-1${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
+    return <button type="button" className={`btn btn-round p-1${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
         {glyph && <svg><use href={`#${glyph}`} /></svg>}{children}
     </button>
 }

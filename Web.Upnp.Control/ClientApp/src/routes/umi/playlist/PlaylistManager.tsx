@@ -370,7 +370,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler}>
                         {this.getMenuConfig().map(i => <li key={i[0]}>
                             {i[1] || i[2]
-                                ? <button data-action={i[0]} disabled={i[3]} className="dropdown-item">
+                                ? <button type="button" data-action={i[0]} disabled={i[3]} className="dropdown-item">
                                     {i[2] && <svg><use href={`#${i[2]}`}></use></svg>}{i[1]}
                                 </button>
                                 : <hr className="dropdown-divider mx-2"></hr>}

@@ -20,7 +20,7 @@ namespace Web.Upnp.Control.Controllers
     {
         private readonly ILogger<UpnpEventsController> logger;
         private readonly IEnumerable<IObserver<UpnpEvent>> observers;
-        private readonly XmlReaderSettings settings = new() {Async = true, IgnoreComments = true, IgnoreWhitespace = true};
+        private readonly XmlReaderSettings settings = new() { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
 
         public UpnpEventsController(ILogger<UpnpEventsController> logger, IEnumerable<IObserver<UpnpEvent>> observers)
         {
@@ -52,6 +52,18 @@ namespace Web.Upnp.Control.Controllers
 
             if(properties == null || properties.Count == 0) return;
 
+            foreach(var item in properties)
+            {
+                Console.WriteLine($"{item.Key} = {item.Value}");
+            }
+
+            foreach(var item in vendorProperties)
+            {
+                Console.WriteLine($"{item.Key} = {item.Value}");
+            }
+
+            Console.WriteLine("-----------------------------------------------");
+
             NotifyObservers<T>(deviceId, properties, vendorProperties);
         }
 
@@ -59,7 +71,7 @@ namespace Web.Upnp.Control.Controllers
             IReadOnlyDictionary<string, string> vendorProperties)
             where T : UpnpPropertyChangedEvent, new()
         {
-            var @event = new T {DeviceId = deviceId, Properties = properties, VendorProperties = vendorProperties};
+            var @event = new T { DeviceId = deviceId, Properties = properties, VendorProperties = vendorProperties };
 
             foreach(var observer in observers)
             {

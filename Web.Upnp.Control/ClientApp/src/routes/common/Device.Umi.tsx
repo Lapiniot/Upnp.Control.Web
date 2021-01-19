@@ -23,7 +23,7 @@ function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
 
 function Menu({ dataContext: d, device }: HTMLAttributes<HTMLDivElement> & DataFetchProps<BrowseFetchResult> & DeviceActionProps) {
     return <>
-        <button className="btn btn-link p-0 image-only" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
+        <button type="button" className="btn btn-link p-0 image-only" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
             <i className="fas fa-caret-right fa-lg" /><span className="visually-hidden">Toggle Dropdown</span>
         </button>
         <DropdownMenu data-device={device.udn} placement="right-start">
