@@ -9,6 +9,8 @@ import { AVPositionState, AVState, RCState } from "./Types";
 import { parseMilliseconds } from "../../components/Extensions";
 import { PlayerSvgSymbols } from "./SvgSymbols";
 
+const STATE_UPDATE_DELAY_MS = 2000;
+
 function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }) {
     const { className, glyph, children, active, ...other } = props;
     return <button type="button" className={`btn btn-round p-1${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
@@ -24,6 +26,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
     handlers;
     ctrl;
+    stateUpdateTimeout: number | null = null;
 
     constructor(props: PlayerProps) {
         super(props);
@@ -42,12 +45,14 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
     onAVTransportEvent = (device: string, { state, position }: { state: AVState; position: AVPositionState }) => {
         if (device === this.props.udn) {
+            this.cancelStateUpdate();
             this.setState({ ...state, ...position });
         }
     }
 
     onRenderingControlEvent = (device: string, state: RCState) => {
-        if (device === this.props.udn) {
+        if (device === this.props.udn && (state.volume !== this.state.volume || state.muted && state.muted !== this.state.muted)) {
+            this.cancelStateUpdate();
             this.setState(state);
         }
     }
@@ -58,37 +63,59 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
+        this.updateStateAsync();
+    }
+
+    componentWillUnmount() {
+        this.cancelStateUpdate();
+    }
+
+    play = () => this.ctrl.play().fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    pause = () => this.ctrl.pause().fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    stop = () => this.ctrl.stop().fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    prev = () => this.ctrl.prev().fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    next = () => this.ctrl.next().fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    seek = (position: number) => this.ctrl.seek(position).fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    setRepeatAllPlayMode = () => this.ctrl.setPlayMode("REPEAT_ALL").fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode("REPEAT_SHUFFLE").fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    changeVolume = (volume: number) => this.ctrl.setVolume(Math.round(volume * 100)).fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    private cancelStateUpdate = () => {
+        if (this.stateUpdateTimeout) {
+            clearTimeout(this.stateUpdateTimeout);
+            this.stateUpdateTimeout = null;
+        }
+    }
+
+    private defferStateUpdate(ms: number) {
+        this.cancelStateUpdate();
+        this.stateUpdateTimeout = window.setTimeout(() => this.updateStateAsync(), ms);
+    }
+
+    private updateStateAsync = async () => {
         try {
             const r = await Promise.all([
                 await this.ctrl.position().jsonFetch($c.timeout),
-                await this.ctrl.volume(true).jsonFetch($c.timeout)]);
+                await this.ctrl.volume(true).jsonFetch($c.timeout)
+            ]);
 
-            this.setState({ ...r[0], ...r[1] });
+            const state = { ...r[0], ...r[1] };
+            this.setState(state);
         } catch (error) {
             console.error(error);
         }
     }
-
-    play = () => this.ctrl.play().fetch($c.timeout);
-
-    pause = () => this.ctrl.pause().fetch($c.timeout);
-
-    stop = () => this.ctrl.stop().fetch($c.timeout);
-
-    prev = () => this.ctrl.prev().fetch($c.timeout);
-
-    next = () => this.ctrl.next().fetch($c.timeout);
-
-    seek = (position: number) => this.ctrl.seek(position).fetch($c.timeout);
-
-    setRepeatAllPlayMode = () => this.ctrl.setPlayMode("REPEAT_ALL").fetch($c.timeout);
-
-    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode("REPEAT_SHUFFLE").fetch($c.timeout);
-
-    toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($c.timeout);
-
-    changeVolume = (volume: number) => this.ctrl.setVolume(Math.round(volume * 100)).fetch($c.timeout);
 
     render() {
         const { actions = [], current, next, state, playMode, relTime, duration, volume = 0, muted = false } = this.state;
