@@ -52,18 +52,6 @@ namespace Web.Upnp.Control.Controllers
 
             if(properties == null || properties.Count == 0) return;
 
-            foreach(var item in properties)
-            {
-                Console.WriteLine($"{item.Key} = {item.Value}");
-            }
-
-            foreach(var item in vendorProperties)
-            {
-                Console.WriteLine($"{item.Key} = {item.Value}");
-            }
-
-            Console.WriteLine("-----------------------------------------------");
-
             NotifyObservers<T>(deviceId, properties, vendorProperties);
         }
 

@@ -36,6 +36,15 @@ namespace Web.Upnp.Control.Services
 
         private void NotifyAVTransportEvent(UpnpPropertyChangedEvent avtEvent)
         {
+            if(avtEvent.Properties.Count == 1 &&
+                (avtEvent.Properties.ContainsKey("RelativeTimePosition") ||
+                avtEvent.Properties.ContainsKey("AbsoluteTimePosition")))
+            {
+                // Workaround for some quirky renderers that report position changes every second during playback
+                // via state variable changes. Some way of throttling is definitely needed here :(
+                return;
+            }
+
             var map = avtEvent.Properties;
             var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
             var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
