@@ -3,11 +3,11 @@ import Breadcrumb from "./Breadcrumb";
 import { TablePagination } from "./Pagination";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import $config from "./Config";
 import { DataFetchProps } from "../../components/DataFetch";
 import { RouteComponentProps } from "react-router";
 import { BrowseFetchResult } from "./Types";
 import { NavigatorProps } from "./Navigator";
+import $s from "./Config";
 
 type FetchProps = {
     s?: string;
@@ -34,6 +34,6 @@ export default function (props: BrowserProps) {
         <TablePagination location={props.location} history={props.history}
             className="bg-light border-top sticky-bottom py-1 px-3 justify-content-end"
             total={total} current={typeof page === "string" ? parseInt(page) : 1}
-            pageSize={typeof size === "string" ? parseInt(size) : $config.pageSize} />
+            pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
     </>
 }

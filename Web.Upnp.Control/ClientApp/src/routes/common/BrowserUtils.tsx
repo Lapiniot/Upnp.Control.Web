@@ -2,9 +2,9 @@ import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/Dat
 import withNavigation, { NavigatorProps } from "./Navigator";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $api, { BrowseFetch } from "../../components/WebApi";
-import $config from "./Config";
 import { DIDLItem, DIDLResource } from "./Types";
 import { ComponentType } from "react";
+import $s from "./Config";
 
 export class DIDLUtils {
     static getKind(upnpClassName: string): string {
@@ -76,7 +76,7 @@ type FetchProps = {
 
 export function fromBaseQuery(baseFetchQuery: FetchFunction) {
     return ({ device, id, p, s }: FetchProps) => {
-        const size = parse(s) ?? $config.pageSize;
+        const size = parse(s) ?? $s.get("pageSize");
         const page = parse(p) ?? 1;
         const key = `${device}!${id ?? ""}!${p ?? ""}!${s ?? ""}`;
         return withMemoKey(baseFetchQuery(device as string, id as string).take(size).skip((page - 1) * size).jsonFetch, key);

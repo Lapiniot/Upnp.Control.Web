@@ -2,7 +2,6 @@ import React, { EventHandler, HTMLAttributes, ReactNode, UIEvent } from "react";
 import { RouteComponentProps } from "react-router";
 import { AVState, BrowseFetchResult, DIDLItem, PropertyBag } from "../../common/Types";
 import $api from "../../../components/WebApi";
-import $config from "../../common/Config";
 import { TextValueEditDialog } from "../../../components/Dialogs";
 import { withBrowser, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils";
 import Toolbar from "../../../components/Toolbar";
@@ -22,6 +21,7 @@ import { UploadPlaylistModalDialog } from "./dialogs/UploadPlaylistModalDialog";
 import { DropTarget } from "../../../components/DropTarget";
 import { PlaylistSvgSymbols } from "../../common/SvgSymbols";
 import { Portal } from "../../../components/Portal";
+import $s from "../../common/Config";
 
 type RouteParams = {
     device: string;
@@ -253,7 +253,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const { dataContext, s, p } = this.props;
         const { items = [], parents = [] } = dataContext?.source ?? {};
         const url = parents[0]?.res?.url
-            ? `${parents[0].res.url}#tracknr=${(p ? parseInt(p) - 1 : 0) * (s ? parseInt(s) : $config.pageSize) + index + 1},play`
+            ? `${parents[0].res.url}#tracknr=${(p ? parseInt(p) - 1 : 0) * (s ? parseInt(s) : $s.get("pageSize")) + index + 1},play`
             : `${items[index]?.res?.url}#play`;
         return this.ctrl.playUri(url).fetch();
     }
@@ -327,7 +327,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const { dataContext: data, match, navigate, fetching, error, id, s, p } = this.props;
         const { playlist, currentTrack } = this.state;
         const { source: { total = 0, items = [], parents = [] } = {} } = data || {};
-        const pageSize = s ? parseInt(s) : $config.pageSize;
+        const pageSize = s ? parseInt(s) : $s.get("pageSize");
         const page = p ? parseInt(p) : 1;
 
         const fetched = items.length;

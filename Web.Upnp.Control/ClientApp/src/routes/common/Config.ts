@@ -1,8 +1,55 @@
-const config = {
+type TypedSettings = {
+    pageSize: number;
+    readonly pageSizes: number[];
+    timeout: number;
+}
+
+const defaults: TypedSettings = {
     pageSize: 60,
     pageSizes: [15, 30, 60, 120, 150],
     timeout: 5000,
-    playlist: { pageSize: 200 }
 };
 
-export default config;
+export class Settings<T extends { [P: string]: string | number | boolean | object }> {
+
+    defaults: T;
+    section: string;
+
+    constructor(section: string, defaults: T) {
+        this.section = section;
+        this.defaults = defaults;
+    }
+
+    public get<K extends keyof T, V extends T[K]>(key: K): V {
+        const def = this.defaults[key];
+        const str = localStorage.getItem(`${this.section}:${key}`);
+
+        if (str) {
+            switch (typeof def) {
+                case "string": return str as V;
+                case "number": return parseInt(str) as V;
+                case "boolean": return !!parseInt(str) as V;
+                case "object": return JSON.parse(str) as V;
+            }
+        }
+        return def as V;
+    }
+
+    public set<K extends keyof T, V extends T[K]>(key: K, value: V): void {
+        const name = this.section + ":" + key;
+        switch (typeof value) {
+            case "object": localStorage.setItem(name, JSON.stringify(value)); break;
+            case "boolean": localStorage.setItem(name, value ? "1" : "0"); break;
+            default: localStorage.setItem(name, value.toString()); break;
+        }
+    }
+
+    public remove<K extends keyof T>(key: K): void {
+        const name = this.section + ":" + key;
+        localStorage.removeItem(name);
+    }
+}
+
+const settings = new Settings("global", defaults);
+
+export default settings;

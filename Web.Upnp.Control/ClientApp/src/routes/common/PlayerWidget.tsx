@@ -4,10 +4,10 @@ import { SignalRListener } from "../../components/SignalR";
 import $api from "../../components/WebApi";
 import SeekBar from "./SeekBar";
 import Slider from "../../components/Slider";
-import $c from "./Config";
 import { AVPositionState, AVState, RCState } from "./Types";
 import { parseMilliseconds } from "../../components/Extensions";
 import { PlayerSvgSymbols } from "./SvgSymbols";
+import $s from "./Config";
 
 const STATE_UPDATE_DELAY_MS = 2000;
 
@@ -71,25 +71,25 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
         this.cancelStateUpdate();
     }
 
-    play = () => this.ctrl.play().fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    play = () => this.ctrl.play().fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
-    pause = () => this.ctrl.pause().fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    pause = () => this.ctrl.pause().fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
-    stop = () => this.ctrl.stop().fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    stop = () => this.ctrl.stop().fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
-    prev = () => this.ctrl.prev().fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    prev = () => this.ctrl.prev().fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
-    next = () => this.ctrl.next().fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    next = () => this.ctrl.next().fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
-    seek = (position: number) => this.ctrl.seek(position).fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    seek = (position: number) => this.ctrl.seek(position).fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
-    setRepeatAllPlayMode = () => this.ctrl.setPlayMode("REPEAT_ALL").fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    setRepeatAllPlayMode = () => this.ctrl.setPlayMode("REPEAT_ALL").fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
-    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode("REPEAT_SHUFFLE").fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode("REPEAT_SHUFFLE").fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
-    toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
-    changeVolume = (volume: number) => this.ctrl.setVolume(Math.round(volume * 100)).fetch($c.timeout).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    changeVolume = (volume: number) => this.ctrl.setVolume(Math.round(volume * 100)).fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
     private cancelStateUpdate = () => {
         if (this.stateUpdateTimeout) {
@@ -106,8 +106,8 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
     private updateStateAsync = async () => {
         try {
             const r = await Promise.all([
-                await this.ctrl.position().jsonFetch($c.timeout),
-                await this.ctrl.volume(true).jsonFetch($c.timeout)
+                await this.ctrl.position().jsonFetch($s.get("timeout")),
+                await this.ctrl.volume(true).jsonFetch($s.get("timeout"))
             ]);
 
             const state = { ...r[0], ...r[1] };
@@ -165,6 +165,6 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
     }
 }
 
-const fetchPromiseFactoryBuilder = ({ udn }: { udn: string }) => withMemoKey($api.control(udn as string).state(true).withTimeout($c.timeout).jsonFetch, udn);
+const fetchPromiseFactoryBuilder = ({ udn }: { udn: string }) => withMemoKey($api.control(udn as string).state(true).withTimeout($s.get("timeout")).jsonFetch, udn);
 
 export default withDataFetch(PlayerCore, fetchPromiseFactoryBuilder, { usePreloader: false });

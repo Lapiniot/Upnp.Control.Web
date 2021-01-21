@@ -1,8 +1,8 @@
 import React, { ChangeEvent, HTMLProps } from "react";
 import { LinkProps, NavLink, RouteLink } from "../../components/NavLink";
 import { PaginationSvgSymbols } from "./SvgSymbols";
-import $c from "./Config";
 import H from "history";
+import $s from "./Config";
 
 type PageLinkProps = LinkProps & {
     current: boolean
@@ -76,11 +76,13 @@ const RelativePageLink = ({ title, to, label, children, className, ...other }: L
 export class TablePagination extends React.Component<PaginationProps & NavigationProps & { pageSizes?: number[] }> {
 
     private pageSizeChangedHandler = (event: ChangeEvent<HTMLSelectElement>) => {
-        const url = this.getBaseUrl(event.target.value);
+        const pageSize = parseInt(event.target.value);
+        const url = this.getBaseUrl(pageSize);
+        $s.set("pageSize", pageSize);
         this.props.history.push(url);
     }
 
-    private getBaseUrl(pageSize: number | string) {
+    private getBaseUrl(pageSize: number) {
         const sp = new window.URLSearchParams(this.props.location.search);
         sp.set("s", pageSize.toString());
         sp.delete("p");
@@ -88,7 +90,7 @@ export class TablePagination extends React.Component<PaginationProps & Navigatio
     }
 
     render() {
-        const { total, current, pageSize, className, pageSizes = $c.pageSizes, ...other } = this.props;
+        const { total, current, pageSize = $s.get("pageSize"), className, pageSizes = $s.get("pageSizes"), ...other } = this.props;
 
         const pattern = `${this.getBaseUrl(pageSize).toString()}&p=`;
         const pages = Math.ceil(total / pageSize);
