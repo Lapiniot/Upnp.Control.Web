@@ -110,6 +110,31 @@ $generate-grid-layout-responsive-styles: false;
     .gapx-#{$k} {
         column-gap: $v;
     }
+
+    $gap: $v/2;
+
+    .flex-gapx-#{$k} {
+        margin-left: -$gap;
+        margin-right: -$gap;
+        & > * {
+            margin-left: $gap;
+            margin-right: $gap;
+        }
+    }
+
+    .flex-gapy-#{$k} {
+        margin-top: -$gap;
+        margin-bottom: -$gap;
+        & > * {
+            margin-top: $gap;
+            margin-bottom: $gap;
+        }
+    }
+
+    .flex-gap-#{$k} {
+        @extend .flex-gapx-#{$k};
+        @extend .flex-gapy-#{$k};
+    }
 }
 
 @each $k, $v in $spacers {
