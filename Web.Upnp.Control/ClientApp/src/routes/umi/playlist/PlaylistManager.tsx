@@ -353,20 +353,18 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         return <DropTarget className="d-flex flex-column h-100" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
             <PlaylistSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
+            <div className="d-flex flex-column sticky-top">
+                <Toolbar className="px-2 py-1 bg-light border-bottom">
+                    <Toolbar.Group>
+                        {this.getToolbarConfig().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round" />)}
+                    </Toolbar.Group>
+                </Toolbar>
+                <Breadcrumb className="border-bottom" items={parents} path={match.path} params={match.params} />
+            </div>
             <SignalRListener handlers={this.handlers}>
                 <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
                     selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.open} rowState={this.rowStates}
                     useCheckboxes multiSelect>
-                    <Browser.Header className="p-0">
-                        <div className="d-flex flex-column">
-                            <Toolbar className="px-2 py-1 bg-light border-bottom">
-                                <Toolbar.Group>
-                                    {this.getToolbarConfig().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round" />)}
-                                </Toolbar.Group>
-                            </Toolbar>
-                            <Breadcrumb items={parents} path={match.path} params={match.params} />
-                        </div>
-                    </Browser.Header>
                     <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler}>
                         {this.getMenuConfig().map(i => <li key={i[0]}>
                             {i[1] || i[2]

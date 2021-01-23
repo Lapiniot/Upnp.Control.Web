@@ -11,8 +11,10 @@ import { EventHint, SelectionTracker } from "../../components/SelectionTracker";
 const DATA_ROW_SELECTOR = "div[data-id]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-id]:focus";
 const DATA_ROW_FOCUS_WITHIN_SELECTOR = "div[data-id]:focus,div[data-id] :focus";
+const HEADER_SELECTOR = ":scope > div.table-caption";
+const HEADER_CELLS_SELECTOR = ":scope > div:not(.table-caption):first-of-type > div > div, :scope > div.table-caption:first-of-type + div > div > div";
 
-type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode" | "stickyColumnHeaders";
+type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode";
 
 export enum RowState {
     None = 0b0,
@@ -49,7 +51,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         super(props);
         this.selection = props.selection || new SelectionService();
         this.selection.addEventListener("changed", this.selectionChangedHandler);
-        this.resizeObserver = new ResizeObserver(this.onCaptionResized);
+        this.resizeObserver = new ResizeObserver(this.resizedObservedHandler);
         this.tracker = new SelectionTracker([], this.selection, this.complexSelectionChanged);
     }
 
@@ -64,18 +66,8 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
 
     componentDidMount() {
         document.body.addEventListener("keydown", this.onKeyDown);
-
-        const scope = this.tableRef.current;
-        const caption = scope?.querySelector<HTMLDivElement>("div.table-caption:first-of-type");
-
-        if (caption) {
-            this.resizeObserver.disconnect();
-            this.resizeObserver.observe(caption);
-        }
-        else {
-            const headers = scope?.querySelectorAll<HTMLDivElement>(`div:nth-of-type(${caption ? 2 : 1}) > div > div`);
-            this.adjustStickyElements(caption ?? undefined, headers);
-        }
+        this.resizeObserver.disconnect();
+        this.resizeObserver.observe(this.tableRef.current as HTMLDivElement);
     }
 
     private selectionFilter = (item: DIDLItem, index: number) => {
@@ -100,23 +92,19 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         this.selection.clear();
     }
 
-    onCaptionResized: ResizeObserverCallback = entries => {
-        const caption = entries[0].target;
-        const headers = caption?.nextSibling?.firstChild?.childNodes;
-        this.adjustStickyElements(caption as HTMLElement, headers as NodeListOf<HTMLElement>);
-    }
+    resizedObservedHandler: ResizeObserverCallback = entries => {
+        const table = entries[0].target;
 
-    adjustStickyElements(caption: HTMLElement | undefined, headers: NodeListOf<HTMLElement> | undefined) {
+        const caption = table.querySelector<HTMLDivElement>(HEADER_SELECTOR);
         if (caption) {
             const rect = caption.getBoundingClientRect();
-            const top = Math.min(rect.top, caption.offsetTop);
-            const captionBottom = `${top + rect.height}px`;
-            caption.style.top = `${top}px`;
-            if (headers) headers.forEach(header => { header.style.top = captionBottom; });
+            caption.style.top = `${rect.top}px`;
         }
-        else if (headers) {
-            headers.forEach(h => { h.style.top = `${Math.min(h.getBoundingClientRect().top, h.offsetTop)}px`; });
-        }
+
+        table.querySelectorAll<HTMLDivElement>(HEADER_CELLS_SELECTOR).forEach(cell => {
+            const rect = cell.getBoundingClientRect();
+            cell.style.top = `${rect.top}px`;
+        })
     }
 
     onCheckboxChanged: ChangeEventHandler<HTMLInputElement> = e => {
@@ -274,8 +262,8 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
             ?? RowState.Navigable;
     }
 
-    static Header({ className, sticky = true, ...other }: HTMLAttributes<HTMLDivElement> & { sticky?: boolean }) {
-        return <div className={`table-caption${sticky ? " sticky-top" : ""}${className ? ` ${className}` : ""}`} {...other} />;
+    static Caption({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
+        return <div className={`table-caption sticky-top${className ? ` ${className}` : ""}`} {...other} />;
     }
 
     static Footer(props: HTMLAttributes<HTMLDivElement>) {
@@ -288,14 +276,14 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
 
     render() {
         const { className, rowState = () => RowState.Navigable, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes = false, stickyColumnHeaders = true } = this.props;
+            useCheckboxes = false } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
         this.rowStates = typeof rowState === "function" ? items.map(rowState) : rowState;
         this.tracker.setup(items.map(i => i.id), this.props.selection ?? this.selection);
 
         const children = React.Children.toArray(this.props.children);
-        const header = children.find(c => (c as ReactElement)?.type === MediaBrowser.Header);
+        const caption = children.find(c => (c as ReactElement)?.type === MediaBrowser.Caption);
         const footer = children.find(c => (c as ReactElement)?.type === MediaBrowser.Footer);
         const contextMenu = children.find(c => (c as ReactElement)?.type === MediaBrowser.ContextMenu);
 
@@ -303,8 +291,8 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler}>
             <div className="auto-table table-compact table-hover-link table-striped table-focus-marker"
                 ref={this.tableRef} onFocus={this.focusHandler}>
-                {header}
-                <div className={stickyColumnHeaders ? "sticky-header" : undefined}>
+                {caption}
+                <div className="sticky-header">
                     <div>
                         {useCheckboxes &&
                             <div>
@@ -347,9 +335,9 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
                         </div>;
                     })]}
                 </div>
-                {contextMenu}
                 {footer}
             </div>
+            {contextMenu}
         </div>;
     }
 }

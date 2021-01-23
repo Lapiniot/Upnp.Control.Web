@@ -26,11 +26,8 @@ export default function (props: BrowserProps) {
     const { source: { total = 0, parents = undefined } = {} } = data || {};
     return <>
         { fetching && <LoadIndicatorOverlay />}
-        <BrowserCore {...props}>
-            <BrowserCore.Header className="p-0">
-                <Breadcrumb items={parents} path={match.path} params={match.params} />
-            </BrowserCore.Header>
-        </BrowserCore>
+        <Breadcrumb items={parents} path={match.path} params={match.params} className="sticky-top border-bottom" />
+        <BrowserCore {...props} />
         <TablePagination location={props.location} history={props.history}
             className="bg-light border-top sticky-bottom py-1 px-3 justify-content-end"
             total={total} current={typeof page === "string" ? parseInt(page) : 1}
