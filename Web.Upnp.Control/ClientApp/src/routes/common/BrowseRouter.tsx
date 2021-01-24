@@ -11,5 +11,5 @@ type DeviceRouteParams = {
 
 export default ({ match: { path, params: { category } } }: RouteComponentProps<DeviceRouteParams>) => <Switch>
     <Route path={`${path}/-1`} exact render={() => <Redirect to={`/${category}`} />} />
-    <Route path={`${path}/:id(.*)*`} render={props => <Browser {...props} />} />
+    <Route path={`${path}/:id(.*)*`} render={props => <Browser {...props} className="flex-grow-1 flex-shrink-0" />} />
 </Switch>;

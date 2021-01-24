@@ -25,7 +25,7 @@ export default function (props: BrowserProps) {
     const { dataContext: data, match, s: size, p: page, fetching } = props;
     const { source: { total = 0, parents = undefined } = {} } = data || {};
     return <>
-        { fetching && <LoadIndicatorOverlay />}
+        {fetching && <LoadIndicatorOverlay />}
         <Breadcrumb items={parents} path={match.path} params={match.params} className="sticky-top border-bottom" />
         <BrowserCore {...props} />
         <TablePagination location={props.location} history={props.history}

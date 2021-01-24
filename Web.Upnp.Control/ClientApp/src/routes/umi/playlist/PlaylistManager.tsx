@@ -364,7 +364,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <SignalRListener handlers={this.handlers}>
                 <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
                     selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.open} rowState={this.rowStates}
-                    useCheckboxes multiSelect>
+                    useCheckboxes multiSelect className="flex-grow-1 flex-shrink-0">
                     <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler}>
                         {this.getMenuConfig().map(i => <li key={i[0]}>
                             {i[1] || i[2]
