@@ -97,13 +97,11 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
 
         const caption = table.querySelector<HTMLDivElement>(HEADER_SELECTOR);
         if (caption) {
-            const rect = caption.getBoundingClientRect();
-            caption.style.top = `${rect.top}px`;
+            caption.style.top = `${caption.offsetTop}px`;
         }
 
         table.querySelectorAll<HTMLDivElement>(HEADER_CELLS_SELECTOR).forEach(cell => {
-            const rect = cell.getBoundingClientRect();
-            cell.style.top = `${rect.top}px`;
+            cell.style.top = `${cell.offsetTop}px`;
         })
     }
 
