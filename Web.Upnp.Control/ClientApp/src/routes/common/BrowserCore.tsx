@@ -101,7 +101,8 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         }
 
         table.querySelectorAll<HTMLDivElement>(HEADER_CELLS_SELECTOR).forEach(cell => {
-            cell.style.top = `${cell.offsetTop}px`;
+            if (cell.style.top === "")
+                cell.style.top = `${cell.offsetTop}px`;
         })
     }
 
