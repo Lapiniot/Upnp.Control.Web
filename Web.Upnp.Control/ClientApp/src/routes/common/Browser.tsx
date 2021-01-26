@@ -26,11 +26,13 @@ export default function (props: BrowserProps) {
     const { source: { total = 0, parents = undefined } = {} } = data || {};
     return <>
         {fetching && <LoadIndicatorOverlay />}
-        <Breadcrumb items={parents} path={match.path} params={match.params} className="sticky-top border-bottom" />
-        <BrowserCore {...props} />
-        <TablePagination location={props.location} history={props.history}
-            className="bg-light border-top sticky-bottom py-1 px-3 justify-content-end"
-            total={total} current={typeof page === "string" ? parseInt(page) : 1}
-            pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
+        <div className="flex-expand d-flex flex-column">
+            <Breadcrumb items={parents} path={match.path} params={match.params} className="sticky-top border-bottom" />
+            <BrowserCore {...props} className="flex-expand" />
+            <TablePagination location={props.location} history={props.history}
+                className="bg-light border-top sticky-bottom py-1 px-3 justify-content-end"
+                total={total} current={typeof page === "string" ? parseInt(page) : 1}
+                pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
+        </div>
     </>
 }

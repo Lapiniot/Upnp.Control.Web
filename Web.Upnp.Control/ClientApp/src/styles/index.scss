@@ -93,6 +93,10 @@ $generate-grid-layout-responsive-styles: false;
     flex-basis: 0;
 }
 
+.flex-expand {
+    flex: 1 0 auto;
+}
+
 .sticky-bottom {
     position: sticky;
     bottom: 0;

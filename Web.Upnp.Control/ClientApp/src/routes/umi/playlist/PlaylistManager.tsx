@@ -350,38 +350,40 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             state: this.state.state
         };
 
-        return <DropTarget className="d-flex flex-column h-100" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
+        return <>
             <PlaylistSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
-            <div className="d-flex flex-column sticky-top">
-                <Toolbar className="px-2 py-1 bg-light border-bottom">
-                    <Toolbar.Group>
-                        {this.getToolbarConfig().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round" />)}
-                    </Toolbar.Group>
-                </Toolbar>
-                <Breadcrumb className="border-bottom" items={parents} path={match.path} params={match.params} />
-            </div>
-            <SignalRListener handlers={this.handlers}>
-                <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
-                    selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.open} rowState={this.rowStates}
-                    useCheckboxes multiSelect className="flex-grow-1 flex-shrink-0">
-                    <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler}>
-                        {this.getMenuConfig().map(i => <li key={i[0]}>
-                            {i[1] || i[2]
-                                ? <button type="button" data-action={i[0]} disabled={i[3]} className="dropdown-item">
-                                    {i[2] && <svg><use href={`#${i[2]}`}></use></svg>}{i[1]}
-                                </button>
-                                : <hr className="dropdown-divider mx-2"></hr>}
-                        </li>)}
-                    </Browser.ContextMenu>
-                </Browser>
-            </SignalRListener>
-            <div className="sticky-bottom bg-light py-1 px-3 d-flex align-items-center border-top">
-                {this.selection.length > 0 ? <span className="text-muted small">{`${this.selection.length} of ${fetched} selected`}</span> : null}
-                <TablePagination className="ms-auto" location={this.props.location} history={this.props.history} total={total} current={page} pageSize={pageSize} />
-            </div>
-            <Portal selector="#modal-root">{this.state.modal}</Portal>
-        </DropTarget >;
+            <DropTarget className="flex-expand d-flex flex-column" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
+                <div className="d-flex flex-column sticky-top">
+                    <Toolbar className="px-2 py-1 bg-light border-bottom">
+                        <Toolbar.Group>
+                            {this.getToolbarConfig().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round" />)}
+                        </Toolbar.Group>
+                    </Toolbar>
+                    <Breadcrumb className="border-bottom" items={parents} path={match.path} params={match.params} />
+                </div>
+                <SignalRListener handlers={this.handlers}>
+                    <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
+                        selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.open} rowState={this.rowStates}
+                        useCheckboxes multiSelect className="flex-expand">
+                        <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler}>
+                            {this.getMenuConfig().map(i => <li key={i[0]}>
+                                {i[1] || i[2]
+                                    ? <button type="button" data-action={i[0]} disabled={i[3]} className="dropdown-item">
+                                        {i[2] && <svg><use href={`#${i[2]}`}></use></svg>}{i[1]}
+                                    </button>
+                                    : <hr className="dropdown-divider mx-2"></hr>}
+                            </li>)}
+                        </Browser.ContextMenu>
+                    </Browser>
+                </SignalRListener>
+                <div className="sticky-bottom bg-light py-1 px-3 d-flex align-items-center border-top">
+                    {this.selection.length > 0 ? <span className="text-muted small">{`${this.selection.length} of ${fetched} selected`}</span> : null}
+                    <TablePagination className="ms-auto" location={this.props.location} history={this.props.history} total={total} current={page} pageSize={pageSize} />
+                </div>
+                <Portal selector="#modal-root">{this.state.modal}</Portal>
+            </DropTarget >
+        </>;
     }
 }
 

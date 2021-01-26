@@ -75,17 +75,19 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
     render() {
         const { id, title, confirmText = "OK", onConfirm, browserProps = {}, ...other } = this.props;
         return <Modal id={id} title={title} {...other} data-bs-keyboard={true} ref={this.modalRef}>
-            <Modal.Body className="p-0 d-flex flex-column">
-                <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
-                    <Switch>
-                        <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
-                        <Route path={"/sources/:device/-1"} exact render={() => <Redirect to="/sources" />} />
-                        <Route path={"/sources/:device/:id(.*)?"} render={props =>
-                            <Browser {...props} ref={this.browserRef} className="flex-grow-1 flex-shrink-0"
-                                open={this.props.dismissOnOpen ? this.open : undefined} {...browserProps}
-                                selection={this.selection} selectionChanged={this.selectionChanged} modalDialogMode />} />
-                    </Switch>
-                </MemoryRouter>
+            <Modal.Body className="overflow-hidden p-0 position-relative d-flex flex-column">
+                <div className="overflow-auto flex-grow-1 d-flex flex-column">
+                    <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
+                        <Switch>
+                            <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
+                            <Route path={"/sources/:device/-1"} exact render={() => <Redirect to="/sources" />} />
+                            <Route path={"/sources/:device/:id(.*)?"} render={props =>
+                                <Browser {...props} ref={this.browserRef} className="flex-expand"
+                                    open={this.props.dismissOnOpen ? this.open : undefined} {...browserProps}
+                                    selection={this.selection} selectionChanged={this.selectionChanged} modalDialogMode />} />
+                        </Switch>
+                    </MemoryRouter>
+                </div>
             </Modal.Body>
             <Modal.Footer>
                 {(typeof (this.props.children) === "function" ? this.props.children(this) : this.props.children) ||

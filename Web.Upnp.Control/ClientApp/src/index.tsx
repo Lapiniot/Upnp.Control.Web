@@ -32,20 +32,22 @@ ReactDOM.render(
                     </nav>
                 </div>
             </div>
-            <main className="col d-flex flex-column position-relative">
-                <SignalRConnection hubUrl="/upnpevents">
-                    <Switch>
-                        <Route exact path="/" component={HomePage} />
-                        <Route path="/:category(upnp)" component={UpnpPage} />
-                        <Route path="/:category(umi)" component={UmiPage} />
-                        <Route path="/:category(renderers)" component={RenderersPage} />
-                        <Route path="/settings" component={SettingsPage} />
-                        <Route path="*" render={() => <div className="m-2 text-danger">
-                            <h3>404 - Not Found</h3>
-                            <h5>Page you are looking for is not found</h5>
-                        </div>} />
-                    </Switch>
-                </SignalRConnection>
+            <main className="col vh-100 overflow-hidden position-relative">
+                <div className="h-100 overflow-auto d-flex flex-column">
+                    <SignalRConnection hubUrl="/upnpevents">
+                        <Switch>
+                            <Route exact path="/" component={HomePage} />
+                            <Route path="/:category(upnp)" component={UpnpPage} />
+                            <Route path="/:category(umi)" component={UmiPage} />
+                            <Route path="/:category(renderers)" component={RenderersPage} />
+                            <Route path="/settings" component={SettingsPage} />
+                            <Route path="*" render={() => <div className="m-2 text-danger">
+                                <h3>404 - Not Found</h3>
+                                <h5>Page you are looking for is not found</h5>
+                            </div>} />
+                        </Switch>
+                    </SignalRConnection>
+                </div>
             </main>
         </div>
     </BrowserRouter>, container);
