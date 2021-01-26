@@ -42,7 +42,7 @@ export class OpenMediaAction extends React.Component<DeviceActionProps, { modal?
 
     browse = () => {
         this.setState({
-            modal: <BrowserDialog id="open-media-dialog" title="Select media to play" confirmText="Open" className="modal-lg modal-vh-80"
+            modal: <BrowserDialog id="open-media-dialog" title="Select media to play" confirmText="Open" className="modal-lg"
                 onDismiss={this.resetModal} onConfirm={this.playMedia} browserProps={browserProps} immediate>
             </BrowserDialog>
         })

@@ -82,7 +82,6 @@ $generate-grid-layout-responsive-styles: false;
 @import "layout-grid";
 @import "layout-table";
 @import "spoiler";
-@import "modal";
 @import "slider";
 
 .flex-basis-100 {
@@ -267,8 +266,9 @@ $album-art-sizes: (
     z-index: $zindex-modal;
     width: 100%;
     height: 100%;
-    background-color: rgba(#000, 0.5);
+    background-color: rgba(#000, 0.6);
     pointer-events: none;
+    backdrop-filter: blur(0.3px);
 }
 
 .backdrop-primary {
