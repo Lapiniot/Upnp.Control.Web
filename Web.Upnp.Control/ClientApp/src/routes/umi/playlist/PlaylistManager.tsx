@@ -22,6 +22,7 @@ import { DropTarget } from "../../../components/DropTarget";
 import { PlaylistSvgSymbols } from "../../common/SvgSymbols";
 import { Portal } from "../../../components/Portal";
 import $s from "../../common/Config";
+import { MenuItem } from "../../../components/DropdownMenu";
 
 type RouteParams = {
     device: string;
@@ -61,8 +62,6 @@ type ItemAction = "remove";
 type PlaybackAction = "play" | "pause" | "stop";
 
 type Action = PlaylistAction | ItemAction | PlaybackAction;
-
-type MenuItem = [Action | string, string | undefined, string | undefined, boolean | undefined];
 
 type ToolbarItem = [Action, string | undefined, string | undefined, () => void, boolean | undefined];
 
@@ -306,21 +305,23 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             ];
     }
 
-    private getMenuConfig = (): MenuItem[] => this.props.id === "PL:" ?
-        [
-            ["add-items", "Add items", "plus", undefined],
-            ["add-url", "Add stream url", "broadcast-tower", undefined],
-            ["add-files", "Add playlist file", "list", undefined],
-            ["divider", undefined, undefined, undefined],
-            ["rename", "Rename", "edit", undefined],
-            ["delete", "Delete", "trash", undefined],
-            ["copy", "Copy", "copy", true]
-        ] :
-        [
-            ["remove", "Remove item", "trash", undefined],
-            ["divider", undefined, undefined, undefined],
-            ["play", "Play", "play", true],
-        ];
+    renderContextMenu = (anchor?: HTMLElement | null) => {
+        return this.props.id === "PL:"
+            ? <>
+                <MenuItem action="add-items" glyph="plus">Add items</MenuItem>
+                <MenuItem action="add-url" glyph="broadcast-tower">Add stream url</MenuItem>
+                <MenuItem action="add-files" glyph="list">Add playlist file</MenuItem>
+                <MenuItem action="" glyph=""></MenuItem>
+                <li><hr className="dropdown-divider mx-2" /></li>
+                <MenuItem action="rename" glyph="edit">Rename</MenuItem>
+                <MenuItem action="delete" glyph="trash">Delete</MenuItem>
+                <MenuItem action="copy" glyph="copy">Copy</MenuItem>
+            </> : <>
+                <MenuItem action="remove" glyph="trash">Remove item</MenuItem>
+                <li><hr className="dropdown-divider mx-2" /></li>
+                <MenuItem action="play" glyph="play" disabled>Play</MenuItem>
+            </>;
+    };
 
     render() {
 
@@ -366,15 +367,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
                         selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.open} rowState={this.rowStates}
                         useCheckboxes multiSelect className="flex-expand">
-                        <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler}>
-                            {this.getMenuConfig().map(i => <li key={i[0]}>
-                                {i[1] || i[2]
-                                    ? <button type="button" data-action={i[0]} disabled={i[3]} className="dropdown-item">
-                                        {i[2] && <svg><use href={`#${i[2]}`}></use></svg>}{i[1]}
-                                    </button>
-                                    : <hr className="dropdown-divider mx-2"></hr>}
-                            </li>)}
-                        </Browser.ContextMenu>
+                        <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>
                 <div className="sticky-bottom bg-light py-1 px-3 d-flex align-items-center border-top">

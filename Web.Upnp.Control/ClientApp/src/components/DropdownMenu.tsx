@@ -1,6 +1,6 @@
 import { createPopper, Instance as PopperInstance } from "@popperjs/core/lib/popper";
 import { Placement } from "@popperjs/core/lib/enums";
-import React, { HTMLAttributes } from "react";
+import React, { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
@@ -9,15 +9,36 @@ const TOGGLE_ITEM_SELECTOR = "[data-bs-toggle='dropdown']";
 export type DropdownMenuProps = Omit<HTMLAttributes<HTMLUListElement>, "onSelect"> & {
     placement?: Placement;
     onSelect?: (item: HTMLElement, anchor?: HTMLElement) => void;
+    render?: (anchor?: HTMLElement | null) => ReactNode;
 };
 
-export class DropdownMenu extends React.Component<DropdownMenuProps> {
+type DropdownMenuState = {
+    children?: ReactNode;
+    anchor?: HTMLElement;
+    show?: boolean;
+};
+
+export function MenuItem({ className, action, glyph, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action: string, glyph?: string }) {
+    return <li>
+        <button type="button" data-action={action} className={`dropdown-item${className ? ` ${className}` : ""}`} {...other}>
+            {glyph && <svg xmlns="http://www.w3.org/2000/svg"><use href={`#${glyph}`} /></svg>}{children}
+        </button>
+    </li>
+}
+
+export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMenuState> {
 
     menuRef = React.createRef<HTMLUListElement>();
     instance: PopperInstance | null = null;
+    state: DropdownMenuState = { children: null, show: undefined, anchor: undefined };
 
     componentDidMount() {
         this.menuRef.current?.parentElement?.addEventListener("click", this.parentClickListener);
+    }
+
+    componentDidUpdate() {
+        if (this.state.children)
+            this.update(this.state.anchor ?? null, this.menuRef.current as HTMLElement, this.state.show);
     }
 
     componentWillUnmount() {
@@ -27,16 +48,18 @@ export class DropdownMenu extends React.Component<DropdownMenuProps> {
         this.instance?.destroy();
     }
 
-    toggle = (anchor: HTMLElement) => {
-        this.update(anchor, this.menuRef.current as HTMLElement);
-    }
-
     show = (anchor: HTMLElement) => {
-        this.update(anchor, this.menuRef.current as HTMLElement, true);
+        if (this.props.render)
+            this.setState({ children: this.props.render(anchor), show: true, anchor })
+        else
+            this.update(anchor, this.menuRef.current as HTMLElement, true);
     }
 
     hide = () => {
-        this.update(null, this.menuRef.current as HTMLElement, false);
+        if (this.props.render)
+            this.setState({ show: false, anchor: undefined })
+        else
+            this.update(null, this.menuRef.current as HTMLElement, false);
     }
 
     private update = (reference: HTMLElement | null, popper: HTMLElement, visibility?: boolean) => {
@@ -187,7 +210,7 @@ export class DropdownMenu extends React.Component<DropdownMenuProps> {
     render() {
         const { className, children, placement, onSelect, ...other } = this.props;
         return <ul ref={this.menuRef} className={`dropdown-menu${className ? ` ${className}` : ""}`} style={{ margin: 0 }} {...other}>
-            {children}
+            {this.state.children ?? children}
         </ul>;
     }
 }
