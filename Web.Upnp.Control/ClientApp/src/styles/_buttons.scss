@@ -43,6 +43,10 @@ nav.navbar-nav > a.nav-link,
         margin: 0;
     }
 
+    & > svg {
+        fill: currentColor;
+    }
+
     &:focus-visible,
     &:hover {
         color: $dropdown-link-hover-color;
