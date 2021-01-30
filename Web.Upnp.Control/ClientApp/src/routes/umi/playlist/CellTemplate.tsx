@@ -39,7 +39,7 @@ export default function ({ data: d, context: { state, play, pause, playUrl } = {
                             <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                         </div>
                     </React.Fragment>
-                : <div className="stack-layer d-flex stack-layer-hover" onClick={playUrl} data-play-index={index}>
+                : <div className="stack-layer d-flex stack-layer-hover" onClick={playUrl} data-id={d.id}>
                     <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                 </div>}
         </div>
@@ -48,7 +48,7 @@ export default function ({ data: d, context: { state, play, pause, playUrl } = {
             {d.creator && <>&nbsp;&bull;&nbsp;<small>{d.creator}</small></>}
             {d.album && <>&nbsp;&bull;&nbsp;<small>{d.album}</small></>}
         </span>
-        <button type="button" className="btn btn-round" data-menu-toggle-for={d.id} data-bs-toggle="dropdown" disabled={!!(rowState & RowState.Readonly)}>
+        <button type="button" className="btn btn-round" data-id={d.id} data-index={index} data-bs-toggle="dropdown" disabled={!!(rowState & RowState.Readonly)}>
             <svg><use href="#ellipsis-v" /></svg>
         </button>
     </div>;

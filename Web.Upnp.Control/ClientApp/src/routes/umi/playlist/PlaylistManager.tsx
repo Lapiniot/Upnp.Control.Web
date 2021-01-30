@@ -247,24 +247,29 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private pause: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.pause().fetch();
 
-    private playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { playIndex = "0" } } }) => {
-        const index = parseInt(playIndex);
-        const { dataContext, s, p } = this.props;
-        const { items = [], parents = [] } = dataContext?.source ?? {};
-        const url = parents[0]?.res?.url
-            ? `${parents[0].res.url}#tracknr=${(p ? parseInt(p) - 1 : 0) * (s ? parseInt(s) : $s.get("pageSize")) + index + 1},play`
-            : `${items[index]?.res?.url}#play`;
-        return this.ctrl.playUri(url).fetch();
+    private playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { id } } }) => {
+        if (id) this.playItem(id);
     }
 
-    private open = (id: string) => {
-        const index = this.props.dataContext?.source.items.findIndex(i => i.id === id) ?? -1;
-        const url = this.props.dataContext?.source?.parents?.[0].res?.url;
-        if (index >= 0 && url) {
-            const playUrl = `${url}#tracknr=${index + 1},play`;
-            this.ctrl.playUri(playUrl).fetch();
-        }
+    private playItem = (id: string) => {
+        const url = this.getPlayUrl(id);
+        if (url) this.ctrl.playUri(url).fetch();
         return false;
+    }
+
+    private getPlayUrl(id: string) {
+        const { dataContext, s, p } = this.props;
+        const { items = [], parents = [] } = dataContext?.source ?? {};
+
+        const index = items.findIndex(i => i.id === id);
+        if (index === undefined || index < 0) return;
+
+        const item = items[index];
+        if (!item || !item.res) return;
+
+        return item.container
+            ? `${item.res.url}#play`
+            : `${parents[0]?.res?.url}#tracknr=${(p ? parseInt(p) - 1 : 0) * (s ? parseInt(s) : $s.get("pageSize")) + index + 1},play`;
     }
 
     //#endregion
@@ -272,7 +277,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     //#region Context menu select handler
 
     private menuSelectHandler = (item: HTMLElement, anchor?: HTMLElement) => {
-        const id = anchor?.dataset["menuToggleFor"];
+        const id = anchor?.dataset["id"];
         if (!id) return;
 
         switch (item.dataset["action"] as Action) {
@@ -283,6 +288,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             case "rename": this.renamePlaylist(id); break;
             case "copy": break;
             case "remove": this.removePlaylistItems([id]); break;
+            case "play": if (anchor?.dataset?.id) this.playItem(anchor.dataset.id); break;
+            case "pause": this.ctrl.pause().fetch(); break;
         }
     }
 
@@ -306,21 +313,28 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 
     renderContextMenu = (anchor?: HTMLElement | null) => {
-        return this.props.id === "PL:"
-            ? <>
-                <MenuItem action="add-items" glyph="plus">Add items</MenuItem>
-                <MenuItem action="add-url" glyph="broadcast-tower">Add stream url</MenuItem>
-                <MenuItem action="add-files" glyph="list">Add playlist file</MenuItem>
-                <MenuItem action="" glyph=""></MenuItem>
-                <li><hr className="dropdown-divider mx-2" /></li>
-                <MenuItem action="rename" glyph="edit">Rename</MenuItem>
-                <MenuItem action="delete" glyph="trash">Delete</MenuItem>
-                <MenuItem action="copy" glyph="copy">Copy</MenuItem>
-            </> : <>
-                <MenuItem action="remove" glyph="trash">Remove item</MenuItem>
-                <li><hr className="dropdown-divider mx-2" /></li>
-                <MenuItem action="play" glyph="play" disabled>Play</MenuItem>
-            </>;
+        const active = anchor?.dataset?.index ? this.rowStates[parseInt(anchor.dataset.index)] & RowState.Active : false;
+        return <>
+            {active && this.state.state === "PLAYING"
+                ? <MenuItem action="pause" glyph="pause">Pause</MenuItem>
+                : <MenuItem action="play" glyph="play">Play</MenuItem>}
+            {this.props.id === "PL:"
+                ? <>
+                    <li><hr className="dropdown-divider mx-2" /></li>
+                    <MenuItem action="add-items" glyph="plus">Add items</MenuItem>
+                    <MenuItem action="add-url" glyph="broadcast-tower">Add stream url</MenuItem>
+                    <MenuItem action="add-files" glyph="list">Add playlist file</MenuItem>
+                    <MenuItem action="" glyph=""></MenuItem>
+                    <li><hr className="dropdown-divider mx-2" /></li>
+                    <MenuItem action="rename" glyph="edit">Rename</MenuItem>
+                    <MenuItem action="delete" glyph="trash">Delete</MenuItem>
+                    <MenuItem action="copy" glyph="copy">Copy</MenuItem>
+                </>
+                : <>
+                    <li><hr className="dropdown-divider mx-2" /></li>
+                    <MenuItem action="remove" glyph="trash">Remove item</MenuItem>
+                </>}
+        </>;
     };
 
     render() {
@@ -366,7 +380,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 </div>
                 <SignalRListener handlers={this.handlers}>
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
-                        selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.open} rowState={this.rowStates}
+                        selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
                         useCheckboxes multiSelect className="flex-expand">
                         <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler} render={this.renderContextMenu} />
                     </Browser>
