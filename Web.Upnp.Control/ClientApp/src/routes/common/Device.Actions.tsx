@@ -3,6 +3,7 @@ import { NavLink, RouteLink } from "../../components/NavLink";
 import WebApi from "../../components/WebApi";
 import { BrowserCoreProps, RowState } from "./BrowserCore";
 import BrowserDialog, { BrowseResult } from "./BrowserDialog";
+import { DIDLUtils } from "./BrowserUtils";
 import { Services, UpnpDevice } from "./Types";
 
 export type DeviceActionProps = {
@@ -12,6 +13,10 @@ export type DeviceActionProps = {
 
 const browserProps: BrowserCoreProps = {
     rowState: () => RowState.Navigable | RowState.Selectable
+}
+
+const audioBrowserProps: BrowserCoreProps = {
+    rowState: (item) => DIDLUtils.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
 }
 
 export function BrowseContentAction({ device, category }: DeviceActionProps) {
@@ -24,7 +29,7 @@ export function DownloadMetadataAction({ device }: DeviceActionProps) {
     return <NavLink to={device.url} glyph="download" className="p-0">Metadata</NavLink>;
 }
 
-export class OpenMediaAction extends React.Component<DeviceActionProps, { modal?: ReactNode | null }>{
+class OpenAction extends React.Component<DeviceActionProps & { browserProps: BrowserCoreProps }, { modal?: ReactNode | null }>{
     state = { modal: null }
 
     resetModal = () => this.setState({ modal: null });
@@ -39,15 +44,29 @@ export class OpenMediaAction extends React.Component<DeviceActionProps, { modal?
     browse = () => {
         this.setState({
             modal: <BrowserDialog id="open-media-dialog" title="Select media to play" confirmText="Open" className="modal-lg"
-                onDismiss={this.resetModal} onConfirm={this.playMedia} browserProps={browserProps} immediate>
+                onDismiss={this.resetModal} onConfirm={this.playMedia} browserProps={this.props.browserProps} immediate>
             </BrowserDialog>
         })
     }
 
     render() {
         return <>
-            <button type="button" className="btn nav-link btn-link p-0" onClick={this.browse}>Open media</button>
+            <button type="button" className="btn nav-link btn-link p-0" onClick={this.browse}>
+                {this.props.children}
+            </button>
             {this.state.modal}
         </>;
     }
+}
+
+export function OpenMediaAction(props: DeviceActionProps) {
+    return <OpenAction {...props} browserProps={browserProps}>
+        <svg className="icon"><use href="#photo-video" /></svg>Open media
+    </OpenAction>
+}
+
+export function OpenAudioAction(props: DeviceActionProps) {
+    return <OpenAction {...props} browserProps={audioBrowserProps}>
+        <svg className="icon"><use href="#music" /></svg>Open audio
+    </OpenAction>
 }

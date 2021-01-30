@@ -4,7 +4,7 @@ import { BrowseFetchResult, DataSourceProps, UpnpDevice } from "./Types";
 import $api from "../../components/WebApi";
 import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import AlbumArt from "./AlbumArt";
-import { BrowseContentAction, DeviceActionProps } from "./Device.Actions";
+import { BrowseContentAction, DeviceActionProps, OpenAudioAction } from "./Device.Actions";
 import { DeviceCard } from "./DeviceCard";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { MicroLoader } from "../../components/LoadIndicator";
@@ -41,8 +41,11 @@ const builder = ({ device: { udn } }: { device: UpnpDevice }) => withMemoKey($ap
 
 const PlaylistMenu = withDataFetch(Menu, builder, { template: MicroLoader });
 
-const umiActions: [string, ComponentType<DeviceActionProps>][] =
-    [["browse", BrowseContentAction], ["playlists", ManagePlaylistsAction], ["quick-playlist", PlaylistMenu]];
+const umiActions: [string, ComponentType<DeviceActionProps>][] = [
+    ["browse", BrowseContentAction],
+    ["open", OpenAudioAction],
+    ["playlists", ManagePlaylistsAction],
+    ["quick-playlist", PlaylistMenu]];
 
 export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
     return <DeviceCard {...props} actions={umiActions}>
