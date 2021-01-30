@@ -341,12 +341,17 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     }
 }
 
-const CellTemplate = ({ data: { class: itemClass, albumArts, title, creator, album, res } }: { data: DIDLItem }) =>
-    <div className="d-flex align-items-center" title={utils.formatMediaInfo(res) ?? undefined}>
+export type CellTemplateProps = HTMLAttributes<HTMLDivElement> & { data: DIDLItem; index: number; rowState: RowState };
+
+const CellTemplate = ({ children, data: { class: itemClass, albumArts, title, creator, album, res }, ...other }: CellTemplateProps) =>
+    <div className="d-flex align-items-center" title={utils.formatMediaInfo(res) ?? undefined} {...other}>
         <AlbumArt itemClass={itemClass} albumArts={albumArts} className="me-2" />
-        <span className="text-truncate">
+        <span className="text-truncate flex-basis-100">
             {title}
             {creator && <>&nbsp;&bull;&nbsp;<small>{creator}</small></>}
             {album && <>&nbsp;&bull;&nbsp;<small>{album}</small></>}
         </span>
+        {children}
     </div>
+
+export { CellTemplate };

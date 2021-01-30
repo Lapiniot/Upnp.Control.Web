@@ -7,7 +7,7 @@ import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/Dat
 import DeviceCard from "./Device.Upnp";
 import { DataSourceProps, UpnpDevice } from "./Types";
 import { DeviceContainer, DeviceListContainer, TemplatedDataComponentProps } from "./DeviceList";
-import { UpnpActionSvgSymbols } from "./SvgSymbols";
+import { BrowserSvgSymbols, UpnpActionSvgSymbols } from "./SvgSymbols";
 
 type CategoryParams = { category: string }
 type DeviceParams = { device: string }
@@ -24,6 +24,7 @@ const Devices = withDataFetch<DataFetchProps<UpnpDevice[]> & TemplatedDataCompon
 
 export default ({ match: { path, params: { category } }, deviceTemplate = DeviceCard, children }: DeviceRouterProps) => <>
     <UpnpActionSvgSymbols />
+    <BrowserSvgSymbols />
     <Switch>
         {children}
         <Route path={`${path}/:device/browse`} render={props => <Browser {...props} />} />
