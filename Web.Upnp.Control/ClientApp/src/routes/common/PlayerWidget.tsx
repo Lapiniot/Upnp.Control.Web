@@ -143,7 +143,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                 <SeekBar className="mb-2" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChangeRequested={this.seek} />
                 <div className="d-flex align-items-center flex-nowrap">
                     <Button title="Prev" glyph="step-backward" onClick={this.prev} disabled={!actions.includes("Previous")} />
-                    <Button className="fa-2x" {...button} />
+                    <Button className="icon-2x" {...button} />
                     <Button title={nextTitle} glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
                     <div className="d-flex flex-wrap justify-content-center flex-grow-1 overflow-hidden mx-2">
                         {current ? <>

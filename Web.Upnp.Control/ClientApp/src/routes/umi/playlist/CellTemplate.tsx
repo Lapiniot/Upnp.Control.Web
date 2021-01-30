@@ -25,22 +25,22 @@ export default function ({ data: d, context: { state, play, pause, playUrl } = {
                 ? state === "PLAYING"
                     ? <React.Fragment key="active-playing">
                         <div className="stack-layer d-flex">
-                            <i className="m-auto fas fa-lg fa-volume-up animate-pulse" />
+                            <svg className="icon m-auto icon-lg animate-pulse"><use href="#volume-up" /></svg>
                         </div>
                         <div className="stack-layer d-flex stack-layer-hover" onClick={pause}>
-                            <i className="m-auto fas fa-lg fa-pause-circle" />
+                            <svg className="icon m-auto icon-lg"><use href="#pause-circle" /></svg>
                         </div>
                     </React.Fragment>
                     : <React.Fragment key="active-paused">
                         <div className="stack-layer d-flex">
-                            <i className="m-auto fas fa-lg fa-volume-off" />
+                            <svg className="icon m-auto icon-lg"><use href="#volume-off" /></svg>
                         </div>
                         <div className="stack-layer d-flex stack-layer-hover" onClick={play}>
-                            <i className="m-auto fas fa-lg fa-play-circle" />
+                            <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                         </div>
                     </React.Fragment>
                 : <div className="stack-layer d-flex stack-layer-hover" onClick={playUrl} data-play-index={index}>
-                    <i className="m-auto fas fa-lg fa-play-circle" />
+                    <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                 </div>}
         </div>
         <span className="text-truncate flex-basis-100">

@@ -104,7 +104,7 @@ export default class Modal extends React.Component<ModalProps> {
 
     static Button = ({ dismiss, className, icon, children, ...other }: { dismiss?: boolean; icon?: string } & ButtonHTMLAttributes<HTMLButtonElement>) =>
         <button type="button" className={`btn${className ? ` ${className}` : ""}`} data-bs-dismiss={dismiss ? "modal" : null} {...other}>
-            {icon && <i className={`me-2 fas fa-${icon}`} />}{children}
+            {icon && <svg className="icon me-2"><use href={`#${icon}`} /></svg>}{children}
         </button>;
 
     static Header = ({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) =>

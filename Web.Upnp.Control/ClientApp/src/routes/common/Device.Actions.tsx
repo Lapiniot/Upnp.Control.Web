@@ -20,10 +20,6 @@ export function BrowseContentAction({ device, category }: DeviceActionProps) {
     return isMediaServer ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="folder" className="p-0 nav-link">Browse</RouteLink> : null;
 }
 
-export function ManagePlaylistsAction({ device, category }: DeviceActionProps) {
-    return <RouteLink to={`/${category}/${device.udn}/playlists/PL:`} glyph="list-alt" className="p-0 nav-link" title="Manage playlists">Playlists</RouteLink>
-}
-
 export function DownloadMetadataAction({ device }: DeviceActionProps) {
     return <NavLink to={device.url} glyph="download" className="p-0">Metadata</NavLink>;
 }

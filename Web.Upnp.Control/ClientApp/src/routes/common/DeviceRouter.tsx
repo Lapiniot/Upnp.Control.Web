@@ -7,6 +7,7 @@ import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/Dat
 import DeviceCard from "./Device.Upnp";
 import { DataSourceProps, UpnpDevice } from "./Types";
 import { DeviceContainer, DeviceListContainer, TemplatedDataComponentProps } from "./DeviceList";
+import { UpnpActionSvgSymbols } from "./SvgSymbols";
 
 type CategoryParams = { category: string }
 type DeviceParams = { device: string }
@@ -21,7 +22,8 @@ const Devices = withDataFetch<DataFetchProps<UpnpDevice[]> & TemplatedDataCompon
     DeviceListContainer, ({ category }) => withMemoKey($api.devices(category).jsonFetch, category as string),
     { usePreloader: false });
 
-export default ({ match: { path, params: { category } }, deviceTemplate = DeviceCard, children }: DeviceRouterProps) =>
+export default ({ match: { path, params: { category } }, deviceTemplate = DeviceCard, children }: DeviceRouterProps) => <>
+    <UpnpActionSvgSymbols />
     <Switch>
         {children}
         <Route path={`${path}/:device/browse`} render={props => <Browser {...props} />} />
@@ -29,3 +31,4 @@ export default ({ match: { path, params: { category } }, deviceTemplate = Device
             <Device category={category} itemTemplate={deviceTemplate} device={props.match.params.device} />} />
         <Route path={path} exact render={() => <Devices category={category} itemTemplate={deviceTemplate} />} />
     </Switch>
+</>

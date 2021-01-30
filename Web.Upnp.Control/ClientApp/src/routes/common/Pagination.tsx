@@ -103,24 +103,16 @@ export class TablePagination extends React.Component<PaginationProps & Navigatio
             </select>
             <span className="me-4 small text-nowrap">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} of {total}</span>
             <RelativePageLink to={`${pattern}${1}`} label="First" disabled={current === 1}>
-                <svg xmlns="http://www.w3.org/2000/svg">
-                    <use href="#chevron-bar-left" />
-                </svg>
+                <svg><use href="#chevron-bar-left" /></svg>
             </RelativePageLink>
             <RelativePageLink to={`${pattern}${current - 1}`} label="Previous" disabled={current === 1}>
-                <svg xmlns="http://www.w3.org/2000/svg">
-                    <use href="#chevron-left" />
-                </svg>
+                <svg><use href="#chevron-left" /></svg>
             </RelativePageLink>
             <RelativePageLink to={`${pattern}${current + 1}`} label="Next" disabled={current >= pages}>
-                <svg xmlns="http://www.w3.org/2000/svg">
-                    <use href="#chevron-right" />
-                </svg>
+                <svg><use href="#chevron-right" /></svg>
             </RelativePageLink>
             <RelativePageLink to={`${pattern}${pages}`} label="Last" disabled={current >= pages}>
-                <svg xmlns="http://www.w3.org/2000/svg">
-                    <use href="#chevron-bar-right" />
-                </svg>
+                <svg><use href="#chevron-bar-right" /></svg>
             </RelativePageLink>
         </nav>;
     }

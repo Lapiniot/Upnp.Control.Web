@@ -1,15 +1,17 @@
-import { ComponentType, HTMLAttributes } from "react";
+import React, { ComponentType, HTMLAttributes } from "react";
 import PlayerWidget from "./PlayerWidget";
 import { BrowseFetchResult, DataSourceProps, UpnpDevice } from "./Types";
 import $api from "../../components/WebApi";
 import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import AlbumArt from "./AlbumArt";
-import { BrowseContentAction, DeviceActionProps, ManagePlaylistsAction } from "./Device.Actions";
+import { BrowseContentAction, DeviceActionProps } from "./Device.Actions";
 import { DeviceCard } from "./DeviceCard";
 import { DropdownMenu } from "../../components/DropdownMenu";
+import { MicroLoader } from "../../components/LoadIndicator";
+import { RouteLink } from "../../components/NavLink";
 
-function MicroLoader() {
-    return <span><i className="fas fa-spinner fa-spin" /></span>
+function ManagePlaylistsAction({ device, category }: DeviceActionProps) {
+    return <RouteLink to={`/${category}/${device.udn}/playlists/PL:`} glyph="list-alt" className="p-0 nav-link" title="Manage playlists">Playlists</RouteLink>
 }
 
 function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
@@ -24,7 +26,7 @@ function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
 function Menu({ dataContext: d, device }: HTMLAttributes<HTMLDivElement> & DataFetchProps<BrowseFetchResult> & DeviceActionProps) {
     return <>
         <button type="button" className="btn btn-link p-0 image-only" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
-            <i className="fas fa-caret-right fa-lg" /><span className="visually-hidden">Toggle Dropdown</span>
+            <svg className="icon icon-lg"><use href="#caret-right" /></svg><span className="visually-hidden">Toggle Dropdown</span>
         </button>
         <DropdownMenu data-device={device.udn} placement="right-start">
             {d?.source.items.map(i => <li key={i.id}>

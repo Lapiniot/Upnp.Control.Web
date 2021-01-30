@@ -1,5 +1,6 @@
 import React from "react";
 import { DragEvent, HTMLAttributes } from "react";
+import { DropTargetSvgSymbols } from "../routes/common/SvgSymbols";
 import { Indicator } from "./LoadIndicator";
 
 type DropTargetProps = Omit<HTMLAttributes<HTMLDivElement>, "onDrop"> & {
@@ -71,10 +72,13 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
 
         return <div {...other} onDragEnter={this.dragEnterHandler} onDragLeave={this.dragLeaveHandler}
             onDragOver={this.dragOverHandler} onDrop={this.dropHandler}>
+            <DropTargetSvgSymbols />
             {children}
             {dragging && <div className={`backdrop d-flex border border-2 border-${color} backdrop-${color}`}>
                 <Indicator className={`m-auto flex-column text-${acceptable ? "white" : "white-50"}`}>
-                    <i className={`fa fa-${acceptable ? "upload" : "poo"} fa-3x`} />
+                    <svg className="icon icon-3x">
+                        <use href={`#${acceptable ? "upload" : "poo"}`} />
+                    </svg>
                     <p className="text-bolder">{acceptable ? "Drop playlist files here" : "Only playlist files (.m3u, .m3u8) are supported"}</p>
                 </Indicator>
             </div>}

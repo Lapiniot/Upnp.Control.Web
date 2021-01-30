@@ -19,7 +19,7 @@ import { AddItemsModalDialog } from "./dialogs/AddItemsModalDialog";
 import { RemoveItemsModalDialog } from "./dialogs/RemoveItemsModalDialog";
 import { UploadPlaylistModalDialog } from "./dialogs/UploadPlaylistModalDialog";
 import { DropTarget } from "../../../components/DropTarget";
-import { PlaylistSvgSymbols } from "../../common/SvgSymbols";
+import { PlayerSvgSymbols, PlaylistSvgSymbols } from "../../common/SvgSymbols";
 import { Portal } from "../../../components/Portal";
 import $s from "../../common/Config";
 import { MenuItem } from "../../../components/DropdownMenu";
@@ -353,6 +353,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
         return <>
             <PlaylistSvgSymbols />
+            <PlayerSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="flex-expand d-flex flex-column" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
                 <div className="d-flex flex-column sticky-top">

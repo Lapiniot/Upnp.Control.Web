@@ -14,12 +14,12 @@ function BuildClass(className: string | undefined, active: boolean | undefined, 
 
 const NavLink = ({ to, glyph, className, active, disabled, children, ...other }: LinkProps) =>
     <a href={!disabled ? to : undefined} className={BuildClass(className, active, disabled)} {...other}>
-        {glyph && <i className={`fas fa-fw fa-${glyph}`} />}{children}
+        {glyph && <svg className="icon"><use href={`#${glyph}`} /></svg>}{children}
     </a>;
 
 const RouteLink = ({ glyph, className, active, disabled, children, ...other }: NavLinkProps & LinkProps) => {
     return <RNavLink className={BuildClass(className, active, disabled)} {...other}>
-        {glyph && <i className={`fas fa-fw fa-${glyph}`} />}{children}
+        {glyph && <svg className="icon"><use href={`#${glyph}`} /></svg>}{children}
     </RNavLink>;
 }
 

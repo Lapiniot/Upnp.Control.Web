@@ -1,7 +1,4 @@
 ﻿import "./css/index.css";
-import "@fortawesome/fontawesome-free/js/fontawesome";
-import "@fortawesome/fontawesome-free/js/solid";
-
 import React from "react";
 import ReactDOM from "react-dom";
 import { Route, Switch } from "react-router";
@@ -13,6 +10,7 @@ import UpnpPage from "./routes/upnp/Router";
 import UmiPage from "./routes/umi/Router";
 import RenderersPage from "./routes/renderers/Router";
 import SettingsPage from "./routes/settings/Settings";
+import { NavBarSvgSymbols } from "./routes/common/SvgSymbols";
 
 const baseUrl: string = document.getElementsByTagName("base")[0].getAttribute("href") as string;
 const container: HTMLElement = document.getElementById("main-root") as HTMLElement;
@@ -24,6 +22,7 @@ ReactDOM.render(
                 <div className="navbar position-sticky sticky-left flex-column justify-content-start navbar-dark bg-dark bg-gradient px-3">
                     <h5 className="navbar-brand mx-0">UPnP Controller</h5>
                     <nav className="navbar-nav">
+                        <NavBarSvgSymbols />
                         <RouteLink to="/" exact glyph="home" className="nav-item nav-link">Home</RouteLink>
                         <RouteLink to="/upnp" glyph="server" className="nav-item nav-link">UPnP devices</RouteLink>
                         <RouteLink to="/renderers" glyph="tv" className="nav-item nav-link">Network Players</RouteLink>

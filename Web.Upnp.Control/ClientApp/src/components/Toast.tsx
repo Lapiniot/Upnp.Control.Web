@@ -34,8 +34,8 @@ export class Toast extends React.Component<ToastProps> {
             data-bs-autohide={autohide} data-bs-animation={animation} data-bs-delay={delay} {...other}>
             <div className="toast-header">
                 {color &&
-                    <svg className={`me-2 text-${color}`} width="16" height="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <circle cx="50%" cy="50%" r="50%" fill="currentColor" />
+                    <svg className={`me-2 icon text-${color}`} viewBox="0 0 16 16" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <circle cx="50%" cy="50%" r="50%" />
                     </svg>}
                 <strong className="me-auto">{header}</strong>
                 {hint && <small>{hint}</small>}

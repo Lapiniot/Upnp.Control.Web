@@ -76,13 +76,13 @@ $generate-grid-layout-responsive-styles: false;
     }
 }
 
-@import "fontawesome";
 @import "buttons";
 @import "text-utils";
 @import "layout-grid";
 @import "layout-table";
 @import "spoiler";
 @import "slider";
+@import "animations";
 
 .flex-basis-100 {
     flex-basis: 100%;
@@ -154,6 +154,30 @@ $generate-grid-layout-responsive-styles: false;
 }
 
 /********** Specific site element styles **********/
+
+.icon {
+    display: inline-block;
+    font-size: inherit;
+    height: 1em;
+    vertical-align: -0.125em;
+    fill: currentColor;
+}
+
+@mixin icon($size) {
+    font-size: $size * 1em;
+}
+
+@for $size from 2 through 3 {
+    .icon-#{$size}x {
+        @include icon($size);
+    }
+}
+
+.icon-lg {
+    font-size: 1.33333em;
+    line-height: 0.75em;
+    vertical-align: -0.0667em;
+}
 
 .upnp-dev-icon {
     height: 48px !important;
@@ -243,22 +267,6 @@ $album-art-sizes: (
         overflow: hidden;
         text-overflow: ellipsis;
     }
-}
-
-@keyframes fade {
-    0% {
-        color: rgba($color: #fff, $alpha: 1);
-    }
-    50% {
-        color: rgba($color: #fff, $alpha: 0.7);
-    }
-    100% {
-        color: rgba($color: #fff, $alpha: 1);
-    }
-}
-
-.animate-pulse {
-    animation: fade 1.5s ease-in-out infinite;
 }
 
 .backdrop {
