@@ -3,7 +3,7 @@ import { RouteComponentProps } from "react-router";
 import { AVState, BrowseFetchResult, DIDLItem, PropertyBag } from "../../common/Types";
 import $api from "../../../components/WebApi";
 import { TextValueEditDialog } from "../../../components/Dialogs";
-import { withBrowser, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils";
+import { withBrowserDataFetch, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils";
 import Toolbar from "../../../components/Toolbar";
 import { TablePagination } from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
@@ -397,4 +397,4 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
 const browsePlaylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id || "PL:").withParents().withResource().withVendor());
 
-export default withBrowser(PlaylistManagerCore, false, browsePlaylistsQueryBuilder);
+export default withBrowserDataFetch(PlaylistManagerCore, false, browsePlaylistsQueryBuilder);

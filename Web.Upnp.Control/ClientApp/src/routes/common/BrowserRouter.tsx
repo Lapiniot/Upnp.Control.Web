@@ -1,8 +1,8 @@
 ﻿import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
-import { withBrowser } from "./BrowserUtils";
-import BrowserView from "./BrowserCore";
+import { withBrowserDataFetch } from "./BrowserUtils";
+import BrowserCore from "./BrowserCore";
 
-const Browser = withBrowser(BrowserView, false);
+const Browser = withBrowserDataFetch(BrowserCore, false);
 
 type DeviceRouteParams = {
     category: string;

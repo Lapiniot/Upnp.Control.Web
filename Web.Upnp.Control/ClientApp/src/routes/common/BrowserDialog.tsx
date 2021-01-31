@@ -5,7 +5,7 @@ import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
 import { DataFetchProps, withDataFetch } from "../../components/DataFetch";
-import { withBrowser } from "./BrowserUtils";
+import { withBrowserDataFetch } from "./BrowserUtils";
 import BrowserCore from "./BrowserCore";
 import $api from "../../components/WebApi";
 import { UpnpDevice } from "./Types";
@@ -39,7 +39,7 @@ const MediaSourceList = withDataFetch(({ dataContext: ctx, fetching }: DataFetch
             </ul>}
     </div>, () => serversFetch, { usePreloader: true });
 
-const Browser = withBrowser(BrowserCore, false);
+const Browser = withBrowserDataFetch(BrowserCore, false);
 
 export default class BrowserDialog extends React.Component<BrowserDialogProps, { selection: string[] }> {
 
