@@ -1,12 +1,8 @@
-import { HTMLAttributes } from "react";
 import Breadcrumb from "./Breadcrumb";
 import { TablePagination } from "./Pagination";
-import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
+import BrowserView, { BrowserViewProps } from "./BrowserView";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { DataFetchProps } from "../../components/DataFetch";
 import { RouteComponentProps } from "react-router";
-import { BrowseFetchResult } from "./Types";
-import { NavigatorProps } from "./Navigator";
 import $s from "./Config";
 
 type FetchProps = {
@@ -14,21 +10,16 @@ type FetchProps = {
     p?: string;
 };
 
-export type BrowserProps = BrowserCoreProps &
-    DataFetchProps<BrowseFetchResult> &
-    HTMLAttributes<HTMLDivElement> &
-    NavigatorProps &
-    RouteComponentProps<FetchProps> &
-    FetchProps
+export type BrowserCoreProps = BrowserViewProps & RouteComponentProps<FetchProps> & FetchProps
 
-export default function (props: BrowserProps) {
+export default function BrowserCore(props: BrowserCoreProps) {
     const { dataContext: data, match, s: size, p: page, fetching } = props;
     const { source: { total = 0, parents = undefined } = {} } = data || {};
     return <>
         {fetching && <LoadIndicatorOverlay />}
         <div className="flex-expand d-flex flex-column">
             <Breadcrumb items={parents} path={match.path} params={match.params} className="sticky-top border-bottom" />
-            <BrowserCore {...props} className="flex-expand" />
+            <BrowserView {...props} className="flex-expand" />
             <TablePagination location={props.location} history={props.history}
                 className="bg-light border-top sticky-bottom py-1 px-3 justify-content-end"
                 total={total} current={typeof page === "string" ? parseInt(page) : 1}

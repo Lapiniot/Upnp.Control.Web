@@ -7,11 +7,11 @@ import { withBrowser, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils
 import Toolbar from "../../../components/Toolbar";
 import { TablePagination } from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
-import Browser, { BrowserCoreProps, RowState } from "../../common/BrowserCore";
+import Browser, { BrowserProps, RowState } from "../../common/BrowserView";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
 import { SignalRListener } from "../../../components/SignalR";
-import MainCell, { CellContext } from "./CellTemplate";
+import MainCell from "./CellTemplate";
 import { DataFetchProps } from "../../../components/DataFetch";
 import { NavigatorProps } from "../../common/Navigator";
 import { AddUrlModalDialog } from "./dialogs/AddUrlModalDialog";
@@ -43,7 +43,7 @@ type PlaylistManagerState = {
     playlist?: string;
 } & Partial<AVState>;
 
-const browserProps: BrowserCoreProps = {
+const browserProps: BrowserProps = {
     multiSelect: true,
     useCheckboxes: true,
     rowState: item => item.container
@@ -358,7 +358,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
         this.rowStates = items.map(getRowState);
 
-        const cellContext: CellContext = {
+        const cellContext = {
             play: this.play,
             pause: this.pause,
             playUrl: this.playUrl,

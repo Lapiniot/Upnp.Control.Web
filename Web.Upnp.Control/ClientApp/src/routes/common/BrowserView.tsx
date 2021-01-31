@@ -26,20 +26,25 @@ export enum RowState {
     Navigable = 0x100000,
 }
 
-export type BrowserCoreProps<TContext = {}> = {
+export type CellTemplateProps<TContext = any> = HTMLAttributes<HTMLDivElement> & {
+    data: DIDLItem;
+    index: number;
+    rowState: RowState;
+    context?: TContext;
+};
+
+export type BrowserProps<TContext = {}> = {
     rowState?: ((item: DIDLItem, index: number) => RowState) | (RowState[]);
     open?: (id: string) => boolean;
     selection?: SelectionService;
     selectionChanged?: (ids: string[]) => boolean | undefined | void;
-    mainCellTemplate?: ComponentType<{ data: DIDLItem, index: number, rowState: RowState, context?: TContext }>;
+    mainCellTemplate?: ComponentType<CellTemplateProps<TContext>>;
     mainCellContext?: TContext;
 } & { [K in ModeFlags]?: boolean }
 
-type MediaBrowserState = {}
+export type BrowserViewProps<TContext = {}> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
 
-type PropsType<TContext> = BrowserCoreProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
-
-export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, MediaBrowserState> {
+export default class BrowserView<TContext = {}> extends React.Component<BrowserViewProps<TContext>> {
     state = { modal: null };
     private selection;
     private tableRef = React.createRef<HTMLDivElement>();
@@ -47,7 +52,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     private tracker: SelectionTracker;
     rowStates: RowState[] = [];
 
-    constructor(props: PropsType<P>) {
+    constructor(props: BrowserViewProps<TContext>) {
         super(props);
         this.selection = props.selection || new SelectionService();
         this.selection.addEventListener("changed", this.selectionChangedHandler);
@@ -55,7 +60,7 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         this.tracker = new SelectionTracker([], this.selection, this.complexSelectionChanged);
     }
 
-    componentDidUpdate(prevProps: PropsType<P>) {
+    componentDidUpdate(prevProps: BrowserViewProps<TContext>) {
         if (prevProps.selection !== this.props.selection) {
             this.selection = this.props.selection || new SelectionService();
         }
@@ -282,9 +287,9 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
         this.tracker.setup(items.map(i => i.id), this.props.selection ?? this.selection);
 
         const children = React.Children.toArray(this.props.children);
-        const caption = children.find(c => (c as ReactElement)?.type === MediaBrowser.Caption);
-        const footer = children.find(c => (c as ReactElement)?.type === MediaBrowser.Footer);
-        const contextMenu = children.find(c => (c as ReactElement)?.type === MediaBrowser.ContextMenu);
+        const caption = children.find(c => (c as ReactElement)?.type === BrowserView.Caption);
+        const footer = children.find(c => (c as ReactElement)?.type === BrowserView.Footer);
+        const contextMenu = children.find(c => (c as ReactElement)?.type === BrowserView.ContextMenu);
 
         return <div className={`d-flex flex-column${className ? ` ${className}` : ""}`}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler}>
@@ -341,10 +346,9 @@ export default class MediaBrowser<P = {}> extends React.Component<PropsType<P>, 
     }
 }
 
-export type CellTemplateProps = HTMLAttributes<HTMLDivElement> & { data: DIDLItem; index: number; rowState: RowState };
-
-const CellTemplate = ({ children, data: { class: itemClass, albumArts, title, creator, album, res }, ...other }: CellTemplateProps) =>
-    <div className="d-flex align-items-center" title={utils.formatMediaInfo(res) ?? undefined} {...other}>
+export function CellTemplate({ children, data, index, rowState, context, ...other }: CellTemplateProps) {
+    const { class: itemClass, albumArts, title, creator, album, res } = data;
+    return <div className="d-flex align-items-center" title={utils.formatMediaInfo(res) ?? undefined} {...other}>
         <AlbumArt itemClass={itemClass} albumArts={albumArts} className="me-2" />
         <span className="text-truncate flex-basis-100">
             {title}
@@ -352,6 +356,5 @@ const CellTemplate = ({ children, data: { class: itemClass, albumArts, title, cr
             {album && <>&nbsp;&bull;&nbsp;<small>{album}</small></>}
         </span>
         {children}
-    </div>
-
-export { CellTemplate };
+    </div>;
+}

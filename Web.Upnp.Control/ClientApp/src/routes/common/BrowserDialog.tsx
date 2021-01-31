@@ -9,11 +9,11 @@ import { withBrowser } from "./BrowserUtils";
 import BrowserCore from "./Browser";
 import $api from "../../components/WebApi";
 import { UpnpDevice } from "./Types";
-import { BrowserCoreProps } from "./BrowserCore";
+import { BrowserProps } from "./BrowserView";
 import SelectionService from "../../components/SelectionService";
 
 export type BrowserDialogProps = HTMLAttributes<HTMLDivElement> & {
-    browserProps?: BrowserCoreProps;
+    browserProps?: BrowserProps;
     confirmText?: string;
     onConfirm?: (selection: BrowseResult) => void;
     dismissOnOpen?: boolean;

@@ -1,23 +1,16 @@
 import React, { EventHandler, UIEvent } from "react";
 import AlbumArt from "../../common/AlbumArt";
-import { RowState } from "../../common/BrowserCore";
-import { DIDLItem, PlaybackState } from "../../common/Types";
+import { CellTemplateProps, RowState } from "../../common/BrowserView";
+import { PlaybackState } from "../../common/Types";
 
-export type CellContext = {
+type CellContext = {
     state?: PlaybackState;
     play?: EventHandler<UIEvent<HTMLDivElement>>;
     pause?: EventHandler<UIEvent<HTMLDivElement>>;
     playUrl?: EventHandler<UIEvent<HTMLDivElement>>;
 }
 
-type CellTemplateProps = {
-    data: DIDLItem;
-    index: number;
-    rowState: RowState;
-    context?: CellContext;
-}
-
-export default function ({ data: d, context: { state, play, pause, playUrl } = {}, index, rowState }: CellTemplateProps) {
+export default function ({ data: d, context: { state, play, pause, playUrl } = {}, index, rowState }: CellTemplateProps<CellContext>) {
     return <div className="d-flex align-items-center">
         <div className="d-inline-block stack me-1">
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} />

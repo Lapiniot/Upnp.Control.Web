@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { NavLink, RouteLink } from "../../components/NavLink";
 import WebApi from "../../components/WebApi";
-import { BrowserCoreProps, RowState } from "./BrowserCore";
+import { BrowserProps, RowState } from "./BrowserView";
 import BrowserDialog, { BrowseResult } from "./BrowserDialog";
 import { DIDLUtils } from "./BrowserUtils";
 import { Services, UpnpDevice } from "./Types";
@@ -11,11 +11,11 @@ export type DeviceActionProps = {
     category?: string;
 };
 
-const browserProps: BrowserCoreProps = {
+const browserProps: BrowserProps = {
     rowState: () => RowState.Navigable | RowState.Selectable
 }
 
-const audioBrowserProps: BrowserCoreProps = {
+const audioBrowserProps: BrowserProps = {
     rowState: (item) => DIDLUtils.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
 }
 
@@ -29,7 +29,7 @@ export function DownloadMetadataAction({ device }: DeviceActionProps) {
     return <NavLink to={device.url} glyph="download" className="p-0">Metadata</NavLink>;
 }
 
-class OpenAction extends React.Component<DeviceActionProps & { browserProps: BrowserCoreProps }, { modal?: ReactNode | null }>{
+class OpenAction extends React.Component<DeviceActionProps & { browserProps: BrowserProps }, { modal?: ReactNode | null }>{
     state = { modal: null }
 
     resetModal = () => this.setState({ modal: null });
