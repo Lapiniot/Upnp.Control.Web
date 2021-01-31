@@ -26,14 +26,14 @@ export enum RowState {
     Navigable = 0x100000,
 }
 
-export type CellTemplateProps<TContext = any> = HTMLAttributes<HTMLDivElement> & {
+export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
     data: DIDLItem;
     index: number;
     rowState: RowState;
     context?: TContext;
 };
 
-export type BrowserProps<TContext = {}> = {
+export type BrowserProps<TContext> = {
     rowState?: ((item: DIDLItem, index: number) => RowState) | (RowState[]);
     open?: (id: string) => boolean;
     selection?: SelectionService;
@@ -42,9 +42,9 @@ export type BrowserProps<TContext = {}> = {
     mainCellContext?: TContext;
 } & { [K in ModeFlags]?: boolean }
 
-export type BrowserViewProps<TContext = {}> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
+export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
 
-export default class BrowserView<TContext = {}> extends React.Component<BrowserViewProps<TContext>> {
+export default class BrowserView<TContext = unknown> extends React.Component<BrowserViewProps<TContext>> {
     state = { modal: null };
     private selection;
     private tableRef = React.createRef<HTMLDivElement>();
@@ -346,7 +346,7 @@ export default class BrowserView<TContext = {}> extends React.Component<BrowserV
     }
 }
 
-export function CellTemplate({ children, data, index, rowState, context, ...other }: CellTemplateProps) {
+export function CellTemplate({ children, data, index, rowState, context, ...other }: CellTemplateProps<unknown>) {
     const { class: itemClass, albumArts, title, creator, album, res } = data;
     return <div className="d-flex align-items-center" title={utils.formatMediaInfo(res) ?? undefined} {...other}>
         <AlbumArt itemClass={itemClass} albumArts={albumArts} className="me-2" />

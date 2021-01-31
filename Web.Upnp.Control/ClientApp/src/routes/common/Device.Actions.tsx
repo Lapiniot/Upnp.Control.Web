@@ -11,11 +11,11 @@ export type DeviceActionProps = {
     category?: string;
 };
 
-const browserProps: BrowserProps = {
+const browserProps: BrowserProps<unknown> = {
     rowState: () => RowState.Navigable | RowState.Selectable
 }
 
-const audioBrowserProps: BrowserProps = {
+const audioBrowserProps: BrowserProps<unknown> = {
     rowState: (item) => DIDLUtils.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
 }
 
@@ -29,7 +29,7 @@ export function DownloadMetadataAction({ device }: DeviceActionProps) {
     return <NavLink to={device.url} glyph="download" className="p-0">Metadata</NavLink>;
 }
 
-class OpenAction extends React.Component<DeviceActionProps & { browserProps: BrowserProps }, { modal?: ReactNode | null }>{
+class OpenAction extends React.Component<DeviceActionProps & { browserProps: BrowserProps<unknown> }, { modal?: ReactNode | null }>{
     state = { modal: null }
 
     resetModal = () => this.setState({ modal: null });

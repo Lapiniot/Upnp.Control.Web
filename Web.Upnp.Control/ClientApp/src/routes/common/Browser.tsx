@@ -10,7 +10,7 @@ type CellContext = {
     disabled?: boolean;
 }
 
-function Template(props: CellTemplateProps) {
+function Template(props: CellTemplateProps<CellContext>) {
     return <CellTemplate {...props}>
         <button type="button" className="btn btn-round" data-id={props.data.id}
             data-bs-toggle="dropdown" disabled={props.context?.disabled}>
@@ -23,7 +23,7 @@ type BrowserState = {
     devices: UpnpDevice[] | null;
 };
 
-export class Browser extends React.Component<BrowserCoreProps, BrowserState> {
+export class Browser extends React.Component<BrowserCoreProps<CellContext>, BrowserState> {
 
     state: BrowserState = { devices: null }
 
@@ -54,7 +54,7 @@ export class Browser extends React.Component<BrowserCoreProps, BrowserState> {
     }
 
     render() {
-        return <BrowserCore {...this.props} mainCellTemplate={Template} mainCellContext={{ disabled: !this.state.devices }}>
+        return <BrowserCore mainCellTemplate={Template} mainCellContext={{ disabled: !this.state.devices }} {...this.props}>
             <BrowserView.ContextMenu render={this.renderContextMenu} />
         </BrowserCore>;
     }

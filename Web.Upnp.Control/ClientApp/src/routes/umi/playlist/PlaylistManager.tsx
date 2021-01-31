@@ -43,7 +43,7 @@ type PlaylistManagerState = {
     playlist?: string;
 } & Partial<AVState>;
 
-const browserProps: BrowserProps = {
+const dialogBrowserProps: BrowserProps<unknown> = {
     multiSelect: true,
     useCheckboxes: true,
     rowState: item => item.container
@@ -194,7 +194,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private addPlaylistItems = (id: string) => {
         const addItems = (device: string, ids: string[]) => this.addItems(id, device, ids);
-        return this.setState({ modal: <AddItemsModalDialog id="add-items-dialog" onDismiss={this.resetModal} onAdd={addItems} browserProps={browserProps} /> });
+        return this.setState({ modal: <AddItemsModalDialog id="add-items-dialog" onDismiss={this.resetModal} onAdd={addItems} browserProps={dialogBrowserProps} /> });
     }
 
     private addPlaylistUrl = (id: string) => {
@@ -358,7 +358,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
         this.rowStates = items.map(getRowState);
 
-        const cellContext = {
+        const ctx = {
             play: this.play,
             pause: this.pause,
             playUrl: this.playUrl,
@@ -379,7 +379,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <Breadcrumb className="border-bottom" items={parents} path={match.path} params={match.params} />
                 </div>
                 <SignalRListener handlers={this.handlers}>
-                    <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={cellContext}
+                    <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
                         useCheckboxes multiSelect className="flex-expand">
                         <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler} render={this.renderContextMenu} />

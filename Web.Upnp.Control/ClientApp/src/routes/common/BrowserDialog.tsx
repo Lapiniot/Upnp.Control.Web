@@ -12,8 +12,8 @@ import { UpnpDevice } from "./Types";
 import { BrowserProps } from "./BrowserView";
 import SelectionService from "../../components/SelectionService";
 
-export type BrowserDialogProps = HTMLAttributes<HTMLDivElement> & {
-    browserProps?: BrowserProps;
+export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
+    browserProps?: BrowserProps<TContext>;
     confirmText?: string;
     onConfirm?: (selection: BrowseResult) => void;
     dismissOnOpen?: boolean;
