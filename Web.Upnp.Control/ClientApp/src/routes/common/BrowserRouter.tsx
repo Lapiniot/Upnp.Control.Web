@@ -1,6 +1,6 @@
 ﻿import { Switch, Route, Redirect, RouteComponentProps } from "react-router-dom";
 import { withBrowser } from "./BrowserUtils";
-import BrowserView from "./Browser";
+import BrowserView from "./BrowserCore";
 
 const Browser = withBrowser(BrowserView, false);
 

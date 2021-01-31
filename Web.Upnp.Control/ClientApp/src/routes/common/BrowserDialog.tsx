@@ -6,7 +6,7 @@ import DeviceIcon from "../common/DeviceIcon";
 import { RouteLink } from "../../components/NavLink";
 import { DataFetchProps, withDataFetch } from "../../components/DataFetch";
 import { withBrowser } from "./BrowserUtils";
-import BrowserCore from "./Browser";
+import BrowserCore from "./BrowserCore";
 import $api from "../../components/WebApi";
 import { UpnpDevice } from "./Types";
 import { BrowserProps } from "./BrowserView";

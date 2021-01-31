@@ -1,7 +1,7 @@
 ﻿import { ComponentType, PropsWithChildren } from "react";
 import { Switch, Route } from "react-router-dom"
 import { RouteComponentProps } from "react-router";
-import Browser from "./BrowseRouter";
+import Browser from "./BrowserRouter";
 import $api from "../../components/WebApi";
 import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import DeviceCard from "./Device.Upnp";
