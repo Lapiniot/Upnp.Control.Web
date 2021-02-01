@@ -8,17 +8,17 @@ export type ToastProps = HTMLAttributes<HTMLDivElement> & {
     autohide?: boolean;
     animation?: boolean;
     delay?: number;
-    onDismiss?: (element: HTMLDivElement) => void;
+    onDismissed?: (element: HTMLDivElement) => void;
 };
 
 export class Toast extends React.Component<ToastProps> {
 
     toast: BootstrapToast | null = null;
 
-    #initialize = (element: HTMLDivElement) => {
+    private initialize = (element: HTMLDivElement) => {
         if (element) {
             this.toast = new BootstrapToast(element);
-            element.addEventListener("hidden.bs.toast", this.#onDismiss);
+            element.addEventListener("hidden.bs.toast", this.onDismiss);
             (this.toast as any).show();
         }
         else {
@@ -26,11 +26,11 @@ export class Toast extends React.Component<ToastProps> {
         }
     }
 
-    #onDismiss: EventListener = (e) => this.props.onDismiss?.(e.target as HTMLDivElement);
+    private onDismiss: EventListener = (e) => this.props.onDismissed?.(e.target as HTMLDivElement);
 
     render() {
-        const { header, hint, color, children, autohide, animation, delay, className, onDismiss, ...other } = this.props;
-        return <div ref={this.#initialize} className={`toast${className ? ` ${className}` : ""}`} role="alert" aria-live="assertive" aria-atomic="true"
+        const { header, hint, color, children, autohide, animation, delay, className, onDismissed, ...other } = this.props;
+        return <div ref={this.initialize} className={`toast${className ? ` ${className}` : ""}`} role="alert" aria-live="assertive" aria-atomic="true"
             data-bs-autohide={autohide} data-bs-animation={animation} data-bs-delay={delay} {...other}>
             <div className="toast-header">
                 {color &&

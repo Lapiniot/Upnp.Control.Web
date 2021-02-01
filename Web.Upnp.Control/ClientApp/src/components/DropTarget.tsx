@@ -5,7 +5,7 @@ import { Indicator } from "./LoadIndicator";
 
 type DropTargetProps = Omit<HTMLAttributes<HTMLDivElement>, "onDrop"> & {
     acceptedTypes?: string[];
-    onDrop: (files: Iterable<File>, target: HTMLElement) => boolean;
+    onDropped: (files: Iterable<File>, target: HTMLElement) => boolean;
 };
 
 type DropTargetState = {
@@ -32,7 +32,7 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
         try {
             const element = e.target as HTMLElement;
             const filtered = Array.from(e.dataTransfer.files).filter(this.isAcceptable);
-            if (this.props.onDrop(filtered, element)) {
+            if (this.props.onDropped(filtered, element)) {
                 e.stopPropagation();
                 e.preventDefault();
             }
@@ -66,7 +66,7 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
     }
 
     render() {
-        const { children, acceptedTypes, onDrop, ...other } = this.props;
+        const { children, acceptedTypes, onDropped, ...other } = this.props;
         const { dragging, acceptable } = this.state;
         const color = acceptable ? "primary" : "secondary";
 

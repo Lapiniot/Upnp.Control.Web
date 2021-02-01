@@ -15,7 +15,7 @@ import SelectionService from "../../components/SelectionService";
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;
     confirmText?: string;
-    onConfirm?: (selection: BrowseResult) => void;
+    onConfirmed?: (selection: BrowseResult) => void;
     dismissOnOpen?: boolean;
 } & ModalProps
 
@@ -59,7 +59,7 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
         return false;
     }
 
-    private confirm = () => { return !!this.props.onConfirm && this.props.onConfirm(this.getSelectionData()); }
+    private confirm = () => { return !!this.props.onConfirmed && this.props.onConfirmed(this.getSelectionData()); }
 
     private open = () => {
         this.modalRef.current?.dismiss();
@@ -73,7 +73,7 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
     public clearSelection = () => this.selection.clear();
 
     render() {
-        const { id, title, confirmText = "OK", onConfirm, browserProps = {}, ...other } = this.props;
+        const { id, title, confirmText = "OK", onConfirmed, browserProps = {}, ...other } = this.props;
         return <Modal id={id} title={title} {...other} data-bs-keyboard={true} ref={this.modalRef}>
             <Modal.Body className="overflow-hidden p-0 position-relative d-flex flex-column" style={{ height: "60vh" }}>
                 <div className="overflow-auto flex-grow-1 d-flex flex-column">

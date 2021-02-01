@@ -3,7 +3,7 @@ import React, { ButtonHTMLAttributes, FormEventHandler, HTMLAttributes, ReactEle
 
 export type ModalProps<P = {}> = Omit<HTMLAttributes<HTMLDivElement>, "onSubmit"> & P & {
     immediate?: boolean;
-    onDismiss?: EventListener;
+    onDismissed?: EventListener;
     onShown?: EventListener;
     onSubmit?: (data: FormData) => boolean;
 }
@@ -44,7 +44,7 @@ export default class Modal extends React.Component<ModalProps> {
     }
 
     onHidden: EventListener = (event) => {
-        return this.props.onDismiss?.(event);
+        return this.props.onDismissed?.(event);
     }
 
     onShown: EventListener = (event) => {
@@ -70,7 +70,7 @@ export default class Modal extends React.Component<ModalProps> {
 
     render() {
 
-        const { id, title, className, immediate, onDismiss, onShown, onSubmit, ...other } = this.props;
+        const { id, title, className, immediate, onDismissed, onShown, onSubmit: onSubmit, ...other } = this.props;
 
         let header, body, footer;
         const children: ReactNode[] = [];

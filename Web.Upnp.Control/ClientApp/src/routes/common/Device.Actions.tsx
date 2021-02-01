@@ -44,7 +44,7 @@ class OpenAction extends React.Component<DeviceActionProps & { browserProps: Bro
     browse = () => {
         this.setState({
             modal: <BrowserDialog id="open-media-dialog" title="Select media to play" confirmText="Open" className="modal-lg"
-                onDismiss={this.resetModal} onConfirm={this.playMedia} browserProps={this.props.browserProps} immediate>
+                onDismissed={this.resetModal} onConfirmed={this.playMedia} browserProps={this.props.browserProps} immediate>
             </BrowserDialog>
         })
     }

@@ -5,19 +5,19 @@ type TextValueEditDialogProps = PropsWithRef<ModalProps<{
     label: string;
     confirmText?: string;
     required?: boolean;
-    onConfirm?: (value: string) => void;
+    onConfirmed?: (value: string) => void;
     onChanged?: ChangeEventHandler<HTMLInputElement>;
 }>>;
 
 export class TextValueEditDialog extends React.Component<TextValueEditDialogProps> {
 
     onSubmit = (data: FormData) => {
-        this.props?.onConfirm?.(data.get("text-input") as string);
+        this.props?.onConfirmed?.(data.get("text-input") as string);
         return true;
     }
 
     render() {
-        const { id, title, label, defaultValue, confirmText = "OK", required = true, onChanged, onConfirm, ...other } = this.props;
+        const { id, title, label, defaultValue, confirmText = "OK", required = true, onChanged, onConfirmed, ...other } = this.props;
         return <Modal id={id} title={title} {...other} onSubmit={this.onSubmit}>
             <div className="input-group has-validation mb-3">
                 <span className="input-group-text" id="basic-addon1">{label}</span>
@@ -35,15 +35,15 @@ export class TextValueEditDialog extends React.Component<TextValueEditDialogProp
 
 type ConfirmationDialogProps = ModalProps<{
     confirmText?: string;
-    onConfirm: () => void;
+    onConfirmed: () => void;
 }>;
 
-export function ConfirmationDialog({ id, title, confirmText = "OK", onConfirm, children, ...other }: ConfirmationDialogProps) {
+export function ConfirmationDialog({ id, title, confirmText = "OK", onConfirmed, children, ...other }: ConfirmationDialogProps) {
     return <Modal id={id} title={title} {...other}>
         {children}
         <Modal.Footer>
             <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>
-            <Modal.Button key="confirm" className="btn-primary" onClick={() => onConfirm()} dismiss>{confirmText}</Modal.Button>
+            <Modal.Button key="confirm" className="btn-primary" onClick={() => onConfirmed()} dismiss>{confirmText}</Modal.Button>
         </Modal.Footer>
     </Modal>;
 }

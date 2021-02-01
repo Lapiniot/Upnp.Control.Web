@@ -61,7 +61,7 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
                     <div className="m-3 mb-0 d-flex flex-wrap justify-content-center gap-3">{
                         Array.from(this.state.alerts).map(({ 0: key, 1: { type, info: { name, description } } }) =>
                             <Toast key={key} data-id={key} header={name} color={type === "appeared" ? "success" : "warning"}
-                                delay={120000} onDismiss={this.dismissAlert}><b>&laquo;{description}&raquo;</b> has {type === "appeared" ? "appeared on" : "disappeared from"} the network</Toast>
+                                delay={120000} onDismissed={this.dismissAlert}><b>&laquo;{description}&raquo;</b> has {type === "appeared" ? "appeared on" : "disappeared from"} the network</Toast>
                         )}
                     </div>}
                 <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">

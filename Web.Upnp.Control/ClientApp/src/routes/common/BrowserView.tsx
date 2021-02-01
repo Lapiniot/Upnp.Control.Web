@@ -56,7 +56,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         super(props);
         this.selection = props.selection || new SelectionService();
         this.selection.addEventListener("changed", this.selectionChangedHandler);
-        this.resizeObserver = new ResizeObserver(this.resizedObservedHandler);
+        this.resizeObserver = new ResizeObserver(this.resizeObservedHandler);
         this.tracker = new SelectionTracker([], this.selection, this.complexSelectionChanged);
     }
 
@@ -97,7 +97,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         this.selection.clear();
     }
 
-    resizedObservedHandler: ResizeObserverCallback = entries => {
+    resizeObservedHandler: ResizeObserverCallback = entries => {
         const table = entries[0].target;
 
         const caption = table.querySelector<HTMLDivElement>(HEADER_SELECTOR);

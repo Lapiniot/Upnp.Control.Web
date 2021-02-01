@@ -8,7 +8,7 @@ const TOGGLE_ITEM_SELECTOR = "[data-bs-toggle='dropdown']";
 
 export type DropdownMenuProps = Omit<HTMLAttributes<HTMLUListElement>, "onSelect"> & {
     placement?: Placement;
-    onSelect?: (item: HTMLElement, anchor?: HTMLElement) => void;
+    onSelected?: (item: HTMLElement, anchor?: HTMLElement) => void;
     render?: (anchor?: HTMLElement | null) => ReactNode;
 };
 
@@ -140,8 +140,8 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
             const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
             if (item) {
                 this.hide();
-                if (this.props.onSelect) {
-                    this.props.onSelect(item, this.instance?.state.elements.reference as HTMLElement);
+                if (this.props.onSelected) {
+                    this.props.onSelected(item, this.instance?.state.elements.reference as HTMLElement);
                 }
             }
             else {
@@ -208,7 +208,7 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
     }
 
     render() {
-        const { className, children, placement, render, onSelect, ...other } = this.props;
+        const { className, children, placement, render, onSelected, ...other } = this.props;
         return <ul ref={this.menuRef} className={`dropdown-menu${className ? ` ${className}` : ""}`} style={{ margin: 0 }} {...other}>
             {this.state.children ?? children}
         </ul>;

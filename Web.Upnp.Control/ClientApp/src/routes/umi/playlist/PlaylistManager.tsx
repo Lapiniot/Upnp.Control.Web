@@ -161,7 +161,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const onRemove = () => this.remove(ids);
 
         this.setState({
-            modal: <RemoveItemsModalDialog id="remove-dialog" title="Do you want to delete playlist(s)?" onDismiss={this.resetModal} onRemove={onRemove}>
+            modal: <RemoveItemsModalDialog id="remove-dialog" title="Do you want to delete playlist(s)?" onDismissed={this.resetModal} onRemove={onRemove}>
                 <ul className="list-unstyled">
                     {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
                 </ul>
@@ -175,7 +175,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
         this.setState({
             modal: <TextValueEditDialog id="rename-confirm" title="Rename playlist" label="Name" confirmText="Rename"
-                defaultValue={title} onConfirm={onRename} onDismiss={this.resetModal} immediate />
+                defaultValue={title} onConfirmed={onRename} onDismissed={this.resetModal} immediate />
         });
     }
 
@@ -184,7 +184,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const onRemove = () => this.removeItems(ids);
 
         this.setState({
-            modal: <RemoveItemsModalDialog id="remove-items-dialog" onDismiss={this.resetModal} onRemove={onRemove}>
+            modal: <RemoveItemsModalDialog id="remove-items-dialog" onDismissed={this.resetModal} onRemove={onRemove}>
                 <ul className="list-unstyled">
                     {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
                 </ul>
@@ -194,24 +194,24 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private addPlaylistItems = (id: string) => {
         const addItems = (device: string, ids: string[]) => this.addItems(id, device, ids);
-        return this.setState({ modal: <AddItemsModalDialog id="add-items-dialog" onDismiss={this.resetModal} onAdd={addItems} browserProps={dialogBrowserProps} /> });
+        return this.setState({ modal: <AddItemsModalDialog id="add-items-dialog" onDismissed={this.resetModal} onAdd={addItems} browserProps={dialogBrowserProps} /> });
     }
 
     private addPlaylistUrl = (id: string) => {
         const addUrl = (url: string, title?: string, useProxy?: boolean) => this.addUrl(id, url, title, useProxy);
-        return this.setState({ modal: <AddUrlModalDialog id="add-url-dialog" onDismiss={this.resetModal} onAdd={addUrl} /> });
+        return this.setState({ modal: <AddUrlModalDialog id="add-url-dialog" onDismissed={this.resetModal} onAdd={addUrl} /> });
     }
 
     private addPlaylistFiles = (id: string) => {
         const addFiles = (data: FormData) => this.addFiles(id, data);
-        return this.setState({ modal: <UploadPlaylistModalDialog id="upload-playlist-dialog" onDismiss={this.resetModal} onAdd={addFiles} /> });
+        return this.setState({ modal: <UploadPlaylistModalDialog id="upload-playlist-dialog" onDismissed={this.resetModal} onAdd={addFiles} /> });
     }
 
     //#endregion
 
     //#region Toolbar button click handlers 
 
-    private addClickHandler = () => this.setState({ modal: <TextValueEditDialog id="create-dialog" title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirm={this.create} onDismiss={this.resetModal} immediate /> });
+    private addClickHandler = () => this.setState({ modal: <TextValueEditDialog id="create-dialog" title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} onDismissed={this.resetModal} immediate /> });
 
     private removeClickHandler = () => this.removePlaylist(this.state.selection);
 
@@ -231,7 +231,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     //#region Drag&Drop handler
 
-    private onDropFiles = (files: Iterable<File>) => {
+    private dropFilesHandler = (files: Iterable<File>) => {
         const request = this.props.id === "PL:"
             ? $api.playlist(this.props.device).createFromFiles(files, null, false)
             : $api.playlist(this.props.device).addFromFiles(this.props.id, files);
@@ -276,7 +276,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     //#region Context menu select handler
 
-    private menuSelectHandler = (item: HTMLElement, anchor?: HTMLElement) => {
+    private menuSelectedHandler = (item: HTMLElement, anchor?: HTMLElement) => {
         const id = anchor?.dataset["id"];
         if (!id) return;
 
@@ -369,7 +369,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <PlaylistSvgSymbols />
             <PlayerSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
-            <DropTarget className="flex-expand d-flex flex-column" acceptedTypes={fileTypes} onDrop={this.onDropFiles}>
+            <DropTarget className="flex-expand d-flex flex-column" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <div className="d-flex flex-column sticky-top">
                     <Toolbar className="px-2 py-1 bg-light border-bottom">
                         <Toolbar.Group>
@@ -382,7 +382,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
                         useCheckboxes multiSelect className="flex-expand">
-                        <Browser.ContextMenu placement="bottom-end" onSelect={this.menuSelectHandler} render={this.renderContextMenu} />
+                        <Browser.ContextMenu placement="bottom-end" onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>
                 <div className="sticky-bottom bg-light py-1 px-3 d-flex align-items-center border-top">
