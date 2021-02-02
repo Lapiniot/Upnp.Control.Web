@@ -23,6 +23,7 @@ export interface ControlApiProvider {
 export interface PlaylistApiProvider {
     state: () => JsonFetch;
     create: (title: string) => JsonPostFetch;
+    createFromItems: (title: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) => JsonPostFetch;
     createFromFiles: (data: Iterable<File> | FormData, title?: string | null, merge?: boolean, useProxy?: boolean) => HttpPost;
     rename: (id: string, title: string) => JsonPutFetch;
     delete: (ids: string[]) => JsonDeleteFetch;
@@ -44,6 +45,9 @@ export default class {
     static playlist = (deviceId: string): PlaylistApiProvider => ({
         state: () => new JsonFetch(`${baseUri}/${deviceId}/playlists/state`),
         create: (title: string) => new JsonPostFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(title) }),
+        createFromItems: (title: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) =>
+            new JsonPostFetch(`${baseUri}/${deviceId}/playlists/items`, null,
+                { body: JSON.stringify({ title, source: { deviceId: sourceDevice, items: sourceIds }, maxDepth }) }),
         createFromFiles: (data: Iterable<File> | FormData, title?: string | null, merge?: boolean, useProxy?: boolean) => {
             const url = `${baseUri}/${deviceId}/playlists`;
 
