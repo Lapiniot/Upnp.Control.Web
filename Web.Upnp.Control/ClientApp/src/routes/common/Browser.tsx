@@ -23,7 +23,7 @@ type BrowserState = {
     devices: UpnpDevice[] | null;
 };
 
-export class Browser extends React.Component<BrowserCoreProps<CellContext>, BrowserState> {
+export class Browser extends React.Component<BrowserCoreProps<CellContext> & { device?: string }, BrowserState> {
 
     state: BrowserState = { devices: null }
 
@@ -37,6 +37,18 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext>, Brow
         }
     }
 
+    menuSelectedHandler = ({ dataset: { action, udn } }: HTMLElement, anchor?: HTMLElement) => {
+        const { dataContext, device } = this.props;
+
+        if (!anchor || !device) return;
+
+        if (action?.startsWith("send-") && udn) {
+            const item = dataContext?.source.items.find(i => i.id === anchor.dataset.id);
+            if (!item) return;
+            WebApi.playlist(udn).createFromItems(item.title, device, [item.id]).fetch();
+        }
+    }
+
     renderContextMenu = (anchor?: HTMLElement | null) => {
         const id = anchor?.dataset.id;
         if (!id) return;
@@ -44,10 +56,10 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext>, Brow
         if (!item) return;
         return <>{item.container
             ? <>{this.state.devices?.filter(d => d.services.some(s => s.type.startsWith(Services.UmiPlaylist))).map(d =>
-                <MenuItem action={"send-" + d.udn} data-udn={d.udn}>Send as Playlist to <span className="text-bolder">&laquo;{d.name}&raquo;</span></MenuItem>)}
+                <MenuItem key={d.udn} action={"send-" + d.udn} data-udn={d.udn}>Send as Playlist to <span className="text-bolder">&laquo;{d.name}&raquo;</span></MenuItem>)}
                 <li><hr className="dropdown-divider mx-2" /></li></>
             : <>{this.state.devices?.map(d =>
-                <MenuItem action={"play-" + d.udn} data-udn={d.udn}>Play on <span className="text-bolder">&laquo;{d.name}&raquo;</span></MenuItem>)}
+                <MenuItem key={d.udn} action={"play-" + d.udn} data-udn={d.udn}>Play on <span className="text-bolder">&laquo;{d.name}&raquo;</span></MenuItem>)}
                 <li><hr className="dropdown-divider mx-2" /></li></>}
             <MenuItem action={"info"}>Get Info</MenuItem>
         </>;
@@ -55,7 +67,7 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext>, Brow
 
     render() {
         return <BrowserCore mainCellTemplate={Template} mainCellContext={{ disabled: !this.state.devices }} {...this.props}>
-            <BrowserView.ContextMenu render={this.renderContextMenu} />
+            <BrowserView.ContextMenu render={this.renderContextMenu} onSelected={this.menuSelectedHandler} />
         </BrowserCore>;
     }
 }
