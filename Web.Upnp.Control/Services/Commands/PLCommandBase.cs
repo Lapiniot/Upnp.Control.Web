@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -85,6 +86,65 @@ namespace Web.Upnp.Control.Services.Commands
             writer.WriteValue(url.AbsoluteUri);
             writer.WriteEndElement();
             writer.WriteEndElement();
+        }
+
+        protected void CopyItems(string metadata, XmlWriter writer, Stack<(string Id, int Depth)> containerIds, int depth)
+        {
+            if(string.IsNullOrEmpty(metadata)) return;
+            if(writer is null) throw new ArgumentNullException(nameof(writer));
+            if(containerIds is null) throw new ArgumentNullException(nameof(containerIds));
+
+            using(var input = new StringReader(metadata))
+            using(var reader = XmlReader.Create(input))
+            {
+                if(!reader.ReadToDescendant("DIDL-Lite") || reader.NamespaceURI != DIDLLiteNamespace)
+                {
+                    return;
+                }
+
+                while(reader.Read() && reader.NodeType != XmlNodeType.Element) ;
+
+                while(reader.NodeType != XmlNodeType.EndElement)
+                {
+                    if(reader.NamespaceURI == DIDLLiteNamespace)
+                    {
+                        switch(reader.Name)
+                        {
+                            case "item":
+                                writer.WriteNode(reader, true);
+                                break;
+                            case "container":
+                                var id = reader.GetAttribute("id");
+                                if(!string.IsNullOrEmpty(id)) containerIds.Push((id, depth));
+                                reader.Skip();
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        protected async Task WriteItemsMetadataTree(string deviceId, IEnumerable<string> itemIds, XmlWriter writer, int maxDepth, CancellationToken cancellationToken)
+        {
+            var sourceCDService = await GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
+
+            var containerIds = new Stack<(string Id, int Depth)>();
+
+            // Phase 1: get items metadata and sort out items and containers, items are copied immidiatelly to the output xml writer,
+            // container ids are scheduled for future expansion by pushing to the containerIds stack structure
+            foreach(var item in itemIds)
+            {
+                var data = await sourceCDService.BrowseAsync(item, mode: BrowseMode.BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
+                CopyItems(data["Result"], writer, containerIds, 0);
+            }
+
+            // Phase 2: iteratively pop container id from the stack and browse for its direct children sorting items and child containers again
+            while(containerIds.TryPop(out var result))
+            {
+                if(result.Depth >= maxDepth) continue;
+                var data = await sourceCDService.BrowseAsync(result.Id, mode: BrowseMode.BrowseDirectChildren, cancellationToken: cancellationToken).ConfigureAwait(false);
+                CopyItems(data["Result"], writer, containerIds, result.Depth + 1);
+            }
         }
 
         protected async Task CreatePlaylistAsync(string deviceId, string title, string contentMetadata, CancellationToken cancellationToken)

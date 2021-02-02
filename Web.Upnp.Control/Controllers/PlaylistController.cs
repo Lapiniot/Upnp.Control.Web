@@ -34,6 +34,13 @@ namespace Web.Upnp.Control.Controllers
             return handler.ExecuteAsync(new PLCreateCommand(deviceId, title), cancellationToken);
         }
 
+        [HttpPost("items")]
+        public Task CreateAsync([FromServices] IAsyncCommandHandler<PLCreateFromItemsCommand> handler,
+            string deviceId, [FromBody] CreatePlaylistParams @params, CancellationToken cancellationToken)
+        {
+            return handler.ExecuteAsync(new PLCreateFromItemsCommand(deviceId, @params), cancellationToken);
+        }
+
         [HttpPost]
         [Consumes("multipart/form-data")]
         public Task CreateAsync([FromServices] IAsyncCommandHandler<PLCreateFromFilesCommand> handler,

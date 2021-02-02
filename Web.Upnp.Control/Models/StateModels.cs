@@ -71,6 +71,10 @@ namespace Web.Upnp.Control.Models
 
     public record PLCreateCommand(string DeviceId, string Title);
 
+    public record CreatePlaylistParams(string Title, MediaSource Source, int? maxDepth);
+
+    public record PLCreateFromItemsCommand(string DeviceId, CreatePlaylistParams Params);
+
     public record PLCreateFromFilesCommand(string DeviceId, PlaylistFilesSource Source, string Title, bool? Merge);
 
     public record PLUpdateCommand(string DeviceId, string PlaylistId, string Title);
