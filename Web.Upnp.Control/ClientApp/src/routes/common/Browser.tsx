@@ -1,7 +1,8 @@
 import React from "react";
-import { MenuItem } from "../../components/DropdownMenu";
+import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
 import WebApi from "../../components/WebApi";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
+import { DIDLUtils } from "./BrowserUtils";
 import BrowserView, { CellTemplate, CellTemplateProps, RowState } from "./BrowserView";
 import settings from "./Config";
 import { Services, UpnpDevice } from "./Types";
@@ -47,13 +48,13 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
         return false;
     }
 
-    menuSelectedHandler = async ({ dataset: { action, udn } }: HTMLElement, anchor?: HTMLElement) => {
+    itemMenuSelectedHandler = async ({ dataset: { action, udn } }: HTMLElement, anchor?: HTMLElement) => {
         const { dataContext, device } = this.props;
 
-        if (!anchor || !device) return;
+        if (!action || !anchor || !device || !dataContext?.source) return;
 
-        if (action?.startsWith("send-") && udn) {
-            const item = dataContext?.source.items.find(i => i.id === anchor.dataset.id);
+        if (action.startsWith("send-") && udn) {
+            const item = dataContext.source.items.find(i => i.id === anchor.dataset.id);
             if (!item) return;
 
             this.setState({ fetching: true, error: null });
@@ -62,25 +63,92 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
                 this.setState({ fetching: false });
             }
             catch (error) {
+                console.error(error);
                 this.setState({ fetching: false, error: error });
+            }
+        }
+        else if (action?.startsWith("play-") && udn) {
+            const item = dataContext.source.items.find(i => i.id === anchor.dataset.id);
+            if (!item) return;
+
+            try {
+                await WebApi.control(udn).play(item.id, device).fetch();
+            }
+            catch (error) {
+                console.error(error);
             }
         }
     }
 
-    renderContextMenu = (anchor?: HTMLElement | null) => {
+    actionMenuSelectedHandler = async ({ dataset: { action, udn } }: HTMLElement, anchor?: HTMLElement) => {
+        const { dataContext, device } = this.props;
+
+        if (!action || !anchor || !device || !dataContext?.source || !this.state.selection) return;
+
+        if (action.startsWith("send-") && udn) {
+            this.setState({ fetching: true, error: null });
+            try {
+                const items = this.state.selection.map(id => dataContext.source.items.find(i => i.id === id));
+                const title = items?.map(i => i?.title).join(";");
+                await WebApi.playlist(udn).createFromItems(title, device, items.map(i => i?.id ?? "")).fetch();
+                this.setState({ fetching: false });
+            }
+            catch (error) {
+                console.error(error);
+                this.setState({ fetching: false, error: error });
+            }
+        }
+        else if (action.startsWith("play-") && udn) {
+            const item = this.getSelectedMusicTrack();
+            if (!item) return;
+            try {
+                await WebApi.control(udn).play(item.id, device).fetch();
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+    }
+
+    renderItemMenu = (anchor?: HTMLElement | null) => {
         const id = anchor?.dataset.id;
         if (!id) return;
         const item = this.props.dataContext?.source.items.find(i => i.id === id);
         if (!item) return;
-        return <>{item.container
-            ? <>{this.state.devices?.filter(d => d.services.some(s => s.type.startsWith(Services.UmiPlaylist))).map(d =>
-                <MenuItem key={d.udn} action={"send-" + d.udn} data-udn={d.udn}>Send as Playlist to <span className="text-bolder">&laquo;{d.name}&raquo;</span></MenuItem>)}
-                <li><hr className="dropdown-divider mx-2" /></li></>
-            : <>{this.state.devices?.map(d =>
-                <MenuItem key={d.udn} action={"play-" + d.udn} data-udn={d.udn}>Play on <span className="text-bolder">&laquo;{d.name}&raquo;</span></MenuItem>)}
-                <li><hr className="dropdown-divider mx-2" /></li></>}
+
+        const prefix = item.container ? "send" : "play";
+        const caption = item.container ? "Send as Playlist to " : "Play on ";
+        const devices = item.container
+            ? this.state.devices?.filter(isUmiDevice)
+            : DIDLUtils.isMusicTrack(item)
+                ? this.state.devices
+                : this.state.devices?.filter(d => !isUmiDevice(d));
+
+        return <>
+            {devices?.map(({ udn, name }) => this.createMenuItem(udn, prefix, caption, name))}
+            {!!devices?.length && <li><hr className="dropdown-divider mx-2" /></li>}
             <MenuItem action={"info"}>Get Info</MenuItem>
         </>;
+    }
+
+    renderActionMenu = () => {
+        var track = this.getSelectedMusicTrack();
+        return <>
+            {!!track && <>
+                {this.state.devices?.map(({ udn, name }) => this.createMenuItem(udn, "play", "Play on ", name))}
+                <li><hr className="dropdown-divider mx-2" /></li>
+            </>}
+            {this.state.devices?.filter(isUmiDevice).map(({ udn, name }) => this.createMenuItem(udn, "send", "Send as Playlist to ", name))}
+        </>;
+    }
+
+    private getSelectedMusicTrack() {
+        return this.props.dataContext?.source.items.find(i =>
+            !i.container && DIDLUtils.isMusicTrack(i) && this.state.selection?.some(id => id === i.id));
+    }
+
+    private createMenuItem(udn: string, action: string, caption: string, name: string): JSX.Element {
+        return <MenuItem key={`${action}-${udn}`} action={`${action}-${udn}`} data-udn={udn}>{caption}<span className="text-bolder">&laquo;{name}&raquo;</span></MenuItem>;
     }
 
     render() {
@@ -88,13 +156,19 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
             <BrowserCore mainCellTemplate={Template} mainCellContext={{ disabled: !this.state.devices }}
                 useCheckboxes multiSelect rowState={this.rowState} selectionChanged={this.selectionChanged}
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
-                <BrowserView.ContextMenu render={this.renderContextMenu} onSelected={this.menuSelectedHandler} />
+                <BrowserView.ContextMenu render={this.renderItemMenu} onSelected={this.itemMenuSelectedHandler} />
             </BrowserCore>
             <div className="float-container bottom-0 end-0" style={{ marginBlockEnd: "4rem" }}>
-                <button type="button" className="btn btn-lg btn-round btn-primary" disabled={!this.state.selection?.length}>
+                <button type="button" className="btn btn-lg btn-round btn-primary" data-bs-toggle="dropdown"
+                    disabled={!this.state.selection?.length || !this.state.devices?.length}>
                     <svg className="icon"><use href="#ellipsis-v" /></svg>
                 </button>
             </div>
+            <DropdownMenu render={this.renderActionMenu} onSelected={this.actionMenuSelectedHandler} placement="top-end" />
         </>;
     }
+}
+
+function isUmiDevice(device: UpnpDevice) {
+    return device.services.some(s => s.type.startsWith(Services.UmiPlaylist));
 }
