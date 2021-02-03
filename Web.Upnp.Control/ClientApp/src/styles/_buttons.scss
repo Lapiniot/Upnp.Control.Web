@@ -35,6 +35,7 @@ nav.navbar-nav > a.nav-link,
     clip-path: circle();
     outline: none !important;
     box-shadow: none;
+    border: none;
 
     & > img,
     & > svg {
@@ -45,24 +46,32 @@ nav.navbar-nav > a.nav-link,
         fill: currentColor;
     }
 
-    &:focus-visible,
-    &:hover {
-        color: $dropdown-link-hover-color;
-        @include gradient-bg($gray-400);
+    &.btn-icon:not(:hover):not(:active):not(:focus) {
+        color: #000;
+        background-color: unset !important;
+        background-image: unset !important;
+
+        &.disabled,
+        &:disabled {
+            color: $dropdown-link-disabled-color;
+            pointer-events: none;
+            background-color: transparent;
+            background-image: if($enable-gradients, none, null);
+        }
     }
 
-    &.active,
-    &:active {
-        color: $dropdown-link-active-color;
-        @include gradient-bg($dropdown-link-active-bg);
-    }
+    &.btn-plain {
+        &:focus-visible,
+        &:hover {
+            color: $dropdown-link-hover-color;
+            @include gradient-bg($gray-400);
+        }
 
-    &.disabled,
-    &:disabled {
-        color: $dropdown-link-disabled-color;
-        pointer-events: none;
-        background-color: transparent;
-        background-image: if($enable-gradients, none, null);
+        &.active,
+        &:active {
+            color: $dropdown-link-active-color;
+            @include gradient-bg($dropdown-link-active-bg);
+        }
     }
 }
 
@@ -71,4 +80,16 @@ nav.navbar-nav > a.nav-link,
     & > svg {
         margin: 0;
     }
+}
+
+.float-container {
+    --float-shadow-offset: 2px;
+    --float-shadow-radius: 4px;
+    --float-shadow-color: #00000088;
+    position: fixed;
+    z-index: $zindex-fixed;
+    filter: drop-shadow(
+        var(--float-shadow-offset) var(--float-shadow-offset) var(--float-shadow-radius) var(--float-shadow-color)
+    );
+    margin: $spacer;
 }

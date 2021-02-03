@@ -324,7 +324,6 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <MenuItem action="add-items" glyph="plus">Add items</MenuItem>
                     <MenuItem action="add-url" glyph="broadcast-tower">Add stream url</MenuItem>
                     <MenuItem action="add-files" glyph="list">Add playlist file</MenuItem>
-                    <MenuItem action="" glyph=""></MenuItem>
                     <li><hr className="dropdown-divider mx-2" /></li>
                     <MenuItem action="rename" glyph="edit">Rename</MenuItem>
                     <MenuItem action="delete" glyph="trash">Delete</MenuItem>
@@ -373,7 +372,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 <div className="d-flex flex-column sticky-top">
                     <Toolbar className="px-2 py-1 bg-light border-bottom">
                         <Toolbar.Group>
-                            {this.getToolbarConfig().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round" />)}
+                            {this.getToolbarConfig().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round btn-icon btn-plain" />)}
                         </Toolbar.Group>
                     </Toolbar>
                     <Breadcrumb className="border-bottom" items={parents} path={match.path} params={match.params} />

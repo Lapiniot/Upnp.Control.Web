@@ -41,7 +41,7 @@ export default function ({ data: d, context: { state, play, pause, playUrl } = {
             {d.creator && <>&nbsp;&bull;&nbsp;<small>{d.creator}</small></>}
             {d.album && <>&nbsp;&bull;&nbsp;<small>{d.album}</small></>}
         </span>
-        <button type="button" className="btn btn-round" data-id={d.id} data-index={index} data-bs-toggle="dropdown" disabled={!!(rowState & RowState.Readonly)}>
+        <button type="button" className="btn btn-round btn-icon btn-primary" data-id={d.id} data-index={index} data-bs-toggle="dropdown" disabled={!!(rowState & RowState.Readonly)}>
             <svg><use href="#ellipsis-v" /></svg>
         </button>
     </div>;

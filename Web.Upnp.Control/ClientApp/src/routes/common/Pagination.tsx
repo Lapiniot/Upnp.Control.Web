@@ -67,7 +67,7 @@ function noActive() {
 }
 
 const RelativePageLink = ({ title, to, label, children, className, ...other }: LinkProps & { label?: string }) =>
-    <RouteLink to={to} aria-label={label} className={`btn btn-round${className ? ` ${className}` : ""}`} isActive={noActive} {...other}>
+    <RouteLink to={to} aria-label={label} className={`btn btn-round btn-icon btn-plain${className ? ` ${className}` : ""}`} isActive={noActive} {...other}>
         {children}
         {title && <span aria-hidden="true">{title}</span>}
         {label && <span className="visually-hidden">{label}</span>}

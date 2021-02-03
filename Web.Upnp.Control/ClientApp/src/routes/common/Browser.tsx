@@ -2,7 +2,7 @@ import React from "react";
 import { MenuItem } from "../../components/DropdownMenu";
 import WebApi from "../../components/WebApi";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
-import BrowserView, { CellTemplate, CellTemplateProps } from "./BrowserView";
+import BrowserView, { CellTemplate, CellTemplateProps, RowState } from "./BrowserView";
 import settings from "./Config";
 import { Services, UpnpDevice } from "./Types";
 
@@ -12,7 +12,7 @@ type CellContext = {
 
 function Template(props: CellTemplateProps<CellContext>) {
     return <CellTemplate {...props}>
-        <button type="button" className="btn btn-round" data-id={props.data.id}
+        <button type="button" className="btn btn-round btn-icon btn-primary" data-id={props.data.id}
             data-bs-toggle="dropdown" disabled={props.context?.disabled}>
             <svg><use href="#ellipsis-v" /></svg>
         </button>
@@ -21,11 +21,14 @@ function Template(props: CellTemplateProps<CellContext>) {
 
 type BrowserState = {
     devices: UpnpDevice[] | null;
+    selection: string[] | null;
+    fetching: boolean;
+    error: Error | null;
 };
 
 export class Browser extends React.Component<BrowserCoreProps<CellContext> & { device?: string }, BrowserState> {
 
-    state: BrowserState = { devices: null }
+    state: BrowserState = { devices: null, selection: null, fetching: false, error: null }
 
     async componentDidMount() {
         try {
@@ -37,7 +40,14 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
         }
     }
 
-    menuSelectedHandler = ({ dataset: { action, udn } }: HTMLElement, anchor?: HTMLElement) => {
+    rowState = () => RowState.Selectable | RowState.Navigable;
+
+    selectionChanged = (ids: string[]) => {
+        this.setState({ selection: ids });
+        return false;
+    }
+
+    menuSelectedHandler = async ({ dataset: { action, udn } }: HTMLElement, anchor?: HTMLElement) => {
         const { dataContext, device } = this.props;
 
         if (!anchor || !device) return;
@@ -45,7 +55,15 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
         if (action?.startsWith("send-") && udn) {
             const item = dataContext?.source.items.find(i => i.id === anchor.dataset.id);
             if (!item) return;
-            WebApi.playlist(udn).createFromItems(item.title, device, [item.id]).fetch();
+
+            this.setState({ fetching: true, error: null });
+            try {
+                await WebApi.playlist(udn).createFromItems(item.title, device, [item.id]).fetch();
+                this.setState({ fetching: false });
+            }
+            catch (error) {
+                this.setState({ fetching: false, error: error });
+            }
         }
     }
 
@@ -66,8 +84,17 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
     }
 
     render() {
-        return <BrowserCore mainCellTemplate={Template} mainCellContext={{ disabled: !this.state.devices }} {...this.props}>
-            <BrowserView.ContextMenu render={this.renderContextMenu} onSelected={this.menuSelectedHandler} />
-        </BrowserCore>;
+        return <>
+            <BrowserCore mainCellTemplate={Template} mainCellContext={{ disabled: !this.state.devices }}
+                useCheckboxes multiSelect rowState={this.rowState} selectionChanged={this.selectionChanged}
+                {...this.props} fetching={this.state.fetching || this.props.fetching}>
+                <BrowserView.ContextMenu render={this.renderContextMenu} onSelected={this.menuSelectedHandler} />
+            </BrowserCore>
+            <div className="float-container bottom-0 end-0" style={{ marginBlockEnd: "4rem" }}>
+                <button type="button" className="btn btn-lg btn-round btn-primary" disabled={!this.state.selection?.length}>
+                    <svg className="icon"><use href="#ellipsis-v" /></svg>
+                </button>
+            </div>
+        </>;
     }
 }
