@@ -117,7 +117,7 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
         if (!item) return;
 
         const prefix = item.container ? "send" : "play";
-        const caption = item.container ? "Send as Playlist to " : "Play on ";
+        const caption = item.container ? "Send as Playlist to" : "Play on";
         const devices = item.container
             ? this.state.devices?.filter(isUmiDevice)
             : DIDLUtils.isMusicTrack(item)
@@ -125,20 +125,27 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
                 : this.state.devices?.filter(d => !isUmiDevice(d));
 
         return <>
-            {devices?.map(({ udn, name }) => this.createMenuItem(udn, prefix, caption, name))}
-            {!!devices?.length && <li><hr className="dropdown-divider mx-2" /></li>}
+            {!!devices?.length && <>
+                <li><h6 className="dropdown-header">{caption}</h6></li>
+                {devices?.map(({ udn, name }) => this.createMenuItem(udn, prefix, name))}
+                <li><hr className="dropdown-divider mx-2" /></li>
+            </>}
             <MenuItem action={"info"}>Get Info</MenuItem>
         </>;
     }
 
     renderActionMenu = () => {
         var track = this.getSelectedMusicTrack();
+        const umiDevices = this.state.devices?.filter(isUmiDevice);
         return <>
             {!!track && <>
-                {this.state.devices?.map(({ udn, name }) => this.createMenuItem(udn, "play", "Play on ", name))}
-                <li><hr className="dropdown-divider mx-2" /></li>
+                <li><h6 className="dropdown-header">Play on</h6></li>
+                {this.state.devices?.map(({ udn, name }) => this.createMenuItem(udn, "play", name))}
             </>}
-            {this.state.devices?.filter(isUmiDevice).map(({ udn, name }) => this.createMenuItem(udn, "send", "Send as Playlist to ", name))}
+            {!!umiDevices?.length && <>
+                <li><h6 className="dropdown-header">Send as Playlist to</h6></li>
+                {umiDevices.map(({ udn, name }) => this.createMenuItem(udn, "send", name))}
+            </>}
         </>;
     }
 
@@ -147,8 +154,8 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
             !i.container && DIDLUtils.isMusicTrack(i) && this.state.selection?.some(id => id === i.id));
     }
 
-    private createMenuItem(udn: string, action: string, caption: string, name: string): JSX.Element {
-        return <MenuItem key={`${action}-${udn}`} action={`${action}-${udn}`} data-udn={udn}>{caption}<span className="text-bolder">&laquo;{name}&raquo;</span></MenuItem>;
+    private createMenuItem(udn: string, action: string, name: string): JSX.Element {
+        return <MenuItem key={`${action}-${udn}`} action={`${action}-${udn}`} data-udn={udn}>&laquo;{name}&raquo;</MenuItem>;
     }
 
     render() {
