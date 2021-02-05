@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
@@ -69,7 +70,7 @@ namespace Web.Upnp.Control.Services.Commands
                 useProxy ??= response.Headers.TryGetValues("icy-metaint", out _);
                 var url = useProxy != true ? mediaUrl : GetProxyUri(mediaUrl);
                 
-                WriteItem(writer, title, description, genre, url, length, contentType?.MediaType, br);
+                DIDLUtils.WriteItem(writer, title, description, genre, url, length, contentType?.MediaType, br);
             }
             catch(HttpRequestException exception)
             {
@@ -78,7 +79,7 @@ namespace Web.Upnp.Control.Services.Commands
                 title = !string.IsNullOrWhiteSpace(title) ? title : mediaUrl.ToString();
                 var url = useProxy == false ? mediaUrl : GetProxyUri(mediaUrl);
                 
-                WriteItem(writer, title, null, null, url, null, null, null);
+                DIDLUtils.WriteItem(writer, title, null, null, url, null, null, null);
             }
         }
 
@@ -95,7 +96,7 @@ namespace Web.Upnp.Control.Services.Commands
         {
             var sb = new StringBuilder();
 
-            using(var writer = CreateDidlXmlWriter(sb))
+            using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
             {
                 foreach(var file in files)
                 {
@@ -117,7 +118,7 @@ namespace Web.Upnp.Control.Services.Commands
         {
             var sb = new StringBuilder();
 
-            using(var writer = CreateDidlXmlWriter(sb))
+            using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
             {
                 await AppendFeedItemAsync(writer, mediaUrl, title, useProxy, cancellationToken).ConfigureAwait(false);
             }

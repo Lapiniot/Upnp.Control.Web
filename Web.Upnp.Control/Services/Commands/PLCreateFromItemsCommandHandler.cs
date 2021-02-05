@@ -1,6 +1,7 @@
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using IoT.Protocol.Upnp.DIDL;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Models;
@@ -24,7 +25,7 @@ namespace Web.Upnp.Control.Services.Commands
             var maxDepth = depth ?? options.Value.MaxContainerScanDepth;
 
             var sb = new StringBuilder();
-            using(var writer = CreateDidlXmlWriter(sb))
+            using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
             {
                 await WriteItemsMetadataTree(sourceDeviceId, ids, writer, maxDepth, cancellationToken).ConfigureAwait(false);
             }

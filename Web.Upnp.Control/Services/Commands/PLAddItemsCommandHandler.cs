@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
+using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
@@ -34,19 +33,14 @@ namespace Web.Upnp.Control.Services.Commands
 
             var sb = new StringBuilder();
 
-            using(var writer = CreateDidlXmlWriter(sb))
+            using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
             {
                 foreach(var item in sourceItems)
                 {
                     var data = await sourceCDService.BrowseAsync(item, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                    using(var input = new StringReader(data["Result"]))
-                    using(var reader = XmlReader.Create(input))
-                    {
-                        if(!reader.ReadToDescendant("DIDL-Lite") || reader.NamespaceURI != DIDLLiteNamespace) continue;
-                        if(!reader.ReadToDescendant("item") || reader.NamespaceURI != DIDLLiteNamespace) continue;
-                        writer.WriteNode(reader, true);
-                    }
+                    string metadata = data["Result"];
+                    DIDLUtils.CopyItems(metadata, writer);
                 }
             }
 
