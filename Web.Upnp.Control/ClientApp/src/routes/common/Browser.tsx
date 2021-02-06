@@ -59,7 +59,7 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
 
             this.setState({ fetching: true, error: null });
             try {
-                await WebApi.playlist(udn).createFromItems(item.title, device, [item.id]).fetch();
+                await WebApi.playlist(udn).createFromItems(item.title, device, [item.id]).fetch(settings.get("containerScanTimeout"));
                 this.setState({ fetching: false });
             }
             catch (error) {
@@ -90,7 +90,7 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
             try {
                 const items = this.state.selection.map(id => dataContext.source.items.find(i => i.id === id));
                 const title = items?.map(i => i?.title).join(";");
-                await WebApi.playlist(udn).createFromItems(title, device, items.map(i => i?.id ?? "")).fetch();
+                await WebApi.playlist(udn).createFromItems(title, device, items.map(i => i?.id ?? "")).fetch(settings.get("containerScanTimeout"));
                 this.setState({ fetching: false });
             }
             catch (error) {
@@ -99,10 +99,13 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
             }
         }
         else if (action.startsWith("play-") && udn) {
-            const item = this.getSelectedMusicTrack();
-            if (!item) return;
             try {
-                await WebApi.control(udn).play(item.id, device).fetch();
+                const queues = WebApi.queues(udn);
+                const timeout = settings.get("timeout");
+
+                await queues.clear("Q:0").fetch(timeout);
+                await queues.enqueue("Q:0", device, this.state.selection).fetch(settings.get("containerScanTimeout"));
+                await WebApi.control(udn).playUri("x-mi://sys/queue?id=0").fetch(timeout);
             }
             catch (error) {
                 console.error(error);
@@ -135,13 +138,10 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
     }
 
     renderActionMenu = () => {
-        var track = this.getSelectedMusicTrack();
         const umiDevices = this.state.devices?.filter(isUmiDevice);
         return <>
-            {!!track && <>
-                <li><h6 className="dropdown-header">Play on</h6></li>
-                {this.state.devices?.map(({ udn, name }) => this.createMenuItem(udn, "play", name))}
-            </>}
+            <li><h6 className="dropdown-header">Play on</h6></li>
+            {this.state.devices?.map(({ udn, name }) => this.createMenuItem(udn, "play", name))}
             {!!umiDevices?.length && <>
                 <li><h6 className="dropdown-header">Send as Playlist to</h6></li>
                 {umiDevices.map(({ udn, name }) => this.createMenuItem(udn, "send", name))}
