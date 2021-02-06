@@ -2,18 +2,20 @@ type TypedSettings = {
     pageSize: number;
     readonly pageSizes: number[];
     timeout: number;
+    containerScanTimeout: number;
 }
 
 const defaults: TypedSettings = {
     pageSize: 60,
     pageSizes: [15, 30, 60, 120, 150],
     timeout: 5000,
+    containerScanTimeout: 15000,
 };
 
 export class Settings<T extends { [P: string]: string | number | boolean | object }> {
 
-    defaults: T;
-    section: string;
+    private defaults: T;
+    private section: string;
 
     constructor(section: string, defaults: T) {
         this.section = section;
