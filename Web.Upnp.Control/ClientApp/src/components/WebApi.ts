@@ -34,6 +34,11 @@ export interface PlaylistApiProvider {
     removeItems: (id: string, ids: string[]) => JsonDeleteFetch;
 }
 
+export interface QueueApiProvider {
+    enqueue: (queueId: string, sourceDevice: string, sourceIds: string[]) => JsonPostFetch;
+    clear: (queueId: string) => JsonDeleteFetch;
+}
+
 export default class {
 
     static devices = (category: string, id?: string) => new HttpFetch(`${baseUri}${id ? `/${id}` : ""}${category ? "?category=" + category : ""}`);
@@ -75,6 +80,14 @@ export default class {
                 { body: data instanceof FormData ? data : createFormData(data, useProxy) });
         },
         removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null, { body: JSON.stringify(ids) })
+    });
+
+    static queues = (deviceId: string): QueueApiProvider => ({
+        enqueue: (queueId: string, sourceDevice: string, sourceIds: string[]) =>
+            new JsonPostFetch(`${baseUri}/${deviceId}/queues/${queueId}/items`, null, {
+                body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds })
+            }),
+        clear: (queueId: string) => new JsonDeleteFetch(`${baseUri}/${deviceId}/queues/${queueId}/items`, null, { body: null })
     });
 
     static control = (deviceId: string): ControlApiProvider => {
