@@ -20,7 +20,7 @@ namespace Web.Upnp.Control.Services.Commands
             var cds = await GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
 
             var updateId = await UpnpUtils.GetUpdateIdAsync(cds, playlistId, cancellationToken).ConfigureAwait(false);
-            var indices = await UpnpUtils.GetItemIndices(cds, playlistId, items, cancellationToken).ConfigureAwait(false);
+            var indices = await UpnpUtils.GetItemIndicesAsync(cds, playlistId, items, cancellationToken).ConfigureAwait(false);
 
             await pls.RemoveItemsAsync(objectId: playlistId, updateId: updateId, indices: indices, cancellationToken: cancellationToken).ConfigureAwait(false);
         }

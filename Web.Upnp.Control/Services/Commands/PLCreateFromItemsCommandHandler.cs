@@ -27,7 +27,7 @@ namespace Web.Upnp.Control.Services.Commands
             var sb = new StringBuilder();
             using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
             {
-                await WriteItemsMetadataTree(sourceDeviceId, ids, writer, maxDepth, cancellationToken).ConfigureAwait(false);
+                await WriteItemsMetadataTreeAsync(sourceDeviceId, ids, writer, maxDepth, cancellationToken).ConfigureAwait(false);
             }
 
             await CreatePlaylistAsync(deviceId, title, sb.ToString(), cancellationToken).ConfigureAwait(false);

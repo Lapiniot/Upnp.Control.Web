@@ -27,10 +27,10 @@ namespace Web.Upnp.Control.Services.Commands
             return serviceFactory.GetServiceAsync<T>(deviceId);
         }
 
-        protected async Task<int[]> GetItemIndices(string deviceId, string parentId, IEnumerable<string> ids, CancellationToken cancellationToken)
+        protected async Task<int[]> GetItemIndicesAsync(string deviceId, string parentId, IEnumerable<string> ids, CancellationToken cancellationToken)
         {
             var service = await GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
-            return await UpnpUtils.GetItemIndices(service, parentId, ids, cancellationToken).ConfigureAwait(false);
+            return await UpnpUtils.GetItemIndicesAsync(service, parentId, ids, cancellationToken).ConfigureAwait(false);
         }
 
         protected async Task<string> GetUpdateIdAsync(string deviceId, string itemId, CancellationToken cancellationToken)
@@ -39,10 +39,10 @@ namespace Web.Upnp.Control.Services.Commands
             return await UpnpUtils.GetUpdateIdAsync(service, itemId, cancellationToken).ConfigureAwait(false);
         }
 
-        protected async Task WriteItemsMetadataTree(string deviceId, IEnumerable<string> itemIds, XmlWriter writer, int maxDepth, CancellationToken cancellationToken)
+        protected async Task WriteItemsMetadataTreeAsync(string deviceId, IEnumerable<string> itemIds, XmlWriter writer, int maxDepth, CancellationToken cancellationToken)
         {
             var sourceCDService = await GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
-            await UpnpUtils.WriteItemsMetadataTree(sourceCDService, itemIds, writer, maxDepth, cancellationToken).ConfigureAwait(false);
+            await UpnpUtils.WriteItemsMetadataTreeAsync(sourceCDService, itemIds, writer, maxDepth, cancellationToken).ConfigureAwait(false);
         }
 
         protected async Task CreatePlaylistAsync(string deviceId, string title, string contentMetadata, CancellationToken cancellationToken)
