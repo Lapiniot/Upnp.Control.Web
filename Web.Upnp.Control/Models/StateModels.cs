@@ -89,6 +89,10 @@ namespace Web.Upnp.Control.Models
 
     public record PLRemoveItemsCommand(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
 
+    public record QAddItemsCommand(string DeviceId, string QueueId, MediaSource Source);
+
+    public record QClearCommand(string DeviceId, string QueueId);
+
     public record MediaSource(string DeviceId, IEnumerable<string> Items);
 
     public record PlaylistFilesSource(IEnumerable<IFormFile> Files, bool? UseProxy);
