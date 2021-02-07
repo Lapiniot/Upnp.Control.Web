@@ -14,7 +14,7 @@ function TemplateSelector(props: DataSourceProps<UpnpDevice>) {
 }
 
 export default (props: RouteComponentProps<{ category: string }>) => <>
-    <UmiActionSvgSymbols />˝
+    <UmiActionSvgSymbols />
     <DeviceRouter {...props} deviceTemplate={TemplateSelector}>
         <Route path={`${props.match.path}/:device/playlists/(0|-1)`} exact render={() => <Redirect to={`/${props.match.params.category}`} />} />
         <Route path={`${props.match.path}/:device/playlists/:id(.*)*`} render={({ id = "PL:", ...other }: any) => <PlaylistManager {...other} id={id} />} />
