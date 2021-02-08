@@ -1,5 +1,5 @@
 import { AddBookmarkAction } from "./actions/AddBookmarkAction";
-import { OpenMediaAction } from "./actions/OpenAction";
+import { OpenMediaAction } from "./actions/OpenMediaAction";
 import { ActionDescriptor, DeviceCard } from "./DeviceCard";
 import PlayerWidget from "./PlayerWidget";
 import { DataSourceProps, UpnpDevice } from "./Types";

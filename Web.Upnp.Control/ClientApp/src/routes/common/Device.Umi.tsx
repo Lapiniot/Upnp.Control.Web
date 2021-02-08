@@ -5,7 +5,7 @@ import $api from "../../components/WebApi";
 import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import AlbumArt from "./AlbumArt";
 import { BrowseContentAction, DeviceActionProps } from "./actions/Actions";
-import { OpenAudioAction } from "./actions/OpenAction";
+import { OpenAudioAction } from "./actions/OpenMediaAction";
 import { AddBookmarkAction } from "./actions/AddBookmarkAction";
 import { ActionDescriptor, DeviceCard } from "./DeviceCard";
 import { DropdownMenu } from "../../components/DropdownMenu";
