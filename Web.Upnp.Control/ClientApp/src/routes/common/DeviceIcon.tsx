@@ -1,11 +1,11 @@
 import { Icon, Services } from "./Types";
 
-function getOptimalIcon(icons: Icon[], preferredSize: number = 48): Icon | null {
+export function getOptimalIcon(icons: Icon[], preferredSize: number = 48): Icon | null {
     return icons?.sort((i1, i2) => i1.w - i2.w)?.find(i => i.w >= preferredSize) ||
         icons?.sort((i1, i2) => i2.w - i1.w)?.find(i => i.w <= preferredSize) || null;
 }
 
-function getFallbackIcon(service: string): string {
+export function getFallbackIcon(service: string): string {
     return service?.startsWith(Services.MediaRenderer) ? "icons.svg#upnp-renderer" : "icons.svg#upnp-server";
 }
 
