@@ -1,11 +1,10 @@
-import { ComponentType } from "react";
 import DeviceInfo from "./DeviceInfo";
 import ServicesList from "./DeviceServiceList";
 import { DataSourceProps, UpnpDevice } from "./Types";
-import { DownloadMetadataAction, BrowseContentAction, DeviceActionProps } from "./Device.Actions";
-import { DeviceCard } from "./DeviceCard";
+import { DownloadMetadataAction, BrowseContentAction } from "./Device.Actions";
+import { ActionDescriptor, DeviceCard } from "./DeviceCard";
 
-const upnpActions: [string, ComponentType<DeviceActionProps>][] =
+const upnpActions: ActionDescriptor[] =
     [["download", DownloadMetadataAction], ["browse", BrowseContentAction]];
 
 export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {

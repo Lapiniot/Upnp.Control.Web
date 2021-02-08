@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { HTMLAttributes, ReactNode } from "react";
 import { NavLink, RouteLink } from "../../components/NavLink";
 import WebApi from "../../components/WebApi";
 import { BrowserProps, RowState } from "./BrowserView";
@@ -6,7 +6,7 @@ import BrowserDialog, { BrowseResult } from "./BrowserDialog";
 import { DIDLUtils } from "./BrowserUtils";
 import { Services, UpnpDevice } from "./Types";
 
-export type DeviceActionProps = {
+export type DeviceActionProps = HTMLAttributes<HTMLElement> & {
     device: UpnpDevice;
     category?: string;
 };
@@ -19,17 +19,19 @@ const audioBrowserProps: BrowserProps<unknown> = {
     rowState: (item) => DIDLUtils.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
 }
 
-export function BrowseContentAction({ device, category }: DeviceActionProps) {
+export function BrowseContentAction({ device, category, className, ...other }: DeviceActionProps) {
     const isMediaServer = device.services && device.services.some(
         s => s.type.startsWith(Services.ContentDirectory) || s.type.startsWith(Services.UmiPlaylist));
-    return isMediaServer ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="folder" className="p-0 nav-link">Browse</RouteLink> : null;
+    return isMediaServer
+        ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="folder" className={`p-0 nav-link${className ? ` ${className}` : ""}`} {...other}>Browse</RouteLink>
+        : null;
 }
 
-export function DownloadMetadataAction({ device }: DeviceActionProps) {
-    return <NavLink to={device.url} glyph="download" className="p-0">Metadata</NavLink>;
+export function DownloadMetadataAction({ device, category, className, ...other }: DeviceActionProps) {
+    return <NavLink to={device.url} glyph="download" className={`p-0${className ? ` ${className}` : ""}`} {...other}>Metadata</NavLink>;
 }
 
-class OpenAction extends React.Component<DeviceActionProps & { browserProps: BrowserProps<unknown> }, { modal?: ReactNode | null }>{
+export class OpenAction extends React.Component<DeviceActionProps & { browserProps: BrowserProps<unknown> }, { modal?: ReactNode | null }>{
     state = { modal: null }
 
     resetModal = () => this.setState({ modal: null });
@@ -50,9 +52,10 @@ class OpenAction extends React.Component<DeviceActionProps & { browserProps: Bro
     }
 
     render() {
+        const { children, className, browserProps, device, category, ...other } = this.props;
         return <>
-            <button type="button" className="btn nav-link btn-link p-0" onClick={this.browse}>
-                {this.props.children}
+            <button type="button" className={`btn nav-link btn-link p-0${className ? ` ${className}` : ""}`} {...other} onClick={this.browse}>
+                {children}
             </button>
             {this.state.modal}
         </>;

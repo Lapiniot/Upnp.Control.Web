@@ -1,17 +1,18 @@
-import React, { ComponentType, HTMLAttributes } from "react";
+import React from "react";
 import PlayerWidget from "./PlayerWidget";
 import { BrowseFetchResult, DataSourceProps, UpnpDevice } from "./Types";
 import $api from "../../components/WebApi";
 import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import AlbumArt from "./AlbumArt";
 import { BrowseContentAction, DeviceActionProps, OpenAudioAction } from "./Device.Actions";
-import { DeviceCard } from "./DeviceCard";
+import { ActionDescriptor, DeviceCard } from "./DeviceCard";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { MicroLoader } from "../../components/LoadIndicator";
 import { RouteLink } from "../../components/NavLink";
 
-function ManagePlaylistsAction({ device, category }: DeviceActionProps) {
-    return <RouteLink to={`/${category}/${device.udn}/playlists/PL:`} glyph="list-alt" className="p-0 nav-link" title="Manage playlists">Playlists</RouteLink>
+function ManagePlaylistsAction({ device, category, className, ...other }: DeviceActionProps) {
+    return <RouteLink to={`/${category}/${device.udn}/playlists/PL:`} {...other} glyph="list-alt"
+        className={`p-0 nav-link${className ? ` ${className}` : ""}`} title="Manage playlists">Playlists</RouteLink>
 }
 
 function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
@@ -23,12 +24,12 @@ function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     return false;
 }
 
-function Menu({ dataContext: d, device }: HTMLAttributes<HTMLDivElement> & DataFetchProps<BrowseFetchResult> & DeviceActionProps) {
+function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & DeviceActionProps) {
     return <>
-        <button type="button" className="btn btn-link p-0 image-only" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
+        <button type="button" className="btn p-0 image-only" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
             <svg className="icon icon-lg"><use href="#caret-right" /></svg><span className="visually-hidden">Toggle Dropdown</span>
         </button>
-        <DropdownMenu data-device={device.udn} placement="right-start">
+        <DropdownMenu data-device={device.udn} placement="bottom-end">
             {d?.source.items.map(i => <li key={i.id}>
                 <a className="dropdown-item" href="#" data-play-url={i.res?.url + "#play"} onClick={playUrlHandler}>
                     <AlbumArt itemClass={i.class} albumArts={i.albumArts} className="album-art-sm me-1 align-middle" />{i.title}</a>
@@ -41,11 +42,17 @@ const builder = ({ device: { udn } }: { device: UpnpDevice }) => withMemoKey($ap
 
 const PlaylistMenu = withDataFetch(Menu, builder, { template: MicroLoader });
 
-const umiActions: [string, ComponentType<DeviceActionProps>][] = [
+function PlaylistMenuAction({ className, device, category, ...other }: DeviceActionProps) {
+    return <div className={className} {...other}>
+        <PlaylistMenu device={device} category={category} />
+    </div>;
+}
+
+const umiActions: ActionDescriptor[] = [
     ["browse", BrowseContentAction],
     ["open", OpenAudioAction],
     ["playlists", ManagePlaylistsAction],
-    ["quick-playlist", PlaylistMenu]];
+    ["quick-playlist", PlaylistMenuAction, "end"]];
 
 export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
     return <DeviceCard {...props} actions={umiActions}>

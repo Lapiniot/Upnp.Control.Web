@@ -4,12 +4,16 @@ import { NavLink } from "../../components/NavLink";
 import { DataSourceProps, UpnpDevice } from "./Types";
 import { DeviceActionProps } from "./Device.Actions";
 
-export type DeviceProps = DataSourceProps<UpnpDevice> & {
+type ActionWidgetComponent = ComponentType<DeviceActionProps & HTMLAttributes<HTMLElement>>;
+
+export type ActionDescriptor = [key: string, component: ActionWidgetComponent, alignment?: "start" | "end" | "center"];
+
+export type DeviceCardProps = DataSourceProps<UpnpDevice> & {
     category?: string;
-    actions?: [string, ComponentType<DeviceActionProps>][]
+    actions?: ActionDescriptor[]
 }
 
-export function DeviceCard({ "data-source": d, category, children, actions, className, ...other }: DeviceProps & HTMLAttributes<HTMLDivElement>) {
+export function DeviceCard({ "data-source": d, category, children, actions, className, ...other }: DeviceCardProps & HTMLAttributes<HTMLDivElement>) {
     return <div className={`card shadow${className ? ` ${className}` : ""}`} {...other}>
         <div className="card-header d-flex">
             <DeviceIcon service={d.type} icons={d.icons} />
@@ -22,8 +26,10 @@ export function DeviceCard({ "data-source": d, category, children, actions, clas
             {children}
         </div>
         <div className="card-footer d-flex">
-            <div className="d-flex flex-gap-2 flex-wrap text-decoration-none">
-                {actions?.map(({ 0: key, 1: ActionWidget }) => <ActionWidget key={key} device={d} category={category} />)}
+            <div className="flex-grow-1 d-flex flex-gap-2 flex-wrap">
+                {actions?.map(({ 0: key, 1: ActionWidget, 2: alignment }) =>
+                    <ActionWidget key={key} device={d} category={category}
+                        className={alignment === "end" ? "ms-auto" : alignment === "center" ? "mx-auto" : undefined} />)}
             </div>
         </div>
     </div>;
