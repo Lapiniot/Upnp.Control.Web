@@ -52,7 +52,7 @@ const umiActions: ActionDescriptor[] = [
     ["browse", BrowseContentAction],
     ["open", OpenAudioAction],
     ["playlists", ManagePlaylistsAction],
-    ["quick-playlist", PlaylistMenuAction, "end"]];
+    ["quick-playlist", PlaylistMenuAction, { className: "ms-auto" }]];
 
 export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
     return <DeviceCard {...props} actions={umiActions}>

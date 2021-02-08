@@ -6,7 +6,7 @@ import { DeviceActionProps } from "./Device.Actions";
 
 type ActionWidgetComponent = ComponentType<DeviceActionProps & HTMLAttributes<HTMLElement>>;
 
-export type ActionDescriptor = [key: string, component: ActionWidgetComponent, alignment?: "start" | "end" | "center"];
+export type ActionDescriptor = [key: string, component: ActionWidgetComponent, props?: HTMLAttributes<HTMLElement>];
 
 export type DeviceCardProps = DataSourceProps<UpnpDevice> & {
     category?: string;
@@ -27,9 +27,8 @@ export function DeviceCard({ "data-source": d, category, children, actions, clas
         </div>
         <div className="card-footer d-flex">
             <div className="flex-grow-1 d-flex flex-gap-2 flex-wrap">
-                {actions?.map(({ 0: key, 1: ActionWidget, 2: alignment }) =>
-                    <ActionWidget key={key} device={d} category={category}
-                        className={alignment === "end" ? "ms-auto" : alignment === "center" ? "mx-auto" : undefined} />)}
+                {actions?.map(({ 0: key, 1: ActionWidget, 2: props }) =>
+                    <ActionWidget key={key} device={d} category={category} {...props} />)}
             </div>
         </div>
     </div>;
