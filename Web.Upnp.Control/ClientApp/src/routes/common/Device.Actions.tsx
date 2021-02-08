@@ -31,6 +31,12 @@ export function DownloadMetadataAction({ device, category, className, ...other }
     return <NavLink to={device.url} glyph="download" className={`py-0 px-1${className ? ` ${className}` : ""}`} {...other}>Metadata</NavLink>;
 }
 
+export function AddBookmarkAction({ device, category, className, ...other }: DeviceActionProps) {
+    return <button type="button" className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`} title="Add bookmark to Home section" {...other}>
+        <svg className="icon"><use href="#star" /></svg><span className="visually-hidden">Add bookmark to Home section</span>
+    </button>
+}
+
 export class OpenAction extends React.Component<DeviceActionProps & { browserProps: BrowserProps<unknown> }, { modal?: ReactNode | null }>{
     state = { modal: null }
 

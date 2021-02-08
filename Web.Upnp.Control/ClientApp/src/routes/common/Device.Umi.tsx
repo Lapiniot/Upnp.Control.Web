@@ -4,7 +4,7 @@ import { BrowseFetchResult, DataSourceProps, UpnpDevice } from "./Types";
 import $api from "../../components/WebApi";
 import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import AlbumArt from "./AlbumArt";
-import { BrowseContentAction, DeviceActionProps, OpenAudioAction } from "./Device.Actions";
+import { AddBookmarkAction, BrowseContentAction, DeviceActionProps, OpenAudioAction } from "./Device.Actions";
 import { ActionDescriptor, DeviceCard } from "./DeviceCard";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { MicroLoader } from "../../components/LoadIndicator";
@@ -27,7 +27,7 @@ function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
 function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & DeviceActionProps) {
     return <>
         <button type="button" className="btn btn-round btn-plain" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
-            <svg className="icon"><use href="#music" /></svg><span className="visually-hidden">Toggle Dropdown</span>
+            <svg className="icon"><use href="#music" /></svg>
         </button>
         <DropdownMenu data-device={device.udn} placement="bottom-end">
             {d?.source.items.map(i => <li key={i.id}>
@@ -52,7 +52,8 @@ const umiActions: ActionDescriptor[] = [
     ["browse", BrowseContentAction],
     ["playlists", ManagePlaylistsAction],
     ["quick-playlist", PlaylistMenuAction, { className: "m-0 ms-auto" }],
-    ["open", OpenAudioAction, { className: "m-0" }]
+    ["open", OpenAudioAction, { className: "m-0" }],
+    ["add-bookmark", AddBookmarkAction, { className: "m-0" }]
 ];
 
 export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
