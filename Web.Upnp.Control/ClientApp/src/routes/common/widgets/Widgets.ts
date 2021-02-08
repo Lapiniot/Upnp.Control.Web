@@ -13,7 +13,7 @@ export class Widgets {
         return widgets[key];
     }
 
-    static createInstance(key: string, props: any): ReactNode {
+    static createElement(key: string, props: any): ReactNode {
         return React.createElement(Widgets.get(key), props);
     }
 }
