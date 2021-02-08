@@ -10,12 +10,7 @@ import { AddBookmarkAction } from "./actions/AddBookmarkAction";
 import { ActionDescriptor, DeviceCard } from "./DeviceCard";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { MicroLoader } from "../../components/LoadIndicator";
-import { RouteLink } from "../../components/NavLink";
-
-function ManagePlaylistsAction({ device, category, className, ...other }: DeviceActionProps) {
-    return <RouteLink to={`/${category}/${device.udn}/playlists/PL:`} {...other} glyph="list-alt"
-        className={`py-0 px-1 nav-link${className ? ` ${className}` : ""}`} title="Manage playlists">Playlists</RouteLink>
-}
+import { ManagePlaylistsAction } from "./actions/ManagePlaylistsAction";
 
 function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     const url = e.currentTarget.dataset["playUrl"];
