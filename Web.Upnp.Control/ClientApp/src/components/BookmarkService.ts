@@ -5,21 +5,32 @@ type BookmarkMap = { [key: string]: Bookmark };
 
 class BookmarkService {
 
-    getAll(): BookmarkMap {
+    map: BookmarkMap | null = null;
+
+    private load(): BookmarkMap {
         const data = localStorage.getItem(STORAGE_KEY);
         return data ? JSON.parse(data) : {};
+    }
+
+    private save() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.getAll()));
+    }
+
+    getAll(): BookmarkMap {
+        this.map = this.map ?? this.load();
+        return this.map;
     }
 
     add(key: string, widgetName: string, props?: {}) {
         const bookmarks = this.getAll();
         bookmarks[key] = { "widget": widgetName, "props": props };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(bookmarks));
+        this.save();
     }
 
     remove(key: string) {
         const bookmarks = this.getAll();
         delete bookmarks[key];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(bookmarks));
+        this.save();
     }
 
     contains(key: string) {
