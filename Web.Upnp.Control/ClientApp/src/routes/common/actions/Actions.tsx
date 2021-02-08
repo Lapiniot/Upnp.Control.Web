@@ -5,8 +5,6 @@ import { BrowserProps, RowState } from "../BrowserView";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
 import { DIDLUtils } from "../BrowserUtils";
 import { Services, UpnpDevice } from "../Types";
-import { BookmarkService } from "../../../components/BookmarkService";
-import { getFallbackIcon, getOptimalIcon } from "../DeviceIcon";
 
 export type DeviceActionProps = HTMLAttributes<HTMLElement> & {
     device: UpnpDevice;
@@ -31,40 +29,6 @@ export function BrowseContentAction({ device, category, className, ...other }: D
 
 export function DownloadMetadataAction({ device, category, className, ...other }: DeviceActionProps) {
     return <NavLink to={device.url} glyph="download" className={`py-0 px-1${className ? ` ${className}` : ""}`} {...other}>Metadata</NavLink>;
-}
-
-export class AddBookmarkAction extends React.Component<DeviceActionProps, { bookmarked?: boolean }> {
-
-    private clickHandler = () => {
-        const { device: { udn: device, name, description, icons, type }, category } = this.props;
-        const key = this.getKey();
-        const bookmarked = BookmarkService.contains(key);
-        if (bookmarked)
-            BookmarkService.remove(key);
-        else
-            BookmarkService.add(key, "DeviceBookmarkWidget", {
-                device, category, name, description,
-                icon: getOptimalIcon(icons)?.url ?? getFallbackIcon(type)
-            });
-        this.setState({ bookmarked });
-    }
-
-    private getKey() {
-        const { device: { udn: device }, category } = this.props;
-        return `dev.bookmark.${category}.${device}`;
-    }
-
-    render() {
-        const { device, category, className, ...other } = this.props;
-        const bookmarked = BookmarkService.contains(this.getKey());
-        const title = bookmarked
-            ? "Remove bookmark from the Home section"
-            : "Add bookmark to the Home section";
-        return <button type="button" className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`}
-            title={title} onClick={this.clickHandler} {...other}>
-            <svg className="icon"><use href={bookmarked ? "#star-solid" : "#star"} /></svg>
-        </button>
-    }
 }
 
 export class OpenAction extends React.Component<DeviceActionProps & { browserProps: BrowserProps<unknown> }, { modal?: ReactNode | null }>{
