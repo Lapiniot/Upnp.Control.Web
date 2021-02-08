@@ -54,7 +54,7 @@ $grid-layout-breakpoints: map-merge(
 }
 
 @if $generate-grid-layout-auto-columns-styles {
-    @for $i from 1 through 5 {
+    @for $i from 0 through 5 {
         .grid-auto-x#{$i} {
             @include grid-auto-columns(20rem + $i * 5rem);
         }

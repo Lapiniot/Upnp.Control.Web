@@ -1,23 +1,33 @@
 const STORAGE_KEY = "bookmarks";
 
-export class BookmarkService {
-    static add(key: string, widgetName: string, props?: {}) {
+type Bookmark = { widget: string, "props": any };
+type BookmarkMap = { [key: string]: Bookmark };
+
+class BookmarkService {
+
+    getAll(): BookmarkMap {
         const data = localStorage.getItem(STORAGE_KEY);
-        const bookmarks = data ? JSON.parse(data) : {};
+        return data ? JSON.parse(data) : {};
+    }
+
+    add(key: string, widgetName: string, props?: {}) {
+        const bookmarks = this.getAll();
         bookmarks[key] = { "widget": widgetName, "props": props };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(bookmarks));
     }
 
-    static remove(key: string) {
-        const data = localStorage.getItem(STORAGE_KEY);
-        const bookmarks = data ? JSON.parse(data) : {};
+    remove(key: string) {
+        const bookmarks = this.getAll();
         delete bookmarks[key];
         localStorage.setItem(STORAGE_KEY, JSON.stringify(bookmarks));
     }
 
-    static contains(key: string) {
-        const data = localStorage.getItem(STORAGE_KEY);
-        const bookmarks = data ? JSON.parse(data) : {};
+    contains(key: string) {
+        const bookmarks = this.getAll();
         return key in bookmarks;
     }
 }
+
+const bookmarks = new BookmarkService();
+
+export { bookmarks as Bookmarks };

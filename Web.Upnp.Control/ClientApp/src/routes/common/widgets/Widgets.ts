@@ -2,10 +2,10 @@ import React from "react";
 import { ComponentType, ReactNode } from "react";
 import DeviceBookmark from "./DeviceBookmark";
 
-const widgets: { [key: string]: ComponentType } = {}
+const widgets: { [key: string]: ComponentType<any> } = {}
 
 export class Widgets {
-    static register(key: string, component: ComponentType) {
+    static register(key: string, component: ComponentType<any>) {
         widgets[key] = component;
     }
 

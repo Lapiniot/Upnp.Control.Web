@@ -1,5 +1,5 @@
 import React from "react";
-import { BookmarkService } from "../../../components/BookmarkService";
+import { Bookmarks } from "../../../components/BookmarkService";
 import { getFallbackIcon, getOptimalIcon } from "../DeviceIcon";
 import { DeviceActionProps } from "./Actions";
 
@@ -9,12 +9,12 @@ export class AddBookmarkAction extends React.Component<DeviceActionProps, { book
     private clickHandler = () => {
         const { device: { udn: device, name, description, icons, type }, category } = this.props;
         const key = this.getKey();
-        const bookmarked = BookmarkService.contains(key);
+        const bookmarked = Bookmarks.contains(key);
         if (bookmarked)
-            BookmarkService.remove(key);
+            Bookmarks.remove(key);
 
         else
-            BookmarkService.add(key, "DeviceBookmarkWidget", {
+            Bookmarks.add(key, "DeviceBookmarkWidget", {
                 device, category, name, description,
                 icon: getOptimalIcon(icons)?.url ?? getFallbackIcon(type)
             });
@@ -28,7 +28,7 @@ export class AddBookmarkAction extends React.Component<DeviceActionProps, { book
 
     render() {
         const { device, category, className, ...other } = this.props;
-        const bookmarked = BookmarkService.contains(this.getKey());
+        const bookmarked = Bookmarks.contains(this.getKey());
         const title = bookmarked
             ? "Remove bookmark from the Home section"
             : "Add bookmark to the Home section";
