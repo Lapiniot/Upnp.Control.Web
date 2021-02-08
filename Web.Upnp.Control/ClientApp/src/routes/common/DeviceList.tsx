@@ -22,10 +22,13 @@ export type TemplatedDataComponentProps<T = any, P = {}> = { itemTemplate: Compo
 
 type DeviceContainerProps = DataFetchProps<UpnpDevice> & TemplatedDataComponentProps<UpnpDevice, CategoryParams> & CategoryParams;
 
-export function DeviceContainer({ itemTemplate: Template, dataContext, category }: DeviceContainerProps) {
-    return <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-        {dataContext?.source && <Template data-source={dataContext.source} category={category} />}
-    </div>;
+export function DeviceContainer({ itemTemplate: Template, dataContext, category, fetching }: DeviceContainerProps) {
+    return <>
+        {fetching && <LoadIndicatorOverlay />}
+        <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
+            {dataContext?.source && <Template data-source={dataContext.source} category={category} />}
+        </div>
+    </>;
 }
 
 type DeviceListContainerProps = DataFetchProps<UpnpDevice[]> & TemplatedDataComponentProps<UpnpDevice, CategoryParams> & CategoryParams;

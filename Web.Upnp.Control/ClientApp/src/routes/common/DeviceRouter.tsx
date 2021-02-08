@@ -16,7 +16,7 @@ type DeviceRouterProps = PropsWithChildren<{ deviceTemplate?: ComponentType<Data
     & RouteComponentProps<CategoryParams>
 
 const Device = withDataFetch<DataFetchProps<UpnpDevice> & TemplatedDataComponentProps<UpnpDevice>, CategoryParams & DeviceParams>(
-    DeviceContainer, ({ device, category }) => withMemoKey($api.devices(category, device).jsonFetch, `${category}|${device}`));
+    DeviceContainer, ({ device, category }) => withMemoKey($api.devices(category, device).jsonFetch, `${category}|${device}`), { usePreloader: false });
 
 const Devices = withDataFetch<DataFetchProps<UpnpDevice[]> & TemplatedDataComponentProps<UpnpDevice>, CategoryParams>(
     DeviceListContainer, ({ category }) => withMemoKey($api.devices(category).jsonFetch, category as string),
