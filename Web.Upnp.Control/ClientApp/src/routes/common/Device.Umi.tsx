@@ -12,7 +12,7 @@ import { RouteLink } from "../../components/NavLink";
 
 function ManagePlaylistsAction({ device, category, className, ...other }: DeviceActionProps) {
     return <RouteLink to={`/${category}/${device.udn}/playlists/PL:`} {...other} glyph="list-alt"
-        className={`p-0 nav-link${className ? ` ${className}` : ""}`} title="Manage playlists">Playlists</RouteLink>
+        className={`py-0 px-1 nav-link${className ? ` ${className}` : ""}`} title="Manage playlists">Playlists</RouteLink>
 }
 
 function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
@@ -26,8 +26,8 @@ function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
 
 function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & DeviceActionProps) {
     return <>
-        <button type="button" className="btn p-0 image-only" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
-            <svg className="icon icon-lg"><use href="#caret-right" /></svg><span className="visually-hidden">Toggle Dropdown</span>
+        <button type="button" className="btn btn-round btn-plain" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
+            <svg className="icon"><use href="#music" /></svg><span className="visually-hidden">Toggle Dropdown</span>
         </button>
         <DropdownMenu data-device={device.udn} placement="bottom-end">
             {d?.source.items.map(i => <li key={i.id}>
@@ -50,9 +50,10 @@ function PlaylistMenuAction({ className, device, category, ...other }: DeviceAct
 
 const umiActions: ActionDescriptor[] = [
     ["browse", BrowseContentAction],
-    ["open", OpenAudioAction],
     ["playlists", ManagePlaylistsAction],
-    ["quick-playlist", PlaylistMenuAction, { className: "ms-auto" }]];
+    ["quick-playlist", PlaylistMenuAction, { className: "m-0 ms-auto" }],
+    ["open", OpenAudioAction, { className: "m-0" }]
+];
 
 export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
     return <DeviceCard {...props} actions={umiActions}>

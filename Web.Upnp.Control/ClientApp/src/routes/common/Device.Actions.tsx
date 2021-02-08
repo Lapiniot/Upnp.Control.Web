@@ -23,12 +23,12 @@ export function BrowseContentAction({ device, category, className, ...other }: D
     const isMediaServer = device.services && device.services.some(
         s => s.type.startsWith(Services.ContentDirectory) || s.type.startsWith(Services.UmiPlaylist));
     return isMediaServer
-        ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="folder" className={`p-0 nav-link${className ? ` ${className}` : ""}`} {...other}>Browse</RouteLink>
+        ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="folder" className={`py-0 p-1 nav-link${className ? ` ${className}` : ""}`} {...other}>Browse</RouteLink>
         : null;
 }
 
 export function DownloadMetadataAction({ device, category, className, ...other }: DeviceActionProps) {
-    return <NavLink to={device.url} glyph="download" className={`p-0${className ? ` ${className}` : ""}`} {...other}>Metadata</NavLink>;
+    return <NavLink to={device.url} glyph="download" className={`py-0 px-1${className ? ` ${className}` : ""}`} {...other}>Metadata</NavLink>;
 }
 
 export class OpenAction extends React.Component<DeviceActionProps & { browserProps: BrowserProps<unknown> }, { modal?: ReactNode | null }>{
@@ -54,7 +54,8 @@ export class OpenAction extends React.Component<DeviceActionProps & { browserPro
     render() {
         const { children, className, browserProps, device, category, ...other } = this.props;
         return <>
-            <button type="button" className={`btn nav-link btn-link p-0${className ? ` ${className}` : ""}`} {...other} onClick={this.browse}>
+            <button type="button" className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`} data-bs-toggle="dropdown"
+                aria-expanded="false" title="Browse for external media to play on this device" {...other} onClick={this.browse}>
                 {children}
             </button>
             {this.state.modal}
@@ -64,12 +65,12 @@ export class OpenAction extends React.Component<DeviceActionProps & { browserPro
 
 export function OpenMediaAction(props: DeviceActionProps) {
     return <OpenAction {...props} browserProps={browserProps}>
-        <svg className="icon"><use href="#photo-video" /></svg>Open media
+        <svg className="icon"><use href="#photo-video" /></svg>
     </OpenAction>
 }
 
 export function OpenAudioAction(props: DeviceActionProps) {
     return <OpenAction {...props} browserProps={audioBrowserProps}>
-        <svg className="icon"><use href="#music" /></svg>Open audio
+        <svg className="icon"><use href="#folder-open" /></svg>
     </OpenAction>
 }
