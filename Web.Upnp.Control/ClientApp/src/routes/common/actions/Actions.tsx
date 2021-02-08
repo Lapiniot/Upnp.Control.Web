@@ -1,12 +1,12 @@
 import React, { HTMLAttributes, ReactNode } from "react";
-import { NavLink, RouteLink } from "../../components/NavLink";
-import WebApi from "../../components/WebApi";
-import { BrowserProps, RowState } from "./BrowserView";
-import BrowserDialog, { BrowseResult } from "./BrowserDialog";
-import { DIDLUtils } from "./BrowserUtils";
-import { Services, UpnpDevice } from "./Types";
-import { BookmarkService } from "../../components/BookmarkService";
-import { getFallbackIcon, getOptimalIcon } from "./DeviceIcon";
+import { NavLink, RouteLink } from "../../../components/NavLink";
+import WebApi from "../../../components/WebApi";
+import { BrowserProps, RowState } from "../BrowserView";
+import BrowserDialog, { BrowseResult } from "../BrowserDialog";
+import { DIDLUtils } from "../BrowserUtils";
+import { Services, UpnpDevice } from "../Types";
+import { BookmarkService } from "../../../components/BookmarkService";
+import { getFallbackIcon, getOptimalIcon } from "../DeviceIcon";
 
 export type DeviceActionProps = HTMLAttributes<HTMLElement> & {
     device: UpnpDevice;

@@ -2,7 +2,7 @@ import { ComponentType, HTMLAttributes } from "react";
 import DeviceIcon from "./DeviceIcon";
 import { NavLink } from "../../components/NavLink";
 import { DataSourceProps, UpnpDevice } from "./Types";
-import { DeviceActionProps } from "./Device.Actions";
+import { DeviceActionProps } from "./actions/Actions";
 
 type ActionWidgetComponent = ComponentType<DeviceActionProps & HTMLAttributes<HTMLElement>>;
 

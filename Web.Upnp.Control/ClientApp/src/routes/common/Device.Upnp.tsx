@@ -1,7 +1,7 @@
 import DeviceInfo from "./DeviceInfo";
 import ServicesList from "./DeviceServiceList";
 import { DataSourceProps, UpnpDevice } from "./Types";
-import { DownloadMetadataAction, BrowseContentAction, AddBookmarkAction } from "./Device.Actions";
+import { DownloadMetadataAction, BrowseContentAction, AddBookmarkAction } from "./actions/Actions";
 import { ActionDescriptor, DeviceCard } from "./DeviceCard";
 
 const upnpActions: ActionDescriptor[] = [

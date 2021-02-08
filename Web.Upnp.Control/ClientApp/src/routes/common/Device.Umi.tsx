@@ -4,7 +4,7 @@ import { BrowseFetchResult, DataSourceProps, UpnpDevice } from "./Types";
 import $api from "../../components/WebApi";
 import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import AlbumArt from "./AlbumArt";
-import { AddBookmarkAction, BrowseContentAction, DeviceActionProps, OpenAudioAction } from "./Device.Actions";
+import { AddBookmarkAction, BrowseContentAction, DeviceActionProps, OpenAudioAction } from "./actions/Actions";
 import { ActionDescriptor, DeviceCard } from "./DeviceCard";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { MicroLoader } from "../../components/LoadIndicator";

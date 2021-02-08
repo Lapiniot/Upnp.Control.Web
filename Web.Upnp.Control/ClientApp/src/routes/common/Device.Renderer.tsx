@@ -1,4 +1,4 @@
-import { AddBookmarkAction, OpenMediaAction } from "./Device.Actions";
+import { AddBookmarkAction, OpenMediaAction } from "./actions/Actions";
 import { ActionDescriptor, DeviceCard } from "./DeviceCard";
 import PlayerWidget from "./PlayerWidget";
 import { DataSourceProps, UpnpDevice } from "./Types";
