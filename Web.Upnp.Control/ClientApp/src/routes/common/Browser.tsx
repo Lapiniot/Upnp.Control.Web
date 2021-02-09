@@ -1,11 +1,12 @@
 import React from "react";
+import { DataContext } from "../../components/DataFetch";
 import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
 import WebApi from "../../components/WebApi";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { DIDLUtils } from "./BrowserUtils";
 import BrowserView, { CellTemplate, CellTemplateProps, RowState } from "./BrowserView";
 import settings from "./Config";
-import { DIDLItem, Services, UpnpDevice } from "./Types";
+import { BrowseFetchResult, DIDLItem, Services, UpnpDevice } from "./Types";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);
@@ -41,6 +42,7 @@ function Template(props: CellTemplateProps<CellContext>) {
 }
 
 type BrowserState = {
+    ctx?: DataContext<BrowseFetchResult>;
     umis: UpnpDevice[];
     renderers: UpnpDevice[];
     selection: { items: DIDLItem[], umiCompatible: boolean, rendererCompatible: boolean };
@@ -48,7 +50,11 @@ type BrowserState = {
     error: Error | null;
 };
 
-export class Browser extends React.Component<BrowserCoreProps<CellContext> & { device?: string }, BrowserState> {
+type BrowserProps = BrowserCoreProps<CellContext> & {
+    device?: string;
+};
+
+export class Browser extends React.Component<BrowserProps, BrowserState> {
 
     state: BrowserState = { umis: [], renderers: [], selection: { items: [], umiCompatible: false, rendererCompatible: false }, fetching: false, error: null }
 
@@ -60,6 +66,13 @@ export class Browser extends React.Component<BrowserCoreProps<CellContext> & { d
         catch (error) {
             console.error(error);
         }
+    }
+
+    static getDerivedStateFromProps(props: BrowserProps, state: BrowserState) {
+        if (props.dataContext && props.dataContext !== state.ctx)
+            return { id: props.id, selection: { items: [], umiCompatible: false, rendererCompatible: false } }
+        else
+            return null;
     }
 
     rowState = () => RowState.Selectable | RowState.Navigable;
