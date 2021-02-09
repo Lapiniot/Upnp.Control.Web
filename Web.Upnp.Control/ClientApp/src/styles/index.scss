@@ -17,6 +17,8 @@ $generate-grid-layout-responsive-styles: false;
 @import "../../node_modules/bootstrap/scss/reboot";
 @import "../../node_modules/bootstrap/scss/type";
 @import "../../node_modules/bootstrap/scss/forms";
+$accordion-button-active-bg: $light;
+@import "../../node_modules/bootstrap/scss/accordion";
 @import "../../node_modules/bootstrap/scss/buttons";
 @import "../../node_modules/bootstrap/scss/transitions";
 @import "../../node_modules/bootstrap/scss/button-group";

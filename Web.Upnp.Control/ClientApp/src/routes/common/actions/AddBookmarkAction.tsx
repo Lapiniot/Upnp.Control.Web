@@ -23,7 +23,7 @@ export class AddBookmarkAction extends React.Component<DeviceActionProps, { book
 
     private getKey() {
         const { device: { udn: device }, category } = this.props;
-        return `dev.bookmark.${category}.${device}`;
+        return `dev:${category}:${device}`;
     }
 
     render() {
