@@ -1,5 +1,5 @@
 import React from "react";
-import { DeviceBookmarks as Bookmarks } from "../../../components/BookmarkService";
+import { deviceBookmarks as bookmarks } from "../../../components/BookmarkService";
 import { getFallbackIcon, getOptimalIcon } from "../DeviceIcon";
 import { DeviceActionProps } from "./Actions";
 
@@ -10,13 +10,13 @@ export class AddBookmarkAction extends React.Component<DeviceActionProps, { book
     private clickHandler = async () => {
         const { device: { udn: device, name, description, icons, type }, category = "upnp" } = this.props;
 
-        const bookmarked = await Bookmarks.contains([category, device]);
+        const bookmarked = await bookmarks.contains([category, device]);
 
         if (bookmarked) {
-            await Bookmarks.remove([category, device]);
+            await bookmarks.remove([category, device]);
         }
         else {
-            await Bookmarks.add("DeviceBookmarkWidget", {
+            await bookmarks.add("DeviceBookmarkWidget", {
                 device, category, name, description,
                 icon: getOptimalIcon(icons)?.url ?? getFallbackIcon(type)
             });
@@ -26,7 +26,7 @@ export class AddBookmarkAction extends React.Component<DeviceActionProps, { book
     };
 
     async componentDidMount() {
-        this.setState({ bookmarked: await Bookmarks.contains([this.props.category as string, this.props.device.udn]) })
+        this.setState({ bookmarked: await bookmarks.contains([this.props.category as string, this.props.device.udn]) })
     }
 
     render() {

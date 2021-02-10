@@ -3,9 +3,10 @@ import { Database } from "./Database";
 const DB_NAME = "bookmarks";
 const DB_VERSION = 1;
 
-function databaseMigrate(this: IDBOpenDBRequest, e: IDBVersionChangeEvent) {
-    if (e.newVersion === 1) {
-        this.result.createObjectStore("devices", { keyPath: ["props.category", "props.device"] })
+function databaseMigrate(this: IDBOpenDBRequest, { newVersion }: IDBVersionChangeEvent) {
+    const { result: db } = this;
+    if (newVersion === 1) {
+        db.createObjectStore("devices", { keyPath: ["props.category", "props.device"] });
     }
 }
 
@@ -21,32 +22,31 @@ class BookmarkService<TKey extends string | number | Array<string | number>, TPr
         return await Database.open(DB_NAME, DB_VERSION, databaseMigrate);
     }
 
-    private store(database: Database) {
-        return database.transaction([this.storeName], "readwrite").store(this.storeName);
+    private store(database: Database, mode: "readonly" | "readwrite") {
+        return database.transaction([this.storeName], mode).store(this.storeName);
     }
 
     async getAll(): Promise<{ widget: string, props: TProps }[]> {
         this.db = this.db ?? await this.open();
-        return await this.store(this.db).getAll() as unknown as { widget: string, props: TProps }[];
+        return await this.store(this.db, "readonly").getAll() as unknown as { widget: string, props: TProps }[];
     }
 
     async add(widgetName: string, props: TProps) {
         this.db = this.db ?? await this.open();
-        return await this.store(this.db).add({ widget: widgetName, props });
+        return await this.store(this.db, "readwrite").add({ widget: widgetName, props });
     }
 
     async remove(key: TKey) {
         this.db = this.db ?? await this.open();
-        return await this.store(this.db).delete(key);
+        return await this.store(this.db, "readwrite").delete(key);
     }
 
     async contains(key: TKey) {
         this.db = this.db ?? await this.open();
-        return await this.store(this.db).count(key) > 0;
+        return await this.store(this.db, "readonly").count(key) > 0;
     }
 }
 
-const devices = new BookmarkService<[string, string],
-    { category: string, device: string, [key: string]: any }>("devices");
+const deviceBookmarks = new BookmarkService<[string, string], { category: string, device: string, [key: string]: any }>("devices");
 
-export { devices as DeviceBookmarks };
+export { deviceBookmarks };

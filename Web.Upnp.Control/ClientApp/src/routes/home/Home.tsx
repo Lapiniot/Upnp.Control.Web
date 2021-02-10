@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { DeviceBookmarks as Bookmarks } from "../../components/BookmarkService";
+import { deviceBookmarks as bookmarks } from "../../components/BookmarkService";
 import { Widgets } from "../common/widgets/Widgets";
 
 type Groups = "devices" | "playlists" | "items";
@@ -18,10 +18,10 @@ export default class extends React.Component<{}, HomeState> {
     };
 
     async componentDidMount() {
-        const bookmarks = await Bookmarks.getAll();
+        const items = await bookmarks.getAll();
         this.setState(state => {
             const data = { ...state.data };
-            data.devices[1] = bookmarks.map(({ widget, props }) => ({ key: `${props.category}:${props.device}`, widget, props }));
+            data.devices[1] = items.map(({ widget, props }) => ({ key: `${props.category}:${props.device}`, widget, props }));
             return { data: data };
         });
     }
