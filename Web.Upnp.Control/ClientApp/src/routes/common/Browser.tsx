@@ -68,9 +68,9 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         }
     }
 
-    static getDerivedStateFromProps(props: BrowserProps, state: BrowserState) {
-        if (props.dataContext && props.dataContext !== state.ctx)
-            return { id: props.id, selection: { items: [], umiCompatible: false, rendererCompatible: false } }
+    static getDerivedStateFromProps({ dataContext: propsCtx }: BrowserProps, { ctx: stateCtx }: BrowserState) {
+        if (propsCtx && propsCtx !== stateCtx)
+            return { ctx: propsCtx, selection: { items: [], umiCompatible: false, rendererCompatible: false } }
         else
             return null;
     }
@@ -176,16 +176,17 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     }
 
     private renderMenu(umiAcceptable: boolean, rendererAcceptable: boolean, umis: UpnpDevice[], renderers: UpnpDevice[]) {
-        return [
-            umiAcceptable && <>
+        return <>
+            {umiAcceptable && <>
                 <li><h6 className="dropdown-header">Send as Playlist to</h6></li>
                 {umis.map(({ udn, name }) => this.renderMenuItem(udn, "send", name))}
-            </>,
-            (umiAcceptable || rendererAcceptable) && <>
+            </>}
+            {(umiAcceptable || rendererAcceptable) && <>
                 <li><h6 className="dropdown-header">Play on</h6></li>
                 {umiAcceptable && umis.map(({ udn, name }) => this.renderMenuItem(udn, "play", name))}
                 {rendererAcceptable && renderers.map(({ udn, name }) => this.renderMenuItem(udn, "play", name))}
-            </>];
+            </>}
+        </>;
     }
 
     private renderMenuItem(udn: string, action: string, name: string): JSX.Element {
