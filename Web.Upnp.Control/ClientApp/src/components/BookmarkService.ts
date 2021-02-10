@@ -1,44 +1,52 @@
-const STORAGE_KEY = "bookmarks";
+import { Database } from "./Database";
 
-type Bookmark = { widget: string, "props": any };
-type BookmarkMap = { [key: string]: Bookmark };
+const DB_NAME = "bookmarks";
+const DB_VERSION = 1;
 
-class BookmarkService {
-
-    map: BookmarkMap | null = null;
-
-    private load(): BookmarkMap {
-        const data = localStorage.getItem(STORAGE_KEY);
-        return data ? JSON.parse(data) : {};
-    }
-
-    private save() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.getAll()));
-    }
-
-    getAll(): BookmarkMap {
-        this.map = this.map ?? this.load();
-        return this.map;
-    }
-
-    add(key: string, widgetName: string, props?: {}) {
-        const bookmarks = this.getAll();
-        bookmarks[key] = { "widget": widgetName, "props": props };
-        this.save();
-    }
-
-    remove(key: string) {
-        const bookmarks = this.getAll();
-        delete bookmarks[key];
-        this.save();
-    }
-
-    contains(key: string) {
-        const bookmarks = this.getAll();
-        return key in bookmarks;
+function databaseMigrate(this: IDBOpenDBRequest, e: IDBVersionChangeEvent) {
+    if (e.newVersion === 1) {
+        this.result.createObjectStore("devices", { keyPath: ["props.category", "props.device"] })
     }
 }
 
-const bookmarks = new BookmarkService();
+class BookmarkService<TKey extends string | number | Array<string | number>, TProps = {}> {
+    storeName: string;
+    db: Database | null = null;
 
-export { bookmarks as Bookmarks };
+    constructor(group: string) {
+        this.storeName = group;
+    }
+
+    private async open() {
+        return await Database.open(DB_NAME, DB_VERSION, databaseMigrate);
+    }
+
+    private store(database: Database) {
+        return database.transaction([this.storeName], "readwrite").store(this.storeName);
+    }
+
+    async getAll(): Promise<{ widget: string, props: TProps }[]> {
+        this.db = this.db ?? await this.open();
+        return await this.store(this.db).getAll() as unknown as { widget: string, props: TProps }[];
+    }
+
+    async add(widgetName: string, props: TProps) {
+        this.db = this.db ?? await this.open();
+        return await this.store(this.db).add({ widget: widgetName, props });
+    }
+
+    async remove(key: TKey) {
+        this.db = this.db ?? await this.open();
+        return await this.store(this.db).delete(key);
+    }
+
+    async contains(key: TKey) {
+        this.db = this.db ?? await this.open();
+        return await this.store(this.db).count(key) > 0;
+    }
+}
+
+const devices = new BookmarkService<[string, string],
+    { category: string, device: string, [key: string]: any }>("devices");
+
+export { devices as DeviceBookmarks };
