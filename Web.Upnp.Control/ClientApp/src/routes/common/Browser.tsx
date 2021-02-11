@@ -1,7 +1,9 @@
 import React from "react";
+import { itemBookmarks } from "../../components/BookmarkService";
 import { DataContext } from "../../components/DataFetch";
 import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
 import WebApi from "../../components/WebApi";
+import { useBookmarkButton } from "./BookmarkButton";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { DIDLUtils } from "./BrowserUtils";
 import BrowserView, { CellTemplate, CellTemplateProps, RowState } from "./BrowserView";
@@ -30,11 +32,15 @@ function isUmiDevice(device: UpnpDevice) {
 
 type CellContext = {
     disabled?: boolean;
+    device: string;
 }
+
+const BookmarkItemButton = useBookmarkButton("ItemBookmarkWidget", itemBookmarks);
 
 function Template(props: CellTemplateProps<CellContext>) {
     return <CellTemplate {...props}>
-        <button type="button" className="btn btn-round btn-icon btn-primary" data-id={props.data.id}
+        {props.data.container && <BookmarkItemButton item={props.data} device={props.context?.device as string} />}
+        <button type="button" className="btn btn-round btn-plain" data-id={props.data.id}
             data-bs-toggle="dropdown" disabled={props.context?.disabled}>
             <svg><use href="#ellipsis-v" /></svg>
         </button>
@@ -51,7 +57,7 @@ type BrowserState = {
 };
 
 type BrowserProps = BrowserCoreProps<CellContext> & {
-    device?: string;
+    device: string;
 };
 
 export class Browser extends React.Component<BrowserProps, BrowserState> {
@@ -201,12 +207,13 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         const { selection: { umiCompatible, rendererCompatible }, umis, renderers } = this.state;
         const isActionButtonEnabled = (umis.length && umiCompatible) || (renderers.length && rendererCompatible);
         const isItemActionMenuEnabled = umis.length || renderers.length;
+        const ctx = { disabled: !isItemActionMenuEnabled, device: this.props.device };
 
         return <>
-            <BrowserCore mainCellTemplate={Template} mainCellContext={{ disabled: !isItemActionMenuEnabled }}
+            <BrowserCore mainCellTemplate={Template} mainCellContext={ctx}
                 useCheckboxes multiSelect rowState={this.rowState} selectionChanged={this.selectionChanged}
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
-                <BrowserView.ContextMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} />
+                <BrowserView.ContextMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} placement="bottom-end" />
             </BrowserCore>
             <div className="float-container bottom-0 end-0" style={{ marginBlockEnd: "4rem" }}>
                 <button type="button" className="btn btn-lg btn-round btn-primary" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
