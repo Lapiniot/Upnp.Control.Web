@@ -1,21 +1,11 @@
-import React from "react";
-import { ComponentType, ReactNode } from "react";
-import DeviceBookmark from "./DeviceBookmark";
+import DeviceBookmarkWidget from "./DeviceBookmarkWidget";
+import ItemBookmarkWidget from "./ItemBookmarkWidget";
 
-const widgets: { [key: string]: ComponentType<any> } = {}
-
-export class Widgets {
-    static register(key: string, component: ComponentType<any>) {
-        widgets[key] = component;
-    }
-
-    static get(key: string): ComponentType {
-        return widgets[key];
-    }
-
-    static createElement(key: string, props: any): ReactNode {
-        return React.createElement(Widgets.get(key), props);
-    }
+const widgets = {
+    "DeviceBookmarkWidget": DeviceBookmarkWidget,
+    "ItemBookmarkWidget": ItemBookmarkWidget
 }
 
-Widgets.register("DeviceBookmarkWidget", DeviceBookmark);
+export type KnownWidgets = keyof typeof widgets;
+
+export { widgets as Widgets };

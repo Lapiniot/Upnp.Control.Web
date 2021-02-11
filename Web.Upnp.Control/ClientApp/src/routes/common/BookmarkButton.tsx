@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes, useCallback, useEffect, useState } from "react";
 import { IBookmarkStore } from "../../components/BookmarkService";
 import { DIDLItem } from "./Types";
+import { KnownWidgets } from "./widgets/Widgets";
 
 type BookmarkButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     device: string;
@@ -15,7 +16,7 @@ type WidgetPropsType = {
     icon?: string;
 };
 
-export function useBookmarkButton(widgetName: string, storeInstance?: IBookmarkStore<[string, string], WidgetPropsType>) {
+export function useBookmarkButton(widgetName: KnownWidgets, storeInstance?: IBookmarkStore<[string, string], WidgetPropsType>) {
     return function ({ device, item, store = storeInstance, ...other }: BookmarkButtonProps) {
         const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);
         const toggleHandler = useCallback(

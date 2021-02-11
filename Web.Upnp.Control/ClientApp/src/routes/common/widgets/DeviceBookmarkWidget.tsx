@@ -1,7 +1,7 @@
 import { HTMLAttributes } from "react";
 import { RouteLink } from "../../../components/NavLink";
 
-type DeviceBookmarkProps = HTMLAttributes<HTMLDivElement> & {
+type DeviceBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
     category: string;
     device: string;
     name: string;
@@ -9,7 +9,7 @@ type DeviceBookmarkProps = HTMLAttributes<HTMLDivElement> & {
     icon: string;
 };
 
-export default function ({ category, device, name, description, icon }: DeviceBookmarkProps) {
+export default function ({ category, device, name, description, icon }: DeviceBookmarkWidgetProps) {
     return <div className="card shadow">
         <RouteLink to={`/${category}/${device}`} className="p-0 text-decoration-none">
             <div className="card-body d-flex align-items-center">
