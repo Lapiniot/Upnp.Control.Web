@@ -3,14 +3,29 @@ import { Database } from "./Database";
 const DB_NAME = "bookmarks";
 const DB_VERSION = 1;
 
+type WidgetProps<T = {}> = T & { [index: string]: any };
+
 function databaseMigrate(this: IDBOpenDBRequest, { newVersion }: IDBVersionChangeEvent) {
     const { result: db } = this;
     if (newVersion === 1) {
         db.createObjectStore("devices", { keyPath: ["props.category", "props.device"] });
+        db.createObjectStore("items", { keyPath: ["props.device", "props.id"] }).
+            createIndex("device", ["props.device"]);
+        db.createObjectStore("playlists", { keyPath: ["props.device", "props.id"] }).
+            createIndex("device", ["props.device"]);
     }
 }
 
-class BookmarkService<TKey extends string | number | Array<string | number>, TProps = {}> {
+type BookmarkKey = string | number | Array<string | number>;
+
+export interface IBookmarkStore<TKey extends BookmarkKey, TProps = {}> {
+    getAll(): Promise<{ widget: string, props: TProps }[]>;
+    add(widgetName: string, props: TProps): Promise<IDBValidKey>;
+    remove(key: TKey): Promise<undefined>;
+    contains(key: TKey): Promise<boolean>;
+}
+
+export class BookmarkService<TKey extends BookmarkKey, TProps = {}> implements IBookmarkStore<TKey, TProps> {
     storeName: string;
     db: Database | null = null;
 
@@ -47,6 +62,8 @@ class BookmarkService<TKey extends string | number | Array<string | number>, TPr
     }
 }
 
-const deviceBookmarks = new BookmarkService<[string, string], { category: string, device: string, [key: string]: any }>("devices");
+const deviceBookmarks = new BookmarkService<[string, string], WidgetProps<{ category: string, device: string }>>("devices");
+const itemBookmarks = new BookmarkService<[string, string], WidgetProps<{ device: string, id: string, title: string }>>("items");
+const playlistBookmarks = new BookmarkService<[string, string], WidgetProps<{ device: string, id: string, title: string }>>("playlists");
 
-export { deviceBookmarks };
+export { deviceBookmarks, itemBookmarks, playlistBookmarks };
