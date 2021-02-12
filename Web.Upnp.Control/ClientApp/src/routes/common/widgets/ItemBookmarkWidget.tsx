@@ -11,13 +11,13 @@ type ItemBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 export default function ({ device, id, title, icon, deviceName }: ItemBookmarkWidgetProps) {
-    return <div className="card shadow">
+    return <div className="card shadow-sm">
         <RouteLink to={`/upnp/${device}/browse/${id}`} className="p-0 text-decoration-none">
             <div className="card-body d-flex align-items-center">
-                <AlbumArt albumArts={icon ? [icon] : undefined} itemClass="" />
-                <div className="d-flex flex-wrap overflow-hidden">
-                    <span className="text-truncate ms-1">{title}</span>
-                    <span className="text-truncate ms-1">(on {deviceName})</span>
+                <AlbumArt albumArts={icon ? [icon] : undefined} itemClass="" className="me-3" />
+                <div className="d-flex flex-wrap overflow-hidden" title={`${title} on ${deviceName}`}>
+                    <h6 className="card-title text-truncate flex-basis-100">{title}</h6>
+                    <p className="card-subtitle text-truncate text-muted small">(on {deviceName})</p>
                 </div>
             </div>
         </RouteLink>
