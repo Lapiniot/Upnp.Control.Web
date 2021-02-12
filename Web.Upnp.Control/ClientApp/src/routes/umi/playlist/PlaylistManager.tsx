@@ -1,6 +1,6 @@
 import React, { EventHandler, HTMLAttributes, ReactNode, UIEvent } from "react";
 import { RouteComponentProps } from "react-router";
-import { AVState, BrowseFetchResult, DIDLItem, PropertyBag } from "../../common/Types";
+import { AVState, BrowseFetchResult, DIDLItem, PropertyBag, UpnpDevice } from "../../common/Types";
 import $api from "../../../components/WebApi";
 import { TextValueEditDialog } from "../../../components/Dialogs";
 import { withBrowserDataFetch, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils";
@@ -23,6 +23,7 @@ import { PlayerSvgSymbols, PlaylistSvgSymbols } from "../../common/SvgSymbols";
 import { Portal } from "../../../components/Portal";
 import $s from "../../common/Settings";
 import { MenuItem } from "../../../components/DropdownMenu";
+import settings from "../../common/Settings";
 
 type RouteParams = {
     device: string;
@@ -41,6 +42,7 @@ type PlaylistManagerState = {
     modal: ReactNode;
     selection: string[];
     playlist?: string;
+    device: UpnpDevice | null;
 } & Partial<AVState>;
 
 const dialogBrowserProps: BrowserProps<unknown> = {
@@ -87,7 +89,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     constructor(props: PlaylistManagerProps) {
         super(props);
         this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
-        this.state = { modal: null, selection: [] };
+        this.state = { modal: null, selection: [], device: null };
         this.ctrl = $api.control(this.props.device);
         this.pls = $api.playlist(this.props.device);
     }
@@ -104,15 +106,17 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     async componentDidMount() {
         try {
-            const state = await this.ctrl.state(true).jsonFetch();
+            const timeout = settings.get("timeout");
+            const state = await this.ctrl.state(true).jsonFetch(timeout);
+            const device: UpnpDevice = await $api.devices("upnp", this.props.device).jsonFetch(timeout);
             if (state.medium === "X-MI-AUX") {
-                this.setState({ ...state, playlist: "aux" });
+                this.setState({ ...state, playlist: "aux", device });
             } else {
                 const { 0: { "playlist_transport_uri": playlist }, 1: { currentTrack } } = await Promise.all([
                     await this.pls.state().jsonFetch(),
                     await this.ctrl.position().jsonFetch()
                 ]);
-                this.setState({ ...state, playlist, currentTrack });
+                this.setState({ ...state, playlist, currentTrack, device });
             }
         } catch (e) {
             console.error(e);
@@ -338,7 +342,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     render() {
 
-        const { dataContext: data, match, navigate, fetching, error, id, s, p } = this.props;
+        const { dataContext: data, match, navigate, fetching, error, id, s, p, device } = this.props;
         const { playlist, currentTrack } = this.state;
         const { source: { total = 0, items = [], parents = [] } = {} } = data || {};
         const pageSize = s ? parseInt(s) : $s.get("pageSize");
@@ -361,7 +365,9 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             play: this.play,
             pause: this.pause,
             playUrl: this.playUrl,
-            state: this.state.state
+            state: this.state.state,
+            device: device,
+            deviceName: this.state.device?.name
         };
 
         return <>
