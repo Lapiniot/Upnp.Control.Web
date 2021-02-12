@@ -18,7 +18,8 @@ type WidgetPropsType = {
     icon?: string;
 };
 
-export function useBookmarkButton(widgetName: KnownWidgets, storeInstance?: IBookmarkStore<[string, string], WidgetPropsType>) {
+export function useBookmarkButton(widgetName: KnownWidgets,
+    storeInstance?: IBookmarkStore<[string, string], WidgetPropsType>, icons?: [string, string]) {
     return function ({ device, deviceName, item, store = storeInstance, ...other }: BookmarkButtonProps) {
         const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);
         const toggleHandler = useCallback(
@@ -36,14 +37,21 @@ export function useBookmarkButton(widgetName: KnownWidgets, storeInstance?: IBoo
             }, []);
         useEffect(() => { store?.contains([device, item.id]).then(v => setBookmarked(v)) }, []);
 
-        return <BookmarkButton bookmarked={bookmarked} {...other} onClick={toggleHandler} />;
+        return <BookmarkButton bookmarked={bookmarked} icons={icons} {...other} onClick={toggleHandler} />;
     }
 }
 
-export function BookmarkButton({ className, children, bookmarked, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { bookmarked?: boolean; }) {
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+    bookmarked?: boolean;
+    icons?: [string, string];
+};
+
+const defaultIcons: [string, string] = ["#star-solid", "#star"];
+
+export function BookmarkButton({ className, children, bookmarked, icons = defaultIcons, ...other }: Props) {
     const title = bookmarked ? "Remove bookmark from the Home section" : "Add bookmark to the Home section";
     return <button type="button" className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`}
         disabled={bookmarked === undefined} title={title} {...other}>
-        {children || <svg className="icon"><use href={bookmarked === true ? "#star-solid" : "#star"} /></svg>}
+        {children || <svg className="icon"><use href={icons[bookmarked === true ? 0 : 1]} /></svg>}
     </button>;
 }
