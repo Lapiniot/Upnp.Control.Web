@@ -40,8 +40,8 @@ const BookmarkItemButton = useBookmarkButton("ItemBookmarkWidget", itemBookmarks
 
 function Template(props: CellTemplateProps<CellContext>) {
     return <CellTemplate {...props}>
-        {props.data.container && <BookmarkItemButton item={props.data} device={props.context?.device as string}
-            deviceName={props.context?.deviceName as string} disabled={!props.context?.deviceName} />}
+        {props.data.container && props.context?.deviceName &&
+            <BookmarkItemButton item={props.data} device={props.context?.device as string} deviceName={props.context?.deviceName as string} />}
         <button type="button" className="btn btn-round btn-plain" data-id={props.data.id}
             data-bs-toggle="dropdown" disabled={props.context?.disabled}>
             <svg><use href="#ellipsis-v" /></svg>
