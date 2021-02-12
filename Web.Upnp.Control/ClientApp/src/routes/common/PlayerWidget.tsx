@@ -7,7 +7,7 @@ import Slider from "../../components/Slider";
 import { AVPositionState, AVState, RCState } from "./Types";
 import { parseMilliseconds } from "../../components/Extensions";
 import { PlayerSvgSymbols } from "./SvgSymbols";
-import $s from "./Config";
+import $s from "./Settings";
 
 const STATE_UPDATE_DELAY_MS = 2000;
 

@@ -2,7 +2,7 @@ import React, { ChangeEvent, HTMLProps } from "react";
 import { LinkProps, NavLink, RouteLink } from "../../components/NavLink";
 import { PaginationSvgSymbols } from "./SvgSymbols";
 import H from "history";
-import $s from "./Config";
+import $s from "./Settings";
 
 type PageLinkProps = LinkProps & {
     current: boolean

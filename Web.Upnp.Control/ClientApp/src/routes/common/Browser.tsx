@@ -7,7 +7,7 @@ import { useBookmarkButton } from "./BookmarkButton";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { DIDLUtils } from "./BrowserUtils";
 import BrowserView, { CellTemplate, CellTemplateProps, RowState } from "./BrowserView";
-import settings from "./Config";
+import settings from "./Settings";
 import { BrowseFetchResult, DIDLItem, Services, UpnpDevice } from "./Types";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {

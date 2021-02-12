@@ -3,7 +3,7 @@ import { TablePagination } from "./Pagination";
 import BrowserView, { BrowserViewProps } from "./BrowserView";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { RouteComponentProps } from "react-router";
-import $s from "./Config";
+import $s from "./Settings";
 
 type FetchProps = {
     s?: string;

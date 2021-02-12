@@ -4,7 +4,7 @@ import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $api, { BrowseFetch } from "../../components/WebApi";
 import { DIDLItem, DIDLResource } from "./Types";
 import { ComponentType } from "react";
-import $s from "./Config";
+import $s from "./Settings";
 
 export class DIDLUtils {
     static getKind(upnpClassName: string): string {

@@ -21,7 +21,7 @@ import { UploadPlaylistModalDialog } from "./dialogs/UploadPlaylistModalDialog";
 import { DropTarget } from "../../../components/DropTarget";
 import { PlayerSvgSymbols, PlaylistSvgSymbols } from "../../common/SvgSymbols";
 import { Portal } from "../../../components/Portal";
-import $s from "../../common/Config";
+import $s from "../../common/Settings";
 import { MenuItem } from "../../../components/DropdownMenu";
 
 type RouteParams = {
