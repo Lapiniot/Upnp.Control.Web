@@ -5,26 +5,28 @@ import { KnownWidgets } from "./widgets/Widgets";
 
 type BookmarkButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     device: string;
+    deviceName: string;
     item: DIDLItem;
     store?: IBookmarkStore<[string, string], WidgetPropsType>;
 };
 
 type WidgetPropsType = {
     device: string;
+    deviceName: string;
     id: string;
     title: string;
     icon?: string;
 };
 
 export function useBookmarkButton(widgetName: KnownWidgets, storeInstance?: IBookmarkStore<[string, string], WidgetPropsType>) {
-    return function ({ device, item, store = storeInstance, ...other }: BookmarkButtonProps) {
+    return function ({ device, deviceName, item, store = storeInstance, ...other }: BookmarkButtonProps) {
         const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);
         const toggleHandler = useCallback(
             async () => {
                 if (!store) return;
                 const key: [string, string] = [device, item.id];
                 if (!await store.contains(key)) {
-                    await store.add(widgetName, { device, id: item.id, title: item.title, icon: item.albumArts?.[0] });
+                    await store.add(widgetName, { device, deviceName, id: item.id, title: item.title, icon: item.albumArts?.[0] });
                     setBookmarked(true);
                 }
                 else {

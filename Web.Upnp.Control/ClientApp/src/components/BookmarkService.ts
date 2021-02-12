@@ -63,7 +63,7 @@ export class BookmarkService<TKey extends BookmarkKey, TProps = {}> implements I
 }
 
 const deviceBookmarks = new BookmarkService<[string, string], WidgetProps<{ category: string, device: string }>>("devices");
-const itemBookmarks = new BookmarkService<[string, string], WidgetProps<{ device: string, id: string, title: string }>>("items");
-const playlistBookmarks = new BookmarkService<[string, string], WidgetProps<{ device: string, id: string, title: string }>>("playlists");
+const itemBookmarks = new BookmarkService<[string, string], WidgetProps<{ device: string, deviceName: string, id: string, title: string }>>("items");
+const playlistBookmarks = new BookmarkService<[string, string], WidgetProps<{ device: string, deviceName: string, id: string, title: string }>>("playlists");
 
 export { deviceBookmarks, itemBookmarks, playlistBookmarks };

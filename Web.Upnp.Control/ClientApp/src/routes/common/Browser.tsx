@@ -33,13 +33,15 @@ function isUmiDevice(device: UpnpDevice) {
 type CellContext = {
     disabled?: boolean;
     device: string;
+    deviceName?: string;
 }
 
 const BookmarkItemButton = useBookmarkButton("ItemBookmarkWidget", itemBookmarks);
 
 function Template(props: CellTemplateProps<CellContext>) {
     return <CellTemplate {...props}>
-        {props.data.container && <BookmarkItemButton item={props.data} device={props.context?.device as string} />}
+        {props.data.container && <BookmarkItemButton item={props.data} device={props.context?.device as string}
+            deviceName={props.context?.deviceName as string} disabled={!props.context?.deviceName} />}
         <button type="button" className="btn btn-round btn-plain" data-id={props.data.id}
             data-bs-toggle="dropdown" disabled={props.context?.disabled}>
             <svg><use href="#ellipsis-v" /></svg>
@@ -49,6 +51,7 @@ function Template(props: CellTemplateProps<CellContext>) {
 
 type BrowserState = {
     ctx?: DataContext<BrowseFetchResult>;
+    device: UpnpDevice | null;
     umis: UpnpDevice[];
     renderers: UpnpDevice[];
     selection: { items: DIDLItem[], umiCompatible: boolean, rendererCompatible: boolean };
@@ -62,12 +65,14 @@ type BrowserProps = BrowserCoreProps<CellContext> & {
 
 export class Browser extends React.Component<BrowserProps, BrowserState> {
 
-    state: BrowserState = { umis: [], renderers: [], selection: { items: [], umiCompatible: false, rendererCompatible: false }, fetching: false, error: null }
+    state: BrowserState = { device: null, umis: [], renderers: [], selection: { items: [], umiCompatible: false, rendererCompatible: false }, fetching: false, error: null }
 
     async componentDidMount() {
         try {
-            const devices: UpnpDevice[] = await WebApi.devices("renderers").jsonFetch(settings.get("timeout"));
-            this.setState({ umis: devices.filter(isUmiDevice), renderers: devices.filter(d => !isUmiDevice(d)) })
+            const timeout = settings.get("timeout");
+            const devices: UpnpDevice[] = await WebApi.devices("renderers").jsonFetch(timeout);
+            const device: UpnpDevice = await WebApi.devices("upnp", this.props.device).jsonFetch(timeout);
+            this.setState({ device, umis: devices.filter(isUmiDevice), renderers: devices.filter(d => !isUmiDevice(d)) })
         }
         catch (error) {
             console.error(error);
@@ -207,7 +212,11 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         const { selection: { umiCompatible, rendererCompatible }, umis, renderers } = this.state;
         const isActionButtonEnabled = (umis.length && umiCompatible) || (renderers.length && rendererCompatible);
         const isItemActionMenuEnabled = umis.length || renderers.length;
-        const ctx = { disabled: !isItemActionMenuEnabled, device: this.props.device };
+        const ctx = {
+            disabled: !isItemActionMenuEnabled,
+            device: this.props.device,
+            deviceName: this.state.device?.name
+        };
 
         return <>
             <BrowserCore mainCellTemplate={Template} mainCellContext={ctx}
