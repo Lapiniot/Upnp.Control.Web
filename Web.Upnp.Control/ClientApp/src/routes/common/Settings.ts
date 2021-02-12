@@ -12,7 +12,9 @@ const defaults: TypedSettings = {
     containerScanTimeout: 15000,
 };
 
-const homeDefaults: { expandSection: "devices" | "playlists" | "items" | "" } = {
+export type BookmarkGroup = "devices" | "playlists" | "items";
+
+const homeDefaults: { expandSection: BookmarkGroup | "" } = {
     expandSection: "devices"
 }
 

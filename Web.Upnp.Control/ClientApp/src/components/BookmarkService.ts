@@ -67,3 +67,11 @@ const itemBookmarks = new BookmarkService<[string, string], WidgetProps<{ device
 const playlistBookmarks = new BookmarkService<[string, string], WidgetProps<{ device: string, deviceName: string, id: string, title: string }>>("playlists");
 
 export { deviceBookmarks, itemBookmarks, playlistBookmarks };
+
+export async function getBookmarkData() {
+    return {
+        devices: await deviceBookmarks.getAll(),
+        items: await itemBookmarks.getAll(),
+        playlists: await playlistBookmarks.getAll()
+    };
+}
