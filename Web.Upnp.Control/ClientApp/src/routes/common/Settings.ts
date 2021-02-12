@@ -12,6 +12,10 @@ const defaults: TypedSettings = {
     containerScanTimeout: 15000,
 };
 
+const homeDefaults: { expandSection: "devices" | "playlists" | "items" | "" } = {
+    expandSection: "devices"
+}
+
 export class Settings<T extends { [P: string]: string | number | boolean | object }> {
 
     private defaults: T;
@@ -26,7 +30,7 @@ export class Settings<T extends { [P: string]: string | number | boolean | objec
         const def = this.defaults[key];
         const str = localStorage.getItem(`${this.section}:${key}`);
 
-        if (str) {
+        if (str !== null) {
             switch (typeof def) {
                 case "string": return str as V;
                 case "number": return parseInt(str) as V;
@@ -53,5 +57,7 @@ export class Settings<T extends { [P: string]: string | number | boolean | objec
 }
 
 const settings = new Settings("global", defaults);
+const profile = { home: new Settings("home", homeDefaults) };
 
 export default settings;
+export { profile };
