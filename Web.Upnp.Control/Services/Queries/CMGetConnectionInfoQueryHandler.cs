@@ -18,7 +18,7 @@ namespace Web.Upnp.Control.Services.Queries
 
         public async Task<CMConnectionInfo> ExecuteAsync(CMGetConnectionInfoQuery query, CancellationToken cancellationToken)
         {
-            var service = await factory.GetServiceAsync<ConnectionManagerService>(query.DeviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<ConnectionManagerService>(query.DeviceId, cancellationToken).ConfigureAwait(false);
             var r = await service.GetCurrentConnectionInfoAsync(query.ConnectionId, cancellationToken);
             return new CMConnectionInfo(r["RcsID"], r["AVTransportID"], r["PeerConnectionID"], r["Direction"], r["Status"]);
         }

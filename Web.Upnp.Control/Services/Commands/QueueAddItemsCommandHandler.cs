@@ -28,9 +28,9 @@ namespace Web.Upnp.Control.Services.Commands
         {
             var (deviceId, queueId, source) = command;
 
-            var sourceCds = await factory.GetServiceAsync<ContentDirectoryService>(source.DeviceId).ConfigureAwait(false);
-            var targetCds = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
-            var service = await factory.GetServiceAsync<QueueService>(deviceId).ConfigureAwait(false);
+            var sourceCds = await factory.GetServiceAsync<ContentDirectoryService>(source.DeviceId, cancellationToken).ConfigureAwait(false);
+            var targetCds = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<QueueService>(deviceId, cancellationToken).ConfigureAwait(false);
 
             var sb = new System.Text.StringBuilder();
             using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))

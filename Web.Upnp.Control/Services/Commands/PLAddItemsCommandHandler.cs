@@ -29,7 +29,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         private async Task AddItemsAsync(string deviceId, string playlistId, string sourceDeviceId, IEnumerable<string> sourceItems, CancellationToken cancellationToken)
         {
-            var sourceCDService = await GetServiceAsync<ContentDirectoryService>(sourceDeviceId).ConfigureAwait(false);
+            var sourceCDService = await GetServiceAsync<ContentDirectoryService>(sourceDeviceId, cancellationToken).ConfigureAwait(false);
 
             var sb = new StringBuilder();
 

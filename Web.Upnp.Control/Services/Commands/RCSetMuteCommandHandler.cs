@@ -19,7 +19,7 @@ namespace Web.Upnp.Control.Services.Commands
         public async Task ExecuteAsync(RCSetMuteCommand command, CancellationToken cancellationToken)
         {
             var (deviceId, mute) = command;
-            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId, cancellationToken).ConfigureAwait(false);
             await service.SetMuteAsync(0, mute, cancellationToken).ConfigureAwait(false);
         }
     }

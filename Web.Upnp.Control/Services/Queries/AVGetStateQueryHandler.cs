@@ -21,7 +21,7 @@ namespace Web.Upnp.Control.Services.Queries
         public async Task<AVState> ExecuteAsync(AVGetStateQuery query, CancellationToken cancellationToken)
         {
             var (deviceId, detailed) = query;
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
             var actions = await avt.GetCurrentTransportActionsAsync(0, cancellationToken).ConfigureAwait(false);
             var transport = await avt.GetTransportInfoAsync(0, cancellationToken).ConfigureAwait(false);
 

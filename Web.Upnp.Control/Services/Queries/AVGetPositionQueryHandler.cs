@@ -21,7 +21,7 @@ namespace Web.Upnp.Control.Services.Queries
         public async Task<AVPosition> ExecuteAsync(AVGetPositionQuery query, CancellationToken cancellationToken)
         {
             var (deviceId, detailed) = query;
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
             var info = await avt.GetPositionInfoAsync(0, cancellationToken).ConfigureAwait(false);
             return new AVPosition(info.TryGetValue("Track", out var value) ? value : null,
                 info.TryGetValue("TrackDuration", out value) ? value : null,

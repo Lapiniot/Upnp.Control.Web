@@ -19,7 +19,7 @@ namespace Web.Upnp.Control.Services.Commands
         public async Task ExecuteAsync(RCSetVolumeCommand command, CancellationToken cancellationToken)
         {
             var (deviceId, volume) = command;
-            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId, cancellationToken).ConfigureAwait(false);
             await service.SetVolumeAsync(0, volume, cancellationToken).ConfigureAwait(false);
         }
     }

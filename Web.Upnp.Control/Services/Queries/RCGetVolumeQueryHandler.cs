@@ -19,7 +19,7 @@ namespace Web.Upnp.Control.Services.Queries
         public async Task<RCVolumeState> ExecuteAsync(RCGetVolumeQuery query, CancellationToken cancellationToken)
         {
             var (deviceId, detailed) = query;
-            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<RenderingControlService>(deviceId, cancellationToken).ConfigureAwait(false);
             var rv = await service.GetVolumeAsync(0, cancellationToken).ConfigureAwait(false);
             var rm = detailed != false ? await service.GetMuteAsync(0, cancellationToken).ConfigureAwait(false) : null;
 

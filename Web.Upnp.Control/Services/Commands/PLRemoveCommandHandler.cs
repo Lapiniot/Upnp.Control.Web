@@ -14,7 +14,7 @@ namespace Web.Upnp.Control.Services.Commands
         {
             var (deviceId, ids) = command;
 
-            var service = await GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
+            var service = await GetServiceAsync<PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
 
             var indices = await GetItemIndicesAsync(deviceId, "PL:", ids, cancellationToken).ConfigureAwait(false);
 

@@ -20,7 +20,7 @@ namespace Web.Upnp.Control.Services.Commands
         public async Task ExecuteAsync(AVSetPositionCommand command, CancellationToken cancellationToken)
         {
             var (deviceId, (position, time)) = command;
-            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId).ConfigureAwait(false);
+            var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
 
             if(position != null)
             {

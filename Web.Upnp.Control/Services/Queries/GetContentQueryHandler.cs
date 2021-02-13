@@ -27,7 +27,7 @@ namespace Web.Upnp.Control.Services.Queries
 
             path ??= "0";
 
-            var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false);
 
             var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
 

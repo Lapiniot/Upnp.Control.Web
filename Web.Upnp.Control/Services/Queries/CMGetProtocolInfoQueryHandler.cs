@@ -19,7 +19,7 @@ namespace Web.Upnp.Control.Services.Queries
 
         public async Task<CMProtocolInfo> ExecuteAsync(CMGetProtocolInfoQuery query, CancellationToken cancellationToken)
         {
-            var service = await factory.GetServiceAsync<ConnectionManagerService>(query.DeviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<ConnectionManagerService>(query.DeviceId, cancellationToken).ConfigureAwait(false);
             var result = await service.GetProtocolInfoAsync(cancellationToken).ConfigureAwait(false);
             return new CMProtocolInfo(
                 result.TryGetValue("Source", out var value) ? value.Split(',', TrimEntries | RemoveEmptyEntries) : null,

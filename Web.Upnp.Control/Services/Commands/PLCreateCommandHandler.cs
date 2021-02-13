@@ -18,7 +18,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(PLCreateCommand command, CancellationToken cancellationToken)
         {
-            var service = await factory.GetServiceAsync<PlaylistService>(command.DeviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<PlaylistService>(command.DeviceId, cancellationToken).ConfigureAwait(false);
             await service.CreateAsync(title: command.Title, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }

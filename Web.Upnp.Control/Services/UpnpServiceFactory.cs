@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.Services;
@@ -35,11 +36,11 @@ namespace Web.Upnp.Control.Services
             this.clientFactory = clientFactory;
         }
 
-        public async Task<TService> GetServiceAsync<TService>(string deviceId, string schema = null) where TService : SoapActionInvoker
+        public async Task<TService> GetServiceAsync<TService>(string deviceId, CancellationToken cancellationToken) where TService : SoapActionInvoker
         {
-            var device = await context.UpnpDevices.FindAsync(new {deviceId}).ConfigureAwait(false);
+            var device = await context.UpnpDevices.FindAsync(new object[]{deviceId}, cancellationToken).ConfigureAwait(false);
 
-            schema ??= Cache.GetOrAdd(typeof(TService), ServiceSchemaAttribute.GetSchema);
+            var schema = Cache.GetOrAdd(typeof(TService), ServiceSchemaAttribute.GetSchema);
 
             var controlUrl = GetControlUrl(device, schema);
 
@@ -53,7 +54,7 @@ namespace Web.Upnp.Control.Services
             return service != null
                 ? service.ControlUrl
                 : device.Services.Any(s => s.ServiceType == "urn:xiaomi-com:service:Playlist:1")
-                    ? new UriBuilder(device.Location) {Path = string.Format(UmiMappings[schema], device.Udn)}.Uri
+                    ? new UriBuilder(device.Location) { Path = string.Format(UmiMappings[schema], device.Udn) }.Uri
                     : null;
         }
 

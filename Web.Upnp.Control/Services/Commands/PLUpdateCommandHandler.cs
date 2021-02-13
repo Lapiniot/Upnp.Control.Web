@@ -19,7 +19,7 @@ namespace Web.Upnp.Control.Services.Commands
         public async Task ExecuteAsync(PLUpdateCommand command, CancellationToken cancellationToken)
         {
             var (deviceId, playlistId, title) = command;
-            var service = await factory.GetServiceAsync<PlaylistService>(deviceId).ConfigureAwait(false);
+            var service = await factory.GetServiceAsync<PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
             var result = await service.RenameAsync(objectId: playlistId, title: title, cancellationToken: cancellationToken).ConfigureAwait(false);
             await service.RenameAsync(objectId: playlistId, title: title, updateId: result["NewUpdateID"], cancellationToken: cancellationToken).ConfigureAwait(false);
         }

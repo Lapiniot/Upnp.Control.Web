@@ -18,7 +18,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(AVSetPlayModeCommand command, CancellationToken cancellationToken)
         {
-            var avt = await factory.GetServiceAsync<AVTransportService>(command.DeviceId).ConfigureAwait(false);
+            var avt = await factory.GetServiceAsync<AVTransportService>(command.DeviceId, cancellationToken).ConfigureAwait(false);
             await avt.SetPlayModeAsync(0, command.PlayMode, cancellationToken).ConfigureAwait(false);
         }
     }
