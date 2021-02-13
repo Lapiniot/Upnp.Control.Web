@@ -19,7 +19,7 @@ import { AddItemsModalDialog } from "./dialogs/AddItemsModalDialog";
 import { RemoveItemsModalDialog } from "./dialogs/RemoveItemsModalDialog";
 import { UploadPlaylistModalDialog } from "./dialogs/UploadPlaylistModalDialog";
 import { DropTarget } from "../../../components/DropTarget";
-import { PlayerSvgSymbols, PlaylistSvgSymbols } from "../../common/SvgSymbols";
+import { EditSvgSymbols, PlayerSvgSymbols, PlaylistSvgSymbols, PlaySvgSymbols } from "../../common/SvgSymbols";
 import { Portal } from "../../../components/Portal";
 import $s from "../../common/Settings";
 import { MenuItem } from "../../../components/DropdownMenu";
@@ -371,6 +371,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         };
 
         return <>
+            <EditSvgSymbols />
+            <PlaySvgSymbols />
             <PlaylistSvgSymbols />
             <PlayerSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}

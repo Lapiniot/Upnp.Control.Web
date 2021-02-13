@@ -1,6 +1,6 @@
 import React, { ChangeEvent, HTMLProps } from "react";
 import { LinkProps, NavLink, RouteLink } from "../../components/NavLink";
-import { PaginationSvgSymbols } from "./SvgSymbols";
+import { ChevronSvgSymbols } from "./SvgSymbols";
 import H from "history";
 import $s from "./Settings";
 
@@ -96,7 +96,7 @@ export class TablePagination extends React.Component<PaginationProps & Navigatio
         const pages = Math.ceil(total / pageSize);
 
         return <nav aria-label="Page navigation" className={`d-flex flex-shrink-0 align-items-center${className ? ` ${className}` : ""}`} {...other}>
-            <PaginationSvgSymbols />
+            <ChevronSvgSymbols />
             <label className="text-nowrap small me-2">Items per page</label>
             <select className="form-select form-select-sm me-4 my-0 w-auto" aria-label="Items per page" value={pageSize} onChange={this.pageSizeChangedHandler} >
                 {pageSizes.map(s => <option key={s} value={s}>{s}</option>)}

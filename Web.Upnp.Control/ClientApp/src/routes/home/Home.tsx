@@ -1,6 +1,7 @@
 ﻿import React, { useCallback, useEffect, useState, MouseEvent } from "react";
 import { getBookmarkData } from "../../components/BookmarkService";
 import { BookmarkGroup, profile } from "../common/Settings";
+import { PlaySvgSymbols } from "../common/SvgSymbols";
 import { KnownWidgets, Widgets } from "../common/widgets/Widgets";
 
 type State = { [K in BookmarkGroup]: { key: string, widget: KnownWidgets, props: any }[] };
@@ -30,21 +31,24 @@ export default function () {
 
     const expanded = profile.home.get("expandSection");
 
-    return <div className="accordion accordion-flush" id="bookmarks-section">
-        {Object.entries(data).map(([id, value], i) => <div className="accordion-item" key={id}>
-            <h2 className="accordion-header" id={`h-${id}`}>
-                <button type="button" className={`accordion-button${id !== expanded ? " collapsed" : ""}`} data-bs-toggle="collapse"
-                    data-bs-target={`#${id}`} aria-expanded={id === expanded ? "true" : "false"}
-                    aria-controls={id} onClick={clickHandler}>{headers[id as BookmarkGroup]}<span className="badge bg-primary ms-2">{value.length}</span></button>
-            </h2>
-            <div id={id} className={`accordion-collapse collapse${id === expanded ? " show" : ""}`}
-                aria-labelledby={`h-${id}`} data-bs-parent="#bookmarks-section">
-                {value.length > 0
-                    ? <div className="accordion-body d-grid grid-auto-x0 align-items-start">
-                        {value.map(({ key, widget, props }) => React.createElement(Widgets[widget] as any, { ...props, key: key }))}
-                    </div>
-                    : <div className="d-flex text-muted p-3 justify-content-center">[No items bookmarked yet]</div>}
-            </div>
-        </div>)}
-    </div >;
+    return <>
+        <PlaySvgSymbols />
+        <div className="accordion accordion-flush" id="bookmarks-section">
+            {Object.entries(data).map(([id, value], i) => <div className="accordion-item" key={id}>
+                <h2 className="accordion-header" id={`h-${id}`}>
+                    <button type="button" className={`accordion-button${id !== expanded ? " collapsed" : ""}`} data-bs-toggle="collapse"
+                        data-bs-target={`#${id}`} aria-expanded={id === expanded ? "true" : "false"}
+                        aria-controls={id} onClick={clickHandler}>{headers[id as BookmarkGroup]}<span className="badge bg-primary ms-2">{value.length}</span></button>
+                </h2>
+                <div id={id} className={`accordion-collapse collapse${id === expanded ? " show" : ""}`}
+                    aria-labelledby={`h-${id}`} data-bs-parent="#bookmarks-section">
+                    {value.length > 0
+                        ? <div className="accordion-body d-grid grid-auto-x0 align-items-start">
+                            {value.map(({ key, widget, props }) => React.createElement(Widgets[widget] as any, { ...props, key: key }))}
+                        </div>
+                        : <div className="d-flex text-muted p-3 justify-content-center">[No items bookmarked yet]</div>}
+                </div>
+            </div>)}
+        </div>
+    </>;
 }
