@@ -2,13 +2,11 @@ import DeviceInfo from "./DeviceInfo";
 import ServicesList from "./DeviceServiceList";
 import { DataSourceProps, UpnpDevice } from "./Types";
 import { DownloadMetadataAction, BrowseContentAction } from "./actions/Actions";
-import { AddBookmarkAction } from "./actions/AddBookmarkAction";
 import { ActionDescriptor, DeviceCard } from "./DeviceCard";
 
 const upnpActions: ActionDescriptor[] = [
     ["download", DownloadMetadataAction],
-    ["browse", BrowseContentAction],
-    ["add-bookmark", AddBookmarkAction, { className: "ms-auto" }]
+    ["browse", BrowseContentAction]
 ];
 
 export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
