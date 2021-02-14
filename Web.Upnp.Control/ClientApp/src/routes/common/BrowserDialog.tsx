@@ -82,7 +82,7 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
                             <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
                             <Route path={"/sources/:device/-1"} exact render={() => <Redirect to="/sources" />} />
                             <Route path={"/sources/:device/:id(.*)?"} render={props =>
-                                <Browser {...props} ref={this.browserRef} className="flex-expand"
+                                <Browser {...props} ref={this.browserRef} className="flex-fill"
                                     open={this.props.dismissOnOpen ? this.open : undefined} {...browserProps}
                                     selection={this.selection} selectionChanged={this.selectionChanged} modalDialogMode />} />
                         </Switch>

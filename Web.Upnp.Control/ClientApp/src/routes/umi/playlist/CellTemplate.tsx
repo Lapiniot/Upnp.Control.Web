@@ -42,7 +42,7 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
                     <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                 </div>}
         </div>
-        <span className="text-truncate flex-basis-100">
+        <span className="text-truncate flex-grow-1">
             {d.title}
             {d.creator && <>&nbsp;&bull;&nbsp;<small>{d.creator}</small></>}
             {d.album && <>&nbsp;&bull;&nbsp;<small>{d.album}</small></>}

@@ -11,7 +11,7 @@ export type SliderCSSProperties = CSSProperties & {
 type SliderProps = HTMLProps<HTMLDivElement> & {
     progress: number;
     onChangeRequested: SliderChangeHandler;
-    style?: SliderCSSProperties;
+    sliderStyle?: SliderCSSProperties;
 }
 
 export default class extends React.Component<SliderProps> {
@@ -28,11 +28,11 @@ export default class extends React.Component<SliderProps> {
     };
 
     render() {
-        const { progress, style = {} as SliderCSSProperties, onChangeRequested, readOnly, ...other } = this.props;
-        style["--slider-progress"] = progress;
+        const { progress, sliderStyle = {} as SliderCSSProperties, onChangeRequested, readOnly, ...other } = this.props;
+        sliderStyle["--slider-progress"] = progress;
 
         return <div onClick={!readOnly ? this.clickHandler : undefined} role="button" {...other}>
-            <div className="slider-track" style={style}>
+            <div className="slider-track" style={sliderStyle}>
                 <div className="slider-indicator" />
                 <div className="slider-thumb"><div /></div>
             </div>

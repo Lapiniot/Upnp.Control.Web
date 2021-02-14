@@ -376,7 +376,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <PlaylistSvgSymbols />
             <PlayerSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
-            <DropTarget className="flex-expand d-flex flex-column" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
+            <DropTarget className="flex-fill d-flex flex-column" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <div className="d-flex flex-column sticky-top">
                     <Toolbar className="px-2 py-1 bg-light border-bottom">
                         <Toolbar.Group>
@@ -388,7 +388,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 <SignalRListener handlers={this.handlers}>
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
-                        useCheckboxes multiSelect className="flex-expand">
+                        useCheckboxes multiSelect className="flex-fill">
                         <Browser.ContextMenu placement="bottom-end" onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>

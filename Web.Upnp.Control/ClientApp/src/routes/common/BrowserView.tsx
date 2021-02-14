@@ -350,7 +350,7 @@ export function CellTemplate({ children, data, index, rowState, context, ...othe
     const { class: itemClass, albumArts, title, creator, album, res } = data;
     return <div className="d-flex align-items-center" title={utils.formatMediaInfo(res) ?? undefined} {...other}>
         <AlbumArt itemClass={itemClass} albumArts={albumArts} className="me-2" />
-        <span className="text-truncate flex-basis-100">
+        <span className="text-truncate flex-grow-1">
             {title}
             {creator && <>&nbsp;&bull;&nbsp;<small>{creator}</small></>}
             {album && <>&nbsp;&bull;&nbsp;<small>{album}</small></>}

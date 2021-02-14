@@ -145,11 +145,11 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                     <Button title="Prev" glyph="step-backward" onClick={this.prev} disabled={!actions.includes("Previous")} />
                     <Button className="icon-2x" {...button} />
                     <Button title={nextTitle} glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
-                    <div className="d-flex flex-wrap justify-content-center flex-grow-1 overflow-hidden mx-2">
+                    <div className="d-flex flex-column flex-grow-1 overflow-hidden mx-2">
                         {current ? <>
-                            <h6 className="text-center text-truncate flex-basis-100 m-0">{title}</h6>
+                            <h6 className="text-center text-truncate flex-grow-1 m-0">{title}</h6>
                             {(creator || album) && <small className="m-0 text-center lines-2">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
-                        </> : <h6 className="text-center text-truncate flex-basis-100 m-0">[No media]</h6>}
+                        </> : <h6 className="text-center text-truncate flex-grow-1 m-0">[No media]</h6>}
                     </div>
                     <div className="d-flex position-relative flex-nowrap align-items-center">
                         <div className="hover-container">

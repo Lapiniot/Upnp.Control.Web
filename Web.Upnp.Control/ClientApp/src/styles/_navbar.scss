@@ -1,0 +1,39 @@
+@mixin bottom-bar($infix) {
+    .navbar-nav.bottom-bar#{breakpoint-infix($infix)} {
+        flex: 1 1 0;
+        a.nav-link {
+            display: flex;
+            flex-direction: column;
+            flex: 1 0 0;
+            align-items: center;
+            font-size: x-small;
+
+            & > svg {
+                margin: unset !important;
+                font-size: 1rem;
+            }
+        }
+    }
+}
+
+@mixin nav-rail($infix) {
+    .navbar-nav.nav-rail#{breakpoint-infix($infix)} {
+        flex-direction: column;
+        a.nav-link {
+            flex-direction: row;
+            font-size: inherit;
+            margin-block: map-get($spacers, 1);
+
+            & > svg {
+                margin-inline-end: map-get($spacers, 2) !important;
+                font-size: 1rem;
+            }
+        }
+    }
+}
+
+@include bottom-bar(xs);
+
+@include media-breakpoint-up(lg) {
+    @include nav-rail(lg);
+}

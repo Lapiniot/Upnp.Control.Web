@@ -17,21 +17,19 @@ const container: HTMLElement = document.getElementById("main-root") as HTMLEleme
 
 ReactDOM.render(
     <BrowserRouter basename={baseUrl}>
-        <div className="row g-0 flex-nowrap">
-            <div className="col-auto">
-                <div className="navbar position-sticky sticky-left flex-column justify-content-start navbar-dark bg-dark bg-gradient px-3">
-                    <h5 className="navbar-brand mx-0">UPnP Controller</h5>
-                    <nav className="navbar-nav">
-                        <NavBarSvgSymbols />
-                        <RouteLink to="/" exact glyph="home" className="nav-item nav-link">Home</RouteLink>
-                        <RouteLink to="/upnp" glyph="server" className="nav-item nav-link">UPnP devices</RouteLink>
-                        <RouteLink to="/renderers" glyph="tv" className="nav-item nav-link">Network Players</RouteLink>
-                        <RouteLink to="/umi" glyph="music" className="nav-item nav-link">Xiaomi Speakers</RouteLink>
-                        <RouteLink to="/settings" glyph="cog" className="nav-item nav-link">Settings</RouteLink>
-                    </nav>
-                </div>
+        <div className="vh-100 d-flex flex-column flex-lg-row">
+            <div className="navbar navbar-expand navbar-dark bg-dark bg-gradient p-0 order-1 order-lg-0 flex-lg-column justify-content-start">
+                <a className="navbar-brand d-none d-lg-inline ps-3" href="/">UPnP RUI</a>
+                <nav className="navbar-nav bottom-bar nav-rail-lg p-lg-1 flex-lg-grow-0">
+                    <RouteLink to="/" exact glyph="home" className="nav-link">Home</RouteLink>
+                    <RouteLink to="/upnp" glyph="server" className="nav-link">Devices</RouteLink>
+                    <RouteLink to="/renderers" glyph="tv" className="nav-link">Players</RouteLink>
+                    <RouteLink to="/umi" glyph="music" className="nav-link">Speakers</RouteLink>
+                    <RouteLink to="/settings" glyph="cog" className="nav-link">Settings</RouteLink>
+                </nav>
+                <NavBarSvgSymbols />
             </div>
-            <main className="col vh-100 overflow-hidden position-relative">
+            <main className="h-100 overflow-hidden position-relative order-0 order-lg-1 flex-grow-1">
                 <div className="h-100 overflow-auto d-flex flex-column">
                     <SignalRConnection hubUrl="/upnpevents">
                         <Switch>
