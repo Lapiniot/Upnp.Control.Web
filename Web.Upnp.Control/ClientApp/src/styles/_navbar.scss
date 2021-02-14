@@ -20,13 +20,24 @@
     .navbar-nav.nav-rail#{breakpoint-infix($infix)} {
         flex-direction: column;
         a.nav-link {
-            flex-direction: row;
+            display: flex;
+            flex-direction: column;
             font-size: inherit;
+            & > svg {
+                font-size: 1rem;
+            }
+        }
+    }
+}
+
+@mixin wide($infix) {
+    .navbar-nav.wide#{breakpoint-infix($infix)} {
+        a.nav-link {
+            flex-direction: row;
             margin-block: map-get($spacers, 1);
 
             & > svg {
                 margin-inline-end: map-get($spacers, 2) !important;
-                font-size: 1rem;
             }
         }
     }
@@ -34,6 +45,17 @@
 
 @include bottom-bar(xs);
 
+@include media-breakpoint-up(sm) {
+    @include nav-rail(sm);
+    @include wide(sm);
+}
+
+@include media-breakpoint-up(md) {
+    @include nav-rail(md);
+    @include wide(md);
+}
+
 @include media-breakpoint-up(lg) {
     @include nav-rail(lg);
+    @include wide(lg);
 }
