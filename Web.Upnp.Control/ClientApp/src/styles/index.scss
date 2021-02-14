@@ -283,3 +283,25 @@ $album-art-sizes: (
         }
     }
 }
+
+.scroll-snap-y {
+    scroll-snap-type: y mandatory;
+}
+
+.scroll-snap-x {
+    scroll-snap-type: x mandatory;
+}
+
+.snap-start {
+    scroll-snap-align: start;
+}
+
+.snap-end {
+    scroll-snap-align: end;
+}
+
+@each $k, $v in $spacers {
+    .spt-#{$k} {
+        scroll-padding-block-start: $v;
+    }
+}
