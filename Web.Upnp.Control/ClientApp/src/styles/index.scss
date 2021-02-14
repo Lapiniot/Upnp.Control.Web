@@ -285,23 +285,17 @@ $album-art-sizes: (
 }
 
 .scroll-snap-y {
-    scroll-snap-type: y mandatory;
-}
-
-.scroll-snap-x {
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: y proximity;
 }
 
 .snap-start {
     scroll-snap-align: start;
 }
 
-.snap-end {
-    scroll-snap-align: end;
+.spt-3 {
+    scroll-padding-block-start: map-get($spacers, 3);
 }
 
-@each $k, $v in $spacers {
-    .spt-#{$k} {
-        scroll-padding-block-start: $v;
-    }
+.spb-3 {
+    scroll-padding-block-end: map-get($spacers, 3);
 }

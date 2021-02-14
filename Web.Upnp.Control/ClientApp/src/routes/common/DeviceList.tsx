@@ -57,7 +57,7 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
     render() {
         const { dataContext, itemTemplate: Item, fetching, category } = this.props;
 
-        return <div className="h-100 overflow-auto scroll-snap-y spt-3 d-flex flex-column">
+        return <div className="h-100 overflow-auto scroll-snap-y spt-3 spb-3 d-flex flex-column">
             {fetching || !dataContext?.source
                 ? <LoadIndicatorOverlay />
                 : <SignalRListener handlers={this.handlers}>
