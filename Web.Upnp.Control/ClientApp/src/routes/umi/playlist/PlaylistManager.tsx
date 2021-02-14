@@ -370,7 +370,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             deviceName: this.state.device?.name
         };
 
-        return <>
+        return <div className="h-100 overflow-auto d-flex flex-column">
             <EditSvgSymbols />
             <PlaySvgSymbols />
             <PlaylistSvgSymbols />
@@ -398,7 +398,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 </div>
                 <Portal selector="#modal-root">{this.state.modal}</Portal>
             </DropTarget >
-        </>;
+        </div>;
     }
 }
 

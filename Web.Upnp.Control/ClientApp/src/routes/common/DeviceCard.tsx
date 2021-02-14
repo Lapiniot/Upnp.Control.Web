@@ -15,7 +15,7 @@ export type DeviceCardProps = DataSourceProps<UpnpDevice> & {
 }
 
 export function DeviceCard({ "data-source": d, category, children, actions, className, ...other }: DeviceCardProps & HTMLAttributes<HTMLDivElement>) {
-    return <div className={`card shadow${className ? ` ${className}` : ""}`} {...other}>
+    return <div className={`card shadow snap-start${className ? ` ${className}` : ""}`} {...other}>
         <div className="card-header d-flex">
             <DeviceIcon service={d.type} icons={d.icons} />
             <div className="flex-grow-1">

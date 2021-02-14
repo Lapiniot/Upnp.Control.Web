@@ -30,21 +30,19 @@ ReactDOM.render(
                 <NavBarSvgSymbols />
             </div>
             <main className="h-100 overflow-hidden position-relative order-0 order-sm-1 flex-grow-1">
-                <div className="h-100 overflow-auto d-flex flex-column">
-                    <SignalRConnection hubUrl="/upnpevents">
-                        <Switch>
-                            <Route exact path="/" component={HomePage} />
-                            <Route path="/:category(upnp)" component={UpnpPage} />
-                            <Route path="/:category(umi)" component={UmiPage} />
-                            <Route path="/:category(renderers)" component={RenderersPage} />
-                            <Route path="/settings" component={SettingsPage} />
-                            <Route path="*" render={() => <div className="m-2 text-danger">
-                                <h3>404 - Not Found</h3>
-                                <h5>Page you are looking for is not found</h5>
-                            </div>} />
-                        </Switch>
-                    </SignalRConnection>
-                </div>
+                <SignalRConnection hubUrl="/upnpevents">
+                    <Switch>
+                        <Route exact path="/" component={HomePage} />
+                        <Route path="/:category(upnp)" component={UpnpPage} />
+                        <Route path="/:category(umi)" component={UmiPage} />
+                        <Route path="/:category(renderers)" component={RenderersPage} />
+                        <Route path="/settings" component={SettingsPage} />
+                        <Route path="*" render={() => <div className="m-2 text-danger">
+                            <h3>404 - Not Found</h3>
+                            <h5>Page you are looking for is not found</h5>
+                        </div>} />
+                    </Switch>
+                </SignalRConnection>
             </main>
         </div>
     </BrowserRouter>, container);

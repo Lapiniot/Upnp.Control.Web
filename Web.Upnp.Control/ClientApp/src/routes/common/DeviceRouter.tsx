@@ -24,7 +24,6 @@ const Devices = withDataFetch<DataFetchProps<UpnpDevice[]> & TemplatedDataCompon
 
 export default ({ match: { path, params: { category } }, deviceTemplate = DeviceCard, children }: DeviceRouterProps) => <>
     <UpnpActionSvgSymbols />
-    <BrowserSvgSymbols />
     <Switch>
         {children}
         <Route path={`${path}/:device/browse`} render={props => <Browser {...props} />} />

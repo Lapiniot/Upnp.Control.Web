@@ -8,6 +8,7 @@ import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { DIDLUtils } from "./BrowserUtils";
 import BrowserView, { CellTemplate, CellTemplateProps, RowState } from "./BrowserView";
 import settings from "./Settings";
+import { BrowserSvgSymbols } from "./SvgSymbols";
 import { BrowseFetchResult, DIDLItem, Services, UpnpDevice } from "./Types";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
@@ -218,7 +219,8 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             deviceName: this.state.device?.name
         };
 
-        return <>
+        return <div className="h-100 overflow-auto d-flex flex-column">
+            <BrowserSvgSymbols />
             <BrowserCore mainCellTemplate={Template} mainCellContext={ctx}
                 useCheckboxes multiSelect rowState={this.rowState} selectionChanged={this.selectionChanged}
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
@@ -230,6 +232,6 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 </button>
             </div>
             <DropdownMenu render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} placement="top-end" />
-        </>;
+        </div>;
     }
 }

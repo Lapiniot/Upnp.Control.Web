@@ -20,7 +20,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
         <div className="flex-fill d-flex flex-column">
             <Breadcrumb items={parents} path={match.path} params={match.params} className="sticky-top border-bottom" />
             <BrowserView className="flex-fill" {...props} />
-            <TablePagination location={props.location} history={props.history}
+            <TablePagination location={props.location} history={props.history} style={{bottom:"-1px"}}
                 className="bg-light border-top sticky-bottom py-1 px-3 justify-content-end"
                 total={total} current={typeof page === "string" ? parseInt(page) : 1}
                 pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />

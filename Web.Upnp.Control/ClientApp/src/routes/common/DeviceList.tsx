@@ -25,7 +25,7 @@ type DeviceContainerProps = DataFetchProps<UpnpDevice> & TemplatedDataComponentP
 export function DeviceContainer({ itemTemplate: Template, dataContext, category, fetching }: DeviceContainerProps) {
     return <>
         {fetching && <LoadIndicatorOverlay />}
-        <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
+        <div className="h-100 overflow-auto d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
             {dataContext?.source && <Template data-source={dataContext.source} category={category} />}
         </div>
     </>;
@@ -57,19 +57,21 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
     render() {
         const { dataContext, itemTemplate: Item, fetching, category } = this.props;
 
-        return fetching || !dataContext?.source
-            ? <LoadIndicatorOverlay />
-            : <SignalRListener handlers={this.handlers}>
-                {!fetching && this.state.alerts.size > 0 &&
-                    <div className="m-3 mb-0 d-flex flex-wrap justify-content-center gap-3">{
-                        Array.from(this.state.alerts).map(({ 0: key, 1: { type, info: { name, description } } }) =>
-                            <Toast key={key} data-id={key} header={name} color={type === "appeared" ? "success" : "warning"}
-                                delay={120000} onDismissed={this.dismissAlert}><b>&laquo;{description}&raquo;</b> has {type === "appeared" ? "appeared on" : "disappeared from"} the network</Toast>
-                        )}
-                    </div>}
-                <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-                    {[dataContext.source.map(item => <Item key={item.udn} data-source={item} category={category} />)]}
-                </div>
-            </SignalRListener>
+        return <div className="h-100 overflow-auto scroll-snap-y spt-3 d-flex flex-column">
+            {fetching || !dataContext?.source
+                ? <LoadIndicatorOverlay />
+                : <SignalRListener handlers={this.handlers}>
+                    {!fetching && this.state.alerts.size > 0 &&
+                        <div className="m-3 mb-0 d-flex flex-wrap justify-content-center gap-3">{
+                            Array.from(this.state.alerts).map(({ 0: key, 1: { type, info: { name, description } } }) =>
+                                <Toast key={key} data-id={key} header={name} color={type === "appeared" ? "success" : "warning"}
+                                    delay={120000} onDismissed={this.dismissAlert}><b>&laquo;{description}&raquo;</b> has {type === "appeared" ? "appeared on" : "disappeared from"} the network</Toast>
+                            )}
+                        </div>}
+                    <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
+                        {[dataContext.source.map(item => <Item key={item.udn} data-source={item} category={category} />)]}
+                    </div>
+                </SignalRListener>}
+        </div>
     }
 }
