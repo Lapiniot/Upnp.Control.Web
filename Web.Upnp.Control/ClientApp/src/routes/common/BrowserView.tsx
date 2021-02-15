@@ -293,7 +293,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
         return <div className={`d-flex flex-column${className ? ` ${className}` : ""}`}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler}>
-            <div className="auto-table table-compact table-hover-link table-striped table-focus-marker"
+            <div className="auto-table table-compact trim-sm-3 hide-md-3 hide-md-5 hide-lg-5 table-hover-link table-striped table-focus-marker"
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {caption}
                 <div className="sticky-header">
