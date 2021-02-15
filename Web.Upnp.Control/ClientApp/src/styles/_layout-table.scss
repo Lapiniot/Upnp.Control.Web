@@ -1,5 +1,17 @@
 ﻿$auto-table-striped-order: even;
 
+$trim-map: (
+    sm: 3,
+);
+
+$hide-map: (
+    md: (
+        3,
+        5,
+    ),
+    lg: 5,
+);
+
 .auto-table {
     --bs-auto-table-bg: #{$table-bg};
     --bs-auto-table-header-bg: #{$light};
@@ -178,6 +190,26 @@
                 color: $link-hover-color;
                 text-decoration: none;
                 cursor: default;
+            }
+        }
+    }
+
+    @each $breakpoint, $indices in $trim-map {
+        @include media-breakpoint-down($breakpoint) {
+            @each $i in $indices {
+                &.trim#{breakpoint-infix($breakpoint)}-#{$i} > div:not(.table-caption) > div > div {
+                    @include display-no-children-since($i);
+                }
+            }
+        }
+    }
+
+    @each $breakpoint, $indices in $hide-map {
+        @include media-breakpoint-down($breakpoint) {
+            @each $i in $indices {
+                &.hide#{breakpoint-infix($breakpoint)}-#{$i} > div:not(.table-caption) > div > div {
+                    @include display-no-child($i);
+                }
             }
         }
     }

@@ -1,9 +1,24 @@
 ﻿$enable-gradients: true;
+$enable-shadows: true;
+$enable-grid-classes: false;
 $breadcrumb-divider: quote("\276f");
 $breadcrumb-item-padding-x: 0.25rem !default;
 $breadcrumb-border-radius: 0 !default;
-$generate-album-art-sizes: true;
 $generate-grid-layout-responsive-styles: false;
+
+$album-art-size-base: 2rem !default;
+
+$album-art-scales: (
+    "": 1,
+    //xs: 0.5,
+    sm: 0.75,
+    //"md": 1.25,
+    //"lg": 1.75,
+    //"xl": 2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+);
+
+$backdrops: ("", primary, secondary, danger);
+$backdrop-opacity: 0.6;
 
 // Configuration
 @import "../../node_modules/bootstrap/scss/functions";
@@ -42,6 +57,7 @@ $accordion-button-active-bg: $light;
 // Utilities
 @import "../../node_modules/bootstrap/scss/utilities/api";
 
+@import "mixins";
 @import "navbar";
 @import "buttons";
 @import "text-utils";
@@ -54,13 +70,6 @@ $accordion-button-active-bg: $light;
 .sticky-bottom {
     position: sticky;
     bottom: 0;
-    z-index: $zindex-sticky;
-}
-
-.sticky-left {
-    position: sticky;
-    top: 0 !important;
-    height: 100vh;
     z-index: $zindex-sticky;
 }
 
@@ -118,13 +127,9 @@ $accordion-button-active-bg: $light;
     fill: currentColor;
 }
 
-@mixin icon($size) {
-    font-size: $size * 1em;
-}
-
-@for $size from 2 through 3 {
-    .icon-#{$size}x {
-        @include icon($size);
+@for $scale from 2 through 3 {
+    .icon-#{$scale}x {
+        @include font-scale($scale);
     }
 }
 
@@ -141,51 +146,14 @@ $accordion-button-active-bg: $light;
     margin-right: 0.5rem;
 }
 
-$album-art-size-base: 2rem;
-
-$album-art-sizes: (
-    //"xs": 0.5,
-    "sm": 0.75,
-    //"md": 1.25,
-    //"lg": 1.75,
-    //"xl": 2,
-);
-
-.album-art {
-    width: $album-art-size-base;
-    min-width: $album-art-size-base;
-    height: $album-art-size-base;
-    min-height: $album-art-size-base;
-    line-height: $album-art-size-base;
-    text-align: center;
-    vertical-align: middle !important;
-    // This renders in case of image download error
-    &:after {
-        content: "?";
-        position: absolute;
-        top: 0;
-        width: 100%;
-        display: block;
-        color: orangered;
-        border: 1px dashed orangered;
-        background-color: whitesmoke;
-        font-weight: bolder;
-    }
+%album-art {
+    @include image-box();
 }
 
-@mixin album-art($size) {
-    @extend .album-art;
-    width: $size !important;
-    min-width: $size !important;
-    height: $size !important;
-    min-height: $size !important;
-}
-
-@if $generate-album-art-sizes {
-    @each $name, $size in $album-art-sizes {
-        .album-art-#{$name} {
-            @include album-art($size * $album-art-size-base);
-        }
+@each $name, $scale in $album-art-scales {
+    .album-art#{infix($name)} {
+        @extend %album-art;
+        @include image-box-sized($scale * $album-art-size-base, $scale * $album-art-size-base);
     }
 }
 
@@ -224,26 +192,17 @@ $album-art-sizes: (
     }
 }
 
-.backdrop {
-    position: absolute;
-    z-index: $zindex-modal;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(#000, 0.6);
-    pointer-events: none;
-    backdrop-filter: blur(0.3px);
+%backdrop {
+    @include overlay();
 }
 
-.backdrop-primary {
-    background-color: rgba($primary, 0.5);
-}
-
-.backdrop-secondary {
-    background-color: rgba($black, 0.8);
-}
-
-.backdrop-danger {
-    background-color: rgba($danger, 0.5);
+@each $name in $backdrops {
+    .backdrop#{infix($name)} {
+        @extend %backdrop;
+        $color: map-get($theme-colors, $name);
+        background-color: change-color($color: if($color, $color, #000000), $alpha: $backdrop-opacity);
+        color: shade-color(if($color, $color, #000000), 40%);
+    }
 }
 
 .stack {
