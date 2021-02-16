@@ -296,14 +296,14 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             <div className="auto-table table-compact trim-sm-3 hide-md-3 hide-md-5 hide-lg-5 table-hover-link table-striped table-focus-marker"
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {caption}
-                <div className="sticky-header">
+                <div className="sticky-header d-none-h-before-md">
                     <div>
                         {useCheckboxes &&
                             <div>
                                 <input type="checkbox" id="select_all" onChange={this.onCheckboxAllChanged}
                                     checked={this.tracker.allSelected()} disabled={!this.tracker.enabled()} />
                             </div>}
-                        <div className="w-100">Name</div>
+                        <div>Name</div>
                         <div>Size</div>
                         <div>Time</div>
                         <div>Kind</div>
@@ -314,7 +314,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         <div data-id={parents[1]?.id ?? -1} onDoubleClick={this.navigateHandler}
                             title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ...">
                             {useCheckboxes && <div>&nbsp;</div>}
-                            <div>
+                            <div className="w-100">
                                 <svg className="icon" stroke="currentColor" viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M4.854 1.146a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L4 2.707V12.5A2.5 2.5 0 0 0 6.5 15h8a.5.5 0 0 0 0-1h-8A1.5 1.5 0 0 1 5 12.5V2.707l3.146 3.147a.5.5 0 1 0 .708-.708l-4-4z" />
                                 </svg>&nbsp;&nbsp;...
