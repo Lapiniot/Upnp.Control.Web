@@ -1,10 +1,10 @@
 ﻿$auto-table-striped-order: even;
 
-$trim-map: (
+$trim-columns-map: (
     sm: 3,
 );
 
-$hide-map: (
+$hide-columns-map: (
     md: (
         3,
         5,
@@ -194,7 +194,7 @@ $hide-map: (
         }
     }
 
-    @each $breakpoint, $indices in $trim-map {
+    @each $breakpoint, $indices in $trim-columns-map {
         @include media-breakpoint-down($breakpoint) {
             @each $i in $indices {
                 &.trim#{breakpoint-infix($breakpoint)}-#{$i} > div:not(.table-caption) > div > div {
@@ -204,7 +204,7 @@ $hide-map: (
         }
     }
 
-    @each $breakpoint, $indices in $hide-map {
+    @each $breakpoint, $indices in $hide-columns-map {
         @include media-breakpoint-down($breakpoint) {
             @each $i in $indices {
                 &.hide#{breakpoint-infix($breakpoint)}-#{$i} > div:not(.table-caption) > div > div {

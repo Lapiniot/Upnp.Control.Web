@@ -14,11 +14,14 @@ $album-art-scales: (
     sm: 0.75,
     //"md": 1.25,
     //"lg": 1.75,
-    //"xl": 2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    //"xl": 2,
 );
 
 $backdrops: ("", primary, secondary, danger);
 $backdrop-opacity: 0.6;
+
+$display-none-before-width-breakpoints: ();
+$display-none-before-height-breakpoints: (sm, md);
 
 // Configuration
 @import "../../node_modules/bootstrap/scss/functions";
@@ -71,6 +74,22 @@ $accordion-button-active-bg: $light;
     position: sticky;
     bottom: 0;
     z-index: $zindex-sticky;
+}
+
+@each $breakpoint in $display-none-before-width-breakpoints {
+    @include media-breakpoint-down($breakpoint) {
+        &.d-none-before#{breakpoint-infix($breakpoint)} {
+            display: none !important;
+        }
+    }
+}
+
+@each $breakpoint in $display-none-before-height-breakpoints {
+    @include media-breakpoint-height-down($breakpoint) {
+        &.d-none-h-before#{breakpoint-infix($breakpoint)} {
+            display: none !important;
+        }
+    }
 }
 
 @each $k, $v in $spacers {
