@@ -38,7 +38,7 @@ export default function () {
                 <h2 className="accordion-header" id={`h-${id}`}>
                     <button type="button" className={`accordion-button${id !== expanded ? " collapsed" : ""}`} data-bs-toggle="collapse"
                         data-bs-target={`#${id}`} aria-expanded={id === expanded ? "true" : "false"}
-                        aria-controls={id} onClick={clickHandler}>{headers[id as BookmarkGroup]}<span className="badge bg-primary ms-2">{value.length}</span></button>
+                        aria-controls={id} onClick={clickHandler}>{headers[id as BookmarkGroup]}<span className="badge rounded-pill bg-secondary ms-1 small">{value.length}</span></button>
                 </h2>
                 <div id={id} className={`accordion-collapse collapse${id === expanded ? " show" : ""}`}
                     aria-labelledby={`h-${id}`} data-bs-parent="#bookmarks-section">
