@@ -227,7 +227,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             <BrowserCore mainCellTemplate={Template} mainCellContext={ctx} withPagination={false}
                 useCheckboxes multiSelect rowState={this.rowState} selectionChanged={this.selectionChanged}
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
-                <BrowserView.ContextMenu placement="bottom-end" render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} />
+                <BrowserView.ContextMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} />
             </BrowserCore>
             <BottomBar>
                 <TablePagination location={location} history={history}
@@ -236,7 +236,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 <button type="button" className="btn btn-round btn-plain" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
                     <svg className="icon"><use href="#ellipsis-v" /></svg>
                 </button>
-                <DropdownMenu placement="top-end" render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} />
+                <DropdownMenu render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} />
             </BottomBar>
         </div>;
     }

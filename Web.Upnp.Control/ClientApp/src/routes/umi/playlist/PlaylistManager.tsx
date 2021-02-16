@@ -22,7 +22,7 @@ import { DropTarget } from "../../../components/DropTarget";
 import { BrowserSvgSymbols, EditSvgSymbols, PlayerSvgSymbols, PlaylistSvgSymbols, PlaySvgSymbols } from "../../common/SvgSymbols";
 import { Portal } from "../../../components/Portal";
 import $s from "../../common/Settings";
-import { MenuItem } from "../../../components/DropdownMenu";
+import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
 import settings from "../../common/Settings";
 import { BottomBar } from "../../common/BottomBar";
 
@@ -304,7 +304,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const disabled = this.state.selection.length === 0;
         return this.props.id === "PL:" ?
             [
-                ["create", "Create", "plus", this.addClickHandler, undefined],
+                ["create", "Add new", "plus", this.addClickHandler, undefined],
                 ["delete", "Delete", "trash", this.removeClickHandler, disabled],
                 ["rename", "Rename", "edit", this.renameClickHandler, this.state.selection.length !== 1],
                 ["copy", "Copy", "copy", this.copyClickHandler, disabled]
@@ -339,6 +339,10 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <MenuItem action="remove" glyph="trash">Remove item</MenuItem>
                 </>}
         </>;
+    };
+
+    renderActionMenu = () => {
+        return this.getToolbarConfig().map(i => <MenuItem action={i[0]} key={i[0]} glyph={i[2]} onClick={i[3]} disabled={i[4]}>{i[1]}</MenuItem>);
     };
 
     render() {
@@ -391,16 +395,21 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
                         useCheckboxes multiSelect className="flex-fill">
-                        <Browser.ContextMenu placement="bottom-end" onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
+                        <Browser.ContextMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>
                 <div className="sticky-bottom d-flex flex-column">
                     <div className="position-relative d-flex justify-content-center justify-content-sm-end d-none-h-md">
                         <div className="float-container position-absolute bottom-0">
-                            <button type="button" className="btn btn-round btn-primary" data-bs-toggle="dropdown">
-                                <svg className="icon"><use href="#edit" /></svg>
-                            </button>
+                            {id === "PL:" && this.state.selection.length === 0
+                                ? <button type="button" className="btn btn-round btn-primary" onClick={this.addClickHandler}>
+                                    <svg className="icon"><use href="#plus" /></svg>
+                                </button>
+                                : <button type="button" className="btn btn-round btn-primary" data-bs-toggle="dropdown">
+                                    <svg className="icon"><use href="#edit" /></svg>
+                                </button>}
                         </div>
+                        <DropdownMenu render={this.renderActionMenu} />
                     </div>
                     <BottomBar className="position-static">
                         {this.selection.length > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${this.selection.length} of ${fetched} selected`}</span> : null}
