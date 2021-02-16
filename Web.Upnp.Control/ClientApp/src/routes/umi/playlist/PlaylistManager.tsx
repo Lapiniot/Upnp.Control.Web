@@ -384,7 +384,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                             {this.getToolbarConfig().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round btn-icon btn-plain" />)}
                         </Toolbar.Group>
                     </Toolbar>
-                    <Breadcrumb className="border-bottom d-none-h-before-md" items={parents} path={match.path} params={match.params} />
+                    <Breadcrumb className="border-bottom d-none-h-before-sm" items={parents} path={match.path} params={match.params} />
                 </div>
                 <SignalRListener handlers={this.handlers}>
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
