@@ -226,7 +226,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
                 <BrowserView.ContextMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} placement="bottom-end" />
             </BrowserCore>
-            <div className="float-container bottom-0 end-0" style={{ marginBlockEnd: "4rem" }}>
+            <div className="float-container position-absolute bottom-0 end-0" style={{ marginBlockEnd: "4rem" }}>
                 <button type="button" className="btn btn-lg btn-round btn-primary" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
                     <svg className="icon"><use href="#ellipsis-v" /></svg>
                 </button>
