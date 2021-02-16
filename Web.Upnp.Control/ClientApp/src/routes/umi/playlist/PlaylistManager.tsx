@@ -394,13 +394,15 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         <Browser.ContextMenu placement="bottom-end" onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>
-                <div className="sticky-bottom d-flex flex-column pe-none">
-                    <div className="float-container align-self-center align-self-md-end pe-auto">
-                        <button type="button" className="btn btn-round btn-primary" data-bs-toggle="dropdown">
-                            <svg className="icon"><use href="#edit" /></svg>
-                        </button>
+                <div className="sticky-bottom d-flex flex-column">
+                    <div className="position-relative d-flex justify-content-center justify-content-sm-end d-none-h-md">
+                        <div className="float-container position-absolute bottom-0">
+                            <button type="button" className="btn btn-round btn-primary" data-bs-toggle="dropdown">
+                                <svg className="icon"><use href="#edit" /></svg>
+                            </button>
+                        </div>
                     </div>
-                    <BottomBar className="position-static pe-auto">
+                    <BottomBar className="position-static">
                         {this.selection.length > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${this.selection.length} of ${fetched} selected`}</span> : null}
                         <TablePagination location={location} history={history} total={total} current={page} pageSize={pageSize} />
                     </BottomBar>

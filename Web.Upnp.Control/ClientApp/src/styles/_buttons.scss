@@ -88,10 +88,12 @@ nav.navbar-nav > a.nav-link,
     --float-shadow-color: #00000088;
     --float-size: 1.5rem;
     z-index: $zindex-dropdown - 5;
+    position: absolute;
+    bottom: 0;
+    margin: $spacer;
     filter: drop-shadow(
         var(--float-shadow-offset) var(--float-shadow-offset) var(--float-shadow-radius) var(--float-shadow-color)
     );
-    margin: $spacer / 2;
     & > button {
         font-size: var(--float-size);
     }
