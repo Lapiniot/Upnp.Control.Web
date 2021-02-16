@@ -95,25 +95,27 @@ export class TablePagination extends React.Component<PaginationProps & Navigatio
         const pattern = `${this.getBaseUrl(pageSize).toString()}&p=`;
         const pages = Math.ceil(total / pageSize);
 
-        return <nav aria-label="Page navigation" className={`d-flex align-items-center${className ? ` ${className}` : ""}`} {...other}>
+        return <>
             <ChevronSvgSymbols />
-            <label className="text-nowrap text-muted small me-2 d-none d-md-inline">Items per page</label>
-            <select className="form-select form-select-sm me-4 my-0 w-auto" aria-label="Items per page" value={pageSize} onChange={this.pageSizeChangedHandler} >
+            <label className="text-nowrap text-muted small pe-2 d-none d-md-inline">Items per page</label>
+            <select className="form-select form-select-sm me-2 my-0 w-auto" aria-label="Items per page" value={pageSize} onChange={this.pageSizeChangedHandler} >
                 {pageSizes.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
-            <span className="text-muted small me-4 overflow-hidden text-wrap lines-2">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
-            <RelativePageLink to={`${pattern}${1}`} label="First" disabled={current === 1}>
-                <svg><use href="#chevron-bar-left" /></svg>
-            </RelativePageLink>
-            <RelativePageLink to={`${pattern}${current - 1}`} label="Previous" disabled={current === 1}>
-                <svg><use href="#chevron-left" /></svg>
-            </RelativePageLink>
-            <RelativePageLink to={`${pattern}${current + 1}`} label="Next" disabled={current >= pages}>
-                <svg><use href="#chevron-right" /></svg>
-            </RelativePageLink>
-            <RelativePageLink to={`${pattern}${pages}`} label="Last" disabled={current >= pages}>
-                <svg><use href="#chevron-bar-right" /></svg>
-            </RelativePageLink>
-        </nav>;
+            <span className="text-muted small pe-2 overflow-hidden text-wrap lines-2">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
+            <nav aria-label="Page navigation" className={`d-flex align-items-center${className ? ` ${className}` : ""}`} {...other}>
+                <RelativePageLink to={`${pattern}${1}`} label="First" disabled={current === 1}>
+                    <svg><use href="#chevron-bar-left" /></svg>
+                </RelativePageLink>
+                <RelativePageLink to={`${pattern}${current - 1}`} label="Previous" disabled={current === 1}>
+                    <svg><use href="#chevron-left" /></svg>
+                </RelativePageLink>
+                <RelativePageLink to={`${pattern}${current + 1}`} label="Next" disabled={current >= pages}>
+                    <svg><use href="#chevron-right" /></svg>
+                </RelativePageLink>
+                <RelativePageLink to={`${pattern}${pages}`} label="Last" disabled={current >= pages}>
+                    <svg><use href="#chevron-bar-right" /></svg>
+                </RelativePageLink>
+            </nav>
+        </>;
     }
 }

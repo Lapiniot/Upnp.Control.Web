@@ -5,8 +5,10 @@ import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
 import WebApi from "../../components/WebApi";
 import { useBookmarkButton } from "./BookmarkButton";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
+import { BottomBar } from "./BottomBar";
 import { DIDLUtils } from "./BrowserUtils";
 import BrowserView, { CellTemplate, CellTemplateProps, RowState } from "./BrowserView";
+import { TablePagination } from "./Pagination";
 import settings from "./Settings";
 import { BrowserSvgSymbols } from "./SvgSymbols";
 import { BrowseFetchResult, DIDLItem, Services, UpnpDevice } from "./Types";
@@ -210,6 +212,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     }
 
     render() {
+        const { dataContext: data, location, history, p: page, s: size } = this.props;
         const { selection: { umiCompatible, rendererCompatible }, umis, renderers } = this.state;
         const isActionButtonEnabled = (umis.length && umiCompatible) || (renderers.length && rendererCompatible);
         const isItemActionMenuEnabled = umis.length || renderers.length;
@@ -221,17 +224,20 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
 
         return <div className="h-100 overflow-auto d-flex flex-column">
             <BrowserSvgSymbols />
-            <BrowserCore mainCellTemplate={Template} mainCellContext={ctx}
+            <BrowserCore mainCellTemplate={Template} mainCellContext={ctx} withPagination={false}
                 useCheckboxes multiSelect rowState={this.rowState} selectionChanged={this.selectionChanged}
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
-                <BrowserView.ContextMenu placement="bottom" render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} />
+                <BrowserView.ContextMenu placement="bottom-end" render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} />
             </BrowserCore>
-            <div className="float-container position-absolute bottom-0 align-self-center align-self-md-end" style={{ marginBlockEnd: "3.5rem" }}>
-                <button type="button" className="btn btn-round btn-primary" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
+            <BottomBar>
+                <TablePagination location={location} history={history}
+                    total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
+                    pageSize={typeof size === "string" ? parseInt(size) : settings.get("pageSize")} />
+                <button type="button" className="btn btn-round btn-plain" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
                     <svg className="icon"><use href="#ellipsis-v" /></svg>
                 </button>
-            </div>
-            <DropdownMenu render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} />
+                <DropdownMenu placement="top-end" render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} />
+            </BottomBar>
         </div>;
     }
 }

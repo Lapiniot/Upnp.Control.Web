@@ -303,7 +303,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                                 <input type="checkbox" id="select_all" onChange={this.onCheckboxAllChanged}
                                     checked={this.tracker.allSelected()} disabled={!this.tracker.enabled()} />
                             </div>}
-                        <div>Name</div>
+                        <div className="w-100">Name</div>
                         <div>Size</div>
                         <div>Time</div>
                         <div>Kind</div>

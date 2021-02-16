@@ -4,26 +4,35 @@ import BrowserView, { BrowserViewProps } from "./BrowserView";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { RouteComponentProps } from "react-router";
 import $s from "./Settings";
+import React from "react";
+import { BottomBar } from "./BottomBar";
 
 type FetchProps = {
     s?: string;
     p?: string;
 };
 
-export type BrowserCoreProps<TContext> = BrowserViewProps<TContext> & RouteComponentProps<FetchProps> & FetchProps
+type RenderFlags = "withBreadcrumb" | "withPagination";
+
+export type BrowserCoreProps<TContext> =
+    BrowserViewProps<TContext> &
+    RouteComponentProps<FetchProps> &
+    FetchProps & { [K in RenderFlags]?: boolean };
 
 export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>) {
     const { dataContext: data, match, s: size, p: page, fetching } = props;
+    const { withBreadcrumb = true, withPagination = true, ...forwardProps } = props;
     const { source: { total = 0, parents = undefined } = {} } = data || {};
     return <>
         {fetching && <LoadIndicatorOverlay />}
         <div className="flex-fill d-flex flex-column">
-            <Breadcrumb items={parents} path={match.path} params={match.params} className="sticky-top border-bottom d-none-h-before-sm" />
-            <BrowserView className="flex-fill" {...props} />
-            <TablePagination location={props.location} history={props.history} style={{ bottom: "-1px" }}
-                className="bg-light border-top sticky-bottom py-1 px-3 justify-content-end"
-                total={total} current={typeof page === "string" ? parseInt(page) : 1}
-                pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
+            {withBreadcrumb && <Breadcrumb items={parents} path={match.path} params={match.params} className="sticky-top border-bottom d-none-h-before-sm" />}
+            <BrowserView className="flex-fill" {...forwardProps} />
+            {withPagination && <BottomBar>
+                <TablePagination location={props.location} history={props.history}
+                    total={total} current={typeof page === "string" ? parseInt(page) : 1}
+                    pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
+            </BottomBar>}
         </div>
     </>
 }

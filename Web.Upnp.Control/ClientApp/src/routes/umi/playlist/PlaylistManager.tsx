@@ -24,6 +24,7 @@ import { Portal } from "../../../components/Portal";
 import $s from "../../common/Settings";
 import { MenuItem } from "../../../components/DropdownMenu";
 import settings from "../../common/Settings";
+import { BottomBar } from "../../common/BottomBar";
 
 type RouteParams = {
     device: string;
@@ -342,7 +343,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     render() {
 
-        const { dataContext: data, match, navigate, fetching, error, id, s, p, device } = this.props;
+        const { dataContext: data, match, navigate, fetching, error, id, s, p, device, location, history } = this.props;
         const { playlist, currentTrack } = this.state;
         const { source: { total = 0, items = [], parents = [] } = {} } = data || {};
         const pageSize = s ? parseInt(s) : $s.get("pageSize");
@@ -390,12 +391,19 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
                         useCheckboxes multiSelect className="flex-fill">
-                        <Browser.ContextMenu placement="bottom" onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
+                        <Browser.ContextMenu placement="bottom-end" onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>
-                <div className="sticky-bottom bg-light py-1 px-3 d-flex align-items-center border-top">
-                    {this.selection.length > 0 ? <span className="text-muted me-3 small d-none d-sm-inline text-truncate">{`${this.selection.length} of ${fetched} selected`}</span> : null}
-                    <TablePagination className="ms-auto flex-shrink-1 flex-sm-shrink-0" location={this.props.location} history={this.props.history} total={total} current={page} pageSize={pageSize} />
+                <div className="sticky-bottom d-flex flex-column pe-none">
+                    <div className="float-container align-self-center align-self-md-end pe-auto">
+                        <button type="button" className="btn btn-round btn-primary" data-bs-toggle="dropdown">
+                            <svg className="icon"><use href="#edit" /></svg>
+                        </button>
+                    </div>
+                    <BottomBar className="position-static pe-auto">
+                        {this.selection.length > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${this.selection.length} of ${fetched} selected`}</span> : null}
+                        <TablePagination location={location} history={history} total={total} current={page} pageSize={pageSize} />
+                    </BottomBar>
                 </div>
                 <Portal selector="#modal-root">{this.state.modal}</Portal>
             </DropTarget >
