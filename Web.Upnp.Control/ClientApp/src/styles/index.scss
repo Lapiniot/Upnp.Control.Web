@@ -22,6 +22,7 @@ $backdrop-opacity: 0.6;
 
 $display-none-before-width-breakpoints: ();
 $display-none-before-height-breakpoints: (sm, md);
+$display-none-after-height-breakpoints: (md, lg);
 
 // Configuration
 @import "../../node_modules/bootstrap/scss/functions";
@@ -88,6 +89,14 @@ $zindex-dropdown: $zindex-sticky + 5;
 @each $breakpoint in $display-none-before-height-breakpoints {
     @include media-breakpoint-height-down($breakpoint) {
         &.d-none-h-before#{breakpoint-infix($breakpoint)} {
+            display: none !important;
+        }
+    }
+}
+
+@each $breakpoint in $display-none-after-height-breakpoints {
+    @include media-breakpoint-height-up($breakpoint) {
+        &.d-none-h#{breakpoint-infix($breakpoint)} {
             display: none !important;
         }
     }
