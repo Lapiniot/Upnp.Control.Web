@@ -296,7 +296,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             <div className="auto-table table-compact trim-sm-3 hide-md-3 hide-md-5 hide-lg-5 table-hover-link table-striped table-focus-marker"
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {caption}
-                <div className="sticky-header d-none-h-before-md">
+                <div className="sticky-header d-none-h-before-sm">
                     <div>
                         {useCheckboxes &&
                             <div>

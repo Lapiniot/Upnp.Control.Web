@@ -224,14 +224,14 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             <BrowserCore mainCellTemplate={Template} mainCellContext={ctx}
                 useCheckboxes multiSelect rowState={this.rowState} selectionChanged={this.selectionChanged}
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
-                <BrowserView.ContextMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} placement="bottom-end" />
+                <BrowserView.ContextMenu placement="bottom" render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} />
             </BrowserCore>
-            <div className="float-container position-absolute bottom-0 end-0" style={{ marginBlockEnd: "4rem" }}>
-                <button type="button" className="btn btn-lg btn-round btn-primary" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
+            <div className="float-container position-absolute bottom-0 align-self-center align-self-md-end" style={{ marginBlockEnd: "3.5rem" }}>
+                <button type="button" className="btn btn-round btn-primary" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
                     <svg className="icon"><use href="#ellipsis-v" /></svg>
                 </button>
             </div>
-            <DropdownMenu render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} placement="top-end" />
+            <DropdownMenu render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} />
         </div>;
     }
 }

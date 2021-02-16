@@ -208,7 +208,7 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
     }
 
     render() {
-        const { className, children, placement, render, onSelected, ...other } = this.props;
+        const { className, children, placement = "auto", render, onSelected, ...other } = this.props;
         return <ul ref={this.menuRef} className={`dropdown-menu${className ? ` ${className}` : ""}`} style={{ margin: 0 }} {...other}>
             {this.state.children ?? children}
         </ul>;

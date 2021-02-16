@@ -390,7 +390,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
                         useCheckboxes multiSelect className="flex-fill">
-                        <Browser.ContextMenu placement="bottom-end" onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
+                        <Browser.ContextMenu placement="bottom" onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>
                 <div className="sticky-bottom bg-light py-1 px-3 d-flex align-items-center border-top">

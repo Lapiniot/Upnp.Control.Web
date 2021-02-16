@@ -52,6 +52,7 @@ $accordion-button-active-bg: $light;
 @import "../../node_modules/bootstrap/scss/close";
 @import "../../node_modules/bootstrap/scss/modal";
 @import "../../node_modules/bootstrap/scss/spinners";
+$zindex-dropdown: $zindex-sticky + 5;
 @import "../../node_modules/bootstrap/scss/dropdown";
 
 // Helpers
