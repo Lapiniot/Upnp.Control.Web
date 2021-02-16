@@ -65,7 +65,7 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
     private update = (reference: HTMLElement | null, popper: HTMLElement, visibility?: boolean) => {
         if (reference && reference !== this.instance?.state?.elements?.reference) {
             this.instance?.destroy();
-            this.instance = createPopper(reference, popper, { placement: this.props.placement ?? "bottom-start" });
+            this.instance = createPopper(reference, popper, { placement: this.props.placement ?? "auto" });
         }
 
         if (popper.classList.toggle("show", visibility)) {
@@ -208,7 +208,7 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
     }
 
     render() {
-        const { className, children, placement = "auto", render, onSelected, ...other } = this.props;
+        const { className, children, placement, render, onSelected, ...other } = this.props;
         return <ul ref={this.menuRef} className={`dropdown-menu${className ? ` ${className}` : ""}`} style={{ margin: 0 }} {...other}>
             {this.state.children ?? children}
         </ul>;
