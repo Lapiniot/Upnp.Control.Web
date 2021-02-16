@@ -24,3 +24,9 @@ export function formatTime(seconds: number): string {
         ? `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
         : `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
+
+const getSafeContentUrl = window.location.protocol === "https:"
+    ? function (originalUrl: string) { return `/proxy/${originalUrl}`; }
+    : function (originalUrl: string) { return originalUrl; }
+
+export { getSafeContentUrl };
