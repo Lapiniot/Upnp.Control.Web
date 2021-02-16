@@ -2,7 +2,10 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Logging;
+using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services
@@ -11,15 +14,23 @@ namespace Web.Upnp.Control.Services
     {
         private readonly ILogger logger;
         private readonly IEventSubscribeClient subscribeClient;
+        private readonly IServerAddressesFeature serverAddresses;
+        private Uri bindingAddress;
 
-        public UpnpEventSubscriptionFactory(IEventSubscribeClient subscribeClient, ILogger<UpnpEventSubscriptionFactory> logger)
+        public UpnpEventSubscriptionFactory(IEventSubscribeClient subscribeClient, IServer server, ILogger<UpnpEventSubscriptionFactory> logger)
         {
-            this.subscribeClient = subscribeClient;
-            this.logger = logger;
+            this.subscribeClient = subscribeClient ?? throw new ArgumentNullException(nameof(subscribeClient));
+            this.serverAddresses = (server ?? throw new ArgumentNullException(nameof(server))).Features.Get<IServerAddressesFeature>();
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public IAsyncCancelable Subscribe(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken stoppingToken)
         {
+            if(!callbackUri.IsAbsoluteUri)
+            {
+                callbackUri = new Uri(bindingAddress ??= HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses, "http"), callbackUri);
+            }
+
             return CancelableOperationScope.StartInScope(token => StartSubscriptionLoopAsync(subscribeUri, callbackUri, timeout, token), stoppingToken);
         }
 
@@ -28,7 +39,7 @@ namespace Web.Upnp.Control.Services
             try
             {
                 var (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
-                logger.LogInformation($"Successfully subscribed to events from {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
+                logger.LogInformation($"Successfully subscribed to events from {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds, Callback: {callbackUri}.");
                 logger.LogInformation($"Starting refresh loop for session: {sid}.");
                 try
                 {

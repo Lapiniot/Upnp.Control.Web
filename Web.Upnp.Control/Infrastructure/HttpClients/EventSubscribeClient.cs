@@ -3,8 +3,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Infrastructure.HttpClients
@@ -12,12 +10,9 @@ namespace Web.Upnp.Control.Infrastructure.HttpClients
     public class EventSubscribeClient : IEventSubscribeClient
     {
         private readonly HttpClient client;
-        private readonly IServerAddressesFeature serverAddresses;
-        private Uri bindingAddress;
 
-        public EventSubscribeClient(HttpClient client, IServer server)
+        public EventSubscribeClient(HttpClient client)
         {
-            serverAddresses = (server ?? throw new ArgumentNullException(nameof(server))).Features.Get<IServerAddressesFeature>();
             this.client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
@@ -25,7 +20,7 @@ namespace Web.Upnp.Control.Infrastructure.HttpClients
         {
             if(!deliveryUri.IsAbsoluteUri)
             {
-                deliveryUri = new Uri(bindingAddress ??= HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses), deliveryUri);
+                throw new ArgumentException("Only absolute uri is acceptable");
             }
 
             using var request = new HttpRequestMessage(new HttpMethod("SUBSCRIBE"), subscribeUri)

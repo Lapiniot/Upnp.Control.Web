@@ -9,7 +9,7 @@ namespace Web.Upnp.Control.Infrastructure
 {
     public static class HostingExtensions
     {
-        public static Uri ResolveExternalBindingAddress(IEnumerable<string> serverAddresses)
+        public static Uri ResolveExternalBindingAddress(IEnumerable<string> serverAddresses, string protocol)
         {
             var addresses = serverAddresses.Select(a =>
                     Uri.TryCreate(a, UriKind.Absolute, out var uri) && IPEndPoint.TryParse(uri.Authority, out var ep) && !IPAddress.IsLoopback(ep.Address)
@@ -24,14 +24,15 @@ namespace Web.Upnp.Control.Infrastructure
 
             if(ipv4.Length <= 0) throw new InvalidOperationException("Cannot find suitable IP address for callback URI");
 
-            if(ipv4.FirstOrDefault(a => !a.Endpoint.Address.Equals(IPAddress.Any)) is { Address: { } address })
+            if(ipv4.FirstOrDefault(a => !a.Endpoint.Address.Equals(IPAddress.Any) && a.Address.Scheme == protocol) is { Address: { } address })
             {
                 return address;
             }
 
-            if(!(ipv4.FirstOrDefault(a => a.Endpoint.Address.Equals(IPAddress.Any)) is { Endpoint: { Port: var port }, Address: { Scheme: var scheme } }))
+            if(!(ipv4.FirstOrDefault(a => a.Endpoint.Address.Equals(IPAddress.Any) && a.Address.Scheme == protocol) is
+                { Endpoint: { Port: var port }, Address: { Scheme: var scheme } }))
             {
-                throw new InvalidOperationException("Cannot find suitable IP address for callback URI");
+                throw new InvalidOperationException("Cannot find suitable listening address for callback URI");
             }
 
             var ipv4Address = NetworkInterface.GetAllNetworkInterfaces().GetActiveExternalInterfaces().FindExternalIPv4Address();

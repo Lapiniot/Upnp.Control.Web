@@ -32,7 +32,7 @@ namespace Web.Upnp.Control.Services.Commands
             IServer server, IOptionsSnapshot<PlaylistOptions> options, ILogger<PLFeedsCommandBase> logger) : base(serviceFactory)
         {
             var serverAddresses = server.Features.Get<IServerAddressesFeature>() ?? throw new InvalidOperationException("Get server addresses feature is not available");
-            BindingUri = ResolveExternalBindingAddress(serverAddresses.Addresses);
+            BindingUri = ResolveExternalBindingAddress(serverAddresses.Addresses, "http");
             this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -69,16 +69,16 @@ namespace Web.Upnp.Control.Services.Commands
                 var genre = response.Headers.TryGetValues("icy-genre", out values) ? values.First() : null;
                 useProxy ??= response.Headers.TryGetValues("icy-metaint", out _);
                 var url = useProxy != true ? mediaUrl : GetProxyUri(mediaUrl);
-                
+
                 DIDLUtils.WriteItem(writer, title, description, genre, url, length, contentType?.MediaType, br);
             }
             catch(HttpRequestException exception)
             {
                 logger.LogWarning(exception, "Media feed test request failed");
-                
+
                 title = !string.IsNullOrWhiteSpace(title) ? title : mediaUrl.ToString();
                 var url = useProxy == false ? mediaUrl : GetProxyUri(mediaUrl);
-                
+
                 DIDLUtils.WriteItem(writer, title, null, null, url, null, null, null);
             }
         }
