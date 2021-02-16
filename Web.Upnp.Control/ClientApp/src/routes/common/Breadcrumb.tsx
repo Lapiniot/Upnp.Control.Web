@@ -21,8 +21,8 @@ const ItemTemplate = ({ disabled, title, url }: BreadcrumbItemProps) => disabled
         <NavLink className="text-decoration-none" to={url}>{title}</NavLink>
     </li>;
 
-export default ({ items = [], path, params, className, disabled }: BreadcrumbParams & HTMLAttributes<HTMLDivElement>) =>
-    <nav aria-label="breadcrumb" className={className}>
+export default ({ items = [], path, params, disabled, ...other }: BreadcrumbParams & HTMLAttributes<HTMLDivElement>) =>
+    <nav aria-label="breadcrumb" {...other}>
         <ol className="breadcrumb my-0 p-1 px-2 bg-light bg-gradient">
             {reversemap(items, ({ title, id }, i) => <ItemTemplate key={i} title={title !== "" ? title : "..."} url={generatePath(path, { ...params, id })} disabled={disabled || i === 0} />)}
             &nbsp;
