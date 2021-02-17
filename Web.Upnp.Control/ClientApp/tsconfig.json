@@ -1,33 +1,29 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "allowJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "skipLibCheck": false,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
+    "compilerOptions": {
+        "target": "ES2020",
+        "allowJs": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "skipLibCheck": true,
+        "noFallthroughCasesInSwitch": true,
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ESNext"
+        ]
+    },
+    "include": [
+        "src"
     ],
-    "typeRoots": [
-      "Node",
-      "src/@types"
-    ],
-    "noFallthroughCasesInSwitch": true
-  },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules/**/*.*"
-  ]
+    "exclude": [
+        "node_modules/**/*.*"
+    ]
 }
