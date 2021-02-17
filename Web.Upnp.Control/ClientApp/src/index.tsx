@@ -11,6 +11,7 @@ import UmiPage from "./routes/umi/Router";
 import RenderersPage from "./routes/renderers/Router";
 import SettingsPage from "./routes/settings/Settings";
 import { NavBarSvgSymbols } from "./routes/common/SvgSymbols";
+import * as SWRegistration from "./serviceWorkerRegistration";
 
 const baseUrl: string = document.getElementsByTagName("base")[0].getAttribute("href") as string;
 const container: HTMLElement = document.getElementById("main-root") as HTMLElement;
@@ -46,3 +47,5 @@ ReactDOM.render(
             </main>
         </div>
     </BrowserRouter>, container);
+
+SWRegistration.register();
