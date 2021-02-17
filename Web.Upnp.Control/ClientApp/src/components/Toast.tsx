@@ -26,7 +26,7 @@ export class Toast extends React.Component<ToastProps> {
         }
     }
 
-    private onDismiss: EventListener = (e) => this.props.onDismissed?.(e.target as HTMLDivElement);
+    private onDismiss: EventListener = (e: Event) => this.props.onDismissed?.(e.target as HTMLDivElement);
 
     render() {
         const { header, hint, color, children, autohide, animation, delay, className, onDismissed, ...other } = this.props;

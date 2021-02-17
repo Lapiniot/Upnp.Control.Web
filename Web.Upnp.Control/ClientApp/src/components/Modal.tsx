@@ -43,11 +43,11 @@ export default class Modal extends React.Component<ModalProps> {
             (this.activeElement as HTMLElement).focus();
     }
 
-    onHidden: EventListener = (event) => {
+    onHidden: EventListener = (event: Event) => {
         return this.props.onDismissed?.(event);
     }
 
-    onShown: EventListener = (event) => {
+    onShown: EventListener = (event: Event) => {
         return this.props.onShown?.(event);
     }
 
