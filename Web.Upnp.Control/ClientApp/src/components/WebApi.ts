@@ -54,7 +54,7 @@ export default class {
             new JsonPostFetch(`${baseUri}/${deviceId}/playlists/items`, null,
                 { body: JSON.stringify({ title, source: { deviceId: sourceDevice, items: sourceIds }, maxDepth }) }),
         createFromFiles: (data: Iterable<File> | FormData, title?: string | null, merge?: boolean, useProxy?: boolean) => {
-            const url = `${baseUri}/${deviceId}/playlists`;
+            const url = `${baseUri}/${deviceId}/playlists/files`;
 
             if (data instanceof FormData) {
                 return new HttpPost(url, null, { body: data });
@@ -76,7 +76,7 @@ export default class {
             new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null,
                 { body: JSON.stringify({ url, title, useProxy }) }),
         addFromFiles: (id: string, data: Iterable<File> | FormData, useProxy?: boolean) => {
-            return new HttpPost(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null,
+            return new HttpPost(`${baseUri}/${deviceId}/playlists/${id}/files`, null,
                 { body: data instanceof FormData ? data : createFormData(data, useProxy) });
         },
         removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null, { body: JSON.stringify(ids) })

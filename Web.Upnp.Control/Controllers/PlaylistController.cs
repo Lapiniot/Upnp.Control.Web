@@ -41,7 +41,7 @@ namespace Web.Upnp.Control.Controllers
             return handler.ExecuteAsync(new PLCreateFromItemsCommand(deviceId, @params), cancellationToken);
         }
 
-        [HttpPost]
+        [HttpPost("files")]
         [Consumes("multipart/form-data")]
         public Task CreateAsync([FromServices] IAsyncCommandHandler<PLCreateFromFilesCommand> handler,
             string deviceId, [FromForm] PlaylistFilesSource source, [FromForm] string title, [FromForm] bool? merge,
@@ -74,15 +74,15 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpPost("{playlistId}/feeds")]
         [Consumes("application/json")]
-        public Task AddFeedsAsync([FromServices] IAsyncCommandHandler<PLAddFeedUrlCommand> handler,
+        public Task AddFromFeedsAsync([FromServices] IAsyncCommandHandler<PLAddFeedUrlCommand> handler,
             string deviceId, string playlistId, [FromBody] FeedUrlSource source, CancellationToken cancellationToken)
         {
             return handler.ExecuteAsync(new PLAddFeedUrlCommand(deviceId, playlistId, source), cancellationToken);
         }
 
-        [HttpPost("{playlistId}/feeds")]
+        [HttpPost("{playlistId}/files")]
         [Consumes("multipart/form-data")]
-        public Task AddFeedsAsync([FromServices] IAsyncCommandHandler<PLAddPlaylistFilesCommand> handler,
+        public Task AddFromFilesAsync([FromServices] IAsyncCommandHandler<PLAddPlaylistFilesCommand> handler,
             string deviceId, string playlistId, [FromForm] PlaylistFilesSource source, CancellationToken cancellationToken = default)
         {
             return handler.ExecuteAsync(new PLAddPlaylistFilesCommand(deviceId, playlistId, source), cancellationToken);
