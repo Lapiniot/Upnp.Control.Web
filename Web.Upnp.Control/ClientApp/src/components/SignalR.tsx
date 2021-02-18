@@ -16,7 +16,7 @@ export class SignalRConnection extends React.Component<SignalRConnectionProps, {
         super(props);
         this.hub = new signalR.HubConnectionBuilder()
             .withUrl(props.hubUrl)
-            .withAutomaticReconnect([2, 4, 8, 16, 32, 64])
+            .withAutomaticReconnect([2, 4, 8, 15, 30, 60])
             .build();
     }
 
@@ -26,9 +26,8 @@ export class SignalRConnection extends React.Component<SignalRConnectionProps, {
             console.info(`Established SignalR connection to the hub at '${this.hub.baseUrl}'`);
             this.setState({ error: null, connected: true });
         } catch (error) {
-            const message = `Error connecting to a SignalR hub at '${this.hub.baseUrl}': ${error.message}`;
-            console.error(message);
-            this.setState({ error: `Cannot establish connection to events hub. Some features may not work.`, connected: false });
+            console.error(`Error connecting to a SignalR hub at '${this.hub.baseUrl}': ${error.message}`);
+            this.setState({ error: `Cannot establish connection to the server. Some features may not work as expected.`, connected: false });
         }
     }
 
@@ -43,9 +42,8 @@ export class SignalRConnection extends React.Component<SignalRConnectionProps, {
 
     render() {
         return <React.Fragment>
-            {this.state.error && <div className="alert bg-danger text-white text-center m-3" role="alert">
-                {this.state.error}
-                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" />
+            {this.state.error && <div className="alert alert-warning rounded-0 py-1 py-md-2 mb-0 mx-md-3 mt-md-3" role="alert">
+                <strong>Connection problems!</strong> {this.state.error}
             </div>}
             <SignalRContext.Provider value={this.hub}>{this.props.children}</SignalRContext.Provider>
         </React.Fragment>
@@ -71,7 +69,6 @@ export class SignalRListener extends React.Component<SignalRListenerProps> {
     }
 
     foreach(func: (key: string, handler: SignalRMessageHandler) => void) {
-
         for (let [key, handler] of this.props.handlers)
             func(key, handler);
     }

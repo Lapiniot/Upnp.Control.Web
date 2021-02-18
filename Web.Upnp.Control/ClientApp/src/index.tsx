@@ -30,7 +30,7 @@ ReactDOM.render(
                 </nav>
                 <NavBarSvgSymbols />
             </div>
-            <main className="h-100 overflow-hidden position-relative order-0 order-sm-1 flex-grow-1">
+            <main className="h-100 overflow-hidden position-relative order-0 order-sm-1 flex-grow-1 d-flex flex-column">
                 <SignalRConnection hubUrl="/upnpevents">
                     <Switch>
                         <Route exact path="/" component={HomePage} />
