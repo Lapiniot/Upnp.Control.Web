@@ -16,18 +16,19 @@ declare global {
 declare const self: ServiceWorkerGlobalScope;
 
 const CACHE_STORE_NAME = "upnp-dashboard-store";
+const CACHE_STORE_ITEMS = self.__WB_MANIFEST
+    .map(e => typeof e === "string" ? e : e.url)
+    .concat(["icons.svg", "icon.svg", "favicon.ico", "manifest.webmanifest",
+        "192.png", "512.png", "apple-touch-icon.png"]);
 
 async function precache() {
     try {
-        const entries = self.__WB_MANIFEST;
-        console.log(entries);
+        console.info("precaching static content:");
+        console.debug(CACHE_STORE_ITEMS);
         const cache = await caches.open(CACHE_STORE_NAME);
-        entries.forEach(e => {
-            cache.add(new Request(typeof e === "string" ? e : e.url, { cache: "reload" }));
-        });
-        console.info("succesfully installed service worker");
+        await cache.addAll(CACHE_STORE_ITEMS);
     } catch (error) {
-        console.error(`error installing service worker: ${error}`);
+        console.error(`error precaching static content: ${error}`);
         throw error;
     }
 }
@@ -37,23 +38,18 @@ async function enablePreload() {
     // See https://developers.google.com/web/updates/2017/02/navigation-preload
     if ('navigationPreload' in self.registration) {
         await self.registration.navigationPreload.enable();
+        console.info("navigation preload has beeen enabled");
     }
-}
-
-function normalizeUrl(originalUrl: string): string {
-    const url = new URL(originalUrl);
-    url.search = "";
-    return url.toString();
 }
 
 async function fetchWithPreload(event: FetchEvent) {
     const response = await Promise.resolve(event.preloadResponse);
     if (response) {
-        console.info(`received preload response for ${event.request.url}`);
+        console.debug(`received preload response for ${event.request.url}`);
         return response;
     }
     else {
-        console.info(`no preload response for ${event.request.url}, using regular fetch`);
+        console.debug(`no preload response for ${event.request.url}, using regular fetch`);
         return await fetch(event.request);
     }
 }
@@ -65,32 +61,49 @@ self.addEventListener("install", event => {
 })
 
 self.addEventListener("activate", event => {
-    console.info("activating service worker");
+    console.info("activating service worker...");
     event.waitUntil(enablePreload());
     self.clients.claim();
 })
 
 self.addEventListener("fetch", event => {
-    if (event.request.mode === "navigate") {
+    console.debug(event.request);
+    const r = event.request;
+    if (r.mode === "navigate" || r.destination !== "") {
         event.respondWith((async () => {
-            try {
-                const preloadResponse = await event.preloadResponse;
-                if (preloadResponse) {
-                    return preloadResponse;
-                }
-            } catch (error) { }
+            const url = new URL(r.url);
+            url.search = "";
 
-            const url = normalizeUrl(event.request.url);
+            if (r.mode === "navigate") {
+                url.pathname = "index.html";
+            }
+
+            const key = url.toString();
+
             const networkResponse = fetchWithPreload(event);
             const cacheResponse = networkResponse.then(r => r.clone());
 
             event.waitUntil((async () => {
                 const cache = await caches.open(CACHE_STORE_NAME);
-                console.info(`updating cache for ${url}`);
-                await cache.put(url, await cacheResponse);
+                try {
+                    const response = await cacheResponse;
+                    console.debug(`updating cache content for ${key}`);
+                    await cache.put(key, response);
+                }
+                catch (error) {
+                    console.debug(`network request failed for ${key}, cached content will stay intact`);
+                }
             })());
 
-            return await caches.match(url) ?? networkResponse;
+            const cached = await caches.match(key);
+            if (cached) {
+                console.debug(`serving content from the cache for ${key}`);
+                return cached;
+            }
+            else {
+                console.debug(`cache miss for ${key}, waiting for network response is ready`);
+                return networkResponse;
+            }
         })());
     }
 })

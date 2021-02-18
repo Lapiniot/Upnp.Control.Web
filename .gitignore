@@ -17,3 +17,5 @@ Web.Upnp.Control/ClientApp/.eslintcache
 Web.Upnp.Control/upnp.db3-shm
 .gitignore
 Web.Upnp.Control/upnp.db3-wal
+Web.Upnp.Control/ClientApp/public/service-worker.js
+Web.Upnp.Control/ClientApp/public/service-worker.js.map
