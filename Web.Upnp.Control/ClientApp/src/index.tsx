@@ -1,7 +1,7 @@
 ﻿import "./css/index.css";
 import React from "react";
 import ReactDOM from "react-dom";
-import { Route, Switch } from "react-router";
+import { Redirect, Route, Switch } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalR";
@@ -38,6 +38,7 @@ ReactDOM.render(
                         <Route path="/:category(umi)" component={UmiPage} />
                         <Route path="/:category(renderers)" component={RenderersPage} />
                         <Route path="/settings" component={SettingsPage} />
+                        <Route path="/index.html" render={() => <Redirect to="/" />} />
                         <Route path="*" render={() => <div className="m-2 text-danger">
                             <h3>404 - Not Found</h3>
                             <h5>Page you are looking for is not found</h5>
