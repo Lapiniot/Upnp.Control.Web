@@ -75,6 +75,8 @@
                 "--verbose",
                 "--progress",
                 "--delete",
+                "--filter=\"protect *.crt\"",
+                "--filter=\"protect *.key\"",
                 "--rsh=ssh",
                 "./Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/$RUNTIMEID/publish/",
                 "${input:remote-url}"
