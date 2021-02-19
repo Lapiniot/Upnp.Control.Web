@@ -4,42 +4,55 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using static System.Net.Sockets.AddressFamily;
+using static System.Net.IPAddress;
 
 namespace Web.Upnp.Control.Infrastructure
 {
     public static class HostingExtensions
     {
-        public static Uri ResolveExternalBindingAddress(IEnumerable<string> serverAddresses, string protocol)
+        private const string NoProtocolExternalEndpoint = "Server is not listening for specified protocol on external addresses";
+        private const string NoActiveExternalAddress = "Cannot find external address on active interface for requested address family";
+
+        public static Uri ResolveExternalBindingAddress(IEnumerable<string> serverAddresses, string protocol, AddressFamily family = InterNetwork)
         {
             var addresses = serverAddresses.Select(a =>
-                    Uri.TryCreate(a, UriKind.Absolute, out var uri) && IPEndPoint.TryParse(uri.Authority, out var ep) && !IPAddress.IsLoopback(ep.Address)
+                    Uri.TryCreate(a, UriKind.Absolute, out var uri) && IPEndPoint.TryParse(uri.Authority, out var ep) && !IsLoopback(ep.Address)
                         ? (Address: uri, Endpoint: ep)
                         : (uri, null))
-                .Where(a => a.Endpoint != null)
+                .Where(a => a.Endpoint != null && a.Address.Scheme == protocol)
                 .ToArray();
 
-            if(addresses.Length == 0) throw new InvalidOperationException("Server is not listening on any of external interface addresses");
+            if(addresses.Length == 0) throw new InvalidOperationException(NoProtocolExternalEndpoint);
 
-            var ipv4 = addresses.Where(a => a.Endpoint.AddressFamily == AddressFamily.InterNetwork).ToArray();
+            var any = family == InterNetworkV6 ? IPv6Any : Any;
 
-            if(ipv4.Length <= 0) throw new InvalidOperationException("Cannot find suitable IP address for callback URI");
-
-            if(ipv4.FirstOrDefault(a => !a.Endpoint.Address.Equals(IPAddress.Any) && a.Address.Scheme == protocol) is { Address: { } address })
+            // Check whether we have explicitely configured address (not IPAddress.Any) which matches protocol scheme and family
+            if(addresses.FirstOrDefault(a => a.Endpoint.AddressFamily == family && !a.Endpoint.Address.Equals(any)) is { Address: { } match })
             {
-                return address;
+                return match;
             }
 
-            if(!(ipv4.FirstOrDefault(a => a.Endpoint.Address.Equals(IPAddress.Any) && a.Address.Scheme == protocol) is
-                { Endpoint: { Port: var port }, Address: { Scheme: var scheme } }))
+            Func<(Uri Address, IPEndPoint Endpoint), bool> condition = family == InterNetworkV6 ?
+                p => p.Address.Equals(IPv6Any) :
+                p => true;
+
+            // Or there should be at least IPAddress.IPv6Any specified if we want external endpoint for IPv6,
+            // and IPv6Any|IPv4Any if we need IPv4 binding
+            if(!(addresses.FirstOrDefault(condition) is { Endpoint: { Port: var port }, Address: { Scheme: var scheme } }))
             {
                 throw new InvalidOperationException("Cannot find suitable listening address for callback URI");
             }
 
-            var ipv4Address = NetworkInterface.GetAllNetworkInterfaces().GetActiveExternalInterfaces().FindExternalIPv4Address();
+            var address = GetExternalIPAddress(family) ?? throw new InvalidOperationException(NoActiveExternalAddress);
 
-            if(ipv4Address == null) throw new InvalidOperationException("Cannot find suitable IP address for callback URI");
+            return new Uri($"{scheme}://{address}:{port}");
+        }
 
-            return new Uri($"{scheme}://{ipv4Address}:{port}");
+        public static IPAddress GetExternalIPAddress(AddressFamily family)
+        {
+            var interfaces = NetworkInterface.GetAllNetworkInterfaces().GetActiveExternalInterfaces();
+            return family == InterNetworkV6 ? interfaces.FindExternalIPv6Address() : interfaces.FindExternalIPv4Address();
         }
     }
 }
