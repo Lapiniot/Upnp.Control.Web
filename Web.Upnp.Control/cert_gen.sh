@@ -41,11 +41,11 @@ openssl req \
   echo 'extendedKeyUsage = serverAuth, clientAuth')
 
 openssl x509 -noout -text -in $FILE_NAME.crt
+openssl pkcs12 -export -out $FILE_NAME.pfx -inkey $FILE_NAME.key -in $FILE_NAME.crt
 
-cp --force --verbose ./$FILE_NAME.crt /usr/local/share/ca-certificates/
+#cp --force --verbose ./$FILE_NAME.crt /usr/local/share/ca-certificates/
 
-update-ca-certificates --verbose
+#update-ca-certificates --verbose
 
-chown $USER:$GROUP $FILE_NAME.crt $FILE_NAME.key
-chmod 0444 $FILE_NAME.crt $FILE_NAME.key
-#openssl pkcs12 -export -out $PARENT.pfx -inkey $PARENT.key -in $PARENT.crt
+#chown $USER:$GROUP $FILE_NAME.crt $FILE_NAME.key
+#chmod 0444 $FILE_NAME.crt $FILE_NAME.key
