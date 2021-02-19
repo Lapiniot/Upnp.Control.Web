@@ -33,6 +33,8 @@ openssl req \
   echo '[ alt_names ]'; \
   echo "DNS.1 = www.${PARENT}"; \
   echo "DNS.2 = ${PARENT}"; \
+  echo "DNS.3 = localhost"; \
+  echo "DNS.4 = 127.0.0.1"; \
   echo '[ v3_ca ]'; \
   echo 'subjectKeyIdentifier=hash'; \
   echo 'authorityKeyIdentifier=keyid:always,issuer'; \
