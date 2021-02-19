@@ -19,3 +19,6 @@ Web.Upnp.Control/upnp.db3-shm
 Web.Upnp.Control/upnp.db3-wal
 Web.Upnp.Control/ClientApp/public/service-worker.js
 Web.Upnp.Control/ClientApp/public/service-worker.js.map
+*.crt
+*.key
+*.pfx

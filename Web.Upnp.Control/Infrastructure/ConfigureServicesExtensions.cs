@@ -65,6 +65,11 @@ namespace Web.Upnp.Control.Infrastructure
             return services.AddTransient<ContentProxyMiddleware>();
         }
 
+        public static IServiceCollection AddCertificateDownloadMiddleware(this IServiceCollection services)
+        {
+            return services.AddTransient<CertificateDownloadMiddleware>();
+        }
+
         public static IEndpointConventionBuilder MapImageLoaderProxy(this IEndpointRouteBuilder routeBuilder, string route)
         {
             return routeBuilder.Map(route, routeBuilder
@@ -81,6 +86,15 @@ namespace Web.Upnp.Control.Infrastructure
                     .UseMiddleware<ContentProxyMiddleware>()
                     .Build())
                 .WithDisplayName("Content Proxy Middleware");
+        }
+
+        public static IEndpointConventionBuilder MapCertificateDownloadMiddleware(this IEndpointRouteBuilder routeBuilder, string pattern)
+        {
+            return routeBuilder.Map(pattern, routeBuilder
+                    .CreateApplicationBuilder()
+                    .UseMiddleware<CertificateDownloadMiddleware>()
+                    .Build())
+                .WithDisplayName("Certificate Download Middleware");
         }
     }
 }

@@ -93,6 +93,7 @@ namespace Web.Upnp.Control
             services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
             services.AddImageLoaderProxyMiddleware();
             services.AddContentProxyMiddleware();
+            services.AddCertificateDownloadMiddleware();
 
             services.AddSwaggerGen(c =>
             {
@@ -117,12 +118,27 @@ namespace Web.Upnp.Control
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseResponseCaching();
+
             if(env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwagger(c => c.RouteTemplate = "api/swagger/{documentName}/swagger.json");
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapHub<UpnpEventsHub>("upnpevents", o => o.Transports = HttpTransportType.WebSockets);
+                endpoints.MapImageLoaderProxy("proxy/{*url}");
+                endpoints.MapContentProxy("dlna-proxy/{*url}");
+                endpoints.MapHealthChecks("api/health");
+                endpoints.MapCertificateDownloadMiddleware("api/cert");
+                endpoints.MapSwagger("api/swagger/{documentName}/swagger.json");
+            });
 
             app.UseSwaggerUI(c =>
             {
@@ -130,21 +146,6 @@ namespace Web.Upnp.Control
                 c.RoutePrefix = "api/swagger";
             });
 
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapDefaultControllerRoute();
-                endpoints.MapHub<UpnpEventsHub>("/upnpevents", o => o.Transports = HttpTransportType.WebSockets);
-                endpoints.MapImageLoaderProxy("/proxy/{*url}");
-                endpoints.MapContentProxy("/dlna-proxy/{*url}");
-                endpoints.MapHealthChecks("/api/health");
-            });
-
-            //app.UseHttpsRedirection()
-            app.UseStaticFiles();
-            app.UseResponseCaching();
-
-            app.UseSpaStaticFiles();
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
