@@ -100,6 +100,8 @@ namespace Web.Upnp.Control
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            services.AddHealthChecks();
         }
 
         private static void ConfigureJsonSerializer(JsonSerializerOptions options, IEnumerable<JsonConverter> converters)
@@ -135,6 +137,7 @@ namespace Web.Upnp.Control
                 endpoints.MapHub<UpnpEventsHub>("/upnpevents", o => o.Transports = HttpTransportType.WebSockets);
                 endpoints.MapImageLoaderProxy("/proxy/{*url}");
                 endpoints.MapContentProxy("/dlna-proxy/{*url}");
+                endpoints.MapHealthChecks("/api/health");
             });
 
             //app.UseHttpsRedirection()
