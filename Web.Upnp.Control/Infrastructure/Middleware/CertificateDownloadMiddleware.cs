@@ -1,4 +1,3 @@
-using System;
 using System.Buffers.Text;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -25,30 +24,13 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var endpointsSection = configuration.GetSection("Kestrel:Endpoints");
-            foreach(var ep in endpointsSection.GetChildren())
-            {
-                var url = ep["Url"];
-                if(string.IsNullOrEmpty(url) || !url.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase)) continue;
+            using var certificate = KestrelCertificateLoader.LoadFromConfiguration(configuration, environment.ContentRootFileProvider);
 
-                var certSection = ep.GetSection("Certificate");
-                if(certSection == null) continue;
+            if(certificate != null)
+                await SendAsFileAsync(context.Response, certificate, $"{context.Request.Host.Host}.crt").ConfigureAwait(false);
+            else
+                context.Response.StatusCode = 404;
 
-                var path = certSection["Path"];
-                if(string.IsNullOrEmpty(path)) continue;
-                var fileinfo = environment.ContentRootFileProvider.GetFileInfo(path);
-                if(!fileinfo.Exists) continue;
-
-                string password = certSection["Password"];
-                using(var cert = new X509Certificate2(fileinfo.PhysicalPath, password))
-                {
-                    await SendAsFileAsync(context.Response, cert, $"{context.Request.Host.Host}.crt").ConfigureAwait(false);
-                    await context.Response.CompleteAsync().ConfigureAwait(false);
-                    return;
-                }
-            }
-
-            context.Response.StatusCode = 404;
             await context.Response.CompleteAsync().ConfigureAwait(false);
         }
 
