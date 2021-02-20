@@ -16,10 +16,15 @@ declare global {
 declare const self: ServiceWorkerGlobalScope;
 
 const CACHE_STORE_NAME = "upnp-dashboard-store";
+
 const CACHE_STORE_ITEMS = self.__WB_MANIFEST
     .map(e => typeof e === "string" ? e : e.url)
     .concat(["icons.svg", "icon.svg", "favicon.ico", "manifest.webmanifest",
         "192.png", "512.png", "apple-touch-icon.png"]);
+
+// Navigation requests to the urls starting with any of this 
+// prefixes will be skipped from fetch by this worker
+const BLACKLIST_PREFIXES = ["/api", "/proxy"];
 
 async function precache() {
     try {
@@ -67,14 +72,22 @@ self.addEventListener("activate", event => {
 })
 
 self.addEventListener("fetch", event => {
+
     console.debug(event.request);
     const r = event.request;
-    if (r.mode === "navigate" || r.destination !== "") {
-        event.respondWith((async () => {
-            const url = new URL(r.url);
-            url.search = "";
 
+    if (r.mode === "navigate" || r.destination !== "") {
+
+        const url = new URL(r.url);
+        url.search = "";
+        if (BLACKLIST_PREFIXES.some(prefix => url.pathname.startsWith(prefix))) {
+            console.debug(`${url.href} is blacklisted by this service worker, allowing regular fetch to proceed`);
+            return;
+        }
+
+        event.respondWith((async () => {
             if (r.mode === "navigate") {
+                // forward all navigation requests to tha main AppShell page
                 url.pathname = "index.html";
             }
 
