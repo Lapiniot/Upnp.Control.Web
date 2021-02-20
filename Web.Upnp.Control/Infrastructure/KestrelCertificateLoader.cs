@@ -8,6 +8,7 @@ namespace Web.Upnp.Control.Infrastructure
     public static class KestrelCertificateLoader
     {
         private const string EndpointsSectionName = "Kestrel:Endpoints";
+        private const string CertificatesSectionName = "Kestrel:Certificates";
         private const string CertificateSectionName = "Certificate";
         private const string UrlKey = "Url";
         private const string PathKey = "Path";
@@ -19,9 +20,7 @@ namespace Web.Upnp.Control.Infrastructure
 
         public static X509Certificate2 LoadFromConfiguration(IConfiguration configuration, IFileProvider contentRootFileProvider)
         {
-            var endpointsSection = configuration.GetSection(EndpointsSectionName);
-
-            foreach(var endpoint in endpointsSection.GetChildren())
+            foreach(var endpoint in configuration.GetSection(EndpointsSectionName).GetChildren())
             {
                 var url = endpoint[UrlKey];
 
@@ -29,21 +28,34 @@ namespace Web.Upnp.Control.Infrastructure
 
                 var certSection = endpoint.GetSection(CertificateSectionName);
 
-                if(certSection == null) continue;
-
-                var path = certSection[PathKey];
-                if(!string.IsNullOrEmpty(path))
+                if(!certSection.Exists())
                 {
-                    return CertificateLoader.LoadFromFile(contentRootFileProvider.GetFileInfo(path), certSection[PasswordKey]);
+                    certSection = configuration.GetSection($"{CertificatesSectionName}:Default");
                 }
 
-                var subject = certSection[SubjectKey];
-                if(!string.IsNullOrEmpty(subject))
+                if(certSection.Exists())
                 {
-                    return CertificateLoader.LoadFromStore(certSection[StoreKey] ?? "My",
-                        certSection[LocationKey] ?? "CurrentUser", subject,
-                        certSection.GetValue<bool?>(AllowInvalidKey) ?? false);
+                    return LoadFromConfiguration(certSection, contentRootFileProvider);
                 }
+            }
+
+            return null;
+        }
+
+        private static X509Certificate2 LoadFromConfiguration(IConfigurationSection section, IFileProvider contentRootFileProvider)
+        {
+            var path = section[PathKey];
+            if(!string.IsNullOrEmpty(path))
+            {
+                return CertificateLoader.LoadFromFile(contentRootFileProvider.GetFileInfo(path), section[PasswordKey]);
+            }
+
+            var subject = section[SubjectKey];
+            if(!string.IsNullOrEmpty(subject))
+            {
+                return CertificateLoader.LoadFromStore(section[StoreKey] ?? "My",
+                    section[LocationKey] ?? "CurrentUser", subject,
+                    section.GetValue<bool?>(AllowInvalidKey) ?? false);
             }
 
             return null;
