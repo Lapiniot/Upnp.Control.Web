@@ -166,7 +166,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const onRemove = () => this.remove(ids);
 
         this.setState({
-            modal: <RemoveItemsModalDialog id="remove-dialog" title="Do you want to delete playlist(s)?" onDismissed={this.resetModal} onRemove={onRemove}>
+            modal: <RemoveItemsModalDialog title="Do you want to delete playlist(s)?" onDismissed={this.resetModal} onRemove={onRemove}>
                 <ul className="list-unstyled">
                     {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
                 </ul>
@@ -179,7 +179,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const onRename = (value: string) => this.rename(id, value);
 
         this.setState({
-            modal: <TextValueEditDialog id="rename-confirm" title="Rename playlist" label="Name" confirmText="Rename"
+            modal: <TextValueEditDialog title="Rename playlist" label="Name" confirmText="Rename"
                 defaultValue={title} onConfirmed={onRename} onDismissed={this.resetModal} immediate />
         });
     }
@@ -189,7 +189,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const onRemove = () => this.removeItems(ids);
 
         this.setState({
-            modal: <RemoveItemsModalDialog id="remove-items-dialog" onDismissed={this.resetModal} onRemove={onRemove}>
+            modal: <RemoveItemsModalDialog onDismissed={this.resetModal} onRemove={onRemove}>
                 <ul className="list-unstyled">
                     {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
                 </ul>
@@ -199,24 +199,24 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private addPlaylistItems = (id: string) => {
         const addItems = (device: string, ids: string[]) => this.addItems(id, device, ids);
-        return this.setState({ modal: <AddItemsModalDialog id="add-items-dialog" onDismissed={this.resetModal} onAdd={addItems} browserProps={dialogBrowserProps} /> });
+        return this.setState({ modal: <AddItemsModalDialog onDismissed={this.resetModal} onAdd={addItems} browserProps={dialogBrowserProps} /> });
     }
 
     private addPlaylistUrl = (id: string) => {
         const addUrl = (url: string, title?: string, useProxy?: boolean) => this.addUrl(id, url, title, useProxy);
-        return this.setState({ modal: <AddUrlModalDialog id="add-url-dialog" onDismissed={this.resetModal} onAdd={addUrl} /> });
+        return this.setState({ modal: <AddUrlModalDialog onDismissed={this.resetModal} onAdd={addUrl} /> });
     }
 
     private addPlaylistFiles = (id: string) => {
         const addFiles = (data: FormData) => this.addFiles(id, data);
-        return this.setState({ modal: <UploadPlaylistModalDialog id="upload-playlist-dialog" onDismissed={this.resetModal} onAdd={addFiles} /> });
+        return this.setState({ modal: <UploadPlaylistModalDialog onDismissed={this.resetModal} onAdd={addFiles} /> });
     }
 
     //#endregion
 
     //#region Toolbar button click handlers 
 
-    private addClickHandler = () => this.setState({ modal: <TextValueEditDialog id="create-dialog" title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} onDismissed={this.resetModal} immediate /> });
+    private addClickHandler = () => this.setState({ modal: <TextValueEditDialog title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} onDismissed={this.resetModal} immediate /> });
 
     private removeClickHandler = () => this.removePlaylist(this.state.selection);
 

@@ -73,8 +73,8 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
     public clearSelection = () => this.selection.clear();
 
     render() {
-        const { id, title, confirmText = "OK", onConfirmed, browserProps = {}, ...other } = this.props;
-        return <Modal id={id} title={title} {...other} data-bs-keyboard={true} ref={this.modalRef}>
+        const { title, confirmText = "OK", onConfirmed, browserProps = {}, ...other } = this.props;
+        return <Modal title={title} {...other} data-bs-keyboard={true} ref={this.modalRef}>
             <Modal.Body className="overflow-hidden p-0 position-relative d-flex flex-column" style={{ height: "60vh" }}>
                 <div className="overflow-auto flex-grow-1 d-flex flex-column">
                     <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>

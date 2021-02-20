@@ -28,7 +28,7 @@ export class OpenAction extends React.Component<DeviceActionProps & { browserPro
 
     browse = () => {
         this.setState({
-            modal: <BrowserDialog id="open-media-dialog" title="Select media to play" confirmText="Open" className="modal-lg"
+            modal: <BrowserDialog className="modal-lg modal-modal-fullscreen-sm-down" title="Select media to play" confirmText="Open"
                 onDismissed={this.resetModal} onConfirmed={this.playMedia} browserProps={this.props.browserProps} immediate>
             </BrowserDialog>
         });

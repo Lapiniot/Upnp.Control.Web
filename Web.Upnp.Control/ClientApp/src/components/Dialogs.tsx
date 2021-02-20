@@ -17,8 +17,8 @@ export class TextValueEditDialog extends React.Component<TextValueEditDialogProp
     }
 
     render() {
-        const { id, title, label, defaultValue, confirmText = "OK", required = true, onChanged, onConfirmed, ...other } = this.props;
-        return <Modal id={id} title={title} {...other} onSubmit={this.onSubmit}>
+        const { title, label, defaultValue, confirmText = "OK", required = true, onChanged, onConfirmed, ...other } = this.props;
+        return <Modal title={title} {...other} onSubmit={this.onSubmit}>
             <div className="input-group has-validation mb-3">
                 <span className="input-group-text" id="basic-addon1">{label}</span>
                 <input type="text" name="text-input" onChange={onChanged} className="form-control" defaultValue={defaultValue}
@@ -38,8 +38,8 @@ type ConfirmationDialogProps = ModalProps<{
     onConfirmed: () => void;
 }>;
 
-export function ConfirmationDialog({ id, title, confirmText = "OK", onConfirmed, children, ...other }: ConfirmationDialogProps) {
-    return <Modal id={id} title={title} {...other}>
+export function ConfirmationDialog({ title, confirmText = "OK", onConfirmed, children, ...other }: ConfirmationDialogProps) {
+    return <Modal title={title} {...other}>
         {children}
         <Modal.Footer>
             <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>

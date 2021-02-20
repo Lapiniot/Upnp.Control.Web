@@ -2,7 +2,7 @@ import Modal from "../../../../components/Modal";
 import BrowserDialog, { BrowserDialogProps } from "../../../common/BrowserDialog";
 
 export function AddItemsModalDialog({ onAdd, ...other }: BrowserDialogProps & { onAdd: (device: string, keys: string[]) => Promise<any> }) {
-    return <BrowserDialog title="Select items to add" className="modal-lg" immediate {...other}>
+    return <BrowserDialog title="Select items to add" className="modal-lg modal-fullscreen-sm-down" immediate {...other}>
         {(b: BrowserDialog) => {
             const { device, keys } = b.getSelectionData();
             return [keys.length ? <button type="button" key="counter" className="btn btn-link text-decoration-none me-auto px-0" onClick={b.clearSelection}>Clear selection</button> : undefined,

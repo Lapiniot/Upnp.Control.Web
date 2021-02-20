@@ -70,7 +70,7 @@ export default class Modal extends React.Component<ModalProps> {
 
     render() {
 
-        const { id, title, className, immediate, onDismissed, onShown, onSubmit: onSubmit, ...other } = this.props;
+        const { title, className, immediate, onDismissed, onShown, onSubmit: onSubmit, ...other } = this.props;
 
         let header, body, footer;
         const children: ReactNode[] = [];
