@@ -39,6 +39,18 @@ $grid-layout-breakpoints: map-merge(
     grid-gap: 0 !important;
 }
 
+.grid-auto-auto {
+    grid-template-columns: auto auto;
+}
+
+.grid-auto-1fr {
+    grid-template-columns: auto 1fr;
+}
+
+.grid-1fr-auto {
+    grid-template-columns: 1fr auto;
+}
+
 @if $generate-grid-layout-responsive-styles {
     @each $breakpoint in map-keys($grid-layout-breakpoints) {
         @include media-breakpoint-up($breakpoint, $grid-layout-breakpoints) {

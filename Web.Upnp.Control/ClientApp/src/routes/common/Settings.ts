@@ -3,6 +3,7 @@ type TypedSettings = {
     readonly pageSizes: number[];
     timeout: number;
     containerScanTimeout: number;
+    containerScanDepth: number;
 }
 
 const defaults: TypedSettings = {
@@ -10,6 +11,7 @@ const defaults: TypedSettings = {
     pageSizes: [15, 30, 60, 120, 150],
     timeout: 5000,
     containerScanTimeout: 15000,
+    containerScanDepth: 3
 };
 
 export type BookmarkGroup = "devices" | "playlists" | "items";

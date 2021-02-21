@@ -78,6 +78,12 @@ $zindex-dropdown: $zindex-sticky + 5;
     z-index: $zindex-sticky;
 }
 
+@include media-breakpoint-up(md) {
+    .w-md-50 {
+        width: 50% !important;
+    }
+}
+
 @each $breakpoint in $display-none-before-width-breakpoints {
     @include media-breakpoint-down($breakpoint) {
         &.d-none-before#{breakpoint-infix($breakpoint)} {
@@ -200,13 +206,7 @@ $zindex-dropdown: $zindex-sticky + 5;
 }
 
 .grid-form {
-    @extend .d-grid;
-    @extend .gapx-2;
-    @extend .gapy-1;
-    grid-template-columns: auto 1fr;
-    white-space: nowrap !important;
-
-    & > :nth-of-type(odd) {
+    & > :nth-child(odd) {
         justify-self: end;
         color: $text-muted;
 
@@ -215,7 +215,7 @@ $zindex-dropdown: $zindex-sticky + 5;
         }
     }
 
-    & > :nth-of-type(even) {
+    & > :nth-child(even) {
         overflow: hidden;
         text-overflow: ellipsis;
     }

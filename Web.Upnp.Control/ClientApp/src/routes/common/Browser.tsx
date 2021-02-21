@@ -9,24 +9,24 @@ import { BottomBar } from "./BottomBar";
 import { DIDLUtils } from "./BrowserUtils";
 import BrowserView, { CellTemplate, CellTemplateProps, RowState } from "./BrowserView";
 import { TablePagination } from "./Pagination";
-import settings from "./Settings";
+import $s from "./Settings";
 import { BrowserSvgSymbols } from "./SvgSymbols";
 import { BrowseFetchResult, DIDLItem, Services, UpnpDevice } from "./Types";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);
-    const timeout = settings.get("timeout");
+    const timeout = $s.get("timeout");
     await queues.clear("Q:0").fetch(timeout);
-    await queues.enqueue("Q:0", source, items).fetch(settings.get("containerScanTimeout"));
+    await queues.enqueue("Q:0", source, items).fetch($s.get("containerScanTimeout"));
     await WebApi.control(target).playUri("x-mi://sys/queue?id=0").fetch(timeout);
 }
 
 function umiCreatePlaylist(target: string, title: string, source: string, items: string[]) {
-    return WebApi.playlist(target).createFromItems(title, source, items).fetch(settings.get("containerScanTimeout"));
+    return WebApi.playlist(target).createFromItems(title, source, items, $s.get("containerScanDepth")).fetch($s.get("containerScanTimeout"));
 }
 
 function playItem(target: string, source: string, id: string) {
-    return WebApi.control(target).play(id, source).fetch(settings.get("timeout"));
+    return WebApi.control(target).play(id, source).fetch($s.get("timeout"));
 }
 
 function isUmiDevice(device: UpnpDevice) {
@@ -72,7 +72,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
 
     async componentDidMount() {
         try {
-            const timeout = settings.get("timeout");
+            const timeout = $s.get("timeout");
             const devices: UpnpDevice[] = await WebApi.devices("renderers").jsonFetch(timeout);
             const device: UpnpDevice = await WebApi.devices("upnp", this.props.device).jsonFetch(timeout);
             this.setState({ device, umis: devices.filter(isUmiDevice), renderers: devices.filter(d => !isUmiDevice(d)) })
@@ -232,7 +232,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             <BottomBar>
                 <TablePagination location={location} history={history}
                     total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
-                    pageSize={typeof size === "string" ? parseInt(size) : settings.get("pageSize")} />
+                    pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
                 <button type="button" className="btn btn-round btn-plain" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
                     <svg className="icon"><use href="#ellipsis-v" /></svg>
                 </button>
