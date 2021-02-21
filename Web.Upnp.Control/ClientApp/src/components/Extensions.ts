@@ -19,7 +19,7 @@ export function formatTime(seconds: number): string {
     if (!Number.isFinite(seconds)) return "--:--";
     let h = Math.floor(seconds / 3600);
     let m = Math.floor((seconds % 3600) / 60);
-    let s = (seconds % 3600) % 60;
+    let s = Math.round((seconds % 3600) % 60);
     return h > 0
         ? `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
         : `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
