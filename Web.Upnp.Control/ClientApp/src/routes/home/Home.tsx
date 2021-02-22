@@ -31,7 +31,7 @@ export default function () {
 
     const expanded = profile.home.get("expandSection");
 
-    return <>
+    return <div className="overflow-auto">
         <PlaySvgSymbols />
         <div className="accordion accordion-flush" id="bookmarks-section">
             {Object.entries(data).map(([id, value], i) => <div className="accordion-item" key={id}>
@@ -50,5 +50,5 @@ export default function () {
                 </div>
             </div>)}
         </div>
-    </>;
+    </div>;
 }
