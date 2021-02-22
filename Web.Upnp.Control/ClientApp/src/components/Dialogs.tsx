@@ -26,8 +26,8 @@ export class TextValueEditDialog extends React.Component<TextValueEditDialogProp
                 <div className="invalid-tooltip">Non-empty value is required</div>
             </div>
             <Modal.Footer>
-                <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>
-                <Modal.Button key="confirm" className="btn-primary" type="submit">{confirmText}</Modal.Button>
+                <Modal.Button key="cancel" className="dismiss" dismiss>Cancel</Modal.Button>
+                <Modal.Button key="confirm" className="confirm" type="submit">{confirmText}</Modal.Button>
             </Modal.Footer>
         </Modal>;
     }
@@ -42,8 +42,8 @@ export function ConfirmationDialog({ title, confirmText = "OK", onConfirmed, chi
     return <Modal title={title} {...other}>
         {children}
         <Modal.Footer>
-            <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>
-            <Modal.Button key="confirm" className="btn-primary" onClick={() => onConfirmed()} dismiss>{confirmText}</Modal.Button>
+            <Modal.Button key="cancel" className="dismiss" dismiss>Cancel</Modal.Button>
+            <Modal.Button key="confirm" className="confirm" onClick={() => onConfirmed()} dismiss>{confirmText}</Modal.Button>
         </Modal.Footer>
     </Modal>;
 }

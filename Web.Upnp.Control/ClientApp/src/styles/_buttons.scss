@@ -31,19 +31,20 @@ nav.navbar-nav > a.nav-link,
     }
 }
 
-.btn.btn-round {
-    clip-path: circle();
-    outline: none !important;
-    box-shadow: none;
-    border: none;
+.btn,
+.btn-close {
+    &.btn-round {
+        clip-path: circle();
+        @extend %no-decoration;
 
-    & > img,
-    & > svg {
-        margin: 0;
-    }
+        & > img,
+        & > svg {
+            margin: 0;
+        }
 
-    & > svg {
-        fill: currentColor;
+        & > svg {
+            fill: currentColor;
+        }
     }
 
     &.btn-icon:not(:hover):not(:active):not(:focus) {
@@ -61,6 +62,8 @@ nav.navbar-nav > a.nav-link,
     }
 
     &.btn-plain {
+        @extend %no-decoration;
+
         &:focus-visible,
         &:hover {
             color: $dropdown-link-hover-color;
@@ -70,15 +73,38 @@ nav.navbar-nav > a.nav-link,
         &.active,
         &:active {
             color: $dropdown-link-active-color;
+            @extend %no-decoration;
             @include gradient-bg($dropdown-link-active-bg);
         }
-    }
-}
 
-.btn.image-only {
-    & > img,
-    & > svg {
-        margin: 0;
+        &.disabled,
+        &:disabled {
+            color: $dropdown-link-disabled-color;
+            pointer-events: none;
+            background-color: transparent;
+            background-image: if($enable-gradients, none, null);
+        }
+    }
+
+    &.image-only {
+        & > img,
+        & > svg {
+            margin: 0;
+        }
+    }
+
+    &:not(:disabled):not(.disabled) {
+        &.confirm {
+            color: $primary;
+        }
+
+        &.dismiss {
+            color: $secondary;
+        }
+
+        &.destructive {
+            color: $danger;
+        }
     }
 }
 

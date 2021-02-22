@@ -79,3 +79,10 @@ $missing-image-content: "\1F61F" !default;
     height: 100%;
     pointer-events: none;
 }
+
+%no-decoration {
+    border: none;
+    outline: none !important;
+    @include border-radius(0);
+    @include box-shadow(none);
+}

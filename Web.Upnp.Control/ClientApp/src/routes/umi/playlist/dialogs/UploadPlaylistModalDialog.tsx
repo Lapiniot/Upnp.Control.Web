@@ -27,8 +27,8 @@ export class UploadPlaylistModalDialog extends React.Component<ModalProps & Uplo
                 <label htmlFor="useProxy" className="form-check-label" >Use DLNA proxy for live stream</label>
             </div>
             <Modal.Footer>
-                <Modal.Button className="btn-secondary" dismiss>Cancel</Modal.Button>
-                <Modal.Button className="btn-primary" icon="plus" type="submit">Add</Modal.Button>
+                <Modal.Button className="dismiss" dismiss>Cancel</Modal.Button>
+                <Modal.Button className="confirm" icon="plus" type="submit">Add</Modal.Button>
             </Modal.Footer>
         </Modal>;
     }

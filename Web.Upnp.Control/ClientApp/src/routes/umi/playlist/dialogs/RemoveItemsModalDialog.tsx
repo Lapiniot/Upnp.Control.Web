@@ -4,8 +4,8 @@ export function RemoveItemsModalDialog({ onRemove, children, ...other }: ModalPr
     return <Modal title="Do you want to remove items from the playlist?" immediate {...other}>
         {children}
         <Modal.Footer>
-            <Modal.Button className="btn-secondary" dismiss>Cancel</Modal.Button>
-            <Modal.Button className="btn-danger" icon="trash" onClick={onRemove} dismiss>Remove</Modal.Button>
+            <Modal.Button className="dismiss" dismiss>Cancel</Modal.Button>
+            <Modal.Button className="destructive" icon="trash" onClick={onRemove} dismiss>Remove</Modal.Button>
         </Modal.Footer>
     </Modal>;
 }

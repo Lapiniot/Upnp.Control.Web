@@ -93,8 +93,8 @@ export default class Modal extends React.Component<ModalProps> {
                         {header ? header : <Modal.Header>{title}</Modal.Header>}
                         {body ? body : <Modal.Body>{children}</Modal.Body>}
                         {footer ? footer : <Modal.Footer>
-                            <Modal.Button className="btn-secondary" dismiss>Cancel</Modal.Button>
-                            <Modal.Button className="btn-primary" type="submit" name="action" value="ok">OK</Modal.Button>
+                            <Modal.Button className="dismiss" dismiss>Cancel</Modal.Button>
+                            <Modal.Button className="confirm" type="submit" name="action" value="ok">Ok</Modal.Button>
                         </Modal.Footer>}
                     </form>
                 </div>
@@ -103,12 +103,12 @@ export default class Modal extends React.Component<ModalProps> {
     }
 
     static Button = ({ dismiss, className, icon, children, ...other }: { dismiss?: boolean; icon?: string } & ButtonHTMLAttributes<HTMLButtonElement>) =>
-        <button type="button" className={`btn${className ? ` ${className}` : ""}`} data-bs-dismiss={dismiss ? "modal" : null} {...other}>
+        <button type="button" className={`btn btn-plain text-uppercase p-2 py-1${className ? ` ${className}` : ""}`} data-bs-dismiss={dismiss ? "modal" : null} {...other}>
             {icon && <svg className="icon me-2"><use href={`#${icon}`} /></svg>}{children}
         </button>;
 
     static Header = ({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) =>
-        <div className={`modal-header${className ? ` ${className}` : ""}`} {...other}>
+        <div className={`modal-header border-0${className ? ` ${className}` : ""}`} {...other}>
             <h5 className="modal-title">{children}</h5>
             <button type="button" className="btn-close" tabIndex={200} data-bs-dismiss="modal" aria-label="Close" />
         </div>;
@@ -117,5 +117,5 @@ export default class Modal extends React.Component<ModalProps> {
         <div className={`modal-body${className ? ` ${className}` : ""}`} {...other}></div>;
 
     static Footer = ({ className, ...other }: HTMLAttributes<HTMLDivElement>) =>
-        <div className={`modal-footer${className ? ` ${className}` : ""}`} {...other}></div>;
+        <div className={`modal-footer border-0 p-2${className ? ` ${className}` : ""}`} {...other}></div>;
 };

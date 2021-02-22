@@ -14,6 +14,7 @@ import SelectionService from "../../components/SelectionService";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;
+    selection?: SelectionService;
     confirmText?: string;
     onConfirmed?: (selection: BrowseResult) => void;
     dismissOnOpen?: boolean;
@@ -30,7 +31,7 @@ const MediaSourceList = withDataFetch(({ dataContext: ctx, fetching }: DataFetch
     <div>
         {fetching
             ? <LoadIndicatorOverlay />
-            : <ul className="list-group list-group-flush">
+            : <ul className="list-group list-group-flush border-top border-bottom">
                 {ctx?.source?.map(({ udn, name, type, description, icons }) =>
                     <RouteLink key={udn} to={`/sources/${udn}`} className="nav-link list-group-item list-group-item-action d-flex align-items-center">
                         <DeviceIcon icons={icons} service={type} />
@@ -51,7 +52,7 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
     constructor(props: BrowserDialogProps) {
         super(props);
         this.state = { selection: [] };
-        this.selection = new SelectionService();
+        this.selection = this.props.selection ?? new SelectionService();
     }
 
     private selectionChanged = (ids: string[]) => {
@@ -66,14 +67,12 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
         return false;
     }
 
-    public getSelectionData = (): BrowseResult => {
+    private getSelectionData = (): BrowseResult => {
         return { device: this.browserRef?.current?.props.match.params.device, keys: this.state.selection };
     }
 
-    public clearSelection = () => this.selection.clear();
-
     render() {
-        const { title, confirmText = "OK", onConfirmed, browserProps = {}, ...other } = this.props;
+        const { title, confirmText = "OK", onConfirmed, browserProps = {}, selection, ...other } = this.props;
         return <Modal title={title} {...other} data-bs-keyboard={true} ref={this.modalRef}>
             <Modal.Body className="overflow-hidden p-0 position-relative d-flex flex-column" style={{ height: "60vh" }}>
                 <div className="overflow-auto flex-grow-1 d-flex flex-column">
@@ -82,18 +81,21 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
                             <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
                             <Route path={"/sources/:device/-1"} exact render={() => <Redirect to="/sources" />} />
                             <Route path={"/sources/:device/:id(.*)?"} render={props =>
-                                <Browser {...props} ref={this.browserRef} className="flex-fill"
+                                <Browser {...props} ref={this.browserRef} className="flex-fill border-top border-bottom"
                                     open={this.props.dismissOnOpen ? this.open : undefined} {...browserProps}
-                                    selection={this.selection} selectionChanged={this.selectionChanged} modalDialogMode />} />
+                                    selection={this.selection} selectionChanged={this.selectionChanged}
+                                    modalDialogMode />} />
                         </Switch>
                     </MemoryRouter>
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                {(typeof (this.props.children) === "function" ? this.props.children(this) : this.props.children) ||
+                {(typeof (this.props.children) === "function"
+                    ? this.props.children(this.getSelectionData())
+                    : this.props.children) ||
                     <React.Fragment>
-                        <Modal.Button key="cancel" className="btn-secondary" dismiss>Cancel</Modal.Button>
-                        <Modal.Button key="confirm" className="btn-primary" disabled={this.state.selection.length === 0} onClick={this.confirm} dismiss>{confirmText}</Modal.Button>
+                        <Modal.Button key="cancel" className="dismiss" dismiss>Cancel</Modal.Button>
+                        <Modal.Button key="confirm" className="confirm" disabled={this.state.selection.length === 0} onClick={this.confirm} dismiss>{confirmText}</Modal.Button>
                     </React.Fragment>}
             </Modal.Footer>
         </Modal>;

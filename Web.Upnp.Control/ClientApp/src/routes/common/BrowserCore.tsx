@@ -4,7 +4,7 @@ import BrowserView, { BrowserViewProps } from "./BrowserView";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { RouteComponentProps } from "react-router";
 import $s from "./Settings";
-import React from "react";
+import React, { useCallback } from "react";
 import { BottomBar } from "./BottomBar";
 
 type FetchProps = {
@@ -21,11 +21,11 @@ export type BrowserCoreProps<TContext> =
 
 export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>) {
     const { dataContext: data, match, s: size, p: page, fetching } = props;
-    const { withBreadcrumb = true, withPagination = true, ...forwardProps } = props;
+    const { withBreadcrumb = true, withPagination = true, className, ...forwardProps } = props;
     const { source: { total = 0, parents = undefined } = {} } = data || {};
     return <>
         {fetching && <LoadIndicatorOverlay />}
-        <div className="flex-fill d-flex flex-column">
+        <div className={`flex-fill d-flex flex-column${className ? ` ${className}` : ""}`}>
             {withBreadcrumb && <Breadcrumb items={parents} path={match.path} params={match.params} className="sticky-top border-bottom d-none-h-before-sm" />}
             <BrowserView className="flex-fill" {...forwardProps} />
             {withPagination && <BottomBar>
