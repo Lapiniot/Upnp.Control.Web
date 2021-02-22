@@ -1,7 +1,14 @@
 import React from "react";
 import Modal, { ModalProps } from "../../../../components/Modal";
 
-export class AddUrlModalDialog extends React.Component<ModalProps & { onAdd: (url: string, title: string, useProxy: boolean) => void }> {
+type AddModalDialogProps = ModalProps & {
+    feedUrl?: string;
+    feedTitle?: string;
+    useProxy?: boolean;
+    onAdd: (url: string, title: string, useProxy: boolean) => void;
+};
+
+export class AddUrlModalDialog extends React.Component<AddModalDialogProps> {
     style = { width: "60px" };
 
     onSubmit = (data: FormData): boolean => {
@@ -10,20 +17,21 @@ export class AddUrlModalDialog extends React.Component<ModalProps & { onAdd: (ur
     }
 
     render() {
-        const { onAdd, ...other } = this.props;
+        const { onAdd, feedUrl, feedTitle, useProxy, ...other } = this.props;
         return <Modal title="Provide url for media feed" onSubmit={this.onSubmit} immediate {...other}>
             <div className="input-group has-validation mb-3">
                 <span className="input-group-text text-end d-inline" id="basic-addon1" style={this.style}>Url</span>
-                <input type="url" className="form-control" name="feed-url" placeholder="[provide value]" pattern="http(s?)://.*" required
+                <input type="url" defaultValue={feedUrl} className="form-control" name="feed-url" placeholder="[feed url]" pattern="http(s?)://.*" required
                     aria-label="Url" aria-describedby="basic-addon1" />
                 <div className="invalid-tooltip">Please provide a valid feed url</div>
             </div>
             <div className="input-group mb-3">
                 <span className="input-group-text text-end d-inline" id="basic-addon2" style={this.style}>Title</span>
-                <input type="text" className="form-control" name="feed-title" placeholder="[provide value]" aria-label="Title" aria-describedby="basic-addon2" />
+                <input type="text" defaultValue={feedTitle} className="form-control" name="feed-title" placeholder="[feed title]"
+                    aria-label="Title" aria-describedby="basic-addon2" />
             </div>
             <div className="form-check form-switch">
-                <input className="form-check-input" type="checkbox" name="use-proxy" id="use-dlna-proxy" defaultChecked />
+                <input type="checkbox" defaultChecked={useProxy} className="form-check-input" name="use-proxy" id="use-dlna-proxy" />
                 <label className="form-check-label" htmlFor="use-dlna-proxy">Use DLNA proxy for live stream</label>
             </div>
             <Modal.Footer>

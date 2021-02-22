@@ -23,7 +23,6 @@ import { BrowserSvgSymbols, EditSvgSymbols, PlayerSvgSymbols, PlaylistSvgSymbols
 import { Portal } from "../../../components/Portal";
 import $s from "../../common/Settings";
 import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
-import settings from "../../common/Settings";
 import { BottomBar } from "../../common/BottomBar";
 
 type RouteParams = {
@@ -107,7 +106,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     async componentDidMount() {
         try {
-            const timeout = settings.get("timeout");
+            const timeout = $s.get("timeout");
             const state = await this.ctrl.state(true).jsonFetch(timeout);
             const device: UpnpDevice = await $api.devices("upnp", this.props.device).jsonFetch(timeout);
             if (state.medium === "X-MI-AUX") {
@@ -204,12 +203,12 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private addPlaylistUrl = (id: string) => {
         const addUrl = (url: string, title?: string, useProxy?: boolean) => this.addUrl(id, url, title, useProxy);
-        return this.setState({ modal: <AddUrlModalDialog onDismissed={this.resetModal} onAdd={addUrl} /> });
+        return this.setState({ modal: <AddUrlModalDialog useProxy={$s.get("useDlnaProxy")} onDismissed={this.resetModal} onAdd={addUrl} /> });
     }
 
     private addPlaylistFiles = (id: string) => {
         const addFiles = (data: FormData) => this.addFiles(id, data);
-        return this.setState({ modal: <UploadPlaylistModalDialog onDismissed={this.resetModal} onAdd={addFiles} /> });
+        return this.setState({ modal: <UploadPlaylistModalDialog useProxy={$s.get("useDlnaProxy")} onDismissed={this.resetModal} onAdd={addFiles} /> });
     }
 
     //#endregion
@@ -237,9 +236,10 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     //#region Drag&Drop handler
 
     private dropFilesHandler = (files: Iterable<File>) => {
+        const useProxy = $s.get("useDlnaProxy");
         const request = this.props.id === "PL:"
-            ? $api.playlist(this.props.device).createFromFiles(files, null, false)
-            : $api.playlist(this.props.device).addFromFiles(this.props.id, files);
+            ? $api.playlist(this.props.device).createFromFiles(files, null, false, useProxy)
+            : $api.playlist(this.props.device).addFromFiles(this.props.id, files, useProxy);
         this.reload(request.fetch);
         return true;
     }
