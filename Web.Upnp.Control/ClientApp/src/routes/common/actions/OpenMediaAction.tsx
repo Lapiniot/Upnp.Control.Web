@@ -4,6 +4,7 @@ import { BrowserProps, RowState } from "../BrowserView";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
 import { DeviceActionProps } from "./Actions";
 import { DIDLUtils } from "../BrowserUtils";
+import { Portal } from "../../../components/Portal";
 
 const browserProps: BrowserProps<unknown> = {
     rowState: () => RowState.Navigable | RowState.Selectable
@@ -28,7 +29,7 @@ export class OpenAction extends React.Component<DeviceActionProps & { browserPro
 
     browse = () => {
         this.setState({
-            modal: <BrowserDialog className="modal-lg modal-modal-fullscreen-sm-down" title="Select media to play" confirmText="Open"
+            modal: <BrowserDialog className="modal-lg modal-fullscreen-sm-down" title="Select media to play" confirmText="Open"
                 onDismissed={this.resetModal} onConfirmed={this.playMedia} browserProps={this.props.browserProps} immediate>
             </BrowserDialog>
         });
@@ -41,7 +42,9 @@ export class OpenAction extends React.Component<DeviceActionProps & { browserPro
                 aria-expanded="false" title="Browse for external media to play on this device" {...other} onClick={this.browse}>
                 {children}
             </button>
-            {this.state.modal}
+            <Portal selector="#modal-root">
+                {this.state.modal}
+            </Portal>
         </>;
     }
 }
