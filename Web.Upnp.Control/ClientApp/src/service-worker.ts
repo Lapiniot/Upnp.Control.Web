@@ -22,6 +22,8 @@ const CACHE_STORE_ITEMS = self.__WB_MANIFEST
     .concat(["icons.svg", "icon.svg", "favicon.ico", "manifest.webmanifest",
         "192.png", "512.png", "apple-touch-icon.png"]);
 
+const CACHES = [CACHE_STORE_NAME];
+
 // Navigation requests to the urls starting with any of this 
 // prefixes will be skipped from fetch by this worker
 const BLACKLIST_PREFIXES = ["/api", "/proxy"];
@@ -34,7 +36,18 @@ async function precache() {
         await cache.addAll(CACHE_STORE_ITEMS);
     } catch (error) {
         console.error(`error precaching static content: ${error}`);
-        throw error;
+    }
+}
+
+async function cleanup() {
+    const keys = (await caches.keys()).filter(k => !CACHES.includes(k));
+    console.debug(`obsolete caches to be removed: ${keys}`);
+    for (const key of keys) {
+        try {
+            await caches.delete(key);
+        } catch (error) {
+            console.error(`error purging obsolete cache ${key}: ${error}`);
+        }
     }
 }
 
@@ -67,7 +80,10 @@ self.addEventListener("install", event => {
 
 self.addEventListener("activate", event => {
     console.info("activating service worker...");
-    event.waitUntil(enablePreload());
+    event.waitUntil(Promise.all([
+        cleanup(),
+        enablePreload()
+    ]));
     self.clients.claim();
 })
 
