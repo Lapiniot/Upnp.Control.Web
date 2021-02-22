@@ -12,7 +12,7 @@ import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import SelectionService from "../../../components/SelectionService";
 import { SignalRListener } from "../../../components/SignalR";
 import MainCell from "./CellTemplate";
-import { DataFetchProps } from "../../../components/DataFetch";
+import { DataContext, DataFetchProps } from "../../../components/DataFetch";
 import { NavigatorProps } from "../../common/Navigator";
 import { AddUrlModalDialog } from "./dialogs/AddUrlModalDialog";
 import { AddItemsModalDialog } from "./dialogs/AddItemsModalDialog";
@@ -43,6 +43,7 @@ type PlaylistManagerState = {
     selection: string[];
     playlist?: string;
     device: UpnpDevice | null;
+    ctx?: DataContext<BrowseFetchResult>
 } & Partial<AVState>;
 
 const dialogBrowserProps: BrowserProps<unknown> = {
@@ -102,6 +103,13 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         if (prevProps.device !== this.props.device || prevProps.id !== this.props.id) {
             this.selection.reset();
         }
+    }
+
+    static getDerivedStateFromProps({ dataContext: propsCtx }: PlaylistManagerProps, { ctx: stateCtx }: PlaylistManagerState) {
+        if (propsCtx && propsCtx !== stateCtx)
+            return { ctx: propsCtx, selection: [] }
+        else
+            return null;
     }
 
     async componentDidMount() {
