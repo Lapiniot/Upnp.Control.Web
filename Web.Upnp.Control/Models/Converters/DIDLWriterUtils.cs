@@ -13,9 +13,9 @@ namespace Web.Upnp.Control.Models.Converters
             writer.WriteString("id", item.Id);
             writer.WriteString("class", item.Class);
             writer.WriteString("title", item.Title);
-            writer.WriteBoolean("container", item is Container);
+            if(item is Container) writer.WriteBoolean("container", true);
 
-            if(item.StorageUsed is { } storageUsed) writer.WriteNumber(nameof(storageUsed), storageUsed);
+            if(item.StorageUsed is { } storageUsed && storageUsed > 0) writer.WriteNumber(nameof(storageUsed), storageUsed);
             if(item.StorageTotal is { } storageTotal) writer.WriteNumber(nameof(storageTotal), storageTotal);
             if(item.StorageFree is { } storageFree) writer.WriteNumber(nameof(storageFree), storageFree);
             if(item.StorageMedium is { } storageMedium) writer.WriteNumber(nameof(storageMedium), storageMedium);
