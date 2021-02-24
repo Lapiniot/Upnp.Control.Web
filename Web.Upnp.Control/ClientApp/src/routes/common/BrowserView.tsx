@@ -97,7 +97,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         this.selection.clear();
     }
 
-    resizeObservedHandler: ResizeObserverCallback = entries => {
+    resizeObservedHandler = (entries: ResizeObserverEntry[]) => {
         const table = entries[0].target;
 
         const caption = table.querySelector<HTMLDivElement>(HEADER_SELECTOR);
