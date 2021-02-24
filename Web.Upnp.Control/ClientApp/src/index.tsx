@@ -17,10 +17,10 @@ const container: HTMLElement = document.getElementById("main-root") as HTMLEleme
 
 ReactDOM.render(
     <BrowserRouter basename={baseUrl}>
-        <div className="vh-100 d-flex flex-column flex-sm-row">
-            <div className="navbar navbar-expand navbar-dark bg-dark bg-gradient p-0 order-1 order-sm-0 flex-sm-column justify-content-start align-items-stretch">
-                <a className="navbar-brand d-none d-lg-inline ps-3" href="/">UPnP Dashboard</a>
-                <nav className="navbar-nav bottom-bar nav-rail-sm wide-lg p-sm-1 flex-sm-grow-0">
+        <div className="shell">
+            <div className="navbar">
+                <a className="navbar-brand d-none d-lg-inline" href="/">UPnP Dashboard</a>
+                <nav>
                     <RouteLink to="/" exact glyph="home" className="nav-link">Home</RouteLink>
                     <RouteLink to="/upnp" glyph="server" className="nav-link"><span><span className="d-none d-lg-inline">UPnP&nbsp;</span>Devices</span></RouteLink>
                     <RouteLink to="/renderers" glyph="tv" className="nav-link"><span><span className="d-none d-lg-inline">Network&nbsp;</span>Players</span></RouteLink>
@@ -29,7 +29,7 @@ ReactDOM.render(
                 </nav>
                 <NavBarSvgSymbols />
             </div>
-            <main className="h-100 overflow-hidden position-relative order-0 order-sm-1 flex-grow-1 d-flex flex-column">
+            <main>
                 <SignalRConnection hubUrl="/upnpevents">
                     <Switch>
                         <Route exact path="/" component={HomePage} />

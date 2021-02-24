@@ -1,0 +1,98 @@
+.shell {
+    height: 100vh;
+    display: grid;
+    grid-template: 1fr auto / auto 1fr;
+    grid-template-areas: "main main" "navbar navbar";
+
+    & > * {
+        display: flex;
+    }
+
+    & > .navbar {
+        grid-area: navbar;
+        @include gradient-bg(shade-color($primary, 40%));
+
+        & > .navbar-brand {
+            padding-block-start: $navbar-brand-padding-y;
+            padding-inline: $nav-link-padding-x;
+            @include font-size($navbar-brand-font-size);
+            text-decoration: if($link-decoration == none, null, none);
+            white-space: nowrap;
+            color: $navbar-dark-brand-color;
+
+            &:hover,
+            &:focus {
+                color: $navbar-dark-brand-hover-color;
+            }
+        }
+
+        & > nav {
+            display: flex;
+            flex: 1 0 0;
+
+            & > .nav-link {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                flex: 1 1 0;
+                font-size: x-small;
+                padding-inline: $navbar-nav-link-padding-x;
+                color: $navbar-dark-color;
+
+                &:hover,
+                &:focus {
+                    color: $navbar-dark-hover-color;
+                }
+
+                &.disabled {
+                    color: $navbar-dark-disabled-color;
+                }
+
+                &.active {
+                    color: $navbar-dark-active-color;
+                }
+
+                & > svg {
+                    margin: unset;
+                    font-size: 1rem;
+                }
+            }
+        }
+    }
+
+    & > main {
+        grid-area: main;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+    }
+
+    @include media-breakpoint-up(sm) {
+        grid-template-areas: "navbar main" "navbar main";
+        & > .navbar {
+            flex-direction: column;
+            align-items: stretch;
+
+            & > nav {
+                flex-direction: column;
+                flex: 0 0 auto;
+                padding-block: $navbar-padding-y;
+            }
+        }
+    }
+
+    @include media-breakpoint-up(md) {
+        & > .navbar {
+            & > nav {
+                & > .nav-link {
+                    flex-direction: row;
+                    font-size: inherit;
+                    padding-inline: $nav-link-padding-x;
+                    & > svg {
+                        margin-right: $spacer / 2;
+                    }
+                }
+            }
+        }
+    }
+}
