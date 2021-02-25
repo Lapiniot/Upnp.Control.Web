@@ -90,7 +90,7 @@ export default class Modal extends React.Component<ModalProps> {
             <div className={`modal-dialog modal-dialog-centered${className ? ` ${className}` : ""}`} role="document">
                 <div className="modal-content">
                     <form action="#" noValidate onSubmit={this.onSubmit} className="d-flex flex-column flex-grow-1 overflow-hidden">
-                        {header ? header : <Modal.Header>{title}</Modal.Header>}
+                        {header ? header : <Modal.Header><h5 className="modal-title text-truncate">{title}</h5></Modal.Header>}
                         {body ? body : <Modal.Body>{children}</Modal.Body>}
                         {footer ? footer : <Modal.Footer>
                             <Modal.Button className="dismiss" dismiss>Cancel</Modal.Button>
@@ -109,7 +109,7 @@ export default class Modal extends React.Component<ModalProps> {
 
     static Header = ({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) =>
         <div className={`modal-header border-0${className ? ` ${className}` : ""}`} {...other}>
-            <h5 className="modal-title text-truncate">{children}</h5>
+            {children}
             <button type="button" className="btn-close" tabIndex={200} data-bs-dismiss="modal" aria-label="Close" />
         </div>;
 
