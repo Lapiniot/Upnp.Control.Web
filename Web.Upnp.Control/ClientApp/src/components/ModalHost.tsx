@@ -1,8 +1,8 @@
-import React, { PropsWithChildren, ReactElement, ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 import { ModalProps } from "./Modal";
 import { Portal } from "./Portal";
 
-export default class ModalHost extends React.Component<PropsWithChildren<{}>, { modal?: ReactNode }> {
+export default class ModalHost extends React.Component<{}, { modal?: ReactNode }> {
 
     state = { modal: undefined };
 
@@ -11,9 +11,15 @@ export default class ModalHost extends React.Component<PropsWithChildren<{}>, { 
 
         this.setState({
             modal: React.cloneElement(modal, {
-                ...modal.props, immediate: true, onDismissed: (e: Event) => {
-                    onDismissed?.(e);
-                    this.setState({ modal: undefined });
+                ...this.props, ...modal.props,
+                immediate: true,
+                onDismissed: (e: Event) => {
+                    try {
+                        onDismissed?.(e);
+                    }
+                    finally {
+                        this.setState({ modal: undefined });
+                    }
                 }
             })
         });
