@@ -109,7 +109,7 @@ export default class Modal extends React.Component<ModalProps> {
 
     static Header = ({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) =>
         <div className={`modal-header border-0${className ? ` ${className}` : ""}`} {...other}>
-            <h5 className="modal-title">{children}</h5>
+            <h5 className="modal-title text-truncate">{children}</h5>
             <button type="button" className="btn-close" tabIndex={200} data-bs-dismiss="modal" aria-label="Close" />
         </div>;
 
