@@ -14,7 +14,7 @@ $album-art-scales: (
     sm: 0.75,
     //"md": 1.25,
     //"lg": 1.75,
-    //"xl": 2,
+    xxl: 4
 );
 
 $backdrops: ("", primary, secondary, danger);
@@ -205,20 +205,36 @@ $zindex-dropdown: $zindex-sticky + 5;
     }
 }
 
+%grid-form-label {
+    justify-self: end;
+    color: $text-muted;
+
+    &::after {
+        content: ":";
+    }
+}
+
+%grid-form-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .grid-form {
     & > :nth-child(odd) {
-        justify-self: end;
-        color: $text-muted;
-
-        &::after {
-            content: ":";
-        }
+        @extend %grid-form-label;
     }
 
     & > :nth-child(even) {
-        overflow: hidden;
-        text-overflow: ellipsis;
+        @extend %grid-form-text;
     }
+}
+
+.grid-form-label {
+    @extend %grid-form-label;
+}
+
+.grid-form-text {
+    @extend %grid-form-text;
 }
 
 %backdrop {

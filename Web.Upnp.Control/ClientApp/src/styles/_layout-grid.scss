@@ -51,6 +51,10 @@ $grid-layout-breakpoints: map-merge(
     grid-template-columns: 1fr auto;
 }
 
+.col-span-2 {
+    grid-column: 1 / span 2;
+}
+
 @if $generate-grid-layout-responsive-styles {
     @each $breakpoint in map-keys($grid-layout-breakpoints) {
         @include media-breakpoint-up($breakpoint, $grid-layout-breakpoints) {
