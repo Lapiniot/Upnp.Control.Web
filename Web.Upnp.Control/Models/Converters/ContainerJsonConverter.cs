@@ -17,6 +17,8 @@ namespace Web.Upnp.Control.Models.Converters
         {
             writer.WriteStartObject();
             WriteCoreProps(writer, value);
+            if(value.ChildCount is { } childCount) writer.WriteNumber("count", childCount);
+            if(value.ChildContainerCount is { } childContainerCount) writer.WriteNumber("containerCount", childContainerCount);
             WriteCollection(writer, "albumArts", value.AlbumArts);
             WriteResource(writer, value, options);
             WriteVendorProps(writer, value);

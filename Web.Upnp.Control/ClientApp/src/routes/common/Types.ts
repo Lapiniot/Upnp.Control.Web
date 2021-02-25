@@ -37,9 +37,13 @@ export type DIDLResource = {
     size?: number;
     duration?: string;
     resolution?: string;
+    depth?: number;
     bitrate?: number;
-    sampleFrequency?: number;
-    nrAudioChannels?: number;
+    freq?: number;
+    bits?: number;
+    channels?: number;
+    infoUri?: string;
+    protection?: string;
 }
 
 export type DIDLItem = {
@@ -48,10 +52,28 @@ export type DIDLItem = {
     title: string;
     readonly?: boolean;
     container?: boolean;
+    count?: number;
+    containerCount?: number;
     creator?: string;
     album?: string;
     albumArts?: string[];
     artists?: string[];
+    actors?: string[];
+    authors?: string[];
+    producers?: string[];
+    directors?: string[];
+    publishers?: string[];
+    date?: string;
+    genre?: string;
+    genres?: string[];
+    track?: number;
+    discographyUrl?: string;
+    lyricsUrl?: string;
+    description?: string;
+    storageUsed?: number;
+    storageTotal?: number;
+    storageFree?: number;
+    storageMedium?: number;
     res?: DIDLResource;
     vendor?: PropertyBag;
 }
