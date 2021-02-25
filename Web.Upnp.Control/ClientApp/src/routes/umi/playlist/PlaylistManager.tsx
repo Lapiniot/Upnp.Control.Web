@@ -1,4 +1,4 @@
-import React, { EventHandler, HTMLAttributes, ReactNode, UIEvent } from "react";
+import React, { EventHandler, HTMLAttributes, ReactElement, UIEvent } from "react";
 import { RouteComponentProps } from "react-router";
 import { AVState, BrowseFetchResult, DIDLItem, PropertyBag, UpnpDevice } from "../../common/Types";
 import $api from "../../../components/WebApi";
@@ -20,10 +20,11 @@ import { RemoveItemsModalDialog } from "./dialogs/RemoveItemsModalDialog";
 import { UploadPlaylistModalDialog } from "./dialogs/UploadPlaylistModalDialog";
 import { DropTarget } from "../../../components/DropTarget";
 import { BrowserSvgSymbols, EditSvgSymbols, PlayerSvgSymbols, PlaylistSvgSymbols, PlaySvgSymbols } from "../../common/SvgSymbols";
-import { Portal } from "../../../components/Portal";
 import $s from "../../common/Settings";
 import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
 import { BottomBar } from "../../common/BottomBar";
+import ModalHost from "../../../components/ModalHost";
+import { ModalProps } from "../../../components/Modal";
 
 type RouteParams = {
     device: string;
@@ -39,7 +40,6 @@ type PlaylistManagerProps = RouteParams &
     RouteComponentProps;
 
 type PlaylistManagerState = {
-    modal: ReactNode;
     selection: string[];
     playlist?: string;
     device: UpnpDevice | null;
@@ -86,11 +86,12 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     handlers;
     ctrl;
     pls;
+    modalHostRef = React.createRef<ModalHost>();
 
     constructor(props: PlaylistManagerProps) {
         super(props);
         this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
-        this.state = { modal: null, selection: [], device: null };
+        this.state = { selection: [], device: null };
         this.ctrl = $api.control(this.props.device);
         this.pls = $api.playlist(this.props.device);
     }
@@ -143,7 +144,9 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         return false;
     }
 
-    private resetModal = () => { this.setState({ modal: null }); }
+    private modal(modal: ReactElement<ModalProps>) {
+        this.modalHostRef.current?.show(modal);
+    }
 
     //#region API calls wrapped with UI indication and automatic data reload
 
@@ -172,58 +175,54 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
         const onRemove = () => this.remove(ids);
 
-        this.setState({
-            modal: <RemoveItemsModalDialog title="Do you want to delete playlist(s)?" onDismissed={this.resetModal} onRemove={onRemove}>
+        this.modal(
+            <RemoveItemsModalDialog title="Do you want to delete playlist(s)?" onRemove={onRemove}>
                 <ul className="list-unstyled">
                     {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
                 </ul>
-            </RemoveItemsModalDialog>
-        });
+            </RemoveItemsModalDialog>);
     }
 
     private renamePlaylist = (id: string) => {
         const title = this.props.dataContext?.source.items.find(e => e.id === id)?.title;
         const onRename = (value: string) => this.rename(id, value);
 
-        this.setState({
-            modal: <TextValueEditDialog title="Rename playlist" label="Name" confirmText="Rename"
-                defaultValue={title} onConfirmed={onRename} onDismissed={this.resetModal} immediate />
-        });
+        this.modal(
+            <TextValueEditDialog title="Rename playlist" label="Name" confirmText="Rename" defaultValue={title} onConfirmed={onRename} />
+        );
     }
 
     private removePlaylistItems = (ids: string[]) => {
         const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
         const onRemove = () => this.removeItems(ids);
 
-        this.setState({
-            modal: <RemoveItemsModalDialog onDismissed={this.resetModal} onRemove={onRemove}>
-                <ul className="list-unstyled">
-                    {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
-                </ul>
+        this.modal(
+            <RemoveItemsModalDialog onRemove={onRemove}>
+                <ul className="list-unstyled">{[values?.map(e => <li key={e.id}>{e.title}</li>)]}</ul>
             </RemoveItemsModalDialog>
-        });
+        );
     }
 
     private addPlaylistItems = (id: string) => {
         const addItems = (device: string, ids: string[]) => this.addItems(id, device, ids);
-        return this.setState({ modal: <AddItemsModalDialog onDismissed={this.resetModal} onAdd={addItems} browserProps={dialogBrowserProps} /> });
+        return this.modal(<AddItemsModalDialog onAdd={addItems} browserProps={dialogBrowserProps} />);
     }
 
     private addPlaylistUrl = (id: string) => {
         const addUrl = (url: string, title?: string, useProxy?: boolean) => this.addUrl(id, url, title, useProxy);
-        return this.setState({ modal: <AddUrlModalDialog useProxy={$s.get("useDlnaProxy")} onDismissed={this.resetModal} onAdd={addUrl} /> });
+        return this.modal(<AddUrlModalDialog useProxy={$s.get("useDlnaProxy")} onAdd={addUrl} />);
     }
 
     private addPlaylistFiles = (id: string) => {
         const addFiles = (data: FormData) => this.addFiles(id, data);
-        return this.setState({ modal: <UploadPlaylistModalDialog useProxy={$s.get("useDlnaProxy")} onDismissed={this.resetModal} onAdd={addFiles} /> });
+        return this.modal(<UploadPlaylistModalDialog useProxy={$s.get("useDlnaProxy")} onAdd={addFiles} />);
     }
 
     //#endregion
 
     //#region Toolbar button click handlers 
 
-    private addClickHandler = () => this.setState({ modal: <TextValueEditDialog title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} onDismissed={this.resetModal} immediate /> });
+    private addClickHandler = () => this.modal(<TextValueEditDialog title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} />);
 
     private removeClickHandler = () => this.removePlaylist(this.state.selection);
 
@@ -424,7 +423,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         <TablePagination location={location} history={history} total={total} current={page} pageSize={pageSize} />
                     </BottomBar>
                 </div>
-                <Portal selector="#modal-root">{this.state.modal}</Portal>
+                <ModalHost ref={this.modalHostRef} />
             </DropTarget >
         </div>;
     }

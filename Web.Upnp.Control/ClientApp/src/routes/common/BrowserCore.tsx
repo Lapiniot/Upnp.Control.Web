@@ -4,7 +4,6 @@ import BrowserView, { BrowserViewProps } from "./BrowserView";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { RouteComponentProps } from "react-router";
 import $s from "./Settings";
-import React, { useCallback } from "react";
 import { BottomBar } from "./BottomBar";
 
 type FetchProps = {
