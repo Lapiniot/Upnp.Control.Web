@@ -12,6 +12,8 @@ import { TablePagination } from "./Pagination";
 import $s from "./Settings";
 import { BrowserSvgSymbols } from "./SvgSymbols";
 import { BrowseFetchResult, DIDLItem, Services, UpnpDevice } from "./Types";
+import ModalHost from "../../components/ModalHost";
+import ItemInfoDialog from "./ItemInfoDialog";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);
@@ -70,6 +72,8 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
 
     state: BrowserState = { device: null, umis: [], renderers: [], selection: { items: [], umiCompatible: false, rendererCompatible: false }, fetching: false, error: null }
 
+    modalHostRef = React.createRef<ModalHost>();
+
     async componentDidMount() {
         try {
             const timeout = $s.get("timeout");
@@ -107,18 +111,17 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         const { dataContext, device } = this.props;
 
         if (!action || !anchor || !device || !dataContext?.source) return;
+        const item = dataContext.source.items.find(i => i.id === anchor.dataset.id);
+        if (!item) return;
 
         if (udn) {
-            const item = dataContext.source.items.find(i => i.id === anchor.dataset.id);
-
-            if (!item) return;
-
             if (action.startsWith("send.")) {
                 await this.createPlaylist(udn, item.title, device, [item.id]);
-            }
-            else if (action.startsWith("play.") && udn) {
+            } else if (action.startsWith("play.") && udn) {
                 await this.playItems(udn, device, [item.id]);
             }
+        } else if (action == "info") {
+            this.modalHostRef.current?.show(<ItemInfoDialog item={item} />);
         }
     }
 
@@ -238,6 +241,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 </button>
                 <DropdownMenu render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} />
             </BottomBar>
+            <ModalHost ref={this.modalHostRef} />
         </div>;
     }
 }

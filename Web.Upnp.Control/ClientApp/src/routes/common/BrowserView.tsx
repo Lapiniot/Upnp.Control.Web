@@ -335,7 +335,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                             <div className="mw-1"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.rowStates[index]} /></div>
                             <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
                             <div className="small">{utils.formatTime(e.res?.duration)}</div>
-                            <div className="text-capitalize" title={JSON.stringify(e, null, 2)}>{utils.getDisplayName(e.class)}</div>
+                            <div className="text-capitalize">{utils.getDisplayName(e.class)}</div>
                         </div>;
                     })]}
                 </div>
