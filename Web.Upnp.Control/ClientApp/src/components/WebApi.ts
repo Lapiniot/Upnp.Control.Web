@@ -28,7 +28,7 @@ export interface PlaylistApiProvider {
     rename: (id: string, title: string) => JsonPutFetch;
     delete: (ids: string[]) => JsonDeleteFetch;
     copy: (id: string) => JsonFetch;
-    addItems: (id: string, sourceDevice: string, sourceIds: string[]) => JsonPostFetch;
+    addItems: (id: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) => JsonPostFetch;
     addUrl: (id: string, mediaUrl: string, title?: string, useProxy?: boolean) => JsonPostFetch;
     addFromFiles: (id: string, data: Iterable<File> | FormData, useProxy?: boolean) => HttpPost;
     removeItems: (id: string, ids: string[]) => JsonDeleteFetch;
@@ -52,7 +52,7 @@ export default class {
         create: (title: string) => new JsonPostFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(title) }),
         createFromItems: (title: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) =>
             new JsonPostFetch(`${baseUri}/${deviceId}/playlists/items`, null,
-                { body: JSON.stringify({ title, source: { deviceId: sourceDevice, items: sourceIds }, maxDepth }) }),
+                { body: JSON.stringify({ title, source: { deviceId: sourceDevice, items: sourceIds, maxDepth } }) }),
         createFromFiles: (data: Iterable<File> | FormData, title?: string | null, merge?: boolean, useProxy?: boolean) => {
             const url = `${baseUri}/${deviceId}/playlists/files`;
 
@@ -69,9 +69,9 @@ export default class {
         rename: (id: string, title: string) => new JsonPutFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { body: JSON.stringify(title) }),
         delete: (ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(ids) }),
         copy: (id: string) => new JsonFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { method: "COPY" }),
-        addItems: (id: string, sourceDevice: string, sourceIds: string[]) =>
+        addItems: (id: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) =>
             new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null,
-                { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds }) }),
+                { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds, maxDepth }) }),
         addUrl: (id: string, url: string, title?: string, useProxy?: boolean) =>
             new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null,
                 { body: JSON.stringify({ url, title, useProxy }) }),

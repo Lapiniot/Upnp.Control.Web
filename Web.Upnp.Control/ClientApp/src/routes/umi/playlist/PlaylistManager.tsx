@@ -51,7 +51,7 @@ const dialogBrowserProps: BrowserProps<unknown> = {
     multiSelect: true,
     useCheckboxes: true,
     rowState: item => item.container
-        ? RowState.Navigable
+        ? RowState.Navigable | RowState.Selectable
         : DIDLUtils.isMusicTrack(item)
             ? RowState.Selectable
             : RowState.None
@@ -159,7 +159,10 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private remove = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).delete(ids).fetch().then(this.selection.reset));
 
-    private addItems = (id: string, device: string, ids: string[]) => this.reload($api.playlist(this.props.device).addItems(id, device, ids).fetch);
+    private addItems = (id: string, device: string, ids: string[]) => this.reload(() => $api
+        .playlist(this.props.device)
+        .addItems(id, device, ids, $s.get("containerScanDepth"))
+        .fetch($s.get("containerScanTimeout")));
 
     private addUrl = (id: string, url: string, title?: string, useProxy?: boolean) => this.reload($api.playlist(this.props.device).addUrl(id, url, title, useProxy).fetch);
 
@@ -182,38 +185,32 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
         const onRemove = () => this.remove(ids);
 
-        this.modal(
-            <RemoveItemsModalDialog title="Do you want to delete playlist(s)?" onRemove={onRemove}>
-                <ul className="list-unstyled">
-                    {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
-                </ul>
-            </RemoveItemsModalDialog>);
+        this.modal(<RemoveItemsModalDialog title="Do you want to delete playlist(s)?" onRemove={onRemove}>
+            <ul className="list-unstyled">
+                {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
+            </ul>
+        </RemoveItemsModalDialog>);
     }
 
     private renamePlaylist = (id: string) => {
         const title = this.props.dataContext?.source.items.find(e => e.id === id)?.title;
         const onRename = (value: string) => this.rename(id, value);
 
-        this.modal(
-            <TextValueEditDialog title="Rename playlist" label="Name" confirmText="Rename" defaultValue={title} onConfirmed={onRename} />
-        );
+        this.modal(<TextValueEditDialog title="Rename playlist" label="Name" confirmText="Rename" defaultValue={title} onConfirmed={onRename} />);
     }
 
     private removePlaylistItems = (ids: string[]) => {
         const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
         const onRemove = () => this.removeItems(ids);
 
-        this.modal(
-            <RemoveItemsModalDialog onRemove={onRemove}>
-                <ul className="list-unstyled">{[values?.map(e => <li key={e.id}>{e.title}</li>)]}</ul>
-            </RemoveItemsModalDialog>
-        );
+        this.modal(<RemoveItemsModalDialog onRemove={onRemove}>
+            <ul className="list-unstyled">{[values?.map(e => <li key={e.id}>{e.title}</li>)]}</ul>
+        </RemoveItemsModalDialog>);
     }
 
-    private addPlaylistItems = (id: string) => {
-        const addItems = (device: string, ids: string[]) => this.addItems(id, device, ids);
-        return this.modal(<AddItemsModalDialog onAdd={addItems} browserProps={dialogBrowserProps} />);
-    }
+    private addPlaylistItems = (id: string) => this.modal(<AddItemsModalDialog browserProps={dialogBrowserProps}
+        onConfirmed={({ device, keys }) => this.addItems(id, device, keys)} />);
+
 
     private addPlaylistUrl = (id: string) => {
         const addUrl = (url: string, title?: string, useProxy?: boolean) => this.addUrl(id, url, title, useProxy);
