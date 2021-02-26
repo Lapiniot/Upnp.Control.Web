@@ -25,6 +25,7 @@ import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
 import { BottomBar } from "../../common/BottomBar";
 import ModalHost from "../../../components/ModalHost";
 import { ModalProps } from "../../../components/Modal";
+import ItemInfoDialog from "../../common/ItemInfoDialog";
 
 type RouteParams = {
     device: string;
@@ -64,7 +65,7 @@ type ItemAction = "remove";
 
 type PlaybackAction = "play" | "pause" | "stop";
 
-type Action = PlaylistAction | ItemAction | PlaybackAction;
+type Action = PlaylistAction | ItemAction | PlaybackAction | "info";
 
 type ToolbarItem = [Action, string | undefined, string | undefined, () => void, boolean | undefined];
 
@@ -165,6 +166,12 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     private addFiles = (id: string, data: FormData) => this.reload($api.playlist(this.props.device).addFromFiles(id, data).fetch);
 
     private removeItems = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset));
+
+    private showInfo = (id: string) => {
+        var item = this.props.dataContext?.source.items.find(i => i.id === id);
+        if (!item) return;
+        this.modal(<ItemInfoDialog item={item} />);
+    }
 
     //#endregion
 
@@ -302,6 +309,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             case "remove": this.removePlaylistItems([id]); break;
             case "play": if (anchor?.dataset?.id) this.playItem(anchor.dataset.id); break;
             case "pause": this.ctrl.pause().fetch(); break;
+            case "info": this.showInfo(id); break;
         }
     }
 
@@ -345,6 +353,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <li><hr className="dropdown-divider mx-2" /></li>
                     <MenuItem action="remove" glyph="trash">Remove item</MenuItem>
                 </>}
+            <li><hr className="dropdown-divider mx-2" /></li>
+            <MenuItem action="info" glyph="info">Get Info</MenuItem>
         </>;
     };
 

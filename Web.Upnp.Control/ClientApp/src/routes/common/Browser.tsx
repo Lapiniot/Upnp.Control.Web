@@ -157,7 +157,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             {this.renderMenu(umiAcceptable, rendererAcceptable, umis, renderers)}
             {(umiAcceptable || rendererAcceptable) &&
                 <li><hr className="dropdown-divider mx-2" /></li>}
-            <MenuItem action={"info"}>Get Info</MenuItem>
+            <MenuItem action={"info"} glyph="info">Get Info</MenuItem>
         </>;
     }
 
