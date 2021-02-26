@@ -355,9 +355,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         </>;
     };
 
-    renderActionMenu = () => {
-        return this.getToolbarConfig().map(i => <MenuItem action={i[0]} key={i[0]} glyph={i[2]} onClick={i[3]} disabled={i[4]}>{i[1]}</MenuItem>);
-    };
+    renderActionMenu = () => this.getToolbarConfig().filter(c => !c[4]).map(c =>
+        <MenuItem action={c[0]} key={c[0]} glyph={c[2]} onClick={c[3]} disabled={c[4]}>{c[1]}</MenuItem>);
 
     render() {
 
@@ -368,8 +367,10 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const page = p ? parseInt(p) : 1;
 
         const fetched = items.length;
+        const isRootLevel = id === "PL:";
+        const hasSelection = this.state.selection.length > 0;
 
-        const activeIndex = id === "PL:"
+        const activeIndex = isRootLevel
             ? playlist === "aux" ? items.findIndex(i => i.vendor?.["mi:playlistType"] === "aux") : items.findIndex(i => i.res?.url === playlist)
             : currentTrack && playlist === parents?.[0]?.res?.url ? parseInt(currentTrack) - pageSize * (page - 1) - 1 : -1;
 
@@ -415,13 +416,11 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 <div className="sticky-bottom d-flex flex-column">
                     <div className="position-relative d-flex justify-content-center justify-content-sm-end d-none-h-md">
                         <div className="float-container position-absolute bottom-0">
-                            {id === "PL:" && this.state.selection.length === 0
-                                ? <button type="button" className="btn btn-round btn-primary" onClick={this.addClickHandler}>
-                                    <svg className="icon"><use href="#plus" /></svg>
-                                </button>
-                                : <button type="button" className="btn btn-round btn-primary" data-bs-toggle="dropdown">
-                                    <svg className="icon"><use href="#edit" /></svg>
-                                </button>}
+                            <button type="button" className="btn btn-round btn-primary"
+                                onClick={isRootLevel && !hasSelection ? this.addClickHandler : undefined}
+                                data-bs-toggle={(hasSelection || !isRootLevel) ? "dropdown" : undefined}>
+                                <svg className="icon"><use href={hasSelection ? "#edit" : "#plus"} /></svg>
+                            </button>
                         </div>
                         <DropdownMenu render={this.renderActionMenu} />
                     </div>
