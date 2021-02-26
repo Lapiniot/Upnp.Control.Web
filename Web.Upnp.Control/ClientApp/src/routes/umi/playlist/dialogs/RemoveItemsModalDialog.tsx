@@ -1,7 +1,7 @@
 import Modal, { ModalProps } from "../../../../components/Modal";
 
-export function RemoveItemsModalDialog({ onRemove, children, ...other }: ModalProps & { onRemove: () => void; }) {
-    return <Modal title="Do you want to remove items from the playlist?" immediate {...other}>
+export function RemoveItemsModalDialog({ onRemove, children, className, ...other }: ModalProps & { onRemove: () => void; }) {
+    return <Modal title="Do you want to remove items from the playlist?" className={`modal-dialog-scrollable${className ? ` ${className}` : ""}`} {...other}>
         {children}
         <Modal.Footer>
             <Modal.Button className="dismiss" dismiss>Cancel</Modal.Button>
