@@ -66,6 +66,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         }
         if (prevProps.dataContext?.source !== this.props.dataContext?.source) {
             this.tracker.blur();
+            this.props.selectionChanged?.([]);
         }
     }
 
