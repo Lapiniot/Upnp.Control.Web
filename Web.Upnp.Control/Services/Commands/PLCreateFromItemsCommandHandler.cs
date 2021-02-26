@@ -21,7 +21,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(PLCreateFromItemsCommand command, CancellationToken cancellationToken)
         {
-            var (deviceId, (title, (sourceDeviceId, ids), depth)) = command;
+            var (deviceId, (title, (sourceDeviceId, ids, depth))) = command;
             var maxDepth = depth ?? options.Value.MaxContainerScanDepth;
 
             var sb = new StringBuilder();

@@ -71,7 +71,7 @@ namespace Web.Upnp.Control.Models
 
     public record PLCreateCommand(string DeviceId, string Title);
 
-    public record CreatePlaylistParams(string Title, MediaSource Source, int? maxDepth);
+    public record CreatePlaylistParams(string Title, MediaSource Source);
 
     public record PLCreateFromItemsCommand(string DeviceId, CreatePlaylistParams Params);
 
@@ -93,7 +93,7 @@ namespace Web.Upnp.Control.Models
 
     public record QClearCommand(string DeviceId, string QueueId);
 
-    public record MediaSource(string DeviceId, IEnumerable<string> Items);
+    public record MediaSource(string DeviceId, IEnumerable<string> Items, int? MaxDepth);
 
     public record PlaylistFilesSource(IEnumerable<IFormFile> Files, bool? UseProxy);
 
