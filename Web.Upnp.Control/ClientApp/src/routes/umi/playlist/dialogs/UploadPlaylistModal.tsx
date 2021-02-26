@@ -1,12 +1,12 @@
 import React from "react";
 import Modal, { ModalProps } from "../../../../components/Modal";
 
-type UploadPlaylistModalDialogProps = {
+type UploadPlaylistModalProps = ModalProps & {
     useProxy?: boolean;
     onAdd: (data: FormData) => void;
 };
 
-export class UploadPlaylistModalDialog extends React.Component<ModalProps & UploadPlaylistModalDialogProps> {
+export class UploadPlaylistModal extends React.Component<UploadPlaylistModalProps> {
 
     style = { width: "60px" };
 

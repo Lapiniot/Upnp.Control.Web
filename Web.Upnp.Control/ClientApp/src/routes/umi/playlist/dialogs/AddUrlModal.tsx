@@ -1,14 +1,14 @@
 import React from "react";
 import Modal, { ModalProps } from "../../../../components/Modal";
 
-type AddModalDialogProps = ModalProps & {
+type AddUrlModalProps = ModalProps & {
     feedUrl?: string;
     feedTitle?: string;
     useProxy?: boolean;
     onAdd: (url: string, title: string, useProxy: boolean) => void;
 };
 
-export class AddUrlModalDialog extends React.Component<AddModalDialogProps> {
+export class AddUrlModal extends React.Component<AddUrlModalProps> {
     style = { width: "60px" };
 
     onSubmit = (data: FormData): boolean => {

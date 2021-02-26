@@ -1,6 +1,6 @@
 import BrowserDialog, { BrowserDialogProps } from "../../../common/BrowserDialog";
 
-export function AddItemsModalDialog(props: BrowserDialogProps) {
+export function AddItemsModal(props: BrowserDialogProps) {
     return <BrowserDialog title="Select items to add" className="modal-lg modal-fullscreen-sm-down" confirmText="Add" {...props}>
         {/* {({ keys }: { device: string, keys: string[] }) => {
             return [<Modal.Button key="close" className="dismiss" dismiss>Close</Modal.Button>,

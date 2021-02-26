@@ -14,10 +14,10 @@ import { SignalRListener } from "../../../components/SignalR";
 import MainCell from "./CellTemplate";
 import { DataContext, DataFetchProps } from "../../../components/DataFetch";
 import { NavigatorProps } from "../../common/Navigator";
-import { AddUrlModalDialog } from "./dialogs/AddUrlModalDialog";
-import { AddItemsModalDialog } from "./dialogs/AddItemsModalDialog";
-import { RemoveItemsModalDialog } from "./dialogs/RemoveItemsModalDialog";
-import { UploadPlaylistModalDialog } from "./dialogs/UploadPlaylistModalDialog";
+import { AddUrlModal } from "./dialogs/AddUrlModal";
+import { AddItemsModal } from "./dialogs/AddItemsModal";
+import { RemoveItemsModal } from "./dialogs/RemoveItemsModal";
+import { UploadPlaylistModal } from "./dialogs/UploadPlaylistModal";
 import { DropTarget } from "../../../components/DropTarget";
 import { BrowserSvgSymbols, EditSvgSymbols, PlayerSvgSymbols, PlaylistSvgSymbols, PlaySvgSymbols } from "../../common/SvgSymbols";
 import $s from "../../common/Settings";
@@ -185,11 +185,11 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
         const onRemove = () => this.remove(ids);
 
-        this.modal(<RemoveItemsModalDialog title="Do you want to delete playlist(s)?" onRemove={onRemove}>
+        this.modal(<RemoveItemsModal title="Do you want to delete playlist(s)?" onRemove={onRemove}>
             <ul className="list-unstyled">
                 {[values?.map(e => <li key={e.id}>{e.title}</li>)]}
             </ul>
-        </RemoveItemsModalDialog>);
+        </RemoveItemsModal>);
     }
 
     private renamePlaylist = (id: string) => {
@@ -203,23 +203,23 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
         const onRemove = () => this.removeItems(ids);
 
-        this.modal(<RemoveItemsModalDialog onRemove={onRemove}>
+        this.modal(<RemoveItemsModal onRemove={onRemove}>
             <ul className="list-unstyled">{[values?.map(e => <li key={e.id}>{e.title}</li>)]}</ul>
-        </RemoveItemsModalDialog>);
+        </RemoveItemsModal>);
     }
 
-    private addPlaylistItems = (id: string) => this.modal(<AddItemsModalDialog browserProps={dialogBrowserProps}
+    private addPlaylistItems = (id: string) => this.modal(<AddItemsModal browserProps={dialogBrowserProps}
         onConfirmed={({ device, keys }) => this.addItems(id, device, keys)} />);
 
 
     private addPlaylistUrl = (id: string) => {
         const addUrl = (url: string, title?: string, useProxy?: boolean) => this.addUrl(id, url, title, useProxy);
-        return this.modal(<AddUrlModalDialog useProxy={$s.get("useDlnaProxy")} onAdd={addUrl} />);
+        return this.modal(<AddUrlModal useProxy={$s.get("useDlnaProxy")} onAdd={addUrl} />);
     }
 
     private addPlaylistFiles = (id: string) => {
         const addFiles = (data: FormData) => this.addFiles(id, data);
-        return this.modal(<UploadPlaylistModalDialog useProxy={$s.get("useDlnaProxy")} onAdd={addFiles} />);
+        return this.modal(<UploadPlaylistModal useProxy={$s.get("useDlnaProxy")} onAdd={addFiles} />);
     }
 
     //#endregion
