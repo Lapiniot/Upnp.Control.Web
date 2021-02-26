@@ -24,7 +24,7 @@ export function OpenAction({ children, className, browserProps, device, category
     }, [device]);
     const browseClickHandler = useCallback(() =>
         modalHostRef.current?.show(
-            <BrowserDialog className="modal-lg modal-fullscreen-sm-down" title="Select media to play" confirmText="Open"
+            <BrowserDialog className="modal-lg modal-fullscreen-sm-down" title="Select media to play"
                 onConfirmed={playHandler} browserProps={browserProps}>
             </BrowserDialog>)
         , [device]);

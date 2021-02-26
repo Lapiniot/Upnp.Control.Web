@@ -1,12 +1,10 @@
 import BrowserDialog, { BrowserDialogProps } from "../../../common/BrowserDialog";
 
+function renderConfirmButton(ids: string[]): JSX.Element {
+    return <>Add{ids.length ? <span className="badge rounded-pill ms-1 bg-secondary small">{ids.length}</span> : undefined}</>
+}
+
 export function AddItemsModal(props: BrowserDialogProps) {
-    return <BrowserDialog title="Select items to add" className="modal-lg modal-fullscreen-sm-down" confirmText="Add" {...props}>
-        {/* {({ keys }: { device: string, keys: string[] }) => {
-            return [<Modal.Button key="close" className="dismiss" dismiss>Close</Modal.Button>,
-            <Modal.Button key="add" className="confirm" icon="plus" disabled={!keys.length} onClick={clickHandler} dismiss>
-                Add{keys.length ? <span className="badge rounded-pill ms-1 bg-secondary small">{keys.length}</span> : undefined}
-            </Modal.Button>];
-        }} */}
-    </BrowserDialog>;
+    return <BrowserDialog title="Select items to add" className="modal-lg modal-fullscreen-sm-down"
+        confirmContent={renderConfirmButton} {...props} />
 }

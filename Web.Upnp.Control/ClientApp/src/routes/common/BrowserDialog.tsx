@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from "react";
+import React, { HTMLAttributes, ReactNode } from "react";
 import { MemoryRouter, Switch, Route, Redirect } from "react-router-dom";
 import Modal, { ModalProps } from "../../components/Modal";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
@@ -15,7 +15,7 @@ import SelectionService from "../../components/SelectionService";
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;
     selection?: SelectionService;
-    confirmText?: string;
+    confirmContent?: ((ids: string[]) => ReactNode) | string;
     onConfirmed?: (selection: BrowseResult) => void;
     dismissOnOpen?: boolean;
 } & ModalProps
@@ -57,19 +57,16 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
         return false;
     }
 
-    private confirmHandler = () => { return !!this.props.onConfirmed && this.props.onConfirmed(this.getSelectionData()); }
+    private confirmHandler = () => !!this.props.onConfirmed &&
+        this.props.onConfirmed({ device: this.browserRef?.current?.props.match.params.device, keys: this.state.selection });
 
     private openHandler = () => {
         this.modalRef.current?.dismiss();
         return false;
     }
 
-    private getSelectionData = (): BrowseResult => {
-        return { device: this.browserRef?.current?.props.match.params.device, keys: this.state.selection };
-    }
-
     render() {
-        const { title, confirmText = "OK", onConfirmed, browserProps = {}, selection, ...other } = this.props;
+        const { title, confirmContent = "Open", onConfirmed, browserProps = {}, selection, ...other } = this.props;
         return <Modal title={title} {...other} data-bs-keyboard={true} ref={this.modalRef}>
             <Modal.Body className="overflow-hidden p-0 position-relative d-flex flex-column" style={{ height: "60vh" }}>
                 <div className="overflow-auto flex-grow-1 d-flex flex-column">
@@ -88,7 +85,9 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
             <Modal.Footer>
                 <React.Fragment>
                     <Modal.Button key="cancel" className="dismiss" dismiss>Cancel</Modal.Button>
-                    <Modal.Button key="confirm" className="confirm" disabled={this.state.selection.length === 0} onClick={this.confirmHandler} dismiss>{confirmText}</Modal.Button>
+                    <Modal.Button key="confirm" className="confirm" disabled={this.state.selection.length === 0} onClick={this.confirmHandler} dismiss>
+                        {typeof confirmContent === "function" ? confirmContent(this.state.selection) : confirmContent}
+                    </Modal.Button>
                 </React.Fragment>
             </Modal.Footer>
         </Modal>;
