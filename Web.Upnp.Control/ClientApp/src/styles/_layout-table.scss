@@ -36,6 +36,13 @@ $hide-columns-map: (
     vertical-align: $table-cell-vertical-align;
     border-color: $table-border-color;
 
+    @mixin at-header {
+        & > :not(.table-caption):first-of-type,
+        & > .table-caption:first-of-type + * {
+            @content;
+        }
+    }
+
     @mixin at-body {
         & > .table-caption:first-of-type ~ :nth-of-type(3),
         & > :not(.table-caption):first-of-type ~ :nth-of-type(2) {
@@ -43,7 +50,7 @@ $hide-columns-map: (
         }
     }
 
-    @mixin at-row($selector: null) {
+    @mixin at-body-row($selector: null) {
         @include at-body() {
             #{if($selector, selector-nest("& >", $selector), "*")} {
                 @content;
@@ -51,42 +58,49 @@ $hide-columns-map: (
         }
     }
 
+    @mixin at-footer {
+        & > .table-footer:last-of-type {
+            @content;
+        }
+    }
+
     & > * {
         display: table-row-group;
+    }
 
-        /* Table caption */
-        &.table-caption:first-of-type {
-            display: table-caption;
-            color: $table-caption-color;
-            padding: $table-cell-padding-y $table-cell-padding-x;
-            caption-side: top;
-            border: none;
-        }
+    /* Table caption */
+    & > .table-caption:first-of-type {
+        display: table-caption;
+        color: $table-caption-color;
+        padding: $table-cell-padding-y $table-cell-padding-x;
+        caption-side: top;
+        border: none;
+    }
 
-        /* Table header */
-        &:not(.table-caption):first-of-type,
-        &.table-caption:first-of-type + * {
-            display: table-header-group;
+    /* Table header */
+    @include at-header() {
+        display: table-header-group;
 
-            & > * > * {
-                color: $table-color;
-                background-color: var(--bs-auto-table-header-bg);
-                border-top: $table-border-width solid $table-border-color;
-                border-bottom: $table-border-width solid $table-border-color;
-                border-left: $table-border-width solid $table-border-color;
-                font-weight: $headings-font-weight;
-                &:first-child {
-                    border-left: none;
-                }
-            }
-
-            &.sticky-header > * > * {
-                position: sticky;
-                top: 0;
-                z-index: $zindex-sticky;
+        & > * > * {
+            color: $table-color;
+            background-color: var(--bs-auto-table-header-bg);
+            border-top: $table-border-width solid $table-border-color;
+            border-bottom: $table-border-width solid $table-border-color;
+            border-left: $table-border-width solid $table-border-color;
+            font-weight: $headings-font-weight;
+            &:first-child {
+                border-left: none;
             }
         }
 
+        &.sticky-header > * > * {
+            position: sticky;
+            top: 0;
+            z-index: $zindex-sticky;
+        }
+    }
+
+    & > * {
         /* Table row */
         &:not(.table-caption) > * {
             display: table-row;
@@ -130,10 +144,10 @@ $hide-columns-map: (
                 padding-right: 2 * $table-cell-padding-x;
             }
         }
+    }
 
-        &.table-footer:last-of-type {
-            display: table-footer-group;
-        }
+    @include at-footer() {
+        display: table-footer-group;
     }
 
     &.table-compact {
@@ -151,7 +165,7 @@ $hide-columns-map: (
     }
 
     &.table-striped {
-        @include at-row(":nth-of-type(#{$auto-table-striped-order})") {
+        @include at-body-row(":nth-of-type(#{$auto-table-striped-order})") {
             --bs-auto-table-accent-bg: var(--bs-auto-table-striped-bg);
             color: var(--bs-auto-table-striped-color);
         }
@@ -160,7 +174,7 @@ $hide-columns-map: (
     &.table-focus-marker {
         --bs-auto-table-focused-marker-size: #{map-get($spacers, 1)};
 
-        @include at-row('[data-focused="true"],:focus,:focus-within') {
+        @include at-body-row('[data-focused="true"],:focus,:focus-within') {
             --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
             color: var(--bs-auto-table-selected-color) !important;
             outline: none;
@@ -171,14 +185,14 @@ $hide-columns-map: (
     }
 
     &.table-hover {
-        @include at-row(":hover") {
+        @include at-body-row(":hover") {
             --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
             color: var(--bs-auto-table-hover-color);
         }
     }
 
     &.table-hover-link {
-        @include at-row(":hover") {
+        @include at-body-row(":hover") {
             --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
             color: $link-hover-color;
             text-decoration: none;
