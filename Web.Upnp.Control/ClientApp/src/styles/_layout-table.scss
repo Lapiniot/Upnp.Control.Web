@@ -36,7 +36,22 @@ $hide-columns-map: (
     vertical-align: $table-cell-vertical-align;
     border-color: $table-border-color;
 
-    & > div {
+    @mixin at-body {
+        & > .table-caption:first-of-type ~ :nth-of-type(3),
+        & > :not(.table-caption):first-of-type ~ :nth-of-type(2) {
+            @content;
+        }
+    }
+
+    @mixin at-row($selector: null) {
+        @include at-body() {
+            #{if($selector, selector-nest("& >", $selector), "*")} {
+                @content;
+            }
+        }
+    }
+
+    & > * {
         display: table-row-group;
 
         /* Table caption */
@@ -50,25 +65,22 @@ $hide-columns-map: (
 
         /* Table header */
         &:not(.table-caption):first-of-type,
-        &.table-caption:first-of-type + div {
+        &.table-caption:first-of-type + * {
             display: table-header-group;
 
-            & > div {
-                & > div {
-                    :first-child {
-                        border-left: none;
-                    }
-
-                    color: $table-color;
-                    background-color: var(--bs-auto-table-header-bg);
-                    border-top: $table-border-width solid $table-border-color;
-                    border-bottom: $table-border-width solid $table-border-color;
-                    border-left: $table-border-width solid $table-border-color;
-                    font-weight: $headings-font-weight;
+            & > * > * {
+                color: $table-color;
+                background-color: var(--bs-auto-table-header-bg);
+                border-top: $table-border-width solid $table-border-color;
+                border-bottom: $table-border-width solid $table-border-color;
+                border-left: $table-border-width solid $table-border-color;
+                font-weight: $headings-font-weight;
+                &:first-child {
+                    border-left: none;
                 }
             }
 
-            &.sticky-header > div > div {
+            &.sticky-header > * > * {
                 position: sticky;
                 top: 0;
                 z-index: $zindex-sticky;
@@ -76,7 +88,7 @@ $hide-columns-map: (
         }
 
         /* Table row */
-        &:not(.table-caption) > div {
+        &:not(.table-caption) > * {
             display: table-row;
             background-color: var(--bs-auto-table-bg);
             background-image: linear-gradient(var(--bs-auto-table-accent-bg), var(--bs-auto-table-accent-bg));
@@ -88,17 +100,13 @@ $hide-columns-map: (
             }
 
             &[data-selected="true"],
-            &.selected,
-            &[data-focused="true"],
-            &.focused,
-            &:focus,
-            &:focus-within {
+            &.selected {
                 --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
                 color: var(--bs-auto-table-selected-color) !important;
                 outline: none;
             }
 
-            & > div {
+            & > * {
                 display: table-cell;
                 vertical-align: middle;
                 white-space: nowrap;
@@ -110,15 +118,15 @@ $hide-columns-map: (
                 }
             }
 
-            &:first-child > div {
+            &:first-child > * {
                 border-top: none;
             }
 
-            & > div:first-child {
+            & > :first-child {
                 padding-left: calc(#{2 * $table-cell-padding-x} + var(--bs-auto-table-focused-marker-size));
             }
 
-            & > div:last-child {
+            & > :last-child {
                 padding-right: 2 * $table-cell-padding-x;
             }
         }
@@ -129,75 +137,59 @@ $hide-columns-map: (
     }
 
     &.table-compact {
-        & > div {
-            & > div {
-                & > div {
-                    padding: $table-cell-padding-y-sm $table-cell-padding-x-sm;
-                }
+        & > * > * > * {
+            padding: $table-cell-padding-y-sm $table-cell-padding-x-sm;
 
-                & > div:first-child {
-                    padding-left: calc(#{2 * $table-cell-padding-x-sm} + var(--bs-auto-table-focused-marker-size));
-                }
+            &:first-child {
+                padding-left: calc(#{2 * $table-cell-padding-x-sm} + var(--bs-auto-table-focused-marker-size));
+            }
 
-                & > div:last-child {
-                    padding-right: 2 * $table-cell-padding-x-sm;
-                }
+            &:last-child {
+                padding-right: 2 * $table-cell-padding-x-sm;
             }
         }
     }
 
     &.table-striped {
-        & > div.table-caption:first-of-type ~ :nth-of-type(3),
-        & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
-            & > :nth-of-type(#{$auto-table-striped-order}) {
-                --bs-auto-table-accent-bg: var(--bs-auto-table-striped-bg);
-                color: var(--bs-auto-table-striped-color);
-            }
+        @include at-row(":nth-of-type(#{$auto-table-striped-order})") {
+            --bs-auto-table-accent-bg: var(--bs-auto-table-striped-bg);
+            color: var(--bs-auto-table-striped-color);
         }
     }
 
     &.table-focus-marker {
         --bs-auto-table-focused-marker-size: #{map-get($spacers, 1)};
 
-        & > div.table-caption:first-of-type ~ :nth-of-type(3),
-        & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
-            & > div {
-                &[data-focused="true"] > div:first-child,
-                &:focus > div:first-child,
-                &:focus-within > div:first-child {
-                    box-shadow: inset var(--bs-auto-table-focused-marker-size) 0 0
-                        var(--bs-auto-table-focused-marker-color);
-                }
+        @include at-row('[data-focused="true"],:focus,:focus-within') {
+            --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
+            color: var(--bs-auto-table-selected-color) !important;
+            outline: none;
+            & > :first-child {
+                box-shadow: inset var(--bs-auto-table-focused-marker-size) 0 0 var(--bs-auto-table-focused-marker-color);
             }
         }
     }
 
     &.table-hover {
-        & > div.table-caption:first-of-type ~ :nth-of-type(3),
-        & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
-            & > :hover {
-                --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
-                color: var(--bs-auto-table-hover-color);
-            }
+        @include at-row(":hover") {
+            --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
+            color: var(--bs-auto-table-hover-color);
         }
     }
 
     &.table-hover-link {
-        & > div.table-caption:first-of-type ~ :nth-of-type(3),
-        & > div:not(.table-caption):first-of-type ~ :nth-of-type(2) {
-            & > :hover {
-                --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
-                color: $link-hover-color;
-                text-decoration: none;
-                cursor: default;
-            }
+        @include at-row(":hover") {
+            --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
+            color: $link-hover-color;
+            text-decoration: none;
+            cursor: default;
         }
     }
 
     @each $breakpoint, $indices in $trim-columns-map {
         @include media-breakpoint-down($breakpoint) {
             @each $i in $indices {
-                &.trim#{breakpoint-infix($breakpoint)}-#{$i} > div:not(.table-caption) > div > div {
+                &.trim#{breakpoint-infix($breakpoint)}-#{$i} > :not(.table-caption) > * > * {
                     @include display-no-children-since($i);
                 }
             }
@@ -207,7 +199,7 @@ $hide-columns-map: (
     @each $breakpoint, $indices in $hide-columns-map {
         @include media-breakpoint-down($breakpoint) {
             @each $i in $indices {
-                &.hide#{breakpoint-infix($breakpoint)}-#{$i} > div:not(.table-caption) > div > div {
+                &.hide#{breakpoint-infix($breakpoint)}-#{$i} > :not(.table-caption) > * > * {
                     @include display-no-child($i);
                 }
             }
