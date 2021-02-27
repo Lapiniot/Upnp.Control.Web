@@ -100,25 +100,12 @@ $hide-columns-map: (
         }
     }
 
-    & > * {
-        /* Table row */
-        &:not(.table-caption) > * {
+    /* Table row */
+    & > :not(.table-caption) {
+        & > * {
             display: table-row;
             background-color: var(--bs-auto-table-bg);
             background-image: linear-gradient(var(--bs-auto-table-accent-bg), var(--bs-auto-table-accent-bg));
-
-            &[data-active="true"],
-            &.active {
-                --bs-auto-table-accent-bg: var(--bs-auto-table-active-bg) !important;
-                color: var(--bs-auto-table-active-color);
-            }
-
-            &[data-selected="true"],
-            &.selected {
-                --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
-                color: var(--bs-auto-table-selected-color) !important;
-                outline: none;
-            }
 
             & > * {
                 display: table-cell;
@@ -130,19 +117,32 @@ $hide-columns-map: (
                 &.mw-1 {
                     max-width: 1px;
                 }
+
+                &:first-child {
+                    padding-left: calc(#{2 * $table-cell-padding-x} + var(--bs-auto-table-focused-marker-size));
+                }
+
+                &:last-child {
+                    padding-right: 2 * $table-cell-padding-x;
+                }
             }
 
             &:first-child > * {
                 border-top: none;
             }
+        }
 
-            & > :first-child {
-                padding-left: calc(#{2 * $table-cell-padding-x} + var(--bs-auto-table-focused-marker-size));
-            }
+        & > [data-active="true"],
+        & > .active {
+            --bs-auto-table-accent-bg: var(--bs-auto-table-active-bg) !important;
+            color: var(--bs-auto-table-active-color);
+        }
 
-            & > :last-child {
-                padding-right: 2 * $table-cell-padding-x;
-            }
+        & > [data-selected="true"],
+        & > .selected {
+            --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
+            color: var(--bs-auto-table-selected-color) !important;
+            outline: none;
         }
     }
 
