@@ -48,7 +48,7 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
             {d.album && <>&nbsp;&bull;&nbsp;<small>{d.album}</small></>}
         </span>
         {d.container && ctx?.deviceName && <BookmarkItemButton item={d} device={ctx?.device as string} deviceName={ctx?.deviceName as string} />}
-        <button type="button" className="btn btn-round btn-icon btn-primary" data-id={d.id} data-index={index} data-bs-toggle="dropdown" disabled={!!(rowState & RowState.Readonly)}>
+        <button type="button" className="btn btn-round btn-plain" data-id={d.id} data-index={index} data-bs-toggle="dropdown" disabled={!!(rowState & RowState.Readonly)}>
             <svg><use href="#ellipsis-v" /></svg>
         </button>
     </div>;
