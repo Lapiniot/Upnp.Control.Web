@@ -140,10 +140,14 @@ $hide-columns-map: (
 
         & > [data-selected="true"],
         & > .selected {
-            --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
-            color: var(--bs-auto-table-selected-color) !important;
-            outline: none;
+            @extend %row-accent;
         }
+    }
+
+    %row-accent {
+        --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
+        color: var(--bs-auto-table-selected-color) !important;
+        outline: none;
     }
 
     @include at-footer() {
@@ -175,9 +179,7 @@ $hide-columns-map: (
         --bs-auto-table-focused-marker-size: #{map-get($spacers, 1)};
 
         @include at-body-row('[data-focused="true"],:focus,:focus-within') {
-            --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
-            color: var(--bs-auto-table-selected-color) !important;
-            outline: none;
+            @extend %row-accent;
             & > :first-child {
                 box-shadow: inset var(--bs-auto-table-focused-marker-size) 0 0 var(--bs-auto-table-focused-marker-color);
             }
@@ -198,6 +200,26 @@ $hide-columns-map: (
             text-decoration: none;
             cursor: default;
         }
+    }
+
+    &.table-material {
+        @include at-header() {
+            --bs-auto-table-header-bg: var(--bs-auto-table-bg);
+            &.sticky-header {
+                --bs-auto-table-header-bg: var(--bs-white);
+            }
+            & > * > * {
+                border-left: none;
+            }
+        }
+
+        & > * > * > * {
+            padding-inline: $table-cell-padding-x;
+        }
+
+        @extend .table-compact;
+        @extend .table-hover-link;
+        @extend .table-focus-marker;
     }
 
     @each $breakpoint, $indices in $trim-columns-map {
