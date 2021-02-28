@@ -1,3 +1,4 @@
+using System;
 using System.Buffers.Text;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 {
     public class CertificateDownloadMiddleware : IMiddleware
     {
+        const int ChunkSize = 48;
         private readonly IWebHostEnvironment environment;
         private readonly IConfiguration configuration;
         private readonly IServer server;
@@ -42,15 +44,31 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             response.Headers.Add("Content-Disposition", $"attachment; filename=\"{fileName}\"");
 
             var writer = response.BodyWriter;
-            var memory = writer.GetMemory(Base64.GetMaxEncodedToUtf8Length(bytes.Length) + 55);
 
-            var total = ASCII.GetBytes("-----BEGIN CERTIFICATE-----\n", memory.Span);
-            Base64.EncodeToUtf8(bytes, memory.Span[total..], out _, out var written);
-            total += written;
-            total += ASCII.GetBytes("\n-----END CERTIFICATE-----\n", memory.Span[total..]);
-            writer.Advance(total);
+            var memory = writer.GetMemory(Base64.GetMaxEncodedToUtf8Length(bytes.Length) + 55 + (bytes.Length / ChunkSize));
+
+            writer.Advance(PemEncode(bytes, memory.Span));
 
             await writer.FlushAsync().ConfigureAwait(false);
+        }
+
+        private static int PemEncode(Span<byte> bytes, Span<byte> utf8)
+        {
+            var total = ASCII.GetBytes("-----BEGIN CERTIFICATE-----\n", utf8);
+
+            for(var index = 0; index < bytes.Length; index += ChunkSize)
+            {
+                var source = bytes.Length - index > ChunkSize
+                    ? bytes.Slice(index, ChunkSize)
+                    : bytes.Slice(index);
+                Base64.EncodeToUtf8(source, utf8[total..], out _, out var bytesWritten);
+                total += bytesWritten;
+                utf8[total++] = (byte)'\n';
+            }
+
+            total += ASCII.GetBytes("-----END CERTIFICATE-----\n", utf8[total..]);
+
+            return total;
         }
     }
 }
