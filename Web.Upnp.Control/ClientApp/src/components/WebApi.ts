@@ -113,6 +113,10 @@ export default class {
     }
 }
 
+type BrowseOptionFlags = "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata";
+
+type BrowseOptions = { [K in BrowseOptionFlags]?: boolean };
+
 export class BrowseFetch extends HttpFetch {
     constructor(path: string, query: RequestQuery = {}) {
         super(path, query);
@@ -123,6 +127,10 @@ export class BrowseFetch extends HttpFetch {
     withResource = () => { return new BrowseFetch(this.path, { ...this.query, withResourceProps: true }); };
 
     withVendor = () => { return new BrowseFetch(this.path, { ...this.query, withVendorProps: true }); };
+
+    withMetadata = () => { return new BrowseFetch(this.path, { ...this.query, withMetadata: true }); };
+
+    withOptions = (options: BrowseOptions) => { return new BrowseFetch(this.path, { ...this.query, ...options }); };
 
     take = (count: number) => { return new BrowseFetch(this.path, { ...this.query, take: count }); };
 

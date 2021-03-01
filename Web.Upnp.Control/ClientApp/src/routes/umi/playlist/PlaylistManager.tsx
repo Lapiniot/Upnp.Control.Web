@@ -435,6 +435,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 }
 
-const browsePlaylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id || "PL:").withParents().withResource().withVendor());
+const browsePlaylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id || "PL:")
+    .withOptions({ withParents: true, withResourceProps: true, withVendorProps: true }));
 
 export default withBrowserDataFetch(PlaylistManagerCore, false, browsePlaylistsQueryBuilder);
