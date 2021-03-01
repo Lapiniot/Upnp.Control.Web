@@ -104,15 +104,19 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
         const scrollParent = findScrollParent(table as HTMLElement);
         if (!scrollParent) return;
-        const scrollParentOffset = scrollParent.getBoundingClientRect().top + scrollParent.clientTop;
+
+        let offset = table.getBoundingClientRect().top + table.clientTop
+            - scrollParent.getBoundingClientRect().top - scrollParent.clientTop;
 
         const caption = table.querySelector<HTMLDivElement>(HEADER_SELECTOR);
         if (caption) {
-            caption.style.top = `${Math.round(caption.getBoundingClientRect().top - scrollParentOffset)}px`;
+            const rect = caption.getBoundingClientRect();
+            caption.style.top = `${Math.round(offset)}px`;
+            offset += rect.height;
         }
 
+        const top = `${Math.round(offset)}px`;
         const headers = table.querySelectorAll<HTMLDivElement>(HEADER_CELLS_SELECTOR);
-        const top = `${Math.round(headers.item(0).getBoundingClientRect().top - scrollParentOffset)}px`;
         headers.forEach(cell => { cell.style.top = top; });
     }
 
