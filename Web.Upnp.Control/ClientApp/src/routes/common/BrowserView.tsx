@@ -7,6 +7,7 @@ import { NavigatorProps } from "./Navigator";
 import { DataFetchProps } from "../../components/DataFetch";
 import { DropdownMenu, DropdownMenuProps } from "../../components/DropdownMenu";
 import { EventHint, SelectionTracker } from "../../components/SelectionTracker";
+import { findScrollParent } from "../../components/Extensions";
 
 const DATA_ROW_SELECTOR = "div[data-id]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-id]:focus";
@@ -101,15 +102,18 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     resizeObservedHandler = (entries: ResizeObserverEntry[]) => {
         const table = entries[0].target;
 
+        const scrollParent = findScrollParent(table as HTMLElement);
+        if (!scrollParent) return;
+        const scrollParentOffset = scrollParent.getBoundingClientRect().top + scrollParent.clientTop;
+
         const caption = table.querySelector<HTMLDivElement>(HEADER_SELECTOR);
         if (caption) {
-            caption.style.top = `${caption.offsetTop}px`;
+            caption.style.top = `${Math.round(caption.getBoundingClientRect().top - scrollParentOffset)}px`;
         }
 
-        table.querySelectorAll<HTMLDivElement>(HEADER_CELLS_SELECTOR).forEach(cell => {
-            if (cell.style.top === "")
-                cell.style.top = `${cell.offsetTop}px`;
-        })
+        const headers = table.querySelectorAll<HTMLDivElement>(HEADER_CELLS_SELECTOR);
+        const top = `${Math.round(headers.item(0).getBoundingClientRect().top - scrollParentOffset)}px`;
+        headers.forEach(cell => { cell.style.top = top; });
     }
 
     onCheckboxChanged: ChangeEventHandler<HTMLInputElement> = e => {

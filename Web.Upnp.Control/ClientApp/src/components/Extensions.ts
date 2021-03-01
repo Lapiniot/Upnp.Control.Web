@@ -30,3 +30,26 @@ const getSafeContentUrl = window.location.protocol === "https:"
     : function (originalUrl: string) { return originalUrl; }
 
 export { getSafeContentUrl };
+
+/**
+ * Finds first element in the DOM tree starting from 'element'
+ * which acts as scrolling container (literally has effective values 
+ * of overflow-y set to either "auto" or "scroll")
+ * @param {HTMLElement|null} element element to start search from
+ * @returns {HTMLElement|null} element which is scrolling container 
+ * or null if nothing suitable found
+ */
+export function findScrollParent(element: HTMLElement | null): HTMLElement | null {
+    while (element) {
+        if (element.classList.contains("overflow-auto") || element.classList.contains("overflow-scroll"))
+            return element;
+
+        const overflow = window.getComputedStyle(element).getPropertyValue("overflow-y");
+        if (overflow === "auto" || overflow === "scroll")
+            return element;
+
+        element = element.parentElement;
+    }
+
+    return element;
+}
