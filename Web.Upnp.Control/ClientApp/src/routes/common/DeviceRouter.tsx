@@ -2,12 +2,13 @@
 import { Switch, Route } from "react-router-dom"
 import { RouteComponentProps } from "react-router";
 import Browser from "./BrowserRouter";
+import Viewer from "./ViewerRouter";
 import $api from "../../components/WebApi";
 import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import DeviceCard from "./Device.Upnp";
 import { DataSourceProps, UpnpDevice } from "./Types";
 import { DeviceContainer, DeviceListContainer, TemplatedDataComponentProps } from "./DeviceList";
-import { BrowserSvgSymbols, UpnpActionSvgSymbols } from "./SvgSymbols";
+import { UpnpActionSvgSymbols } from "./SvgSymbols";
 
 type CategoryParams = { category: string }
 type DeviceParams = { device: string }
@@ -27,6 +28,7 @@ export default ({ match: { path, params: { category } }, deviceTemplate = Device
     <Switch>
         {children}
         <Route path={`${path}/:device/browse`} render={props => <Browser {...props} />} />
+        <Route path={`${path}/:device/view`} render={props => <Viewer {...props} />} />
         <Route path={`${path}/:device`} exact render={(props: RouteComponentProps<CategoryParams & DeviceParams>) =>
             <Device category={category} itemTemplate={deviceTemplate} device={props.match.params.device} />} />
         <Route path={path} exact render={() => <Devices category={category} itemTemplate={deviceTemplate} />} />

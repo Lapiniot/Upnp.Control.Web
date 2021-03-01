@@ -22,7 +22,7 @@ function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & De
             <svg className="icon"><use href="#music" /></svg>
         </button>
         <DropdownMenu data-device={device.udn} placement="bottom-end">
-            {d?.source.items.map(i => <li key={i.id}>
+            {d?.source.items?.map(i => <li key={i.id}>
                 <a className="dropdown-item" href="#" data-play-url={i.res?.url + "#play"} onClick={playUrlHandler}>
                     <AlbumArt itemClass={i.class} albumArts={i.albumArts} className="album-art-sm me-1 align-middle" />{i.title}</a>
             </li>)}

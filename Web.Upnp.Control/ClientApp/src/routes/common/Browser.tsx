@@ -96,7 +96,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     rowState = () => RowState.Selectable | RowState.Navigable;
 
     selectionChanged = (ids: string[]) => {
-        const items = this.props.dataContext?.source.items.filter(i => ids.includes(i.id)) ?? [];
+        const items = this.props.dataContext?.source.items?.filter(i => ids.includes(i.id)) ?? [];
         this.setState({
             selection: {
                 items,
@@ -110,7 +110,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     itemMenuSelectedHandler = async ({ dataset: { action, udn } }: HTMLElement, anchor?: HTMLElement) => {
         const { dataContext, device } = this.props;
 
-        if (!action || !anchor || !device || !dataContext?.source) return;
+        if (!action || !anchor || !device || !dataContext?.source?.items) return;
         const item = dataContext.source.items.find(i => i.id === anchor.dataset.id);
         if (!item) return;
 
@@ -147,7 +147,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         const { umis, renderers } = this.state;
         const { dataContext: ctx } = this.props;
 
-        const item = ctx?.source.items.find(i => i.id === id);
+        const item = ctx?.source?.items?.find(i => i.id === id);
         if (!item) return;
 
         const umiAcceptable = !!umis.length && (DIDLUtils.isContainer(item) || DIDLUtils.isMusicTrack(item));

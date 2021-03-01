@@ -99,15 +99,21 @@ function parse(value: string | number | undefined): number | undefined {
     }
 }
 
-type FetchProps = {
+export type BrowserRouteProps = {
     device: string;
     id?: string;
     p?: string;
     s?: string;
 };
 
+export type ViewerRouteProps = {
+    category: string;
+    device: string;
+    id: string;
+};
+
 export function fromBaseQuery(baseFetchQuery: FetchFunction) {
-    return ({ device, id, p, s }: FetchProps) => {
+    return ({ device, id, p, s }: BrowserRouteProps) => {
         const size = parse(s) ?? $s.get("pageSize");
         const page = parse(p) ?? 1;
         const key = `${device}!${id ?? ""}!${p ?? ""}!${s ?? ""}`;
@@ -115,9 +121,21 @@ export function fromBaseQuery(baseFetchQuery: FetchFunction) {
     }
 }
 
-const defaultQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id).withOptions({ withParents: true, withResourceProps: true }));
+const browseFetchOptions = { withParents: true, withResourceProps: true };
+const defaultQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id).withOptions(browseFetchOptions));
 
-export function withBrowserDataFetch<P extends DataFetchProps & NavigatorProps>(BrowserComponent: ComponentType<P>, usePreloader = true, builder = defaultQueryBuilder) {
-    return withNavigation<Omit<P, keyof DataFetchProps> & FetchProps, FetchProps>(
-        withDataFetch<P, FetchProps>(BrowserComponent, builder, { template: LoadIndicatorOverlay, usePreloader }));
+export function withBrowserDataFetch<P extends DataFetchProps & NavigatorProps>(BrowserComponent: ComponentType<P>, usePreloader = true,
+    builder = defaultQueryBuilder) {
+    return withNavigation<Omit<P, keyof DataFetchProps> & BrowserRouteProps, BrowserRouteProps>(
+        withDataFetch<P, BrowserRouteProps>(BrowserComponent, builder,
+            { template: LoadIndicatorOverlay, usePreloader }));
+}
+
+const viewFetchOptions = { withParents: true, withMetadata: true, withResourceProps: true };
+const defaultViewQueryBuilder = ({ device, id }: ViewerRouteProps) => withMemoKey(
+    $api.browse(device).get(id).withOptions(viewFetchOptions).jsonFetch, device + "|" + id);
+
+export function withViewerDataFetch<P extends DataFetchProps>(ViewerComponent: ComponentType<P>, usePreloader = true,
+    builder = defaultViewQueryBuilder) {
+    return withDataFetch<P, ViewerRouteProps>(ViewerComponent, builder, { template: LoadIndicatorOverlay, usePreloader });
 }

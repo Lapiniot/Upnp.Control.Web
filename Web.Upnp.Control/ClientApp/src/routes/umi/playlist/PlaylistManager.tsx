@@ -171,7 +171,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     private removeItems = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset));
 
     private showInfo = (id: string) => {
-        var item = this.props.dataContext?.source.items.find(i => i.id === id);
+        var item = this.props.dataContext?.source.items?.find(i => i.id === id);
         if (!item) return;
         this.modal(<ItemInfoModal item={item} />);
     }
@@ -182,7 +182,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private removePlaylist = (ids: string[]) => {
 
-        const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
+        const values = this.props.dataContext?.source.items?.filter(e => ids.includes(e.id));
         const onRemove = () => this.remove(ids);
 
         this.modal(<RemoveItemsModal title="Do you want to delete playlist(s)?" onRemove={onRemove}>
@@ -193,14 +193,14 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 
     private renamePlaylist = (id: string) => {
-        const title = this.props.dataContext?.source.items.find(e => e.id === id)?.title;
+        const title = this.props.dataContext?.source.items?.find(e => e.id === id)?.title;
         const onRename = (value: string) => this.rename(id, value);
 
         this.modal(<TextValueEditDialog title="Rename playlist" label="Name" confirmText="Rename" defaultValue={title} onConfirmed={onRename} />);
     }
 
     private removePlaylistItems = (ids: string[]) => {
-        const values = this.props.dataContext?.source.items.filter(e => ids.includes(e.id));
+        const values = this.props.dataContext?.source.items?.filter(e => ids.includes(e.id));
         const onRemove = () => this.removeItems(ids);
 
         this.modal(<RemoveItemsModal onRemove={onRemove}>
