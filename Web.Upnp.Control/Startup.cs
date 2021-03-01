@@ -73,7 +73,7 @@ namespace Web.Upnp.Control
                 new IconJsonConverter(),
                 new ServiceJsonConverter(),
                 new DeviceJsonConverter(),
-                new DIDLItemJsonConverter(),
+                new ItemJsonConverter(),
                 new ResourceJsonConverter(),
                 new ContainerJsonConverter(),
                 new MediaItemJsonConverter(),
