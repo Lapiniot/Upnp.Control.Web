@@ -22,36 +22,51 @@ namespace Web.Upnp.Control.Models.Converters
             var containerConverter = (JsonConverter<Container>)options.GetConverter(typeof(Container));
             var itemConverter = (JsonConverter<MediaItem>)options.GetConverter(typeof(MediaItem));
 
-            writer.WriteStartArray("items");
-            foreach(var item in value.Items)
+            if(value.metadata is not null)
             {
-                switch(item)
-                {
-                    case Container c:
-                        containerConverter.Write(writer, c, options);
-                        break;
-                    case MediaItem i:
-                        itemConverter.Write(writer, i, options);
-                        break;
-                    default: throw new NotSupportedException("Not supported DIDL item type");
-                }
+                writer.WritePropertyName("self");
+                WriteItem(value.metadata);
             }
 
-            writer.WriteEndArray();
+            if(value.Items is { } items)
+            {
+                writer.WriteStartArray("items");
+                foreach(var item in items)
+                {
+                    WriteItem(item);
+                }
+                writer.WriteEndArray();
+            }
 
-            if(value.Parents is {} parents)
+            if(value.Parents is { } parents)
             {
                 writer.WriteStartArray("parents");
                 foreach(var item in parents)
                 {
-                    if(item is Container container) containerConverter.Write(writer, container, options);
+                    if(item is Container container)
+                    {
+                        containerConverter.Write(writer, container, options);
+                    }
                 }
-
                 writer.WriteEndArray();
             }
 
             writer.WriteEndObject();
             writer.Flush();
+
+            void WriteItem(Item item)
+            {
+                switch(item)
+                {
+                    case Container container:
+                        containerConverter.Write(writer, container, options);
+                        break;
+                    case MediaItem mediaItem:
+                        itemConverter.Write(writer, mediaItem, options);
+                        break;
+                    default: throw new NotSupportedException("Not supported DIDL item type");
+                }
+            }
         }
     }
 }

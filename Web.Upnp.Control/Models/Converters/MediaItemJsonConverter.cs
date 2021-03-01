@@ -37,7 +37,5 @@ namespace Web.Upnp.Control.Models.Converters
             WriteVendorProps(writer, value);
             writer.WriteEndObject();
         }
-
-
     }
 }

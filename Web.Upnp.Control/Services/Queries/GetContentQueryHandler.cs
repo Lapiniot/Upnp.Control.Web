@@ -23,21 +23,35 @@ namespace Web.Upnp.Control.Services.Queries
 
         public async Task<ContentResult> ExecuteAsync(CDGetContentQuery query, CancellationToken cancellationToken)
         {
-            var (deviceId, path, (withParents, withResource, withVendor, take, skip)) = query;
+            var (deviceId, path, (withParents, withResource, withVendor, withMetadata, take, skip)) = query;
 
             path ??= "0";
 
             var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false);
 
-            var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
+            Item metadata = null;
+            if(withMetadata == true)
+            {
+                var mr = await service.BrowseAsync(path, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
+                metadata = DIDLXmlParser.Parse(mr["Result"], withResource == true, withVendor == true).FirstOrDefault();
+            }
 
-            var parents = withParents != false
-                ? await GetParentsAsync(service, path, "id,title,parentId,res", withResource == true, withVendor == true, cancellationToken).ConfigureAwait(false)
-                : null;
+            IEnumerable<Item> items = null;
+            var total = 0;
+            if(metadata is null || metadata is Container)
+            {
+                var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
+                items = DIDLXmlParser.Parse(result["Result"], withResource == true, withVendor == true);
+                total = int.Parse(result["TotalMatches"]);
+            }
 
-            var items = DIDLXmlParser.Parse(result["Result"], withResource == true, withVendor == true);
+            IEnumerable<Item> parents = null;
+            if(withParents != false)
+            {
+                parents = await GetParentsAsync(service, path, "id,title,parentId,res", withResource == true, withVendor == true, cancellationToken).ConfigureAwait(false);
+            }
 
-            return new ContentResult(int.Parse(result["TotalMatches"]), items, parents);
+            return new ContentResult(total, metadata, items, parents);
         }
 
         private static async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string path, string filter,

@@ -11,9 +11,9 @@ namespace Web.Upnp.Control.Models
 
     public record CDGetContentQuery(string DeviceId, string Path, GetContentOptions Options);
 
-    public record GetContentOptions(bool? WithParents, bool? WithResourceProps, bool? WithVendorProps, uint Take = 50, uint Skip = 0);
+    public record GetContentOptions(bool? WithParents, bool? WithResourceProps, bool? WithVendorProps, bool? WithMetadata, uint Take = 50, uint Skip = 0);
 
-    public record ContentResult(int Total, IEnumerable<Item> Items, IEnumerable<Item> Parents);
+    public record ContentResult(int Total, Item metadata, IEnumerable<Item> Items, IEnumerable<Item> Parents);
 
     public record AVState(string State, string Status, int? Tracks, string Medium, string PlayMode)
     {
