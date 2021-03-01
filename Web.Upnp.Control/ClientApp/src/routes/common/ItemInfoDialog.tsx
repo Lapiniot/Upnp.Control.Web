@@ -72,7 +72,7 @@ export default function ItemInfoDialog({ item, ...other }: ModalProps & { item: 
                 navigator.clipboard.writeText(item.res?.url as string);
         }), []);
 
-    return <Modal title={item.title} {...other} className="modal-fullscreen-sm-down">
+    return <Modal title={item.title} {...other} className="modal-fullscreen-sm-down modal-dialog-scrollable">
         <Modal.Body className="d-flex flex-column">
             <AlbumArt itemClass={item.class} albumArts={item.albumArts} className="mx-auto mb-3 album-art-xxl" />
             <div className="d-grid grid-auto-1fr gapy-1 gapx-2">
