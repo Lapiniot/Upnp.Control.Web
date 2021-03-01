@@ -225,7 +225,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             deviceName: this.state.device?.name
         };
 
-        return <div className="h-100 overflow-auto d-flex flex-column">
+        return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column">
             <BrowserSvgSymbols />
             <BrowserCore mainCellTemplate={Template} mainCellContext={ctx} withPagination={false}
                 useCheckboxes multiSelect rowState={this.rowState} selectionChanged={this.selectionChanged}

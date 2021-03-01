@@ -34,7 +34,9 @@ export { getSafeContentUrl };
 /**
  * Finds first element in the DOM tree starting from 'element'
  * which acts as scrolling container (literally has effective values 
- * of overflow-y set to either "auto" or "scroll")
+ * of overflow-y set to either "auto" or "scroll"). Please notice:
+ * this function checks only vertical scroll behavior, as horizontal
+ * must be completely abandoned concept in responsive apps.
  * @param {HTMLElement|null} element element to start search from
  * @returns {HTMLElement|null} element which is scrolling container 
  * or null if nothing suitable found

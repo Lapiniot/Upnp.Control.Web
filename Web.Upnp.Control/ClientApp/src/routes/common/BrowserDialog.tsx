@@ -68,7 +68,7 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
         const { title, confirmContent = "Open", onConfirmed, browserProps = {}, selection, ...other } = this.props;
         return <Modal title={title} {...other} data-bs-keyboard={true} ref={this.modalRef}>
             <Modal.Body className="overflow-hidden p-0 position-relative d-flex flex-column border-bottom border-top" style={{ height: "60vh" }}>
-                <div className="overflow-auto flex-fill d-flex flex-column">
+                <div className="overflow-auto safari-scroll-fix flex-fill d-flex flex-column">
                     <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                         <Switch>
                             <Route path={["/sources"]} exact render={() => <MediaSourceList />} />

@@ -390,7 +390,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             deviceName: this.state.device?.name
         };
 
-        return <div className="h-100 overflow-auto d-flex flex-column">
+        return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column">
             <EditSvgSymbols />
             <PlaySvgSymbols />
             <PlaylistSvgSymbols />
