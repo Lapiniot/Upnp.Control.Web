@@ -1,8 +1,6 @@
 import { DIDLItem, DIDLResource } from "./Types";
-import Modal, { ModalProps } from "../../components/Modal";
-import { DIDLUtils } from "./BrowserUtils";
 import AlbumArt from "./AlbumArt";
-import { useCallback } from "react";
+import { DIDLUtils } from "./BrowserUtils";
 
 function asis(value: any): string {
     return value;
@@ -64,29 +62,6 @@ const resAttributes: [key: string, title: string, formatters: AttributeDescripto
     ]]
 ];
 
-export default function ItemInfoDialog({ item, ...other }: ModalProps & { item: DIDLItem; }) {
-    const clickHandler = useCallback(() => navigator.permissions
-        .query({ name: "clipboard-write" })
-        .then(result => {
-            if (result.state === "granted" || result.state === "prompt")
-                navigator.clipboard.writeText(item.res?.url as string);
-        }), []);
-
-    return <Modal title={item.title} {...other} className="modal-fullscreen-sm-down modal-dialog-scrollable">
-        <Modal.Body className="d-flex flex-column">
-            <AlbumArt itemClass={item.class} albumArts={item.albumArts} className="mx-auto mb-3 album-art-xxl" />
-            <div className="d-grid grid-auto-1fr gapy-1 gapx-2">
-                {attributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item, key, title, formatters)).flat()}
-                {item.res && resAttributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item.res as DIDLResource, key, title, formatters)).flat()}
-            </div>
-        </Modal.Body>
-        <Modal.Footer>
-            {DIDLUtils.isMediaItem(item) && window.isSecureContext ? <Modal.Button className="me-auto" onClick={clickHandler}>Copy media url</Modal.Button> : undefined}
-            <Modal.Button className="confirm" dismiss>Ok</Modal.Button>
-        </Modal.Footer>
-    </Modal>;
-}
-
 function renderGroup<T>(item: T, key: string, title: string, formatters: AttributeDescriptor<T>[]) {
     const children = formatters.map(({ 0: key, 1: title, 2: converter }) => {
         const value = item[key];
@@ -100,4 +75,14 @@ function renderGroup<T>(item: T, key: string, title: string, formatters: Attribu
         <small className="mx-2">{title}</small>
         <hr className="flex-grow-1" />
     </div>, ...children] : undefined;
+}
+
+export function ItemInfo({ item }: { item: DIDLItem; }) {
+    return <>
+        <AlbumArt itemClass={item.class} albumArts={item.albumArts} className="mx-auto mb-3 album-art-xxl" />
+        <div className="d-grid grid-auto-1fr gapy-1 gapx-2">
+            {attributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item, key, title, formatters)).flat()}
+            {item.res && resAttributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item.res as DIDLResource, key, title, formatters)).flat()}
+        </div>
+    </>;
 }

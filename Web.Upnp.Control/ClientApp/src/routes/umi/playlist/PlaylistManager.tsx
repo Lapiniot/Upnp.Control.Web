@@ -25,7 +25,7 @@ import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
 import { BottomBar } from "../../common/BottomBar";
 import ModalHost from "../../../components/ModalHost";
 import { ModalProps } from "../../../components/Modal";
-import ItemInfoDialog from "../../common/ItemInfoDialog";
+import ItemInfoModal from "../../common/ItemInfoModal";
 
 type RouteParams = {
     device: string;
@@ -173,7 +173,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     private showInfo = (id: string) => {
         var item = this.props.dataContext?.source.items.find(i => i.id === id);
         if (!item) return;
-        this.modal(<ItemInfoDialog item={item} />);
+        this.modal(<ItemInfoModal item={item} />);
     }
 
     //#endregion

@@ -13,7 +13,7 @@ import $s from "./Settings";
 import { BrowserSvgSymbols } from "./SvgSymbols";
 import { BrowseFetchResult, DIDLItem, Services, UpnpDevice } from "./Types";
 import ModalHost from "../../components/ModalHost";
-import ItemInfoDialog from "./ItemInfoDialog";
+import ItemInfoModal from "./ItemInfoModal";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);
@@ -121,7 +121,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 await this.playItems(udn, device, [item.id]);
             }
         } else if (action == "info") {
-            this.modalHostRef.current?.show(<ItemInfoDialog item={item} />);
+            this.modalHostRef.current?.show(<ItemInfoModal item={item} />);
         }
     }
 
