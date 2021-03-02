@@ -12,15 +12,15 @@ export default function withNavigator<P extends InjectedProps<Params>, Params ex
 
     return class extends React.Component<ConstructedProps> {
 
-        navigateToItem = (data: { [key: string]: string | undefined }) => {
+        navigate = (data: { [key: string]: string | undefined }, template?: string) => {
             const { match: { path, params }, history } = this.props;
-            history.push(generatePath(path, { ...params, ...data }));
+            history.push(generatePath(template ?? path, { ...params, ...data }));
         }
 
         render() {
             const { location: { search }, match: { params: { ...params } } } = this.props;
             new window.URLSearchParams(search).forEach((value, key) => params[key] = value);
-            return <Component {...(this.props as unknown as P)} {...params} navigate={this.navigateToItem} />;
+            return <Component {...(this.props as unknown as P)} {...params} navigate={this.navigate} />;
         }
     };
 }

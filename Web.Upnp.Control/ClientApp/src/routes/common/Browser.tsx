@@ -107,6 +107,11 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         return false;
     }
 
+    openHandler = (id: string) => {
+        this.props.navigate({ action: "view", id: id });
+        return true;
+    }
+
     itemMenuSelectedHandler = async ({ dataset: { action, udn } }: HTMLElement, anchor?: HTMLElement) => {
         const { dataContext, device } = this.props;
 
@@ -228,7 +233,8 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column">
             <BrowserSvgSymbols />
             <BrowserCore mainCellTemplate={Template} mainCellContext={ctx} withPagination={false}
-                useCheckboxes multiSelect rowState={this.rowState} selectionChanged={this.selectionChanged}
+                useCheckboxes multiSelect rowState={this.rowState}
+                selectionChanged={this.selectionChanged} open={this.openHandler}
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
                 <BrowserView.ContextMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} />
             </BrowserCore>

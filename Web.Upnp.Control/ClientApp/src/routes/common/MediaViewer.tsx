@@ -14,14 +14,14 @@ export function MediaViewer({ dataContext: ctx, fetching, error, category, devic
 
     const { title, res: { url } } = item;
 
-    return <div className={`flex-fill overflow-hidden p-3 d-flex flex-column${className ? ` ${className}` : ""}`} {...other}>
-        <h3>{title}</h3>
+    return <figure className={`flex-fill overflow-hidden p-3 d-flex flex-column align-items-center${className ? ` ${className}` : ""}`} {...other}>
+        <figcaption className="h5">{title}</figcaption>
         {DIDLUtils.isMusicTrack(item) ?
             <audio controls>
                 <source src={url} type="audio/mp4" />
             </audio> :
-            <video controls autoPlay={false}>
+            <video controls className="overflow-hidden mw-100">
                 <source src={url} />
             </video>}
-    </div>;
+    </figure>;
 }

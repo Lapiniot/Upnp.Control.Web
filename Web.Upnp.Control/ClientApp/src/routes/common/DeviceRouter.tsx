@@ -24,8 +24,8 @@ export default ({ match: { path, params: { category } }, deviceTemplate = Device
     <UpnpActionSvgSymbols />
     <Switch>
         {children}
-        <Route path={`${path}/:device/browse` as DeviceRoutePath} render={props => <Browser {...props} />} />
-        <Route path={`${path}/:device/view` as DeviceRoutePath} render={props => <Viewer {...props} />} />
+        <Route path={`${path}/:device/:action(browse)` as DeviceRoutePath} render={props => <Browser {...props} />} />
+        <Route path={`${path}/:device/:action(view)` as DeviceRoutePath} render={props => <Viewer {...props} />} />
         <Route path={`${path}/:device` as DeviceRoutePath} exact render={props => <Device itemTemplate={deviceTemplate} {...props.match.params} />} />
         <Route path={path} exact render={() => <Devices category={category} itemTemplate={deviceTemplate} />} />
     </Switch>

@@ -126,11 +126,11 @@ export type DataSourceProps<T = {}, P = {}> = P & {
 }
 
 /* Routing related params extracted from navigation url */
-export type CategoryRoutePath = ":category";
-export type DeviceRoutePath = ":category/:device";
-export type BrowseRoutePath = ":category/:device/browse/:id?";
-export type PlaylistRoutePath = ":category/:device/playlists/:id?";
-export type ViewRoutePath = ":category/:device/view/:id";
+export type CategoryRoutePath = "/:category";
+export type DeviceRoutePath = "/:category/:device";
+export type BrowseRoutePath = "/:category/:device/:action(browse)/:id?";
+export type PlaylistRoutePath = "/:category/:device/:action(playlists)/:id?";
+export type ViewRoutePath = "/:category/:device/:action(view)/:id";
 
 export type CategoryRouteParams = { category: string }
 export type DeviceRouteParams = CategoryRouteParams & { device: string }
