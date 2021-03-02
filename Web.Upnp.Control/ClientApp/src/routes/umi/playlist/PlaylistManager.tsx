@@ -82,6 +82,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     pls;
     modalHostRef = React.createRef<ModalHost>();
 
+    static defaultProps = { id: "PL:" };
+
     constructor(props: PlaylistManagerProps) {
         super(props);
         this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
@@ -428,7 +430,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 }
 
-const browsePlaylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id)
+const browsePlaylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id ?? PlaylistManagerCore.defaultProps.id)
     .withOptions({ withParents: true, withResourceProps: true, withVendorProps: true }));
 
 export default withBrowserDataFetch(PlaylistManagerCore, false, browsePlaylistsQueryBuilder);

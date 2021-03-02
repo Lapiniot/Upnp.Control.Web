@@ -129,7 +129,7 @@ export type DataSourceProps<T = {}, P = {}> = P & {
 export type CategoryRoutePath = ":category";
 export type DeviceRoutePath = ":category/:device";
 export type BrowseRoutePath = ":category/:device/browse/:id?";
-export type PlaylistRoutePath = ":category/:device/playlists/:id";
+export type PlaylistRoutePath = ":category/:device/playlists/:id?";
 export type ViewRoutePath = ":category/:device/view/:id";
 
 export type CategoryRouteParams = { category: string }
