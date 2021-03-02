@@ -1,6 +1,6 @@
 ﻿import { Redirect, Route, RouteComponentProps } from "react-router";
 import DeviceRouter from "../common/DeviceRouter";
-import { DataSourceProps, Services, UpnpDevice } from "../common/Types";
+import { CategoryRouteParams, DataSourceProps, PlaylistRoutePath, Services, UpnpDevice } from "../common/Types";
 import UmiDeviceCard from "../common/Device.Umi";
 import RendererDeviceCard from "../common/Device.Renderer";
 import PlaylistManager from "../umi/playlist/PlaylistManager";
@@ -13,10 +13,10 @@ function TemplateSelector(props: DataSourceProps<UpnpDevice>) {
         return <RendererDeviceCard {...props} />
 }
 
-export default (props: RouteComponentProps<{ category: string }>) => <>
+export default (props: RouteComponentProps<CategoryRouteParams>) => <>
     <UmiActionSvgSymbols />
     <DeviceRouter {...props} deviceTemplate={TemplateSelector}>
         <Route path={`${props.match.path}/:device/playlists/(0|-1)`} exact render={() => <Redirect to={`/${props.match.params.category}`} />} />
-        <Route path={`${props.match.path}/:device/playlists/:id(.*)*`} render={({ id = "PL:", ...other }: any) => <PlaylistManager {...other} id={id} />} />
+        <Route path={`${props.match.path}/:device/playlists/:id(.*)*` as PlaylistRoutePath} render={props => <PlaylistManager {...props} />} />
     </DeviceRouter>
 </>

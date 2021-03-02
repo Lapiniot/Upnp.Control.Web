@@ -124,3 +124,16 @@ export type DataSourceProps<T = {}, P = {}> = P & {
     "data-source": T;
     "data-row-id"?: string | number
 }
+
+/* Routing related params extracted from navigation url */
+export type CategoryRoutePath = ":category";
+export type DeviceRoutePath = ":category/:device";
+export type BrowseRoutePath = ":category/:device/browse/:id?";
+export type PlaylistRoutePath = ":category/:device/playlists/:id";
+export type ViewRoutePath = ":category/:device/view/:id";
+
+export type CategoryRouteParams = { category: string }
+export type DeviceRouteParams = CategoryRouteParams & { device: string }
+export type BrowseRouteParams = DeviceRouteParams & { id?: string; p?: string; s?: string; };
+export type PlaylistRouteParams = DeviceRouteParams & { id: string; p?: string; s?: string; };
+export type ViewRouteParams = DeviceRouteParams & { id: string };

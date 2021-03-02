@@ -8,7 +8,7 @@ import { DataFetchProps, withDataFetch } from "../../components/DataFetch";
 import { withBrowserDataFetch } from "./BrowserUtils";
 import BrowserCore from "./BrowserCore";
 import $api from "../../components/WebApi";
-import { UpnpDevice } from "./Types";
+import { BrowseRoutePath, UpnpDevice } from "./Types";
 import { BrowserProps } from "./BrowserView";
 import SelectionService from "../../components/SelectionService";
 
@@ -73,7 +73,7 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
                         <Switch>
                             <Route path={["/sources"]} exact render={() => <MediaSourceList />} />
                             <Route path={"/sources/:device/-1"} exact render={() => <Redirect to="/sources" />} />
-                            <Route path={"/sources/:device/:id(.*)?"} render={props =>
+                            <Route path={"/sources/:device/:id(.*)?" as BrowseRoutePath} render={props =>
                                 <Browser {...props} ref={this.browserRef}
                                     open={this.props.dismissOnOpen ? this.openHandler : undefined} {...browserProps}
                                     selectionChanged={this.selectionChanged} modalDialogMode />} />

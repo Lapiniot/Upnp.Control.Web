@@ -1,6 +1,6 @@
 import React, { EventHandler, HTMLAttributes, ReactElement, UIEvent } from "react";
 import { RouteComponentProps } from "react-router";
-import { AVState, BrowseFetchResult, DIDLItem, PropertyBag, UpnpDevice } from "../../common/Types";
+import { AVState, BrowseFetchResult, DIDLItem, PlaylistRouteParams, PropertyBag, UpnpDevice } from "../../common/Types";
 import $api from "../../../components/WebApi";
 import { TextValueEditDialog } from "../../../components/Dialogs";
 import { withBrowserDataFetch, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils";
@@ -27,14 +27,7 @@ import ModalHost from "../../../components/ModalHost";
 import { ModalProps } from "../../../components/Modal";
 import ItemInfoModal from "../../common/ItemInfoModal";
 
-type RouteParams = {
-    device: string;
-    id: string;
-    s?: string;
-    p?: string;
-};
-
-type PlaylistManagerProps = RouteParams &
+type PlaylistManagerProps = PlaylistRouteParams &
     DataFetchProps<BrowseFetchResult> &
     HTMLAttributes<HTMLDivElement> &
     NavigatorProps &
@@ -435,7 +428,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 }
 
-const browsePlaylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id || "PL:")
+const browsePlaylistsQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id)
     .withOptions({ withParents: true, withResourceProps: true, withVendorProps: true }));
 
 export default withBrowserDataFetch(PlaylistManagerCore, false, browsePlaylistsQueryBuilder);
