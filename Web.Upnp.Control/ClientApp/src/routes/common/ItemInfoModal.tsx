@@ -6,7 +6,7 @@ import { ItemInfo } from "./ItemInfo";
 
 export default function ItemInfoModal({ item, ...other }: ModalProps & { item: DIDLItem; }) {
     const clickHandler = useCallback(() => navigator.permissions
-        .query({ name: "clipboard-write" })
+        .query({ name: "clipboard" })
         .then(result => {
             if (result.state === "granted" || result.state === "prompt")
                 navigator.clipboard.writeText(item.res?.url as string);
