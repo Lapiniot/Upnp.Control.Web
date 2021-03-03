@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control.Services;
@@ -15,6 +16,8 @@ namespace Web.Upnp.Control
 
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
+                    .ConfigureAppConfiguration((ctx, cb) =>
+                        cb.AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.Https.json", true))
                     .UseStartup<Startup>()
                     .UseKestrel()
                     .UseSockets())
