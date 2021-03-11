@@ -1,4 +1,5 @@
 import { HTMLAttributes } from "react";
+import { viaProxy } from "../../components/Extensions";
 
 function getIconByClass(itemClass: string) {
     if (itemClass.endsWith("musicTrack"))
@@ -13,7 +14,7 @@ type AlbumArtProps = HTMLAttributes<HTMLOrSVGElement> & { itemClass: string, alb
 export default ({ itemClass, albumArts, className, ...other }: AlbumArtProps) => {
     const cls = `album-art${className ? ` ${className}` : ""}`;
     return albumArts && albumArts.length > 0
-        ? <img src={`/proxy/${albumArts[0]}`} className={cls} alt="" {...other} />
+        ? <img src={viaProxy(albumArts[0])} className={cls} alt="" {...other} />
         : <svg className={cls} {...other}>
             <use href={`icons.svg#${getIconByClass(itemClass)}`} />
         </svg>

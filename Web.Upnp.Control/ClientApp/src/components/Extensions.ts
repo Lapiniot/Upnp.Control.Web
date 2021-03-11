@@ -25,8 +25,12 @@ export function formatTime(seconds: number): string {
         : `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
+export function viaProxy(url: string) {
+    return `/proxy/${encodeURIComponent(url)}`;
+}
+
 const getSafeContentUrl = window.location.protocol === "https:"
-    ? function (originalUrl: string) { return `/proxy/${originalUrl}`; }
+    ? viaProxy
     : function (originalUrl: string) { return originalUrl; }
 
 export { getSafeContentUrl };

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
+using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 using static IoT.Protocol.Upnp.Services.BrowseMode;
@@ -15,10 +15,12 @@ namespace Web.Upnp.Control.Services.Queries
     public class GetContentQueryHandler : IAsyncQueryHandler<CDGetContentQuery, ContentResult>
     {
         private readonly IUpnpServiceFactory factory;
+        private readonly ILogger<GetContentQueryHandler> logger;
 
-        public GetContentQueryHandler(IUpnpServiceFactory factory)
+        public GetContentQueryHandler(IUpnpServiceFactory factory, ILogger<GetContentQueryHandler> logger)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<ContentResult> ExecuteAsync(CDGetContentQuery query, CancellationToken cancellationToken)
@@ -41,7 +43,7 @@ namespace Web.Upnp.Control.Services.Queries
             if(metadata is null || metadata is Container)
             {
                 var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
-                items = DIDLXmlParser.Parse(result["Result"], withResource == true, withVendor == true);
+                items = DIDLXmlParser.Parse(result["Result"], withResource == true, withVendor == true).ToArray();
                 total = int.Parse(result["TotalMatches"]);
             }
 
@@ -54,18 +56,18 @@ namespace Web.Upnp.Control.Services.Queries
             return new ContentResult(total, metadata, items, parents);
         }
 
-        private static async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string path, string filter,
+        private async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string parent, string filter,
             bool withResource, bool withVendor, CancellationToken cancellationToken)
         {
             var parents = new List<Item>();
 
             var errorLimit = 1;
 
-            while(path != "-1" && errorLimit > 0)
+            while(parent != "-1" && errorLimit > 0)
             {
                 try
                 {
-                    var metadataResult = await service.BrowseAsync(path, mode: BrowseMetadata, filter: filter, cancellationToken: cancellationToken).ConfigureAwait(false);
+                    var metadataResult = await service.BrowseAsync(parent, mode: BrowseMetadata, filter: filter, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                     var metadata = DIDLXmlParser.Parse(metadataResult["Result"], withResource, withVendor).FirstOrDefault();
 
@@ -73,12 +75,13 @@ namespace Web.Upnp.Control.Services.Queries
 
                     parents.Add(metadata);
 
-                    path = metadata.ParentId;
+                    parent = metadata.ParentId;
                 }
-                catch(SoapException se) when(se.Code == 701)
+                catch(Exception ex)
                 {
-                    path = "0";
                     errorLimit--;
+                    parent = "0";
+                    logger.LogError(ex, $"Query BrowseMetadata failed for item '{parent}'");
                 }
             }
 

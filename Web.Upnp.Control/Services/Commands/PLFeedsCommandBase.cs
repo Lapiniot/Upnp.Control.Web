@@ -87,7 +87,7 @@ namespace Web.Upnp.Control.Services.Commands
         {
             return new UriBuilder(BindingUri)
             {
-                Path = $"/dlna-proxy/{Uri.EscapeUriString(mediaUrl.AbsoluteUri)}",
+                Path = $"/dlna-proxy/{Uri.EscapeDataString(mediaUrl.AbsoluteUri)}",
                 Query = "?no-length&strip-icy-metadata&add-dlna-metadata"
             }.Uri;
         }

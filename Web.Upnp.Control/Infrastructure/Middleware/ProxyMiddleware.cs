@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -81,7 +82,16 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
         protected Uri GetTargetUri(HttpContext context)
         {
-            return new Uri(Uri.UnescapeDataString(context.GetRouteValue("url") as string ?? throw new InvalidOperationException()));
+            var url = context.GetRouteValue("url") as string ?? throw new InvalidOperationException();
+
+            var queryStart = url.IndexOf('?');
+
+            if(queryStart > 0)
+            {
+                url = url[..queryStart].Replace("%2F", "/", true, CultureInfo.InvariantCulture) + url[queryStart..];
+            }
+
+            return new Uri(url);
         }
 
         protected virtual HttpRequestMessage CreateRequestMessage(HttpContext context, Uri requestUri, HttpMethod method)
