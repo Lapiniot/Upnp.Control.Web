@@ -14,6 +14,10 @@
         }
     ],
     "start_url": "/",
+    "display_override": [
+        "window-control-overlay",
+        "minimal-ui"
+    ],
     "display": "standalone",
     "theme_color": "#212529",
     "background_color": "#ffffff"
