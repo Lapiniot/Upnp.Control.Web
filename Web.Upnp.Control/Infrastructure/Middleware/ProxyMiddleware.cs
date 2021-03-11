@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using static System.Globalization.CultureInfo;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
 {
@@ -84,14 +84,11 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
         {
             var url = context.GetRouteValue("url") as string ?? throw new InvalidOperationException();
 
-            var queryStart = url.IndexOf('?');
-
-            if(queryStart > 0)
+            return new Uri(url.IndexOf('?') switch
             {
-                url = url[..queryStart].Replace("%2F", "/", true, CultureInfo.InvariantCulture) + url[queryStart..];
-            }
-
-            return new Uri(url);
+                <= 0 => url.Replace("%2F", "/", true, InvariantCulture),
+                int i and > 0 => url[..i].Replace("%2F", "/", true, InvariantCulture) + url[i..]
+            });
         }
 
         protected virtual HttpRequestMessage CreateRequestMessage(HttpContext context, Uri requestUri, HttpMethod method)
