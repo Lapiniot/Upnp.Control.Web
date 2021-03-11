@@ -22,7 +22,7 @@ openssl req \
   echo "[req_distinguished_name]"; \
   echo "commonName              = ${PARENT}"; \
   echo "[v3_req]"; \
-  echo "basicConstraints        = critical, CA:FALSE"; \
+  echo "basicConstraints        = critical, CA:TRUE"; \
   echo "keyUsage                = critical, nonRepudiation, keyCertSign, cRLSign, digitalSignature, keyEncipherment"; \
   echo "extendedKeyUsage        = critical, serverAuth"; \
   echo "subjectAltName          = critical, @alt_names"; \
