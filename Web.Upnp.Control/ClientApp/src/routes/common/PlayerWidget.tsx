@@ -8,6 +8,7 @@ import { AVPositionState, AVState, RCState } from "./Types";
 import { parseMilliseconds } from "../../components/Extensions";
 import { PlayerSvgSymbols } from "./SvgSymbols";
 import $s from "./Settings";
+import AlbumArt from "./AlbumArt";
 
 const STATE_UPDATE_DELAY_MS = 2000;
 
@@ -145,11 +146,14 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                     <Button title="Prev" glyph="step-backward" onClick={this.prev} disabled={!actions.includes("Previous")} />
                     <Button className="icon-2x" {...button} />
                     <Button title={nextTitle} glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
-                    <div className="d-flex flex-column flex-grow-1 overflow-hidden mx-2">
-                        {current ? <>
-                            <h6 className="text-center text-truncate flex-grow-1 m-0">{title}</h6>
-                            {(creator || album) && <small className="m-0 text-center lines-2">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
-                        </> : <h6 className="text-center text-truncate flex-grow-1 m-0">[No media]</h6>}
+                    <div className="d-flex flex-grow-1 align-self-stretch align-items-center justify-content-center">
+                        <AlbumArt itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} className="mx-1 album-art-md d-none d-sm-block" />
+                        <div className="d-flex flex-column overflow-hidden">
+                            {current ? <>
+                                <h6 className="text-center text-truncate flex-grow-1 m-0">{title}</h6>
+                                {(creator || album) && <small className="m-0 text-center lines-2">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
+                            </> : <h6 className="text-center text-truncate flex-grow-1 m-0">[No media]</h6>}
+                        </div>
                     </div>
                     <div className="d-flex position-relative flex-nowrap align-items-center">
                         <div className="hover-container">
