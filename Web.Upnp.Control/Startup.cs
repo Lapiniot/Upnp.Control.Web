@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp;
-using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
@@ -118,16 +117,17 @@ namespace Web.Upnp.Control
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-            app.UseResponseCaching();
-
             if(env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+
             app.UseRouting();
+
+            app.UseResponseCaching();
 
             app.UseEndpoints(endpoints =>
             {

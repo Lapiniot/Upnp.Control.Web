@@ -132,7 +132,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             }
         }
 
-        protected async Task CopyContentAsync(Stream source, HttpContext context, int chunkSize, CancellationToken cancellationToken)
+        protected async Task CopyContentAsync(Stream source, HttpContext context, int bufferSize, CancellationToken cancellationToken)
         {
             var id = context.Connection.Id;
             var writer = context.Response.BodyWriter;
@@ -140,9 +140,9 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             while(!cancellationToken.IsCancellationRequested)
             {
                 var available = 0;
-                var buffer = writer.GetMemory(chunkSize);
+                var buffer = writer.GetMemory(bufferSize);
 
-                while(available < chunkSize)
+                while(available < bufferSize)
                 {
                     var bytes = await source.ReadAsync(buffer.Slice(available), cancellationToken).ConfigureAwait(false);
                     if(bytes == 0) break;
@@ -157,7 +157,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
                 logger.LogFlushed(id, available);
 
-                if(available < chunkSize) break;
+                if(available < bufferSize) break;
             }
 
             logger.LogDone(id);

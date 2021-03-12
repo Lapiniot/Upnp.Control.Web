@@ -3,6 +3,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Infrastructure.HttpClients;
 using Web.Upnp.Control.Infrastructure.Middleware;
 using Web.Upnp.Control.Services.Abstractions;
@@ -57,11 +58,13 @@ namespace Web.Upnp.Control.Infrastructure
                     UseProxy = false,
                     UseCookies = false
                 });
+            services.AddOptions<ImageProxyOptions>().BindConfiguration("ImageProxy");
             return services.AddTransient<ImageLoaderProxyMiddleware>();
         }
 
         public static IServiceCollection AddContentProxyMiddleware(this IServiceCollection services)
         {
+            services.AddOptions<ContentProxyOptions>().BindConfiguration("ContentProxy");
             return services.AddTransient<ContentProxyMiddleware>();
         }
 

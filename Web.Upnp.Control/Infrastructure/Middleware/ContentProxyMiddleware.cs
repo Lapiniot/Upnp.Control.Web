@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Web.Upnp.Control.Configuration;
 using static System.StringComparison;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
@@ -17,11 +19,14 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
         private const string OptionNoLength = "no-length";
         private const string OptionStipIcyMetadata = "strip-icy-metadata";
         private const string OptionAddDlnaMetadata = "add-dlna-metadata";
+        private readonly IOptions<ContentProxyOptions> options;
         private readonly ILogger<ProxyMiddleware> logger;
 
-        public ContentProxyMiddleware(HttpClient client, ILogger<ProxyMiddleware> logger) : base(client, logger)
+        public ContentProxyMiddleware(HttpClient client, IOptions<ContentProxyOptions> options, ILogger<ProxyMiddleware> logger) : base(client, logger)
         {
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.logger = logger;
+            this.BufferSize = options.Value.BufferSize;
         }
 
         protected override HttpRequestMessage CreateRequestMessage(HttpContext context, Uri requestUri, HttpMethod method)
