@@ -2,11 +2,16 @@ import { HTMLAttributes } from "react";
 import { viaProxy } from "../../components/Extensions";
 
 function getIconByClass(itemClass: string) {
-    if (itemClass.endsWith("musicTrack"))
+    if (itemClass.includes(".container"))
+        return "s-folder";
+    else if (itemClass.includes(".audioItem"))
         return "s-file-audio";
-    if (itemClass.endsWith("videoItem"))
+    else if (itemClass.includes(".videoItem"))
         return "s-file-video";
-    return "s-folder";
+    else if (itemClass.includes(".imageItem"))
+        return "s-file-image";
+    else
+        return "s-file";
 }
 
 type AlbumArtProps = HTMLAttributes<HTMLOrSVGElement> & { itemClass: string, albumArts?: string[] };
