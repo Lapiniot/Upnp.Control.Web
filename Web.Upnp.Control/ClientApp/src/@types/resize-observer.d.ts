@@ -24,7 +24,7 @@ declare global {
 
     interface ResizeObserverCallback { (entries: ResizeObserverEntry[], observer: ResizeObserver): void }
 
-    var ResizeObserver: {
+    declare var ResizeObserver: {
         prototype: ResizeObserver;
         new(handler: ResizeObserverCallback): ResizeObserver;
     }
