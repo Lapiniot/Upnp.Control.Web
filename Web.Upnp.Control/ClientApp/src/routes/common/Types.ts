@@ -125,6 +125,17 @@ export type DataSourceProps<T = {}, P = {}> = P & {
     "data-row-id"?: string | number
 }
 
+export enum RowState {
+    None = 0b0,
+    Disabled = 0b1,
+    Active = 0b10,
+    Selectable = 0b100,
+    Selected = 0b1000,
+    Readonly = 0x10000,
+    Navigable = 0x100000,
+    SelectMask = Selectable | Selected
+}
+
 /* Routing related params extracted from navigation url */
 export type CategoryRoutePath = "/:category";
 export type DeviceRoutePath = "/:category/:device";

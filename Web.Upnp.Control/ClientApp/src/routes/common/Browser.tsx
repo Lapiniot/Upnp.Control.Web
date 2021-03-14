@@ -7,11 +7,11 @@ import { useBookmarkButton } from "./BookmarkButton";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { BottomBar } from "./BottomBar";
 import { DIDLUtils } from "./BrowserUtils";
-import BrowserView, { CellTemplate, CellTemplateProps, RowState } from "./BrowserView";
+import BrowserView, { CellTemplate, CellTemplateProps } from "./BrowserView";
 import { TablePagination } from "./Pagination";
 import $s from "./Settings";
 import { BrowserSvgSymbols } from "./SvgSymbols";
-import { BrowseFetchResult, DIDLItem, Services, UpnpDevice } from "./Types";
+import { BrowseFetchResult, DIDLItem, RowState, Services, UpnpDevice } from "./Types";
 import ModalHost from "../../components/ModalHost";
 import ItemInfoModal from "./ItemInfoModal";
 

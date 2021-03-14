@@ -10,11 +10,9 @@ import BrowserCore from "./BrowserCore";
 import $api from "../../components/WebApi";
 import { BrowseRoutePath, UpnpDevice } from "./Types";
 import { BrowserProps } from "./BrowserView";
-import SelectionService from "../../components/SelectionService";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;
-    selection?: SelectionService;
     confirmContent?: ((ids: string[]) => ReactNode) | string;
     onConfirmed?: (selection: BrowseResult) => void;
     dismissOnOpen?: boolean;
@@ -65,7 +63,7 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
     }
 
     render() {
-        const { title, confirmContent = "Open", onConfirmed, browserProps = {}, selection, ...other } = this.props;
+        const { title, confirmContent = "Open", onConfirmed, browserProps = {}, ...other } = this.props;
         return <Modal title={title} {...other} data-bs-keyboard={true} ref={this.modalRef}>
             <Modal.Body className="overflow-hidden p-0 position-relative d-flex flex-column border-bottom border-top" style={{ height: "60vh" }}>
                 <div className="overflow-auto safari-scroll-fix flex-fill d-flex flex-column">

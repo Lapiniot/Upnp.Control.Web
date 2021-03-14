@@ -1,31 +1,20 @@
 ﻿import React, { ChangeEventHandler, ComponentType, HTMLAttributes, MouseEventHandler, ReactElement, MouseEvent, FocusEvent } from "react";
 import AlbumArt from "./AlbumArt";
-import SelectionService from "../../components/SelectionService";
 import { DIDLUtils as utils } from "./BrowserUtils";
-import { BrowseFetchResult, DIDLItem } from "./Types";
+import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
 import { NavigatorProps } from "./Navigator";
 import { DataFetchProps } from "../../components/DataFetch";
 import { DropdownMenu, DropdownMenuProps } from "../../components/DropdownMenu";
-import { EventHint, SelectionTracker } from "../../components/SelectionTracker";
 import { findScrollParent } from "../../components/Extensions";
+import { EventHint, SelectionTracker } from "./SelectionTracker";
 
-const DATA_ROW_SELECTOR = "div[data-id]";
-const DATA_ROW_FOCUSED_SELECTOR = "div[data-id]:focus";
-const DATA_ROW_FOCUS_WITHIN_SELECTOR = "div[data-id]:focus,div[data-id] :focus";
+const DATA_ROW_SELECTOR = "div[data-index]";
+const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
+const DATA_ROW_FOCUS_WITHIN_SELECTOR = "div[data-index]:focus,div[data-index] :focus";
 const HEADER_SELECTOR = ":scope > div.table-caption";
 const HEADER_CELLS_SELECTOR = ":scope > div:not(.table-caption):first-of-type > div > div, :scope > div.table-caption:first-of-type + div > div > div";
 
 type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode";
-
-export enum RowState {
-    None = 0b0,
-    Disabled = 0b1,
-    Active = 0b10,
-    Selectable = 0b100,
-    Selected = 0b1000,
-    Readonly = 0x10000,
-    Navigable = 0x100000,
-}
 
 export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
     data: DIDLItem;
@@ -37,7 +26,6 @@ export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
 export type BrowserProps<TContext> = {
     rowState?: ((item: DIDLItem, index: number) => RowState) | (RowState[]);
     open?: (id: string) => boolean;
-    selection?: SelectionService;
     selectionChanged?: (ids: string[]) => boolean | undefined | void;
     mainCellTemplate?: ComponentType<CellTemplateProps<TContext>>;
     mainCellContext?: TContext;
@@ -47,7 +35,7 @@ export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes
 
 export default class BrowserView<TContext = unknown> extends React.Component<BrowserViewProps<TContext>> {
     state = { modal: null };
-    private selection;
+    //private selection;
     private tableRef = React.createRef<HTMLDivElement>();
     private resizeObserver;
     private tracker: SelectionTracker;
@@ -55,18 +43,15 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
-        this.selection = props.selection || new SelectionService();
-        this.selection.addEventListener("changed", this.selectionChangedHandler);
         this.resizeObserver = new ResizeObserver(this.resizeObservedHandler);
-        this.tracker = new SelectionTracker([], this.selection, this.complexSelectionChanged);
+        this.tracker = new SelectionTracker([], this.selectionChanged);
     }
 
     componentDidUpdate(prevProps: BrowserViewProps<TContext>) {
-        if (prevProps.selection !== this.props.selection) {
-            this.selection = this.props.selection || new SelectionService();
-        }
         if (prevProps.dataContext?.source !== this.props.dataContext?.source) {
-            this.tracker.blur();
+            const { rowState = [], dataContext: ctx } = this.props;
+            this.rowStates = typeof rowState === "function" ? ctx?.source?.items?.map(rowState) ?? [] : rowState;
+            this.tracker = new SelectionTracker(this.rowStates, this.selectionChanged);
             this.props.selectionChanged?.([]);
         }
     }
@@ -77,26 +62,9 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         this.resizeObserver.observe(this.tableRef.current as HTMLDivElement);
     }
 
-    private selectionFilter = (item: DIDLItem, index: number) => {
-        return (this.rowStates[index] & RowState.Selectable) && this.selection.selected(item.id);
-    }
-
-    private selectionChangedHandler = (event: Event) => {
-        const { selectionChanged, dataContext } = this.props;
-        if (selectionChanged && dataContext) {
-            const { source: { items } = { items: null } } = dataContext;
-            if (items) {
-                if (selectionChanged(items.filter(this.selectionFilter).map(item => item.id)) === false) {
-                    event.preventDefault();
-                }
-            }
-        }
-    }
-
     componentWillUnmount() {
         document.body.removeEventListener("keydown", this.onKeyDown);
         this.resizeObserver.disconnect();
-        this.selection.clear();
     }
 
     resizeObservedHandler = (entries: ResizeObserverEntry[]) => {
@@ -123,9 +91,9 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     onCheckboxChanged: ChangeEventHandler<HTMLInputElement> = e => {
         e.stopPropagation();
         const checkbox = e.target;
-        const id = checkbox.parentElement?.parentElement?.dataset?.id;
-        if (!id) return;
-        this.tracker.set(id, checkbox.checked);
+        const index = checkbox.parentElement?.parentElement?.dataset?.index;
+        if (!index) return;
+        this.tracker.set(parseInt(index), checkbox.checked);
     };
 
     onCheckboxAllChanged: ChangeEventHandler<HTMLInputElement> = e => {
@@ -137,7 +105,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
         const target = e.target as HTMLElement;
 
-        if (target === e.currentTarget && this.selection.any()) {
+        if (target === e.currentTarget) {
             this.tracker.setAll(false, EventHint.Mouse);
             e.preventDefault();
             e.stopPropagation();
@@ -147,22 +115,22 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             const row = target.closest<HTMLElement>(DATA_ROW_SELECTOR);
             if (!row) return;
 
-            const id = row.dataset.id;
+            const index = row.dataset.index;
 
-            if (!id || !this.tracker.enabled()) return;
+            if (!index || !this.tracker.enabled()) return;
 
             if (e.shiftKey || e.ctrlKey || e.metaKey) {
                 if (!this.props.multiSelect || e.type !== "mousedown") return;
                 if ((e.ctrlKey || e.metaKey))
-                    this.tracker.toggle(id, EventHint.Mouse);
+                    this.tracker.toggle(parseInt(index), EventHint.Mouse);
                 else
-                    this.tracker.expandTo(id, EventHint.Mouse);
+                    this.tracker.expandTo(parseInt(index), EventHint.Mouse);
                 e.preventDefault();
                 e.stopPropagation();
             }
             else {
                 if (e.type === "mouseup")
-                    this.tracker.setOnly(id, EventHint.Mouse);
+                    this.tracker.setOnly(parseInt(index), EventHint.Mouse);
                 e.preventDefault();
                 e.stopPropagation();
             }
@@ -187,7 +155,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
                 const items = this.props.dataContext?.source.items;
                 if (!items) return;
-                const index = items.findIndex(i => i.id === focusedRow.dataset.id);
+                const index = parseInt(focusedRow.dataset.index ?? "");
                 const item = items[index];
                 if (!item) return;
                 const state = this.getRowState(item, index);
@@ -221,8 +189,6 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 else
                     this.tracker.moveNext(EventHint.Keyboard);
                 break;
-            case "Tab":
-                break;
             default: return;
         }
     }
@@ -230,19 +196,20 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     private focusHandler = (event: FocusEvent<HTMLDivElement>) => {
         const row = event.target.matches(DATA_ROW_SELECTOR) && event.target as HTMLDivElement;
         if (row) {
-            const id = row.dataset.id;
-            if (id && id !== this.tracker.focus) {
+            if (!row.dataset.index) return;
+            const index = parseInt(row.dataset.index);
+            if (index && index !== this.tracker.focus) {
                 // last tracked focused item id doesn't match currently focused row -
                 // thus we came here as a result of focus switch via keyboard Tab or Shift+Tab
                 // which we don't emulate programmatically. So lets synchronize selection with news focus
-                this.tracker.setOnly(id, EventHint.Keyboard);
+                this.tracker.setOnly(index, EventHint.Keyboard);
             }
         }
     }
 
-    private complexSelectionChanged = (_ids: string[], focused: string | null, hint: EventHint, canceled: boolean) => {
+    private selectionChanged = (indeeces: number[], focused: number | null, hint: EventHint) => {
         if (focused) {
-            const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-id='${focused}']`);
+            const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-index="${focused}"]`);
             if (!row) return;
 
             if (!row.matches(":focus-within")) {
@@ -256,17 +223,33 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             element?.blur();
         }
 
-        if (!canceled) {
-            this.setState({ selection: true });
+        const { selectionChanged, dataContext: ctx } = this.props;
+
+        if (!ctx?.source.items) return;
+
+        const { source: { items } } = ctx;
+
+        if (selectionChanged?.(indeeces.map(i => items[i].id)) !== false) {
+            this.forceUpdate();
         }
     }
 
-    private navigateHandler = ({ currentTarget: { dataset } }: MouseEvent<HTMLDivElement>) => {
-        this.props.navigate(dataset);
+    private navigateHandler = ({ currentTarget: { dataset: { index, id } } }: MouseEvent<HTMLDivElement>) => {
+        if (id) {
+            this.props.navigate({ id });
+        }
+        else if (index) {
+            this.props.navigate({ id: this.props.dataContext?.source?.items?.[parseInt(index)]?.id });
+        }
     }
 
-    private open: MouseEventHandler<HTMLDivElement> = ({ currentTarget: { dataset: { id } } }) =>
-        this.props.open?.(id as string);
+    private open: MouseEventHandler<HTMLDivElement> = ({ currentTarget: { dataset: { id, index } } }) => {
+        if (id)
+            this.props.open?.(id);
+        else if (index)
+            this.props.open?.(id ?? this.props.dataContext?.source.items?.[parseInt(index)]?.id ?? "");
+
+    }
 
     private getRowState(item: DIDLItem, index: number) {
         return (typeof this.props.rowState === "function"
@@ -288,12 +271,10 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     }
 
     render() {
-        const { className, rowState = () => RowState.Navigable, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
+        const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
             useCheckboxes = false } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
-        this.rowStates = typeof rowState === "function" ? items.map(rowState) : rowState;
-        this.tracker.setup(items.map(i => i.id), this.props.selection ?? this.selection);
 
         const children = React.Children.toArray(this.props.children);
         const caption = children.find(c => (c as ReactElement)?.type === BrowserView.Caption);
@@ -333,9 +314,9 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                             <div>Parent</div>
                         </div>}
                     {[items.map((e, index) => {
-                        const selected = this.selection.selected(e.id);
+                        const selected = !!(this.rowStates[index] & RowState.Selected);
                         const selectable = !!(this.rowStates[index] & RowState.Selectable);
-                        return <div key={e.id} tabIndex={0} data-id={e.id} data-selected={selected ? selected : undefined}
+                        return <div key={e.id} tabIndex={0} data-index={index} data-selected={selected ? selected : undefined}
                             data-active={this.rowStates[index] & RowState.Active ? true : undefined}
                             onDoubleClick={e.container && (this.rowStates[index] & RowState.Navigable) ? this.navigateHandler : this.open}>
                             {useCheckboxes && <div>

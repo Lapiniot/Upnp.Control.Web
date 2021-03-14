@@ -1,10 +1,11 @@
 import { useCallback, useRef } from "react";
 import WebApi from "../../../components/WebApi";
-import { BrowserProps, RowState } from "../BrowserView";
+import { BrowserProps } from "../BrowserView";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
 import { DeviceActionProps } from "./Actions";
 import { DIDLUtils } from "../BrowserUtils";
 import ModalHost from "../../../components/ModalHost";
+import { RowState } from "../Types";
 
 const browserProps: BrowserProps<unknown> = {
     rowState: () => RowState.Navigable | RowState.Selectable

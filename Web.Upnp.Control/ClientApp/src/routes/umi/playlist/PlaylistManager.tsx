@@ -1,15 +1,14 @@
 import React, { EventHandler, HTMLAttributes, ReactElement, UIEvent } from "react";
 import { RouteComponentProps } from "react-router";
-import { AVState, BrowseFetchResult, DIDLItem, PlaylistRouteParams, PropertyBag, UpnpDevice } from "../../common/Types";
+import { AVState, BrowseFetchResult, DIDLItem, PlaylistRouteParams, PropertyBag, RowState, UpnpDevice } from "../../common/Types";
 import $api from "../../../components/WebApi";
 import { TextValueEditDialog } from "../../../components/Dialogs";
 import { withBrowserDataFetch, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils";
 import Toolbar from "../../../components/Toolbar";
 import { TablePagination } from "../../common/Pagination";
 import Breadcrumb from "../../common/Breadcrumb";
-import Browser, { BrowserProps, RowState } from "../../common/BrowserView";
+import Browser, { BrowserProps } from "../../common/BrowserView";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
-import SelectionService from "../../../components/SelectionService";
 import { SignalRListener } from "../../../components/SignalR";
 import MainCell from "./CellTemplate";
 import { DataContext, DataFetchProps } from "../../../components/DataFetch";
@@ -75,7 +74,6 @@ function isNavigable(item: DIDLItem) {
 export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
-    selection = new SelectionService();
     rowStates: RowState[] = [];
     handlers;
     ctrl;
@@ -96,9 +94,6 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         if (prevProps.device !== this.props.device) {
             this.ctrl = $api.control(this.props.device);
             this.pls = $api.playlist(this.props.device);
-        }
-        if (prevProps.device !== this.props.device || prevProps.id !== this.props.id) {
-            this.selection.reset();
         }
     }
 
@@ -152,7 +147,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private create = (title: string) => this.reload($api.playlist(this.props.device).create(title).fetch);
 
-    private remove = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).delete(ids).fetch().then(this.selection.reset));
+    private remove = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).delete(ids).fetch());
 
     private addItems = (id: string, device: string, ids: string[]) => this.reload(() => $api
         .playlist(this.props.device)
@@ -163,7 +158,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private addFiles = (id: string, data: FormData) => this.reload($api.playlist(this.props.device).addFromFiles(id, data).fetch);
 
-    private removeItems = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch().then(this.selection.reset));
+    private removeItems = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch());
 
     private showInfo = (id: string) => {
         var item = this.props.dataContext?.source.items?.find(i => i.id === id);
@@ -403,7 +398,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 </div>
                 <SignalRListener handlers={this.handlers}>
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
-                        selection={this.selection} selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
+                        selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
                         useCheckboxes multiSelect className="flex-fill">
                         <Browser.ContextMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
@@ -420,7 +415,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         <DropdownMenu render={this.renderActionMenu} />
                     </div>
                     <BottomBar className="position-static">
-                        {this.selection.length > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${this.selection.length} of ${fetched} selected`}</span> : null}
+                        {this.state.selection.length > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${this.state.selection.length} of ${fetched} selected`}</span> : null}
                         <TablePagination location={location} history={history} total={total} current={page} pageSize={pageSize} />
                     </BottomBar>
                 </div>

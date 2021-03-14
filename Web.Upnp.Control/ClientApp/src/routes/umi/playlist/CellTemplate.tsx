@@ -2,8 +2,8 @@ import React, { EventHandler, UIEvent } from "react";
 import { playlistBookmarks } from "../../../components/BookmarkService";
 import AlbumArt from "../../common/AlbumArt";
 import { useBookmarkButton } from "../../common/BookmarkButton";
-import { CellTemplateProps, RowState } from "../../common/BrowserView";
-import { PlaybackState } from "../../common/Types";
+import { CellTemplateProps } from "../../common/BrowserView";
+import { PlaybackState, RowState } from "../../common/Types";
 
 type CellContext = {
     state?: PlaybackState;
