@@ -10,7 +10,6 @@ import { EventHint, SelectionStateAdapter } from "./SelectionStateAdapter";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
-const DATA_ROW_FOCUS_WITHIN_SELECTOR = "div[data-index]:focus,div[data-index] :focus";
 const HEADER_SELECTOR = ":scope > div.table-caption";
 const HEADER_CELLS_SELECTOR = ":scope > div:not(.table-caption):first-of-type > div > div, :scope > div.table-caption:first-of-type + div > div > div";
 
@@ -211,14 +210,14 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-index="${focused}"]`);
             if (!row) return;
 
-            if (!row.matches(":focus-within")) {
+            if (!row.matches(":focus")) {
                 if (hint & EventHint.Keyboard)
                     row.scrollIntoView({ block: "center", behavior: "smooth" });
                 row.focus({ preventScroll: true });
             }
         }
         else {
-            const element = this.tableRef.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUS_WITHIN_SELECTOR);
+            const element = this.tableRef.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUSED_SELECTOR);
             element?.blur();
         }
 

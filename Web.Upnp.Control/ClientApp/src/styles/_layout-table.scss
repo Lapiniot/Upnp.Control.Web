@@ -178,7 +178,7 @@ $hide-columns-map: (
     &.table-focus-marker {
         --bs-auto-table-focused-marker-size: #{map-get($spacers, 1)};
 
-        @include at-body-row('[data-focused="true"],:focus,:focus-within') {
+        @include at-body-row('[data-focused="true"],:focus') {
             @extend %row-accent;
             & > :first-child {
                 box-shadow: inset var(--bs-auto-table-focused-marker-size) 0 0 var(--bs-auto-table-focused-marker-color);
