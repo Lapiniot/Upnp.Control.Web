@@ -237,7 +237,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 useCheckboxes multiSelect rowState={this.rowState}
                 selectionChanged={this.selectionChanged} open={this.openHandler}
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
-                <BrowserView.ContextMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} />
+                <BrowserView.ContextMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} placement="left" />
             </BrowserCore>
             <BottomBar>
                 <TablePagination location={location} history={history}
@@ -246,7 +246,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 <button type="button" className="btn btn-round btn-plain" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
                     <svg className="icon"><use href="#ellipsis-v" /></svg>
                 </button>
-                <DropdownMenu render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} />
+                <DropdownMenu render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} placement="bottom-end" />
             </BottomBar>
             <ModalHost ref={this.modalHostRef} />
         </div>;
