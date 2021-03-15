@@ -11,13 +11,16 @@ export enum EventHint {
 
 type SelectionChangedCallback = (indeeces: number[], focused: number | null, hint: EventHint) => void;
 
-export class SelectionTracker {
+export class SelectionStateAdapter {
     private states: RowState[];
     private current: number | null = null;
     private onchanged: SelectionChangedCallback;
 
-    constructor(states: RowState[], onChanged: SelectionChangedCallback) {
+    constructor(states: RowState[], current: number | null, onChanged: SelectionChangedCallback) {
         this.states = states;
+        if (current != null && (current < 0 || current >= states.length))
+            throw new Error("Invalid value for 'current' parameter. Index is out of 'states' array range.");
+        this.current = current;
         this.onchanged = onChanged;
     }
 

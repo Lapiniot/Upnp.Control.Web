@@ -91,9 +91,10 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 
     async componentDidUpdate(prevProps: PlaylistManagerProps) {
-        if (prevProps.device !== this.props.device) {
+        if (prevProps.dataContext !== this.props.dataContext) {
             this.ctrl = $api.control(this.props.device);
             this.pls = $api.playlist(this.props.device);
+            this.rowStates = this.props.dataContext?.source.items?.map(this.getRowState) ?? [];
         }
     }
 
@@ -253,23 +254,19 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private pause: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.pause().fetch();
 
-    private playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { id } } }) => {
-        if (id) this.playItem(id);
+    private playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { index } } }) => {
+        if (index) this.playItem(parseInt(index));
     }
 
-    private playItem = (id: string) => {
-        const url = this.getPlayUrl(id);
+    private playItem = (index: number) => {
+        const url = this.getPlayUrl(index);
         if (url) this.ctrl.playUri(url).fetch();
         return false;
     }
 
-    private getPlayUrl(id: string) {
+    private getPlayUrl(index: number) {
         const { dataContext, s, p } = this.props;
         const { items = [], parents = [] } = dataContext?.source ?? {};
-
-        const index = items.findIndex(i => i.id === id);
-        if (index === undefined || index < 0) return;
-
         const item = items[index];
         if (!item || !item.res) return;
 
@@ -294,13 +291,18 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             case "rename": this.renamePlaylist(id); break;
             case "copy": break;
             case "remove": this.removePlaylistItems([id]); break;
-            case "play": if (anchor?.dataset?.id) this.playItem(anchor.dataset.id); break;
+            case "play": if (anchor?.dataset?.index) this.playItem(parseInt(anchor.dataset.index)); break;
             case "pause": this.ctrl.pause().fetch(); break;
             case "info": this.showInfo(id); break;
         }
     }
 
     //#endregion
+
+    getRowState(item: DIDLItem, index: number): RowState {
+        return (isNavigable(item) ? RowState.Navigable : RowState.None)
+            | (isReadonly(item) ? RowState.Readonly : RowState.Selectable);
+    }
 
     private getToolbarConfig = (): ToolbarItem[] => {
         const disabled = this.state.selection.length === 0;
@@ -360,16 +362,14 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const isRootLevel = id === "PL:";
         const hasSelection = this.state.selection.length > 0;
 
-        const activeIndex = isRootLevel
-            ? playlist === "aux" ? items.findIndex(i => i.vendor?.["mi:playlistType"] === "aux") : items.findIndex(i => i.res?.url === playlist)
+        const activeIndex = this.props.id === "PL:"
+            ? this.state.playlist === "aux" ? items.findIndex(i => i.vendor?.["mi:playlistType"] === "aux") : items.findIndex(i => i.res?.url === playlist)
             : currentTrack && playlist === parents?.[0]?.res?.url ? parseInt(currentTrack) - pageSize * (page - 1) - 1 : -1;
 
-        const getRowState = (item: DIDLItem, index: number) => RowState.None
-            | (index === activeIndex ? RowState.Active : RowState.None)
-            | (isReadonly(item) ? RowState.Readonly : RowState.Selectable)
-            | (isNavigable(item) ? RowState.Navigable : RowState.None);
-
-        this.rowStates = items.map(getRowState);
+        if (activeIndex >= 0 && this.rowStates.length) {
+            for (let i = 0; i < this.rowStates.length; i++) this.rowStates[i] &= ~RowState.Active;
+            this.rowStates[activeIndex] |= RowState.Active;
+        }
 
         const ctx = {
             play: this.play,
