@@ -38,7 +38,7 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
                             <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                         </div>
                     </React.Fragment>
-                : <div className="stack-layer d-flex stack-layer-hover" onClick={ctx?.playUrl} data-id={d.id}>
+                : <div className="stack-layer d-flex stack-layer-hover" onClick={ctx?.playUrl} data-index={index}>
                     <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                 </div>}
         </div>
