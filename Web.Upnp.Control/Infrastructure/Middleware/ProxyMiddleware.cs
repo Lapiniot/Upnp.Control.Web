@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 using static System.Globalization.CultureInfo;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
@@ -71,9 +72,15 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             {
                 logger.LogAborted(id);
             }
-            catch(Exception exception)
+            catch(InvalidDataException ide)
             {
-                logger.LogError(id, exception);
+                logger.LogError(id, ide);
+                context.Response.StatusCode = StatusCodes.Status502BadGateway;
+                await context.Response.CompleteAsync().ConfigureAwait(false);
+            }
+            catch(Exception e)
+            {
+                logger.LogError(id, e);
                 throw;
             }
         }
@@ -97,7 +104,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
             foreach(var (k, v) in context.Request.Headers)
             {
-                if(k == "Host") continue;
+                if(k == HeaderNames.Host) continue;
                 requestMessage.Headers.TryAddWithoutValidation(k, (IEnumerable<string>)v);
             }
 
