@@ -23,7 +23,8 @@ export function useBookmarkButton(widgetName: KnownWidgets,
     return function ({ device, deviceName, item, store = storeInstance, ...other }: BookmarkButtonProps) {
         const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);
         const toggleHandler = useCallback(
-            async () => {
+            async (event) => {
+                event.stopPropagation();
                 if (!store) return;
                 const key: [string, string] = [device, item.id];
                 if (!await store.contains(key)) {

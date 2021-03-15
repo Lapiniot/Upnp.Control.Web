@@ -1,3 +1,5 @@
+import { EventHandler, SyntheticEvent } from "react";
+
 export function reversemap<T, R>(array: T[], fn: (currentValue: T, index: number) => R): R[] {
     return array.reduceRight((acc, element, index) => {
         acc.push(fn(element, index));
@@ -58,4 +60,11 @@ export function findScrollParent(element: HTMLElement | null): HTMLElement | nul
     }
 
     return element;
+}
+
+export function nopropagation<E extends SyntheticEvent>(handler: EventHandler<E>): EventHandler<E> {
+    return (event: E) => {
+        event.stopPropagation();
+        return handler(event);
+    };
 }

@@ -25,6 +25,7 @@ import { BottomBar } from "../../common/BottomBar";
 import ModalHost from "../../../components/ModalHost";
 import { ModalProps } from "../../../components/Modal";
 import ItemInfoModal from "../../common/ItemInfoModal";
+import { nopropagation } from "../../../components/Extensions";
 
 type PlaylistManagerProps = PlaylistRouteParams &
     DataFetchProps<BrowseFetchResult> &
@@ -250,13 +251,13 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     //#region Playback related row event handlers
 
-    private play: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.play().fetch();
+    private play: EventHandler<UIEvent<HTMLElement>> = nopropagation(() => this.ctrl.play().fetch());
 
-    private pause: EventHandler<UIEvent<HTMLElement>> = () => this.ctrl.pause().fetch();
+    private pause: EventHandler<UIEvent<HTMLElement>> = nopropagation(() => this.ctrl.pause().fetch());
 
-    private playUrl: EventHandler<UIEvent<HTMLElement>> = ({ currentTarget: { dataset: { index } } }) => {
+    private playUrl: EventHandler<UIEvent<HTMLElement>> = nopropagation(({ currentTarget: { dataset: { index } } }) => {
         if (index) this.playItem(parseInt(index));
-    }
+    });
 
     private playItem = (index: number) => {
         const url = this.getPlayUrl(index);
