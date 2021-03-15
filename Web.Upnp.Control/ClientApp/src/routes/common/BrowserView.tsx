@@ -17,7 +17,7 @@ type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode";
 
 type DisplayMode = "table" | "list" | "responsive";
 
-type NavigationMode = "single-tap" | "double-click";
+type NavigationMode = "single-tap" | "double-click" | "auto";
 
 export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
     data: DIDLItem;
@@ -45,12 +45,14 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     private adapter: SelectionStateAdapter;
     rowStates: RowState[] = [];
     largeScreenQuery: MediaQueryList;
+    pointerDeviceQuery: MediaQueryList;
 
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
         this.resizeObserver = new ResizeObserver(this.resizeObservedHandler);
         this.adapter = new SelectionStateAdapter([], null, this.selectionChanged);
         this.largeScreenQuery = matchMedia("(min-width: 1024px)");
+        this.pointerDeviceQuery = matchMedia("(hover: hover) and (pointer: fine)");
         this.updateCachedState();
     }
 
@@ -64,18 +66,20 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     componentDidMount() {
         document.body.addEventListener("keydown", this.onKeyDown);
-        this.largeScreenQuery.addEventListener("change", this.screenSizeChanged);
+        this.largeScreenQuery.addEventListener("change", this.mediaQueryChanged);
+        this.pointerDeviceQuery.addEventListener("change", this.mediaQueryChanged);
         this.resizeObserver.disconnect();
         this.resizeObserver.observe(this.tableRef.current as HTMLDivElement);
     }
 
     componentWillUnmount() {
-        this.largeScreenQuery.removeEventListener("change", this.screenSizeChanged);
+        this.pointerDeviceQuery.removeEventListener("change", this.mediaQueryChanged);
+        this.largeScreenQuery.removeEventListener("change", this.mediaQueryChanged);
         document.body.removeEventListener("keydown", this.onKeyDown);
         this.resizeObserver.disconnect();
     }
 
-    screenSizeChanged = () => this.forceUpdate();
+    mediaQueryChanged = () => this.forceUpdate();
 
     resizeObservedHandler = (entries: ResizeObserverEntry[]) => {
         const table = entries[0].target;
@@ -281,7 +285,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     render() {
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes = false, displayMode = "responsive", navigationMode: mode = "single-tap" } = this.props;
+            useCheckboxes = false, displayMode = "responsive", navigationMode: mode = "auto" } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
 
@@ -291,6 +295,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const contextMenu = children.find(c => (c as ReactElement)?.type === BrowserView.ContextMenu);
 
         const tableMode = displayMode === "table" || displayMode === "responsive" && this.largeScreenQuery.matches;
+        const dblClickMode = mode === "double-click" || mode === "auto" && this.pointerDeviceQuery.matches;
 
         return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler}>
@@ -313,8 +318,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 <div>
                     {parents && parents.length > 0 &&
                         <div data-id={parents[1]?.id ?? -1} title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ..."
-                            onDoubleClick={mode === "double-click" ? this.navigateHandler : undefined}
-                            onClick={mode === "single-tap" ? this.navigateHandler : undefined}>
+                            onDoubleClick={dblClickMode ? this.navigateHandler : undefined}
+                            onClick={!dblClickMode ? this.navigateHandler : undefined}>
                             {useCheckboxes && <div>&nbsp;</div>}
                             <div className="w-100">
                                 <svg className="icon" stroke="currentColor" viewBox="0 0 16 16">
@@ -333,7 +338,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         const active = this.rowStates[index] & RowState.Active ? true : undefined;
                         const handler = e.container && (this.rowStates[index] & RowState.Navigable) ? this.navigateHandler : this.open;
                         return <div key={e.id} tabIndex={0} data-index={index} data-selected={selected ? selected : undefined} data-active={active}
-                            onDoubleClick={mode === "double-click" ? handler : undefined} onClick={mode === "single-tap" ? handler : undefined} >
+                            onDoubleClick={dblClickMode ? handler : undefined} onClick={!dblClickMode ? handler : undefined} >
                             {useCheckboxes && <div>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} onClick={this.noopHandler} checked={selected && selectable} disabled={!selectable} />
                             </div>}
