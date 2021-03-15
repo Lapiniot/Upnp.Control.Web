@@ -257,18 +257,19 @@ $zindex-dropdown: $zindex-sticky + 5;
 .stack {
     position: relative;
 
-    & > &-layer {
+    & > .stack-layer {
         position: absolute;
         left: 0;
         top: 0;
         bottom: 0;
         right: 0;
 
-        &-hover {
+        &.stack-layer-hover {
             opacity: 0;
             transition: opacity 250ms ease-in-out 125ms;
 
-            &:hover {
+            &:hover,
+            &:focus {
                 opacity: 1;
                 transition-delay: 0;
             }

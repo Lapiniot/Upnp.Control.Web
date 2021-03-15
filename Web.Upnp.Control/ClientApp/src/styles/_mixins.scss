@@ -60,6 +60,7 @@ $missing-image-content: "\1F61F" !default;
         width: 100%;
         color: $orange;
         outline: 1px dashed $orange;
+        outline-offset: -1px;
         background-color: $orange-100;
     }
 }

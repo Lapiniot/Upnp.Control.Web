@@ -7,9 +7,9 @@ import { PlaybackState, RowState } from "../../common/Types";
 
 type CellContext = {
     state?: PlaybackState;
-    play?: EventHandler<UIEvent<HTMLDivElement>>;
-    pause?: EventHandler<UIEvent<HTMLDivElement>>;
-    playUrl?: EventHandler<UIEvent<HTMLDivElement>>;
+    play?: EventHandler<UIEvent<HTMLElement>>;
+    pause?: EventHandler<UIEvent<HTMLElement>>;
+    playUrl?: EventHandler<UIEvent<HTMLElement>>;
     device: string;
     deviceName?: string;
 }
@@ -26,21 +26,21 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
                         <div className="stack-layer d-flex">
                             <svg className="icon m-auto icon-lg animate-pulse"><use href="#volume-up" /></svg>
                         </div>
-                        <div className="stack-layer d-flex stack-layer-hover" onClick={ctx?.pause}>
+                        <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.pause}>
                             <svg className="icon m-auto icon-lg"><use href="#pause-circle" /></svg>
-                        </div>
+                        </button>
                     </React.Fragment>
                     : <React.Fragment key="active-paused">
                         <div className="stack-layer d-flex">
                             <svg className="icon m-auto icon-lg"><use href="#volume-off" /></svg>
                         </div>
-                        <div className="stack-layer d-flex stack-layer-hover" onClick={ctx?.play}>
+                        <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.play}>
                             <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
-                        </div>
+                        </button>
                     </React.Fragment>
-                : <div className="stack-layer d-flex stack-layer-hover" onClick={ctx?.playUrl} data-index={index}>
+                : <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.playUrl} data-index={index}>
                     <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
-                </div>}
+                </button>}
         </div>
         <span className="text-truncate flex-grow-1">
             {d.title}
