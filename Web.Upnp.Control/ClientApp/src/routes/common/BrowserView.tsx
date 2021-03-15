@@ -5,7 +5,7 @@ import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
 import { NavigatorProps } from "./Navigator";
 import { DataFetchProps } from "../../components/DataFetch";
 import { DropdownMenu, DropdownMenuProps } from "../../components/DropdownMenu";
-import { findScrollParent } from "../../components/Extensions";
+import { findScrollParent, nopropagation } from "../../components/Extensions";
 import { EventHint, SelectionStateAdapter } from "./SelectionStateAdapter";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
@@ -14,6 +14,10 @@ const HEADER_SELECTOR = ":scope > div.table-caption";
 const HEADER_CELLS_SELECTOR = ":scope > div:not(.table-caption):first-of-type > div > div, :scope > div.table-caption:first-of-type + div > div > div";
 
 type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode";
+
+type DisplayMode = "table" | "list" | "responsive";
+
+type NavigationMode = "single-tap" | "double-click";
 
 export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
     data: DIDLItem;
@@ -28,6 +32,8 @@ export type BrowserProps<TContext> = {
     selectionChanged?: (ids: string[]) => boolean | undefined | void;
     mainCellTemplate?: ComponentType<CellTemplateProps<TContext>>;
     mainCellContext?: TContext;
+    displayMode?: DisplayMode;
+    navigationMode?: NavigationMode;
 } & { [K in ModeFlags]?: boolean }
 
 export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
@@ -38,11 +44,13 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     private resizeObserver;
     private adapter: SelectionStateAdapter;
     rowStates: RowState[] = [];
+    largeScreenQuery: MediaQueryList;
 
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
         this.resizeObserver = new ResizeObserver(this.resizeObservedHandler);
         this.adapter = new SelectionStateAdapter([], null, this.selectionChanged);
+        this.largeScreenQuery = matchMedia("(min-width: 1024px)");
         this.updateCachedState();
     }
 
@@ -56,14 +64,18 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     componentDidMount() {
         document.body.addEventListener("keydown", this.onKeyDown);
+        this.largeScreenQuery.addEventListener("change", this.screenSizeChanged);
         this.resizeObserver.disconnect();
         this.resizeObserver.observe(this.tableRef.current as HTMLDivElement);
     }
 
     componentWillUnmount() {
+        this.largeScreenQuery.removeEventListener("change", this.screenSizeChanged);
         document.body.removeEventListener("keydown", this.onKeyDown);
         this.resizeObserver.disconnect();
     }
+
+    screenSizeChanged = () => this.forceUpdate();
 
     resizeObservedHandler = (entries: ResizeObserverEntry[]) => {
         const table = entries[0].target;
@@ -98,6 +110,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const checkbox = e.target;
         this.adapter.setAll(checkbox.checked);
     };
+
+    noopHandler = nopropagation(() => { });
 
     private mouseEventHandler = (e: MouseEvent<HTMLDivElement>) => {
 
@@ -267,7 +281,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     render() {
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes = false } = this.props;
+            useCheckboxes = false, displayMode = "responsive", navigationMode: mode = "single-tap" } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
 
@@ -276,12 +290,14 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const footer = children.find(c => (c as ReactElement)?.type === BrowserView.Footer);
         const contextMenu = children.find(c => (c as ReactElement)?.type === BrowserView.ContextMenu);
 
+        const tableMode = displayMode === "table" || displayMode === "responsive" && this.largeScreenQuery.matches;
+
         return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler}>
             <div className="auto-table table-material trim-sm-3 hide-md-3 hide-md-5 hide-lg-5"
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {caption}
-                <div className="sticky-header d-none-h-before-sm">
+                <div className={tableMode ? "sticky-header" : "d-none"}>
                     <div>
                         {useCheckboxes &&
                             <div>
@@ -296,31 +312,37 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 </div>
                 <div>
                     {parents && parents.length > 0 &&
-                        <div data-id={parents[1]?.id ?? -1} onDoubleClick={this.navigateHandler}
-                            title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ...">
+                        <div data-id={parents[1]?.id ?? -1} title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ..."
+                            onDoubleClick={mode === "double-click" ? this.navigateHandler : undefined}
+                            onClick={mode === "single-tap" ? this.navigateHandler : undefined}>
                             {useCheckboxes && <div>&nbsp;</div>}
                             <div className="w-100">
                                 <svg className="icon" stroke="currentColor" viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M4.854 1.146a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L4 2.707V12.5A2.5 2.5 0 0 0 6.5 15h8a.5.5 0 0 0 0-1h-8A1.5 1.5 0 0 1 5 12.5V2.707l3.146 3.147a.5.5 0 1 0 .708-.708l-4-4z" />
                                 </svg>&nbsp;&nbsp;...
                             </div>
-                            <div>&nbsp;</div>
-                            <div>&nbsp;</div>
-                            <div>Parent</div>
+                            {tableMode && <>
+                                <div>&nbsp;</div>
+                                <div>&nbsp;</div>
+                                <div>Parent</div>
+                            </>}
                         </div>}
                     {[items.map((e, index) => {
                         const selected = !!(this.rowStates[index] & RowState.Selected);
                         const selectable = !!(this.rowStates[index] & RowState.Selectable);
                         const active = this.rowStates[index] & RowState.Active ? true : undefined;
+                        const handler = e.container && (this.rowStates[index] & RowState.Navigable) ? this.navigateHandler : this.open;
                         return <div key={e.id} tabIndex={0} data-index={index} data-selected={selected ? selected : undefined} data-active={active}
-                            onDoubleClick={e.container && (this.rowStates[index] & RowState.Navigable) ? this.navigateHandler : this.open}>
+                            onDoubleClick={mode === "double-click" ? handler : undefined} onClick={mode === "single-tap" ? handler : undefined} >
                             {useCheckboxes && <div>
-                                <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
+                                <input type="checkbox" onChange={this.onCheckboxChanged} onClick={this.noopHandler} checked={selected && selectable} disabled={!selectable} />
                             </div>}
                             <div className="mw-1"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.rowStates[index]} /></div>
-                            <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
-                            <div className="small">{utils.formatTime(e.res?.duration)}</div>
-                            <div className="text-capitalize">{utils.getDisplayName(e.class)}</div>
+                            {tableMode && <>
+                                <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
+                                <div className="small">{utils.formatTime(e.res?.duration)}</div>
+                                <div className="text-capitalize">{utils.getDisplayName(e.class)}</div>
+                            </>}
                         </div>;
                     })]}
                 </div>
