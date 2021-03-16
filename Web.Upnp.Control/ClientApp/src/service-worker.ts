@@ -26,7 +26,7 @@ const CACHES = [CACHE_STORE_NAME];
 
 // Navigation requests to the urls starting with any of this 
 // prefixes will be skipped from fetch by this worker
-const BLACKLIST_PREFIXES = ["/api", "/proxy"];
+const BLACKLIST_PREFIXES = ["/api"];
 
 async function precache() {
     try {
@@ -60,8 +60,8 @@ async function enablePreload() {
     }
 }
 
-async function fetchWithPreload(event: FetchEvent) {
-    const response = await Promise.resolve(event.preloadResponse);
+async function fetchWithPreload(event: FetchEvent): Promise<Response> {
+    const response = await Promise.resolve<Response>(event.preloadResponse);
     if (response) {
         console.debug(`received preload response for ${event.request.url}`);
         return response;
@@ -116,8 +116,13 @@ self.addEventListener("fetch", event => {
                 const cache = await caches.open(CACHE_STORE_NAME);
                 try {
                     const response = await cacheResponse;
-                    console.debug(`updating cache content for ${key}`);
-                    await cache.put(key, response);
+                    if (response.ok) {
+                        console.debug(`updating cache content for ${key}`);
+                        await cache.put(key, response);
+                    }
+                    else {
+                        console.debug(`Request failed for ${key}: ${response.statusText}. Keeping currently cached item intact.`);
+                    }
                 }
                 catch (error) {
                     console.debug(`network request failed for ${key}, cached content will stay intact`);
