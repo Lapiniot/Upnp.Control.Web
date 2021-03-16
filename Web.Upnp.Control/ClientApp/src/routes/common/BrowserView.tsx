@@ -51,8 +51,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     static defaultProps: BrowserProps<unknown> = {
         displayMode: "responsive",
         navigationMode: "auto",
-        multiSelect: false,
-        useCheckboxes: false,
+        multiSelect: true,
+        useCheckboxes: true,
         mainCellTemplate: CellTemplate
     };
 
@@ -213,13 +213,13 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 }
                 break;
             case "ArrowUp":
-                if (event.shiftKey)
+                if (event.shiftKey && this.props.multiSelect)
                     this.adapter.expandUp(EventHint.Keyboard);
                 else
                     this.adapter.movePrev(EventHint.Keyboard);
                 break;
             case "ArrowDown":
-                if (event.shiftKey)
+                if (event.shiftKey && this.props.multiSelect)
                     this.adapter.expandDown(EventHint.Keyboard)
                 else
                     this.adapter.moveNext(EventHint.Keyboard);
@@ -287,7 +287,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     private updateCachedState() {
         const { rowState, dataContext: ctx } = this.props;
         this.rowStates = (typeof rowState === "function" ? ctx?.source.items?.map(rowState) : rowState) ?? [];
-        this.adapter = new SelectionStateAdapter(this.rowStates, this.adapter.focus, this.selectionChanged);
+        this.adapter = new SelectionStateAdapter(this.rowStates, null, this.selectionChanged);
     }
 
     static Caption({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
