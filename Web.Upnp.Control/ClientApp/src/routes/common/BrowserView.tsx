@@ -46,6 +46,15 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     rowStates: RowState[] = [];
     largeScreenQuery: MediaQueryList;
     pointerDeviceQuery: MediaQueryList;
+    touchDeviceQuery: MediaQueryList;
+
+    static defaultProps: BrowserProps<unknown> = {
+        displayMode: "responsive",
+        navigationMode: "auto",
+        multiSelect: false,
+        useCheckboxes: false,
+        mainCellTemplate: CellTemplate
+    };
 
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
@@ -53,6 +62,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         this.adapter = new SelectionStateAdapter([], null, this.selectionChanged);
         this.largeScreenQuery = matchMedia("(min-width: 1024px)");
         this.pointerDeviceQuery = matchMedia("(hover: hover) and (pointer: fine)");
+        this.touchDeviceQuery = matchMedia("(any-pointer: coarse)");
         this.updateCachedState();
     }
 
@@ -62,24 +72,33 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             this.updateCachedState();
             this.props.selectionChanged?.([]);
         }
+
+        if (prevProps.displayMode !== this.props.displayMode) {
+            this.largeScreenQuery.removeEventListener("change", this.screenQueryChangedHandler);
+            if (this.props.displayMode === "responsive") {
+                this.largeScreenQuery.addEventListener("change", this.screenQueryChangedHandler);
+            }
+        }
     }
 
     componentDidMount() {
         document.body.addEventListener("keydown", this.onKeyDown);
-        this.largeScreenQuery.addEventListener("change", this.mediaQueryChanged);
-        this.pointerDeviceQuery.addEventListener("change", this.mediaQueryChanged);
+        if (this.props.displayMode === "responsive") {
+            this.largeScreenQuery.addEventListener("change", this.screenQueryChangedHandler);
+        }
         this.resizeObserver.disconnect();
         this.resizeObserver.observe(this.tableRef.current as HTMLDivElement);
     }
 
     componentWillUnmount() {
-        this.pointerDeviceQuery.removeEventListener("change", this.mediaQueryChanged);
-        this.largeScreenQuery.removeEventListener("change", this.mediaQueryChanged);
+        this.largeScreenQuery.removeEventListener("change", this.screenQueryChangedHandler);
         document.body.removeEventListener("keydown", this.onKeyDown);
         this.resizeObserver.disconnect();
     }
 
-    mediaQueryChanged = () => this.forceUpdate();
+    screenQueryChangedHandler = () => {
+        this.forceUpdate();
+    }
 
     resizeObservedHandler = (entries: ResizeObserverEntry[]) => {
         const table = entries[0].target;
@@ -285,7 +304,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     render() {
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes = false, displayMode = "responsive", navigationMode: mode = "auto" } = this.props;
+            useCheckboxes, displayMode, navigationMode: mode } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
 
@@ -296,10 +315,11 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
         const tableMode = displayMode === "table" || displayMode === "responsive" && this.largeScreenQuery.matches;
         const dblClickMode = mode === "double-click" || mode === "auto" && this.pointerDeviceQuery.matches;
+        const optimizeForTouch = this.touchDeviceQuery.matches;
 
         return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler}>
-            <div className="auto-table table-material trim-sm-3 hide-md-3 hide-md-5 hide-lg-5"
+            <div className={`auto-table at-material trim-sm-3 hide-md-3 hide-md-5 hide-lg-5${optimizeForTouch ? " at-touch-friendly" : ""}`}
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {caption}
                 <div className={tableMode ? "sticky-header" : "d-none"}>
@@ -316,7 +336,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                     </div>
                 </div>
                 <div>
-                    {parents && parents.length > 0 &&
+                    {tableMode && parents && parents.length > 0 &&
                         <div data-id={parents[1]?.id ?? -1} title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ..."
                             onDoubleClick={dblClickMode ? this.navigateHandler : undefined}
                             onClick={!dblClickMode ? this.navigateHandler : undefined}>
@@ -342,7 +362,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                             {useCheckboxes && <div>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} onClick={this.noopHandler} checked={selected && selectable} disabled={!selectable} />
                             </div>}
-                            <div className="mw-1"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.rowStates[index]} /></div>
+                            <div className="mw-1 w-100"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.rowStates[index]} /></div>
                             {tableMode && <>
                                 <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
                                 <div className="small">{utils.formatTime(e.res?.duration)}</div>

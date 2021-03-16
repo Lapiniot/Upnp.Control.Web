@@ -400,7 +400,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 <SignalRListener handlers={this.handlers}>
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
-                        useCheckboxes multiSelect className="flex-fill">
+                        className="flex-fill">
                         <Browser.ContextMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>

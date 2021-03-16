@@ -17,8 +17,9 @@ type CellContext = {
 const BookmarkItemButton = useBookmarkButton("PlaylistBookmarkWidget", playlistBookmarks, ["#heart-solid", "#heart"]);
 
 export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
+    const artist = d.artists?.[0] ?? d.creator;
     return <div className="d-flex align-items-center">
-        <div className="d-inline-block stack me-1">
+        <div className="d-inline-block stack me-2">
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} />
             {rowState & RowState.Active
                 ? ctx?.state === "PLAYING"
@@ -42,10 +43,9 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
                     <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                 </button>}
         </div>
-        <span className="text-truncate flex-grow-1">
-            {d.title}
-            {d.creator && <>&nbsp;&bull;&nbsp;<small>{d.creator}</small></>}
-            {d.album && <>&nbsp;&bull;&nbsp;<small>{d.album}</small></>}
+        <span className="flex-fill d-flex flex-column overflow-hidden">
+            <span className="text-truncate">{d.title}</span>
+            {(d.album || artist) && <small className="text-truncate">{artist}{artist && <>&nbsp;&bull;&nbsp;</>}{d.album}</small>}
         </span>
         {d.container && ctx?.deviceName && <BookmarkItemButton item={d} device={ctx?.device as string} deviceName={ctx?.deviceName as string} />}
         <button type="button" className="btn btn-round btn-plain" data-id={d.id} data-index={index} data-bs-toggle="dropdown" disabled={!!(rowState & RowState.Readonly)}>

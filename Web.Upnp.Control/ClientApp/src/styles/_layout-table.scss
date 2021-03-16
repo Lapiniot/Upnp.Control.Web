@@ -52,7 +52,7 @@ $hide-columns-map: (
 
     @mixin at-body-row($selector: null) {
         @include at-body() {
-            #{if($selector, selector-nest("& >", $selector), "*")} {
+            #{if($selector, selector-nest("& >", $selector), "& > *")} {
                 @content;
             }
         }
@@ -154,7 +154,7 @@ $hide-columns-map: (
         display: table-footer-group;
     }
 
-    &.table-compact {
+    &.at-compact {
         & > * > * > * {
             padding: $table-cell-padding-y-sm $table-cell-padding-x-sm;
 
@@ -168,14 +168,14 @@ $hide-columns-map: (
         }
     }
 
-    &.table-striped {
+    &.at-striped {
         @include at-body-row(":nth-of-type(#{$auto-table-striped-order})") {
             --bs-auto-table-accent-bg: var(--bs-auto-table-striped-bg);
             color: var(--bs-auto-table-striped-color);
         }
     }
 
-    &.table-focus-marker {
+    &.at-focus-marker {
         --bs-auto-table-focused-marker-size: #{map-get($spacers, 1)};
 
         @include at-body-row('[data-focused="true"],:focus') {
@@ -186,14 +186,14 @@ $hide-columns-map: (
         }
     }
 
-    &.table-hover {
+    &.at-hover {
         @include at-body-row(":hover") {
             --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
             color: var(--bs-auto-table-hover-color);
         }
     }
 
-    &.table-hover-link {
+    &.at-hover-link {
         @include at-body-row(":hover") {
             --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
             color: $link-hover-color;
@@ -202,7 +202,7 @@ $hide-columns-map: (
         }
     }
 
-    &.table-material {
+    &.at-material {
         @include at-header() {
             --bs-auto-table-header-bg: var(--bs-auto-table-bg);
             &.sticky-header {
@@ -217,9 +217,15 @@ $hide-columns-map: (
             padding-inline: $table-cell-padding-x;
         }
 
-        @extend .table-compact;
-        @extend .table-hover-link;
-        @extend .table-focus-marker;
+        @extend .at-compact;
+        @extend .at-hover-link;
+        @extend .at-focus-marker;
+    }
+
+    &.at-touch-friendly {
+        @include at-body-row() {
+            height: 3.6rem;
+        }
     }
 
     @each $breakpoint, $indices in $trim-columns-map {
