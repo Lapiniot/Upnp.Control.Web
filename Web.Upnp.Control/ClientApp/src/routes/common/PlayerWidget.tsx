@@ -14,7 +14,7 @@ const STATE_UPDATE_DELAY_MS = 2000;
 
 function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }) {
     const { className, glyph, children, active, ...other } = props;
-    return <button type="button" className={`btn btn-round btn-icon btn-plain p-1${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
+    return <button type="button" className={`btn btn-round btn-icon btn-plain${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
         {glyph && <svg><use href={`#${glyph}`} /></svg>}{children}
     </button>
 }
@@ -144,7 +144,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                 <SeekBar className="mb-2" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChangeRequested={this.seek} />
                 <div className="d-flex align-items-center flex-nowrap">
                     <Button title="Prev" glyph="step-backward" onClick={this.prev} disabled={!actions.includes("Previous")} />
-                    <Button className="icon-2x" {...button} />
+                    <Button className="icon-2x p-1" {...button} />
                     <Button title={nextTitle} glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
                     <div className="d-flex flex-grow-1 align-self-stretch align-items-center justify-content-center">
                         <AlbumArt itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} className="mx-2 my-0 album-art-md d-none d-sm-block" />
