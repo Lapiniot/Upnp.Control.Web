@@ -134,42 +134,38 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         this.adapter.setAll(checkbox.checked);
     };
 
-    noopHandler = nopropagation(() => { });
-
     private mouseEventHandler = (e: MouseEvent<HTMLDivElement>) => {
+
+        if (e.type !== "mousedown") return;
 
         const target = e.target as HTMLElement;
 
         if (target === e.currentTarget) {
-            this.adapter.setAll(false, EventHint.Mouse);
+            requestAnimationFrame(() => this.adapter.setAll(false, EventHint.Mouse));
+            return;
+        }
+
+        if (target instanceof HTMLInputElement ||
+            target instanceof HTMLLabelElement ||
+            target.closest("button")) {
             e.preventDefault();
             e.stopPropagation();
-        } else {
-            if (target instanceof HTMLInputElement || target.closest("button")) return;
-
-            const row = target.closest<HTMLElement>(DATA_ROW_SELECTOR);
-            if (!row) return;
-
-            const index = row.dataset.index;
-
-            if (!index || !this.adapter.enabled()) return;
-
-            if (e.shiftKey || e.ctrlKey || e.metaKey) {
-                if (!this.props.multiSelect || e.type !== "mousedown") return;
-                if ((e.ctrlKey || e.metaKey))
-                    this.adapter.toggle(parseInt(index), EventHint.Mouse);
-                else
-                    this.adapter.expandTo(parseInt(index), EventHint.Mouse);
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            else {
-                if (e.type === "mouseup")
-                    this.adapter.setOnly(parseInt(index), EventHint.Mouse);
-                e.preventDefault();
-                e.stopPropagation();
-            }
+            return;
         }
+
+        const row = target.closest<HTMLElement>(DATA_ROW_SELECTOR);
+        const index = row?.dataset.index;
+        if (!index || !this.adapter.enabled()) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        if ((e.ctrlKey || e.metaKey) && this.props.multiSelect)
+            requestAnimationFrame(() => this.adapter.toggle(parseInt(index), EventHint.Mouse));
+        else if (e.shiftKey && this.props.multiSelect)
+            requestAnimationFrame(() => this.adapter.expandTo(parseInt(index), EventHint.Mouse));
+        else
+            requestAnimationFrame(() => this.adapter.setOnly(parseInt(index), EventHint.Mouse));
     }
 
     private onKeyDown = (event: KeyboardEvent) => {
@@ -182,7 +178,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
                 if (!focusedRow) {
                     if (event.code === "ArrowRight")
-                        this.adapter.selectFirst();
+                        requestAnimationFrame(() => this.adapter.selectFirst());
                     return;
                 }
 
@@ -207,22 +203,23 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 break;
             case "KeyA":
                 if (this.props.multiSelect && !event.cancelBubble && (event.metaKey || event.ctrlKey)) {
-                    this.adapter.setAll(true, EventHint.Keyboard);
                     event.preventDefault();
-                    event.stopPropagation();
+                    requestAnimationFrame(() => this.adapter.setAll(true, EventHint.Keyboard));
                 }
                 break;
             case "ArrowUp":
+                event.preventDefault();
                 if (event.shiftKey && this.props.multiSelect)
-                    this.adapter.expandUp(EventHint.Keyboard);
+                    requestAnimationFrame(() => this.adapter.expandUp(EventHint.Keyboard));
                 else
-                    this.adapter.movePrev(EventHint.Keyboard);
+                    requestAnimationFrame(() => this.adapter.movePrev(EventHint.Keyboard));
                 break;
             case "ArrowDown":
+                event.preventDefault();
                 if (event.shiftKey && this.props.multiSelect)
-                    this.adapter.expandDown(EventHint.Keyboard)
+                    requestAnimationFrame(() => this.adapter.expandDown(EventHint.Keyboard));
                 else
-                    this.adapter.moveNext(EventHint.Keyboard);
+                    requestAnimationFrame(() => this.adapter.moveNext(EventHint.Keyboard));
                 break;
             default: return;
         }
@@ -237,7 +234,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 // last tracked focused item id doesn't match currently focused row -
                 // thus we came here as a result of focus switch via keyboard Tab or Shift+Tab
                 // which we don't emulate programmatically. So lets synchronize selection with news focus
-                this.adapter.setOnly(index, EventHint.Keyboard);
+                requestAnimationFrame(() => this.adapter.setOnly(index, EventHint.Keyboard));
             }
         }
     }
@@ -317,18 +314,17 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const dblClickMode = mode === "double-click" || mode === "auto" && this.pointerDeviceQuery.matches;
         const optimizeForTouch = this.touchDeviceQuery.matches;
 
-        return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`}
-            onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler}>
+        return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`} onMouseDown={this.mouseEventHandler} >
             <div className={`auto-table at-material trim-sm-3 hide-md-3 hide-md-5 hide-lg-5${optimizeForTouch ? " at-touch-friendly" : ""}`}
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {caption}
                 <div className={tableMode ? "sticky-header" : "d-none"}>
                     <div>
                         {useCheckboxes &&
-                            <div>
+                            <label>
                                 <input type="checkbox" onChange={this.onCheckboxAllChanged}
                                     checked={this.adapter.allSelected()} disabled={!this.adapter.enabled()} />
-                            </div>}
+                            </label>}
                         <div className="w-100">Name</div>
                         <div>Size</div>
                         <div>Time</div>
@@ -359,9 +355,9 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         const handler = e.container && (this.rowStates[index] & RowState.Navigable) ? this.navigateHandler : this.open;
                         return <div key={e.id} tabIndex={0} data-index={index} data-selected={selected ? selected : undefined} data-active={active}
                             onDoubleClick={dblClickMode ? handler : undefined} onClick={!dblClickMode ? handler : undefined} >
-                            {useCheckboxes && <div>
-                                <input type="checkbox" onChange={this.onCheckboxChanged} onClick={this.noopHandler} checked={selected && selectable} disabled={!selectable} />
-                            </div>}
+                            {useCheckboxes && <label>
+                                <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
+                            </label>}
                             <div className="mw-1 w-100"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.rowStates[index]} /></div>
                             {tableMode && <>
                                 <div className="small text-end">{utils.formatSize(e.res?.size)}</div>

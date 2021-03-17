@@ -69,7 +69,8 @@ export class SelectionStateAdapter {
         }
         else {
             this.states[index] &= ~RowState.Selected;
-            this.current = null;
+            if (index === this.current)
+                this.current = null;
         }
         this.onchanged(this.getSelectionIndeeces(), this.current, hint ?? EventHint.None);
     }
@@ -77,7 +78,9 @@ export class SelectionStateAdapter {
     toggle(index: number, hint?: EventHint) {
         if (!this.enabled() || index < 0 || index >= this.states.length) return;
         this.states[index] ^= RowState.Selected;
-        this.onchanged(this.getSelectionIndeeces(), this.current === index ? null : (this.current = index), hint ?? EventHint.None);
+        this.onchanged(this.getSelectionIndeeces(),
+            this.states[index] & RowState.Selected ? (this.current = index) : (this.current === index ? (this.current = null) : this.current),
+            hint ?? EventHint.None);
     }
 
     setAll(state: boolean, hint?: EventHint) {
