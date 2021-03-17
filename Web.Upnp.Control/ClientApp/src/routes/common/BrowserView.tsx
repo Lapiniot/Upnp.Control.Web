@@ -34,6 +34,7 @@ export type BrowserProps<TContext> = {
     mainCellContext?: TContext;
     displayMode?: DisplayMode;
     navigationMode?: NavigationMode;
+    editMode?: boolean;
 } & { [K in ModeFlags]?: boolean }
 
 export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
@@ -51,6 +52,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     static defaultProps: BrowserProps<unknown> = {
         displayMode: "responsive",
         navigationMode: "auto",
+        editMode: false,
         multiSelect: true,
         useCheckboxes: true,
         mainCellTemplate: CellTemplate
@@ -136,36 +138,48 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     private mouseEventHandler = (e: MouseEvent<HTMLDivElement>) => {
 
-        if (e.type !== "mousedown") return;
-
         const target = e.target as HTMLElement;
 
-        if (target === e.currentTarget) {
+        if (target === e.currentTarget && e.type === "mousedown") {
             requestAnimationFrame(() => this.adapter.setAll(false, EventHint.Mouse));
             return;
         }
 
-        if (target instanceof HTMLInputElement ||
-            target instanceof HTMLLabelElement ||
-            target.closest("button")) {
+        if (target instanceof HTMLInputElement || target instanceof HTMLLabelElement || target.closest("button")) {
             e.preventDefault();
             e.stopPropagation();
             return;
         }
 
         const row = target.closest<HTMLElement>(DATA_ROW_SELECTOR);
-        const index = row?.dataset.index;
-        if (!index || !this.adapter.enabled()) return;
+        if (!row?.dataset.index) return;
+        const index = parseInt(row?.dataset.index);
 
         e.preventDefault();
         e.stopPropagation();
 
-        if ((e.ctrlKey || e.metaKey) && this.props.multiSelect)
-            requestAnimationFrame(() => this.adapter.toggle(parseInt(index), EventHint.Mouse));
-        else if (e.shiftKey && this.props.multiSelect)
-            requestAnimationFrame(() => this.adapter.expandTo(parseInt(index), EventHint.Mouse));
-        else
-            requestAnimationFrame(() => this.adapter.setOnly(parseInt(index), EventHint.Mouse));
+        switch (e.type) {
+            case "mousedown":
+                if ((e.ctrlKey || e.metaKey) && this.props.multiSelect)
+                    requestAnimationFrame(() => this.adapter.toggle(index, EventHint.Mouse));
+                else if (e.shiftKey && this.props.multiSelect)
+                    requestAnimationFrame(() => this.adapter.expandTo(index, EventHint.Mouse));
+                else
+                    requestAnimationFrame(() => this.editMode
+                        ? this.adapter.toggle(index, EventHint.Mouse)
+                        : this.adapter.setOnly(index, EventHint.Mouse));
+                break;
+            case "mouseup":
+                if (!this.dblClickNavMode && !this.editMode) {
+                    requestAnimationFrame(() => this.navigateTo(index));
+                }
+                break;
+            case "dblclick":
+                if (this.dblClickNavMode && !this.editMode) {
+                    requestAnimationFrame(() => this.navigateTo(index));
+                }
+                break;
+        }
     }
 
     private onKeyDown = (event: KeyboardEvent) => {
@@ -266,19 +280,26 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         }
     }
 
-    private navigateHandler = ({ currentTarget: { dataset: { index, id } } }: MouseEvent<HTMLDivElement>) => {
-        if (id) {
-            this.props.navigate({ id });
+    private navigateTo = (index: number) => {
+        if (index === -1) {
+            this.props.navigate?.({ id: this.props.dataContext?.source.parents?.[1]?.id ?? "-1" });
         }
-        else if (index) {
-            this.props.navigate({ id: this.props.dataContext?.source?.items?.[parseInt(index)]?.id });
+        else {
+            const item = this.props.dataContext?.source.items?.[index];
+            if (!item) return;
+            if (item.container && this.rowStates[index] & RowState.Navigable)
+                this.props.navigate?.({ id: item.id });
+            else
+                this.props.open?.(index);
         }
     }
 
-    private open: MouseEventHandler<HTMLDivElement> = ({ currentTarget: { dataset: { index } } }) => {
-        if (!index) return;
-        this.props.open?.(parseInt(index));
+    private get editMode() {
+        return this.props.editMode;
+    }
 
+    private get dblClickNavMode() {
+        return this.props.navigationMode === "double-click" || this.props.navigationMode === "auto" && this.pointerDeviceQuery.matches;
     }
 
     private updateCachedState() {
@@ -311,11 +332,11 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const contextMenu = children.find(c => (c as ReactElement)?.type === BrowserView.ContextMenu);
 
         const tableMode = displayMode === "table" || displayMode === "responsive" && this.largeScreenQuery.matches;
-        const dblClickMode = mode === "double-click" || mode === "auto" && this.pointerDeviceQuery.matches;
         const optimizeForTouch = this.touchDeviceQuery.matches;
 
-        return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`} onMouseDown={this.mouseEventHandler} >
-            <div className={`auto-table at-material trim-sm-3 hide-md-3 hide-md-5 hide-lg-5${optimizeForTouch ? " at-touch-friendly" : ""}`}
+        return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`}
+            onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
+            <div className={`auto-table at-material user-select-none${optimizeForTouch ? " at-touch-friendly" : ""}`}
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {caption}
                 <div className={tableMode ? "sticky-header" : "d-none"}>
@@ -333,9 +354,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 </div>
                 <div>
                     {tableMode && parents && parents.length > 0 &&
-                        <div data-id={parents[1]?.id ?? -1} title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ..."
-                            onDoubleClick={dblClickMode ? this.navigateHandler : undefined}
-                            onClick={!dblClickMode ? this.navigateHandler : undefined}>
+                        <div data-index={-1} title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ...">
                             {useCheckboxes && <div>&nbsp;</div>}
                             <div className="w-100">
                                 <svg className="icon" stroke="currentColor" viewBox="0 0 16 16">
@@ -352,9 +371,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         const selected = !!(this.rowStates[index] & RowState.Selected);
                         const selectable = !!(this.rowStates[index] & RowState.Selectable);
                         const active = this.rowStates[index] & RowState.Active ? true : undefined;
-                        const handler = e.container && (this.rowStates[index] & RowState.Navigable) ? this.navigateHandler : this.open;
-                        return <div key={e.id} tabIndex={0} data-index={index} data-selected={selected ? selected : undefined} data-active={active}
-                            onDoubleClick={dblClickMode ? handler : undefined} onClick={!dblClickMode ? handler : undefined} >
+                        return <div key={e.id} tabIndex={0} data-index={index} data-selected={selected ? selected : undefined} data-active={active}>
                             {useCheckboxes && <label>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
                             </label>}
