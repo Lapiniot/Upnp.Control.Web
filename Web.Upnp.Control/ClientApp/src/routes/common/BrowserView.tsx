@@ -5,13 +5,13 @@ import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
 import { NavigatorProps } from "./Navigator";
 import { DataFetchProps } from "../../components/DataFetch";
 import { DropdownMenu, DropdownMenuProps } from "../../components/DropdownMenu";
-import { findScrollParent, nopropagation } from "../../components/Extensions";
+import { findScrollParent } from "../../components/Extensions";
 import { EventHint, SelectionStateAdapter } from "./SelectionStateAdapter";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
 const HEADER_SELECTOR = ":scope > div.table-caption";
-const HEADER_CELLS_SELECTOR = ":scope > div:not(.table-caption):first-of-type > div > div, :scope > div.table-caption:first-of-type + div > div > div";
+const HEADER_CELLS_SELECTOR = ":scope > div:not(.table-caption):first-of-type > div > *, :scope > div.table-caption:first-of-type + div > div > *";
 
 type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode";
 
@@ -117,7 +117,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         }
 
         const top = `${Math.round(offset)}px`;
-        const headers = table.querySelectorAll<HTMLDivElement>(HEADER_CELLS_SELECTOR);
+        const headers = table.querySelectorAll<HTMLElement>(HEADER_CELLS_SELECTOR);
         headers.forEach(cell => { cell.style.top = top; });
     }
 
