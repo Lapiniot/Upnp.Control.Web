@@ -351,8 +351,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 ["copy", "Copy", "copy", this.copyClickHandler, disabled]
             ] :
             [
-                ["add-items", "Add items", "plus", this.addItemsClickHandler, undefined],
-                ["add-url", "Add stream url", "broadcast-tower", this.addUrlClickHandler, undefined],
+                ["add-items", "Add from media server", "plus", this.addItemsClickHandler, undefined],
+                ["add-url", "Add Internet stream url", "broadcast-tower", this.addUrlClickHandler, undefined],
                 ["add-files", "Add from playlist file", "list", this.uploadPlaylistClickHandler, undefined],
                 ["remove", "Remove items", "trash", this.removeItemsClickHandler, disabled]
             ];
@@ -384,26 +384,27 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 : <MenuItem action="play" glyph="play">Play</MenuItem>}
             {this.props.id === "PL:"
                 ? <>
-                    <li><hr className="dropdown-divider mx-2" /></li>
-                    <MenuItem action="add-items" glyph="plus">Add items</MenuItem>
-                    <MenuItem action="add-url" glyph="broadcast-tower">Add stream url</MenuItem>
-                    <MenuItem action="add-files" glyph="list">Add playlist file</MenuItem>
-                    <li><hr className="dropdown-divider mx-2" /></li>
+                    <MenuItem action="add-items" glyph="plus">Add from media server</MenuItem>
+                    <MenuItem action="add-url" glyph="broadcast-tower">Add Internet stream url</MenuItem>
+                    <MenuItem action="add-files" glyph="list">Add from playlist file</MenuItem>
                     <MenuItem action="rename" glyph="edit">Rename</MenuItem>
                     <MenuItem action="delete" glyph="trash">Delete</MenuItem>
                     <MenuItem action="copy" glyph="copy">Copy</MenuItem>
                 </>
                 : <>
-                    <li><hr className="dropdown-divider mx-2" /></li>
                     <MenuItem action="remove" glyph="trash">Remove item</MenuItem>
                 </>}
-            <li><hr className="dropdown-divider mx-2" /></li>
             <MenuItem action="info" glyph="info">Get Info</MenuItem>
         </>;
     }
 
-    renderActionMenu = () => this.getToolbarItems().filter(c => !c[4]).map(c =>
-        <MenuItem action={c[0]} key={c[0]} glyph={c[2]} onClick={c[3]} disabled={c[4]}>{c[1]}</MenuItem>)
+    renderActionMenu = () => {
+        return <>
+            <MenuItem action="add-items" key="add-items" glyph="plus" onClick={this.addItemsClickHandler}>From media server</MenuItem>
+            <MenuItem action="add-url" key="add-url" glyph="broadcast-tower" onClick={this.addUrlClickHandler}>Internet stream url</MenuItem>
+            <MenuItem action="add-files" key="add-files" glyph="list" onClick={this.uploadPlaylistClickHandler}>Upload playlist file</MenuItem>
+        </>;
+    }
 
     render() {
 
@@ -472,7 +473,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                             <button type="button" className="btn btn-round btn-primary"
                                 onClick={isRootLevel && !hasSelection ? this.addClickHandler : undefined}
                                 data-bs-toggle={(hasSelection || !isRootLevel) ? "dropdown" : undefined}>
-                                <svg className="icon"><use href={hasSelection ? "#edit" : "#plus"} /></svg>
+                                <svg className="icon"><use href="#plus" /></svg>
                             </button>
                         </div>
                         <DropdownMenu render={this.renderActionMenu} />
