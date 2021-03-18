@@ -1,15 +1,6 @@
 import { RowState } from "./Types";
 
-const empty: number[] = [];
-
-export enum EventHint {
-    None,
-    Keyboard = 0b01,
-    Mouse = 0b10,
-    Any = Keyboard | Mouse
-}
-
-type SelectionChangedCallback = (indeeces: number[], focused: number | null, hint: EventHint) => void;
+type SelectionChangedCallback = (focused: number | null) => void;
 
 export class SelectionStateAdapter {
     private states: RowState[];
@@ -36,32 +27,32 @@ export class SelectionStateAdapter {
         return this.current;
     }
 
-    selectFirst(hint?: EventHint) {
+    selectFirst() {
         if (!this.enabled()) return;
-        this.setOnly(0, hint);
+        this.setOnly(0);
     }
 
-    selectLast(hint?: EventHint) {
+    selectLast() {
         if (!this.enabled()) return;
-        this.setOnly(this.states.length - 1, hint);
+        this.setOnly(this.states.length - 1);
     }
 
-    moveNext(hint?: EventHint) {
-        this.setOnly(this.current !== null ? this.current + 1 : 0, hint);
+    moveNext() {
+        this.setOnly(this.current !== null ? this.current + 1 : 0);
     }
 
-    movePrev(hint?: EventHint) {
-        this.setOnly(this.current !== null ? this.current - 1 : this.states.length - 1, hint)
+    movePrev() {
+        this.setOnly(this.current !== null ? this.current - 1 : this.states.length - 1)
     }
 
-    setOnly(index: number, hint?: EventHint) {
+    setOnly(index: number) {
         if (!this.enabled() || index < 0 || index >= this.states.length) return;
         this.reset();
         this.states[index] |= RowState.Selected;
-        this.onchanged(this.states[index] & RowState.Selectable ? [index] : empty, this.current = index, hint ?? EventHint.None);
+        this.onchanged(this.current = index);
     }
 
-    set(index: number, state: boolean, hint?: EventHint) {
+    set(index: number, state: boolean) {
         if (!this.enabled() || index < 0 || index >= this.states.length) return;
         if (state) {
             this.states[index] |= RowState.Selected;
@@ -72,39 +63,33 @@ export class SelectionStateAdapter {
             if (index === this.current)
                 this.current = null;
         }
-        this.onchanged(this.getSelectionIndeeces(), this.current, hint ?? EventHint.None);
+        this.onchanged(this.current);
     }
 
-    toggle(index: number, hint?: EventHint) {
+    toggle(index: number) {
         if (!this.enabled() || index < 0 || index >= this.states.length) return;
         this.states[index] ^= RowState.Selected;
-        this.onchanged(this.getSelectionIndeeces(),
-            this.states[index] & RowState.Selected ? (this.current = index) : (this.current === index ? (this.current = null) : this.current),
-            hint ?? EventHint.None);
+        this.onchanged(this.states[index] & RowState.Selected
+            ? (this.current = index)
+            : (this.current === index ? (this.current = null) : this.current));
     }
 
-    setAll(state: boolean, hint?: EventHint) {
+    setAll(state: boolean) {
         if (!this.enabled()) return;
         if (state) {
-            const selection = [];
-            for (let i = 0; i < this.states.length; i++) {
-                this.states[i] |= RowState.Selected;
-                if (this.states[i] & RowState.Selectable)
-                    selection.push(i);
-            }
-            this.onchanged(selection, this.current = this.states.length - 1, hint ?? EventHint.None);
+            this.onchanged(this.current = this.states.length - 1);
         }
         else {
             this.reset();
-            this.onchanged(empty, null, hint ?? EventHint.None);
+            this.onchanged(null);
         }
     }
 
-    expandTo(index: number, hint?: EventHint) {
+    expandTo(index: number) {
         if (!this.enabled() || index < 0 || index >= this.states.length) return;
 
         if (this.current === null) {
-            this.set(index, true, hint);
+            this.set(index, true);
             return;
         }
 
@@ -125,14 +110,14 @@ export class SelectionStateAdapter {
             for (let i = start; i <= end; i++) this.states[i] |= RowState.Selected;
         }
 
-        this.onchanged(this.getSelectionIndeeces(), this.current = index, hint ?? EventHint.None);
+        this.onchanged(this.current = index);
     }
 
-    expandUp(hint?: EventHint) {
+    expandUp() {
         if (!this.enabled()) return;
 
         if (this.current === null) {
-            this.selectLast(hint);
+            this.selectLast();
             return;
         }
 
@@ -142,21 +127,21 @@ export class SelectionStateAdapter {
                 // previouse item is not selected - select it and move focus to the beginning of a new "solid" range
                 const next = this.findLastInRange(false, 0, index - 1);
                 this.states[index] |= RowState.Selected;
-                this.onchanged(this.getSelectionIndeeces(), this.current = next !== undefined ? next + 1 : 0, hint ?? EventHint.None);
+                this.onchanged(this.current = next !== undefined ? next + 1 : 0);
             }
             else {
                 // previouse item is already selected - unselect it and move focus one item up, "trimming" nearest range from the bottom
                 this.states[index + 1] &= ~RowState.Selected;
-                this.onchanged(this.getSelectionIndeeces(), this.current = index, hint ?? EventHint.None);
+                this.onchanged(this.current = index);
             }
         }
     }
 
-    expandDown(hint?: EventHint) {
+    expandDown() {
         if (!this.enabled()) return;
 
         if (this.current === null) {
-            this.selectFirst(hint);
+            this.selectFirst();
             return;
         }
 
@@ -166,12 +151,12 @@ export class SelectionStateAdapter {
                 // nex item is not selected - select it and move focus to the end of a new "solid" range
                 const next = this.findFirstInRange(false, index + 1, this.states.length);
                 this.states[index] |= RowState.Selected;
-                this.onchanged(this.getSelectionIndeeces(), this.current = next !== undefined ? next - 1 : this.states.length - 1, hint ?? EventHint.None);
+                this.onchanged(this.current = next !== undefined ? next - 1 : this.states.length - 1);
             }
             else {
                 // next item is already selected - unselect it and move focus one item down, "trimming" nearest range from the top
                 this.states[index - 1] &= ~RowState.Selected;
-                this.onchanged(this.getSelectionIndeeces(), this.current = index, hint ?? EventHint.None);
+                this.onchanged(this.current = index);
             }
         }
     }
@@ -180,15 +165,6 @@ export class SelectionStateAdapter {
         for (let i = 0; i < this.states.length; i++) {
             this.states[i] &= ~RowState.Selected;
         }
-    }
-
-    private getSelectionIndeeces() {
-        const selection = [];
-        for (let i = 0; i < this.states.length; i++) {
-            if (this.states[i] & RowState.Selected)
-                selection.push(i);
-        }
-        return selection;
     }
 
     private findFirstInRange(state: boolean, start: number, end: number) {

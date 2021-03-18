@@ -1,17 +1,30 @@
-﻿import React, { ChangeEventHandler, ComponentType, HTMLAttributes, MouseEventHandler, ReactElement, MouseEvent, FocusEvent } from "react";
+﻿import React, { ChangeEventHandler, ComponentType, HTMLAttributes, ReactElement, MouseEvent, FocusEvent } from "react";
 import AlbumArt from "./AlbumArt";
 import { DIDLUtils as utils } from "./BrowserUtils";
 import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
 import { NavigatorProps } from "./Navigator";
-import { DataFetchProps } from "../../components/DataFetch";
+import { DataContext, DataFetchProps } from "../../components/DataFetch";
 import { DropdownMenu, DropdownMenuProps } from "../../components/DropdownMenu";
 import { findScrollParent } from "../../components/Extensions";
-import { EventHint, SelectionStateAdapter } from "./SelectionStateAdapter";
+import { SelectionStateAdapter } from "./SelectionStateAdapter";
+import { MediaQueries } from "../../components/MediaQueries";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
 const HEADER_SELECTOR = ":scope > div.table-caption";
 const HEADER_CELLS_SELECTOR = ":scope > div:not(.table-caption):first-of-type > div > *, :scope > div.table-caption:first-of-type + div > div > *";
+
+function getSelectedIds(items: DIDLItem[], rowStates: RowState[]): string[] {
+    if (items.length !== rowStates.length) {
+        throw new Error("Both arrays must be same size");
+    }
+
+    const ids = [];
+    for (let i = 0; i < items.length; i++)
+        if ((rowStates[i] & RowState.SelectMask) === RowState.SelectMask)
+            ids.push(items[i].id);
+    return ids;
+}
 
 type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode";
 
@@ -39,46 +52,61 @@ export type BrowserProps<TContext> = {
 
 export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
 
-export default class BrowserView<TContext = unknown> extends React.Component<BrowserViewProps<TContext>> {
-    state = { modal: null };
+type BrowserViewState = {
+    ctx?: DataContext<BrowseFetchResult>;
+    rowStates: RowState[];
+    callback: (focused: number | null) => void;
+    adapter: SelectionStateAdapter;
+};
+
+export default class BrowserView<TContext = unknown> extends React.Component<BrowserViewProps<TContext>, BrowserViewState> {
+
     private tableRef = React.createRef<HTMLDivElement>();
     private resizeObserver;
-    private adapter: SelectionStateAdapter;
-    rowStates: RowState[] = [];
-    largeScreenQuery: MediaQueryList;
-    pointerDeviceQuery: MediaQueryList;
-    touchDeviceQuery: MediaQueryList;
 
     static defaultProps: BrowserProps<unknown> = {
         displayMode: "responsive",
         navigationMode: "auto",
         editMode: false,
         multiSelect: true,
-        useCheckboxes: true,
+        useCheckboxes: false,
         mainCellTemplate: CellTemplate
     };
 
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
         this.resizeObserver = new ResizeObserver(this.resizeObservedHandler);
-        this.adapter = new SelectionStateAdapter([], null, this.selectionChanged);
-        this.largeScreenQuery = matchMedia("(min-width: 1024px)");
-        this.pointerDeviceQuery = matchMedia("(hover: hover) and (pointer: fine)");
-        this.touchDeviceQuery = matchMedia("(any-pointer: coarse)");
-        this.updateCachedState();
+        this.state = {
+            rowStates: [], callback: this.selectionStateChanged,
+            adapter: new SelectionStateAdapter([], null, this.selectionStateChanged)
+        };
     }
 
-    componentDidUpdate(prevProps: BrowserViewProps<TContext>) {
-        if (prevProps.dataContext?.source !== this.props.dataContext?.source
-            || prevProps.rowState !== this.props.rowState) {
-            this.updateCachedState();
-            this.props.selectionChanged?.([]);
+    static getDerivedStateFromProps({ dataContext: propsCtx, rowState }: BrowserViewProps<unknown>,
+        { ctx: stateCtx, callback }: BrowserViewState) {
+        if (propsCtx && propsCtx !== stateCtx) {
+            const states = (typeof rowState === "function" ? propsCtx.source.items?.map(rowState) : rowState) ?? [];
+            return {
+                ctx: propsCtx,
+                rowStates: states,
+                adapter: new SelectionStateAdapter(states, null, callback)
+            }
+        }
+        else
+            return null;
+    }
+
+    componentDidUpdate({ dataContext: prevDataContext, displayMode: prevDisplayMode }: BrowserViewProps<TContext>) {
+        const { dataContext, selectionChanged, displayMode } = this.props;
+
+        if (dataContext && selectionChanged && prevDataContext !== dataContext) {
+            selectionChanged([]);
         }
 
-        if (prevProps.displayMode !== this.props.displayMode) {
-            this.largeScreenQuery.removeEventListener("change", this.screenQueryChangedHandler);
+        if (prevDisplayMode !== displayMode) {
+            MediaQueries.largeScreen.removeEventListener("change", this.screenQueryChangedHandler);
             if (this.props.displayMode === "responsive") {
-                this.largeScreenQuery.addEventListener("change", this.screenQueryChangedHandler);
+                MediaQueries.largeScreen.addEventListener("change", this.screenQueryChangedHandler);
             }
         }
     }
@@ -86,14 +114,14 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     componentDidMount() {
         document.body.addEventListener("keydown", this.onKeyDown);
         if (this.props.displayMode === "responsive") {
-            this.largeScreenQuery.addEventListener("change", this.screenQueryChangedHandler);
+            MediaQueries.largeScreen.addEventListener("change", this.screenQueryChangedHandler);
         }
         this.resizeObserver.disconnect();
         this.resizeObserver.observe(this.tableRef.current as HTMLDivElement);
     }
 
     componentWillUnmount() {
-        this.largeScreenQuery.removeEventListener("change", this.screenQueryChangedHandler);
+        MediaQueries.largeScreen.removeEventListener("change", this.screenQueryChangedHandler);
         document.body.removeEventListener("keydown", this.onKeyDown);
         this.resizeObserver.disconnect();
     }
@@ -128,12 +156,12 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const checkbox = e.target;
         const index = checkbox.parentElement?.parentElement?.dataset?.index;
         if (!index) return;
-        this.adapter.set(parseInt(index), checkbox.checked);
+        this.state.adapter.set(parseInt(index), checkbox.checked);
     };
 
     onCheckboxAllChanged: ChangeEventHandler<HTMLInputElement> = e => {
         const checkbox = e.target;
-        this.adapter.setAll(checkbox.checked);
+        this.state.adapter.setAll(checkbox.checked);
     };
 
     private mouseEventHandler = (e: MouseEvent<HTMLDivElement>) => {
@@ -141,7 +169,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const target = e.target as HTMLElement;
 
         if (target === e.currentTarget && e.type === "mousedown") {
-            requestAnimationFrame(() => this.adapter.setAll(false, EventHint.Mouse));
+            requestAnimationFrame(() => this.state.adapter.setAll(false));
             return;
         }
 
@@ -161,13 +189,13 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         switch (e.type) {
             case "mousedown":
                 if ((e.ctrlKey || e.metaKey) && this.props.multiSelect)
-                    requestAnimationFrame(() => this.adapter.toggle(index, EventHint.Mouse));
+                    requestAnimationFrame(() => this.state.adapter.toggle(index));
                 else if (e.shiftKey && this.props.multiSelect)
-                    requestAnimationFrame(() => this.adapter.expandTo(index, EventHint.Mouse));
+                    requestAnimationFrame(() => this.state.adapter.expandTo(index));
                 else
                     requestAnimationFrame(() => this.editMode
-                        ? this.adapter.toggle(index, EventHint.Mouse)
-                        : this.adapter.setOnly(index, EventHint.Mouse));
+                        ? this.state.adapter.toggle(index)
+                        : this.state.adapter.setOnly(index));
                 break;
             case "mouseup":
                 if (!this.dblClickNavMode && !this.editMode) {
@@ -183,7 +211,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     }
 
     private onKeyDown = (event: KeyboardEvent) => {
-        if (!this.adapter.enabled() || (!this.props.modalDialogMode && document.body.classList.contains("modal-open"))) return;
+        if (!this.state.adapter.enabled() || (!this.props.modalDialogMode && document.body.classList.contains("modal-open"))) return;
 
         switch (event.code) {
             case "Enter":
@@ -192,7 +220,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
                 if (!focusedRow) {
                     if (event.code === "ArrowRight")
-                        requestAnimationFrame(() => this.adapter.selectFirst());
+                        requestAnimationFrame(() => this.state.adapter.selectFirst());
                     return;
                 }
 
@@ -203,7 +231,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 const index = parseInt(focusedRow.dataset.index ?? "");
                 const item = items[index];
                 if (!item) return;
-                const state = this.rowStates[index];
+                const state = this.state.rowStates[index];
                 if (item.container && state & RowState.Navigable)
                     this.props.navigate?.({ id: item.id });
                 else if (state ^ RowState.Readonly && event.code === "Enter")
@@ -218,22 +246,22 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             case "KeyA":
                 if (this.props.multiSelect && !event.cancelBubble && (event.metaKey || event.ctrlKey)) {
                     event.preventDefault();
-                    requestAnimationFrame(() => this.adapter.setAll(true, EventHint.Keyboard));
+                    requestAnimationFrame(() => this.state.adapter.setAll(true));
                 }
                 break;
             case "ArrowUp":
                 event.preventDefault();
                 if (event.shiftKey && this.props.multiSelect)
-                    requestAnimationFrame(() => this.adapter.expandUp(EventHint.Keyboard));
+                    requestAnimationFrame(() => this.state.adapter.expandUp());
                 else
-                    requestAnimationFrame(() => this.adapter.movePrev(EventHint.Keyboard));
+                    requestAnimationFrame(() => this.state.adapter.movePrev());
                 break;
             case "ArrowDown":
                 event.preventDefault();
                 if (event.shiftKey && this.props.multiSelect)
-                    requestAnimationFrame(() => this.adapter.expandDown(EventHint.Keyboard));
+                    requestAnimationFrame(() => this.state.adapter.expandDown());
                 else
-                    requestAnimationFrame(() => this.adapter.moveNext(EventHint.Keyboard));
+                    requestAnimationFrame(() => this.state.adapter.moveNext());
                 break;
             default: return;
         }
@@ -244,23 +272,22 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         if (row) {
             if (!row.dataset.index) return;
             const index = parseInt(row.dataset.index);
-            if (index && index !== this.adapter.focus) {
+            if (index && index !== this.state.adapter.focus) {
                 // last tracked focused item id doesn't match currently focused row -
                 // thus we came here as a result of focus switch via keyboard Tab or Shift+Tab
                 // which we don't emulate programmatically. So lets synchronize selection with news focus
-                requestAnimationFrame(() => this.adapter.setOnly(index, EventHint.Keyboard));
+                requestAnimationFrame(() => this.state.adapter.setOnly(index));
             }
         }
     }
 
-    private selectionChanged = (indeeces: number[], focused: number | null, hint: EventHint) => {
+    private selectionStateChanged = (focused: number | null) => {
         if (focused) {
             const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-index="${focused}"]`);
             if (!row) return;
 
             if (!row.matches(":focus")) {
-                if (hint & EventHint.Keyboard)
-                    row.scrollIntoView({ block: "center", behavior: "smooth" });
+                row.scrollIntoView({ block: "end", behavior: "smooth" });
                 row.focus({ preventScroll: true });
             }
         }
@@ -275,7 +302,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
         const { source: { items } } = ctx;
 
-        if (selectionChanged?.(indeeces.map(i => items[i].id)) !== false) {
+        if (selectionChanged?.(getSelectedIds(items, this.state.rowStates)) !== false) {
             this.forceUpdate();
         }
     }
@@ -287,7 +314,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         else {
             const item = this.props.dataContext?.source.items?.[index];
             if (!item) return;
-            if (item.container && this.rowStates[index] & RowState.Navigable)
+            if (item.container && this.state.rowStates[index] & RowState.Navigable)
                 this.props.navigate?.({ id: item.id });
             else
                 this.props.open?.(index);
@@ -299,13 +326,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     }
 
     private get dblClickNavMode() {
-        return this.props.navigationMode === "double-click" || this.props.navigationMode === "auto" && this.pointerDeviceQuery.matches;
-    }
-
-    private updateCachedState() {
-        const { rowState, dataContext: ctx } = this.props;
-        this.rowStates = (typeof rowState === "function" ? ctx?.source.items?.map(rowState) : rowState) ?? [];
-        this.adapter = new SelectionStateAdapter(this.rowStates, null, this.selectionChanged);
+        return this.props.navigationMode === "double-click" || this.props.navigationMode === "auto" && MediaQueries.pointerDevice.matches;
     }
 
     static Caption({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
@@ -331,8 +352,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const footer = children.find(c => (c as ReactElement)?.type === BrowserView.Footer);
         const contextMenu = children.find(c => (c as ReactElement)?.type === BrowserView.ContextMenu);
 
-        const tableMode = displayMode === "table" || displayMode === "responsive" && this.largeScreenQuery.matches;
-        const optimizeForTouch = this.touchDeviceQuery.matches;
+        const tableMode = displayMode === "table" || displayMode === "responsive" && MediaQueries.largeScreen.matches;
+        const optimizeForTouch = MediaQueries.touchDevice.matches;
 
         return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
@@ -344,7 +365,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         {useCheckboxes &&
                             <label>
                                 <input type="checkbox" onChange={this.onCheckboxAllChanged}
-                                    checked={this.adapter.allSelected()} disabled={!this.adapter.enabled()} />
+                                    checked={this.state.adapter.allSelected()} disabled={!this.state.adapter.enabled()} />
                             </label>}
                         <div className="w-100">Name</div>
                         <div>Size</div>
@@ -368,14 +389,14 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                             </>}
                         </div>}
                     {[items.map((e, index) => {
-                        const selected = !!(this.rowStates[index] & RowState.Selected);
-                        const selectable = !!(this.rowStates[index] & RowState.Selectable);
-                        const active = this.rowStates[index] & RowState.Active ? true : undefined;
+                        const selected = !!(this.state.rowStates[index] & RowState.Selected);
+                        const selectable = !!(this.state.rowStates[index] & RowState.Selectable);
+                        const active = this.state.rowStates[index] & RowState.Active ? true : undefined;
                         return <div key={e.id} tabIndex={0} data-index={index} data-selected={selected ? selected : undefined} data-active={active}>
                             {useCheckboxes && <label>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
                             </label>}
-                            <div className="mw-1 w-100"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.rowStates[index]} /></div>
+                            <div className="mw-1 w-100"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.state.rowStates[index]} /></div>
                             {tableMode && <>
                                 <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
                                 <div className="small">{utils.formatTime(e.res?.duration)}</div>

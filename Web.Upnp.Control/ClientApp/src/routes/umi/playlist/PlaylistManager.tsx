@@ -26,6 +26,7 @@ import ModalHost from "../../../components/ModalHost";
 import { ModalProps } from "../../../components/Modal";
 import ItemInfoModal from "../../common/ItemInfoModal";
 import { nopropagation } from "../../../components/Extensions";
+import { MediaQueries } from "../../../components/MediaQueries";
 
 type PlaylistManagerProps = PlaylistRouteParams &
     DataFetchProps<BrowseFetchResult> &
@@ -37,7 +38,9 @@ type PlaylistManagerState = {
     selection: string[];
     playlist?: string;
     device: UpnpDevice | null;
-    ctx?: DataContext<BrowseFetchResult>
+    ctx?: DataContext<BrowseFetchResult>;
+    rowStates: RowState[];
+    editMode: boolean;
 } & Partial<AVState>;
 
 const dialogBrowserProps: BrowserProps<unknown> = {
@@ -72,10 +75,14 @@ function isNavigable(item: DIDLItem) {
     return item?.vendor?.["mi:playlistType"] !== "aux";
 }
 
+function getRowState(item: DIDLItem): RowState {
+    return (isNavigable(item) ? RowState.Navigable : RowState.None)
+        | (isReadonly(item) ? RowState.Readonly : RowState.Selectable);
+}
+
 export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
-    rowStates: RowState[] = [];
     handlers;
     ctrl;
     pls;
@@ -86,22 +93,22 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     constructor(props: PlaylistManagerProps) {
         super(props);
         this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
-        this.state = { selection: [], device: null };
+        this.state = { selection: [], device: null, editMode: false, rowStates: [] };
         this.ctrl = $api.control(this.props.device);
         this.pls = $api.playlist(this.props.device);
+        MediaQueries.largeScreen.addEventListener("change", this.queryChangedHandler);
     }
 
     async componentDidUpdate(prevProps: PlaylistManagerProps) {
         if (prevProps.dataContext !== this.props.dataContext) {
             this.ctrl = $api.control(this.props.device);
             this.pls = $api.playlist(this.props.device);
-            this.rowStates = this.props.dataContext?.source.items?.map(this.getRowState) ?? [];
         }
     }
 
     static getDerivedStateFromProps({ dataContext: propsCtx }: PlaylistManagerProps, { ctx: stateCtx }: PlaylistManagerState) {
         if (propsCtx && propsCtx !== stateCtx)
-            return { ctx: propsCtx, selection: [] }
+            return { ctx: propsCtx, selection: [], rowStates: propsCtx.source.items?.map(getRowState) }
         else
             return null;
     }
@@ -125,12 +132,18 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         }
     }
 
+    componentWillUnmount() {
+        MediaQueries.largeScreen.removeEventListener("change", this.queryChangedHandler);
+    }
+
     onAVTransportEvent = (device: string, { state, vendorProps: { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = {} }:
         { state: AVState, vendorProps: PropertyBag }) => {
         if (device === this.props.device) {
             this.setState({ ...state, playlist: transport === "AUX" ? "aux" : playlist });
         }
     }
+
+    private queryChangedHandler = () => this.forceUpdate();
 
     private selectionChanged = (ids: string[]) => {
         this.setState({ selection: ids });
@@ -300,12 +313,35 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     //#endregion
 
-    getRowState(item: DIDLItem, index: number): RowState {
-        return (isNavigable(item) ? RowState.Navigable : RowState.None)
-            | (isReadonly(item) ? RowState.Readonly : RowState.Selectable);
+    navigateBackHandler = () => {
+        const id = this.props.dataContext?.source.parents?.[1]?.id ?? "-1";
+        this.props.navigate?.({ id });
     }
 
-    private getToolbarConfig = (): ToolbarItem[] => {
+    toggleEditModeHandler = () => {
+        this.resetStates(RowState.Selected);
+        this.setState(state => ({ editMode: !state.editMode }));
+    }
+
+    toggleSelectAllHandler = () => {
+        if (this.state.rowStates.some(rs => (rs & RowState.SelectMask) === RowState.Selectable))
+            this.setStates(RowState.Selected);
+        else
+            this.resetStates(RowState.Selected);
+        this.forceUpdate();
+    }
+
+    private resetStates = (flag: RowState) => {
+        for (let i = 0; i < this.state.rowStates.length; i++)
+            this.state.rowStates[i] &= ~flag;
+    }
+
+    private setStates = (flag: RowState) => {
+        for (let i = 0; i < this.state.rowStates.length; i++)
+            this.state.rowStates[i] |= flag;
+    }
+
+    private getToolbarItems = (): ToolbarItem[] => {
         const disabled = this.state.selection.length === 0;
         return this.props.id === "PL:" ?
             [
@@ -322,8 +358,26 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             ];
     }
 
+    private renderTopBar = () => {
+        const className = "btn-round btn-icon btn-plain flex-grow-0";
+        const selectedCount = this.state.selection.length;
+        return this.state.editMode ? <>
+            <Toolbar.Button key="close" glyph="close" onClick={this.toggleEditModeHandler} className={className} />
+            <small className="flex-fill my-0 mx-2 text-center text-truncate">
+                {selectedCount ? `${selectedCount} item${selectedCount > 1 ? "s" : ""} selected` : ""}
+            </small>
+            <Toolbar.Button key="delete" glyph="trash" onClick={this.removeClickHandler} className={className} disabled={selectedCount === 0} />
+            <Toolbar.Button key="rename" glyph="edit" onClick={this.renameClickHandler} className={className} disabled={selectedCount !== 1} />
+            <Toolbar.Button key="check-all" glyph="ui-checks" onClick={this.toggleSelectAllHandler} className={className} />
+        </> : <>
+            <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className={className} />
+            <h6 className="flex-fill my-0 mx-2 text-center text-truncate">{this.props.dataContext?.source.parents?.[0]?.title}</h6>
+            <Toolbar.Button key="edit-mode" glyph="pen" onClick={this.toggleEditModeHandler} className={className} />
+        </>;
+    }
+
     renderContextMenu = (anchor?: HTMLElement | null) => {
-        const active = anchor?.dataset?.index ? this.rowStates[parseInt(anchor.dataset.index)] & RowState.Active : false;
+        const active = anchor?.dataset?.index ? this.state.rowStates[parseInt(anchor.dataset.index)] & RowState.Active : false;
         return <>
             {active && this.state.state === "PLAYING"
                 ? <MenuItem action="pause" glyph="pause">Pause</MenuItem>
@@ -346,10 +400,10 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <li><hr className="dropdown-divider mx-2" /></li>
             <MenuItem action="info" glyph="info">Get Info</MenuItem>
         </>;
-    };
+    }
 
-    renderActionMenu = () => this.getToolbarConfig().filter(c => !c[4]).map(c =>
-        <MenuItem action={c[0]} key={c[0]} glyph={c[2]} onClick={c[3]} disabled={c[4]}>{c[1]}</MenuItem>);
+    renderActionMenu = () => this.getToolbarItems().filter(c => !c[4]).map(c =>
+        <MenuItem action={c[0]} key={c[0]} glyph={c[2]} onClick={c[3]} disabled={c[4]}>{c[1]}</MenuItem>)
 
     render() {
 
@@ -367,9 +421,9 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             ? this.state.playlist === "aux" ? items.findIndex(i => i.vendor?.["mi:playlistType"] === "aux") : items.findIndex(i => i.res?.url === playlist)
             : currentTrack && playlist === parents?.[0]?.res?.url ? parseInt(currentTrack) - pageSize * (page - 1) - 1 : -1;
 
-        if (activeIndex >= 0 && this.rowStates.length) {
-            for (let i = 0; i < this.rowStates.length; i++) this.rowStates[i] &= ~RowState.Active;
-            this.rowStates[activeIndex] |= RowState.Active;
+        if (activeIndex >= 0 && this.state.rowStates.length) {
+            this.resetStates(RowState.Active);
+            this.state.rowStates[activeIndex] |= RowState.Active;
         }
 
         const ctx = {
@@ -381,7 +435,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             deviceName: this.state.device?.name
         };
 
-        return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column">
+        return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column" style={{ scrollPaddingBottom: "3rem" }}>
             <EditSvgSymbols />
             <PlaySvgSymbols />
             <PlaylistSvgSymbols />
@@ -390,17 +444,25 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="flex-fill d-flex flex-column" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <div className="d-flex flex-column sticky-top">
-                    <Toolbar className="px-2 py-1 bg-white">
-                        <Toolbar.Group>
-                            {this.getToolbarConfig().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round btn-icon btn-plain" />)}
-                        </Toolbar.Group>
-                    </Toolbar>
-                    <Breadcrumb className="border-bottom d-none-h-before-sm border-top" items={parents} path={match.path} params={match.params} />
+                    {MediaQueries.largeScreen.matches ? <>
+                        <Toolbar className="px-2 py-1 bg-white">
+                            <Toolbar.Group>
+                                {this.getToolbarItems().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round btn-icon btn-plain" />)}
+                            </Toolbar.Group>
+                        </Toolbar>
+                        <Breadcrumb className="border-bottom d-none-h-before-sm border-top" items={parents} path={match.path} params={match.params} />
+                    </> :
+                        <Toolbar className="p-2 bg-white border-bottom">
+                            <Toolbar.Group className="flex-fill align-items-center overflow-hidden">
+                                {this.renderTopBar()}
+                            </Toolbar.Group>
+                        </Toolbar>}
                 </div>
                 <SignalRListener handlers={this.handlers}>
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
-                        selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.rowStates}
-                        className="flex-fill">
+                        selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.state.rowStates}
+                        className="flex-fill" editMode={this.state.editMode}
+                        useCheckboxes={this.state.editMode || MediaQueries.touchDevice.matches && MediaQueries.largeScreen.matches}>
                         <Browser.ContextMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>
