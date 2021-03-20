@@ -18,9 +18,9 @@ export function DeviceCard({ "data-source": d, category, children, actions, clas
     return <div className={`card shadow-sm snap-start${className ? ` ${className}` : ""}`} {...other}>
         <div className="card-header d-flex bg-transparent border-0">
             <DeviceIcon service={d.type} icons={d.icons} />
-            <div className="flex-grow-1">
-                <h5 className="card-title">{d.presentUrl ? <NavLink to={d.presentUrl} className="p-0">{d.name}</NavLink> : d.name}</h5>
-                <h6 className="card-subtitle">{d.description}</h6>
+            <div className="flex-fill overflow-hidden">
+                <h5 className="card-title text-truncate">{d.presentUrl ? <NavLink to={d.presentUrl} className="p-0">{d.name}</NavLink> : d.name}</h5>
+                <h6 className="card-subtitle text-truncate">{d.description}</h6>
             </div>
             <AddBookmarkAction category={category} device={d} />
         </div>
