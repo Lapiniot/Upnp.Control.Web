@@ -343,7 +343,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     render() {
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes, displayMode, navigationMode: mode } = this.props;
+            useCheckboxes, displayMode, style } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
 
@@ -355,7 +355,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const tableMode = displayMode === "table" || displayMode === "responsive" && MediaQueries.largeScreen.matches;
         const optimizeForTouch = MediaQueries.touchDevice.matches;
 
-        return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`}
+        return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`} style={style}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
             <div className={`auto-table at-material user-select-none${optimizeForTouch ? " at-touch-friendly" : ""}`}
                 ref={this.tableRef} onFocus={this.focusHandler}>

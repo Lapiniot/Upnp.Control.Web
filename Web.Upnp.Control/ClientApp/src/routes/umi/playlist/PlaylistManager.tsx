@@ -462,7 +462,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 <SignalRListener handlers={this.handlers}>
                     <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.state.rowStates}
-                        className="flex-fill" editMode={this.state.editMode}
+                        className="flex-fill pb-5" editMode={this.state.editMode}
                         useCheckboxes={this.state.editMode || MediaQueries.touchDevice.matches && MediaQueries.largeScreen.matches}>
                         <Browser.ContextMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
