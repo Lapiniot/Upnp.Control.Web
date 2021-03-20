@@ -1,0 +1,38 @@
+$album-art-size-base: 2rem !default;
+
+$album-art-scales: (
+    "": 1,
+    //xs: 0.5,
+    sm: 0.75,
+    md: 1.5,
+    //"lg": 1.75,
+    xxl: 4
+);
+
+%album-art {
+    @include image-box();
+}
+
+@each $name, $scale in $album-art-scales {
+    .album-art#{infix($name)} {
+        @extend %album-art;
+        @include image-box-sized($scale * $album-art-size-base, $scale * $album-art-size-base);
+    }
+}
+
+.at-hover-link > * > * {
+    & .stack {
+        & > .stack-layer {
+            background-color: rgba($color: #000000, $alpha: 0.5);
+            color: white;
+        }
+
+        &:hover > .stack-layer:not(.stack-layer-hover) {
+            opacity: 0;
+        }
+    }
+}
+
+.at-touch-friendly .album-art {
+    @extend .album-art-md;
+}

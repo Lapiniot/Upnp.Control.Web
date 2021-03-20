@@ -1,0 +1,117 @@
+.player-skeleton {
+    display: grid;
+    height: 100%;
+    place-items: center;
+    gap: map-get($spacers, 2);
+    grid-template: 1fr auto auto auto auto / 1fr auto auto auto 1fr;
+    grid-template-areas:
+        "art art art art art"
+        "title title title title title"
+        "artist artist artist artist artist"
+        "prog prog prog prog prog"
+        "mode prev play next vol";
+    overflow: hidden;
+
+    .art {
+        grid-area: art;
+        justify-self: stretch;
+        align-self: stretch;
+        min-height: 2em;
+        position: relative;
+
+        .album-art {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-height: 320px) {
+            display: none;
+        }
+    }
+
+    .progress {
+        grid-area: prog;
+        justify-self: stretch;
+    }
+
+    .title,
+    .artist {
+        margin: 0;
+        padding-inline: map-get($spacers, 2);
+        max-width: 100%;
+    }
+
+    .title {
+        grid-area: title;
+    }
+
+    .artist {
+        grid-area: artist;
+    }
+
+    .prev-btn {
+        grid-area: prev;
+    }
+
+    .next-btn {
+        grid-area: next;
+    }
+
+    .play-btn {
+        grid-area: play;
+        font-size: 3em;
+    }
+
+    .volume-btn {
+        grid-area: vol;
+    }
+
+    .volume-ctrl {
+        grid-area: vol-ctrl;
+    }
+
+    .mode-btn {
+        grid-area: mode;
+    }
+
+    @media (max-height: 420px) {
+        grid-template: 1fr auto auto auto / auto auto auto 1fr auto auto;
+        grid-template-areas:
+            "art art art art art art"
+            "prog prog prog prog prog prog"
+            "prev play next title mode vol"
+            "prev play next artist mode vol";
+        gap: map-get($spacers, 1) 0;
+
+        .play-btn {
+            font-size: 2em;
+        }
+    }
+
+    @media (min-width: 576px) and (min-height: 576px) {
+        grid-template: auto auto auto / auto auto auto 1fr auto auto 1fr auto auto;
+        grid-template-areas:
+            "prog prog prog prog prog prog prog prog prog"
+            "prev play next s1 art title s2 mode vol"
+            "prev play next s1 art artist s2 mode vol";
+        gap: 0 0;
+
+        .art {
+            .album-art {
+                width: 3.6rem;
+                position: unset;
+            }
+            padding-inline-start: map-get($spacers, 2);
+        }
+
+        .title,
+        .artist {
+            justify-self: start;
+        }
+
+        .play-btn {
+            font-size: 2em;
+        }
+    }
+}

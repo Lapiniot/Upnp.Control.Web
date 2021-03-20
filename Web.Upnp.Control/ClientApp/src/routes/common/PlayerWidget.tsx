@@ -3,7 +3,6 @@ import { DataContext, DataFetchProps, withDataFetch, withMemoKey } from "../../c
 import { SignalRListener } from "../../components/SignalR";
 import $api from "../../components/WebApi";
 import SeekBar from "./SeekBar";
-import Slider from "../../components/Slider";
 import { AVPositionState, AVState, RCState } from "./Types";
 import { parseMilliseconds } from "../../components/Extensions";
 import { PlayerSvgSymbols } from "./SvgSymbols";
@@ -86,7 +85,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
     setRepeatAllPlayMode = () => this.ctrl.setPlayMode("REPEAT_ALL").fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
-    setRepeatShufflePlayMode = () => this.ctrl.setPlayMode("REPEAT_SHUFFLE").fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+    togglePlayMode = () => this.ctrl.setPlayMode(this.state.playMode === "REPEAT_ALL" ? "REPEAT_SHUFFLE" : "REPEAT_ALL").fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
     toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
@@ -137,33 +136,21 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                     : { title: "Stop", glyph: "stop-circle", onClick: this.stop }
                 : { title: "Stop", glyph: "stop-circle", disabled: true };
 
+        const shuffleMode = playMode === "REPEAT_SHUFFLE";
+
         return <React.Fragment>
             <PlayerSvgSymbols />
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
-            <div className="d-flex flex-column">
-                <SeekBar className="mb-2" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChangeRequested={this.seek} />
-                <div className="d-flex align-items-center flex-nowrap">
-                    <Button title="Prev" glyph="step-backward" onClick={this.prev} disabled={!actions.includes("Previous")} />
-                    <Button className="icon-2x p-1" {...button} />
-                    <Button title={nextTitle} glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
-                    <div className="d-flex flex-grow-1 align-self-stretch align-items-center justify-content-center">
-                        <AlbumArt itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} className="mx-2 my-0 album-art-md d-none d-sm-block" />
-                        <div className="d-flex flex-column overflow-hidden">
-                            {current ? <>
-                                <h6 className="text-truncate flex-grow-1 m-0">{title}</h6>
-                                {(creator || album) && <small className="m-0 lines-2">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
-                            </> : <h6 className="text-truncate flex-grow-1 m-0">[No media]</h6>}
-                        </div>
-                    </div>
-                    <div className="d-flex position-relative flex-nowrap align-items-center">
-                        <div className="hover-container">
-                            <Button title={volumeStr} glyph={volumeIcon} onClick={this.toggleMute} disabled={disabled} />
-                            {!disabled && <Slider progress={volume / 100} className="hover-activated position-absolute w-100 px-1" onChangeRequested={this.changeVolume} />}
-                        </div>
-                        <Button title="shuffle play mode" glyph="random" active={playMode === "REPEAT_SHUFFLE"} onClick={this.setRepeatShufflePlayMode} disabled={disabled} />
-                        <Button title="repeat all play mode" glyph="retweet" active={playMode === "REPEAT_ALL"} onClick={this.setRepeatAllPlayMode} disabled={disabled} />
-                    </div>
-                </div>
+            <div className="player-skeleton">
+                <div className="art"><AlbumArt itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} /></div>
+                <h5 className="title text-truncate">{title ?? "[No media]"}{title ?? "[No media]"}{title ?? "[No media]"}{title ?? "[No media]"}{title ?? "[No media]"}{title ?? "[No media]"}{title ?? "[No media]"}{title ?? "[No media]"}</h5>
+                {(creator || album) && <small className="artist text-truncate">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
+                <SeekBar className="progress my-3 mx-2" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChangeRequested={this.seek} />
+                <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="mode-btn" glyph={shuffleMode ? "random" : "retweet"} onClick={this.togglePlayMode} disabled={disabled} />
+                <Button title="Prev" className="prev-btn" glyph="step-backward" onClick={this.prev} disabled={!actions.includes("Previous")} />
+                <Button className="play-btn p-1" {...button} />
+                <Button title={nextTitle} className="next-btn" glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
+                <Button title={volumeStr} className="volume-btn" glyph={volumeIcon} onClick={this.toggleMute} disabled={disabled} />
             </div>
         </React.Fragment>;
     }

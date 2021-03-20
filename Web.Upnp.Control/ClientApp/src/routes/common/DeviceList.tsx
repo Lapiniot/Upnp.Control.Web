@@ -27,9 +27,11 @@ export function DeviceContainer({ itemTemplate: Template, dataContext, category,
     </>;
 }
 
+export type ViewMode = "grid" | "carousel" | "auto";
+
 type DeviceListContainerProps = DataFetchProps<UpnpDevice[]> &
     TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> &
-    CategoryRouteParams;
+    CategoryRouteParams & { viewMode?: ViewMode };
 
 export class DeviceListContainer extends React.Component<DeviceListContainerProps, DeviceListState> {
 
@@ -39,6 +41,8 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
             reload(null, { alerts: this.state.alerts.set(device, message) });
         }
     }
+
+    static defaultProps: Partial<DeviceListContainerProps> = { viewMode: "grid" }
 
     handlers: Map<string, SignalRMessageHandler> = new Map([["SsdpDiscoveryEvent", this.onDiscoveryEvent]]);
 
@@ -53,23 +57,27 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
     }
 
     render() {
-        const { dataContext, itemTemplate: Item, fetching, category } = this.props;
-
-        return <div className="h-100 overflow-auto scroll-snap-y spt-3 spb-3 d-flex flex-column">
+        const { dataContext, itemTemplate: Item, fetching, category, viewMode } = this.props;
+        const viewClass = viewMode === "grid"
+            ? "grid-responsive-auto"
+            : viewMode === "carousel"
+                ? "grid-carousel"
+                : "grid-carousel grid-responsive-auto-lg";
+        return <>
             {fetching || !dataContext?.source
                 ? <LoadIndicatorOverlay />
                 : <SignalRListener handlers={this.handlers}>
-                    {!fetching && this.state.alerts.size > 0 &&
+                    {/* {!fetching && this.state.alerts.size > 0 &&
                         <div className="m-3 mb-0 d-flex flex-wrap justify-content-center gap-3">{
                             Array.from(this.state.alerts).map(({ 0: key, 1: { type, info: { name, description } } }) =>
-                                <Toast key={key} data-id={key} header={name} className="snap-start" color={type === "appeared" ? "success" : "warning"}
+                                <Toast key={key} data-id={key} header={name} color={type === "appeared" ? "success" : "warning"}
                                     delay={120000} onDismissed={this.dismissAlert}><b>&laquo;{description}&raquo;</b> has {type === "appeared" ? "appeared on" : "disappeared from"} the network</Toast>
                             )}
-                        </div>}
-                    <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
+                        </div>} */}
+                    <div className={`h-100 d-grid grid-scroll-snap ${viewClass}`}>
                         {[dataContext.source.map(item => <Item key={item.udn} data-source={item} category={category} device={item.udn} />)]}
                     </div>
                 </SignalRListener>}
-        </div>
+        </>
     }
 }

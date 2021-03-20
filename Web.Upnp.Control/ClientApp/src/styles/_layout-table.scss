@@ -223,6 +223,7 @@ $hide-columns-map: (
     }
 
     &.at-touch-friendly {
+        touch-action: manipulation;
         @include at-body-row() {
             height: 3.6rem;
         }

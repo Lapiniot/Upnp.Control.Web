@@ -8,7 +8,7 @@ import { strict } from "assert";
 
 export default (props: RouteComponentProps<CategoryRouteParams>) => <>
     <UmiActionSvgSymbols />
-    <DeviceRouter {...props} deviceTemplate={UmiDeviceCard}>
+    <DeviceRouter {...props} deviceTemplate={UmiDeviceCard} listViewMode="auto">
         <Route path={`${props.match.path}/:device/playlists/(0|-1)`} exact render={() => <Redirect to={`/${props.match.params.category}`} />} />
         <Route path={`${props.match.path}/:device/playlists/:id(.*)*` as PlaylistRoutePath} render={props => <PlaylistManager {...props} />} />
     </DeviceRouter>
