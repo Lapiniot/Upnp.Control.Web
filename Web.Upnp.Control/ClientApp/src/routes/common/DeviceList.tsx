@@ -1,7 +1,7 @@
 ﻿import React, { ComponentType } from "react";
 import { SignalRListener, SignalRMessageHandler } from "../../components/SignalR";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { DataSourceProps, UpnpDevice } from "./Types";
+import { CategoryRouteParams, DataSourceProps, DeviceRouteParams, UpnpDevice } from "./Types";
 import { DataFetchProps } from "../../components/DataFetch";
 import { Toast } from "../../components/Toast";
 
@@ -14,24 +14,22 @@ type DeviceListState = {
     alerts: Map<string, DiscoveryMessage>
 }
 
-type CategoryParams = {
-    category?: string;
-}
-
 export type TemplatedDataComponentProps<T = any, P = {}> = { itemTemplate: ComponentType<DataSourceProps<T> & P> }
 
-type DeviceContainerProps = DataFetchProps<UpnpDevice> & TemplatedDataComponentProps<UpnpDevice, CategoryParams> & CategoryParams;
+type DeviceContainerProps = DataFetchProps<UpnpDevice> & TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> & DeviceRouteParams;
 
 export function DeviceContainer({ itemTemplate: Template, dataContext, category, fetching }: DeviceContainerProps) {
     return <>
         {fetching && <LoadIndicatorOverlay />}
         <div className="h-100 overflow-auto d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-            {dataContext?.source && <Template data-source={dataContext.source} category={category} />}
+            {dataContext?.source && <Template data-source={dataContext.source} category={category} device={dataContext.source.udn} />}
         </div>
     </>;
 }
 
-type DeviceListContainerProps = DataFetchProps<UpnpDevice[]> & TemplatedDataComponentProps<UpnpDevice, CategoryParams> & CategoryParams;
+type DeviceListContainerProps = DataFetchProps<UpnpDevice[]> &
+    TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> &
+    CategoryRouteParams;
 
 export class DeviceListContainer extends React.Component<DeviceListContainerProps, DeviceListState> {
 
@@ -69,7 +67,7 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
                             )}
                         </div>}
                     <div className="d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-                        {[dataContext.source.map(item => <Item key={item.udn} data-source={item} category={category} />)]}
+                        {[dataContext.source.map(item => <Item key={item.udn} data-source={item} category={category} device={item.udn} />)]}
                     </div>
                 </SignalRListener>}
         </div>
