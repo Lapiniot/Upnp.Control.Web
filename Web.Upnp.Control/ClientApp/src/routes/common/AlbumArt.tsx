@@ -3,24 +3,20 @@ import { viaProxy } from "../../components/Extensions";
 
 function getIconByClass(itemClass: string) {
     if (itemClass.includes(".container"))
-        return "s-folder";
+        return "folder";
     else if (itemClass.includes(".audioItem"))
-        return "s-file-audio";
+        return "music";
     else if (itemClass.includes(".videoItem"))
-        return "s-file-video";
+        return "film";
     else if (itemClass.includes(".imageItem"))
-        return "s-file-image";
+        return "image";
     else
-        return "s-file";
+        return "file";
 }
 
-type AlbumArtProps = HTMLAttributes<HTMLOrSVGElement> & { itemClass: string, albumArts?: string[] };
+type AlbumArtProps = HTMLAttributes<HTMLOrSVGElement> & { itemClass: string, albumArts?: string[], dim?: boolean };
 
-export default ({ itemClass, albumArts, className, ...other }: AlbumArtProps) => {
-    const cls = `album-art${className ? ` ${className}` : ""}`;
-    return albumArts && albumArts.length > 0
-        ? <img src={viaProxy(albumArts[0])} className={cls} alt="" {...other} />
-        : <svg className={cls} {...other}>
-            <use href={`icons.svg#${getIconByClass(itemClass)}`} />
-        </svg>
+export default ({ itemClass, albumArts, className, dim, ...other }: AlbumArtProps) => {
+    const src = albumArts?.length ? viaProxy(albumArts[0]) : `icons.svg#${getIconByClass(itemClass)}${dim ? "-d" : ""}`;
+    return <img src={src} className={`album-art${className ? ` ${className}` : ""}`} alt="" {...other} style={{ objectFit: "initial" }} />;
 }
