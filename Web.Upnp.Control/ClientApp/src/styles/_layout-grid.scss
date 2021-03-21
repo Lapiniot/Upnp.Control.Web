@@ -59,6 +59,10 @@
     scroll-snap-type: x mandatory;
     scroll-snap-stop: always;
 
+    & > * {
+        overflow: hidden;
+    }
+
     & > .card {
         @include border-radius(0);
     }

@@ -24,7 +24,7 @@ export function DeviceCard({ "data-source": d, category, children, actions, clas
             </div>
             <AddBookmarkAction category={category} device={d} />
         </div>
-        <div className="card-body">
+        <div className="card-body overflow-hidden">
             {children}
         </div>
         <div className="card-footer d-flex bg-transparent border-0">
