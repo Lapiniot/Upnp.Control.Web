@@ -1,4 +1,4 @@
-import React, { CSSProperties, HTMLProps } from "react";
+import { CSSProperties, HTMLProps } from "react";
 
 export type ProgressCSSProperties = CSSProperties & {
     "--slider-progress"?: number;
@@ -7,28 +7,23 @@ export type ProgressCSSProperties = CSSProperties & {
     "--slider-animation-name"?: string;
 };
 
-export type ProgressProps = HTMLProps<HTMLDivElement> & {
+export type ProgressProps = {
     progress?: number;
     infinite?: boolean;
-    style?: ProgressCSSProperties;
+    trackStyle?: ProgressCSSProperties;
 }
 
-export class Progress extends React.Component<ProgressProps> {
-
-    render() {
-        const { progress, infinite, style = {} as ProgressCSSProperties, ...other } = this.props;
-
-        if (infinite) {
-            style["--slider-animation"] = "2s ease-in-out infinite slider-run-infinite";
-        }
-        else {
-            style["--slider-progress"] = progress;
-        }
-
-        return <div role="button" {...other}>
-            <div className="progress-track" style={style}>
-                <div className="progress-indicator" />
-            </div>
-        </div>;
+export default function Progress({ className, progress, infinite, trackStyle: style = {}, ...other }: HTMLProps<HTMLDivElement> & ProgressProps) {
+    if (infinite) {
+        style["--slider-animation"] = "2s ease-in-out infinite slider-run-infinite";
     }
+    else {
+        style["--slider-progress"] = progress;
+    }
+
+    return <div {...other} className={`w-100${className ? ` ${className}` : ""}`} role="button">
+        <div className="progress-track" style={style}>
+            <div className="progress-indicator" />
+        </div>
+    </div>;
 }
