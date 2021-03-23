@@ -157,10 +157,10 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                 <Button title={volumeStr} className="volume-btn" glyph={volumeIcon} disabled={disabled} data-bs-toggle="dropdown" />
                 <DropdownMenu className="volume-ctrl" placement="left">
                     <li className="d-flex align-items-center">
-                        <button type="button" className="btn btn-plain btn-round" onClick={this.toggleMute}>
+                        <button type="button" style={{ zIndex: 1000 }} className="btn btn-plain btn-round" onClick={this.toggleMute}>
                             <svg><use href={"#" + (muted ? "volume-up" : "volume-mute")} /></svg>
                         </button>
-                        <Slider className="flex-fill mx-2" value={volume / 100} onChange={this.changeVolume} />
+                        <Slider className="flex-fill mx-2" style={{ width: "10rem" }} value={volume / 100} onChange={this.changeVolume} />
                     </li>
                 </DropdownMenu>
             </div>
