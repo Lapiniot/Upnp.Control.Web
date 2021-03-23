@@ -13,6 +13,7 @@
     --slider-animation: var(--slider-animation-name) var(--slider-animation-duration) linear forwards;
 
     touch-action: none;
+    user-select: none;
     padding: calc((var(--slider-ticker-size) * var(--slider-ticker-scale-factor) - var(--slider-size)) / 2) 0;
 
     &:hover,
