@@ -54,8 +54,16 @@ export default class Slider extends React.Component<SliderProps> {
     private pointerDownHandler = (event: PointerEvent) => {
         const { currentTarget, clientX, pointerId } = event;
         const element = currentTarget as HTMLElement;
-        if (this.props.readOnly) return;
+
         event.preventDefault();
+
+        if (this.props.readOnly) return;
+
+        var r = element.getBoundingClientRect();
+        if (clientX < r.left || clientX > r.right) {
+            return;
+        }
+
         element.setPointerCapture(pointerId);
         element.addEventListener("pointermove", this.pointerMoveHandler, true);
         element.addEventListener("pointerup", this.pointerUpHandler, true);
@@ -68,7 +76,7 @@ export default class Slider extends React.Component<SliderProps> {
         // we cannot rely on event.offsetX value here before entering pointer capture mode, 
         // because it relates to the event.target!!! element and not to the event.currentTarget element,
         // these might be different at this phase
-        this.scheduleUpdate(getOffsetX(element, clientX), false);
+        this.scheduleUpdate(clientX - r.x, false);
     }
 
     private pointerUpHandler = (event: PointerEvent) => {
