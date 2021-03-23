@@ -2,13 +2,13 @@
 
 @mixin grid-auto-columns($size) {
     grid-template-columns: repeat(auto-fit, minmax(unquote("min(10rem, 100%)"), $size));
-    grid-auto-flow: dense;
 }
 
 @mixin grid-responsive-auto($size: 34rem) {
     @include grid-auto-columns($size);
     justify-content: space-evenly;
     align-items: start;
+    align-content: start;
     padding: map-get($spacers, 3);
     overflow-y: auto;
     scroll-padding-block: map-get($spacers, 3);
@@ -61,6 +61,7 @@
 
     & > .card {
         @include border-radius(0);
+        min-height: 0;
     }
 }
 
