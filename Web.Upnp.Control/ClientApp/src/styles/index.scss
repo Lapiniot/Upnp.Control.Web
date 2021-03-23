@@ -63,6 +63,10 @@ $zindex-dropdown: $zindex-sticky + 5;
 @import "albumart";
 @import "player";
 
+.min-h-0 {
+    min-height: 0;
+}
+
 .sticky-bottom {
     position: sticky;
     bottom: 0;

@@ -15,7 +15,7 @@ export type DeviceCardProps = DataSourceProps<UpnpDevice> & {
 }
 
 export function DeviceCard({ "data-source": d, category, children, actions, className, ...other }: DeviceCardProps & HTMLAttributes<HTMLDivElement>) {
-    return <div className={`card${className ? ` ${className}` : ""}`} {...other}>
+    return <div className={`card min-h-0${className ? ` ${className}` : ""}`} {...other}>
         <div className="card-header d-flex bg-transparent border-0">
             <DeviceIcon service={d.type} icons={d.icons} />
             <div className="flex-fill overflow-hidden">
@@ -24,7 +24,7 @@ export function DeviceCard({ "data-source": d, category, children, actions, clas
             </div>
             <AddBookmarkAction category={category} device={d} />
         </div>
-        <div className="card-body overflow-hidden">
+        <div className="card-body min-h-0">
             {children}
         </div>
         <div className="card-footer d-flex bg-transparent border-0">
