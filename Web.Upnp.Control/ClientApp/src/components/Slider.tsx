@@ -27,7 +27,16 @@ export default class Slider extends React.Component<SliderProps> {
     offset: number = 0;
     released: boolean | undefined;
 
-    static defaultProps: Partial<SliderProps> = { reportMode: "release", value: 0, step: 0.05 };
+    static defaultProps: Partial<SliderProps> = { reportMode: "release", value: 0, step: 0.01 };
+
+    get progress() {
+        const value = this.ref.current?.style.getPropertyValue("--slider-progress");
+        return value ? parseFloat(value) : 0.0;
+    }
+
+    set progress(value: number) {
+        this.ref.current?.style.setProperty("--slider-progress", value.toString());
+    }
 
     componentDidMount() {
         this.ref.current?.addEventListener("pointerdown", this.pointerDownHandler, true);
@@ -81,8 +90,14 @@ export default class Slider extends React.Component<SliderProps> {
 
     private keyUpHandler = (e: KeyboardEvent<HTMLDivElement>) => {
         switch (e.key) {
-            case "ArrowLeft": break;
-            case "ArrowRight": break;
+            case "ArrowLeft":
+                e.preventDefault();
+                this.scheduleUpdate((this.progress - (this.props.step ?? 0.0)) * (this.ref.current?.offsetWidth ?? 0), true);
+                break;
+            case "ArrowRight":
+                e.preventDefault();
+                this.scheduleUpdate((this.progress + (this.props.step ?? 0.0)) * (this.ref.current?.offsetWidth ?? 0), true);
+                break;
         }
     }
 
@@ -102,7 +117,7 @@ export default class Slider extends React.Component<SliderProps> {
         try {
             const element = this.ref.current;
             if (element) {
-                const { onChange, onChangeRequested, reportMode, value = 0 } = this.props;
+                const { onChange, onChangeRequested, reportMode, value: propsValue = 0 } = this.props;
                 const progress = clamp(this.offset / element.offsetWidth, 0.0, 1.0);
 
                 // update UI state automaticaly without React's component state update only when
@@ -110,7 +125,7 @@ export default class Slider extends React.Component<SliderProps> {
                 // (this basically means that user takes responsibility for state update 
                 // and prevents our default behavior)
                 if (onChangeRequested?.(progress) !== false) {
-                    element.style.setProperty("--slider-progress", progress.toString());
+                    this.progress = progress;
                 }
 
                 // If provided onChange handler returns boolean value False, this means user
@@ -118,7 +133,7 @@ export default class Slider extends React.Component<SliderProps> {
                 if ((reportMode === "immediate" || this.released)) {
                     const result = onChange?.(progress);
                     if (result === false) {
-                        element.style.setProperty("--slider-progress", value.toString());
+                        this.progress = propsValue;
                     }
                 }
             }
