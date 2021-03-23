@@ -8,6 +8,8 @@ import { parseMilliseconds } from "../../components/Extensions";
 import { PlayerSvgSymbols } from "./SvgSymbols";
 import $s from "./Settings";
 import AlbumArt from "./AlbumArt";
+import { DropdownMenu } from "../../components/DropdownMenu";
+import Slider from "../../components/Slider";
 
 const STATE_UPDATE_DELAY_MS = 2000;
 
@@ -152,7 +154,15 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                 <Button title="Prev" className="prev-btn" glyph="step-backward" onClick={this.prev} disabled={!actions.includes("Previous")} />
                 <Button className="play-btn p-1" {...button} />
                 <Button title={nextTitle} className="next-btn" glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
-                <Button title={volumeStr} className="volume-btn" glyph={volumeIcon} onClick={this.toggleMute} disabled={disabled} />
+                <Button title={volumeStr} className="volume-btn" glyph={volumeIcon} disabled={disabled} data-bs-toggle="dropdown" />
+                <DropdownMenu className="volume-ctrl" placement="left">
+                    <li className="d-flex align-items-center">
+                        <button type="button" className="btn btn-plain btn-round" onClick={this.toggleMute}>
+                            <svg><use href={"#" + (muted ? "volume-up" : "volume-mute")} /></svg>
+                        </button>
+                        <Slider className="flex-fill mx-2" value={volume / 100} onChange={this.changeVolume} />
+                    </li>
+                </DropdownMenu>
             </div>
         </React.Fragment>;
     }

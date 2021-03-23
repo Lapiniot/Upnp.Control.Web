@@ -144,10 +144,6 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
                     this.props.onSelected(item, this.instance?.state.elements.reference as HTMLElement);
                 }
             }
-            else {
-                event.preventDefault();
-                event.stopPropagation();
-            }
             return;
         }
 
