@@ -21,9 +21,10 @@ function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & De
         <button type="button" className="btn btn-round btn-plain" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
             <svg className="icon"><use href="#music" /></svg>
         </button>
-        <DropdownMenu data-device={device.udn} placement="bottom-end">
+        <DropdownMenu className="mw-100" data-device={device.udn} placement="top-end"
+            style={{ overflowY: "auto", maxHeight: "calc(100% - 2.5rem)" }}>
             {d?.source.items?.map(i => <li key={i.id}>
-                <a className="dropdown-item" href="#" data-play-url={i.res?.url + "#play"} onClick={playUrlHandler}>
+                <a className="dropdown-item text-truncate" href="#" data-play-url={i.res?.url + "#play"} onClick={playUrlHandler}>
                     <AlbumArt itemClass={i.class} albumArts={i.albumArts} className="album-art-sm me-1 align-middle" />{i.title}</a>
             </li>)}
         </DropdownMenu>
