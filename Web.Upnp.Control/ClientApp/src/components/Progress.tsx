@@ -8,21 +8,23 @@ export type ProgressCSSProperties = CSSProperties & {
 };
 
 export type ProgressProps = {
-    progress?: number;
+    value?: number;
     infinite?: boolean;
-    trackStyle?: ProgressCSSProperties;
 }
 
-export default function Progress({ className, progress, infinite, trackStyle: style = {}, ...other }: HTMLProps<HTMLDivElement> & ProgressProps) {
+export default function Progress({ className, value, infinite, style = {}, ...other }: HTMLProps<HTMLDivElement> & ProgressProps) {
+    const progressStyle: ProgressCSSProperties = {};
+
     if (infinite) {
-        style["--slider-animation"] = "2s ease-in-out infinite slider-run-infinite";
+        progressStyle["--slider-animation"] = "2s ease-in-out infinite slider-run-infinite";
     }
     else {
-        style["--slider-progress"] = progress;
+        progressStyle["--slider-progress"] = value;
     }
 
-    return <div {...other} className={`w-100${className ? ` ${className}` : ""}`} role="button">
-        <div className="progress-track" style={style}>
+    return <div {...other} role="button" style={{ ...style, ...progressStyle }}
+        className={`progress${className ? ` ${className}` : ""}`}>
+        <div className="progress-track">
             <div className="progress-indicator" />
         </div>
     </div>;
