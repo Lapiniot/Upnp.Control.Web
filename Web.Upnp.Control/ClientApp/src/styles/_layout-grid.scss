@@ -1,7 +1,7 @@
 ﻿/********** Grid Layout utilities **********/
 
 @mixin grid-auto-columns($size) {
-    grid-template-columns: repeat(auto-fit, minmax(unquote("min(10rem, 100%)"), $size));
+    grid: auto / repeat(auto-fit, minmax(unquote("min(10rem, 100%)"), $size));
 }
 
 @mixin grid-responsive-auto($size: 34rem) {
@@ -18,12 +18,12 @@
     & > .card {
         @include box-shadow($box-shadow-sm);
         @include border-radius($card-border-radius);
+        min-height: unset;
     }
 
     &:after {
-        content: '';
-        display: block;
-        grid-column-start: 1;
+        content: "";
+        grid-column: 1;
         height: 1px;
         margin-top: -1px;
     }
