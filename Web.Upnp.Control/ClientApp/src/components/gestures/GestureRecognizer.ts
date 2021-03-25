@@ -1,7 +1,8 @@
-export type GestureHandler<TGesture extends string, TParams = undefined> = (gesture: TGesture, params: TParams) => void;
+export type GestureHandler<TElement extends HTMLElement, TGesture extends string, TParams = undefined> =
+    (target: TElement, gesture: TGesture, params: TParams) => void;
 
 export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture extends string, TParams extends unknown> {
-    protected handler: GestureHandler<TGesture, TParams>;
+    protected handler: GestureHandler<TElement, TGesture, TParams>;
     protected target: TElement | null = null;
     protected startX: number = 0;
     protected startY: number = 0;
@@ -13,7 +14,7 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
         return this.options.passive === true;
     }
 
-    constructor(handler: GestureHandler<TGesture, TParams>, passive: boolean = true) {
+    constructor(handler: GestureHandler<TElement, TGesture, TParams>, passive: boolean = true) {
         this.handler = handler;
         this.options = { capture: true, passive: passive };
     }
@@ -63,16 +64,19 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
 
     private pointerMoveEventHandler = (event: PointerEvent) => this.onPointerMoveEvent(event);
 
-    private updateInternal = () => {
-        if (!this.updatePending)
-            return;
-
-        try {
-            this.update();
-        } finally {
-            this.updatePending = false;
+    private wrap(callback: () => void) {
+        return () => {
+            if (!this.updatePending)
+                return;
+            try {
+                callback();
+            } finally {
+                this.updatePending = false;
+            }
         }
     }
+
+    private updateInternal = this.wrap(() => this.update())
 
     protected onPointerDownEvent(event: PointerEvent) {
         if (!this.passive) {
@@ -88,13 +92,13 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
 
     protected onPointerMoveEvent(_: PointerEvent) { }
 
-    protected scheduleUpdate = () => {
+    protected scheduleUpdate = (callback?: () => void) => {
         if (this.updatePending)
             return;
 
         this.updatePending = true;
 
-        window.requestAnimationFrame(this.updateInternal);
+        window.requestAnimationFrame(callback ? this.wrap(callback) : this.updateInternal);
     }
 
     protected update() { }

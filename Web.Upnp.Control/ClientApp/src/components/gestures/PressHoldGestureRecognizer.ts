@@ -5,7 +5,7 @@ export class PressHoldGestureRecognizer<TElement extends HTMLElement> extends Ge
     timeout: number | null = null;
     tolerance: number;
 
-    constructor(handler: GestureHandler<"hold", undefined>, delay = 500, tolerance = 5) {
+    constructor(handler: GestureHandler<TElement, "hold", undefined>, delay = 500, tolerance = 5) {
         super(handler);
         this.delay = delay;
         this.tolerance = tolerance;
@@ -14,7 +14,7 @@ export class PressHoldGestureRecognizer<TElement extends HTMLElement> extends Ge
     protected onPointerDownEvent(event: PointerEvent) {
         super.onPointerDownEvent(event);
         this.reset();
-        this.timeout = window.setTimeout(() => this.handler("hold", undefined), this.delay);
+        this.timeout = window.setTimeout(() => this.handler(this.target as TElement, "hold", undefined), this.delay);
     }
 
     protected onPointerMoveEvent(event: PointerEvent) {
