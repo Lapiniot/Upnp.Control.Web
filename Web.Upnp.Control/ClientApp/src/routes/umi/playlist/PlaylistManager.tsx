@@ -1,32 +1,33 @@
 import React, { EventHandler, HTMLAttributes, ReactElement, UIEvent } from "react";
 import { RouteComponentProps } from "react-router";
-import { AVState, BrowseFetchResult, DIDLItem, PlaylistRouteParams, PropertyBag, RowState, UpnpDevice } from "../../common/Types";
-import $api from "../../../components/WebApi";
-import { TextValueEditDialog } from "../../../components/Dialogs";
-import { withBrowserDataFetch, fromBaseQuery, DIDLUtils } from "../../common/BrowserUtils";
-import Toolbar from "../../../components/Toolbar";
-import { TablePagination } from "../../common/Pagination";
-import Breadcrumb from "../../common/Breadcrumb";
-import Browser, { BrowserProps } from "../../common/BrowserView";
-import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
-import { SignalRListener } from "../../../components/SignalR";
-import MainCell from "./CellTemplate";
 import { DataContext, DataFetchProps } from "../../../components/DataFetch";
+import { TextValueEditDialog } from "../../../components/Dialogs";
+import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
+import { DropTarget } from "../../../components/DropTarget";
+import { nopropagation } from "../../../components/Extensions";
+import { PressHoldGestureRecognizer } from "../../../components/gestures/PressHoldGestureRecognizer";
+import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
+import { MediaQueries } from "../../../components/MediaQueries";
+import { ModalProps } from "../../../components/Modal";
+import ModalHost from "../../../components/ModalHost";
+import { SignalRListener } from "../../../components/SignalR";
+import Toolbar from "../../../components/Toolbar";
+import $api from "../../../components/WebApi";
+import { BottomBar } from "../../common/BottomBar";
+import Breadcrumb from "../../common/Breadcrumb";
+import { DIDLUtils, fromBaseQuery, withBrowserDataFetch } from "../../common/BrowserUtils";
+import Browser, { BrowserProps } from "../../common/BrowserView";
+import ItemInfoModal from "../../common/ItemInfoModal";
 import { NavigatorProps } from "../../common/Navigator";
-import { AddUrlModal } from "./dialogs/AddUrlModal";
+import { TablePagination } from "../../common/Pagination";
+import $s from "../../common/Settings";
+import { BrowserSvgSymbols, EditSvgSymbols, PlayerSvgSymbols, PlaylistSvgSymbols, PlaySvgSymbols } from "../../common/SvgSymbols";
+import { AVState, BrowseFetchResult, DIDLItem, PlaylistRouteParams, PropertyBag, RowState, UpnpDevice } from "../../common/Types";
+import MainCell from "./CellTemplate";
 import { AddItemsModal } from "./dialogs/AddItemsModal";
+import { AddUrlModal } from "./dialogs/AddUrlModal";
 import { RemoveItemsModal } from "./dialogs/RemoveItemsModal";
 import { UploadPlaylistModal } from "./dialogs/UploadPlaylistModal";
-import { DropTarget } from "../../../components/DropTarget";
-import { BrowserSvgSymbols, EditSvgSymbols, PlayerSvgSymbols, PlaylistSvgSymbols, PlaySvgSymbols } from "../../common/SvgSymbols";
-import $s from "../../common/Settings";
-import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
-import { BottomBar } from "../../common/BottomBar";
-import ModalHost from "../../../components/ModalHost";
-import { ModalProps } from "../../../components/Modal";
-import ItemInfoModal from "../../common/ItemInfoModal";
-import { nopropagation } from "../../../components/Extensions";
-import { MediaQueries } from "../../../components/MediaQueries";
 
 type PlaylistManagerProps = PlaylistRouteParams &
     DataFetchProps<BrowseFetchResult> &
@@ -83,10 +84,12 @@ function getRowState(item: DIDLItem): RowState {
 export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
+    modalHostRef = React.createRef<ModalHost>();
+    browserNodeRef = React.createRef<HTMLDivElement>();
+    pressHoldGestureRecognizer: PressHoldGestureRecognizer<HTMLDivElement>;
     handlers;
     ctrl;
     pls;
-    modalHostRef = React.createRef<ModalHost>();
 
     static defaultProps = { id: "PL:" };
 
@@ -97,6 +100,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         this.ctrl = $api.control(this.props.device);
         this.pls = $api.playlist(this.props.device);
         MediaQueries.largeScreen.addEventListener("change", this.queryChangedHandler);
+        this.pressHoldGestureRecognizer = new PressHoldGestureRecognizer<HTMLDivElement>(this.pressHoldHandler);
     }
 
     async componentDidUpdate(prevProps: PlaylistManagerProps) {
@@ -114,6 +118,10 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 
     async componentDidMount() {
+        if (this.browserNodeRef.current) {
+            this.pressHoldGestureRecognizer.bind(this.browserNodeRef.current);
+        }
+
         try {
             const timeout = $s.get("timeout");
             const state = await this.ctrl.state(true).jsonFetch(timeout);
@@ -133,6 +141,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 
     componentWillUnmount() {
+        this.pressHoldGestureRecognizer.unbind();
         MediaQueries.largeScreen.removeEventListener("change", this.queryChangedHandler);
     }
 
@@ -318,9 +327,13 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         this.props.navigate?.({ id });
     }
 
-    toggleEditModeHandler = () => {
+    toggleEditMode = () => {
         this.resetStates(RowState.Selected);
         this.setState(state => ({ editMode: !state.editMode }));
+    }
+
+    pressHoldHandler = () => {
+        this.toggleEditMode();
     }
 
     toggleSelectAllHandler = () => {
@@ -362,7 +375,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const className = "btn-round btn-icon btn-plain flex-grow-0";
         const selectedCount = this.state.selection.length;
         return this.state.editMode ? <>
-            <Toolbar.Button key="close" glyph="close" onClick={this.toggleEditModeHandler} className={className} />
+            <Toolbar.Button key="close" glyph="close" onClick={this.toggleEditMode} className={className} />
             <small className="flex-fill my-0 mx-2 text-center text-truncate">
                 {selectedCount ? `${selectedCount} item${selectedCount > 1 ? "s" : ""} selected` : ""}
             </small>
@@ -372,7 +385,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         </> : <>
             <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className={className} />
             <h6 className="flex-fill my-0 mx-2 text-center text-truncate">{this.props.dataContext?.source.parents?.[0]?.title}</h6>
-            <Toolbar.Button key="edit-mode" glyph="pen" onClick={this.toggleEditModeHandler} className={className} />
+            <Toolbar.Button key="edit-mode" glyph="pen" onClick={this.toggleEditMode} className={className} />
         </>;
     }
 
@@ -460,7 +473,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         </Toolbar>}
                 </div>
                 <SignalRListener handlers={this.handlers}>
-                    <Browser dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
+                    <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.state.rowStates}
                         className="flex-fill pb-5" editMode={this.state.editMode}
                         useCheckboxes={this.state.editMode || MediaQueries.touchDevice.matches && MediaQueries.largeScreen.matches}>

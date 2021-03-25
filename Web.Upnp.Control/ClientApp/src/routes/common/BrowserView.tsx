@@ -1,13 +1,13 @@
-﻿import React, { ChangeEventHandler, ComponentType, HTMLAttributes, ReactElement, MouseEvent, FocusEvent } from "react";
-import AlbumArt from "./AlbumArt";
-import { DIDLUtils as utils } from "./BrowserUtils";
-import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
-import { NavigatorProps } from "./Navigator";
+﻿import React, { ChangeEventHandler, ComponentType, FocusEvent, HTMLAttributes, MouseEvent, ReactElement, RefObject } from "react";
 import { DataContext, DataFetchProps } from "../../components/DataFetch";
 import { DropdownMenu, DropdownMenuProps } from "../../components/DropdownMenu";
 import { findScrollParent } from "../../components/Extensions";
-import { SelectionStateAdapter } from "./SelectionStateAdapter";
 import { MediaQueries } from "../../components/MediaQueries";
+import AlbumArt from "./AlbumArt";
+import { DIDLUtils as utils } from "./BrowserUtils";
+import { NavigatorProps } from "./Navigator";
+import { SelectionStateAdapter } from "./SelectionStateAdapter";
+import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
@@ -48,6 +48,7 @@ export type BrowserProps<TContext> = {
     displayMode?: DisplayMode;
     navigationMode?: NavigationMode;
     editMode?: boolean;
+    nodeRef?: RefObject<HTMLDivElement>;
 } & { [K in ModeFlags]?: boolean }
 
 export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
@@ -343,7 +344,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     render() {
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes, displayMode, style } = this.props;
+            useCheckboxes, displayMode, style, nodeRef } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
 
@@ -355,7 +356,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const tableMode = displayMode === "table" || displayMode === "responsive" && MediaQueries.largeScreen.matches;
         const optimizeForTouch = MediaQueries.touchDevice.matches;
 
-        return <div className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`} style={style}
+        return <div ref={nodeRef} className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`} style={style}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
             <div className={`auto-table at-material user-select-none${optimizeForTouch ? " at-touch-friendly" : ""}`}
                 ref={this.tableRef} onFocus={this.focusHandler}>
