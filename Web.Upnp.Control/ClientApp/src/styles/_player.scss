@@ -12,9 +12,11 @@
 
     .art {
         grid-area: art;
-        height: 90%;
-        width: 90%;
         object-fit: contain !important;
+        height: unquote("calc(100% - #{2 * map-get($spacers, 3)})");
+        width: auto;
+        aspect-ratio: 1 / 1;
+        font-size: 3em;
 
         @media (max-height: 320px) {
             display: none;
@@ -24,6 +26,7 @@
     .progress {
         grid-area: prog;
         justify-self: stretch;
+        margin: map-get($spacers, 1) map-get($spacers, 2);
     }
 
     .title {
@@ -68,6 +71,10 @@
             / auto auto auto minmax(0, 1fr) auto auto;
         gap: map-get($spacers, 1) 0;
 
+        .art {
+            height: 100%;
+        }
+
         .play-btn {
             font-size: 2em;
         }
@@ -83,7 +90,7 @@
         .art {
             height: 4rem;
             width: 4rem;
-            padding-inline-start: map-get($spacers, 2);
+            margin-inline: map-get($spacers, 1);
         }
 
         .title {
