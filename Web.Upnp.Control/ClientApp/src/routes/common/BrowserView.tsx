@@ -393,7 +393,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         const selected = !!(this.state.rowStates[index] & RowState.Selected);
                         const selectable = !!(this.state.rowStates[index] & RowState.Selectable);
                         const active = this.state.rowStates[index] & RowState.Active ? true : undefined;
-                        return <div key={e.id} tabIndex={0} data-index={index} data-selected={selected ? selected : undefined} data-active={active}>
+                        return <div key={e.id} tabIndex={0} data-index={index} data-selected={(selected && selectable) ? true : undefined} data-active={active}>
                             {useCheckboxes && <label>
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
                             </label>}

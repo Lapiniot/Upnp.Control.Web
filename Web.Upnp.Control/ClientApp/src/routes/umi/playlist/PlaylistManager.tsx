@@ -337,11 +337,17 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 
     toggleSelectAllHandler = () => {
-        if (this.state.rowStates.some(rs => (rs & RowState.SelectMask) === RowState.Selectable))
+        if (this.state.rowStates.some(rs => (rs & RowState.SelectMask) === RowState.Selectable)) {
             this.setStates(RowState.Selected);
-        else
+            this.setState({
+                selection: this.props.dataContext?.source.items?.
+                    filter((_, i) => this.state.rowStates[i] & RowState.Selectable).
+                    map(i => i.id) ?? []
+            })
+        } else {
             this.resetStates(RowState.Selected);
-        this.forceUpdate();
+            this.setState({ selection: [] });
+        }
     }
 
     private resetStates = (flag: RowState) => {
@@ -475,7 +481,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 <SignalRListener handlers={this.handlers}>
                     <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.state.rowStates}
-                        className="flex-fill pb-5" editMode={this.state.editMode}
+                        className="flex-fill pb-5 mb-1" editMode={this.state.editMode}
                         useCheckboxes={this.state.editMode || MediaQueries.touchDevice.matches && MediaQueries.largeScreen.matches}>
                         <Browser.ContextMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
