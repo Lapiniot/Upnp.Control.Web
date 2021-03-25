@@ -35,32 +35,9 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
         this.target = null;
     }
 
-    private pointerDownEventHandler = (event: PointerEvent) => {
-        const target = this.target;
+    private pointerDownEventHandler = (event: PointerEvent) => this.onPointerDownEvent(event);
 
-        if (!target) return;
-
-        target.addEventListener("pointerup", this.pointerUpEventHandler, this.options);
-        target.addEventListener("pointermove", this.pointerMoveEventHandler, this.options);
-        target.setPointerCapture(event.pointerId);
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        this.onPointerDownEvent(event);
-    }
-
-    private pointerUpEventHandler = (event: PointerEvent) => {
-        const target = this.target;
-
-        if (!target) return;
-
-        target.releasePointerCapture(event.pointerId);
-        target.removeEventListener("pointerup", this.pointerUpEventHandler, this.options);
-        target.removeEventListener("pointermove", this.pointerMoveEventHandler, this.options);
-
-        this.onPointerUpEvent(event);
-    }
+    private pointerUpEventHandler = (event: PointerEvent) => this.onPointerUpEvent(event);
 
     private pointerMoveEventHandler = (event: PointerEvent) => this.onPointerMoveEvent(event);
 
@@ -79,18 +56,38 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
     private updateInternal = this.wrap(() => this.update())
 
     protected onPointerDownEvent(event: PointerEvent) {
+        const target = this.target;
+
+        if (!target) {
+            return;
+        }
+
         if (!this.passive) {
             event.preventDefault();
         }
+
+        target.addEventListener("pointerup", this.pointerUpEventHandler, this.options);
+        target.addEventListener("pointermove", this.pointerMoveEventHandler, this.options);
+        target.setPointerCapture(event.pointerId);
 
         this.startX = event.clientX;
         this.startY = event.clientY;
         this.startTime = event.timeStamp;
     }
 
-    protected onPointerUpEvent(_: PointerEvent) { }
+    protected onPointerUpEvent(event: PointerEvent) {
+        const target = this.target;
 
-    protected onPointerMoveEvent(_: PointerEvent) { }
+        if (!target) {
+            return;
+        }
+
+        target.releasePointerCapture(event.pointerId);
+        target.removeEventListener("pointerup", this.pointerUpEventHandler, this.options);
+        target.removeEventListener("pointermove", this.pointerMoveEventHandler, this.options);
+    }
+
+    protected onPointerMoveEvent(_event: PointerEvent) { }
 
     protected scheduleUpdate = (callback?: () => void) => {
         if (this.updatePending)

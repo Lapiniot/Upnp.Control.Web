@@ -50,6 +50,7 @@
             height: 100%;
             transform: translate3d(calc((var(--slider-progress) - 1) * 100%), 0, 0);
             animation: var(--slider-animation-name) var(--slider-animation-duration) linear forwards;
+            pointer-events: none;
 
             & > .slider-thumb {
                 position: absolute;
@@ -60,6 +61,7 @@
                 background-color: var(--slider-color);
                 clip-path: circle(48%);
                 transition: transform 250ms ease-in-out;
+                pointer-events: all;
 
                 &:hover {
                     transform: scale3d(var(--slider-ticker-scale-factor), var(--slider-ticker-scale-factor), 1);
