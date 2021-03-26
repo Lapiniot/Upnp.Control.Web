@@ -1,7 +1,6 @@
 import { HTMLAttributes } from "react";
 import { viaProxy } from "../../components/Extensions";
-
-function getIconByClass(itemClass: string) {
+export function getIconByClass(itemClass: string) {
     if (itemClass.includes(".container"))
         return "folder";
     else if (itemClass.includes(".audioItem"))
@@ -14,9 +13,12 @@ function getIconByClass(itemClass: string) {
         return "file";
 }
 
-type AlbumArtProps = HTMLAttributes<HTMLOrSVGElement> & { itemClass: string, albumArts?: string[], dim?: boolean };
+type AlbumArtProps = HTMLAttributes<HTMLOrSVGElement> & { itemClass: string, albumArts?: string[] };
 
-export default ({ itemClass, albumArts, className, dim, ...other }: AlbumArtProps) => {
-    const src = albumArts?.length ? viaProxy(albumArts[0]) : `icons.svg#${getIconByClass(itemClass)}${dim ? "-d" : ""}`;
-    return <img src={src} className={`album-art${className ? ` ${className}` : ""}`} alt="" {...other} style={{ objectFit: "initial" }} />;
+export default ({ itemClass, albumArts, className, ...other }: AlbumArtProps) => {
+    return albumArts?.length
+        ? <img src={viaProxy(albumArts[0])} className={`album-art${className ? ` ${className}` : ""}`} alt="" {...other} />
+        : <svg className={`album-art${className ? ` ${className}` : ""}`} {...other}>
+            <use href={`icons.svg#s-${getIconByClass(itemClass)}`} />
+        </svg>
 }

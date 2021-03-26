@@ -2,6 +2,12 @@
     @return if(($name == null) or ($name == ""), "", "-#{$name}");
 }
 
+@mixin unify-parent($child) {
+    @at-root #{selector-unify(&, $child)} {
+        @content;
+    }
+}
+
 // Media of at least the minimum breakpoint height. No query for the smallest breakpoint.
 // Makes the @content apply to the given breakpoint and taller.
 @mixin media-breakpoint-height-up($name, $breakpoints: $grid-breakpoints) {
