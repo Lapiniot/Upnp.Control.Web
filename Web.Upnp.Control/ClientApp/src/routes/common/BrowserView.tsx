@@ -273,7 +273,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         if (row) {
             if (!row.dataset.index) return;
             const index = parseInt(row.dataset.index);
-            if (index && index !== this.state.adapter.focus) {
+            if (index >= 0 && index !== this.state.adapter.focus) {
                 // last tracked focused item id doesn't match currently focused row -
                 // thus we came here as a result of focus switch via keyboard Tab or Shift+Tab
                 // which we don't emulate programmatically. So lets synchronize selection with news focus
@@ -283,7 +283,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     }
 
     private selectionStateChanged = (focused: number | null) => {
-        if (focused) {
+        if (focused != null) {
             const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-index="${focused}"]`);
             if (!row) return;
 
