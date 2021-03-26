@@ -263,3 +263,16 @@ $zindex-dropdown: $zindex-sticky + 5;
         }
     }
 }
+
+input[type="checkbox"] {
+    inline-size: 1em;
+    block-size: 1em;
+    outline-offset: 5px;
+    cursor: pointer;
+}
+
+label.cb-wrap {
+    line-height: 100%;
+    text-align: center;
+    vertical-align: middle;
+}

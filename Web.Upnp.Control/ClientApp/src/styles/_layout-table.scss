@@ -1,19 +1,22 @@
 ﻿$auto-table-striped-order: even;
 
 .auto-table {
-    --bs-auto-table-bg: #{$table-bg};
-    --bs-auto-table-header-bg: #{$light};
-    --bs-auto-table-accent-bg: transparent;
-    --bs-auto-table-striped-color: #{$table-striped-color};
-    --bs-auto-table-striped-bg: #{$table-striped-bg};
-    --bs-auto-table-active-color: #{$table-active-color};
-    --bs-auto-table-active-bg: #{$table-active-bg};
-    --bs-auto-table-hover-color: #{$table-hover-color};
-    --bs-auto-table-hover-bg: #{$table-hover-bg};
-    --bs-auto-table-selected-bg: #{$link-color};
-    --bs-auto-table-focused-marker-color: #{shade-color($link-color, 35%)};
-    --bs-auto-table-focused-marker-size: 0rem;
-    --bs-auto-table-selected-color: white;
+    --auto-table-bg: #{$table-bg};
+    --auto-table-header-bg: #{$light};
+    --auto-table-accent-bg: transparent;
+    --auto-table-striped-color: #{$table-striped-color};
+    --auto-table-striped-bg: #{$table-striped-bg};
+    --auto-table-active-color: #{$table-active-color};
+    --auto-table-active-bg: #{$table-active-bg};
+    --auto-table-hover-color: #{$table-hover-color};
+    --auto-table-hover-bg: #{$table-hover-bg};
+    --auto-table-selected-bg: #{$link-color};
+    --auto-table-focused-marker-color: #{shade-color($link-color, 35%)};
+    --auto-table-selected-color: white;
+    --auto-table-padding-x: #{$table-cell-padding-x};
+    --auto-table-padding-x-start: #{2 * $table-cell-padding-x};
+    --auto-table-padding-x-end: #{2 * $table-cell-padding-x};
+    --auto-table-padding-y: #{$table-cell-padding-y};
 
     display: table;
     width: 100%;
@@ -71,7 +74,7 @@
 
         & > * > * {
             color: $table-color;
-            background-color: var(--bs-auto-table-header-bg);
+            background-color: var(--auto-table-header-bg);
             border-top: $table-border-width solid $table-border-color;
             border-bottom: $table-border-width solid $table-border-color;
             border-left: $table-border-width solid $table-border-color;
@@ -92,14 +95,14 @@
     & > :not(.table-caption) {
         & > * {
             display: table-row;
-            background-color: var(--bs-auto-table-bg);
-            background-image: linear-gradient(var(--bs-auto-table-accent-bg), var(--bs-auto-table-accent-bg));
+            background-color: var(--auto-table-bg);
+            background-image: linear-gradient(var(--auto-table-accent-bg), var(--auto-table-accent-bg));
 
             & > * {
                 display: table-cell;
                 vertical-align: middle;
                 white-space: nowrap;
-                padding: $table-cell-padding-y $table-cell-padding-x;
+                padding: var(--auto-table-padding-y) var(--auto-table-padding-x);
                 border-top: $table-border-width solid $table-border-color;
 
                 &.mw-1 {
@@ -107,11 +110,11 @@
                 }
 
                 &:first-child {
-                    padding-left: calc(#{2 * $table-cell-padding-x} + var(--bs-auto-table-focused-marker-size));
+                    padding-left: var(--auto-table-padding-x-start);
                 }
 
                 &:last-child {
-                    padding-right: 2 * $table-cell-padding-x;
+                    padding-right: var(--auto-table-padding-x-end);
                 }
             }
 
@@ -122,8 +125,8 @@
 
         & > [data-active="true"],
         & > .active {
-            --bs-auto-table-accent-bg: var(--bs-auto-table-active-bg) !important;
-            color: var(--bs-auto-table-active-color);
+            --auto-table-accent-bg: var(--auto-table-active-bg) !important;
+            color: var(--auto-table-active-color);
         }
 
         & > [data-selected="true"],
@@ -133,8 +136,8 @@
     }
 
     %row-accent {
-        --bs-auto-table-accent-bg: var(--bs-auto-table-selected-bg) !important;
-        color: var(--bs-auto-table-selected-color) !important;
+        --auto-table-accent-bg: var(--auto-table-selected-bg) !important;
+        color: var(--auto-table-selected-color) !important;
         outline: none;
     }
 
@@ -143,47 +146,46 @@
     }
 
     &.at-compact {
-        & > * > * > * {
-            padding: $table-cell-padding-y-sm $table-cell-padding-x-sm;
-
-            &:first-child {
-                padding-left: calc(#{2 * $table-cell-padding-x-sm} + var(--bs-auto-table-focused-marker-size));
-            }
-
-            &:last-child {
-                padding-right: 2 * $table-cell-padding-x-sm;
-            }
-        }
+        --auto-table-padding-x: #{$table-cell-padding-x-sm};
+        --auto-table-padding-x-start: #{2 * $table-cell-padding-x-sm};
+        --auto-table-padding-x-end: #{2 * $table-cell-padding-x-sm};
+        --auto-table-padding-y: #{$table-cell-padding-y-sm};
     }
 
     &.at-striped {
         @include at-body-row(":nth-of-type(#{$auto-table-striped-order})") {
-            --bs-auto-table-accent-bg: var(--bs-auto-table-striped-bg);
-            color: var(--bs-auto-table-striped-color);
+            --auto-table-accent-bg: var(--auto-table-striped-bg);
+            color: var(--auto-table-striped-color);
         }
     }
 
     &.at-focus-marker {
-        --bs-auto-table-focused-marker-size: #{map-get($spacers, 1)};
+        --auto-table-focused-marker-size: #{map-get($spacers, 1)};
+
+        & > :not(.table-caption) > * > :first-child {
+            padding-inline-start: unquote(
+                "calc(var(--auto-table-padding-x-start) + var(--auto-table-focused-marker-size))"
+            );
+        }
 
         @include at-body-row('[data-focused="true"],:focus') {
             @extend %row-accent;
             & > :first-child {
-                box-shadow: inset var(--bs-auto-table-focused-marker-size) 0 0 var(--bs-auto-table-focused-marker-color);
+                box-shadow: inset var(--auto-table-focused-marker-size) 0 0 var(--auto-table-focused-marker-color);
             }
         }
     }
 
     &.at-hover {
         @include at-body-row(":hover") {
-            --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
-            color: var(--bs-auto-table-hover-color);
+            --auto-table-accent-bg: var(--auto-table-hover-bg);
+            color: var(--auto-table-hover-color);
         }
     }
 
     &.at-hover-link {
         @include at-body-row(":hover") {
-            --bs-auto-table-accent-bg: var(--bs-auto-table-hover-bg);
+            --auto-table-accent-bg: var(--auto-table-hover-bg);
             color: $link-hover-color;
             text-decoration: none;
             cursor: default;
@@ -192,9 +194,9 @@
 
     &.at-material {
         @include at-header() {
-            --bs-auto-table-header-bg: var(--bs-auto-table-bg);
+            --auto-table-header-bg: var(--auto-table-bg);
             &.sticky-header {
-                --bs-auto-table-header-bg: var(--bs-white);
+                --auto-table-header-bg: var(--bs-white);
             }
             & > * > * {
                 border-left: none;

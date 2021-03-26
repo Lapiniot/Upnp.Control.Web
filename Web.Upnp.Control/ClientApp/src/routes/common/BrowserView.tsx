@@ -364,7 +364,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 <div className={tableMode ? "sticky-header" : "d-none"}>
                     <div>
                         {useCheckboxes &&
-                            <label>
+                            <label className="cb-wrap">
                                 <input type="checkbox" onChange={this.onCheckboxAllChanged}
                                     checked={this.state.adapter.allSelected()} disabled={!this.state.adapter.enabled()} />
                             </label>}
@@ -394,7 +394,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         const selectable = !!(this.state.rowStates[index] & RowState.Selectable);
                         const active = this.state.rowStates[index] & RowState.Active ? true : undefined;
                         return <div key={e.id} tabIndex={0} data-index={index} data-selected={(selected && selectable) ? true : undefined} data-active={active}>
-                            {useCheckboxes && <label>
+                            {useCheckboxes && <label className="cb-wrap">
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
                             </label>}
                             <div className="mw-1 w-100"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.state.rowStates[index]} /></div>
