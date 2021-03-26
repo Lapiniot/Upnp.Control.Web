@@ -77,6 +77,9 @@ export class SelectionStateAdapter {
     setAll(state: boolean) {
         if (!this.enabled()) return;
         if (state) {
+            for (let i = 0; i < this.states.length; i++) {
+                this.states[i] |= RowState.Selected;
+            }
             this.onchanged(this.current = this.states.length - 1);
         }
         else {
