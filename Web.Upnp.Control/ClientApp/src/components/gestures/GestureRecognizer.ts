@@ -10,10 +10,6 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
     private updatePending: any;
     private options: AddEventListenerOptions;
 
-    public get passive() {
-        return this.options.passive === true;
-    }
-
     constructor(handler: GestureHandler<TElement, TGesture, TParams>, passive: boolean = true) {
         this.handler = handler;
         this.options = { capture: true, passive: passive };
@@ -62,13 +58,8 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
             return;
         }
 
-        if (!this.passive) {
-            event.preventDefault();
-        }
-
         target.addEventListener("pointerup", this.pointerUpEventHandler, this.options);
         target.addEventListener("pointermove", this.pointerMoveEventHandler, this.options);
-        target.setPointerCapture(event.pointerId);
 
         this.startX = event.clientX;
         this.startY = event.clientY;
@@ -82,7 +73,6 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
             return;
         }
 
-        target.releasePointerCapture(event.pointerId);
         target.removeEventListener("pointerup", this.pointerUpEventHandler, this.options);
         target.removeEventListener("pointermove", this.pointerMoveEventHandler, this.options);
     }

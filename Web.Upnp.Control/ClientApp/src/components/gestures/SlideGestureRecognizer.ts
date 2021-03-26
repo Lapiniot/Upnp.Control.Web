@@ -14,7 +14,7 @@ export class SlideGestureRecognizer<TElement extends HTMLElement> extends Gestur
     }
 
     protected onPointerDownEvent(event: PointerEvent) {
-        const { currentTarget, clientX, clientY } = event;
+        const { currentTarget, clientX, clientY, pointerId } = event;
         const element = currentTarget as HTMLElement;
 
         var r = element.getBoundingClientRect();
@@ -23,20 +23,25 @@ export class SlideGestureRecognizer<TElement extends HTMLElement> extends Gestur
             return;
         }
 
+        event.preventDefault();
+        element.setPointerCapture(pointerId);
         super.onPointerDownEvent(event);
 
         this.x = (clientX - r.x);
         this.y = (clientY - r.y);
 
-        this.scheduleUpdate(() => this.handler(this.target as TElement, "slide", { phase: "start", x: this.x, y: this.y }));
+        this.scheduleUpdate(() => this.handler(currentTarget as TElement, "slide", { phase: "start", x: this.x, y: this.y }));
     }
 
     protected onPointerUpEvent(event: PointerEvent) {
+        const { currentTarget, offsetX, offsetY, pointerId } = event;
+        const element = currentTarget as TElement;
         event.preventDefault();
+        element.releasePointerCapture(pointerId);
         super.onPointerUpEvent(event);
-        this.x = event.offsetX;
-        this.y = event.offsetY;
-        this.scheduleUpdate(() => this.handler(this.target as TElement, "slide", { phase: "end", x: this.x, y: this.y }));
+        this.x = offsetX;
+        this.y = offsetY;
+        this.scheduleUpdate(() => this.handler(element, "slide", { phase: "end", x: this.x, y: this.y }));
     }
 
     protected onPointerMoveEvent(event: PointerEvent) {
