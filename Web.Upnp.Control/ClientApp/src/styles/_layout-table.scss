@@ -1,17 +1,5 @@
 ﻿$auto-table-striped-order: even;
 
-$trim-columns-map: (
-    sm: 3,
-);
-
-$hide-columns-map: (
-    md: (
-        3,
-        5,
-    ),
-    lg: 5,
-);
-
 .auto-table {
     --bs-auto-table-bg: #{$table-bg};
     --bs-auto-table-header-bg: #{$light};
@@ -226,26 +214,6 @@ $hide-columns-map: (
         touch-action: manipulation;
         @include at-body-row() {
             height: 3.6rem;
-        }
-    }
-
-    @each $breakpoint, $indices in $trim-columns-map {
-        @include media-breakpoint-down($breakpoint) {
-            @each $i in $indices {
-                &.trim#{breakpoint-infix($breakpoint)}-#{$i} > :not(.table-caption) > * > * {
-                    @include display-no-children-since($i);
-                }
-            }
-        }
-    }
-
-    @each $breakpoint, $indices in $hide-columns-map {
-        @include media-breakpoint-down($breakpoint) {
-            @each $i in $indices {
-                &.hide#{breakpoint-infix($breakpoint)}-#{$i} > :not(.table-caption) > * > * {
-                    @include display-no-child($i);
-                }
-            }
         }
     }
 }

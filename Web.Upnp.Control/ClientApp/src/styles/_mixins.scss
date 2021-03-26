@@ -34,18 +34,6 @@
     }
 }
 
-@mixin display-no-child($n) {
-    &:nth-of-type(#{$n}) {
-        display: none;
-    }
-}
-
-@mixin display-no-children-since($n) {
-    &:nth-of-type(n + #{$n}) {
-        display: none;
-    }
-}
-
 @mixin font-scale($scale) {
     font-size: $scale * 1em;
 }
