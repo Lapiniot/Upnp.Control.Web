@@ -26,7 +26,7 @@ function getSelectedIds(items: DIDLItem[], rowStates: RowState[]): string[] {
     return ids;
 }
 
-type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode";
+type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode" | "useLevelUpRow";
 
 type DisplayMode = "table" | "list" | "responsive";
 
@@ -71,6 +71,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         editMode: false,
         multiSelect: true,
         useCheckboxes: false,
+        useLevelUpRow: true,
         mainCellTemplate: CellTemplate
     };
 
@@ -344,7 +345,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     render() {
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes, displayMode, style, nodeRef } = this.props;
+            useCheckboxes, useLevelUpRow, displayMode, style, nodeRef } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
 
@@ -375,7 +376,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                     </div>
                 </div>
                 <div>
-                    {tableMode && parents && parents.length > 0 &&
+                    {tableMode && useLevelUpRow && parents && parents.length > 0 &&
                         <div data-index={-1} title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ...">
                             {useCheckboxes && <div>&nbsp;</div>}
                             <div className="w-100">
