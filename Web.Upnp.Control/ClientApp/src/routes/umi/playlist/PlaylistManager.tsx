@@ -47,7 +47,7 @@ type PlaylistManagerState = {
 const dialogBrowserProps: BrowserProps<unknown> = {
     multiSelect: true,
     useCheckboxes: true,
-    rowState: item => item.container
+    rowStateProvider: item => item.container
         ? RowState.Navigable | RowState.Selectable
         : DIDLUtils.isMusicTrack(item)
             ? RowState.Selectable
@@ -482,7 +482,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 </div>
                 <SignalRListener handlers={this.handlers}>
                     <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
-                        selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.state.rowStates}
+                        selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowStateProvider={this.state.rowStates}
                         className="flex-fill pb-5 mb-1" editMode={this.state.editMode} useLevelUpRow={false}
                         useCheckboxes={this.state.editMode || MediaQueries.touchDevice.matches && MediaQueries.largeScreen.matches}>
                         <Browser.ContextMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />

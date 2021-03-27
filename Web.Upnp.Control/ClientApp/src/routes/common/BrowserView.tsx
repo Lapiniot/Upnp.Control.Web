@@ -39,8 +39,10 @@ export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
     context?: TContext;
 };
 
+type RowStateProvider = ((item: DIDLItem, index: number) => RowState) | (RowState[]);
+
 export type BrowserProps<TContext> = {
-    rowState?: ((item: DIDLItem, index: number) => RowState) | (RowState[]);
+    rowStateProvider?: RowStateProvider;
     open?: (index: number) => boolean;
     selectionChanged?: (ids: string[]) => boolean | undefined | void;
     mainCellTemplate?: ComponentType<CellTemplateProps<TContext>>;
@@ -55,7 +57,8 @@ export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes
 
 type BrowserViewState = {
     ctx?: DataContext<BrowseFetchResult>;
-    rowStates: RowState[];
+    rsp?: RowStateProvider;
+    states: RowState[];
     callback: (focused: number | null) => void;
     adapter: SelectionStateAdapter;
 };
@@ -79,20 +82,16 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         super(props);
         this.resizeObserver = new ResizeObserver(this.resizeObservedHandler);
         this.state = {
-            rowStates: [], callback: this.selectionStateChanged,
+            states: [], callback: this.selectionStateChanged,
             adapter: new SelectionStateAdapter([], null, this.selectionStateChanged)
         };
     }
 
-    static getDerivedStateFromProps({ dataContext: propsCtx, rowState }: BrowserViewProps<unknown>,
-        { ctx: stateCtx, callback }: BrowserViewState) {
-        if (propsCtx && propsCtx !== stateCtx) {
-            const states = (typeof rowState === "function" ? propsCtx.source.items?.map(rowState) : rowState) ?? [];
-            return {
-                ctx: propsCtx,
-                rowStates: states,
-                adapter: new SelectionStateAdapter(states, null, callback)
-            }
+    static getDerivedStateFromProps({ dataContext: pctx, rowStateProvider: prsp }: BrowserViewProps<unknown>,
+        { ctx: sctx, callback, rsp: srsp }: BrowserViewState): Partial<BrowserViewState> | null {
+        if (pctx && (pctx !== sctx || prsp !== srsp)) {
+            const states = (typeof prsp === "function" ? pctx?.source.items?.map(prsp) : prsp) ?? [];
+            return { ctx: pctx, rsp: prsp, states, adapter: new SelectionStateAdapter(states, null, callback) }
         }
         else
             return null;
@@ -233,7 +232,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 const index = parseInt(focusedRow.dataset.index ?? "");
                 const item = items[index];
                 if (!item) return;
-                const state = this.state.rowStates[index];
+                const state = this.state.states[index];
                 if (item.container && state & RowState.Navigable)
                     this.props.navigate?.({ id: item.id });
                 else if (state ^ RowState.Readonly && event.code === "Enter")
@@ -303,7 +302,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
         const { source: { items } } = ctx;
 
-        if (selectionChanged?.(getSelectedIds(items, this.state.rowStates)) !== false) {
+        if (selectionChanged?.(getSelectedIds(items, this.state.states)) !== false) {
             this.forceUpdate();
         }
     }
@@ -315,7 +314,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         else {
             const item = this.props.dataContext?.source.items?.[index];
             if (!item) return;
-            if (item.container && this.state.rowStates[index] & RowState.Navigable)
+            if (item.container && this.state.states[index] & RowState.Navigable)
                 this.props.navigate?.({ id: item.id });
             else
                 this.props.open?.(index);
@@ -390,14 +389,14 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                             </>}
                         </div>}
                     {[items.map((e, index) => {
-                        const selected = !!(this.state.rowStates[index] & RowState.Selected);
-                        const selectable = !!(this.state.rowStates[index] & RowState.Selectable);
-                        const active = this.state.rowStates[index] & RowState.Active ? true : undefined;
+                        const selected = !!(this.state.states[index] & RowState.Selected);
+                        const selectable = !!(this.state.states[index] & RowState.Selectable);
+                        const active = this.state.states[index] & RowState.Active ? true : undefined;
                         return <div key={e.id} tabIndex={0} data-index={index} data-selected={(selected && selectable) ? true : undefined} data-active={active}>
                             {useCheckboxes && <label className="cb-wrap">
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
                             </label>}
-                            <div className="mw-1 w-100"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.state.rowStates[index]} /></div>
+                            <div className="mw-1 w-100"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.state.states[index]} /></div>
                             {tableMode && <>
                                 <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
                                 <div className="small">{utils.formatTime(e.res?.duration)}</div>

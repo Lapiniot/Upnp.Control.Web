@@ -8,11 +8,11 @@ import ModalHost from "../../../components/ModalHost";
 import { RowState } from "../Types";
 
 const browserProps: BrowserProps<unknown> = {
-    rowState: () => RowState.Navigable | RowState.Selectable
+    rowStateProvider: () => RowState.Navigable | RowState.Selectable
 }
 
 const audioBrowserProps: BrowserProps<unknown> = {
-    rowState: (item) => DIDLUtils.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
+    rowStateProvider: (item) => DIDLUtils.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
 }
 
 export function OpenAction({ children, className, browserProps, device, category, ...other }: DeviceActionProps & { browserProps: BrowserProps<unknown> }) {

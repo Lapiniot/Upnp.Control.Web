@@ -62,6 +62,7 @@ type BrowserState = {
     selection: { items: DIDLItem[], umiCompatible: boolean, rendererCompatible: boolean };
     fetching: boolean;
     error: Error | null;
+    rowState: (item: DIDLItem) => RowState;
 };
 
 type BrowserProps = BrowserCoreProps<CellContext> & {
@@ -69,10 +70,20 @@ type BrowserProps = BrowserCoreProps<CellContext> & {
 };
 
 export class Browser extends React.Component<BrowserProps, BrowserState> {
-
-    state: BrowserState = { device: null, umis: [], renderers: [], selection: { items: [], umiCompatible: false, rendererCompatible: false }, fetching: false, error: null }
-
     modalHostRef = React.createRef<ModalHost>();
+
+    constructor(props: BrowserProps | Readonly<BrowserProps>) {
+        super(props);
+        this.state = {
+            device: null,
+            umis: [],
+            renderers: [],
+            selection: { items: [], umiCompatible: false, rendererCompatible: false },
+            fetching: false,
+            error: null,
+            rowState: () => this.getRowState()
+        };
+    }
 
     async componentDidMount() {
         try {
@@ -93,7 +104,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             return null;
     }
 
-    rowState = () => RowState.Selectable | RowState.Navigable;
+    getRowState = () => RowState.Selectable | RowState.Navigable;
 
     selectionChanged = (ids: string[]) => {
         const items = this.props.dataContext?.source.items?.filter(i => ids.includes(i.id)) ?? [];
@@ -126,6 +137,8 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             } else if (action.startsWith("play.") && udn) {
                 await this.playItems(udn, device, [item.id]);
             }
+
+            this.resetSelection();
         } else if (action == "info") {
             this.modalHostRef.current?.show(<ItemInfoModal item={item} />);
         }
@@ -144,6 +157,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         else if (action.startsWith("play.")) {
             await this.playItems(udn, device, this.getUmiCompatibleSelectedItems().map(i => i.id));
         }
+        this.resetSelection();
     }
 
     renderItemMenuHandler = (anchor?: HTMLElement | null) => {
@@ -170,6 +184,13 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     renderActionMenuHandler = () => {
         const { selection: { umiCompatible, rendererCompatible }, umis, renderers } = this.state;
         return this.renderMenu(umiCompatible, rendererCompatible, umis, renderers);
+    }
+
+    private resetSelection() {
+        this.setState(state => ({
+            selection: { ...state.selection, items: [] },
+            rowState: () => this.getRowState()
+        }));
     }
 
     private async playItems(target: string, source: string, items: string[]) {
@@ -234,7 +255,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column">
             <BrowserSvgSymbols />
             <BrowserCore mainCellTemplate={Template} mainCellContext={ctx} withPagination={false}
-                useCheckboxes multiSelect rowState={this.rowState}
+                useCheckboxes multiSelect rowStateProvider={this.state.rowState}
                 selectionChanged={this.selectionChanged} open={this.openHandler}
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
                 <BrowserView.ContextMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} placement="left" />
