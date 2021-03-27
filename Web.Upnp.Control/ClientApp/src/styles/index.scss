@@ -79,30 +79,6 @@ $zindex-dropdown: $zindex-sticky + 5;
     }
 }
 
-@each $breakpoint in $display-none-before-width-breakpoints {
-    @include media-breakpoint-down($breakpoint) {
-        &.d-none-before#{breakpoint-infix($breakpoint)} {
-            display: none !important;
-        }
-    }
-}
-
-@each $breakpoint in $display-none-before-height-breakpoints {
-    @include media-breakpoint-height-down($breakpoint) {
-        &.d-none-h-before#{breakpoint-infix($breakpoint)} {
-            display: none !important;
-        }
-    }
-}
-
-@each $breakpoint in $display-none-after-height-breakpoints {
-    @include media-breakpoint-height-up($breakpoint) {
-        &.d-none-h#{breakpoint-infix($breakpoint)} {
-            display: none !important;
-        }
-    }
-}
-
 @each $k, $v in $spacers {
     .gapx-#{$k} {
         column-gap: $v;
