@@ -455,7 +455,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             deviceName: this.state.device?.name
         };
 
-        return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column" style={{ scrollPaddingBottom: "3rem" }}>
+        return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column" style={{ scrollPaddingBlock: "4rem" }}>
             <EditSvgSymbols />
             <PlaySvgSymbols />
             <PlaylistSvgSymbols />

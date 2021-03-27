@@ -288,9 +288,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-index="${focused}"]`);
             if (!row) return;
 
-            if (!row.matches(":focus")) {
-                row.scrollIntoView({ block: "end", behavior: "smooth" });
-                row.focus({ preventScroll: true });
+            if (row !== document.activeElement) {
+                row.focus();
             }
         }
         else {
