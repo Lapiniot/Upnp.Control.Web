@@ -455,6 +455,9 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             deviceName: this.state.device?.name
         };
 
+        const largeScreen = MediaQueries.largeScreen.matches;
+        const hasTouch = MediaQueries.touchDevice.matches;
+
         return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column" style={{ scrollPaddingBlock: "4rem" }}>
             <EditSvgSymbols />
             <PlaySvgSymbols />
@@ -464,15 +467,11 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="flex-fill d-flex flex-column" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <div className="d-flex flex-column sticky-top">
-                    {MediaQueries.largeScreen.matches ?
-                        <Toolbar className="px-2 py-1 bg-white border-bottom">
-                            <Toolbar.Group className="me-2">
-                                <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className="btn-round btn-icon btn-plain" />
-                                <h6 className="d-block mb-0 ms-1">{parents?.[0]?.title ?? ""}</h6>
-                            </Toolbar.Group>
-                            <Toolbar.Group className="ms-auto">
-                                {this.getToolbarItems().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round btn-icon btn-plain" />)}
-                            </Toolbar.Group>
+                    {largeScreen ?
+                        <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
+                            <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className="btn-round btn-icon btn-plain" />
+                            <h6 className="mb-0 mx-2 flex-fill text-truncate">{parents?.[0]?.title ?? ""}</h6>
+                            {this.getToolbarItems().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round btn-icon btn-plain" />)}
                         </Toolbar> :
                         <Toolbar className="p-2 bg-white border-bottom">
                             <Toolbar.Group className="flex-fill align-items-center overflow-hidden">
@@ -483,24 +482,25 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 <SignalRListener handlers={this.handlers}>
                     <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowStateProvider={this.state.rowStates}
-                        className="flex-fill pb-5 mb-1" editMode={this.state.editMode} useLevelUpRow={false}
-                        useCheckboxes={this.state.editMode || MediaQueries.touchDevice.matches && MediaQueries.largeScreen.matches}>
+                        className={"flex-fill mb-1" + (largeScreen ? "" : " pb-5")} editMode={this.state.editMode} useLevelUpRow={false}
+                        useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
                         <Browser.ContextMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>
                 <div className="sticky-bottom d-flex flex-column">
-                    <div className="position-relative d-flex justify-content-center justify-content-sm-end d-none-h-md">
-                        <div className="float-container position-absolute bottom-0">
-                            <button type="button" className="btn btn-round btn-primary"
-                                onClick={isRootLevel && !hasSelection ? this.addClickHandler : undefined}
-                                data-bs-toggle={(hasSelection || !isRootLevel) ? "dropdown" : undefined}>
-                                <svg className="icon"><use href="#plus" /></svg>
-                            </button>
-                        </div>
-                        <DropdownMenu render={this.renderActionMenu} />
-                    </div>
+                    {!largeScreen &&
+                        <div className="position-relative d-flex justify-content-center justify-content-sm-end">
+                            <div className="float-container position-absolute bottom-0">
+                                <button type="button" className="btn btn-round btn-primary"
+                                    onClick={isRootLevel && !hasSelection ? this.addClickHandler : undefined}
+                                    data-bs-toggle={(hasSelection || !isRootLevel) ? "dropdown" : undefined}>
+                                    <svg className="icon"><use href="#plus" /></svg>
+                                </button>
+                            </div>
+                            <DropdownMenu render={this.renderActionMenu} />
+                        </div>}
                     <div className="d-flex flex-column sticky-bottom">
-                        {MediaQueries.largeScreen.matches && <Breadcrumb className="border-top" items={parents} path={match.path} params={match.params} />}
+                        {largeScreen && <Breadcrumb className="border-top" items={parents} path={match.path} params={match.params} />}
                         <BottomBar>
                             {this.state.selection.length > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${this.state.selection.length} of ${fetched} selected`}</span> : null}
                             <TablePagination location={location} history={history} total={total} current={page} pageSize={pageSize} />

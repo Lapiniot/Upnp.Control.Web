@@ -5,6 +5,8 @@ import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { RouteComponentProps } from "react-router";
 import $s from "./Settings";
 import { BottomBar } from "./BottomBar";
+import { useCallback } from "react";
+import Toolbar from "../../components/Toolbar";
 
 type FetchProps = {
     s?: string;
@@ -19,13 +21,21 @@ export type BrowserCoreProps<TContext> =
     FetchProps & { [K in RenderFlags]?: boolean };
 
 export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>) {
-    const { dataContext: data, match, s: size, p: page, fetching } = props;
+    const { dataContext: data, s: size, p: page, fetching, navigate } = props;
     const { withBreadcrumb = true, withPagination = true, className, ...forwardProps } = props;
     const { source: { total = 0, parents = undefined } = {} } = data || {};
+    const navBackHandler = useCallback(() => navigate({ id: parents?.[1]?.id ?? "-1" }), [navigate, parents]);
+
     return <>
         {fetching && <LoadIndicatorOverlay />}
         <div className={`flex-fill d-flex flex-column${className ? ` ${className}` : ""}`}>
-            {withBreadcrumb && <Breadcrumb items={parents} path={match.path} params={match.params} className="sticky-top border-bottom d-none-h-before-sm" />}
+            <div className="d-flex flex-column sticky-top">
+                <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
+                    <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={navBackHandler} className="btn-round btn-icon btn-plain" />
+                    <h6 className="flex-fill mb-0 mx-2 text-truncate text-center text-md-start">{parents?.[0]?.title ?? ""}</h6>
+                    <Toolbar.Button key="main-menu" glyph="ellipsis-v" className="btn-round btn-icon btn-plain ms-auto" disabled />
+                </Toolbar>
+            </div>
             <BrowserView className="flex-fill" {...forwardProps} />
             {withPagination && <BottomBar>
                 <TablePagination location={props.location} history={props.history}

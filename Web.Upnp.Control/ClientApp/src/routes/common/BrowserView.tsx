@@ -74,7 +74,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         editMode: false,
         multiSelect: true,
         useCheckboxes: false,
-        useLevelUpRow: true,
+        useLevelUpRow: false,
         mainCellTemplate: CellTemplate
     };
 

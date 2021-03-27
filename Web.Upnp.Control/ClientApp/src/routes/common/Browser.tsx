@@ -14,6 +14,8 @@ import { BrowserSvgSymbols } from "./SvgSymbols";
 import { BrowseFetchResult, DIDLItem, RowState, Services, UpnpDevice } from "./Types";
 import ModalHost from "../../components/ModalHost";
 import ItemInfoModal from "./ItemInfoModal";
+import { MediaQueries } from "../../components/MediaQueries";
+import Breadcrumb from "./Breadcrumb";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);
@@ -242,9 +244,10 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     }
 
     render() {
-        const { dataContext: data, location, history, p: page, s: size } = this.props;
+        const { dataContext: data, location, history, p: page, s: size, match } = this.props;
         const { selection: { umiCompatible, rendererCompatible }, umis, renderers } = this.state;
-        const isActionButtonEnabled = (umis.length && umiCompatible) || (renderers.length && rendererCompatible);
+        const parents = data?.source.parents ?? [];
+        //const isActionButtonEnabled = (umis.length && umiCompatible) || (renderers.length && rendererCompatible);
         const isItemActionMenuEnabled = umis.length || renderers.length;
         const ctx = {
             disabled: !isItemActionMenuEnabled,
@@ -260,15 +263,19 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 {...this.props} fetching={this.state.fetching || this.props.fetching}>
                 <BrowserView.ContextMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} placement="left" />
             </BrowserCore>
-            <BottomBar>
-                <TablePagination location={location} history={history}
-                    total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
-                    pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
-                <button type="button" className="btn btn-round btn-plain" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
-                    <svg className="icon"><use href="#ellipsis-v" /></svg>
-                </button>
-                <DropdownMenu render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} placement="bottom-end" />
-            </BottomBar>
+            <div className="d-flex flex-column sticky-bottom">
+                {MediaQueries.largeScreen.matches && parents.length > 1 &&
+                    <Breadcrumb className="border-top" items={parents} path={match.path} params={match.params} />}
+                <BottomBar>
+                    <TablePagination location={location} history={history}
+                        total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
+                        pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
+                    {/* <button type="button" className="btn btn-round btn-plain" data-bs-toggle="dropdown" disabled={!isActionButtonEnabled}>
+                        <svg className="icon"><use href="#ellipsis-v" /></svg>
+                    </button> */}
+                    <DropdownMenu render={this.renderActionMenuHandler} onSelected={this.actionMenuSelectedHandler} placement="bottom-end" />
+                </BottomBar>
+            </div>
             <ModalHost ref={this.modalHostRef} />
         </div>;
     }
