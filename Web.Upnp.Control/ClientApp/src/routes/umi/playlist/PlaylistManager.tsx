@@ -464,14 +464,16 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="flex-fill d-flex flex-column" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <div className="d-flex flex-column sticky-top">
-                    {MediaQueries.largeScreen.matches ? <>
-                        <Toolbar className="px-2 py-1 bg-white">
-                            <Toolbar.Group>
+                    {MediaQueries.largeScreen.matches ?
+                        <Toolbar className="px-2 py-1 bg-white border-bottom">
+                            <Toolbar.Group className="me-2">
+                                <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className="btn-round btn-icon btn-plain" />
+                                <h6 className="d-block mb-0 ms-1">{parents?.[0]?.title ?? ""}</h6>
+                            </Toolbar.Group>
+                            <Toolbar.Group className="ms-auto">
                                 {this.getToolbarItems().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round btn-icon btn-plain" />)}
                             </Toolbar.Group>
-                        </Toolbar>
-                        <Breadcrumb className="border-bottom d-none-h-before-sm border-top" items={parents} path={match.path} params={match.params} />
-                    </> :
+                        </Toolbar> :
                         <Toolbar className="p-2 bg-white border-bottom">
                             <Toolbar.Group className="flex-fill align-items-center overflow-hidden">
                                 {this.renderTopBar()}
@@ -481,7 +483,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 <SignalRListener handlers={this.handlers}>
                     <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                         selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowState={this.state.rowStates}
-                        className="flex-fill pb-5 mb-1" editMode={this.state.editMode}
+                        className="flex-fill pb-5 mb-1" editMode={this.state.editMode} useLevelUpRow={false}
                         useCheckboxes={this.state.editMode || MediaQueries.touchDevice.matches && MediaQueries.largeScreen.matches}>
                         <Browser.ContextMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
@@ -497,10 +499,13 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         </div>
                         <DropdownMenu render={this.renderActionMenu} />
                     </div>
-                    <BottomBar className="position-static">
-                        {this.state.selection.length > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${this.state.selection.length} of ${fetched} selected`}</span> : null}
-                        <TablePagination location={location} history={history} total={total} current={page} pageSize={pageSize} />
-                    </BottomBar>
+                    <div className="d-flex flex-column sticky-bottom">
+                        {MediaQueries.largeScreen.matches && <Breadcrumb className="border-top" items={parents} path={match.path} params={match.params} />}
+                        <BottomBar>
+                            {this.state.selection.length > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${this.state.selection.length} of ${fetched} selected`}</span> : null}
+                            <TablePagination location={location} history={history} total={total} current={page} pageSize={pageSize} />
+                        </BottomBar>
+                    </div>
                 </div>
                 <ModalHost ref={this.modalHostRef} />
             </DropTarget >
