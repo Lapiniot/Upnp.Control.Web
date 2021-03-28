@@ -1,11 +1,10 @@
-import Breadcrumb from "./Breadcrumb";
 import { TablePagination } from "./Pagination";
 import BrowserView, { BrowserViewProps } from "./BrowserView";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { RouteComponentProps } from "react-router";
 import $s from "./Settings";
 import { BottomBar } from "./BottomBar";
-import { useCallback } from "react";
+import { ReactNode, useCallback } from "react";
 import Toolbar from "../../components/Toolbar";
 
 type FetchProps = {
@@ -18,10 +17,12 @@ type RenderFlags = "withBreadcrumb" | "withPagination";
 export type BrowserCoreProps<TContext> =
     BrowserViewProps<TContext> &
     RouteComponentProps<FetchProps> &
-    FetchProps & { [K in RenderFlags]?: boolean };
+    FetchProps &
+    { [K in RenderFlags]?: boolean; } &
+    { renderActionMenu?: () => ReactNode };
 
 export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>) {
-    const { dataContext: data, s: size, p: page, fetching, navigate } = props;
+    const { dataContext: data, s: size, p: page, fetching, navigate, renderActionMenu } = props;
     const { withBreadcrumb = true, withPagination = true, className, ...forwardProps } = props;
     const { source: { total = 0, parents = undefined } = {} } = data || {};
     const navBackHandler = useCallback(() => navigate({ id: parents?.[1]?.id ?? "-1" }), [navigate, parents]);
@@ -33,7 +34,9 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
                 <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
                     <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={navBackHandler} className="btn-round btn-icon btn-plain" />
                     <h6 className="flex-fill mb-0 mx-2 text-truncate text-center text-md-start">{parents?.[0]?.title ?? ""}</h6>
-                    <Toolbar.Button key="main-menu" glyph="ellipsis-v" className="btn-round btn-icon btn-plain ms-auto" disabled />
+                    <Toolbar.Button key="main-menu" glyph="ellipsis-v" data-bs-toggle="dropdown"
+                        className="btn-round btn-icon btn-plain ms-auto" disabled={!renderActionMenu} />
+                    {renderActionMenu?.()}
                 </Toolbar>
             </div>
             <BrowserView className="flex-fill" {...forwardProps} />

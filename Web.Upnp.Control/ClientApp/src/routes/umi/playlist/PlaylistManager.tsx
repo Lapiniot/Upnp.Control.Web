@@ -484,7 +484,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowStateProvider={this.state.rowStates}
                         className={"flex-fill mb-1" + (largeScreen ? "" : " pb-5")} editMode={this.state.editMode} useLevelUpRow={false}
                         useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
-                        <Browser.ContextMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
+                        <Browser.ItemActionMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                     </Browser>
                 </SignalRListener>
                 <div className="sticky-bottom d-flex flex-column">

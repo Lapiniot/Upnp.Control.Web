@@ -337,7 +337,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         return <div {...props} />;
     }
 
-    static ContextMenu({ children, ...other }: DropdownMenuProps) {
+    static ItemActionMenu({ children, ...other }: DropdownMenuProps) {
         return <DropdownMenu {...other}>{children}</DropdownMenu>
     }
 
@@ -350,14 +350,14 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const children = React.Children.toArray(this.props.children);
         const caption = children.find(c => (c as ReactElement)?.type === BrowserView.Caption);
         const footer = children.find(c => (c as ReactElement)?.type === BrowserView.Footer);
-        const contextMenu = children.find(c => (c as ReactElement)?.type === BrowserView.ContextMenu);
+        const contextMenu = children.find(c => (c as ReactElement)?.type === BrowserView.ItemActionMenu);
 
         const tableMode = displayMode === "table" || displayMode === "responsive" && MediaQueries.largeScreen.matches;
         const optimizeForTouch = MediaQueries.touchDevice.matches;
 
         return <div ref={nodeRef} className={`d-flex flex-column pb-3${className ? ` ${className}` : ""}`} style={style}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
-            <div className={`auto-table at-material user-select-none${optimizeForTouch ? " at-touch-friendly" : ""}`}
+            <div className={`auto-table at-material user-select-none position-sticky${optimizeForTouch ? " at-touch-friendly" : ""}`}
                 ref={this.tableRef} onFocus={this.focusHandler}>
                 {caption}
                 <div className={tableMode ? "sticky-header" : "d-none"}>
