@@ -1,11 +1,11 @@
 ﻿/********** Grid Layout utilities **********/
 
-@mixin grid-auto-columns($size) {
-    grid: auto / repeat(auto-fit, minmax(unquote("min(10rem, 100%)"), $size));
+@mixin grid-auto-columns($min: 10rem, $max: 30rem) {
+    grid: auto / repeat(auto-fill, minmax(unquote("min(#{$min}, 100%)"), $max));
 }
 
 @mixin grid-responsive-auto($size: 34rem) {
-    @include grid-auto-columns($size);
+    @include grid-auto-columns($max: $size);
     justify-content: space-evenly;
     align-content: start;
     align-items: start;
@@ -77,6 +77,10 @@
     @media (min-width: 576px) and (min-height: 576px) {
         @include grid-responsive-auto();
     }
+}
+
+.grid-auto-m15 {
+    @include grid-auto-columns($min: 15rem, $max: 1fr);
 }
 
 .grid-scroll-snap {

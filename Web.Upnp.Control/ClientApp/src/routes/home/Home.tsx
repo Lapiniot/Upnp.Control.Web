@@ -43,7 +43,7 @@ export default function () {
                 <div id={id} className={`accordion-collapse collapse${id === expanded ? " show" : ""}`}
                     aria-labelledby={`h-${id}`} data-bs-parent="#bookmarks-section">
                     {value.length > 0
-                        ? <div className="accordion-body d-grid grid-auto-x0 align-items-start">
+                        ? <div className="accordion-body d-grid grid-auto-m15 align-items-start p-3">
                             {value.map(({ key, widget, props }) => React.createElement(Widgets[widget] as any, { ...props, key: key }))}
                         </div>
                         : <div className="d-flex text-muted p-3 justify-content-center">[No items bookmarked yet]</div>}
