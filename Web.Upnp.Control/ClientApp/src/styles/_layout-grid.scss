@@ -1,7 +1,7 @@
 ﻿/********** Grid Layout utilities **********/
 
-@mixin grid-auto-columns($min: 10rem, $max: 30rem) {
-    grid: auto / repeat(auto-fill, minmax(unquote("min(#{$min}, 100%)"), $max));
+@mixin grid-auto-columns($min: 10rem, $max: 30rem, $mode: auto-fit) {
+    grid: auto / repeat($mode, minmax(unquote("min(#{$min}, 100%)"), $max));
 }
 
 @mixin grid-responsive-auto($size: 34rem) {
@@ -80,7 +80,7 @@
 }
 
 .grid-auto-m15 {
-    @include grid-auto-columns($min: 15rem, $max: 1fr);
+    @include grid-auto-columns($min: 15rem, $max: 1fr, $mode: auto-fill);
 }
 
 .grid-scroll-snap {
