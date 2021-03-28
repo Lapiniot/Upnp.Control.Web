@@ -19,6 +19,7 @@
         @include box-shadow($box-shadow-sm);
         @include border-radius($card-border-radius);
         min-height: unset;
+        touch-action: pan-y;
     }
 
     &:after {
@@ -70,6 +71,9 @@
     & > .card {
         @include border-radius(0);
         min-height: 0;
+        &:only-child {
+            touch-action: pan-y;
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes } from "react";
+import React, { ButtonHTMLAttributes, createRef } from "react";
 import { DataContext, DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import { SignalRListener } from "../../components/SignalR";
 import $api from "../../components/WebApi";
@@ -10,6 +10,7 @@ import $s from "./Settings";
 import AlbumArt from "./AlbumArt";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import Slider from "../../components/Slider";
+import { SwipeGestureRecognizer, SwipeGestures } from "../../components/gestures/SwipeGestureRecognizer";
 
 const STATE_UPDATE_DELAY_MS = 2000;
 
@@ -29,6 +30,8 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
     handlers;
     ctrl;
     stateUpdateTimeout: number | null = null;
+    ref = createRef<HTMLDivElement>();
+    swipeRecognizer: SwipeGestureRecognizer<HTMLDivElement>;
 
     constructor(props: PlayerProps) {
         super(props);
@@ -36,7 +39,8 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
             ["AVTransportEvent", this.onAVTransportEvent],
             ["RenderingControlEvent", this.onRenderingControlEvent]]);
         this.ctrl = $api.control(this.props.udn);
-        this.state = {}
+        this.state = {};
+        this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler);
     }
 
     static getDerivedStateFromProps({ dataContext }: PlayerProps, prevState: PlayerState) {
@@ -67,10 +71,13 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
     componentDidMount() {
         this.updateStateAsync();
+        if (this.ref.current)
+            this.swipeRecognizer.bind(this.ref.current);
     }
 
     componentWillUnmount() {
         this.cancelStateUpdate();
+        this.swipeRecognizer.unbind();
     }
 
     play = () => this.ctrl.play().fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
@@ -92,6 +99,13 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
     toggleMute = () => this.ctrl.setMute(!this.state.muted).fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
 
     changeVolume = (volume: number) => this.ctrl.setVolume(Math.round(volume * 100)).fetch($s.get("timeout")).then(() => this.defferStateUpdate(STATE_UPDATE_DELAY_MS));
+
+    private swipeGestureHandler = (_: HTMLDivElement, gesture: SwipeGestures) => {
+        switch (gesture) {
+            case "swipe-left": this.next(); break;
+            case "swipe-right": this.prev(); break;
+        }
+    }
 
     private cancelStateUpdate = () => {
         if (this.stateUpdateTimeout) {
@@ -143,7 +157,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
         return <React.Fragment>
             <PlayerSvgSymbols />
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
-            <div className="player-skeleton">
+            <div className="player-skeleton" ref={this.ref}>
                 <AlbumArt className="art" itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} />
                 <div className="title">
                     <h5 className="text-truncate mb-0">{title ?? "[No media]"}</h5>
