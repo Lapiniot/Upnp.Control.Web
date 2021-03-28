@@ -15,44 +15,44 @@ export class SlideGestureRecognizer<TElement extends HTMLElement> extends Gestur
 
     protected onPointerDownEvent(event: PointerEvent) {
         const { currentTarget, clientX, clientY, pointerId } = event;
-        const element = currentTarget as HTMLElement;
-
-        var r = element.getBoundingClientRect();
-        if (clientX < r.left || clientX > r.right ||
-            clientY < r.top || clientY > r.bottom) {
-            return;
-        }
+        const element = currentTarget as TElement;
 
         event.preventDefault();
         element.setPointerCapture(pointerId);
         super.onPointerDownEvent(event);
 
-        this.x = (clientX - r.x);
-        this.y = (clientY - r.y);
-
-        this.scheduleUpdate(() => this.handler(currentTarget as TElement, "slide", { phase: "start", x: this.x, y: this.y }));
+        this.scheduleUpdate(() => {
+            var r = element.getBoundingClientRect();
+            this.handler(element, "slide", { phase: "start", x: clientX - r.x, y: clientY - r.y })
+        });
     }
 
     protected onPointerUpEvent(event: PointerEvent) {
-        const { currentTarget, offsetX, offsetY, pointerId } = event;
+        const { currentTarget, clientX, clientY, pointerId } = event;
         const element = currentTarget as TElement;
+
         event.preventDefault();
         element.releasePointerCapture(pointerId);
         super.onPointerUpEvent(event);
-        this.x = offsetX;
-        this.y = offsetY;
-        this.scheduleUpdate(() => this.handler(element, "slide", { phase: "end", x: this.x, y: this.y }));
+
+        this.scheduleUpdate(() => {
+            var r = element.getBoundingClientRect();
+            this.handler(element, "slide", { phase: "end", x: clientX - r.x, y: clientY - r.y })
+        });
     }
 
     protected onPointerMoveEvent(event: PointerEvent) {
         event.preventDefault();
         super.onPointerMoveEvent(event);
-        this.x = event.offsetX;
-        this.y = event.offsetY;
+        this.x = event.clientX;
+        this.y = event.clientY;
         this.scheduleUpdate();
     }
 
     protected update() {
-        this.handler(this.target as TElement, "slide", { phase: "move", x: this.x, y: this.y });
+        if (this.target) {
+            var r = this.target.getBoundingClientRect();
+            this.handler(this.target as TElement, "slide", { phase: "move", x: this.x - r.x, y: this.y - r.y });
+        }
     }
 }
