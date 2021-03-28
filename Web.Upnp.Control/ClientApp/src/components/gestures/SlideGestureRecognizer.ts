@@ -21,7 +21,7 @@ export class SlideGestureRecognizer<TElement extends HTMLElement> extends Gestur
         element.setPointerCapture(pointerId);
         super.onPointerDownEvent(event);
 
-        this.scheduleUpdate(() => {
+        window.requestAnimationFrame(() => {
             var r = element.getBoundingClientRect();
             this.handler(element, "slide", { phase: "start", x: clientX - r.x, y: clientY - r.y })
         });
@@ -35,7 +35,7 @@ export class SlideGestureRecognizer<TElement extends HTMLElement> extends Gestur
         element.releasePointerCapture(pointerId);
         super.onPointerUpEvent(event);
 
-        this.scheduleUpdate(() => {
+        window.requestAnimationFrame(() => {
             var r = element.getBoundingClientRect();
             this.handler(element, "slide", { phase: "end", x: clientX - r.x, y: clientY - r.y })
         });

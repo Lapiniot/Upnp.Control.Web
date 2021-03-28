@@ -37,19 +37,15 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
 
     private pointerMoveEventHandler = (event: PointerEvent) => this.onPointerMoveEvent(event);
 
-    private wrap(callback: () => void) {
-        return () => {
-            if (!this.updatePending)
-                return;
-            try {
-                callback();
-            } finally {
-                this.updatePending = false;
-            }
+    private updateInternal = () => {
+        if (!this.updatePending)
+            return;
+        try {
+            this.update();
+        } finally {
+            this.updatePending = false;
         }
     }
-
-    private updateInternal = this.wrap(() => this.update())
 
     protected onPointerDownEvent(event: PointerEvent) {
         const target = this.target;
@@ -79,13 +75,13 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
 
     protected onPointerMoveEvent(_event: PointerEvent) { }
 
-    protected scheduleUpdate = (callback?: () => void) => {
+    protected scheduleUpdate = () => {
         if (this.updatePending)
             return;
 
         this.updatePending = true;
 
-        window.requestAnimationFrame(callback ? this.wrap(callback) : this.updateInternal);
+        window.requestAnimationFrame(this.updateInternal);
     }
 
     protected update() { }
