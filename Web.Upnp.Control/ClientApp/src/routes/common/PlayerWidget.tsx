@@ -144,7 +144,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
             <PlayerSvgSymbols />
             <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
             <div className="player-skeleton">
-                <AlbumArt className="art" itemClass={current?.class ?? ".musicTrack"} dim={true} albumArts={current?.albumArts} />
+                <AlbumArt className="art" itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} />
                 <div className="title">
                     <h5 className="text-truncate mb-0">{title ?? "[No media]"}</h5>
                     {(creator || album) && <small className="text-truncate">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
