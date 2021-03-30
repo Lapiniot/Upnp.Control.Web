@@ -35,6 +35,7 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
                 <b>&laquo;{description}&raquo;</b> has { type === "appeared" ? "appeared on" : "disappeared from"} the network
             </>
         });
+        this.props.dataContext?.reload?.();
     }
 
     handlers: Map<string, SignalRMessageHandler> = new Map([["SsdpDiscoveryEvent", this.onDiscoveryEvent]]);
@@ -47,14 +48,13 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
                 ? "grid-carousel"
                 : "grid-carousel grid-responsive-auto-lg";
         return <>
-            {fetching || !dataContext?.source
-                ? <LoadIndicatorOverlay />
-                : <SignalRListener handlers={this.handlers}>
-                    <div className={`h-100 d-grid grid-scroll-snap ${viewClass}`}>
-                        {[dataContext.source.map(item => <Item key={item.udn} data-source={item} category={category} device={item.udn} />)]}
-                    </div>
-                    <NotificationsHost ref={this.nhRef} />
-                </SignalRListener>}
+            {fetching && <LoadIndicatorOverlay />}
+            <SignalRListener handlers={this.handlers}>
+                <div className={`h-100 d-grid grid-scroll-snap ${viewClass}`}>
+                    {[dataContext?.source.map(item => <Item key={item.udn} data-source={item} category={category} device={item.udn} />)]}
+                </div>
+                <NotificationsHost ref={this.nhRef} />
+            </SignalRListener>
         </>
     }
 }
