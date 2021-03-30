@@ -114,6 +114,11 @@ export type RCState = {
     muted?: boolean;
 }
 
+export type DiscoveryMessage = {
+    type: string;
+    info: UpnpDevice;
+}
+
 export enum Services {
     MediaRenderer = "urn:schemas-upnp-org:device:MediaRenderer",
     ContentDirectory = "urn:schemas-upnp-org:service:ContentDirectory",
@@ -148,3 +153,5 @@ export type DeviceRouteParams = CategoryRouteParams & { device: string }
 export type BrowseRouteParams = DeviceRouteParams & { id?: string; p?: string; s?: string; };
 export type PlaylistRouteParams = DeviceRouteParams & { id: string; p?: string; s?: string; };
 export type ViewRouteParams = DeviceRouteParams & { id: string };
+
+export type ThemeColors = "primary" | "secondary" | "success" | "info" | "warning" | "danger" | "light" | "dark";

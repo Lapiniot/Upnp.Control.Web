@@ -1,10 +1,11 @@
 import React, { HTMLAttributes } from "react";
 import BootstrapToast from "bootstrap/js/dist/toast";
+import { ThemeColors } from "../routes/common/Types";
 
 export type ToastProps = HTMLAttributes<HTMLDivElement> & {
     header?: string;
     hint?: string;
-    color?: "primary" | "secondary" | "success" | "info" | "warning" | "danger" | "light" | "dark";
+    color?: ThemeColors;
     autohide?: boolean;
     animation?: boolean;
     delay?: number;
@@ -34,7 +35,7 @@ export class Toast extends React.Component<ToastProps> {
             data-bs-autohide={autohide} data-bs-animation={animation} data-bs-delay={delay} {...other}>
             <div className="toast-header">
                 {color &&
-                    <svg className={`me-2 icon text-${color}`} viewBox="0 0 16 16" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
+                    <svg className={`me-2 flex-shrink-0 icon text-${color}`} viewBox="0 0 16 16" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
                         <circle cx="50%" cy="50%" r="50%" />
                     </svg>}
                 <strong className="me-auto">{header}</strong>

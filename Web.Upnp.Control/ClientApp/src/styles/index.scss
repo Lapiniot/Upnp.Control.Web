@@ -252,3 +252,15 @@ label.cb-wrap {
     text-align: center;
     vertical-align: middle;
 }
+
+.nt-host {
+    position: absolute;
+    display: grid;
+    z-index: $zindex-fixed;
+    @include grid-auto-columns($min: 15rem, $max: 1fr, $mode: auto-fill);
+    gap: map-get($spacers, 3);
+    padding: map-get($spacers, 3);
+    inset: 0 0 auto 0;
+    max-height: 30vh;
+    overflow-y: auto;
+}
