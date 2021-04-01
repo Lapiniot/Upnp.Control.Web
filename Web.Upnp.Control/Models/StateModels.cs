@@ -98,4 +98,10 @@ namespace Web.Upnp.Control.Models
     public record PlaylistFilesSource(IEnumerable<IFormFile> Files, bool? UseProxy);
 
     public record FeedUrlSource(Uri Url, string Title, bool? UseProxy);
+
+    public record PSAddCommand(PushSubscription subscription);
+
+    public record PSRemoveCommand(PushSubscription subscription);
+
+    public record PushSubscription(Uri Endpoint, DateTime? Expiration, string P256dhKey, string AuthKey);
 }
