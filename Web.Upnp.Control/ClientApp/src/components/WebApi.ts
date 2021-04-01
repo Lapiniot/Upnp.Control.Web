@@ -1,7 +1,9 @@
 ﻿import { PlaybackMode } from "../routes/common/Types";
+import { toBase64 } from "./Extensions";
 import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch, RequestQuery, HttpPost } from "./HttpFetch";
 
-const baseUri = "/api/devices";
+const baseUri = "/api";
+const devicesBaseUri = baseUri + "/devices";
 
 export interface ControlApiProvider {
     state: (detailed?: boolean) => JsonFetch;
@@ -39,22 +41,27 @@ export interface QueueApiProvider {
     clear: (queueId: string) => JsonDeleteFetch;
 }
 
-export default class {
+export interface PushSubscriptionApiProvider {
+    subscribe: (endpoint: string, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null, expiration?: number | null) => JsonPostFetch;
+    unsubscribe: (endpoint: string) => JsonDeleteFetch;
+}
 
-    static devices = (category: string, id?: string) => new HttpFetch(`${baseUri}${id ? `/${id}` : ""}${category ? "?category=" + category : ""}`);
+export default class WebApi {
+
+    static devices = (category: string, id?: string) => new HttpFetch(`${devicesBaseUri}${id ? `/${id}` : ""}${category ? "?category=" + category : ""}`);
 
     static browse = (deviceId: string) => ({
-        get: (id = "") => new BrowseFetch(`${baseUri}/${deviceId}/items/${id}`)
+        get: (id = "") => new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${id}`)
     });
 
     static playlist = (deviceId: string): PlaylistApiProvider => ({
-        state: () => new JsonFetch(`${baseUri}/${deviceId}/playlists/state`),
-        create: (title: string) => new JsonPostFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(title) }),
+        state: () => new JsonFetch(`${devicesBaseUri}/${deviceId}/playlists/state`),
+        create: (title: string) => new JsonPostFetch(`${devicesBaseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(title) }),
         createFromItems: (title: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) =>
-            new JsonPostFetch(`${baseUri}/${deviceId}/playlists/items`, null,
+            new JsonPostFetch(`${devicesBaseUri}/${deviceId}/playlists/items`, null,
                 { body: JSON.stringify({ title, source: { deviceId: sourceDevice, items: sourceIds, maxDepth } }) }),
         createFromFiles: (data: Iterable<File> | FormData, title?: string | null, merge?: boolean, useProxy?: boolean) => {
-            const url = `${baseUri}/${deviceId}/playlists/files`;
+            const url = `${devicesBaseUri}/${deviceId}/playlists/files`;
 
             if (data instanceof FormData) {
                 return new HttpPost(url, null, { body: data });
@@ -66,51 +73,62 @@ export default class {
 
             return new HttpPost(url, null, { body: formData });
         },
-        rename: (id: string, title: string) => new JsonPutFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { body: JSON.stringify(title) }),
-        delete: (ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(ids) }),
-        copy: (id: string) => new JsonFetch(`${baseUri}/${deviceId}/playlists/${id}`, null, { method: "COPY" }),
+        rename: (id: string, title: string) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}`, null, { body: JSON.stringify(title) }),
+        delete: (ids: string[]) => new JsonDeleteFetch(`${devicesBaseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(ids) }),
+        copy: (id: string) => new JsonFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}`, null, { method: "COPY" }),
         addItems: (id: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) =>
-            new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null,
+            new JsonPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/items`, null,
                 { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds, maxDepth }) }),
         addUrl: (id: string, url: string, title?: string, useProxy?: boolean) =>
-            new JsonPostFetch(`${baseUri}/${deviceId}/playlists/${id}/feeds`, null,
+            new JsonPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/feeds`, null,
                 { body: JSON.stringify({ url, title, useProxy }) }),
         addFromFiles: (id: string, data: Iterable<File> | FormData, useProxy?: boolean) => {
-            return new HttpPost(`${baseUri}/${deviceId}/playlists/${id}/files`, null,
+            return new HttpPost(`${devicesBaseUri}/${deviceId}/playlists/${id}/files`, null,
                 { body: data instanceof FormData ? data : createFormData(data, useProxy) });
         },
-        removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${baseUri}/${deviceId}/playlists/${id}/items`, null, { body: JSON.stringify(ids) })
+        removeItems: (id: string, ids: string[]) => new JsonDeleteFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/items`, null, { body: JSON.stringify(ids) })
     });
 
     static queues = (deviceId: string): QueueApiProvider => ({
         enqueue: (queueId: string, sourceDevice: string, sourceIds: string[]) =>
-            new JsonPostFetch(`${baseUri}/${deviceId}/queues/${queueId}/items`, null, {
+            new JsonPostFetch(`${devicesBaseUri}/${deviceId}/queues/${queueId}/items`, null, {
                 body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds })
             }),
-        clear: (queueId: string) => new JsonDeleteFetch(`${baseUri}/${deviceId}/queues/${queueId}/items`, null, { body: null })
+        clear: (queueId: string) => new JsonDeleteFetch(`${devicesBaseUri}/${deviceId}/queues/${queueId}/items`, null, { body: null })
     });
 
     static control = (deviceId: string): ControlApiProvider => {
         deviceId = encodeURIComponent(deviceId);
         return {
-            state: (detailed = false) => new JsonFetch(`${baseUri}/${deviceId}/state${detailed ? "?detailed" : ""}`),
-            play: (id?: string, sourceDevice?: string) => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null,
+            state: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/state${detailed ? "?detailed" : ""}`),
+            play: (id?: string, sourceDevice?: string) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null,
                 { body: JSON.stringify({ state: "playing", objectId: id, sourceDevice }) }),
-            playUri: (id: string) => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing", currentUri: id }) }),
-            pause: () => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "paused" }) }),
-            stop: () => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "stopped" }) }),
-            prev: () => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing-prev" }) }),
-            next: () => new JsonPutFetch(`${baseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing-next" }) }),
-            position: (detailed = false) => new JsonFetch(`${baseUri}/${deviceId}/position${detailed ? "?detailed" : ""}`),
-            seek: (position: number | string) => new JsonPutFetch(`${baseUri}/${deviceId}/position`, null,
+            playUri: (id: string) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing", currentUri: id }) }),
+            pause: () => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "paused" }) }),
+            stop: () => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "stopped" }) }),
+            prev: () => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing-prev" }) }),
+            next: () => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing-next" }) }),
+            position: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/position${detailed ? "?detailed" : ""}`),
+            seek: (position: number | string) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/position`, null,
                 { body: JSON.stringify(typeof position === "number" ? { position: position } : { relTime: position }) }),
-            setPlayMode: (mode: string) => new JsonPutFetch(`${baseUri}/${deviceId}/play-mode`, null, { body: JSON.stringify(mode) }),
-            volume: (detailed = false) => new JsonFetch(`${baseUri}/${deviceId}/volume${detailed ? "?detailed" : ""}`),
-            setVolume: (volume: number) => new JsonPutFetch(`${baseUri}/${deviceId}/volume`, null, { body: JSON.stringify(volume) }),
-            getMute: () => new JsonFetch(`${baseUri}/${deviceId}/mute`),
-            setMute: (mute: boolean) => new JsonPutFetch(`${baseUri}/${deviceId}/mute`, null, { body: JSON.stringify(mute) })
+            setPlayMode: (mode: string) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/play-mode`, null, { body: JSON.stringify(mode) }),
+            volume: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/volume${detailed ? "?detailed" : ""}`),
+            setVolume: (volume: number) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/volume`, null, { body: JSON.stringify(volume) }),
+            getMute: () => new JsonFetch(`${devicesBaseUri}/${deviceId}/mute`),
+            setMute: (mute: boolean) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/mute`, null, { body: JSON.stringify(mute) })
         };
     }
+
+    static notifications = (): PushSubscriptionApiProvider => {
+        return pushSubscriber;
+    }
+}
+
+const pushSubscriber = {
+    subscribe: (endpoint: string, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null, expiration?: number | null) =>
+        new JsonPostFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint, p256dhKey: toBase64(p256dh), authKey: toBase64(auth), expiration }) }),
+    unsubscribe: (endpoint: string) =>
+        new JsonDeleteFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint }) })
 }
 
 type BrowseOptionFlags = "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata";
@@ -143,3 +161,4 @@ function createFormData(files: Iterable<File>, useProxy: boolean | undefined) {
     if (useProxy) data.set("useProxy", useProxy.toString());
     return data;
 }
+

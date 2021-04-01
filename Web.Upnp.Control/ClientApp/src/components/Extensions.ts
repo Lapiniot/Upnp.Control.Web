@@ -68,3 +68,7 @@ export function nopropagation<E extends SyntheticEvent>(handler: EventHandler<E>
         return handler(event);
     };
 }
+
+export function toBase64(buffer: ArrayBuffer | null): string | null {
+    return buffer ? btoa(String.fromCharCode(...new Uint8Array(buffer))) : null;
+}
