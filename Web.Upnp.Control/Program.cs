@@ -16,8 +16,9 @@ namespace Web.Upnp.Control
 
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder
-                    .ConfigureAppConfiguration((ctx, cb) =>
-                        cb.AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.Https.json", true))
+                    .ConfigureAppConfiguration((ctx, cb) => cb
+                        .AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.Https.json", true)
+                        .AddJsonFile($"appsettings.Secrets.json", true, true))
                     .UseStartup<Startup>()
                     .UseKestrel()
                     .UseSockets())

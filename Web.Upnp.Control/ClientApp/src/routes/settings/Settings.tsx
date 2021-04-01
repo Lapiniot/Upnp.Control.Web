@@ -1,4 +1,4 @@
-﻿import { InputHTMLAttributes, SelectHTMLAttributes, useCallback, useState } from "react";
+﻿import { InputHTMLAttributes, SelectHTMLAttributes, useCallback, useEffect, useState } from "react";
 import $s from "../common/Settings";
 
 function PageSizeSelect({ className, ...other }: SelectHTMLAttributes<HTMLSelectElement>) {
@@ -22,10 +22,29 @@ function NumberEditor({ className, callback, ...other }: InputHTMLAttributes<HTM
         className={`form-control form-control-sm w-auto${className ? ` ${className}` : ""}`} />;
 }
 
-function FlagEditor({ className, callback, ...other }: InputHTMLAttributes<HTMLInputElement> & { callback: (value: boolean) => void }) {
-    const changedHandler = useCallback(({ target: { checked } }) => callback(checked), [callback]);
+type FlagEditorProps = InputHTMLAttributes<HTMLInputElement> &
+{ callback: (value: boolean) => void | boolean | Promise<boolean> };
+
+function FlagEditor({ className, callback, checked: checkedProp, disabled: disabledProp, ...other }: FlagEditorProps) {
+    const [checked, setChecked] = useState(checkedProp);
+    const [disabled, setDisabled] = useState(disabledProp);
+    const changedHandler = useCallback(async ({ target: { checked } }) => {
+        setDisabled(true);
+        try {
+            const value = callback(checked);
+            if (typeof value === "boolean")
+                setChecked(value);
+            else if (value instanceof Promise)
+                setChecked(await value);
+            else
+                setChecked(checked);
+        }
+        finally {
+            setDisabled(false);
+        }
+    }, [callback]);
     return <div className="form-check form-switch">
-        <input {...other} type="checkbox" onChange={changedHandler}
+        <input {...other} type="checkbox" checked={checked} disabled={disabled} onChange={changedHandler}
             className={`form-check-input${className ? ` ${className}` : ""}`} />
     </div>;
 }
@@ -46,6 +65,25 @@ function setUseProxy(useProxy: boolean) {
     $s.set("useDlnaProxy", useProxy);
 }
 
+async function setUsePushes(usePushes: boolean) {
+    if (usePushes) {
+        if (await Notification.requestPermission() === "granted") {
+            const reg = await navigator.serviceWorker.ready;
+            if (reg) {
+                const subscription = await reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: "BOgOXy-KSALzQUxXxdkoxmtjp_MOZtzHM7G0A7zDXdgcdEqOHfZ5DEVJBHM6HcupVWV-oVSEGEC9B2pSCtv3Smw"
+                });
+                if (subscription) {
+                    $s.set("usePushNotifications", usePushes);
+                }
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export default () => {
     return <div className="overflow-auto">
         <div className="m-0 m-sm-3 d-flex flex-column w-md-50">
@@ -62,7 +100,11 @@ export default () => {
                         <label htmlFor="scan-timeout-editor">Container scan timeout (ms.)</label>
                         <NumberEditor id="scan-timeout-editor" min="1000" max="90000" step="200" defaultValue={$s.get("containerScanTimeout")} callback={setScanTimeout} />
                         <label htmlFor="use-proxy-editor">Use DLNA proxy</label>
-                        <FlagEditor id="use-proxy-editor" className="ms-auto" defaultChecked={$s.get("useDlnaProxy")} callback={setUseProxy} />
+                        <FlagEditor id="use-proxy-editor" className="ms-auto" checked={$s.get("useDlnaProxy")} callback={setUseProxy} />
+                        {("serviceWorker" in navigator) && ("PushManager" in window) && <>
+                            <label htmlFor="use-pushes-editor">Use push notifications</label>
+                            <FlagEditor id="use-pushes-editor" className="ms-auto" checked={$s.get("usePushNotifications")} callback={setUsePushes} />
+                        </>}
                     </div>
                 </li>
                 <li className="list-group-item">
