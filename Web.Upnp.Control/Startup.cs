@@ -47,6 +47,9 @@ namespace Web.Upnp.Control
                 .AddDbContext<UpnpDbContext>(builder => builder
                     .UseSqlite("Data Source=upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                     .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))
+                .AddDbContext<PushSubscriptionDbContext>(builder => builder
+                    .UseSqlite("Data Source=subscriptions.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                    .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
                 .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
