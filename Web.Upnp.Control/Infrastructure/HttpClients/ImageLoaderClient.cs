@@ -8,7 +8,7 @@ namespace Web.Upnp.Control.Infrastructure.HttpClients
 
         public ImageLoaderProxyClient(HttpClient client)
         {
-            this.client = client;
+            this.client = client ?? throw new System.ArgumentNullException(nameof(client));
         }
 
         public HttpClient Client => client;

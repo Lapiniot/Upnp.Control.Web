@@ -64,6 +64,7 @@ namespace Web.Upnp.Control
                         .Build()))
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient()
+                .AddWebPushClient()
                 .AddQueryServices()
                 .AddCommandServices();
 

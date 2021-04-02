@@ -47,6 +47,13 @@ namespace Web.Upnp.Control.Infrastructure
             return services;
         }
 
+        public static IServiceCollection AddWebPushClient(this IServiceCollection services)
+        {
+            services.AddHttpClient<WebPushClient>();
+            services.AddOptions<VAPIDSecretOptions>().BindConfiguration("VAPID");
+            return services;
+        }
+
         public static IServiceCollection AddImageLoaderProxyMiddleware(this IServiceCollection services)
         {
             services.AddHttpClient<ImageLoaderProxyClient>(c => c.DefaultRequestHeaders.ConnectionClose = false)
