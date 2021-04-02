@@ -1,5 +1,6 @@
 ﻿import { InputHTMLAttributes, SelectHTMLAttributes, useCallback, useEffect, useState } from "react";
 import $s from "../common/Settings";
+import PushSubService from "../../components/PushSubscriptionService";
 
 function PageSizeSelect({ className, ...other }: SelectHTMLAttributes<HTMLSelectElement>) {
     const [size, setSize] = useState($s.get("pageSize"));
@@ -68,19 +69,20 @@ function setUseProxy(useProxy: boolean) {
 async function setUsePushes(usePushes: boolean) {
     if (usePushes) {
         if (await Notification.requestPermission() === "granted") {
-            const reg = await navigator.serviceWorker.ready;
-            if (reg) {
-                const subscription = await reg.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: "BOgOXy-KSALzQUxXxdkoxmtjp_MOZtzHM7G0A7zDXdgcdEqOHfZ5DEVJBHM6HcupVWV-oVSEGEC9B2pSCtv3Smw"
-                });
-                if (subscription) {
-                    $s.set("usePushNotifications", usePushes);
-                }
+            try {
+                await PushSubService.unsubscribe();
+            }
+            finally {
+                await PushSubService.subscribe();
+                $s.set("usePushNotifications", true);
                 return true;
             }
         }
+    } else {
+        await PushSubService.unsubscribe();
+        $s.set("usePushNotifications", false);
     }
+
     return false;
 }
 
