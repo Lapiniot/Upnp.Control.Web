@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
@@ -26,12 +27,19 @@ namespace Web.Upnp.Control.Services.Commands
             if(subscription != null)
             {
                 context.Remove(subscription);
-                subscription = subscription with { Created = DateTimeOffset.UtcNow, Expires = expires, P256dhKey = p256dhKey, AuthKey = authKey };
+                subscription = subscription with
+                {
+                    Created = DateTimeOffset.UtcNow,
+                    Expires = expires,
+                    P256dhKey = WebEncoders.Base64UrlDecode(p256dhKey),
+                    AuthKey = WebEncoders.Base64UrlDecode(authKey)
+                };
                 context.Update(subscription);
             }
             else
             {
-                subscription = new PushNotificationSubscription(endpoint, DateTimeOffset.UtcNow, expires, p256dhKey, authKey);
+                subscription = new PushNotificationSubscription(endpoint, DateTimeOffset.UtcNow, expires,
+                    WebEncoders.Base64UrlDecode(p256dhKey), WebEncoders.Base64UrlDecode(authKey));
                 context.Subscriptions.Add(subscription);
             }
 
