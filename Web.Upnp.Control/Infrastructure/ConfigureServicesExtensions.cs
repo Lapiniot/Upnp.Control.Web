@@ -8,6 +8,7 @@ using Web.Upnp.Control.Infrastructure.HttpClients;
 using Web.Upnp.Control.Infrastructure.Middleware;
 using Web.Upnp.Control.Services.Abstractions;
 using static System.Net.DecompressionMethods;
+using WebPushClient = Web.Upnp.Control.Infrastructure.HttpClients.WebPushClient;
 
 namespace Web.Upnp.Control.Infrastructure
 {
