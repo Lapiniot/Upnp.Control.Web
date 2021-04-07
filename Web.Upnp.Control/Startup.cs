@@ -53,9 +53,10 @@ namespace Web.Upnp.Control
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
                 .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
-                .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
-                .AddTransient<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
-                .AddTransient<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
+                .AddScoped<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
+                .AddScoped<IObserver<UpnpDiscoveryEvent>, UpnpDiscoveryPushNotificationObserver>()
+                .AddScoped<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
+                .AddScoped<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
                 .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
                 .AddTransient<IAsyncEnumerable<SsdpReply>>(_ => new SsdpEventEnumerator(UpnpServices.RootDevice,
                     new RepeatPolicyBuilder()

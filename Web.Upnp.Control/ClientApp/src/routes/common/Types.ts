@@ -116,7 +116,7 @@ export type RCState = {
 
 export type DiscoveryMessage = {
     type: string;
-    info: UpnpDevice;
+    device: UpnpDevice;
 }
 
 export enum Services {

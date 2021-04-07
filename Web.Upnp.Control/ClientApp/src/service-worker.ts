@@ -142,4 +142,10 @@ self.addEventListener("fetch", event => {
     }
 })
 
+self.addEventListener("push", event => {
+    const data = event.data?.text() ?? "Some Push Message";
+    console.log(data);
+    event.waitUntil(self.registration.showNotification(data));
+})
+
 export { }

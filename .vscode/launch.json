@@ -18,7 +18,8 @@
                 "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "DYLD_LIBRARY_PATH": "/opt/local/lib/openssl-1.0"
             },
             "sourceFileMap": {
                 "/Views": "./Views"

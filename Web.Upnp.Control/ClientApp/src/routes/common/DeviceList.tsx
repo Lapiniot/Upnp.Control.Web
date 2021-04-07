@@ -28,7 +28,7 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
     static defaultProps: Partial<DeviceListContainerProps> = { viewMode: "grid" }
     nhRef = createRef<NotificationsHost>();
 
-    onDiscoveryEvent = (device: string, { info: { name, description }, type }: DiscoveryMessage) => {
+    onDiscoveryEvent = (device: string, { device: { name, description }, type }: DiscoveryMessage) => {
         this.nhRef.current?.show({
             id: device, title: name, color: type === "appeared" ? "success" : "warning", delay: 120000,
             message: <>

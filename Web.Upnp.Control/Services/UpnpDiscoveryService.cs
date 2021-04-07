@@ -16,22 +16,18 @@ using Icon = Web.Upnp.Control.Models.Icon;
 
 namespace Web.Upnp.Control.Services
 {
-    // TODO: Refactor this service! The only responsibility should be observers notification in response to the discovery database changes
     public class UpnpDiscoveryService : BackgroundService
     {
         private const string RootDevice = "upnp:rootdevice";
         private readonly ILogger<UpnpDiscoveryService> logger;
         private readonly IUpnpServiceMetadataProvider metadataProvider;
-        private readonly IObserver<UpnpDiscoveryEvent>[] observers;
         private readonly IServiceProvider services;
 
-        public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger,
-            IUpnpServiceMetadataProvider metadataProvider, IEnumerable<IObserver<UpnpDiscoveryEvent>> observers = null)
+        public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger, IUpnpServiceMetadataProvider metadataProvider)
         {
             this.services = services ?? throw new ArgumentNullException(nameof(services));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.metadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
-            this.observers = observers?.ToArray() ?? Array.Empty<IObserver<UpnpDiscoveryEvent>>();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -41,91 +37,93 @@ namespace Web.Upnp.Control.Services
             try
             {
                 using var scope = services.CreateScope();
-
                 await using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
                 await context.Database.EnsureCreatedAsync(stoppingToken).ConfigureAwait(false);
-
                 var enumerator = scope.ServiceProvider.GetRequiredService<IAsyncEnumerable<SsdpReply>>();
+                var observers = scope.ServiceProvider.GetServices<IObserver<UpnpDiscoveryEvent>>().ToArray();
 
-                await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
+                try
                 {
-                    try
+                    await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                     {
-                        if(logger.IsEnabled(LogLevel.Trace)) DebugDump(reply, LogLevel.Trace);
-
-                        if(reply.StartLine.StartsWith("M-SEARCH")) continue;
-
-                        var udn = ExtractUdn(reply.UniqueServiceName);
-
-                        if(reply.StartLine.StartsWith("NOTIFY") && reply.TryGetValue("NT", out var nt))
+                        try
                         {
-                            if(nt != RootDevice) continue;
+                            if(logger.IsEnabled(LogLevel.Trace)) DebugDump(reply, LogLevel.Trace);
 
-                            if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
+                            if(reply.StartLine.StartsWith("M-SEARCH")) continue;
+
+                            var udn = ExtractUdn(reply.UniqueServiceName);
+
+                            if(reply.StartLine.StartsWith("NOTIFY") && reply.TryGetValue("NT", out var nt))
                             {
-                                var existing = await context.FindAsync<Device>(new object[] {udn}, stoppingToken).ConfigureAwait(false);
-                                if(existing != null)
+                                if(nt != RootDevice) continue;
+
+                                if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
                                 {
-                                    context.Remove(existing);
-                                    await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-                                    Notify(new UpnpDeviceDisappearedEvent(udn, existing));
+                                    var existing = await context.FindAsync<Device>(new object[] { udn }, stoppingToken).ConfigureAwait(false);
+                                    if(existing != null)
+                                    {
+                                        context.Remove(existing);
+                                        await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                                        Notify(observers, new UpnpDeviceDisappearedEvent(udn, existing));
+                                    }
+
+                                    continue;
                                 }
+                            }
+                            else if(reply.TryGetValue("ST", out var st) && st != RootDevice)
+                            {
+                                continue;
+                            }
+
+                            var device = await context.FindAsync<Device>(new object[] { udn }, stoppingToken).ConfigureAwait(false);
+
+                            if(device != null)
+                            {
+                                context.Entry(device).Property(d => d.ExpiresAt).CurrentValue = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
+                                await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+
+                                Notify(observers, new UpnpDeviceUpdatedEvent(udn, device));
+
+                                logger.LogInformation($"Device expiration updated for UDN='{udn}'");
 
                                 continue;
                             }
-                        }
-                        else if(reply.TryGetValue("ST", out var st) && st != RootDevice)
-                        {
-                            continue;
-                        }
 
-                        var device = await context.FindAsync<Device>(new object[] {udn}, stoppingToken).ConfigureAwait(false);
+                            var desc = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
 
-                        if(device != null)
-                        {
-                            context.Entry(device).Property(d => d.ExpiresAt).CurrentValue = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
+                            device = new Device(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
+                                desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10),
+                                desc.ManufacturerUri, desc.ModelUri, desc.PresentationUri)
+                            {
+                                BootId = reply.BootId,
+                                ConfigId = reply.ConfigId,
+                                Icons = desc.Icons.Select(i => new Icon(i.Width, i.Height, i.Uri, i.Mime)).ToList(),
+                                Services = desc.Services.Select(s => new Service(s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
+                            };
+
+                            await context.AddAsync(device, stoppingToken).ConfigureAwait(false);
                             await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
 
-                            Notify(new UpnpDeviceUpdatedEvent(udn, device));
+                            logger.LogInformation($"New device discovered with UDN='{desc.Udn}'");
 
-                            logger.LogInformation($"Device expiration updated for UDN='{udn}'");
-
-                            continue;
+                            Notify(observers, new UpnpDeviceAppearedEvent(udn, device));
                         }
-
-                        var desc = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
-
-                        device = new Device(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
-                            desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10),
-                            desc.ManufacturerUri, desc.ModelUri, desc.PresentationUri)
+                        catch(Exception exception)
                         {
-                            BootId = reply.BootId,
-                            ConfigId = reply.ConfigId,
-                            Icons = desc.Icons.Select(i => new Icon(i.Width, i.Height, i.Uri, i.Mime)).ToList(),
-                            Services = desc.Services.Select(s => new Service(s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
-                        };
-
-                        await context.AddAsync(device, stoppingToken).ConfigureAwait(false);
-                        await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-
-                        logger.LogInformation($"New device discovered with UDN='{desc.Udn}'");
-
-                        Notify(new UpnpDeviceAppearedEvent(udn, device));
-                    }
-                    catch(Exception exception)
-                    {
-                        logger.LogError(exception, $"Error processing SSDP reply {reply.StartLine} for USN={reply.UniqueServiceName}");
+                            logger.LogError(exception, $"Error processing SSDP reply {reply.StartLine} for USN={reply.UniqueServiceName}");
+                        }
                     }
                 }
+                catch(OperationCanceledException) { /* Expected */}
+                finally
+                {
+                    NotifyCompletion(observers);
+                }
             }
-            catch(OperationCanceledException) {}
             catch(Exception ex)
             {
                 logger.LogError(ex, "Error discovering UPnP devices and services!");
-            }
-            finally
-            {
-                NotifyCompletion();
             }
         }
 
@@ -150,7 +148,7 @@ namespace Web.Upnp.Control.Services
             return i2 < 0 ? usn[i1..] : usn[i1..i2];
         }
 
-        private void Notify(UpnpDiscoveryEvent discoveryEvent)
+        private void Notify(IEnumerable<IObserver<UpnpDiscoveryEvent>> observers, UpnpDiscoveryEvent discoveryEvent)
         {
             foreach(var observer in observers)
             {
@@ -165,7 +163,7 @@ namespace Web.Upnp.Control.Services
             }
         }
 
-        private void NotifyCompletion()
+        private void NotifyCompletion(IEnumerable<IObserver<UpnpDiscoveryEvent>> observers)
         {
             foreach(var observer in observers)
             {
