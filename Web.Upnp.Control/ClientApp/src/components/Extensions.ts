@@ -72,3 +72,12 @@ export function nopropagation<E extends SyntheticEvent>(handler: EventHandler<E>
 export function toBase64(buffer: ArrayBuffer | null): string | null {
     return buffer ? btoa(String.fromCharCode(...new Uint8Array(buffer))) : null;
 }
+
+export function fromBase64(str: string): Uint8Array {
+    const bstr = atob(str);
+    const array = new Uint8Array(bstr.length);
+    for (let index = 0; index < bstr.length; index++) {
+        array[index] = bstr.charCodeAt(index);
+    }
+    return array;
+}
