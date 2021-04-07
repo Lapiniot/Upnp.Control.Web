@@ -56,7 +56,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
         }
     }
 
-    onRenderingControlEvent = (device: string, state: RCState) => {
+    onRenderingControlEvent = (device: string, { state }: { state: RCState }) => {
         if (device === this.props.udn && (state.volume !== this.state.volume || state.muted && state.muted !== this.state.muted)) {
             this.cancelStateUpdate();
             this.setState(state);
