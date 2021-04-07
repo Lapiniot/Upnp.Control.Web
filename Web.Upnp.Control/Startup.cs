@@ -9,6 +9,7 @@ using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
@@ -85,7 +86,10 @@ namespace Web.Upnp.Control
             };
 
             services
-                .Configure((Action<RouteOptions>)(options => options.ConstraintMap.Add("timespan", typeof(TimeSpanRouteConstraint))))
+                .Configure<JsonOptions>(options => ConfigureJsonSerializer(options.SerializerOptions, customConverters));
+
+            services
+                .Configure<RouteOptions>(options => options.ConstraintMap.Add("timespan", typeof(TimeSpanRouteConstraint)))
                 .AddControllers(options => options.Filters.Add<RequestCancelledExceptionFilter>())
                 .AddJsonOptions(options => ConfigureJsonSerializer(options.JsonSerializerOptions, customConverters));
 

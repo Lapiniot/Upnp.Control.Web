@@ -2,8 +2,10 @@ using System;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Infrastructure.HttpClients;
 using Web.Upnp.Control.Models;
@@ -16,16 +18,18 @@ namespace Web.Upnp.Control.Services
         private readonly IServiceProvider services;
         private Infrastructure.HttpClients.WebPushClient client;
         private readonly ILogger<UpnpDiscoveryPushNotificationObserver> logger;
+        private readonly IOptions<JsonOptions> options;
         private CancellationTokenSource cts;
         private SemaphoreSlim sentinel;
         private bool disposed;
 
         public UpnpDiscoveryPushNotificationObserver(IServiceProvider services, WebPushClient client,
-            ILogger<UpnpDiscoveryPushNotificationObserver> logger)
+            ILogger<UpnpDiscoveryPushNotificationObserver> logger, IOptions<JsonOptions> options)
         {
             this.services = services ?? throw new ArgumentNullException(nameof(services));
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
             cts = new CancellationTokenSource();
             sentinel = new SemaphoreSlim(4);
         }
@@ -49,7 +53,7 @@ namespace Web.Upnp.Control.Services
 
         private async Task SendAsync(UpnpDiscoveryMessage message, CancellationToken cancellationToken)
         {
-            var payload = JsonSerializer.SerializeToUtf8Bytes(message);
+            var payload = JsonSerializer.SerializeToUtf8Bytes(message, options.Value.SerializerOptions);
 
             using(var scope = this.services.CreateScope())
             {

@@ -1,6 +1,8 @@
 /// <reference lib="webworker" />
 /* eslint-disable no-restricted-globals */
 
+import { UpnpDevice } from "./routes/common/Types";
+
 interface PrecacheEntry {
     integrity?: string;
     url: string;
@@ -143,9 +145,15 @@ self.addEventListener("fetch", event => {
 })
 
 self.addEventListener("push", event => {
-    const data = event.data?.text() ?? "Some Push Message";
-    console.log(data);
-    event.waitUntil(self.registration.showNotification(data));
+    const data = event.data?.json();
+
+    if ("type" in data && "device" in data) {
+        const device = data.device as UpnpDevice;
+        const title = `UPnP discovery: ${device.name}`;
+        const body = `'${device.description}' has ${data.type === "appeared" ? "appeared on the" : "disappeared from the"} network`;
+        const options = { body: body };
+        event.waitUntil(self.registration.showNotification(title, options));
+    }
 })
 
 export { }
