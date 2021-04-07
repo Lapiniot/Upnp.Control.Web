@@ -1,15 +1,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using Web.Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Hubs
 {
     public class UpnpEventsHub : Hub<IUpnpEventClient>
     {
-        public Task UpnpEventAsync(string deviceId, string service, object message)
-        {
-            return Clients.All.UpnpEvent(deviceId, service, message);
-        }
-
         public Task SendAVTransportEventAsync(string deviceId, object message)
         {
             return Clients.All.AVTransportEvent(deviceId, message);
@@ -20,7 +16,7 @@ namespace Web.Upnp.Control.Hubs
             return Clients.All.RenderingControlEvent(deviceId, message);
         }
 
-        public Task SendSsdpDiscoveryEventAsync(string deviceId, object message)
+        public Task SendSsdpDiscoveryEventAsync(string deviceId, UpnpDiscoveryMessage message)
         {
             return Clients.All.SsdpDiscoveryEvent(deviceId, message);
         }

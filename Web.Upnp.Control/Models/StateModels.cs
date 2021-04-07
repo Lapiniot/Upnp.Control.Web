@@ -31,6 +31,8 @@ namespace Web.Upnp.Control.Models
 
     public record AVStateMessage(AVState State, AVPosition Position, IReadOnlyDictionary<string, string> VendorProps);
 
+    public record UpnpDiscoveryMessage(string Type, Device Device);
+
     public record RCVolumeState(uint? Volume, bool? Muted);
 
     public record AVStateParams(string State, string ObjectId, string SourceDevice, Uri CurrentUri);

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.SignalR;
 using Web.Upnp.Control.Hubs;
+using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Models.Events;
 
 namespace Web.Upnp.Control.Services
@@ -25,10 +26,10 @@ namespace Web.Upnp.Control.Services
             switch(e)
             {
                 case UpnpDeviceAppearedEvent dae:
-                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new {Type = "appeared", Info = dae.Device});
+                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new UpnpDiscoveryMessage("appeared", dae.Device));
                     break;
                 case UpnpDeviceDisappearedEvent dde:
-                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new {Type = "disappeared", Info = dde.Device});
+                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new UpnpDiscoveryMessage("disappeared", dde.Device));
                     break;
             }
         }
