@@ -80,7 +80,7 @@ namespace Web.Upnp.Control
                 new ResourceJsonConverter(),
                 new ContainerJsonConverter(),
                 new MediaItemJsonConverter(),
-                new ContentResultConverter()
+                new CDContentConverter()
             };
 
             services

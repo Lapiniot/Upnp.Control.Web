@@ -5,14 +5,14 @@ using IoT.Protocol.Upnp.DIDL;
 
 namespace Web.Upnp.Control.Models.Converters
 {
-    public class ContentResultConverter : JsonConverter<ContentResult>
+    public class CDContentConverter : JsonConverter<CDContent>
     {
-        public override ContentResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override CDContent Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             throw new NotSupportedException();
         }
 
-        public override void Write(Utf8JsonWriter writer, ContentResult value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, CDContent value, JsonSerializerOptions options)
         {
             if(writer == null) throw new ArgumentNullException(nameof(writer));
 

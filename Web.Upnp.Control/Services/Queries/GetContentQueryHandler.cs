@@ -12,7 +12,7 @@ using static IoT.Protocol.Upnp.Services.BrowseMode;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class GetContentQueryHandler : IAsyncQueryHandler<CDGetContentQuery, ContentResult>
+    public class GetContentQueryHandler : IAsyncQueryHandler<CDGetContentQuery, CDContent>
     {
         private readonly IUpnpServiceFactory factory;
         private readonly ILogger<GetContentQueryHandler> logger;
@@ -23,7 +23,7 @@ namespace Web.Upnp.Control.Services.Queries
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<ContentResult> ExecuteAsync(CDGetContentQuery query, CancellationToken cancellationToken)
+        public async Task<CDContent> ExecuteAsync(CDGetContentQuery query, CancellationToken cancellationToken)
         {
             var (deviceId, path, (withParents, withResource, withVendor, withMetadata, take, skip)) = query;
 
@@ -53,7 +53,7 @@ namespace Web.Upnp.Control.Services.Queries
                 parents = await GetParentsAsync(service, path, "id,title,parentId,res", withResource == true, withVendor == true, cancellationToken).ConfigureAwait(false);
             }
 
-            return new ContentResult(total, metadata, items, parents);
+            return new CDContent(total, metadata, items, parents);
         }
 
         private async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string parent, string filter,
