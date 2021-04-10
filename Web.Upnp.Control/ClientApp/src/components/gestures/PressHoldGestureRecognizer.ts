@@ -6,7 +6,7 @@ export class PressHoldGestureRecognizer<TElement extends HTMLElement> extends Ge
     tolerance: number;
 
     constructor(handler: GestureHandler<TElement, "hold", undefined>, delay = 500, tolerance = 5) {
-        super(handler);
+        super(handler, true, true);
         this.delay = delay;
         this.tolerance = tolerance;
     }

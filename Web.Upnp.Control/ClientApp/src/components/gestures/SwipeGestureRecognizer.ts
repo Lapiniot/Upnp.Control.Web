@@ -10,8 +10,8 @@ export class SwipeGestureRecognizer<TElement extends HTMLElement> extends Gestur
     endY: number = 0;
     endTime: number = 0;
 
-    constructor(handler: GestureHandler<TElement, SwipeGestures, undefined>, delta: number = 100, time: number = 1000) {
-        super(handler);
+    constructor(handler: GestureHandler<TElement, SwipeGestures, undefined>, delta: number = 100, time: number = 500, capture: boolean = false) {
+        super(handler, capture, true);
         this.delta = delta;
         this.dtime = time;
     }

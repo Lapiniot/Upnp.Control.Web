@@ -59,7 +59,7 @@ namespace Web.Upnp.Control.Services
                 Current = current,
                 Next = next,
                 CurrentTrack = map.TryGetValue("CurrentTrack", out value) ? value : null,
-                CurrentTrackUri = map.TryGetValue("CurrentTrackURI", out value) ? new Uri(value) : null,
+                CurrentTrackUri = map.TryGetValue("CurrentTrackURI", out value) && !string.IsNullOrEmpty(value) ? new Uri(value) : null,
             };
 
             var position = new AVPosition(map.TryGetValue("CurrentTrack", out value) ? value : null,

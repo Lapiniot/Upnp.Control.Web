@@ -10,9 +10,9 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
     private updatePending: any;
     private options: AddEventListenerOptions;
 
-    constructor(handler: GestureHandler<TElement, TGesture, TParams>, passive: boolean = true) {
+    constructor(handler: GestureHandler<TElement, TGesture, TParams>, capture: boolean, passive: boolean) {
         this.handler = handler;
-        this.options = { capture: true, passive: passive };
+        this.options = { capture: capture, passive: passive };
     }
 
     public bind(target: TElement) {

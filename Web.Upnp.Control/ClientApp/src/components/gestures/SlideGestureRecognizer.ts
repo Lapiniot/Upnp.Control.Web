@@ -10,7 +10,7 @@ export class SlideGestureRecognizer<TElement extends HTMLElement> extends Gestur
     x: number = 0;
     y: number = 0;
     constructor(handler: GestureHandler<TElement, "slide", SlideParams>) {
-        super(handler, false);
+        super(handler, true, false);
     }
 
     protected onPointerDownEvent(event: PointerEvent) {
@@ -18,6 +18,8 @@ export class SlideGestureRecognizer<TElement extends HTMLElement> extends Gestur
         const element = currentTarget as TElement;
 
         event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
         element.setPointerCapture(pointerId);
         super.onPointerDownEvent(event);
 
