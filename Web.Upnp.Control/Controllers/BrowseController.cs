@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Models;
@@ -9,6 +10,7 @@ namespace Web.Upnp.Control.Controllers
     [ApiController]
     [Route("api/devices/{deviceId}")]
     [Produces("application/json")]
+    [SuppressMessage("Microsoft.Design", "CA1062: Validate arguments of public methods")]
     public class BrowseController : ControllerBase
     {
         [HttpGet("items/{*path}")]

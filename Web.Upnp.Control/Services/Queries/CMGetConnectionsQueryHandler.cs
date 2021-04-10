@@ -9,7 +9,7 @@ using static System.StringSplitOptions;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class CMGetConnectionsQueryHandler : IAsyncQueryHandler<CMGetConnectionsQuery, IEnumerable<string>>
+    public sealed class CMGetConnectionsQueryHandler : IAsyncQueryHandler<CMGetConnectionsQuery, IEnumerable<string>>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -20,6 +20,7 @@ namespace Web.Upnp.Control.Services.Queries
 
         public async Task<IEnumerable<string>> ExecuteAsync(CMGetConnectionsQuery query, CancellationToken cancellationToken)
         {
+            if(query is null) throw new ArgumentNullException(nameof(query));
             var service = await factory.GetServiceAsync<ConnectionManagerService>(query.DeviceId, cancellationToken).ConfigureAwait(false);
             var result = await service.GetCurrentConnectionIDsAsync(cancellationToken).ConfigureAwait(false);
             return result["ConnectionIDs"].Split(',', RemoveEmptyEntries | TrimEntries);

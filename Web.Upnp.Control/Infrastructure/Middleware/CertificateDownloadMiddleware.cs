@@ -1,5 +1,6 @@
 using System;
 using System.Buffers.Text;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +11,8 @@ using static System.Text.Encoding;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
 {
-    public class CertificateDownloadMiddleware : IMiddleware
+    [SuppressMessage("Microsoft.Design", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by infrastructure")]
+    internal sealed class CertificateDownloadMiddleware : IMiddleware
     {
         const int ChunkSize = 48;
         private readonly IWebHostEnvironment environment;

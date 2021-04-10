@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Web.Upnp.Control.Models.Converters
 {
-    public class IconJsonConverter : JsonConverter<Icon>
+    public sealed class IconJsonConverter : JsonConverter<Icon>
     {
         public override Icon Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -13,6 +13,15 @@ namespace Web.Upnp.Control.Models.Converters
 
         public override void Write(Utf8JsonWriter writer, Icon value, JsonSerializerOptions options)
         {
+            if(writer is null) throw new ArgumentNullException(nameof(writer));
+            if(options is null) throw new ArgumentNullException(nameof(options));
+
+            if(value is null)
+            {
+                writer.WriteNullValue();
+                return;
+            }
+            
             writer.WriteStartObject();
             writer.WriteString("url", value.Url.AbsoluteUri);
             writer.WriteString("mime", value.Mime);

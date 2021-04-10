@@ -9,10 +9,11 @@ using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
+using static System.Globalization.CultureInfo;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class PLAddItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLAddItemsCommand>
+    public sealed class PLAddItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLAddItemsCommand>
     {
         private readonly IOptionsSnapshot<PlaylistOptions> options;
 
@@ -25,8 +26,9 @@ namespace Web.Upnp.Control.Services.Commands
         {
             return command switch
             {
-                { DeviceId: null or "" } => throw new ArgumentException(string.Format(MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
-                { PlaylistId: null or "" } => throw new ArgumentException(string.Format(MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
+                null => throw new ArgumentNullException(nameof(command)),
+                { DeviceId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
+                { PlaylistId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
                 { Source: { DeviceId: { } source, Items: { } ids, MaxDepth: var depth }, DeviceId: var deviceId, PlaylistId: var playlistId } =>
                     AddItemsAsync(deviceId, playlistId, source, ids, depth, cancellationToken),
                 _ => throw new ArgumentException("Valid source deviceId and item ids must be provided")

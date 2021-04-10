@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Web.Upnp.Control.Services.Abstractions;
+using static System.Globalization.CultureInfo;
+using static System.Globalization.NumberStyles;
 
 namespace Web.Upnp.Control.Infrastructure.HttpClients
 {
@@ -18,6 +20,8 @@ namespace Web.Upnp.Control.Infrastructure.HttpClients
 
         public async Task<(string Sid, int Timeout)> SubscribeAsync(Uri subscribeUri, Uri deliveryUri, TimeSpan timeout, CancellationToken cancellationToken = default)
         {
+            if(deliveryUri is null) throw new ArgumentNullException(nameof(deliveryUri));
+
             if(!deliveryUri.IsAbsoluteUri)
             {
                 throw new ArgumentException("Only absolute uri is acceptable");
@@ -25,33 +29,35 @@ namespace Web.Upnp.Control.Infrastructure.HttpClients
 
             using var request = new HttpRequestMessage(new HttpMethod("SUBSCRIBE"), subscribeUri)
             {
-                Headers = {{"NT", "upnp:event"}, {"CALLBACK", $"<{deliveryUri.AbsoluteUri}>"}, {"TIMEOUT", $"Second-{timeout.TotalSeconds}"}}
+                Headers = { { "NT", "upnp:event" }, { "CALLBACK", $"<{deliveryUri.AbsoluteUri}>" }, { "TIMEOUT", $"Second-{timeout.TotalSeconds}" } }
             };
 
             using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
-            return (response.Headers.GetValues("SID").First(), int.Parse(response.Headers.GetValues("TIMEOUT").Single()[7..]));
+            return (response.Headers.GetValues("SID").First(),
+                int.Parse(response.Headers.GetValues("TIMEOUT").Single().AsSpan(7), Integer, InvariantCulture));
         }
 
         public async Task<(string Sid, int Timeout)> RenewAsync(Uri subscribeUri, string sid, TimeSpan timeout, CancellationToken cancellationToken)
         {
             using var request = new HttpRequestMessage(new HttpMethod("SUBSCRIBE"), subscribeUri)
             {
-                Headers = {{"SID", sid}, {"TIMEOUT", $"Second-{timeout.TotalSeconds}"}}
+                Headers = { { "SID", sid }, { "TIMEOUT", $"Second-{timeout.TotalSeconds}" } }
             };
 
             using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
-            return (response.Headers.GetValues("SID").First(), int.Parse(response.Headers.GetValues("TIMEOUT").Single()[7..]));
+            return (response.Headers.GetValues("SID").First(),
+            int.Parse(response.Headers.GetValues("TIMEOUT").Single().AsSpan(7), Integer, InvariantCulture));
         }
 
         public async Task UnsubscribeAsync(Uri subscribeUri, string sid, CancellationToken cancellationToken)
         {
             using var request = new HttpRequestMessage(new HttpMethod("UNSUBSCRIBE"), subscribeUri)
             {
-                Headers = {{"SID", sid}}
+                Headers = { { "SID", sid } }
             };
 
             using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);

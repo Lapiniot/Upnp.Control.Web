@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.Models;
 
 namespace Web.Upnp.Control.DataAccess
@@ -7,8 +8,9 @@ namespace Web.Upnp.Control.DataAccess
     {
         public UpnpDbContext(DbContextOptions<UpnpDbContext> options) : base(options) { }
 
-        public DbSet<Device> UpnpDevices { get; set; }
+        public DbSet<UpnpDevice> UpnpDevices { get; set; }
 
+        [SuppressMessage("Microsoft.Design", "CA1062: Validate arguments of public methods")]
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new DeviceEntityTypeConfiguration());

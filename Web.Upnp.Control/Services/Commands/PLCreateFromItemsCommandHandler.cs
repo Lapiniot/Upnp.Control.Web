@@ -9,7 +9,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class PLCreateFromItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLCreateFromItemsCommand>
+    public sealed class PLCreateFromItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLCreateFromItemsCommand>
     {
         private readonly IOptionsSnapshot<PlaylistOptions> options;
 
@@ -21,6 +21,8 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(PLCreateFromItemsCommand command, CancellationToken cancellationToken)
         {
+            if(command is null) throw new System.ArgumentNullException(nameof(command));
+
             var (deviceId, (title, (sourceDeviceId, ids, depth))) = command;
             var maxDepth = depth ?? options.Value.MaxContainerScanDepth;
 

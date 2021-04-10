@@ -5,26 +5,14 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 {
     internal static class ProxyMiddlewareLoggingExtensions
     {
-        private static Action<ILogger, string, Exception> logError;
-        private static Action<ILogger, string, string, string, Exception> logStart;
-        private static Action<ILogger, string, Exception> logCompleted;
-        private static Action<ILogger, string, Exception> logAborted;
-        private static Action<ILogger, string, int, Exception> logBuffered;
-        private static Action<ILogger, string, int, Exception> logFlushed;
-        private static Action<ILogger, string, Exception> logDone;
-        private static Action<ILogger, string, string, Exception> logUnsupportedMethodAction;
-
-        static ProxyMiddlewareLoggingExtensions()
-        {
-            logError = LoggerMessage.Define<string>(LogLevel.Error, new EventId(10, "Error"), "{Id}: Error processing proxy request");
-            logStart = LoggerMessage.Define<string, string, string>(LogLevel.Information, new EventId(1, "Started"), "{Id}: New proxy request for: HTTP {Method} {RequestUri}");
-            logCompleted = LoggerMessage.Define<string>(LogLevel.Information, new EventId(2, "Completed"), "{Id}: Request succesfully completed");
-            logAborted = LoggerMessage.Define<string>(LogLevel.Information, new EventId(3, "Aborted"), "{Id}: Request aborted by client");
-            logBuffered = LoggerMessage.Define<string, int>(LogLevel.Debug, new EventId(4, "Buffered"), "{Id}: {Available} bytes prebuffered and are ready to be sent to the client");
-            logFlushed = LoggerMessage.Define<string, int>(LogLevel.Debug, new EventId(5, "Flushed"), "{Id}: {Available} bytes flushed to the client");
-            logDone = LoggerMessage.Define<string>(LogLevel.Debug, new EventId(6, "TransferDone"), "{Id}: Transfer finished, no more content provided by source");
-            logUnsupportedMethodAction = LoggerMessage.Define<string, string>(LogLevel.Warning, new EventId(7, "UnsupportedMethod"), "{Id}: Unsupported HTTP method: {Method}");
-        }
+        private static Action<ILogger, string, Exception> logError = LoggerMessage.Define<string>(LogLevel.Error, new EventId(10, "Error"), "{Id}: Error processing proxy request");
+        private static Action<ILogger, string, string, string, Exception> logStart = LoggerMessage.Define<string, string, string>(LogLevel.Information, new EventId(1, "Started"), "{Id}: New proxy request for: HTTP {Method} {RequestUri}");
+        private static Action<ILogger, string, Exception> logCompleted = LoggerMessage.Define<string>(LogLevel.Information, new EventId(2, "Completed"), "{Id}: Request succesfully completed");
+        private static Action<ILogger, string, Exception> logAborted = LoggerMessage.Define<string>(LogLevel.Information, new EventId(3, "Aborted"), "{Id}: Request aborted by client");
+        private static Action<ILogger, string, int, Exception> logBuffered = LoggerMessage.Define<string, int>(LogLevel.Debug, new EventId(4, "Buffered"), "{Id}: {Available} bytes prebuffered and are ready to be sent to the client");
+        private static Action<ILogger, string, int, Exception> logFlushed = LoggerMessage.Define<string, int>(LogLevel.Debug, new EventId(5, "Flushed"), "{Id}: {Available} bytes flushed to the client");
+        private static Action<ILogger, string, Exception> logDone = LoggerMessage.Define<string>(LogLevel.Debug, new EventId(6, "TransferDone"), "{Id}: Transfer finished, no more content provided by source");
+        private static Action<ILogger, string, string, Exception> logUnsupportedMethodAction = LoggerMessage.Define<string, string>(LogLevel.Warning, new EventId(7, "UnsupportedMethod"), "{Id}: Unsupported HTTP method: {Method}");
 
         internal static void LogAborted(this ILogger<ProxyMiddleware> logger, string id)
         {

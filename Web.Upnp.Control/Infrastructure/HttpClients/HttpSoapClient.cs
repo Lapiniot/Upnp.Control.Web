@@ -7,9 +7,9 @@ namespace Web.Upnp.Control.Infrastructure.HttpClients
     {
         public HttpSoapClient(HttpClient client)
         {
-            Client = client;
-            client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip,deflate");
-            client.DefaultRequestVersion = new Version(1, 1);
+            Client = client ?? throw new ArgumentNullException(nameof(client));
+            Client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip,deflate");
+            Client.DefaultRequestVersion = new Version(1, 1);
         }
 
         public HttpClient Client { get; }

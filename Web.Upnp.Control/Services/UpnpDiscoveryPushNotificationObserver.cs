@@ -63,7 +63,8 @@ namespace Web.Upnp.Control.Services
                 {
                     await sentinel.WaitAsync(cancellationToken).ConfigureAwait(false);
                     var keys = new System.Net.Http.SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);
-                    _ = PushAsync(subscription.Endpoint, keys, payload, cancellationToken).ContinueWith(t => sentinel.Release());
+                    _ = PushAsync(subscription.Endpoint, keys, payload, cancellationToken)
+                        .ContinueWith(t => sentinel.Release(), default, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
                 }
             }
         }

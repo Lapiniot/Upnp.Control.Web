@@ -13,7 +13,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class QueueAddItemsCommandHandler : IAsyncCommandHandler<QAddItemsCommand>
+    public sealed class QueueAddItemsCommandHandler : IAsyncCommandHandler<QAddItemsCommand>
     {
         private readonly IUpnpServiceFactory factory;
         private readonly IOptionsSnapshot<PlaylistOptions> options;
@@ -26,6 +26,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(QAddItemsCommand command, CancellationToken cancellationToken)
         {
+            if(command is null) throw new ArgumentNullException(nameof(command));
             var (deviceId, queueId, source) = command;
 
             var sourceCds = await factory.GetServiceAsync<ContentDirectoryService>(source.DeviceId, cancellationToken).ConfigureAwait(false);

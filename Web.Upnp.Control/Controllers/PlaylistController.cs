@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Web.Upnp.Control.Controllers
     [ApiController]
     [Route("api/devices/{deviceId}/playlists")]
     [Produces("application/json")]
+    [SuppressMessage("Microsoft.Design", "CA1062: Validate arguments of public methods")]
     public class PlaylistController : ControllerBase
     {
         #region SystemProperties playlist state related

@@ -6,7 +6,7 @@ using static Web.Upnp.Control.Models.Converters.DIDLWriterUtils;
 
 namespace Web.Upnp.Control.Models.Converters
 {
-    public class MediaItemJsonConverter : JsonConverter<MediaItem>
+    public sealed class MediaItemJsonConverter : JsonConverter<MediaItem>
     {
         public override MediaItem Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -15,6 +15,15 @@ namespace Web.Upnp.Control.Models.Converters
 
         public override void Write(Utf8JsonWriter writer, MediaItem value, JsonSerializerOptions options)
         {
+            if(writer is null) throw new ArgumentNullException(nameof(writer));
+            if(options is null) throw new ArgumentNullException(nameof(options));
+
+            if(value is null)
+            {
+                writer.WriteNullValue();
+                return;
+            }
+
             writer.WriteStartObject();
             WriteCoreProps(writer, value);
             if(value.Creator != null) writer.WriteString("creator", value.Creator);
@@ -22,9 +31,9 @@ namespace Web.Upnp.Control.Models.Converters
             if(value.Date != null) writer.WriteString("date", value.Date.ToString());
             if(value.Genre != null) writer.WriteString("genre", value.Genre);
             if(value.Description != null) writer.WriteString("description", value.Description);
-            if(value.TrackNumber is {} track) writer.WriteNumber("track", track);
-            if(value.DiscographyUrl is {} discographyUrl) writer.WriteString("discographyUrl", discographyUrl);
-            if(value.LyricsUrl is {} lyricsUrl) writer.WriteString("lyricsUrl", lyricsUrl);
+            if(value.TrackNumber is { } track) writer.WriteNumber("track", track);
+            if(value.DiscographyUrl is { } discographyUrl) writer.WriteString("discographyUrl", discographyUrl);
+            if(value.LyricsUrl is { } lyricsUrl) writer.WriteString("lyricsUrl", lyricsUrl);
             WriteCollection(writer, "albumArts", value.AlbumArts);
             WriteCollection(writer, "artists", value.Artists);
             WriteCollection(writer, "actors", value.Actors);

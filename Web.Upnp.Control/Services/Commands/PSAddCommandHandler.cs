@@ -8,7 +8,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
+    public sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
     {
         private readonly PushSubscriptionDbContext context;
 
@@ -19,11 +19,13 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(PSAddCommand command, CancellationToken cancellationToken)
         {
+            if(command is null) throw new ArgumentNullException(nameof(command));
+
             await context.Database.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
             var (endpoint, expiration, p256dhKey, authKey) = command.Subscription;
 
             DateTimeOffset? expires = expiration.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value) : null;
-            var subscription = await context.Subscriptions.FindAsync(new object[] { endpoint }).ConfigureAwait(false);
+            var subscription = await context.Subscriptions.FindAsync(new object[] { endpoint }, cancellationToken).ConfigureAwait(false);
             if(subscription != null)
             {
                 context.Remove(subscription);

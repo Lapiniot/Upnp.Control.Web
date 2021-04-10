@@ -7,7 +7,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class AVGetPlayModeQueryHandler : IAsyncQueryHandler<AVGetPlayModeQuery, string>
+    public sealed class AVGetPlayModeQueryHandler : IAsyncQueryHandler<AVGetPlayModeQuery, string>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -18,6 +18,7 @@ namespace Web.Upnp.Control.Services.Queries
 
         public async Task<string> ExecuteAsync(AVGetPlayModeQuery query, CancellationToken cancellationToken)
         {
+            if(query is null) throw new ArgumentNullException(nameof(query));
             var avt = await factory.GetServiceAsync<AVTransportService>(query.DeviceId, cancellationToken).ConfigureAwait(false);
             var settings = await avt.GetTransportSettingsAsync(0, cancellationToken).ConfigureAwait(false);
             return settings.TryGetValue("PlayMode", out var value) ? value : null;

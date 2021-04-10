@@ -10,7 +10,7 @@ using static IoT.Protocol.Upnp.Services.BrowseMode;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class AVSetStateCommandHandler : IAsyncCommandHandler<AVSetStateCommand>
+    public sealed class AVSetStateCommandHandler : IAsyncCommandHandler<AVSetStateCommand>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -21,6 +21,8 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(AVSetStateCommand command, CancellationToken cancellationToken)
         {
+            if(command is null) throw new ArgumentNullException(nameof(command));
+
             var (deviceId, state) = command;
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
 
@@ -75,7 +77,7 @@ namespace Web.Upnp.Control.Services.Commands
             await avt.PlayAsync(0, "1", cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task PlayUriAsync(string deviceId, Uri uri, CancellationToken cancellationToken)
+        private async Task PlayUriAsync(string deviceId, Uri uri, CancellationToken cancellationToken)
         {
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
             await avt.SetAVTransportUriAsync(0, uri.AbsoluteUri, null, cancellationToken).ConfigureAwait(false);

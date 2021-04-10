@@ -7,7 +7,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class RCGetVolumeQueryHandler : IAsyncQueryHandler<RCGetVolumeQuery, RCVolumeState>
+    public sealed class RCGetVolumeQueryHandler : IAsyncQueryHandler<RCGetVolumeQuery, RCVolumeState>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -18,6 +18,8 @@ namespace Web.Upnp.Control.Services.Queries
 
         public async Task<RCVolumeState> ExecuteAsync(RCGetVolumeQuery query, CancellationToken cancellationToken)
         {
+            if(query is null) throw new ArgumentNullException(nameof(query));
+
             var (deviceId, detailed) = query;
             var service = await factory.GetServiceAsync<RenderingControlService>(deviceId, cancellationToken).ConfigureAwait(false);
             var rv = await service.GetVolumeAsync(0, cancellationToken).ConfigureAwait(false);

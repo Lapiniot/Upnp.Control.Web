@@ -21,15 +21,15 @@ namespace Web.Upnp.Control.Services
 
         public void OnError(Exception error) {}
 
-        public void OnNext(UpnpDiscoveryEvent e)
+        public void OnNext(UpnpDiscoveryEvent value)
         {
-            switch(e)
+            switch(value)
             {
                 case UpnpDeviceAppearedEvent dae:
-                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new UpnpDiscoveryMessage("appeared", dae.Device));
+                    _ = context.Clients.All.SsdpDiscoveryEvent(value.DeviceId, new UpnpDiscoveryMessage("appeared", dae.Device));
                     break;
                 case UpnpDeviceDisappearedEvent dde:
-                    _ = context.Clients.All.SsdpDiscoveryEvent(e.DeviceId, new UpnpDiscoveryMessage("disappeared", dde.Device));
+                    _ = context.Clients.All.SsdpDiscoveryEvent(value.DeviceId, new UpnpDiscoveryMessage("disappeared", dde.Device));
                     break;
             }
         }

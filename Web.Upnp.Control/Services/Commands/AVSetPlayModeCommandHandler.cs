@@ -7,7 +7,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class AVSetPlayModeCommandHandler : IAsyncCommandHandler<AVSetPlayModeCommand>
+    public sealed class AVSetPlayModeCommandHandler : IAsyncCommandHandler<AVSetPlayModeCommand>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -18,6 +18,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(AVSetPlayModeCommand command, CancellationToken cancellationToken)
         {
+            if(command is null) throw new ArgumentNullException(nameof(command));
             var avt = await factory.GetServiceAsync<AVTransportService>(command.DeviceId, cancellationToken).ConfigureAwait(false);
             await avt.SetPlayModeAsync(0, command.PlayMode, cancellationToken).ConfigureAwait(false);
         }

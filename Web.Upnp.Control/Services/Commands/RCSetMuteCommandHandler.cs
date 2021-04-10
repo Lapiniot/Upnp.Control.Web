@@ -7,7 +7,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class RCSetMuteCommandHandler : IAsyncCommandHandler<RCSetMuteCommand>
+    public sealed class RCSetMuteCommandHandler : IAsyncCommandHandler<RCSetMuteCommand>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -18,6 +18,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(RCSetMuteCommand command, CancellationToken cancellationToken)
         {
+            if(command is null) throw new ArgumentNullException(nameof(command));
             var (deviceId, mute) = command;
             var service = await factory.GetServiceAsync<RenderingControlService>(deviceId, cancellationToken).ConfigureAwait(false);
             await service.SetMuteAsync(0, mute, cancellationToken).ConfigureAwait(false);

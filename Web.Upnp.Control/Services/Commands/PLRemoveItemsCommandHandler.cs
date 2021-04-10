@@ -8,12 +8,14 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class PLRemoveItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLRemoveItemsCommand>
+    public sealed class PLRemoveItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLRemoveItemsCommand>
     {
         public PLRemoveItemsCommandHandler(IUpnpServiceFactory factory) : base(factory) { }
 
         public async Task ExecuteAsync(PLRemoveItemsCommand command, CancellationToken cancellationToken)
         {
+            if(command is null) throw new System.ArgumentNullException(nameof(command));
+
             var (deviceId, playlistId, items) = command;
 
             var pls = await GetServiceAsync<PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);

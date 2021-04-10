@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using IoT.Device.Xiaomi.Umi.Services;
@@ -40,7 +41,7 @@ namespace Web.Upnp.Control.Services
 
         #endregion
 
-        private void SubscribeToEvents(string deviceId, ICollection<Service> services)
+        private void SubscribeToEvents(string deviceId, IEnumerable<Service> services)
         {
             var baseUrl = $"api/events/{Uri.EscapeUriString(deviceId)}/notify";
 
@@ -55,9 +56,9 @@ namespace Web.Upnp.Control.Services
             );
         }
 
-        private async Task RenewSubscriptionsAsync(string deviceId, ICollection<Service> services)
+        private async Task RenewSubscriptionsAsync(string deviceId, IEnumerable<Service> services)
         {
-            var sessions = repository.Get(deviceId).ToList();
+            var sessions = repository.GetById(deviceId).ToList();
 
             if(!sessions.Any() || sessions.Any(s => s.IsCompleted))
             {
@@ -66,6 +67,7 @@ namespace Web.Upnp.Control.Services
             }
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private async Task TerminateAsync(IEnumerable<IAsyncDisposable> subscriptions)
         {
             foreach(var subscription in subscriptions)
@@ -83,13 +85,13 @@ namespace Web.Upnp.Control.Services
 
         #region Implementation of IObserver<UpnpDiscoveryEvent>
 
-        public void OnCompleted() {}
+        public void OnCompleted() { }
 
-        public void OnError(Exception error) {}
+        public void OnError(Exception error) { }
 
-        public void OnNext(UpnpDiscoveryEvent e)
+        public void OnNext(UpnpDiscoveryEvent value)
         {
-            switch(e)
+            switch(value)
             {
                 case UpnpDeviceAppearedEvent dae when IsRenderer(dae.Device):
                     SubscribeToEvents(dae.DeviceId, dae.Device.Services);
@@ -104,7 +106,7 @@ namespace Web.Upnp.Control.Services
             }
         }
 
-        private static bool IsRenderer(Device device)
+        private static bool IsRenderer(UpnpDevice device)
         {
             return device.DeviceType == UpnpServices.MediaRenderer ||
                 device.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema);

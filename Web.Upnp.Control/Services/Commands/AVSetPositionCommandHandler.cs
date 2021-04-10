@@ -5,10 +5,11 @@ using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.Services;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
+using static System.Globalization.CultureInfo;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class AVSetPositionCommandHandler : IAsyncCommandHandler<AVSetPositionCommand>
+    public sealed class AVSetPositionCommandHandler : IAsyncCommandHandler<AVSetPositionCommand>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -19,6 +20,8 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(AVSetPositionCommand command, CancellationToken cancellationToken)
         {
+            if(command is null) throw new ArgumentNullException(nameof(command));
+
             var (deviceId, (position, time)) = command;
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
 
@@ -27,7 +30,7 @@ namespace Web.Upnp.Control.Services.Commands
                 var info = await avt.GetPositionInfoAsync(0, cancellationToken).ConfigureAwait(false);
                 if(info.TryGetValue("TrackDuration", out var value) && TimeSpan.TryParse(value, out var duration))
                 {
-                    var absTime = (duration * position.Value).ToString("hh\\:mm\\:ss");
+                    var absTime = (duration * position.Value).ToString("hh\\:mm\\:ss", InvariantCulture);
 
                     try
                     {
@@ -46,7 +49,7 @@ namespace Web.Upnp.Control.Services.Commands
             }
             else if(time != null)
             {
-                await avt.SeekAsync(target: time.Value.ToString("hh\\:mm\\:ss"), cancellationToken: cancellationToken).ConfigureAwait(false);
+                await avt.SeekAsync(target: time.Value.ToString("hh\\:mm\\:ss", InvariantCulture), cancellationToken: cancellationToken).ConfigureAwait(false);
             }
             else
             {

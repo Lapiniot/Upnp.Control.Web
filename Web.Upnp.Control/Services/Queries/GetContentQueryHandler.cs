@@ -9,10 +9,12 @@ using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 using static IoT.Protocol.Upnp.Services.BrowseMode;
+using static System.Globalization.CultureInfo;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class GetContentQueryHandler : IAsyncQueryHandler<CDGetContentQuery, CDContent>
+    public sealed class GetContentQueryHandler : IAsyncQueryHandler<CDGetContentQuery, CDContent>
     {
         private readonly IUpnpServiceFactory factory;
         private readonly ILogger<GetContentQueryHandler> logger;
@@ -25,6 +27,8 @@ namespace Web.Upnp.Control.Services.Queries
 
         public async Task<CDContent> ExecuteAsync(CDGetContentQuery query, CancellationToken cancellationToken)
         {
+            if(query is null) throw new ArgumentNullException(nameof(query));
+
             var (deviceId, path, (withParents, withResource, withVendor, withMetadata, take, skip)) = query;
 
             path ??= "0";
@@ -44,7 +48,7 @@ namespace Web.Upnp.Control.Services.Queries
             {
                 var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
                 items = DIDLXmlParser.Parse(result["Result"], withResource == true, withVendor == true).ToArray();
-                total = int.Parse(result["TotalMatches"]);
+                total = int.Parse(result["TotalMatches"], InvariantCulture);
             }
 
             IEnumerable<Item> parents = null;
@@ -56,8 +60,9 @@ namespace Web.Upnp.Control.Services.Queries
             return new CDContent(total, metadata, items, parents);
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string parent, string filter,
-            bool withResource, bool withVendor, CancellationToken cancellationToken)
+                    bool withResource, bool withVendor, CancellationToken cancellationToken)
         {
             var parents = new List<Item>();
 

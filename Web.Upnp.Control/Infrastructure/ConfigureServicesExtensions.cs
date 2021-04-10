@@ -83,6 +83,8 @@ namespace Web.Upnp.Control.Infrastructure
 
         public static IEndpointConventionBuilder MapImageLoaderProxy(this IEndpointRouteBuilder routeBuilder, string route)
         {
+            if(routeBuilder is null) throw new ArgumentNullException(nameof(routeBuilder));
+
             return routeBuilder.Map(route, routeBuilder
                     .CreateApplicationBuilder()
                     .UseMiddleware<ImageLoaderProxyMiddleware>()
@@ -92,6 +94,8 @@ namespace Web.Upnp.Control.Infrastructure
 
         public static IEndpointConventionBuilder MapContentProxy(this IEndpointRouteBuilder routeBuilder, string route)
         {
+            if(routeBuilder is null) throw new ArgumentNullException(nameof(routeBuilder));
+
             return routeBuilder.Map(route, routeBuilder
                     .CreateApplicationBuilder()
                     .UseMiddleware<ContentProxyMiddleware>()
@@ -101,6 +105,8 @@ namespace Web.Upnp.Control.Infrastructure
 
         public static IEndpointConventionBuilder MapCertificateDownloadMiddleware(this IEndpointRouteBuilder routeBuilder, string pattern)
         {
+            if(routeBuilder is null) throw new ArgumentNullException(nameof(routeBuilder));
+
             return routeBuilder.Map(pattern, routeBuilder
                     .CreateApplicationBuilder()
                     .UseMiddleware<CertificateDownloadMiddleware>()

@@ -4,9 +4,9 @@ using Web.Upnp.Control.Models;
 
 namespace Web.Upnp.Control.DataAccess
 {
-    public class DeviceEntityTypeConfiguration : IEntityTypeConfiguration<Device>
+    internal class DeviceEntityTypeConfiguration : IEntityTypeConfiguration<UpnpDevice>
     {
-        public void Configure(EntityTypeBuilder<Device> builder)
+        public void Configure(EntityTypeBuilder<UpnpDevice> builder)
         {
             builder.HasKey(d => d.Udn);
 

@@ -7,7 +7,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class PLCreateCommandHandler : IAsyncCommandHandler<PLCreateCommand>
+    public sealed class PLCreateCommandHandler : IAsyncCommandHandler<PLCreateCommand>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -18,6 +18,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(PLCreateCommand command, CancellationToken cancellationToken)
         {
+            if(command is null) throw new ArgumentNullException(nameof(command));
             var service = await factory.GetServiceAsync<PlaylistService>(command.DeviceId, cancellationToken).ConfigureAwait(false);
             await service.CreateAsync(title: command.Title, cancellationToken: cancellationToken).ConfigureAwait(false);
         }

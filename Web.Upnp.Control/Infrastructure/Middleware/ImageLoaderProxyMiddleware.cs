@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,8 @@ using Web.Upnp.Control.Infrastructure.HttpClients;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
 {
-    public class ImageLoaderProxyMiddleware : ProxyMiddleware
+    [SuppressMessage("Microsoft.Design", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by infrastructure")]
+    internal sealed class ImageLoaderProxyMiddleware : ProxyMiddleware
     {
         private readonly IOptions<ImageProxyOptions> options;
 
@@ -21,7 +23,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
         protected override void CopyHeaders(HttpResponseMessage responseMessage, HttpContext context)
         {
-            if(!responseMessage.Content.Headers.ContentType.MediaType.StartsWith("image/"))
+            if(!responseMessage.Content.Headers.ContentType.MediaType.StartsWith("image/", System.StringComparison.InvariantCulture))
             {
                 throw new InvalidDataException("Invalid data. Content of type image/* was expected.");
             }

@@ -5,7 +5,7 @@ using IoT.Protocol.Upnp.DIDL;
 
 namespace Web.Upnp.Control.Models.Converters
 {
-    public class ItemJsonConverter : JsonConverter<Item>
+    public sealed class ItemJsonConverter : JsonConverter<Item>
     {
         public override Item Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -14,7 +14,14 @@ namespace Web.Upnp.Control.Models.Converters
 
         public override void Write(Utf8JsonWriter writer, Item value, JsonSerializerOptions options)
         {
+            if(writer is null) throw new ArgumentNullException(nameof(writer));
             if(options is null) throw new ArgumentNullException(nameof(options));
+
+            if(value is null)
+            {
+                writer.WriteNullValue();
+                return;
+            }
 
             switch(value)
             {

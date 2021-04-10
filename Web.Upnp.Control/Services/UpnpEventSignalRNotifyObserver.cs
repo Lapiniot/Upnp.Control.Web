@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.SignalR;
@@ -8,6 +9,7 @@ using Web.Upnp.Control.Models.Events;
 
 namespace Web.Upnp.Control.Services
 {
+    [SuppressMessage("Microsoft.Design", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by infrastructure")]
     internal class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
     {
         private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
@@ -17,9 +19,9 @@ namespace Web.Upnp.Control.Services
             this.hub = hub ?? throw new ArgumentNullException(nameof(hub));
         }
 
-        public void OnCompleted() {}
+        public void OnCompleted() { }
 
-        public void OnError(Exception error) {}
+        public void OnError(Exception error) { }
 
         public void OnNext(UpnpEvent value)
         {
@@ -57,7 +59,7 @@ namespace Web.Upnp.Control.Services
                 Current = current,
                 Next = next,
                 CurrentTrack = map.TryGetValue("CurrentTrack", out value) ? value : null,
-                CurrentTrackUri = map.TryGetValue("CurrentTrackURI", out value) ? value : null,
+                CurrentTrackUri = map.TryGetValue("CurrentTrackURI", out value) ? new Uri(value) : null,
             };
 
             var position = new AVPosition(map.TryGetValue("CurrentTrack", out value) ? value : null,

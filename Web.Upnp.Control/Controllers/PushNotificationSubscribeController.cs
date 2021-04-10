@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +11,7 @@ namespace Web.Upnp.Control.Controllers
     [ApiController]
     [Route("api/push-subscriptions")]
     [Produces("application/json")]
+    [SuppressMessage("Microsoft.Design", "CA1062: Validate arguments of public methods")]
     public class PushNotificationSubscribeController : ControllerBase
     {
         [HttpPost]

@@ -7,7 +7,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public class PLUpdateCommandHandler : IAsyncCommandHandler<PLUpdateCommand>
+    public sealed class PLUpdateCommandHandler : IAsyncCommandHandler<PLUpdateCommand>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -18,6 +18,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(PLUpdateCommand command, CancellationToken cancellationToken)
         {
+            if(command is null) throw new ArgumentNullException(nameof(command));
             var (deviceId, playlistId, title) = command;
             var service = await factory.GetServiceAsync<PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
             var result = await service.RenameAsync(objectId: playlistId, title: title, cancellationToken: cancellationToken).ConfigureAwait(false);

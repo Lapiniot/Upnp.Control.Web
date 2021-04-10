@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Web.Upnp.Control.Infrastructure.Routing
 {
-    public class FromRouteOrQueryAttribute : Attribute, IBindingSourceMetadata, IModelNameProvider
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public sealed class FromRouteOrQueryAttribute : Attribute, IBindingSourceMetadata, IModelNameProvider
     {
         public BindingSource BindingSource { get; } = CompositeBindingSource.Create(
             new[] {BindingSource.Path, BindingSource.Query}, "PathAndQuery");

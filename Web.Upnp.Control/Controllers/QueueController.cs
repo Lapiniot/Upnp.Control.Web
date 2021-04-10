@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace Web.Upnp.Control.Controllers
     [ApiController]
     [Route("api/devices/{deviceId}/queues")]
     [Produces("application/json")]
+    [SuppressMessage("Microsoft.Design", "CA1062: Validate arguments of public methods")]
     public class QueueController : ControllerBase
     {
         [HttpPost("{queueId}/items")]

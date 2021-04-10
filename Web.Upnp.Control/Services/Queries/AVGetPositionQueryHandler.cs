@@ -9,7 +9,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class AVGetPositionQueryHandler : IAsyncQueryHandler<AVGetPositionQuery, AVPosition>
+    public sealed class AVGetPositionQueryHandler : IAsyncQueryHandler<AVGetPositionQuery, AVPosition>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -20,6 +20,8 @@ namespace Web.Upnp.Control.Services.Queries
 
         public async Task<AVPosition> ExecuteAsync(AVGetPositionQuery query, CancellationToken cancellationToken)
         {
+            if(query is null) throw new ArgumentNullException(nameof(query));
+
             var (deviceId, detailed) = query;
             var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
             var info = await avt.GetPositionInfoAsync(0, cancellationToken).ConfigureAwait(false);

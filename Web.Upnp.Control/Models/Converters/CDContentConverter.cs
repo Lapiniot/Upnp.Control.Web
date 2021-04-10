@@ -5,7 +5,7 @@ using IoT.Protocol.Upnp.DIDL;
 
 namespace Web.Upnp.Control.Models.Converters
 {
-    public class CDContentConverter : JsonConverter<CDContent>
+    public sealed class CDContentConverter : JsonConverter<CDContent>
     {
         public override CDContent Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -15,6 +15,14 @@ namespace Web.Upnp.Control.Models.Converters
         public override void Write(Utf8JsonWriter writer, CDContent value, JsonSerializerOptions options)
         {
             if(writer == null) throw new ArgumentNullException(nameof(writer));
+            if(options is null) throw new ArgumentNullException(nameof(options));
+
+            if(value is null)
+            {
+                writer.WriteNullValue();
+                return;
+            }
+
 
             writer.WriteStartObject();
             writer.WriteNumber("total", value.Total);

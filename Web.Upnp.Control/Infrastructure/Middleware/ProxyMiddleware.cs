@@ -14,7 +14,7 @@ using static System.Globalization.CultureInfo;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
 {
-    public abstract class ProxyMiddleware : IMiddleware
+    internal abstract class ProxyMiddleware : IMiddleware
     {
         protected int BufferSize;
         private readonly HttpClient client;
@@ -87,11 +87,11 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
         #endregion
 
-        protected Uri GetTargetUri(HttpContext context)
+        protected static Uri GetTargetUri(HttpContext context)
         {
             var url = context.GetRouteValue("url") as string ?? throw new InvalidOperationException();
 
-            return new Uri(url.IndexOf('?') switch
+            return new Uri(url.IndexOf('?', StringComparison.InvariantCulture) switch
             {
                 <= 0 => url.Replace("%2F", "/", true, InvariantCulture),
                 int i and > 0 => url[..i].Replace("%2F", "/", true, InvariantCulture) + url[i..]

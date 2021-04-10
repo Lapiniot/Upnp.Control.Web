@@ -7,7 +7,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Queries
 {
-    public class CMGetConnectionInfoQueryHandler : IAsyncQueryHandler<CMGetConnectionInfoQuery, CMConnectionInfo>
+    public sealed class CMGetConnectionInfoQueryHandler : IAsyncQueryHandler<CMGetConnectionInfoQuery, CMConnectionInfo>
     {
         private readonly IUpnpServiceFactory factory;
 
@@ -18,8 +18,9 @@ namespace Web.Upnp.Control.Services.Queries
 
         public async Task<CMConnectionInfo> ExecuteAsync(CMGetConnectionInfoQuery query, CancellationToken cancellationToken)
         {
+            if(query is null) throw new ArgumentNullException(nameof(query));
             var service = await factory.GetServiceAsync<ConnectionManagerService>(query.DeviceId, cancellationToken).ConfigureAwait(false);
-            var r = await service.GetCurrentConnectionInfoAsync(query.ConnectionId, cancellationToken);
+            var r = await service.GetCurrentConnectionInfoAsync(query.ConnectionId, cancellationToken).ConfigureAwait(false);
             return new CMConnectionInfo(r["RcsID"], r["AVTransportID"], r["PeerConnectionID"], r["Direction"], r["Status"]);
         }
     }

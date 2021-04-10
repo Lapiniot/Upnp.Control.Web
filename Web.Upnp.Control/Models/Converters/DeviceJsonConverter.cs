@@ -4,27 +4,36 @@ using System.Text.Json.Serialization;
 
 namespace Web.Upnp.Control.Models.Converters
 {
-    public class DeviceJsonConverter : JsonConverter<Device>
+    public sealed class DeviceJsonConverter : JsonConverter<UpnpDevice>
     {
-        public override Device Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override UpnpDevice Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public override void Write(Utf8JsonWriter writer, Device value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, UpnpDevice value, JsonSerializerOptions options)
         {
+            if(writer is null) throw new ArgumentNullException(nameof(writer));
+            if(options is null) throw new ArgumentNullException(nameof(options));
+
+            if(value is null)
+            {
+                writer.WriteNullValue();
+                return;
+            }
+
             writer.WriteStartObject();
             writer.WriteString("udn", value.Udn);
             writer.WriteString("url", value.Location.AbsoluteUri);
             writer.WriteString("type", value.DeviceType);
             writer.WriteString("name", value.FriendlyName);
             writer.WriteString("maker", value.Manufacturer);
-            if(value.ManufacturerUri is {AbsoluteUri: {} makerUrl}) writer.WriteString("makerUrl", makerUrl);
+            if(value.ManufacturerUri is { AbsoluteUri: { } makerUrl }) writer.WriteString("makerUrl", makerUrl);
             writer.WriteString("description", value.Description);
             writer.WriteString("model", value.ModelName);
-            if(value.ModelUri is {AbsoluteUri: {} modelUrl}) writer.WriteString("modelUrl", modelUrl);
+            if(value.ModelUri is { AbsoluteUri: { } modelUrl }) writer.WriteString("modelUrl", modelUrl);
             writer.WriteString("modelNumber", value.ModelNumber);
-            if(value.PresentationUri is {AbsoluteUri: {} presentationUrl}) writer.WriteString("presentUrl", presentationUrl);
+            if(value.PresentationUri is { AbsoluteUri: { } presentationUrl }) writer.WriteString("presentUrl", presentationUrl);
 
             var serviceConverter = (JsonConverter<Service>)options.GetConverter(typeof(Service));
 

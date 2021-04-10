@@ -6,7 +6,7 @@ using static Web.Upnp.Control.Models.Converters.DIDLWriterUtils;
 
 namespace Web.Upnp.Control.Models.Converters
 {
-    public class ContainerJsonConverter : JsonConverter<Container>
+    public sealed class ContainerJsonConverter : JsonConverter<Container>
     {
         public override Container Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -15,6 +15,15 @@ namespace Web.Upnp.Control.Models.Converters
 
         public override void Write(Utf8JsonWriter writer, Container value, JsonSerializerOptions options)
         {
+            if(writer is null) throw new ArgumentNullException(nameof(writer));
+            if(options is null) throw new ArgumentNullException(nameof(options));
+
+            if(value is null)
+            {
+                writer.WriteNullValue();
+                return;
+            }
+
             writer.WriteStartObject();
             WriteCoreProps(writer, value);
             if(value.ChildCount is { } childCount) writer.WriteNumber("count", childCount);

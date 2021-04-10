@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,6 +13,8 @@ using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Services.Abstractions;
 using Icon = Web.Upnp.Control.Models.Icon;
+using static System.StringComparison;
+using System;
 
 namespace Web.Upnp.Control.Services
 {
@@ -30,6 +32,7 @@ namespace Web.Upnp.Control.Services
             this.metadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.LogInformation("Started UPnP device discovery service...");
@@ -44,23 +47,25 @@ namespace Web.Upnp.Control.Services
 
                 try
                 {
+#pragma warning disable CA1508 // Looks like bug in the analyzer code 
                     await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
+#pragma warning restore CA1508 // Looks like bug in the analyzer code
                     {
                         try
                         {
                             if(logger.IsEnabled(LogLevel.Trace)) DebugDump(reply, LogLevel.Trace);
 
-                            if(reply.StartLine.StartsWith("M-SEARCH")) continue;
+                            if(reply.StartLine.StartsWith("M-SEARCH", InvariantCulture)) continue;
 
                             var udn = ExtractUdn(reply.UniqueServiceName);
 
-                            if(reply.StartLine.StartsWith("NOTIFY") && reply.TryGetValue("NT", out var nt))
+                            if(reply.StartLine.StartsWith("NOTIFY", InvariantCulture) && reply.TryGetValue("NT", out var nt))
                             {
                                 if(nt != RootDevice) continue;
 
                                 if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
                                 {
-                                    var existing = await context.FindAsync<Device>(new object[] { udn }, stoppingToken).ConfigureAwait(false);
+                                    var existing = await context.FindAsync<UpnpDevice>(new object[] { udn }, stoppingToken).ConfigureAwait(false);
                                     if(existing != null)
                                     {
                                         context.Remove(existing);
@@ -76,7 +81,7 @@ namespace Web.Upnp.Control.Services
                                 continue;
                             }
 
-                            var device = await context.FindAsync<Device>(new object[] { udn }, stoppingToken).ConfigureAwait(false);
+                            var device = await context.FindAsync<UpnpDevice>(new object[] { udn }, stoppingToken).ConfigureAwait(false);
 
                             if(device != null)
                             {
@@ -92,7 +97,7 @@ namespace Web.Upnp.Control.Services
 
                             var desc = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
 
-                            device = new Device(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
+                            device = new UpnpDevice(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
                                 desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10),
                                 desc.ManufacturerUri, desc.ModelUri, desc.PresentationUri)
                             {
@@ -124,6 +129,7 @@ namespace Web.Upnp.Control.Services
             catch(Exception ex)
             {
                 logger.LogError(ex, "Error discovering UPnP devices and services!");
+                throw;
             }
         }
 
@@ -142,12 +148,13 @@ namespace Web.Upnp.Control.Services
 
         private static string ExtractUdn(string usn)
         {
-            var i1 = usn.IndexOf(':');
+            var i1 = usn.IndexOf(':', InvariantCulture);
             if(i1 < 0) return usn;
             var i2 = usn.IndexOf(':', ++i1);
             return i2 < 0 ? usn[i1..] : usn[i1..i2];
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private void Notify(IEnumerable<IObserver<UpnpDiscoveryEvent>> observers, UpnpDiscoveryEvent discoveryEvent)
         {
             foreach(var observer in observers)
@@ -163,6 +170,7 @@ namespace Web.Upnp.Control.Services
             }
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private void NotifyCompletion(IEnumerable<IObserver<UpnpDiscoveryEvent>> observers)
         {
             foreach(var observer in observers)

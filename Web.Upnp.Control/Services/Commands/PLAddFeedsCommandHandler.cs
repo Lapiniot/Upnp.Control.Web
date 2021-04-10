@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
+using static System.Globalization.CultureInfo;
 
 namespace Web.Upnp.Control.Services.Commands
 {
@@ -27,8 +28,9 @@ namespace Web.Upnp.Control.Services.Commands
         {
             return command switch
             {
-                { DeviceId: null or "" } => throw new ArgumentException(string.Format(MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
-                { PlaylistId: null or "" } => throw new ArgumentException(string.Format(MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
+                null => throw new ArgumentNullException(nameof(command)),
+                { DeviceId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
+                { PlaylistId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
                 { DeviceId: { } deviceId, PlaylistId: { } playlistId, Source: { Files: { } files, UseProxy: var useProxy } } =>
                     AddFromFilesAsync(deviceId, playlistId, files, useProxy, cancellationToken),
                 _ => throw new ArgumentException("Valid file must be provided")
@@ -43,8 +45,8 @@ namespace Web.Upnp.Control.Services.Commands
         {
             return command switch
             {
-                { DeviceId: null or "" } => throw new ArgumentException(string.Format(MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
-                { PlaylistId: null or "" } => throw new ArgumentException(string.Format(MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
+                { DeviceId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
+                { PlaylistId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
                 { DeviceId: { } deviceId, PlaylistId: { } playlistId, Source: { Url: { } url, Title: var title, UseProxy: var useProxy } } =>
                     AddFromUrlAsync(deviceId, playlistId, url, title, useProxy, cancellationToken),
                 _ => throw new ArgumentException("Valid feed url must be provided")

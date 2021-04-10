@@ -18,12 +18,12 @@ namespace Web.Upnp.Control.Infrastructure
             this.encoding = encoding ?? Encoding.UTF8;
         }
 
-        protected override IEnumerable<ParseResult> Parse(ReadResult result)
+        protected override IEnumerable<ParseResult> Parse(ReadResult readResult)
         {
             var consumed = 0L;
-            var buffer = result.Buffer;
+            var buffer = readResult.Buffer;
 
-            while(consumed < buffer.Length && TryReadTrack(buffer.Slice(consumed), result.IsCompleted || result.IsCanceled, out var line, out long c))
+            while(consumed < buffer.Length && TryReadTrack(buffer.Slice(consumed), readResult.IsCompleted || readResult.IsCanceled, out var line, out long c))
             {
                 consumed += c;
                 if(line.Path is null) continue;

@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Http.Json;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -21,7 +20,6 @@ using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Infrastructure;
-using Web.Upnp.Control.Infrastructure.Routing;
 using Web.Upnp.Control.Models.Converters;
 using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Services;
@@ -89,8 +87,7 @@ namespace Web.Upnp.Control
                 .Configure<JsonOptions>(options => ConfigureJsonSerializer(options.SerializerOptions, customConverters));
 
             services
-                .Configure<RouteOptions>(options => options.ConstraintMap.Add("timespan", typeof(TimeSpanRouteConstraint)))
-                .AddControllers(options => options.Filters.Add<RequestCancelledExceptionFilter>())
+                .AddControllers(options => options.Filters.Add<RequestCancelledExceptionFilterAttribute>())
                 .AddJsonOptions(options => ConfigureJsonSerializer(options.JsonSerializerOptions, customConverters));
 
             services

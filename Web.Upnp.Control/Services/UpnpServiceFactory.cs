@@ -10,6 +10,7 @@ using IoT.Protocol.Upnp.Services;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
+using static System.Globalization.CultureInfo;
 
 namespace Web.Upnp.Control.Services
 {
@@ -38,7 +39,7 @@ namespace Web.Upnp.Control.Services
 
         public async Task<TService> GetServiceAsync<TService>(string deviceId, CancellationToken cancellationToken) where TService : SoapActionInvoker
         {
-            var device = await context.UpnpDevices.FindAsync(new object[]{deviceId}, cancellationToken).ConfigureAwait(false);
+            var device = await context.UpnpDevices.FindAsync(new object[] { deviceId }, cancellationToken).ConfigureAwait(false);
 
             var schema = Cache.GetOrAdd(typeof(TService), ServiceSchemaAttribute.GetSchema);
 
@@ -47,14 +48,14 @@ namespace Web.Upnp.Control.Services
             return GetService<TService>(controlUrl);
         }
 
-        private static Uri GetControlUrl(Device device, string schema)
+        private static Uri GetControlUrl(UpnpDevice device, string schema)
         {
             var service = device.Services.FirstOrDefault(s => s.ServiceType == schema);
 
             return service != null
                 ? service.ControlUrl
                 : device.Services.Any(s => s.ServiceType == "urn:xiaomi-com:service:Playlist:1")
-                    ? new UriBuilder(device.Location) { Path = string.Format(UmiMappings[schema], device.Udn) }.Uri
+                    ? new UriBuilder(device.Location) { Path = string.Format(InvariantCulture, UmiMappings[schema], device.Udn) }.Uri
                     : null;
         }
 

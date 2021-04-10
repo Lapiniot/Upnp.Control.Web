@@ -10,7 +10,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services
 {
-    public class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
+    public sealed class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
     {
         private readonly ILogger logger;
         private readonly IEventSubscribeClient subscribeClient;
@@ -26,6 +26,8 @@ namespace Web.Upnp.Control.Services
 
         public IAsyncCancelable Subscribe(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken stoppingToken)
         {
+            if(callbackUri is null) throw new ArgumentNullException(nameof(callbackUri));
+
             if(!callbackUri.IsAbsoluteUri)
             {
                 callbackUri = new Uri(bindingAddress ??= HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses, "http"), callbackUri);

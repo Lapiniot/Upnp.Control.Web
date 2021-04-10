@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,6 +56,7 @@ namespace Web.Upnp.Control.Controllers
             NotifyObservers<T>(deviceId, properties, vendorProperties);
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private void NotifyObservers<T>(string deviceId, IReadOnlyDictionary<string, string> properties,
             IReadOnlyDictionary<string, string> vendorProperties)
             where T : UpnpPropertyChangedEvent, new()

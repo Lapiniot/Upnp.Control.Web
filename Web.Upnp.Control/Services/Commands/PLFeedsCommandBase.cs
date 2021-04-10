@@ -31,6 +31,8 @@ namespace Web.Upnp.Control.Services.Commands
         protected PLFeedsCommandBase(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
             IServer server, IOptionsSnapshot<PlaylistOptions> options, ILogger<PLFeedsCommandBase> logger) : base(serviceFactory)
         {
+            if(server is null) throw new ArgumentNullException(nameof(server));
+
             var serverAddresses = server.Features.Get<IServerAddressesFeature>() ?? throw new InvalidOperationException("Get server addresses feature is not available");
             BindingUri = ResolveExternalBindingAddress(serverAddresses.Addresses, "http");
             this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
@@ -44,31 +46,37 @@ namespace Web.Upnp.Control.Services.Commands
 
         protected async Task AppendFromFileAsync(XmlWriter writer, IFormFile file, bool? useProxy, CancellationToken cancellationToken)
         {
+            if(file is null) throw new ArgumentNullException(nameof(file));
+
             using var stream = file.OpenReadStream();
             await using var reader = new StreamPipeReader(stream);
             reader.Start();
             var encoding = Path.GetExtension(file.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
+#pragma warning disable CA1508 // Looks like bug in the analyzer code
             await foreach(var (path, info, _) in new M3uParser(reader, encoding).ConfigureAwait(false).WithCancellation(cancellationToken))
+#pragma warning restore CA1508 // Looks like bug in the analyzer code
             {
                 await AppendFeedItemAsync(writer, new Uri(path), info, useProxy, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        protected async Task AppendFeedItemAsync(XmlWriter writer, Uri mediaUrl, string title, bool? useProxy, CancellationToken cancellationToken)
+        protected async Task AppendFeedItemAsync(XmlWriter writer, Uri mediaUri, string title, bool? useProxy, CancellationToken cancellationToken)
         {
+            if(mediaUri is null) throw new ArgumentNullException(nameof(mediaUri));
+
             try
             {
-                using var request = new HttpRequestMessage(HttpMethod.Get, mediaUrl) { Headers = { { "Icy-MetaData", "1" } } };
+                using var request = new HttpRequestMessage(HttpMethod.Get, mediaUri) { Headers = { { "Icy-MetaData", "1" } } };
                 using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 var length = response.Content.Headers.ContentLength;
                 var contentType = response.Content.Headers.ContentType;
                 int? br = response.Headers.TryGetValues("icy-br", out var values) && int.TryParse(values.First(), out var v) ? v * 128 : null;
-                title = string.IsNullOrWhiteSpace(title) ? (response.Headers.TryGetValues("icy-name", out values) ? values.First() : mediaUrl.ToString()) : title;
+                title = string.IsNullOrWhiteSpace(title) ? (response.Headers.TryGetValues("icy-name", out values) ? values.First() : mediaUri.ToString()) : title;
                 var description = response.Headers.TryGetValues("icy-description", out values) ? values.First() : null;
                 var genre = response.Headers.TryGetValues("icy-genre", out values) ? values.First() : null;
                 useProxy ??= response.Headers.TryGetValues("icy-metaint", out _);
-                var url = useProxy != true ? mediaUrl : GetProxyUri(mediaUrl);
+                var url = useProxy != true ? mediaUri : GetProxyUri(mediaUri);
 
                 DIDLUtils.WriteItem(writer, title, description, genre, url, length, contentType?.MediaType, br);
             }
@@ -76,8 +84,8 @@ namespace Web.Upnp.Control.Services.Commands
             {
                 logger.LogWarning(exception, "Media feed test request failed");
 
-                title = !string.IsNullOrWhiteSpace(title) ? title : mediaUrl.ToString();
-                var url = useProxy == false ? mediaUrl : GetProxyUri(mediaUrl);
+                title = !string.IsNullOrWhiteSpace(title) ? title : mediaUri.ToString();
+                var url = useProxy == false ? mediaUri : GetProxyUri(mediaUri);
 
                 DIDLUtils.WriteItem(writer, title, null, null, url, null, null, null);
             }
@@ -94,6 +102,8 @@ namespace Web.Upnp.Control.Services.Commands
 
         protected async Task<string> GetMetadataAsync(IEnumerable<IFormFile> files, bool? useProxy, CancellationToken cancellationToken)
         {
+            if(files is null) throw new ArgumentNullException(nameof(files));
+
             var sb = new StringBuilder();
 
             using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
@@ -107,6 +117,7 @@ namespace Web.Upnp.Control.Services.Commands
                     catch(Exception exception)
                     {
                         logger.LogError(exception, $"Error processing playlist file '{file.FileName}'");
+                        throw;
                     }
                 }
             }
