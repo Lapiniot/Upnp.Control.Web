@@ -247,6 +247,12 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
+.form-switch {
+    input[type="checkbox"].form-check-input {
+        font-size: 1.5em;
+    }
+}
+
 label.cb-wrap {
     line-height: 100%;
     text-align: center;

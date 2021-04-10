@@ -30,8 +30,8 @@ export class AddUrlModal extends React.Component<AddUrlModalProps> {
                 <input type="text" defaultValue={feedTitle} className="form-control" name="feed-title" placeholder="[feed title]"
                     aria-label="Title" aria-describedby="basic-addon2" />
             </div>
-            <div className="form-check form-switch">
-                <input type="checkbox" defaultChecked={useProxy} className="form-check-input" name="use-proxy" id="use-dlna-proxy" />
+            <div className="form-check form-switch px-0">
+                <input type="checkbox" defaultChecked={useProxy} className="form-check-input m-0 mx-2" name="use-proxy" id="use-dlna-proxy" />
                 <label className="form-check-label" htmlFor="use-dlna-proxy">Use DLNA proxy for live stream</label>
             </div>
             <Modal.Footer>

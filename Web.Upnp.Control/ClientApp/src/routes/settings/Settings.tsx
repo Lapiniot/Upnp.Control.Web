@@ -44,9 +44,9 @@ function FlagEditor({ className, callback, checked: checkedProp, disabled: disab
             setDisabled(false);
         }
     }, [callback]);
-    return <div className="form-check form-switch">
+    return <div className="form-check form-switch px-0 ms-auto">
         <input {...other} type="checkbox" checked={checked} disabled={disabled} onChange={changedHandler}
-            className={`form-check-input${className ? ` ${className}` : ""}`} />
+            className={`form-check-input m-0${className ? ` ${className}` : ""}`} />
     </div>;
 }
 
@@ -92,7 +92,7 @@ export default () => {
             <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                     <small>General</small>
-                    <div className="d-grid grid-1fr-auto gap-2 mt-1 align-items-center">
+                    <div className="d-grid grid-1fr-auto gap-3 mt-1 align-items-center">
                         <label htmlFor="page-size-select">Default page size</label>
                         <PageSizeSelect id="page-size-select" />
                         <label htmlFor="timeout-editor">Default request timeout (ms.)</label>
