@@ -1,4 +1,4 @@
-﻿import React, { ComponentType, createRef } from "react";
+﻿import React, { ComponentType, createRef, HTMLAttributes } from "react";
 import { SignalRListener, SignalRMessageHandler } from "../../components/SignalR";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { CategoryRouteParams, DataSourceProps, DeviceRouteParams, DiscoveryMessage, UpnpDevice } from "./Types";
@@ -7,18 +7,31 @@ import NotificationsHost from "../../components/NotificationsHost";
 
 export type TemplatedDataComponentProps<T = any, P = {}> = { itemTemplate: ComponentType<DataSourceProps<T> & P> }
 
-type DeviceContainerProps = DataFetchProps<UpnpDevice> & TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> & DeviceRouteParams;
+export type ViewMode = "grid" | "carousel" | "auto";
 
-export function DeviceContainer({ itemTemplate: Template, dataContext, category, fetching }: DeviceContainerProps) {
-    return <>
-        {fetching && <LoadIndicatorOverlay />}
-        <div className="h-100 overflow-auto d-grid grid-auto-x3 align-items-start justify-content-evenly m-3">
-            {dataContext?.source && <Template data-source={dataContext.source} category={category} device={dataContext.source.udn} />}
-        </div>
-    </>;
+function GridContainer({ viewMode, className, children, ...other }: HTMLAttributes<HTMLDivElement> & { viewMode?: ViewMode }) {
+    const viewClass = viewMode === "grid"
+        ? "grid-responsive-auto"
+        : viewMode === "carousel"
+            ? "grid-carousel"
+            : "grid-carousel grid-responsive-auto-lg";
+    return <div {...other} className={`h-100 d-grid grid-scroll-snap ${viewClass}${className ? " " + className : ""}`}>
+        {children}
+    </div>;
 }
 
-export type ViewMode = "grid" | "carousel" | "auto";
+type DeviceContainerProps = DataFetchProps<UpnpDevice> &
+    TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> &
+    DeviceRouteParams & { viewMode?: ViewMode };
+
+export function DeviceContainer({ itemTemplate: Item, dataContext, category, fetching, viewMode }: DeviceContainerProps) {
+    return <>
+        {fetching && <LoadIndicatorOverlay />}
+        <GridContainer viewMode={viewMode}>
+            {dataContext?.source && <Item data-source={dataContext.source} category={category} device={dataContext.source.udn} />}
+        </GridContainer>
+    </>;
+}
 
 type DeviceListContainerProps = DataFetchProps<UpnpDevice[]> &
     TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> &
@@ -42,17 +55,12 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
 
     render() {
         const { dataContext, itemTemplate: Item, fetching, category, viewMode } = this.props;
-        const viewClass = viewMode === "grid"
-            ? "grid-responsive-auto"
-            : viewMode === "carousel"
-                ? "grid-carousel"
-                : "grid-carousel grid-responsive-auto-lg";
         return <>
             {fetching && <LoadIndicatorOverlay />}
             <SignalRListener handlers={this.handlers}>
-                <div className={`h-100 d-grid grid-scroll-snap ${viewClass}`}>
+                <GridContainer viewMode={viewMode}>
                     {[dataContext?.source.map(item => <Item key={item.udn} data-source={item} category={category} device={item.udn} />)]}
-                </div>
+                </GridContainer>
                 <NotificationsHost ref={this.nhRef} />
             </SignalRListener>
         </>
