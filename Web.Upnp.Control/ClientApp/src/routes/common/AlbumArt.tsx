@@ -1,9 +1,12 @@
 import { HTMLAttributes } from "react";
 import { viaProxy } from "../../components/Extensions";
 export function getIconByClass(itemClass: string) {
-    if (itemClass.includes(".container"))
-        return "folder";
-    else if (itemClass.includes(".audioItem"))
+    if (itemClass.startsWith("object.container")) {
+        if (itemClass.endsWith(".playlistContainer"))
+            return "music"
+        else
+            return "folder";
+    } else if (itemClass.includes(".audioItem"))
         return "music";
     else if (itemClass.includes(".videoItem"))
         return "film";
