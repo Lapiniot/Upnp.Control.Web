@@ -1,6 +1,10 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +18,7 @@ using Web.Upnp.Control.Models.Events;
 
 namespace Web.Upnp.Control.Services
 {
-    public sealed class UpnpDiscoveryPushNotificationObserver : IObserver<UpnpDiscoveryEvent>, IDisposable
+    public sealed class UpnpDiscoveryPushNotificationObserver : IObserver<UpnpDiscoveryEvent>, IAsyncDisposable
     {
         private readonly IServiceProvider services;
         private IWebPushClient client;
@@ -22,7 +26,8 @@ namespace Web.Upnp.Control.Services
         private readonly IOptions<JsonOptions> jsonOptions;
         private readonly IOptions<WebPushOptions> wpOptions;
         private CancellationTokenSource cts;
-        private SemaphoreSlim sentinel;
+        private readonly Channel<UpnpDiscoveryMessage> channel;
+        private readonly WorkerLoop worker;
         private bool disposed;
 
         public UpnpDiscoveryPushNotificationObserver(IServiceProvider services, IWebPushClient client,
@@ -36,7 +41,15 @@ namespace Web.Upnp.Control.Services
             this.wpOptions = wpOptions ?? throw new ArgumentNullException(nameof(wpOptions));
 
             cts = new CancellationTokenSource();
-            sentinel = new SemaphoreSlim(4);
+            channel = Channel.CreateBounded<UpnpDiscoveryMessage>(new BoundedChannelOptions(100)
+            {
+                FullMode = BoundedChannelFullMode.DropOldest,
+                SingleReader = true,
+                SingleWriter = false
+            });
+
+            worker = new WorkerLoop(PostMessageAsync);
+            _ = worker.RunAsync(cts.Token);
         }
 
         public void OnCompleted()
@@ -51,34 +64,69 @@ namespace Web.Upnp.Control.Services
         {
             switch(value)
             {
-                case UpnpDeviceAppearedEvent dae: _ = SendAsync(new UpnpDiscoveryMessage("appeared", dae.Device), cts.Token); break;
-                case UpnpDeviceDisappearedEvent dde: _ = SendAsync(new UpnpDiscoveryMessage("disappeared", dde.Device), cts.Token); break;
+                case UpnpDeviceAppearedEvent dae: Post(new UpnpDiscoveryMessage("appeared", dae.Device)); break;
+                case UpnpDeviceDisappearedEvent dde: Post(new UpnpDiscoveryMessage("disappeared", dde.Device)); break;
             }
         }
 
-        private async Task SendAsync(UpnpDiscoveryMessage message, CancellationToken cancellationToken)
-        {
-            var payload = JsonSerializer.SerializeToUtf8Bytes(message, jsonOptions.Value.SerializerOptions);
-
-            using(var scope = this.services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<PushSubscriptionDbContext>();
-
-                await foreach(var subscription in context.Subscriptions.AsAsyncEnumerable().WithCancellation(cancellationToken).ConfigureAwait(false))
-                {
-                    await sentinel.WaitAsync(cancellationToken).ConfigureAwait(false);
-                    var keys = new System.Net.Http.SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);
-                    _ = PushAsync(subscription.Endpoint, keys, payload, cancellationToken)
-                        .ContinueWith(t => sentinel.Release(), default, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-                }
-            }
-        }
-
-        private async Task PushAsync(Uri endpoint, System.Net.Http.SubscriptionKeys keys, byte[] payload, CancellationToken cancellationToken)
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Should be never-throw by design")]
+        private async void Post(UpnpDiscoveryMessage message)
         {
             try
             {
-                await client.SendAsync(endpoint, keys, payload, wpOptions.Value.TTLSeconds, cancellationToken).ConfigureAwait(false);
+                var vt = channel.Writer.WriteAsync(message, cts.Token);
+                if(!vt.IsCompletedSuccessfully) await vt.ConfigureAwait(false);
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(ex, "Error writing message to the queue");
+            }
+        }
+
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "None of the exceptions should break worker loop")]
+        private async Task PostMessageAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var message = await channel.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
+                var payload = JsonSerializer.SerializeToUtf8Bytes(message, jsonOptions.Value.SerializerOptions);
+
+                using(var scope = this.services.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetRequiredService<PushSubscriptionDbContext>();
+
+                    try
+                    {
+                        await foreach(var subscription in context.Subscriptions.AsAsyncEnumerable().WithCancellation(cancellationToken).ConfigureAwait(false))
+                        {
+                            Uri endpoint = subscription.Endpoint;
+                            var keys = new SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);
+                            try
+                            {
+                                await client.SendAsync(endpoint, keys, payload, wpOptions.Value.TTLSeconds, cancellationToken).ConfigureAwait(false);
+                            }
+                            catch(OperationCanceledException)
+                            {
+                                // expected
+                            }
+                            catch(HttpRequestException hre) when(hre.StatusCode == HttpStatusCode.Gone)
+                            {
+                                context.Remove(subscription);
+                            }
+                            catch(Exception ex)
+                            {
+                                logger.LogError(ex, "Error pushing message to endpoint: " + endpoint);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        if(context.ChangeTracker.HasChanges())
+                        {
+                            await context.SaveChangesAsync(cts.Token).ConfigureAwait(false);
+                        }
+                    }
+                }
             }
             catch(OperationCanceledException)
             {
@@ -86,19 +134,24 @@ namespace Web.Upnp.Control.Services
             }
             catch(Exception ex)
             {
-                logger.LogError(ex, "Error pushing message to endpoint: " + endpoint);
-                throw;
+                logger.LogError(ex, "Error pushing message");
             }
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
             if(!disposed)
             {
-                cts.Cancel();
-                cts.Dispose();
-                sentinel.Dispose();
-                disposed = true;
+                try
+                {
+                    cts.Cancel();
+                    cts.Dispose();
+                    await worker.DisposeAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    disposed = true;
+                }
             }
         }
     }

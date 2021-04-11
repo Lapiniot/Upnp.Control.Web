@@ -37,6 +37,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
         <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.0" />
+        <PackageReference Include="System.Threading.Channels" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
