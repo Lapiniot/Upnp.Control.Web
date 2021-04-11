@@ -1,7 +1,9 @@
 /// <reference lib="webworker" />
 /* eslint-disable no-restricted-globals */
 
-import { UpnpDevice } from "./routes/common/Types";
+import { viaProxy } from "./components/Extensions";
+import { getFallbackIcon, getOptimalIcon } from "./routes/common/DeviceIcon";
+import { Services, UpnpDevice } from "./routes/common/Types";
 
 interface PrecacheEntry {
     integrity?: string;
@@ -148,11 +150,45 @@ self.addEventListener("push", event => {
     const data = event.data?.json();
 
     if ("type" in data && "device" in data) {
+
         const device = data.device as UpnpDevice;
         const title = `UPnP discovery: ${device.name}`;
-        const body = `'${device.description}' has ${data.type === "appeared" ? "appeared on the" : "disappeared from the"} network`;
-        const options = { body: body };
+        const icon = getOptimalIcon(device.icons, 192);
+        const category = device.services.some(s => s.type.startsWith(Services.UmiPlaylist))
+            ? "umi"
+            : device.services.some(s => s.type.startsWith(Services.MediaRenderer))
+                ? "renderers"
+                : "upnp";
+
+        const options: NotificationOptions = data.type === "appeared" ? {
+            body: `'${device.description}' has appeared on the network`,
+            icon: icon ? viaProxy(icon.url) : getFallbackIcon(device.type),
+            data: { url: `/${category}/${device.udn}` }
+        } : {
+            body: `'${device.description}' has disappeared from the network`,
+            icon: `/${getFallbackIcon(device.type)}`,
+            data: { url: `/${category}` }
+        };
+
         event.waitUntil(self.registration.showNotification(title, options));
+    }
+})
+
+self.addEventListener("notificationclick", event => {
+    const relativeUrl = event.notification.data?.url;
+    if (relativeUrl) {
+        const url = new URL(relativeUrl, self.origin).href;
+        event.waitUntil((async () => {
+            const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+            for (let index = 0; index < clients.length; index++) {
+                const client = clients[index];
+                if (client.url === url) {
+                    client.focus();
+                    return;
+                }
+            }
+            self.clients.openWindow(url);
+        })());
     }
 })
 

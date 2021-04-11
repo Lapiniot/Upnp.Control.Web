@@ -31,7 +31,7 @@ export function viaProxy(url: string) {
     return `/proxy/${encodeURIComponent(url)}`;
 }
 
-const getSafeContentUrl = window.location.protocol === "https:"
+const getSafeContentUrl = global.isSecureContext
     ? viaProxy
     : function (originalUrl: string) { return originalUrl; }
 
