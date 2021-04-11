@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Infrastructure.HttpClients;
 using Web.Upnp.Control.Models;
@@ -16,20 +17,24 @@ namespace Web.Upnp.Control.Services
     public sealed class UpnpDiscoveryPushNotificationObserver : IObserver<UpnpDiscoveryEvent>, IDisposable
     {
         private readonly IServiceProvider services;
-        private Infrastructure.HttpClients.WebPushClient client;
+        private IWebPushClient client;
         private readonly ILogger<UpnpDiscoveryPushNotificationObserver> logger;
-        private readonly IOptions<JsonOptions> options;
+        private readonly IOptions<JsonOptions> jsonOptions;
+        private readonly IOptions<WebPushOptions> wpOptions;
         private CancellationTokenSource cts;
         private SemaphoreSlim sentinel;
         private bool disposed;
 
-        public UpnpDiscoveryPushNotificationObserver(IServiceProvider services, WebPushClient client,
-            ILogger<UpnpDiscoveryPushNotificationObserver> logger, IOptions<JsonOptions> options)
+        public UpnpDiscoveryPushNotificationObserver(IServiceProvider services, IWebPushClient client,
+            ILogger<UpnpDiscoveryPushNotificationObserver> logger,
+            IOptions<JsonOptions> jsonOptions, IOptions<WebPushOptions> wpOptions)
         {
             this.services = services ?? throw new ArgumentNullException(nameof(services));
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.jsonOptions = jsonOptions ?? throw new ArgumentNullException(nameof(jsonOptions));
+            this.wpOptions = wpOptions ?? throw new ArgumentNullException(nameof(wpOptions));
+
             cts = new CancellationTokenSource();
             sentinel = new SemaphoreSlim(4);
         }
@@ -53,7 +58,7 @@ namespace Web.Upnp.Control.Services
 
         private async Task SendAsync(UpnpDiscoveryMessage message, CancellationToken cancellationToken)
         {
-            var payload = JsonSerializer.SerializeToUtf8Bytes(message, options.Value.SerializerOptions);
+            var payload = JsonSerializer.SerializeToUtf8Bytes(message, jsonOptions.Value.SerializerOptions);
 
             using(var scope = this.services.CreateScope())
             {
@@ -73,7 +78,7 @@ namespace Web.Upnp.Control.Services
         {
             try
             {
-                await client.SendAsync(endpoint, keys, payload, cancellationToken).ConfigureAwait(false);
+                await client.SendAsync(endpoint, keys, payload, wpOptions.Value.TTLSeconds, cancellationToken).ConfigureAwait(false);
             }
             catch(OperationCanceledException)
             {

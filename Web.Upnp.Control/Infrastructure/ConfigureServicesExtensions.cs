@@ -50,8 +50,9 @@ namespace Web.Upnp.Control.Infrastructure
 
         public static IServiceCollection AddWebPushClient(this IServiceCollection services)
         {
-            services.AddHttpClient<WebPushClient>();
+            services.AddHttpClient<IWebPushClient, WebPushClient>();
             services.AddOptions<VAPIDSecretOptions>().BindConfiguration("VAPID");
+            services.AddOptions<WebPushOptions>().BindConfiguration("WebPush");
             return services;
         }
 
