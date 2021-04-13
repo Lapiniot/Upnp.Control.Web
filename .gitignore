@@ -22,3 +22,4 @@ Web.Upnp.Control/ClientApp/public/service-worker.js.map
 *.crt
 *.key
 *.pfx
+Web.Upnp.Control/appsettings.Secrets.json

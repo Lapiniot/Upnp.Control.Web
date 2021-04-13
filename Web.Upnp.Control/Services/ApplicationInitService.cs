@@ -1,8 +1,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.DataAccess;
 
 namespace Web.Upnp.Control.Services
@@ -10,13 +12,23 @@ namespace Web.Upnp.Control.Services
     public class ApplicationInitService : IHostedService
     {
         private readonly IServiceProvider services;
+        private readonly IHostEnvironment environment;
+        private readonly IConfiguration configuration;
 
-        public ApplicationInitService(IServiceProvider services)
+        public ApplicationInitService(IServiceProvider services, IHostEnvironment environment, IConfiguration configuration)
         {
             this.services = services ?? throw new ArgumentNullException(nameof(services));
+            this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            await InitializeDatabasesAsync(cancellationToken).ConfigureAwait(false);
+            await ConfigMigrations.EnsureVapidKeysExistAsync(environment.ContentRootPath, configuration).ConfigureAwait(false);
+        }
+
+        private async Task InitializeDatabasesAsync(CancellationToken cancellationToken)
         {
             using(var scope = services.CreateScope())
             {
