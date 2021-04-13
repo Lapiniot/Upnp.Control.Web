@@ -88,7 +88,11 @@ namespace Web.Upnp.Control
                 .Configure<JsonOptions>(options => ConfigureJsonSerializer(options.SerializerOptions, customConverters));
 
             services
-                .AddControllers(options => options.Filters.Add<RequestCancelledExceptionFilterAttribute>())
+                .AddControllers(options =>
+                {
+                    options.Filters.Add<RequestCancelledExceptionFilterAttribute>();
+                    options.OutputFormatters.Add(new BinaryContentOutputFormatter());
+                })
                 .AddJsonOptions(options => ConfigureJsonSerializer(options.JsonSerializerOptions, customConverters));
 
             services

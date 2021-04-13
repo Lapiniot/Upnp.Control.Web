@@ -12,4 +12,8 @@ namespace Web.Upnp.Control.Models
     public record CMGetProtocolInfoQuery(string DeviceId);
     public record CMGetConnectionsQuery(string DeviceId);
     public record CMGetConnectionInfoQuery(string DeviceId, string ConnectionId);
+    public record PSGetServerKeyQuery()
+    {
+        public static PSGetServerKeyQuery Instance { get; } = new PSGetServerKeyQuery();
+    }
 }

@@ -23,8 +23,8 @@ namespace Web.Upnp.Control.Controllers
         {
             try
             {
-                await handler.ExecuteAsync(new PSAddCommand(subscription), cancellationToken).ConfigureAwait(false);
                 HttpContext.Response.StatusCode = StatusCodes.Status201Created;
+                await handler.ExecuteAsync(new PSAddCommand(subscription), cancellationToken).ConfigureAwait(false);
             }
             catch
             {
@@ -42,8 +42,26 @@ namespace Web.Upnp.Control.Controllers
         {
             try
             {
-                await handler.ExecuteAsync(new PSRemoveCommand(subscription), cancellationToken).ConfigureAwait(false);
                 HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
+                await handler.ExecuteAsync(new PSRemoveCommand(subscription), cancellationToken).ConfigureAwait(false);
+            }
+            catch
+            {
+                HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                throw;
+            }
+        }
+
+        [HttpGet("server-key")]
+        [Produces("application/octet-stream")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<byte[]> GetServerKeyAsync([FromServices] IAsyncQueryHandler<PSGetServerKeyQuery, byte[]> handler, CancellationToken cancellationToken)
+        {
+            try
+            {
+                HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+                return await handler.ExecuteAsync(PSGetServerKeyQuery.Instance, cancellationToken).ConfigureAwait(false);
             }
             catch
             {
