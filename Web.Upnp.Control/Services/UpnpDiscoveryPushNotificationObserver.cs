@@ -97,9 +97,9 @@ namespace Web.Upnp.Control.Services
 
                     try
                     {
-                        #pragma warning disable CA1508 // Looks like a bug in the analyzer code 
+#pragma warning disable CA1508 // Looks like a bug in the analyzer code 
                         await foreach(var subscription in context.Subscriptions.AsAsyncEnumerable().WithCancellation(cancellationToken).ConfigureAwait(false))
-                        #pragma warning restore CA1508 // Looks like a bug in the analyzer code 
+#pragma warning restore CA1508 // Looks like a bug in the analyzer code 
                         {
                             Uri endpoint = subscription.Endpoint;
                             var keys = new SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);
@@ -111,7 +111,7 @@ namespace Web.Upnp.Control.Services
                             {
                                 // expected
                             }
-                            catch(HttpRequestException hre) when(hre.StatusCode == HttpStatusCode.Gone)
+                            catch(HttpRequestException hre) when(hre.StatusCode == HttpStatusCode.Gone || hre.StatusCode == HttpStatusCode.Forbidden)
                             {
                                 context.Remove(subscription);
                             }
