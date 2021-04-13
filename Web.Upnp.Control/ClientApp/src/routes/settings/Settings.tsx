@@ -1,53 +1,12 @@
-﻿import { InputHTMLAttributes, SelectHTMLAttributes, useCallback, useEffect, useState } from "react";
-import $s from "../common/Settings";
-import PushSubService from "../../components/PushSubscriptionService";
+﻿import $s from "../common/Settings";
+import { FlagEditor } from "../../components/editors/FlagEditor";
+import { NumberEditor } from "../../components/editors/NumberEditor";
+import { OptionsEditor } from "../../components/editors/OptionsEditor";
+import { PushSubscriptionToggle } from "./PushSubscriptionToggle";
 
-function PageSizeSelect({ className, ...other }: SelectHTMLAttributes<HTMLSelectElement>) {
-    const [size, setSize] = useState($s.get("pageSize"));
-
-    const changedHandler = useCallback((event) => {
-        const pageSize = parseInt(event.target.value);
-        $s.set("pageSize", pageSize);
-        setSize(pageSize);
-    }, []);
-
-    return <select className={`form-select form-select-sm w-auto${className ? ` ${className}` : ""}`}
-        aria-label="Items per page" {...other} value={size} onChange={changedHandler}>
-        {$s.get("pageSizes").map(s => <option key={s} value={s}>{s}</option>)}
-    </select>
-}
-
-function NumberEditor({ className, callback, ...other }: InputHTMLAttributes<HTMLInputElement> & { callback: (value: number) => void }) {
-    const changedHandler = useCallback(({ target: { value } }) => callback(parseInt(value)), [callback]);
-    return <input {...other} type="number" onChange={changedHandler}
-        className={`form-control form-control-sm w-auto${className ? ` ${className}` : ""}`} />;
-}
-
-type FlagEditorProps = InputHTMLAttributes<HTMLInputElement> &
-{ callback: (value: boolean) => void | boolean | Promise<boolean> };
-
-function FlagEditor({ className, callback, checked: checkedProp, disabled: disabledProp, ...other }: FlagEditorProps) {
-    const [checked, setChecked] = useState(checkedProp);
-    const [disabled, setDisabled] = useState(disabledProp);
-    const changedHandler = useCallback(async ({ target: { checked } }) => {
-        setDisabled(true);
-        try {
-            const value = callback(checked);
-            if (typeof value === "boolean")
-                setChecked(value);
-            else if (value instanceof Promise)
-                setChecked(await value);
-            else
-                setChecked(checked);
-        }
-        finally {
-            setDisabled(false);
-        }
-    }, [callback]);
-    return <div className="form-check form-switch px-0 ms-auto">
-        <input {...other} type="checkbox" checked={checked} disabled={disabled} onChange={changedHandler}
-            className={`form-check-input m-0${className ? ` ${className}` : ""}`} />
-    </div>;
+function setPageSize(value: string) {
+    const pageSize = parseInt(value);
+    if (pageSize > 0) $s.set("pageSize", pageSize);
 }
 
 function setTimeout(timeout: number) {
@@ -66,26 +25,6 @@ function setUseProxy(useProxy: boolean) {
     $s.set("useDlnaProxy", useProxy);
 }
 
-async function setUsePushes(usePushes: boolean) {
-    if (usePushes) {
-        if (await Notification.requestPermission() === "granted") {
-            try {
-                await PushSubService.unsubscribe();
-            }
-            finally {
-                await PushSubService.subscribe();
-                $s.set("usePushNotifications", true);
-                return true;
-            }
-        }
-    } else {
-        await PushSubService.unsubscribe();
-        $s.set("usePushNotifications", false);
-    }
-
-    return false;
-}
-
 export default () => {
     return <div className="overflow-auto">
         <div className="m-0 m-sm-3 d-flex flex-column w-md-50">
@@ -94,18 +33,18 @@ export default () => {
                     <small>General</small>
                     <div className="d-grid grid-1fr-auto gap-3 mt-1 align-items-center">
                         <label htmlFor="page-size-select">Default page size</label>
-                        <PageSizeSelect id="page-size-select" />
+                        <OptionsEditor id="page-size-select" options={$s.get("pageSizes")} value={$s.get("pageSize")} callback={setPageSize} />
                         <label htmlFor="timeout-editor">Default request timeout (ms.)</label>
-                        <NumberEditor id="timeout-editor" min="1000" max="30000" step="200" defaultValue={$s.get("timeout")} callback={setTimeout} />
+                        <NumberEditor id="timeout-editor" min="1000" max="30000" step="200" value={$s.get("timeout")} callback={setTimeout} />
                         <label htmlFor="scan-depth-editor">Container scan depth</label>
-                        <NumberEditor id="scan-depth-editor" min="0" max="5" defaultValue={$s.get("containerScanDepth")} callback={setScanDepth} />
+                        <NumberEditor id="scan-depth-editor" min="0" max="5" value={$s.get("containerScanDepth")} callback={setScanDepth} />
                         <label htmlFor="scan-timeout-editor">Container scan timeout (ms.)</label>
-                        <NumberEditor id="scan-timeout-editor" min="1000" max="90000" step="200" defaultValue={$s.get("containerScanTimeout")} callback={setScanTimeout} />
+                        <NumberEditor id="scan-timeout-editor" min="1000" max="90000" step="200" value={$s.get("containerScanTimeout")} callback={setScanTimeout} />
                         <label htmlFor="use-proxy-editor">Use DLNA proxy</label>
                         <FlagEditor id="use-proxy-editor" className="ms-auto" checked={$s.get("useDlnaProxy")} callback={setUseProxy} />
                         {("serviceWorker" in navigator) && ("PushManager" in window) && <>
-                            <label htmlFor="use-pushes-editor">Use push notifications</label>
-                            <FlagEditor id="use-pushes-editor" className="ms-auto" checked={$s.get("usePushNotifications")} callback={setUsePushes} />
+                            <label htmlFor="use-pushes-editor">Enable push notifications</label>
+                            <PushSubscriptionToggle id="use-pushes-editor" className="ms-auto" />
                         </>}
                     </div>
                 </li>

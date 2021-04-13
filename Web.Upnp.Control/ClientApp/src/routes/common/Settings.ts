@@ -5,7 +5,6 @@ type TypedSettings = {
     containerScanTimeout: number;
     containerScanDepth: number;
     useDlnaProxy: boolean;
-    usePushNotifications: boolean;
 }
 
 const defaults: TypedSettings = {
@@ -14,8 +13,7 @@ const defaults: TypedSettings = {
     timeout: 5000,
     containerScanTimeout: 15000,
     containerScanDepth: 3,
-    useDlnaProxy: true,
-    usePushNotifications: false,
+    useDlnaProxy: true
 };
 
 export type BookmarkGroup = "devices" | "playlists" | "items";

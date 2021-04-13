@@ -28,5 +28,9 @@ export default {
                 ]);
             }
         }
+    },
+    isSubscribed: async () => {
+        const reg = await navigator.serviceWorker.ready;
+        return reg && (await reg.pushManager.getSubscription()) !== null;
     }
 }
