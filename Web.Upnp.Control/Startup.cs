@@ -42,7 +42,8 @@ namespace Web.Upnp.Control
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                //.AddDbContext<UpnpDbContext>(p => p.UseInMemoryDatabase("UpnpDB"))
+                .AddHostedService<ApplicationInitService>()
+                .AddHostedService<UpnpDiscoveryService>()
                 .AddDbContext<UpnpDbContext>(builder => builder
                     .UseSqlite("Data Source=upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                     .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))

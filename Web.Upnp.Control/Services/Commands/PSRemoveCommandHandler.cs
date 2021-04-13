@@ -19,7 +19,6 @@ namespace Web.Upnp.Control.Services.Commands
         public async Task ExecuteAsync(PSRemoveCommand command, CancellationToken cancellationToken)
         {
             if(command is null) throw new ArgumentNullException(nameof(command));
-            await context.Database.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
             var subscription = await context.Subscriptions.FindAsync(new object[] { command.Subscription.Endpoint }, cancellationToken).ConfigureAwait(false);
             if(subscription != null)
             {

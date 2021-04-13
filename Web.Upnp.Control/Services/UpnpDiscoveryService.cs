@@ -41,7 +41,6 @@ namespace Web.Upnp.Control.Services
             {
                 using var scope = services.CreateScope();
                 await using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
-                await context.Database.EnsureCreatedAsync(stoppingToken).ConfigureAwait(false);
                 var enumerator = scope.ServiceProvider.GetRequiredService<IAsyncEnumerable<SsdpReply>>();
                 var observers = scope.ServiceProvider.GetServices<IObserver<UpnpDiscoveryEvent>>().ToArray();
 

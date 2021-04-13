@@ -21,7 +21,6 @@ namespace Web.Upnp.Control.Services.Commands
         {
             if(command is null) throw new ArgumentNullException(nameof(command));
 
-            await context.Database.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
             var (endpoint, expiration, p256dhKey, authKey) = command.Subscription;
 
             DateTimeOffset? expires = expiration.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value) : null;
