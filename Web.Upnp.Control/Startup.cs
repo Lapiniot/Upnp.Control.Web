@@ -43,7 +43,6 @@ namespace Web.Upnp.Control
         {
             services
                 .AddHostedService<ApplicationInitService>()
-                .AddHostedService<UpnpDiscoveryService>()
                 .AddHostedService<WebPushSenderService>(sp => sp.GetRequiredService<WebPushSenderService>())
                 .AddSingleton<WebPushSenderService>()
                 .AddDbContext<UpnpDbContext>(builder => builder
