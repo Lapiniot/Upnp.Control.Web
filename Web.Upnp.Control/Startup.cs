@@ -44,6 +44,8 @@ namespace Web.Upnp.Control
             services
                 .AddHostedService<ApplicationInitService>()
                 .AddHostedService<UpnpDiscoveryService>()
+                .AddHostedService<WebPushSenderService>(sp => sp.GetRequiredService<WebPushSenderService>())
+                .AddSingleton<WebPushSenderService>()
                 .AddDbContext<UpnpDbContext>(builder => builder
                     .UseSqlite("Data Source=upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                     .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))
@@ -54,8 +56,8 @@ namespace Web.Upnp.Control
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
                 .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
                 .AddScoped<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
-                .AddScoped<IObserver<UpnpDiscoveryEvent>, UpnpDiscoveryPushNotificationObserver>()
                 .AddScoped<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
+                .AddScoped<IObserver<UpnpDiscoveryEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
                 .AddScoped<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
                 .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
                 .AddTransient<IAsyncEnumerable<SsdpReply>>(_ => new SsdpEventEnumerator(UpnpServices.RootDevice,
