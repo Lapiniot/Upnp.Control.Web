@@ -47,7 +47,6 @@ namespace Web.Upnp.Control.Services
 
         void IObserver<UpnpDiscoveryEvent>.OnCompleted()
         {
-            channel.Writer.Complete();
         }
 
         void IObserver<UpnpDiscoveryEvent>.OnError(Exception error)
@@ -115,9 +114,15 @@ namespace Web.Upnp.Control.Services
                         }
                     }
                 }
-                catch(OperationCanceledException)
+                catch(OperationCanceledException oce) when(oce.CancellationToken == stoppingToken)
                 {
                     // expected
+                    break;
+                }
+                catch(ChannelClosedException)
+                {
+                    logger.LogWarning("Channel closed. Terminating push dispatch loop.");
+                    break;
                 }
                 catch(Exception ex)
                 {
@@ -142,7 +147,7 @@ namespace Web.Upnp.Control.Services
 
         public override void Dispose()
         {
-            channel.Writer.Complete();
+            channel.Writer.TryComplete();
             base.Dispose();
         }
     }
