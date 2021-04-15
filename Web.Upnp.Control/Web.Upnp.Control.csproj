@@ -8,7 +8,7 @@
         <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
         <IsPackable>false</IsPackable>
         <SpaRoot>ClientApp\</SpaRoot>
-        <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+        <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**;appsettings.Secrets.json;appsettings.Development.json;package.json;package-lock.json</DefaultItemExcludes>
         <!-- Trimming settings -->
         <PublishTrimmed>true</PublishTrimmed>
         <TrimMode>Link</TrimMode>
