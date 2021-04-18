@@ -19,12 +19,12 @@ const BookmarkItemButton = useBookmarkButton("PlaylistBookmarkWidget", playlistB
 export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
     const artist = d.artists?.[0] ?? d.creator;
     return <div className="d-flex align-items-center">
-        <div className="d-inline-block stack me-2">
+        <div className="playback-aa-ctrl stack me-2">
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} />
             {rowState & RowState.Active
                 ? ctx?.state === "PLAYING"
                     ? <React.Fragment key="active-playing">
-                        <div className="stack-layer d-flex">
+                        <div className="stack-layer">
                             <svg className="icon m-auto icon-lg animate-pulse"><use href="#volume-up" /></svg>
                         </div>
                         <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.pause}>
@@ -32,7 +32,7 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
                         </button>
                     </React.Fragment>
                     : <React.Fragment key="active-paused">
-                        <div className="stack-layer d-flex">
+                        <div className="stack-layer">
                             <svg className="icon m-auto icon-lg"><use href="#volume-off" /></svg>
                         </div>
                         <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.play}>

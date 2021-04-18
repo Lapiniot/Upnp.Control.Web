@@ -415,7 +415,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 export function CellTemplate({ children, data, index, rowState, context, ...other }: CellTemplateProps<unknown>) {
     const { class: itemClass, albumArts, title, creator, album, res } = data;
     return <div className="d-flex align-items-center" title={utils.formatMediaInfo(res) ?? undefined} {...other}>
-        <AlbumArt itemClass={itemClass} albumArts={albumArts} className="me-2" />
+        <AlbumArt itemClass={itemClass} albumArts={albumArts} className="me-2 rounded-1" />
         <span className="text-truncate flex-grow-1">
             {title}
             {creator && <>&nbsp;&bull;&nbsp;<small>{creator}</small></>}
