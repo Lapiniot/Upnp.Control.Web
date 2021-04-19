@@ -15,20 +15,18 @@ export type PlaylistBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
 export default function ({ device, id, title, icon, deviceName }: PlaylistBookmarkWidgetProps) {
     const clickHandler = useCallback(() => WebApi.control(device).playUri(`x-mi://sys/playlist?id=${id.substring(3)}#play`).fetch(), []);
     const isTouch = MediaQueries.touchDevice.matches;
-    return <div className="card shadow-sm">
-        <div className="card-body d-flex align-items-center p-2">
-            <div className="playback-aa-ctrl stack me-2">
-                <AlbumArt albumArts={icon ? [icon] : undefined} itemClass="object.container.playlistContainer" />
-                <button type="button" className={`btn btn-overlay stack-layer${!isTouch ? " stack-layer-hover" : ""}`}
-                    title={`Play \u00AB${title}\u00BB on ${deviceName}`} onClick={clickHandler}>
-                    <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
-                </button>
-            </div>
-            <RouteLink to={`/umi/${device}/playlists/${id}`} title={`${title} on ${deviceName}`}
-                className="overflow-hidden text-decoration-none flex-fill">
-                <h6 className="card-title text-truncate">{title}</h6>
-                <p className="card-subtitle small text-truncate">[on {deviceName}]</p>
-            </RouteLink>
+    return <div className="d-flex align-items-center">
+        <div className="playback-aa-ctrl stack ms-2 me-2">
+            <AlbumArt albumArts={icon ? [icon] : undefined} itemClass="object.container.playlistContainer" />
+            <button type="button" className={`btn btn-overlay stack-layer${!isTouch ? " stack-layer-hover" : ""}`}
+                title={`Play \u00AB${title}\u00BB on ${deviceName}`} onClick={clickHandler}>
+                <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
+            </button>
         </div>
-    </div>;
+        <RouteLink to={`/umi/${device}/playlists/${id}`} title={`${title} on ${deviceName}`}
+            className="d-flex flex-column overflow-hidden text-decoration-none flex-fill ps-0 p-2">
+            <h6 className="mb-0 text-truncate">{title}</h6>
+            <p className="mb-0 small text-truncate">[on {deviceName}]</p>
+        </RouteLink>
+    </div>
 }

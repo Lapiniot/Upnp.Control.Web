@@ -10,15 +10,11 @@ type DeviceBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 export default function ({ category, device, name, description, icon }: DeviceBookmarkWidgetProps) {
-    return <div className="card shadow-sm">
-        <RouteLink to={`/${category}/${device}`} className="p-0 text-decoration-none">
-            <div className="card-body d-flex align-items-center">
-                <img src={icon} className="upnp-dev-icon" alt="" />
-                <div className="overflow-hidden">
-                    <h5 className="card-title text-truncate">{name}</h5>
-                    <p className="card-text text-truncate">{description}</p>
-                </div>
-            </div>
-        </RouteLink>
-    </div>;
+    return <RouteLink to={`/${category}/${device}`} className="d-flex text-decoration-none p-2">
+        <img src={icon} className="upnp-dev-icon me-2" alt="" />
+        <div className="overflow-hidden">
+            <h5 className="mb-0 text-truncate">{name}</h5>
+            <p className="mb-0 text-truncate">{description}</p>
+        </div>
+    </RouteLink>
 }
