@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
 using System.Policies;
 using System.Reflection;
 using System.Text.Json;
@@ -16,6 +17,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Hubs;
@@ -59,11 +61,7 @@ namespace Web.Upnp.Control
                 .AddScoped<IObserver<UpnpDiscoveryEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
                 .AddScoped<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
                 .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
-                .AddTransient<IAsyncEnumerable<SsdpReply>>(_ => new SsdpEventEnumerator(UpnpServices.RootDevice,
-                    new RepeatPolicyBuilder()
-                        .WithExponentialInterval(2, 180)
-                        .WithJitter(500, 1000)
-                        .Build()))
+                .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => SsdpEnumeratorFactory(sp))
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient()
                 .AddWebPushClient()
@@ -72,6 +70,7 @@ namespace Web.Upnp.Control
 
             services.AddOptions<UpnpEventOptions>().BindConfiguration("UpnpEventSubscriptions");
             services.AddOptions<PlaylistOptions>().BindConfiguration("Playlists");
+            services.AddOptions<SsdpOptions>().BindConfiguration("SSDP");
 
             var customConverters = new JsonConverter[]
             {
@@ -114,6 +113,20 @@ namespace Web.Upnp.Control
             });
 
             services.AddHealthChecks();
+        }
+
+        private static IAsyncEnumerable<SsdpReply> SsdpEnumeratorFactory(IServiceProvider serviceProvider)
+        {
+            var options = serviceProvider.GetRequiredService<IOptions<SsdpOptions>>().Value;
+            return new SsdpSearchEnumerator(UpnpServices.RootDevice,
+                new RepeatPolicyBuilder()
+                    .WithExponentialInterval(2, options.SearchIntervalSeconds)
+                    .WithJitter(500, 1000)
+                    .Build(),
+                ep => SocketBuilderExtensions
+                    .CreateUdp(ep.AddressFamily)
+                    .ConfigureMulticastSender(options.MulticastInterfaceIndex)
+                    .JoinMulticastGroup(ep));
         }
 
         private static void ConfigureJsonSerializer(JsonSerializerOptions options, IEnumerable<JsonConverter> converters)
