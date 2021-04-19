@@ -85,3 +85,7 @@ $missing-image-content: "\1F61F" !default;
     @include border-radius(0);
     @include box-shadow(none);
 }
+
+@mixin bg-translucent($color: #000000, $alpha: 0.25) {
+    background-color: rgba($color, $alpha);
+}
