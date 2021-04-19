@@ -41,22 +41,22 @@ export class BookmarkService<TKey extends BookmarkKey, TProps = {}> implements I
         return database.transaction([this.storeName], mode).store(this.storeName);
     }
 
-    async getAll(): Promise<{ widget: string, props: TProps }[]> {
+    getAll = async (): Promise<{ widget: string, props: TProps }[]> => {
         this.db = this.db ?? await this.open();
         return await this.store(this.db, "readonly").getAll() as unknown as { widget: string, props: TProps }[];
     }
 
-    async add(widgetName: string, props: TProps) {
+    add = async (widgetName: string, props: TProps) => {
         this.db = this.db ?? await this.open();
         return await this.store(this.db, "readwrite").add({ widget: widgetName, props });
     }
 
-    async remove(key: TKey) {
+    remove = async (key: TKey) => {
         this.db = this.db ?? await this.open();
         return await this.store(this.db, "readwrite").delete(key);
     }
 
-    async contains(key: TKey) {
+    contains = async (key: TKey) => {
         this.db = this.db ?? await this.open();
         return await this.store(this.db, "readonly").count(key) > 0;
     }
