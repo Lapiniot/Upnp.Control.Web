@@ -59,6 +59,13 @@ namespace Web.Upnp.Control.Controllers
             return handler.ExecuteAsync(new PLRenameCommand(deviceId, playlistId, title), cancellationToken);
         }
 
+        [HttpPost("{playlistId}/copy")]
+        public Task CopyAsync([FromServices] IAsyncCommandHandler<PLCopyCommand> handler,
+            string deviceId, string playlistId, [FromBody] string title, CancellationToken cancellationToken)
+        {
+            return handler.ExecuteAsync(new PLCopyCommand(deviceId, playlistId, title), cancellationToken);
+        }
+
         [HttpDelete]
         public Task RemoveAsync([FromServices] IAsyncCommandHandler<PLRemoveCommand> handler,
             string deviceId, [FromBody] string[] ids, CancellationToken cancellationToken)
