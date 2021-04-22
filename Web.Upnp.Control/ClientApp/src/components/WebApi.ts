@@ -29,7 +29,7 @@ export interface PlaylistApiProvider {
     createFromFiles: (data: Iterable<File> | FormData, title?: string | null, merge?: boolean, useProxy?: boolean) => HttpPost;
     rename: (id: string, title: string) => JsonPutFetch;
     delete: (ids: string[]) => JsonDeleteFetch;
-    copy: (id: string) => JsonFetch;
+    copy: (id: string, title: string) => JsonFetch;
     addItems: (id: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) => JsonPostFetch;
     addUrl: (id: string, mediaUrl: string, title?: string, useProxy?: boolean) => JsonPostFetch;
     addFromFiles: (id: string, data: Iterable<File> | FormData, useProxy?: boolean) => HttpPost;
@@ -76,7 +76,7 @@ export default class WebApi {
         },
         rename: (id: string, title: string) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}`, null, { body: JSON.stringify(title) }),
         delete: (ids: string[]) => new JsonDeleteFetch(`${devicesBaseUri}/${deviceId}/playlists`, null, { body: JSON.stringify(ids) }),
-        copy: (id: string) => new JsonFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}`, null, { method: "COPY" }),
+        copy: (id: string, title?: string) => new JsonPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/copy`, null, { body: JSON.stringify(title) }),
         addItems: (id: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) =>
             new JsonPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/items`, null,
                 { body: JSON.stringify({ deviceId: sourceDevice, items: sourceIds, maxDepth }) }),
