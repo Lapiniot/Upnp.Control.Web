@@ -7,16 +7,16 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
-    public sealed class PLUpdateCommandHandler : IAsyncCommandHandler<PLUpdateCommand>
+    public sealed class PLRenameCommandHandler : IAsyncCommandHandler<PLRenameCommand>
     {
         private readonly IUpnpServiceFactory factory;
 
-        public PLUpdateCommandHandler(IUpnpServiceFactory factory)
+        public PLRenameCommandHandler(IUpnpServiceFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public async Task ExecuteAsync(PLUpdateCommand command, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(PLRenameCommand command, CancellationToken cancellationToken)
         {
             if(command is null) throw new ArgumentNullException(nameof(command));
             var (deviceId, playlistId, title) = command;

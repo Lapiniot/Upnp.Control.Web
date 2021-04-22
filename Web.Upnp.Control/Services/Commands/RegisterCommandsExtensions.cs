@@ -17,7 +17,7 @@ namespace Web.Upnp.Control.Services.Commands
                 .AddTransient<IAsyncCommandHandler<PLCreateCommand>, PLCreateCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLCreateFromItemsCommand>, PLCreateFromItemsCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLCreateFromFilesCommand>, PLCreateFromFilesCommandHandler>()
-                .AddTransient<IAsyncCommandHandler<PLUpdateCommand>, PLUpdateCommandHandler>()
+                .AddTransient<IAsyncCommandHandler<PLRenameCommand>, PLRenameCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLRemoveCommand>, PLRemoveCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLAddItemsCommand>, PLAddItemsCommandHandler>()
                 .AddTransient<IAsyncCommandHandler<PLAddPlaylistFilesCommand>, PLAddFeedsCommandHandler>()

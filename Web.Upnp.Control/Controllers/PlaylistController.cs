@@ -53,10 +53,10 @@ namespace Web.Upnp.Control.Controllers
         }
 
         [HttpPut("{playlistId}")]
-        public Task UpdateAsync([FromServices] IAsyncCommandHandler<PLUpdateCommand> handler,
+        public Task RenameAsync([FromServices] IAsyncCommandHandler<PLRenameCommand> handler,
             string deviceId, string playlistId, [FromBody] string title, CancellationToken cancellationToken)
         {
-            return handler.ExecuteAsync(new PLUpdateCommand(deviceId, playlistId, title), cancellationToken);
+            return handler.ExecuteAsync(new PLRenameCommand(deviceId, playlistId, title), cancellationToken);
         }
 
         [HttpDelete]
