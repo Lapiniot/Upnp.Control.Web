@@ -37,15 +37,33 @@ namespace Web.Upnp.Control.Services
             this.clientFactory = clientFactory;
         }
 
-        public async Task<TService> GetServiceAsync<TService>(string deviceId, CancellationToken cancellationToken) where TService : SoapActionInvoker
+        public async Task<TService> GetServiceAsync<TService>(string deviceId, CancellationToken cancellationToken)
+            where TService : SoapActionInvoker
         {
             var device = await context.UpnpDevices.FindAsync(new object[] { deviceId }, cancellationToken).ConfigureAwait(false);
 
-            var schema = Cache.GetOrAdd(typeof(TService), ServiceSchemaAttribute.GetSchema);
+            return GetService<TService>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService), t => ServiceSchemaAttribute.GetSchema(t))));
+        }
 
-            var controlUrl = GetControlUrl(device, schema);
+        public async Task<(TService1, TService2)> GetServiceAsync<TService1, TService2>(string deviceId, CancellationToken cancellationToken)
+            where TService1 : SoapActionInvoker where TService2 : SoapActionInvoker
+        {
+            var device = await context.UpnpDevices.FindAsync(new object[] { deviceId }, cancellationToken).ConfigureAwait(false);
 
-            return GetService<TService>(controlUrl);
+            return (GetService<TService1>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService1), t => ServiceSchemaAttribute.GetSchema(t)))),
+                GetService<TService2>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService2), t => ServiceSchemaAttribute.GetSchema(t)))));
+        }
+
+        public async Task<(TService1, TService2, TService3)> GetServiceAsync<TService1, TService2, TService3>(string deviceId, CancellationToken cancellationToken)
+            where TService1 : SoapActionInvoker
+            where TService2 : SoapActionInvoker
+            where TService3 : SoapActionInvoker
+        {
+            var device = await context.UpnpDevices.FindAsync(new object[] { deviceId }, cancellationToken).ConfigureAwait(false);
+
+            return (GetService<TService1>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService1), t => ServiceSchemaAttribute.GetSchema(t)))),
+                GetService<TService2>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService2), t => ServiceSchemaAttribute.GetSchema(t)))),
+                GetService<TService3>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService3), t => ServiceSchemaAttribute.GetSchema(t)))));
         }
 
         private static Uri GetControlUrl(UpnpDevice device, string schema)

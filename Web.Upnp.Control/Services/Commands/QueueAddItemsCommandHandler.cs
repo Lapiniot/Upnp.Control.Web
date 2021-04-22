@@ -30,8 +30,7 @@ namespace Web.Upnp.Control.Services.Commands
             var (deviceId, queueId, source) = command;
 
             var sourceCds = await factory.GetServiceAsync<ContentDirectoryService>(source.DeviceId, cancellationToken).ConfigureAwait(false);
-            var targetCds = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false);
-            var service = await factory.GetServiceAsync<QueueService>(deviceId, cancellationToken).ConfigureAwait(false);
+            var (targetCds, queueService) = await factory.GetServiceAsync<ContentDirectoryService, QueueService>(deviceId, cancellationToken).ConfigureAwait(false);
 
             var sb = new System.Text.StringBuilder();
             using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
@@ -41,7 +40,7 @@ namespace Web.Upnp.Control.Services.Commands
 
             var updateId = await UpnpUtils.GetUpdateIdAsync(targetCds, queueId, cancellationToken).ConfigureAwait(false);
 
-            await service.AddUriAsync(0, queueId, uint.Parse(updateId, CultureInfo.InvariantCulture), "", sb.ToString(), 1, false, cancellationToken).ConfigureAwait(false);
+            await queueService.AddUriAsync(0, queueId, uint.Parse(updateId, CultureInfo.InvariantCulture), "", sb.ToString(), 1, false, cancellationToken).ConfigureAwait(false);
         }
     }
 }
