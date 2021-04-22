@@ -169,6 +169,8 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private rename = (id: string, title: string) => this.reload($api.playlist(this.props.device).rename(id, title).fetch);
 
+    private copy = (id: string, title: string) => this.reload($api.playlist(this.props.device).copy(id, title).fetch);
+
     private create = (title: string) => this.reload($api.playlist(this.props.device).create(title).fetch);
 
     private remove = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).delete(ids).fetch());
@@ -194,7 +196,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     //#region Action UI modal state triggers
 
-    private removePlaylist = (ids: string[]) => {
+    private removePlaylists = (ids: string[]) => {
 
         const values = this.props.dataContext?.source.items?.filter(e => ids.includes(e.id));
         const onRemove = () => this.remove(ids);
@@ -211,6 +213,11 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const onRename = (value: string) => this.rename(id, value);
 
         this.modal(<TextValueEditDialog title="Rename playlist" label="Name" confirmText="Rename" defaultValue={title} onConfirmed={onRename} />);
+    }
+
+    private copyPlaylist = (id: string) => {
+        const title = this.props.dataContext?.source.items?.find(e => e.id === id)?.title;
+        this.copy(id, `${title} - Copy`);
     }
 
     private removePlaylistItems = (ids: string[]) => {
@@ -242,11 +249,11 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private addClickHandler = () => this.modal(<TextValueEditDialog title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} />);
 
-    private removeClickHandler = () => this.removePlaylist(this.state.selection);
+    private removeClickHandler = () => this.removePlaylists(this.state.selection);
 
     private renameClickHandler = () => this.renamePlaylist(this.state.selection[0]);
 
-    private copyClickHandler = () => { alert("not implemented yet"); };
+    private copyClickHandler = () => this.copyPlaylist(this.state.selection[0]);
 
     private addItemsClickHandler = () => this.addPlaylistItems(this.props.id);
 
@@ -310,9 +317,9 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             case "add-items": this.addPlaylistItems(id); break;
             case "add-url": this.addPlaylistUrl(id); break;
             case "add-files": this.addPlaylistFiles(id); break;
-            case "delete": this.removePlaylist([id]); break;
+            case "delete": this.removePlaylists([id]); break;
             case "rename": this.renamePlaylist(id); break;
-            case "copy": break;
+            case "copy": this.copyPlaylist(id); break;
             case "remove": this.removePlaylistItems([id]); break;
             case "play": if (anchor?.dataset?.index) this.playItem(parseInt(anchor.dataset.index)); break;
             case "pause": this.ctrl.pause().fetch(); break;
@@ -362,12 +369,13 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     private getToolbarItems = (): ToolbarItem[] => {
         const disabled = this.state.selection.length === 0;
+        const onlySelected = this.state.selection.length !== 1;
         return this.props.id === "PL:" ?
             [
                 ["create", "Add new", "plus", this.addClickHandler, undefined],
                 ["delete", "Delete", "trash", this.removeClickHandler, disabled],
-                ["rename", "Rename", "edit", this.renameClickHandler, this.state.selection.length !== 1],
-                ["copy", "Copy", "copy", this.copyClickHandler, disabled]
+                ["rename", "Rename", "edit", this.renameClickHandler, onlySelected],
+                ["copy", "Copy", "copy", this.copyClickHandler, onlySelected]
             ] :
             [
                 ["add-items", "Add from media server", "plus", this.addItemsClickHandler, undefined],
