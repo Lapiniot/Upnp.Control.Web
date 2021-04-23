@@ -13,28 +13,26 @@
             "label": "Build",
             "command": "dotnet",
             "detail": "Runs dotnet build task",
-            "type": "shell",
+            "type": "process",
             "args": [
                 "build",
+                "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "reveal": "always"
-            },
             "problemMatcher": "$msCompile"
         },
         {
             "label": "Publish",
-            "command": "dotnet publish -c $CONFIG",
-            "detail": "Runs dotnet publish command",
-            "type": "shell",
-            "group": "build",
-            "problemMatcher": []
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
         },
         {
             "label": "Publish (self-contained)",
@@ -49,7 +47,7 @@
                     "CONFIG": "Release",
                     "RUNTIMEID": "${input:rid}"
                 }
-            },
+            }
         },
         {
             "label": "Deploy (remote SSH)",
@@ -84,6 +82,19 @@
                 "./Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/$RUNTIMEID/publish/",
                 "${input:remote-url}"
             ]
+        },
+        {
+            "label": "Watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
         },
         {
             "label": "npm: install - Web.Upnp.Control",
@@ -122,6 +133,62 @@
                 "clear": false
             },
             "problemMatcher": "$gulp-tsc"
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: debug",
+            "dependsOn": [
+                "Build"
+            ],
+            "dockerBuild": {
+                "tag": "webupnpcontrol:dev",
+                "target": "base",
+                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: release",
+            "dependsOn": [
+                "Build"
+            ],
+            "dockerBuild": {
+                "tag": "webupnpcontrol:latest",
+                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": [
+                "docker-build: debug"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
+                "enableDebugging": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: release",
+            "dependsOn": [
+                "docker-build: release"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+            }
         }
     ],
     "inputs": [

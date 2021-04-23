@@ -1,0 +1,13 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+
+version: '3.4'
+
+services:
+  webupnpcontrol:
+    image: webupnpcontrol
+    build:
+      context: .
+      dockerfile: Web.Upnp.Control/Dockerfile
+    ports:
+      - 8080
+      - 8081
