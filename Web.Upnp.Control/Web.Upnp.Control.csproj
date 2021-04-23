@@ -10,7 +10,6 @@
         <SpaRoot>ClientApp\</SpaRoot>
         <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**;appsettings.Secrets.json;appsettings.Development.json;package.json;package-lock.json</DefaultItemExcludes>
         <!-- Trimming settings -->
-        <PublishTrimmed>true</PublishTrimmed>
         <TrimMode>Link</TrimMode>
         <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
         <!-- Feature trimming settings -->
@@ -21,8 +20,10 @@
         <InvariantGlobalization>true</InvariantGlobalization>
         <UseSystemResourceKeys>true</UseSystemResourceKeys>
         <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+        <!-- XML documentation settings -->
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
+        <!-- .NET Analyzers settings -->
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <AnalysisMode>AllEnabledByDefault</AnalysisMode>
         <AnalysisLevel>latest</AnalysisLevel>
@@ -41,8 +42,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\IoT.Device\IoT.Device.Xiaomi.Umi\IoT.Device.Xiaomi.Umi.csproj" />
-        <ProjectReference Include="..\IoT.Device\IoT.Protocol\System.Common\System.Common.Net.Http\System.Common.Net.Http.csproj" />
+        <ProjectReference Include="../IoT.Device/IoT.Device.Xiaomi.Umi/IoT.Device.Xiaomi.Umi.csproj" />
+        <ProjectReference Include="../IoT.Device/IoT.Protocol/System.Common/System.Common.Net.Http/System.Common.Net.Http.csproj" />
     </ItemGroup>
 
     <ItemGroup>

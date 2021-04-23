@@ -11,9 +11,13 @@
     "tasks": [
         {
             "label": "Build",
-            "command": "dotnet",
             "detail": "Runs dotnet build task",
+            "command": "dotnet",
             "type": "process",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "args": [
                 "build",
                 "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
@@ -36,9 +40,18 @@
         },
         {
             "label": "Publish (self-contained)",
-            "command": "dotnet publish -c $CONFIG -r $RUNTIMEID",
             "detail": "Runs dotnet publish command",
+            "command": "dotnet",
             "type": "shell",
+            "args": [
+                "publish",
+                "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
+                "--configuration=\"$CONFIG\"",
+                "--runtime=\"$RUNTIMEID\"",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "/property:PublishTrimmed=true"
+            ],
             "group": "build",
             "problemMatcher": [],
             "options": {
