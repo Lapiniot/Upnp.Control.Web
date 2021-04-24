@@ -33,6 +33,7 @@
             "args": [
                 "publish",
                 "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
+                "--configuration=Release",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -168,11 +169,7 @@
                 "tag": "webupnpcontrol:latest",
                 "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile",
                 "context": "${workspaceFolder}",
-                "pull": true,
-                "labels": {
-                    "includeDefaults": false
-                },
-                "customOptions": "--label \"Production ready build (Framework dependent deployment)\""
+                "pull": true
             },
             "netCore": {
                 "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"

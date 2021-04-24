@@ -23,4 +23,7 @@
 **/secrets.dev.yaml
 **/values.dev.yaml
 **/*.css
+**/*.db
+**/*.db3
+**/*.service
 README.md

@@ -1,12 +1,9 @@
 FROM node:latest AS node_base
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
-RUN apt-get update && apt-get install openssl -yq
 
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
-
-ENV ASPNETCORE_URLS=http://+:8080,https://+8081
 
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder
 # For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
@@ -46,7 +43,6 @@ RUN npm install && npm install -g gulp && gulp sass
 RUN dotnet publish "Web.Upnp.Control.csproj" -c Release -o /app/publish
 
 FROM base AS final
-RUN openssl version
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Web.Upnp.Control.dll"]
