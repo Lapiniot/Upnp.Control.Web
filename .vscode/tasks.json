@@ -150,9 +150,6 @@
         {
             "type": "docker-build",
             "label": "docker-build: debug",
-            "dependsOn": [
-                "Build"
-            ],
             "dockerBuild": {
                 "tag": "webupnpcontrol:dev",
                 "target": "base",
@@ -167,14 +164,15 @@
         {
             "type": "docker-build",
             "label": "docker-build: release",
-            "dependsOn": [
-                "Build"
-            ],
             "dockerBuild": {
                 "tag": "webupnpcontrol:latest",
                 "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile",
                 "context": "${workspaceFolder}",
-                "pull": true
+                "pull": true,
+                "labels": {
+                    "includeDefaults": false
+                },
+                "customOptions": "--label \"Production ready build (Framework dependent deployment)\""
             },
             "netCore": {
                 "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
