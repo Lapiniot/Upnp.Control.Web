@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -24,8 +25,14 @@ namespace Web.Upnp.Control.Services
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            string root = environment.ContentRootPath;
+
+            Directory.CreateDirectory(Path.Combine(root, "data"));
             await InitializeDatabasesAsync(cancellationToken).ConfigureAwait(false);
-            await ConfigMigrations.EnsureVapidKeysExistAsync(environment.ContentRootPath, configuration).ConfigureAwait(false);
+
+            var configRoot = Path.Combine(root, "config");
+            Directory.CreateDirectory(configRoot);
+            await ConfigMigrations.EnsureVapidConfigExistsAsync(Path.Combine(configRoot, "appsettings.Secrets.json"), configuration).ConfigureAwait(false);
         }
 
         private async Task InitializeDatabasesAsync(CancellationToken cancellationToken)

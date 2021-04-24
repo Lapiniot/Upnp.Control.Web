@@ -9,10 +9,8 @@ namespace Web.Upnp.Control.Configuration
 {
     internal static class ConfigMigrations
     {
-        public static async Task EnsureVapidKeysExistAsync(string contentRootPath, IConfiguration configuration)
+        public static async Task EnsureVapidConfigExistsAsync(string path, IConfiguration configuration)
         {
-            var path = Path.Combine(contentRootPath, "appsettings.Secrets.json");
-
             if(File.Exists(path))
             {
                 using(var doc = await ReadJsonAsync(path).ConfigureAwait(false))

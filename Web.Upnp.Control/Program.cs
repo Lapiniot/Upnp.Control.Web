@@ -15,7 +15,10 @@ await Host
     .CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((ctx, cb) => cb
         .AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.Https.json", true)
-        .AddJsonFile($"appsettings.Secrets.json", true, true))
+        .AddJsonFile($"appsettings.Secrets.json", true, true)
+        .AddJsonFile($"./config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", true)
+        .AddJsonFile($"./config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.Https.json", true)
+        .AddJsonFile($"./config/appsettings.Secrets.json", true, true))
     .ConfigureWebHostDefaults(whb => whb.UseStartup<Startup>())
     .ConfigureServices(cd => cd.AddHostedService<UpnpDiscoveryService>())
     .UseWindowsService()

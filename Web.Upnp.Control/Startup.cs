@@ -48,10 +48,10 @@ namespace Web.Upnp.Control
                 .AddHostedService<WebPushSenderService>(sp => sp.GetRequiredService<WebPushSenderService>())
                 .AddSingleton<WebPushSenderService>()
                 .AddDbContext<UpnpDbContext>(builder => builder
-                    .UseSqlite("Data Source=upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                    .UseSqlite("Data Source=./data/upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                     .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))
                 .AddDbContext<PushSubscriptionDbContext>(builder => builder
-                    .UseSqlite("Data Source=subscriptions.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                    .UseSqlite("Data Source=./data/subscriptions.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                     .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))
                 .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
                 .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()

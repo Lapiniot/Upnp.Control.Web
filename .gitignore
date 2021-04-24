@@ -8,10 +8,10 @@ _ReSharper.Caches/
 *.user
 package-lock.json
 /Web.Upnp.Control/ClientApp/src/css/index.css
-Web.Upnp.Control/*.db
-Web.Upnp.Control/*.db3
-Web.Upnp.Control/*.sqlite
-Web.Upnp.Control/*.sqlite3
+Web.Upnp.Control/**/*.db
+Web.Upnp.Control/**/*.db3
+Web.Upnp.Control/**/*.sqlite
+Web.Upnp.Control/**/*.sqlite3
 Web.Upnp.Control/ClientApp/src/react-app-env.d.ts
 Web.Upnp.Control/ClientApp/.eslintcache
 Web.Upnp.Control/upnp.db3-shm
@@ -22,4 +22,4 @@ Web.Upnp.Control/ClientApp/public/service-worker.js.map
 *.crt
 *.key
 *.pfx
-Web.Upnp.Control/appsettings.Secrets.json
+Web.Upnp.Control/**/appsettings.Secrets.json
