@@ -176,6 +176,19 @@
             }
         },
         {
+            "type": "docker-build",
+            "label": "docker-build: release, self-contained",
+            "dockerBuild": {
+                "tag": "webupnpcontrol:latest-scd",
+                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile.SelfContained",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+            }
+        },
+        {
             "type": "docker-run",
             "label": "docker-run: debug",
             "dependsOn": [
