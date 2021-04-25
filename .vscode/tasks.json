@@ -48,20 +48,13 @@
                 "publish",
                 "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
                 "--configuration=\"$CONFIG\"",
-                "--runtime=\"$RUNTIMEID\"",
+                "--runtime=${input:rid}",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
                 "/property:PublishTrimmed=true"
             ],
             "group": "build",
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}",
-                "env": {
-                    "CONFIG": "Release",
-                    "RUNTIMEID": "${input:rid}"
-                }
-            }
+            "problemMatcher": []
         },
         {
             "label": "Deploy (remote SSH)",
@@ -71,14 +64,6 @@
             ],
             "type": "shell",
             "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}",
-                "env": {
-                    "FRAMEWORK": "net5.0",
-                    "CONFIG": "Release",
-                    "RUNTIMEID": "${input:rid}"
-                }
-            },
             "command": "rsync",
             "args": [
                 "--rsync-path",
@@ -93,7 +78,7 @@
                 "--filter=\"protect **/appsettings.Production*.json\"",
                 "--filter=\"protect **/appsettings.Secrets.json\"",
                 "--rsh=ssh",
-                "./Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/$RUNTIMEID/publish/",
+                "\"${workspaceFolder}/Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/${input:rid}/publish/\"",
                 "${input:remote-url}"
             ]
         },
@@ -180,13 +165,29 @@
             "label": "docker-build: release, self-contained",
             "dockerBuild": {
                 "tag": "webupnpcontrol:latest-scd",
-                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile.SelfContained",
+                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile.SCD",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
             "netCore": {
                 "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
             }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build-outside: release, self-contained",
+            "dockerBuild": {
+                "tag": "webupnpcontrol:latest-scd-${input:rid}",
+                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile.SCD.${input:rid}",
+                "context": "${workspaceFolder}/Web.Upnp.Control/bin/Release/net5.0/${input:rid}/publish",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+            },
+            "dependsOn": [
+                "Publish (self-contained)"
+            ]
         },
         {
             "type": "docker-run",
