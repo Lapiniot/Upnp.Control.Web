@@ -4,7 +4,7 @@ import { formatTime } from "./Extensions";
 type TimerProps = { running: boolean; current: number; interval?: number }
 
 export default class extends React.Component<TimerProps & HTMLAttributes<HTMLTimeElement>> {
-    nativeRef: RefObject<HTMLElement> = React.createRef();
+    nativeRef = React.createRef<HTMLElement>();
     start: number = 0;
     controller: AbortController | null = null;
     interval: number = 1000;
