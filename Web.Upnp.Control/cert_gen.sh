@@ -2,6 +2,7 @@
 
 PARENT=$(hostname)
 FILE_NAME=upnp-dashboard
+PASS=${1:-12345}
 
 openssl req \
 -x509 \
@@ -37,4 +38,6 @@ openssl req \
 
 openssl x509 -noout -text -in $FILE_NAME.crt
 
-openssl pkcs12 -export -out $FILE_NAME.pfx -inkey $FILE_NAME.key -in $FILE_NAME.crt
+openssl pkcs12 -export -out $FILE_NAME.pfx -inkey $FILE_NAME.key -in $FILE_NAME.crt -passout pass:$PASS
+
+rm $FILE_NAME.key $FILE_NAME.crt
