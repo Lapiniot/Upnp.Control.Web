@@ -87,11 +87,11 @@
                 "--verbose",
                 "--progress",
                 "--delete",
-                "--filter=\"protect *.crt\"",
-                "--filter=\"protect *.key\"",
-                "--filter=\"protect *.db3\"",
-                "--filter=\"protect appsettings.Production*.json\"",
-                "--filter=\"protect appsettings.Secrets.json\"",
+                "--filter=\"protect **/*.crt\"",
+                "--filter=\"protect **/*.key\"",
+                "--filter=\"protect **/*.db3\"",
+                "--filter=\"protect **/appsettings.Production*.json\"",
+                "--filter=\"protect **/appsettings.Secrets.json\"",
                 "--rsh=ssh",
                 "./Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/$RUNTIMEID/publish/",
                 "${input:remote-url}"
@@ -227,8 +227,10 @@
                 "osx-x64",
                 "ubuntu-x64",
                 "debian-x64",
+                "alpine-x64",
                 "ubuntu-arm64",
-                "debian-arm64"
+                "debian-arm64",
+                "alpine-arm64"
             ],
             "default": "osx-x64"
         }
