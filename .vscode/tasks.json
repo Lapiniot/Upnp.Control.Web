@@ -142,7 +142,7 @@
             "dockerBuild": {
                 "tag": "webupnpcontrol:dev",
                 "target": "base",
-                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile",
+                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
@@ -155,7 +155,7 @@
             "label": "docker-build: release",
             "dockerBuild": {
                 "tag": "webupnpcontrol:latest",
-                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile",
+                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
@@ -168,7 +168,7 @@
             "label": "docker-build: release, self-contained",
             "dockerBuild": {
                 "tag": "webupnpcontrol:latest-scd",
-                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile.SCD",
+                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile.SCD",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
@@ -181,7 +181,7 @@
             "label": "docker-build-outside: release, self-contained",
             "dockerBuild": {
                 "tag": "webupnpcontrol:latest-scd-${input:rid}",
-                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Dockerfile.SCD.${input:rid}",
+                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile.SCD.${input:rid}",
                 "context": "${workspaceFolder}/Web.Upnp.Control/bin/Release/net5.0/${input:rid}/publish",
                 "pull": true
             },
@@ -208,9 +208,23 @@
             "type": "docker-run",
             "label": "docker-run: release",
             "dependsOn": [
-                "docker-build: release"
+                "docker-build-outside: release, self-contained"
             ],
-            "dockerRun": {},
+            "dockerRun": {
+                "image": "webupnpcontrol:latest-scd-${input:rid}",
+                "ports": [
+                    {
+                        "hostPort": 8080,
+                        "containerPort": 8080,
+                        "protocol": "tcp"
+                    },
+                    {
+                        "hostPort": 8081,
+                        "containerPort": 8081,
+                        "protocol": "tcp"
+                    }
+                ]
+            },
             "netCore": {
                 "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
             }
