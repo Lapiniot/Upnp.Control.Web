@@ -181,7 +181,7 @@
             "label": "docker-build-outside: release, self-contained",
             "dockerBuild": {
                 "tag": "webupnpcontrol:latest-scd-${input:rid}",
-                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile.SCD.${input:rid}",
+                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/${input:rid}/Dockerfile",
                 "context": "${workspaceFolder}/Web.Upnp.Control/bin/Release/net5.0/${input:rid}/publish",
                 "pull": true
             },
@@ -254,10 +254,12 @@
                 "win10-x64",
                 "osx-x64",
                 "ubuntu-x64",
-                "debian-x64",
-                "alpine-x64",
+                "ubuntu-arm",
                 "ubuntu-arm64",
+                "debian-x64",
+                "debian-arm",
                 "debian-arm64",
+                "alpine-x64",
                 "alpine-arm64"
             ],
             "default": "osx-x64"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 if [[ ! -f config/upnp-dashboard.pfx ]]; then
     cd config
