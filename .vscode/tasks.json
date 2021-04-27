@@ -212,6 +212,16 @@
             ],
             "dockerRun": {
                 "image": "webupnpcontrol:latest-scd-${input:rid}",
+                "volumes": [
+                    {
+                        "containerPath": "/app/config",
+                        "localPath": "upnp-dashboard-config"
+                    },
+                    {
+                        "containerPath": "/app/data",
+                        "localPath": "upnp-dashboard-data"
+                    }
+                ],
                 "ports": [
                     {
                         "hostPort": 8080,
