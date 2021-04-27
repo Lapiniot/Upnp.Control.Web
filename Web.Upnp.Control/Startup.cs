@@ -125,7 +125,7 @@ namespace Web.Upnp.Control
                     .Build(),
                 ep => SocketBuilderExtensions
                     .CreateUdp(ep.AddressFamily)
-                    .ConfigureMulticast(options.MulticastInterfaceIndex)
+                    .ConfigureMulticast(options.MulticastInterfaceIndex, options.MulticastTTL)
                     .JoinMulticastGroup(ep));
         }
 

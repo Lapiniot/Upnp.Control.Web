@@ -21,6 +21,8 @@ namespace Web.Upnp.Control.Configuration
 
         public int SearchIntervalSeconds { get; init; } = 60;
 
+        public byte MulticastTTL { get; init; } = 1;
+
         private static int GetInterfaceIndex(string nameOrIdOrAddress)
         {
             var mcastInterface = (nameOrIdOrAddress == "any" || nameOrIdOrAddress == "auto"
