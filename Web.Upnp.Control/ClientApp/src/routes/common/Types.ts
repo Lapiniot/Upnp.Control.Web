@@ -80,6 +80,7 @@ export type DIDLItem = {
 
 export type BrowseFetchResult = {
     total: number;
+    dev?: { name: string; desc: string };
     self?: DIDLItem;
     items?: DIDLItem[];
     parents?: DIDLItem[];

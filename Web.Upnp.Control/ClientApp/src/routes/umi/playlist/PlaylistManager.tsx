@@ -398,7 +398,10 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <Toolbar.Button key="check-all" glyph="ui-checks" onClick={this.toggleSelectAllHandler} className={className} />
         </> : <>
             <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className={className} />
-            <h6 className="flex-fill my-0 mx-2 text-center text-truncate">{this.props.dataContext?.source.parents?.[0]?.title}</h6>
+            <div className="flex-fill mx-2 text-center text-truncate">
+                <h6 className="mb-0">{this.props.dataContext?.source.parents?.[0]?.title}</h6>
+                <small className="text-muted">{this.props.dataContext?.source.dev?.name}</small>
+            </div>
             <Toolbar.Button key="edit-mode" glyph="pen" onClick={this.toggleEditMode} className={className} />
         </>;
     }
@@ -437,7 +440,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
         const { dataContext: data, match, navigate, fetching, error, id, s, p, device, location, history } = this.props;
         const { playlist, currentTrack } = this.state;
-        const { source: { total = 0, items = [], parents = [] } = {} } = data || {};
+        const { source: { total = 0, items = [], parents = [], dev = undefined } = {} } = data || {};
         const pageSize = s ? parseInt(s) : $s.get("pageSize");
         const page = p ? parseInt(p) : 1;
 
@@ -478,7 +481,10 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     {largeScreen ?
                         <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
                             <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className="btn-round btn-icon btn-plain" />
-                            <h6 className="mb-0 mx-2 flex-fill text-truncate">{parents?.[0]?.title ?? ""}</h6>
+                            <div className="flex-fill mx-2 text-truncate text-center text-md-start">
+                                <h6 className="mb-0 text-truncate">{parents?.[0]?.title ?? ""}</h6>
+                                <small className="text-muted">{dev?.name ?? ""}</small>
+                            </div>
                             {this.getToolbarItems().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round btn-icon btn-plain" />)}
                         </Toolbar> :
                         <Toolbar className="p-2 bg-white border-bottom">

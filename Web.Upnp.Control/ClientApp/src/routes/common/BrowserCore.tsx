@@ -24,7 +24,7 @@ export type BrowserCoreProps<TContext> =
 export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>) {
     const { dataContext: data, s: size, p: page, fetching, navigate, renderActionMenu } = props;
     const { withBreadcrumb = true, withPagination = true, className, ...forwardProps } = props;
-    const { source: { total = 0, parents = undefined } = {} } = data || {};
+    const { source: { total = 0, parents = undefined, dev = undefined } = {} } = data || {};
     const navBackHandler = useCallback(() => navigate({ id: parents?.[1]?.id ?? "-1" }), [navigate, parents]);
 
     return <>
@@ -33,7 +33,10 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
             <div className="d-flex flex-column sticky-top">
                 <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
                     <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={navBackHandler} className="btn-round btn-icon btn-plain" />
-                    <h6 className="flex-fill mb-0 mx-2 text-truncate text-center text-md-start">{parents?.[0]?.title ?? ""}</h6>
+                    <div className="flex-fill mx-2 text-truncate text-center text-md-start">
+                        <h6 className="mb-0 text-truncate">{parents?.[0]?.title ?? ""}</h6>
+                        <small className="text-muted">{dev?.name ?? ""}</small>
+                    </div>
                     <Toolbar.Button key="main-menu" glyph="ellipsis-v" data-bs-toggle="dropdown"
                         className="btn-round btn-icon btn-plain ms-auto" disabled={!renderActionMenu} />
                     {renderActionMenu?.()}
