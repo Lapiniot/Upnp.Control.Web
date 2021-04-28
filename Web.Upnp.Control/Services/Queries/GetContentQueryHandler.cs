@@ -29,11 +29,13 @@ namespace Web.Upnp.Control.Services.Queries
         {
             if(query is null) throw new ArgumentNullException(nameof(query));
 
-            var (deviceId, path, (withParents, withResource, withVendor, withMetadata, take, skip)) = query;
+            var (deviceId, path, (withParents, withResource, withVendor, withMetadata, withDevice, take, skip)) = query;
 
             path ??= "0";
 
-            var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false);
+            var (service, description) = query.Options.WithDevice != false ?
+                await factory.GetAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false) :
+                (await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false), null);
 
             Item metadata = null;
             if(withMetadata == true)
@@ -57,7 +59,7 @@ namespace Web.Upnp.Control.Services.Queries
                 parents = await GetParentsAsync(service, path, "id,title,parentId,res", withResource == true, withVendor == true, cancellationToken).ConfigureAwait(false);
             }
 
-            return new CDContent(total, metadata, items, parents);
+            return new CDContent(total, description, metadata, items, parents);
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]

@@ -133,7 +133,7 @@ const pushSubscriber = {
     serverKey: () => new HttpFetch(`${baseUri}/push-subscriptions/server-key`)
 }
 
-type BrowseOptionFlags = "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata";
+type BrowseOptionFlags = "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata" | "withDevice";
 
 type BrowseOptions = { [K in BrowseOptionFlags]?: boolean };
 
@@ -149,6 +149,8 @@ export class BrowseFetch extends HttpFetch {
     withVendor = () => { return new BrowseFetch(this.path, { ...this.query, withVendorProps: true }); };
 
     withMetadata = () => { return new BrowseFetch(this.path, { ...this.query, withMetadata: true }); };
+
+    withDevice = () => { return new BrowseFetch(this.path, { ...this.query, withDevice: true }); };
 
     withOptions = (options: BrowseOptions) => { return new BrowseFetch(this.path, { ...this.query, ...options }); };
 

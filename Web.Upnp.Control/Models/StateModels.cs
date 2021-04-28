@@ -7,9 +7,9 @@ namespace Web.Upnp.Control.Models
 {
 
 #pragma warning disable CA1801 // Review unused parameters, looks like issue with analyzer itself
-
-    public record GetContentOptions(bool? WithParents, bool? WithResourceProps, bool? WithVendorProps, bool? WithMetadata, uint Take = 50, uint Skip = 0);
-    public record CDContent(int Total, Item metadata, IEnumerable<Item> Items, IEnumerable<Item> Parents);
+    public record DeviceDescription(string Name, string Description);
+    public record GetContentOptions(bool? WithParents, bool? WithResourceProps, bool? WithVendorProps, bool? WithMetadata, bool? WithDevice, uint Take = 50, uint Skip = 0);
+    public record CDContent(int Total, DeviceDescription Device, Item Metadata, IEnumerable<Item> Items, IEnumerable<Item> Parents);
 
     public record AVState(string State, string Status, int? Tracks, string Medium, string PlayMode)
     {

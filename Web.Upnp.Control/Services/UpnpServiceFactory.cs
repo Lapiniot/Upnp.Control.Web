@@ -37,6 +37,14 @@ namespace Web.Upnp.Control.Services
             this.clientFactory = clientFactory;
         }
 
+        public async Task<(TService, DeviceDescription)> GetAsync<TService>(string deviceId, CancellationToken cancellationToken) where TService : SoapActionInvoker
+        {
+            var device = await context.UpnpDevices.FindAsync(new object[] { deviceId }, cancellationToken).ConfigureAwait(false);
+
+            return (GetService<TService>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService), t => ServiceSchemaAttribute.GetSchema(t)))),
+                new DeviceDescription(device.FriendlyName, device.Description));
+        }
+
         public async Task<TService> GetServiceAsync<TService>(string deviceId, CancellationToken cancellationToken)
             where TService : SoapActionInvoker
         {
@@ -45,7 +53,7 @@ namespace Web.Upnp.Control.Services
             return GetService<TService>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService), t => ServiceSchemaAttribute.GetSchema(t))));
         }
 
-        public async Task<(TService1, TService2)> GetServiceAsync<TService1, TService2>(string deviceId, CancellationToken cancellationToken)
+        public async Task<(TService1, TService2)> GetServicesAsync<TService1, TService2>(string deviceId, CancellationToken cancellationToken)
             where TService1 : SoapActionInvoker where TService2 : SoapActionInvoker
         {
             var device = await context.UpnpDevices.FindAsync(new object[] { deviceId }, cancellationToken).ConfigureAwait(false);
@@ -54,7 +62,7 @@ namespace Web.Upnp.Control.Services
                 GetService<TService2>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService2), t => ServiceSchemaAttribute.GetSchema(t)))));
         }
 
-        public async Task<(TService1, TService2, TService3)> GetServiceAsync<TService1, TService2, TService3>(string deviceId, CancellationToken cancellationToken)
+        public async Task<(TService1, TService2, TService3)> GetServicesAsync<TService1, TService2, TService3>(string deviceId, CancellationToken cancellationToken)
             where TService1 : SoapActionInvoker
             where TService2 : SoapActionInvoker
             where TService3 : SoapActionInvoker

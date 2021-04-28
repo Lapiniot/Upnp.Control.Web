@@ -30,10 +30,18 @@ namespace Web.Upnp.Control.Models.Converters
             var containerConverter = (JsonConverter<Container>)options.GetConverter(typeof(Container));
             var itemConverter = (JsonConverter<MediaItem>)options.GetConverter(typeof(MediaItem));
 
-            if(value.metadata is not null)
+            if(value.Metadata is not null)
             {
                 writer.WritePropertyName("self");
-                WriteItem(value.metadata);
+                WriteItem(value.Metadata);
+            }
+
+            if(value.Device is not null)
+            {
+                writer.WriteStartObject("dev");
+                writer.WriteString("name", value.Device.Name);
+                writer.WriteString("desc", value.Device.Description);
+                writer.WriteEndObject();
             }
 
             if(value.Items is { } items)

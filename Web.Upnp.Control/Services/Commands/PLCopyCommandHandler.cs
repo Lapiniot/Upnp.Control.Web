@@ -23,7 +23,7 @@ namespace Web.Upnp.Control.Services.Commands
         {
             if(command is null) throw new ArgumentNullException(nameof(command));
             var (deviceId, playlistId, title) = command;
-            var (cdService, plService) = await factory.GetServiceAsync<ContentDirectoryService, PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
+            var (cdService, plService) = await factory.GetServicesAsync<ContentDirectoryService, PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
 
             var sb = new StringBuilder();
             using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
