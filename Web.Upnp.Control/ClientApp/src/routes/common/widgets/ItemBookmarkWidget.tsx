@@ -15,7 +15,7 @@ export default function ({ device, id, title, icon, deviceName }: ItemBookmarkWi
         <AlbumArt albumArts={icon ? [icon] : undefined} itemClass="" className="me-2" />
         <div className="d-flex flex-column overflow-hidden" title={`${title} on ${deviceName}`}>
             <h6 className="mb-0 text-truncate">{title}</h6>
-            <p className="mb-0 text-truncate small">[on {deviceName}]</p>
+            <p className="mb-0 text-truncate small">[{deviceName}]</p>
         </div>
     </RouteLink>
 }

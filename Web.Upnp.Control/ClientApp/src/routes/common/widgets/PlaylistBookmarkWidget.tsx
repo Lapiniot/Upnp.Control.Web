@@ -26,7 +26,7 @@ export default function ({ device, id, title, icon, deviceName }: PlaylistBookma
         <RouteLink to={`/umi/${device}/playlists/${id}`} title={`${title} on ${deviceName}`}
             className="d-flex flex-column overflow-hidden text-decoration-none flex-fill ps-0 p-2">
             <h6 className="mb-0 text-truncate">{title}</h6>
-            <p className="mb-0 small text-truncate">[on {deviceName}]</p>
+            <p className="mb-0 small text-truncate">[{deviceName}]</p>
         </RouteLink>
     </div>
 }

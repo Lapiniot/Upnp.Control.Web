@@ -38,7 +38,6 @@ type PlaylistManagerProps = PlaylistRouteParams &
 type PlaylistManagerState = {
     selection: string[];
     playlist?: string;
-    device: UpnpDevice | null;
     ctx?: DataContext<BrowseFetchResult>;
     rowStates: RowState[];
     editMode: boolean;
@@ -96,7 +95,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     constructor(props: PlaylistManagerProps) {
         super(props);
         this.handlers = new Map<string, (...args: any[]) => void>([["AVTransportEvent", this.onAVTransportEvent]]);
-        this.state = { selection: [], device: null, editMode: false, rowStates: [] };
+        this.state = { selection: [], editMode: false, rowStates: [] };
         this.ctrl = $api.control(this.props.device);
         this.pls = $api.playlist(this.props.device);
         MediaQueries.largeScreen.addEventListener("change", this.queryChangedHandler);
@@ -125,15 +124,14 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         try {
             const timeout = $s.get("timeout");
             const state = await this.ctrl.state(true).jsonFetch(timeout);
-            const device: UpnpDevice = await $api.devices("upnp", this.props.device).jsonFetch(timeout);
             if (state.medium === "X-MI-AUX") {
-                this.setState({ ...state, playlist: "aux", device });
+                this.setState({ ...state, playlist: "aux" });
             } else {
                 const { 0: { "playlist_transport_uri": playlist }, 1: { currentTrack } } = await Promise.all([
                     await this.pls.state().jsonFetch(),
                     await this.ctrl.position().jsonFetch()
                 ]);
-                this.setState({ ...state, playlist, currentTrack, device });
+                this.setState({ ...state, playlist, currentTrack });
             }
         } catch (e) {
             console.error(e);
@@ -463,7 +461,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             playUrl: this.playUrl,
             state: this.state.state,
             device: device,
-            deviceName: this.state.device?.name
+            deviceName: this.props.dataContext?.source.dev?.name
         };
 
         const largeScreen = MediaQueries.largeScreen.matches;

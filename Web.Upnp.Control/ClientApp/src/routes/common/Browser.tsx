@@ -58,7 +58,6 @@ function Template(props: CellTemplateProps<CellContext>) {
 
 type BrowserState = {
     ctx?: DataContext<BrowseFetchResult>;
-    device: UpnpDevice | null;
     umis: UpnpDevice[];
     renderers: UpnpDevice[];
     selection: { items: DIDLItem[], umiCompatible: boolean, rendererCompatible: boolean };
@@ -77,7 +76,6 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     constructor(props: BrowserProps | Readonly<BrowserProps>) {
         super(props);
         this.state = {
-            device: null,
             umis: [],
             renderers: [],
             selection: { items: [], umiCompatible: false, rendererCompatible: false },
@@ -91,8 +89,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         try {
             const timeout = $s.get("timeout");
             const devices: UpnpDevice[] = await WebApi.devices("renderers").jsonFetch(timeout);
-            const device: UpnpDevice = await WebApi.devices("upnp", this.props.device).jsonFetch(timeout);
-            this.setState({ device, umis: devices.filter(isUmiDevice), renderers: devices.filter(d => !isUmiDevice(d)) })
+            this.setState({ umis: devices.filter(isUmiDevice), renderers: devices.filter(d => !isUmiDevice(d)) })
         }
         catch (error) {
             console.error(error);
@@ -254,7 +251,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         const ctx = {
             disabled: !itemActionMenuEnabled,
             device: this.props.device,
-            deviceName: this.state.device?.name
+            deviceName: this.props.dataContext?.source.dev?.name
         };
 
         return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column">
