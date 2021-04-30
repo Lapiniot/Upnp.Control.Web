@@ -16,6 +16,7 @@ type WidgetPropsType = {
     id: string;
     title: string;
     icon?: string;
+    itemClass?: string;
 };
 
 export function useBookmarkButton(widgetName: KnownWidgets,
@@ -28,7 +29,7 @@ export function useBookmarkButton(widgetName: KnownWidgets,
                 if (!store) return;
                 const key: [string, string] = [device, item.id];
                 if (!await store.contains(key)) {
-                    await store.add(widgetName, { device, deviceName, id: item.id, title: item.title, icon: item.albumArts?.[0] });
+                    await store.add(widgetName, { device, deviceName, id: item.id, title: item.title, icon: item.albumArts?.[0], itemClass: item.class });
                     setBookmarked(true);
                 }
                 else {
