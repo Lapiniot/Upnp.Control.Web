@@ -50,7 +50,7 @@ export default () => {
                 </li>
                 <li className="list-group-item">
                     <small>Tools</small>
-                    <div className="d-flex flex-column flex-gapy-2 mt-1">
+                    <div className="d-flex flex-column mt-1 gap-2">
                         <div className="d-flex flex-column">
                             <a className="btn-link" href="api/swagger" target="_blank" rel="noopener noreferrer">Open SwaggerUI</a>
                             <small className="form-text">Offers a web-based UI that provides information about the service, using the generated OpenAPI specification</small>

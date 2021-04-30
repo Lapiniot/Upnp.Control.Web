@@ -79,47 +79,13 @@ $zindex-dropdown: $zindex-sticky + 5;
     }
 }
 
-@each $k, $v in $spacers {
+@each $k, $spacer in $spacers {
     .gapx-#{$k} {
-        column-gap: $v;
+        column-gap: $spacer;
     }
 
-    $gap: $v/2;
-
-    .flex-gapx-#{$k} {
-        margin-left: -$gap;
-        margin-right: -$gap;
-        & > * {
-            margin-left: $gap;
-            margin-right: $gap;
-        }
-    }
-
-    .flex-gapy-#{$k} {
-        margin-top: -$gap;
-        margin-bottom: -$gap;
-        & > * {
-            margin-top: $gap;
-            margin-bottom: $gap;
-        }
-    }
-
-    .flex-gap-#{$k} {
-        @extend .flex-gapx-#{$k};
-        @extend .flex-gapy-#{$k};
-    }
-}
-
-@each $k, $v in $spacers {
     .gapy-#{$k} {
-        row-gap: $v;
-    }
-}
-
-@each $k, $v in $spacers {
-    .gap-#{$k} {
-        @extend .gapx-#{$k};
-        @extend .gapy-#{$k};
+        row-gap: $spacer;
     }
 }
 
@@ -148,8 +114,10 @@ $zindex-dropdown: $zindex-sticky + 5;
 .upnp-dev-icon {
     height: 48px !important;
     width: 48px !important;
-    object-fit: contain;
     margin-right: 0.5rem;
+    &:not([src*=".svg"]) {
+        object-fit: contain;
+    }
 }
 
 %grid-form-label {
@@ -268,7 +236,6 @@ label.cb-wrap {
     display: grid;
     z-index: $zindex-fixed;
     @include grid-auto-columns($min: 15rem, $max: 1fr, $mode: auto-fill);
-    gap: map-get($spacers, 3);
     padding: map-get($spacers, 3);
     inset: 0 0 auto 0;
     max-height: 30vh;

@@ -30,7 +30,7 @@ ReactDOM.render(
                 <NavBarSvgSymbols />
             </div>
             <main>
-                <div id="notifications-root" className="nt-host pe-none" />
+                <div id="notifications-root" className="nt-host gap-3 pe-none" />
                 <SignalRConnection hubUrl="/upnpevents">
                     <Switch>
                         <Route exact path="/" component={HomePage} />
