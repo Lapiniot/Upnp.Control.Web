@@ -13,6 +13,12 @@
             "args": [],
             "cwd": "${workspaceFolder}/Web.Upnp.Control",
             "stopAtEntry": false,
+            "allowFastEvaluate": true,
+            "logging": {
+                "moduleLoad": false,
+                "engineLogging": false,
+                "threadExit": false
+            },
             "serverReadyAction": {
                 "action": "debugWithChrome",
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
