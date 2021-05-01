@@ -113,7 +113,7 @@
             "task": "sass",
             "group": "build",
             "options": {
-                "cwd": "Web.Upnp.Control/"
+                "cwd": "${workspaceFolder}/Web.Upnp.Control/ClientApp"
             },
             "problemMatcher": "$gulp-tsc"
         },
@@ -124,7 +124,7 @@
             "task": "watch",
             "isBackground": true,
             "options": {
-                "cwd": "Web.Upnp.Control/"
+                "cwd": "${workspaceFolder}/Web.Upnp.Control/ClientApp"
             },
             "presentation": {
                 "echo": true,
