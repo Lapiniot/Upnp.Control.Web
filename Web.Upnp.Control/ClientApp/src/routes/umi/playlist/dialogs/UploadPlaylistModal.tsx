@@ -22,8 +22,8 @@ export class UploadPlaylistModal extends React.Component<UploadPlaylistModalProp
                 <input type="file" className="form-control" name="files" accept=".m3u,.m3u8" multiple required />
                 <div className="invalid-tooltip">Please select at least one playlist file</div>
             </div>
-            <div className="form-check form-switch">
-                <input type="checkbox" defaultChecked={useProxy} className="form-check-input" name="useProxy" value="true" />
+            <div className="form-check form-switch px-0">
+                <input type="checkbox" defaultChecked={useProxy} className="form-check-input m-0 mx-2" name="useProxy" value="true" />
                 <label htmlFor="useProxy" className="form-check-label" >Use DLNA proxy for live stream</label>
             </div>
             <Modal.Footer>
