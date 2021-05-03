@@ -10,13 +10,13 @@ export default class Toolbar extends React.Component<HTMLAttributes<HTMLDivEleme
         </button>;
 
     static Group = ({ className, children, visible, ...other }: HTMLAttributes<HTMLDivElement> & { visible?: boolean }) =>
-        <div className={`btn-group align-items-center${className ? ` ${className}` : ""} ${visible === false ? " d-none" : ""}`} role="group" {...other}>
+        <div className={`d-inline-flex align-items-center${className ? ` ${className}` : ""} ${visible === false ? " d-none" : ""}`} role="group" {...other}>
             {children}
         </div>;
 
     render() {
         const { className, children, ...other } = this.props;
-        return <div className={`btn-toolbar align-items-center${className ? ` ${className}` : ""}`} role="toolbar" {...other}>
+        return <div className={`btn-toolbar gapx-1 align-items-center${className ? ` ${className}` : ""}`} role="toolbar" {...other}>
             {children}
         </div>;
     }

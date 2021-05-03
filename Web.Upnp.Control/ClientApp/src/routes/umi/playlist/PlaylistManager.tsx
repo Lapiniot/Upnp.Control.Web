@@ -365,42 +365,43 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             this.state.rowStates[i] |= flag;
     }
 
-    private getToolbarItems = (): ToolbarItem[] => {
-        const disabled = this.state.selection.length === 0;
-        const onlySelected = this.state.selection.length !== 1;
-        return this.props.id === "PL:" ?
-            [
-                ["create", "Add new", "plus", this.addClickHandler, undefined],
-                ["delete", "Delete", "trash", this.removeClickHandler, disabled],
-                ["rename", "Rename", "edit", this.renameClickHandler, onlySelected],
-                ["copy", "Copy", "copy", this.copyClickHandler, onlySelected]
-            ] :
-            [
-                ["add-items", "Add from media server", "plus", this.addItemsClickHandler, undefined],
-                ["add-url", "Add Internet stream url", "broadcast-tower", this.addUrlClickHandler, undefined],
-                ["add-files", "Add from playlist file", "list", this.uploadPlaylistClickHandler, undefined],
-                ["remove", "Remove items", "trash", this.removeItemsClickHandler, disabled]
-            ];
-    }
-
-    private renderTopBar = () => {
+    private renderTopBar = (expanded: boolean) => {
         const className = "btn-round btn-icon btn-plain flex-grow-0";
         const selectedCount = this.state.selection.length;
+        const hasNoSelection = selectedCount === 0;
+        const onlySelected = selectedCount === 1;
         return this.state.editMode ? <>
             <Toolbar.Button key="close" glyph="close" onClick={this.toggleEditMode} className={className} />
             <small className="flex-fill my-0 mx-2 text-center text-truncate">
                 {selectedCount ? `${selectedCount} item${selectedCount > 1 ? "s" : ""} selected` : ""}
-            </small>
-            <Toolbar.Button key="delete" glyph="trash" onClick={this.removeClickHandler} className={className} disabled={selectedCount === 0} />
-            <Toolbar.Button key="rename" glyph="edit" onClick={this.renameClickHandler} className={className} disabled={selectedCount !== 1} />
+            </small>{this.props.id === "PL:" ? <>
+                <Toolbar.Button glyph="trash" title="Delete" onClick={this.removeClickHandler} className={className} disabled={hasNoSelection} />
+                <Toolbar.Button glyph="edit" title="Rename" onClick={this.renameClickHandler} className={className} disabled={!onlySelected} />
+                <Toolbar.Button glyph="copy" title="Copy" onClick={this.copyClickHandler} className={className} disabled={!onlySelected} />
+            </> :
+                <Toolbar.Button glyph="trash" title="Delete items" onClick={this.removeItemsClickHandler} className={className} disabled={hasNoSelection} />}
             <Toolbar.Button key="check-all" glyph="ui-checks" onClick={this.toggleSelectAllHandler} className={className} />
         </> : <>
             <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className={className} />
-            <div className="flex-fill mx-2 text-center text-truncate">
-                <h6 className="mb-0">{this.props.dataContext?.source.parents?.[0]?.title}</h6>
-                <small className="text-muted">{this.props.dataContext?.source.dev?.name}</small>
+            <div className="flex-fill d-flex flex-column align-items-stretch overflow-hidden text-center text-md-start">
+                <h6 className="mb-0 text-truncate">{this.props.dataContext?.source.parents?.[0]?.title}</h6>
+                <small className="text-muted text-truncate">{this.props.dataContext?.source.dev?.name}</small>
             </div>
-            <Toolbar.Button key="edit-mode" glyph="pen" onClick={this.toggleEditMode} className={className} />
+            {expanded ? <>{
+                this.props.id === "PL:" ? <>
+                    <Toolbar.Button glyph="plus" title="Add new" onClick={this.addClickHandler} className={className} />
+                    <Toolbar.Button glyph="trash" title="Delete" onClick={this.removeClickHandler} className={className} disabled={hasNoSelection} />
+                    <Toolbar.Button glyph="edit" title="Rename" onClick={this.renameClickHandler} className={className} disabled={!onlySelected} />
+                    <Toolbar.Button glyph="copy" title="Copy" onClick={this.copyClickHandler} className={className} disabled={!onlySelected} />
+                </> : <>
+                    <Toolbar.Button glyph="plus" title="Add from media server" onClick={this.addItemsClickHandler} className={className} />
+                    <Toolbar.Button glyph="broadcast-tower" title="Add Internet stream url" onClick={this.addUrlClickHandler} className={className} />
+                    <Toolbar.Button glyph="list" title="Add from playlist file" onClick={this.uploadPlaylistClickHandler} className={className} />
+                    <Toolbar.Button glyph="trash" title="Delete items" onClick={this.removeItemsClickHandler} className={className} disabled={hasNoSelection} />
+                </>
+            }
+            </> :
+                <Toolbar.Button key="edit-mode" glyph="pen" onClick={this.toggleEditMode} className={className} />}
         </>;
     }
 
@@ -420,7 +421,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <MenuItem action="copy" glyph="copy">Copy</MenuItem>
                 </>
                 : <>
-                    <MenuItem action="remove" glyph="trash">Remove item</MenuItem>
+                    <MenuItem action="remove" glyph="trash">Delete item</MenuItem>
                 </>}
             <MenuItem action="info" glyph="info">Get Info</MenuItem>
         </>;
@@ -476,20 +477,9 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="flex-fill d-flex flex-column" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <div className="d-flex flex-column sticky-top">
-                    {largeScreen ?
-                        <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
-                            <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className="btn-round btn-icon btn-plain" />
-                            <div className="flex-fill mx-2 text-truncate text-center text-md-start">
-                                <h6 className="mb-0 text-truncate">{parents?.[0]?.title ?? ""}</h6>
-                                <small className="text-muted">{dev?.name ?? ""}</small>
-                            </div>
-                            {this.getToolbarItems().map(i => <Toolbar.Button key={i[0]} title={i[1]} glyph={i[2]} onClick={i[3]} disabled={i[4]} className="btn-round btn-icon btn-plain" />)}
-                        </Toolbar> :
-                        <Toolbar className="p-2 bg-white border-bottom">
-                            <Toolbar.Group className="flex-fill align-items-center overflow-hidden">
-                                {this.renderTopBar()}
-                            </Toolbar.Group>
-                        </Toolbar>}
+                    <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
+                        {this.renderTopBar(largeScreen)}
+                    </Toolbar>
                 </div>
                 <SignalRListener handlers={this.handlers}>
                     <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
