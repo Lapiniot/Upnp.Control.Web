@@ -80,7 +80,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
-        this.resizeObserver = new ResizeObserver(this.resizeObservedHandler);
+        this.resizeObserver = new ResizeObserver(this.updateStickyElementsLayout);
         this.state = {
             states: [], callback: this.selectionStateChanged,
             adapter: new SelectionStateAdapter([], null, this.selectionStateChanged)
@@ -97,8 +97,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             return null;
     }
 
-    componentDidUpdate({ dataContext: prevDataContext, displayMode: prevDisplayMode }: BrowserViewProps<TContext>) {
-        const { dataContext, selectionChanged, displayMode } = this.props;
+    componentDidUpdate({ dataContext: prevDataContext, displayMode: prevDisplayMode, useCheckboxes: prevUseCheckboxes }: BrowserViewProps<TContext>) {
+        const { dataContext, selectionChanged, displayMode, useCheckboxes } = this.props;
 
         if (dataContext && selectionChanged && prevDataContext !== dataContext) {
             selectionChanged([]);
@@ -109,6 +109,10 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             if (this.props.displayMode === "responsive") {
                 MediaQueries.largeScreen.addEventListener("change", this.screenQueryChangedHandler);
             }
+        }
+
+        if (prevUseCheckboxes !== useCheckboxes) {
+            this.updateStickyElementsLayout();
         }
     }
 
@@ -131,8 +135,9 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         this.forceUpdate();
     }
 
-    resizeObservedHandler = (entries: ResizeObserverEntry[]) => {
-        const table = entries[0].target;
+    updateStickyElementsLayout = () => {
+        const table = this.tableRef.current;
+        if (!table) return;
 
         const scrollParent = findScrollParent(table as HTMLElement);
         if (!scrollParent) return;
