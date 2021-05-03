@@ -63,7 +63,6 @@ type PlaybackAction = "play" | "pause" | "stop";
 
 type Action = PlaylistAction | ItemAction | PlaybackAction | "info";
 
-type ToolbarItem = [Action, string | undefined, string | undefined, () => void, boolean | undefined];
 
 function isReadonly(item: DIDLItem) {
     if (item.readonly) return true;
@@ -333,8 +332,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
     }
 
     toggleEditMode = () => {
-        this.resetStates(RowState.Selected);
-        this.setState(state => ({ editMode: !state.editMode }));
+        this.setState(({ editMode }) => ({ editMode: !editMode }));
     }
 
     pressHoldHandler = () => {
@@ -343,26 +341,30 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     toggleSelectAllHandler = () => {
         if (this.state.rowStates.some(rs => (rs & RowState.SelectMask) === RowState.Selectable)) {
-            this.setStates(RowState.Selected);
-            this.setState({
-                selection: this.props.dataContext?.source.items?.
-                    filter((_, i) => this.state.rowStates[i] & RowState.Selectable).
-                    map(i => i.id) ?? []
+            this.setState(({ rowStates }) => {
+                this.setStateFlag(rowStates, RowState.Selected);
+                return {
+                    selection: this.props.dataContext?.source.items?.
+                        filter((_, i) => this.state.rowStates[i] & RowState.Selectable).
+                        map(i => i.id) ?? [], rowStates
+                };
             })
         } else {
-            this.resetStates(RowState.Selected);
-            this.setState({ selection: [] });
+            this.setState(({ rowStates }) => {
+                this.resetStateFlag(rowStates, RowState.Selected);
+                return { selection: [], rowStates };
+            });
         }
     }
 
-    private resetStates = (flag: RowState) => {
-        for (let i = 0; i < this.state.rowStates.length; i++)
-            this.state.rowStates[i] &= ~flag;
+    private resetStateFlag = (states: RowState[], flag: RowState) => {
+        for (let i = 0; i < states.length; i++)
+            states[i] &= ~flag;
     }
 
-    private setStates = (flag: RowState) => {
-        for (let i = 0; i < this.state.rowStates.length; i++)
-            this.state.rowStates[i] |= flag;
+    private setStateFlag = (states: RowState[], flag: RowState) => {
+        for (let i = 0; i < states.length; i++)
+            states[i] |= flag;
     }
 
     private renderTopBar = (expanded: boolean) => {
@@ -452,7 +454,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             : currentTrack && playlist === parents?.[0]?.res?.url ? parseInt(currentTrack) - pageSize * (page - 1) - 1 : -1;
 
         if (activeIndex >= 0 && this.state.rowStates.length) {
-            this.resetStates(RowState.Active);
+            this.resetStateFlag(this.state.rowStates, RowState.Active);
             this.state.rowStates[activeIndex] |= RowState.Active;
         }
 
