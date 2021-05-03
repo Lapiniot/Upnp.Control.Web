@@ -27,19 +27,19 @@ $cert | Select-Object *
 
 $path = Get-Location
 
-[File]::WriteAllText([Path]::Combine($path, "upnp-dashboard.crt"), `
-    [StringBuilder]::new().`
-        AppendLine("-----BEGIN CERTIFICATE-----").`
-        AppendLine([Convert]::ToBase64String($cert.Export("Cert"), "InsertLineBreaks")).`
-        AppendLine("-----END CERTIFICATE-----").`
-        ToString())
+# [File]::WriteAllText([Path]::Combine($path, "upnp-dashboard.crt"), `
+#     [StringBuilder]::new().`
+#         AppendLine("-----BEGIN CERTIFICATE-----").`
+#         AppendLine([Convert]::ToBase64String($cert.Export("Cert"), "InsertLineBreaks")).`
+#         AppendLine("-----END CERTIFICATE-----").`
+#         ToString())
 
-[File]::WriteAllText([Path]::Combine($path, "upnp-dashboard.key"), `
-    [StringBuilder]::new().`
-        AppendLine("-----BEGIN PRIVATE KEY-----").`
-        AppendLine([Convert]::ToBase64String($cert.PrivateKey.ExportPkcs8PrivateKey(), "InsertLineBreaks")).`
-        AppendLine("-----END PRIVATE KEY-----").`
-        ToString())
+# [File]::WriteAllText([Path]::Combine($path, "upnp-dashboard.key"), `
+#     [StringBuilder]::new().`
+#         AppendLine("-----BEGIN PRIVATE KEY-----").`
+#         AppendLine([Convert]::ToBase64String($cert.PrivateKey.ExportPkcs8PrivateKey(), "InsertLineBreaks")).`
+#         AppendLine("-----END PRIVATE KEY-----").`
+#         ToString())
 
 $password = $(Read-Host -AsSecureString -Prompt "Enter export password");
 
