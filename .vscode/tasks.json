@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "options": {
         "env": {
-            "FRAMEWORK": "net5.0",
+            "FRAMEWORK": "net6.0",
             "CONFIG": "Release"
         }
     },
@@ -178,7 +178,7 @@
             "dockerBuild": {
                 "tag": "webupnpcontrol:latest-scd-${input:rid}",
                 "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/${input:rid}/Dockerfile",
-                "context": "${workspaceFolder}/Web.Upnp.Control/bin/Release/net5.0/${input:rid}/publish",
+                "context": "${workspaceFolder}/Web.Upnp.Control/bin/Release/net6.0/${input:rid}/publish",
                 "pull": true
             },
             "netCore": {

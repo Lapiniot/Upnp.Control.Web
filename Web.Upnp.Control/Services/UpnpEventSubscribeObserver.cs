@@ -43,7 +43,7 @@ namespace Web.Upnp.Control.Services
 
         private void SubscribeToEvents(string deviceId, IEnumerable<Service> services)
         {
-            var baseUrl = $"api/events/{Uri.EscapeUriString(deviceId)}/notify";
+            var baseUrl = $"api/events/{Uri.EscapeDataString(deviceId)}/notify";
 
             var rcService = services.Single(s => s.ServiceType == UpnpServices.RenderingControl);
             var avtService = services.Single(s => s.ServiceType == UpnpServices.AVTransport);

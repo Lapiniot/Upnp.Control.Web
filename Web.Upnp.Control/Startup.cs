@@ -131,7 +131,7 @@ namespace Web.Upnp.Control
 
         private static void ConfigureJsonSerializer(JsonSerializerOptions options, IEnumerable<JsonConverter> converters)
         {
-            options.IgnoreNullValues = true;
+            options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
             foreach(var converter in converters)
             {

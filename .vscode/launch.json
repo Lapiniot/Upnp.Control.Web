@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "Build",
-            "program": "${workspaceFolder}/Web.Upnp.Control/bin/Debug/net5.0/Web.Upnp.Control.dll",
+            "program": "${workspaceFolder}/Web.Upnp.Control/bin/Debug/net6.0/Web.Upnp.Control.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Web.Upnp.Control",
             "stopAtEntry": false,
