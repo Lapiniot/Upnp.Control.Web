@@ -25,7 +25,7 @@ function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & De
             style={{ overflowY: "auto", maxHeight: "calc(100% - 2.5rem)" }}>
             {d?.source.items?.map(i => <li key={i.id}>
                 <a className="dropdown-item text-truncate" href="#" data-play-url={i.res?.url + "#play"} onClick={playUrlHandler}>
-                    <AlbumArt itemClass={i.class} albumArts={i.albumArts} className="album-art-sm me-1 align-middle" />{i.title}</a>
+                    <AlbumArt itemClass={i.class} albumArts={i.albumArts} className="album-art-sm align-middle" />{i.title}</a>
             </li>)}
         </DropdownMenu>
     </>

@@ -8,7 +8,7 @@ a {
             width: 1em;
             overflow: visible;
             vertical-align: -0.125em;
-            margin-right: map-get($spacers, 1);
+            margin-inline-end: map-get($spacers, 1);
         }
     }
 }
@@ -17,8 +17,8 @@ nav.navbar-nav > a.nav-link,
 .dropdown-item {
     & > svg,
     & > img {
-        &:first-child() {
-            margin-right: map-get($spacers, 3);
+        &:first-child {
+            margin-inline-end: map-get($spacers, 3);
         }
     }
 }
