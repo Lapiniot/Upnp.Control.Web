@@ -1,6 +1,14 @@
 export type GestureHandler<TElement extends HTMLElement, TGesture extends string, TParams = undefined> =
     (target: TElement, gesture: TGesture, params: TParams) => void;
 
+export enum PointerType {
+    Touch = 0x1,
+    LButton = 0x2,
+    RButton = 0x4,
+    Primary = Touch | LButton,
+    Any = Touch | LButton | RButton
+}
+
 export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture extends string, TParams extends unknown> {
     protected handler: GestureHandler<TElement, TGesture, TParams>;
     protected target: TElement | null = null;
@@ -85,6 +93,23 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
     }
 
     protected update() { }
+
+    protected static buildPointerTypePredicate(pointerType: PointerType): (event: PointerEvent) => boolean {
+        let predicate: (e: PointerEvent) => boolean = () => false;
+        if (pointerType & PointerType.LButton) {
+            const prev = predicate;
+            predicate = (e) => prev(e) || e.pointerType === "mouse" && e.button === 0;
+        }
+        if (pointerType & PointerType.RButton) {
+            const prev = predicate;
+            predicate = (e) => prev(e) || e.pointerType === "mouse" && e.button === 2;
+        }
+        if (pointerType & PointerType.Touch) {
+            const prev = predicate;
+            predicate = (e) => prev(e) || e.pointerType === "touch";
+        }
+        return predicate;
+    }
 }
 
 export default GestureRecognizer;
