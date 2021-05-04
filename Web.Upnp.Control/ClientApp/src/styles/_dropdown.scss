@@ -1,0 +1,21 @@
+.dropdown-item {
+    @extend .text-truncate;
+    &:focus,
+    &:active {
+        outline: none !important;
+        box-shadow: none;
+    }
+}
+
+.dropdown-menu {
+    max-height: 100vh;
+    max-width: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+@media (pointer: coarse) {
+    .dropdown-item {
+        padding-block: map-get($spacers, 3);
+    }
+}

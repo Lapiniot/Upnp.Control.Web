@@ -23,14 +23,6 @@ nav.navbar-nav > a.nav-link,
     }
 }
 
-.dropdown-item {
-    &:focus,
-    &:active {
-        outline: none !important;
-        box-shadow: none;
-    }
-}
-
 .btn,
 .btn-close {
     &.btn-round {
