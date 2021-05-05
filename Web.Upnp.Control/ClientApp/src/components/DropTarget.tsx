@@ -74,7 +74,7 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
             onDragOver={this.dragOverHandler} onDrop={this.dropHandler}>
             <DropTargetSvgSymbols />
             {children}
-            {dragging && <div className={`d-flex border border-2 border-${color} backdrop-${color}`}>
+            {dragging && <div className={`pe-none d-flex border border-2 border-${color} backdrop-${color}`}>
                 <Indicator className={`m-auto flex-column border-${color} p-3`} style={{ borderStyle: "dashed", borderWidth: "2px" }}>
                     <svg className="icon icon-3x">
                         <use href={`#${acceptable ? "upload" : "poo"}`} />
