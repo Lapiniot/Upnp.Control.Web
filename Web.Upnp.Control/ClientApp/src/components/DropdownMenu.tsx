@@ -72,11 +72,18 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
             document.addEventListener("click", this.documentClickListener, true);
             document.addEventListener("keydown", this.keydownListener, true);
             reference?.setAttribute("aria-expanded", "true");
+            this.instance?.setOptions({
+                modifiers: [{ name: 'eventListeners', enabled: true }],
+            });
+            this.instance?.update();
         }
         else {
             document.removeEventListener("click", this.documentClickListener, true);
             document.removeEventListener("keydown", this.keydownListener, true);
             reference?.setAttribute("aria-expanded", "false");
+            this.instance?.setOptions({
+                modifiers: [{ name: 'eventListeners', enabled: false }],
+            });
         }
     }
 
