@@ -95,14 +95,6 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "npm: install - Web.Upnp.Control",
-            "detail": "install dependencies from package",
-            "type": "npm",
-            "script": "install",
-            "path": "Web.Upnp.Control/",
-            "problemMatcher": []
-        },
-        {
             "label": "Gulp Compile",
             "detail": "Compiles *.scss files to *.css files",
             "type": "gulp",
@@ -234,6 +226,17 @@
             "netCore": {
                 "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
             }
+        },
+        {
+            "type": "npm",
+            "script": "build",
+            "path": "Web.Upnp.Control/ClientApp/",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": "build",
+            "label": "npm: build - Web.Upnp.Control/ClientApp",
+            "detail": "react-scripts build"
         }
     ],
     "inputs": [
