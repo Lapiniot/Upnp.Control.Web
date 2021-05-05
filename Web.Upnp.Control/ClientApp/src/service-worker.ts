@@ -34,8 +34,6 @@ const BLACKLIST_PREFIXES = ["/api"];
 
 async function precache() {
     try {
-        console.info("precaching static content:");
-        console.debug(CACHE_STORE_ITEMS);
         const cache = await caches.open(CACHE_STORE_NAME);
         await cache.addAll(CACHE_STORE_ITEMS);
     } catch (error) {
@@ -45,7 +43,6 @@ async function precache() {
 
 async function cleanup() {
     const keys = (await caches.keys()).filter(k => !CACHES.includes(k));
-    console.debug(`obsolete caches to be removed: ${keys}`);
     for (const key of keys) {
         try {
             await caches.delete(key);
@@ -67,11 +64,9 @@ async function enablePreload() {
 async function fetchWithPreload(event: FetchEvent): Promise<Response> {
     const response = await Promise.resolve<Response>(event.preloadResponse);
     if (response) {
-        console.debug(`received preload response for ${event.request.url}`);
         return response;
     }
     else {
-        console.debug(`no preload response for ${event.request.url}, using regular fetch`);
         return await fetch(event.request);
     }
 }
@@ -93,7 +88,6 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
 
-    console.debug(event.request);
     const r = event.request;
 
     if (r.mode === "navigate" || r.destination !== "") {
@@ -101,7 +95,6 @@ self.addEventListener("fetch", event => {
         const url = new URL(r.url);
         url.search = "";
         if (BLACKLIST_PREFIXES.some(prefix => url.pathname.startsWith(prefix))) {
-            console.debug(`${url.href} is blacklisted by this service worker, allowing regular fetch to proceed`);
             return;
         }
 
@@ -118,30 +111,13 @@ self.addEventListener("fetch", event => {
 
             event.waitUntil((async () => {
                 const cache = await caches.open(CACHE_STORE_NAME);
-                try {
-                    const response = await cacheResponse;
-                    if (response.ok) {
-                        console.debug(`updating cache content for ${key}`);
-                        await cache.put(key, response);
-                    }
-                    else {
-                        console.debug(`Request failed for ${key}: ${response.statusText}. Keeping currently cached item intact.`);
-                    }
-                }
-                catch (error) {
-                    console.debug(`network request failed for ${key}, cached content will stay intact`);
+                const response = await cacheResponse;
+                if (response.ok) {
+                    await cache.put(key, response);
                 }
             })());
 
-            const cached = await caches.match(key);
-            if (cached) {
-                console.debug(`serving content from the cache for ${key}`);
-                return cached;
-            }
-            else {
-                console.debug(`cache miss for ${key}, waiting for network response is ready`);
-                return networkResponse;
-            }
+            return await caches.match(key) ?? networkResponse;
         })());
     }
 })
