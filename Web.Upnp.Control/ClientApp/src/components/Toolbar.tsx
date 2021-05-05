@@ -16,7 +16,7 @@ export default class Toolbar extends React.Component<HTMLAttributes<HTMLDivEleme
 
     render() {
         const { className, children, ...other } = this.props;
-        return <div className={`btn-toolbar gapx-1 align-items-center${className ? ` ${className}` : ""}`} role="toolbar" {...other}>
+        return <div className={`btn-toolbar align-items-center${className ? ` ${className}` : ""}`} role="toolbar" {...other}>
             {children}
         </div>;
     }

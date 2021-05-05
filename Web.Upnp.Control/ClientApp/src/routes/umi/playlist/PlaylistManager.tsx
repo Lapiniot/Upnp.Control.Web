@@ -385,7 +385,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <Toolbar.Button key="check-all" glyph="ui-checks" onClick={this.toggleSelectAllHandler} className={className} />
         </> : <>
             <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className={className} />
-            <div className="flex-fill d-flex flex-column align-items-stretch overflow-hidden text-center text-md-start">
+            <div className="flex-fill d-flex flex-column align-items-stretch overflow-hidden text-center text-md-start mx-2">
                 <h6 className="mb-0 text-truncate">{this.props.dataContext?.source.parents?.[0]?.title}</h6>
                 <small className="text-muted text-truncate">{this.props.dataContext?.source.dev?.name}</small>
             </div>
