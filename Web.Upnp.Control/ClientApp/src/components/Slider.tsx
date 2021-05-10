@@ -18,13 +18,11 @@ type SliderProps = Omit<HTMLProps<HTMLDivElement>, "onChange">
     }
 
 export default class Slider extends React.Component<SliderProps> {
-
-    ref = createRef<HTMLDivElement>();
     updatePending: boolean = false;
     slideGestureRecognizer: SlideGestureRecognizer<HTMLDivElement>;
-
     static defaultProps: Partial<SliderProps> = { reportMode: "release", value: 0, step: 0.01 };
     increment: number = 0;
+    element: HTMLDivElement | null = null;
 
     constructor(props: SliderProps | Readonly<SliderProps>) {
         super(props);
@@ -32,24 +30,25 @@ export default class Slider extends React.Component<SliderProps> {
     }
 
     get progress() {
-        const value = this.ref.current?.style.getPropertyValue("--slider-progress");
+        const value = this.element?.style.getPropertyValue("--slider-progress");
         return value ? parseFloat(value) : 0.0;
     }
 
     set progress(value: number) {
-        this.ref.current?.style.setProperty("--slider-progress", value.toString());
+        this.element?.style.setProperty("--slider-progress", value.toString());
     }
 
-    componentDidMount() {
-        if (this.ref.current)
-            this.slideGestureRecognizer.bind(this.ref.current);
+    private refCallback = (element: HTMLDivElement) => {
+        if (element) {
+            this.element = element;
+            this.slideGestureRecognizer.bind(element);
+        } else {
+            this.element = null;
+            this.slideGestureRecognizer.unbind();
+        }
     }
 
-    componentWillUnmount() {
-        this.slideGestureRecognizer.unbind();
-    }
-
-    slideGestureHandler = (target: HTMLDivElement, _: "slide", { phase, x }: SlideParams) => {
+    private slideGestureHandler = (target: HTMLDivElement, _: "slide", { phase, x }: SlideParams) => {
         if (this.props.readOnly) return;
 
         if (phase === "start") {
@@ -57,6 +56,9 @@ export default class Slider extends React.Component<SliderProps> {
             // which could interfere with manipulation
             target.style.setProperty("--slider-animation-duration", "0");
             target.style.setProperty("--slider-animation-name", "none");
+            target.dataset.manipulated = "1";
+        } else if (phase === "end") {
+            target.dataset.manipulated = undefined;
         }
 
         this.tryUpdateProgress(clamp(x / target.offsetWidth, 0.0, 1.0), phase === "end");
@@ -119,7 +121,7 @@ export default class Slider extends React.Component<SliderProps> {
     render() {
         const { className, value, reportMode: updateMode, style = {}, onChange, onChangeRequested, readOnly, ...other } = this.props;
 
-        return <div tabIndex={0} {...other} role="button" ref={this.ref} className={`slider${className ? ` ${className}` : ""}`}
+        return <div tabIndex={0} {...other} role="button" ref={this.refCallback} className={`slider${className ? ` ${className}` : ""}`}
             style={{ ...style, "--slider-progress": value } as ProgressCSSProperties} onKeyUp={this.keyUpHandler}>
             <div className="slider-track"  >
                 <div className="slider-indicator" />

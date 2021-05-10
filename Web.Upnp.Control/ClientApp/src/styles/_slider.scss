@@ -17,6 +17,7 @@
     padding: calc((var(--slider-ticker-size) * var(--slider-ticker-scale-factor) - var(--slider-size)) / 2) 0;
 
     &:hover,
+    &[data-manipulated="1"],
     &:focus-visible {
         --slider-color: var(--slider-hover-color);
     }
@@ -68,6 +69,10 @@
                 }
             }
         }
+    }
+
+    &[data-manipulated="1"] .slider-thumb {
+        transform: scale3d(var(--slider-ticker-scale-factor), var(--slider-ticker-scale-factor), 1);
     }
 
     .progress-track {
