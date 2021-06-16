@@ -40,89 +40,91 @@ namespace Web.Upnp.Control.Services
             try
             {
                 using var scope = services.CreateScope();
-                await using var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
-                var enumerator = scope.ServiceProvider.GetRequiredService<IAsyncEnumerable<SsdpReply>>();
-                var observers = scope.ServiceProvider.GetServices<IObserver<UpnpDiscoveryEvent>>().ToArray();
+                var context = scope.ServiceProvider.GetRequiredService<UpnpDbContext>();
 
-                try
+                await using(context.ConfigureAwait(false))
                 {
-#pragma warning disable CA1508 // Looks like bug in the analyzer code 
-                    await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
-#pragma warning restore CA1508 // Looks like bug in the analyzer code
+                    var enumerator = scope.ServiceProvider.GetRequiredService<IAsyncEnumerable<SsdpReply>>();
+                    var observers = scope.ServiceProvider.GetServices<IObserver<UpnpDiscoveryEvent>>().ToArray();
+
+                    try
                     {
-                        try
+                        await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                         {
-                            if(logger.IsEnabled(LogLevel.Trace)) DebugDump(reply, LogLevel.Trace);
-
-                            if(reply.StartLine.StartsWith("M-SEARCH", InvariantCulture)) continue;
-
-                            var udn = ExtractUdn(reply.UniqueServiceName);
-
-                            if(reply.StartLine.StartsWith("NOTIFY", InvariantCulture) && reply.TryGetValue("NT", out var nt))
+                            try
                             {
-                                if(nt != RootDevice) continue;
+                                if(logger.IsEnabled(LogLevel.Trace)) DebugDump(reply, LogLevel.Trace);
 
-                                if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
+                                if(reply.StartLine.StartsWith("M-SEARCH", InvariantCulture)) continue;
+
+                                var udn = ExtractUdn(reply.UniqueServiceName);
+
+                                if(reply.StartLine.StartsWith("NOTIFY", InvariantCulture) && reply.TryGetValue("NT", out var nt))
                                 {
-                                    var existing = await context.FindAsync<UpnpDevice>(new object[] { udn }, stoppingToken).ConfigureAwait(false);
-                                    if(existing != null)
+                                    if(nt != RootDevice) continue;
+
+                                    if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
                                     {
-                                        context.Remove(existing);
-                                        await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-                                        Notify(observers, new UpnpDeviceDisappearedEvent(udn, existing));
+                                        var existing = await context.FindAsync<UpnpDevice>(new object[] { udn }, stoppingToken).ConfigureAwait(false);
+                                        if(existing != null)
+                                        {
+                                            context.Remove(existing);
+                                            await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                                            Notify(observers, new UpnpDeviceDisappearedEvent(udn, existing));
+                                        }
+
+                                        continue;
                                     }
+                                }
+                                else if(reply.TryGetValue("ST", out var st) && st != RootDevice)
+                                {
+                                    continue;
+                                }
+
+                                var device = await context.FindAsync<UpnpDevice>(new object[] { udn }, stoppingToken).ConfigureAwait(false);
+
+                                if(device != null)
+                                {
+                                    context.Entry(device).Property(d => d.ExpiresAt).CurrentValue = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
+                                    await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+
+                                    Notify(observers, new UpnpDeviceUpdatedEvent(udn, device));
+
+                                    logger.LogInformation($"Device expiration updated for UDN='{udn}'");
 
                                     continue;
                                 }
-                            }
-                            else if(reply.TryGetValue("ST", out var st) && st != RootDevice)
-                            {
-                                continue;
-                            }
 
-                            var device = await context.FindAsync<UpnpDevice>(new object[] { udn }, stoppingToken).ConfigureAwait(false);
+                                var desc = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
 
-                            if(device != null)
-                            {
-                                context.Entry(device).Property(d => d.ExpiresAt).CurrentValue = DateTime.UtcNow.AddSeconds(reply.MaxAge + 10);
+                                device = new UpnpDevice(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
+                                    desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10),
+                                    desc.ManufacturerUri, desc.ModelUri, desc.PresentationUri)
+                                {
+                                    BootId = reply.BootId,
+                                    ConfigId = reply.ConfigId,
+                                    Icons = desc.Icons.Select(i => new Icon(i.Width, i.Height, i.Uri, i.Mime)).ToList(),
+                                    Services = desc.Services.Select(s => new Service(s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
+                                };
+
+                                await context.AddAsync(device, stoppingToken).ConfigureAwait(false);
                                 await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
 
-                                Notify(observers, new UpnpDeviceUpdatedEvent(udn, device));
+                                logger.LogInformation($"New device discovered with UDN='{desc.Udn}'");
 
-                                logger.LogInformation($"Device expiration updated for UDN='{udn}'");
-
-                                continue;
+                                Notify(observers, new UpnpDeviceAppearedEvent(udn, device));
                             }
-
-                            var desc = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
-
-                            device = new UpnpDevice(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
-                                desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10),
-                                desc.ManufacturerUri, desc.ModelUri, desc.PresentationUri)
+                            catch(Exception exception)
                             {
-                                BootId = reply.BootId,
-                                ConfigId = reply.ConfigId,
-                                Icons = desc.Icons.Select(i => new Icon(i.Width, i.Height, i.Uri, i.Mime)).ToList(),
-                                Services = desc.Services.Select(s => new Service(s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
-                            };
-
-                            await context.AddAsync(device, stoppingToken).ConfigureAwait(false);
-                            await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-
-                            logger.LogInformation($"New device discovered with UDN='{desc.Udn}'");
-
-                            Notify(observers, new UpnpDeviceAppearedEvent(udn, device));
-                        }
-                        catch(Exception exception)
-                        {
-                            logger.LogError(exception, $"Error processing SSDP reply {reply.StartLine} for USN={reply.UniqueServiceName}");
+                                logger.LogError(exception, $"Error processing SSDP reply {reply.StartLine} for USN={reply.UniqueServiceName}");
+                            }
                         }
                     }
-                }
-                catch(OperationCanceledException) { /* Expected */}
-                finally
-                {
-                    NotifyCompletion(observers);
+                    catch(OperationCanceledException) { /* Expected */}
+                    finally
+                    {
+                        NotifyCompletion(observers);
+                    }
                 }
             }
             catch(Exception ex)

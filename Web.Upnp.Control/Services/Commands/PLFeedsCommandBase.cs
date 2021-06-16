@@ -49,14 +49,19 @@ namespace Web.Upnp.Control.Services.Commands
             if(file is null) throw new ArgumentNullException(nameof(file));
 
             using var stream = file.OpenReadStream();
-            await using var reader = new StreamPipeReader(stream);
-            reader.Start();
-            var encoding = Path.GetExtension(file.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
-#pragma warning disable CA1508 // Looks like bug in the analyzer code
-            await foreach(var (path, info, _) in new M3uParser(reader, encoding).ConfigureAwait(false).WithCancellation(cancellationToken))
-#pragma warning restore CA1508 // Looks like bug in the analyzer code
+
+#pragma warning disable CA2000 // TODO: Review after some future .NET update,- seems to be an issue with analyzer itself
+            var reader = new StreamPipeReader(stream);
+#pragma warning restore CA2000
+
+            await using(reader.ConfigureAwait(false))
             {
-                await AppendFeedItemAsync(writer, new Uri(path), info, useProxy, cancellationToken).ConfigureAwait(false);
+                reader.Start();
+                var encoding = Path.GetExtension(file.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
+                await foreach(var (path, info, _) in new M3uParser(reader, encoding).ConfigureAwait(false).WithCancellation(cancellationToken))
+                {
+                    await AppendFeedItemAsync(writer, new Uri(path), info, useProxy, cancellationToken).ConfigureAwait(false);
+                }
             }
         }
 

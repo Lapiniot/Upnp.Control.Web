@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 namespace Web.Upnp.Control.Models
 {
-#pragma warning disable CA1801 // Review unused parameters, looks like issue with analyzer itself
-
     public record UpnpDevice(string Udn, Uri Location, string DeviceType, string FriendlyName, string Manufacturer,
         string Description, string ModelName, string ModelNumber, DateTime ExpiresAt,
         Uri ManufacturerUri, Uri ModelUri, Uri PresentationUri)
@@ -14,8 +12,6 @@ namespace Web.Upnp.Control.Models
         public IEnumerable<Icon> Icons { get; init; }
         public IEnumerable<Service> Services { get; init; }
     }
-
-#pragma warning restore CA1801 // Review unused parameters, looks like issue with analyzer itself
 
     public record Service(string UniqueServiceName, string ServiceType, Uri MetadataUrl, Uri ControlUrl, Uri EventsUrl);
 

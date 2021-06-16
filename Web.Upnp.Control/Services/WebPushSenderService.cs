@@ -81,9 +81,7 @@ namespace Web.Upnp.Control.Services
 
                         try
                         {
-#pragma warning disable CA1508 // Looks like a bug in the analyzer code 
                             await foreach(var subscription in context.Subscriptions.AsAsyncEnumerable().WithCancellation(stoppingToken).ConfigureAwait(false))
-#pragma warning restore CA1508 // Looks like a bug in the analyzer code 
                             {
                                 Uri endpoint = subscription.Endpoint;
                                 var keys = new SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);

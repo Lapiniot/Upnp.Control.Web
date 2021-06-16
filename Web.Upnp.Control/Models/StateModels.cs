@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Http;
 
 namespace Web.Upnp.Control.Models
 {
-
-#pragma warning disable CA1801 // Review unused parameters, looks like issue with analyzer itself
     public record DeviceDescription(string Name, string Description);
     public record GetContentOptions(bool? WithParents, bool? WithResourceProps, bool? WithVendorProps, bool? WithMetadata, bool? WithDevice, uint Take = 50, uint Skip = 0);
     public record CDContent(int Total, DeviceDescription Device, Item Metadata, IEnumerable<Item> Items, IEnumerable<Item> Parents);
@@ -35,6 +33,4 @@ namespace Web.Upnp.Control.Models
     public record PlaylistFilesSource(IEnumerable<IFormFile> Files, bool? UseProxy);
     public record FeedUrlSource(Uri Url, string Title, bool? UseProxy);
     public record PushSubscription(Uri Endpoint, long? Expiration, string P256dhKey, string AuthKey);
-
-#pragma warning restore CA1801 // Review unused parameters
 }

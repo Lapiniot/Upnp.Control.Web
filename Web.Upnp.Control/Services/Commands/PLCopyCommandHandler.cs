@@ -28,9 +28,7 @@ namespace Web.Upnp.Control.Services.Commands
             var sb = new StringBuilder();
             using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
             {
-#pragma warning disable CA1508 // Looks like bug in the analyzer code 
                 await foreach(var (content, _, _) in cdService.BrowseChildrenAsync(playlistId, pageSize: 100, cancellationToken: cancellationToken).ConfigureAwait(false))
-#pragma warning restore CA1508 // Looks like bug in the analyzer code 
                 {
                     DIDLUtils.CopyItems(content, writer, null, null);
                 }

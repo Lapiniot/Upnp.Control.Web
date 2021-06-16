@@ -34,9 +34,7 @@ namespace Web.Upnp.Control.Services.Queries
         public async IAsyncEnumerable<UpnpDevice> ExecuteAsync(GetDevicesQuery query, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             if(query is null) throw new ArgumentNullException(nameof(query));
-#pragma warning disable CA1508 // Looks like bug in the analyzer code
             await foreach(var device in GetQuery(query.Category).AsAsyncEnumerable().WithCancellation(cancellationToken).ConfigureAwait(false))
-#pragma warning restore CA1508 // Looks like bug in the analyzer code
             {
                 yield return device;
             }
