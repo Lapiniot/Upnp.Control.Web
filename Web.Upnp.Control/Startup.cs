@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Http.Json;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -100,7 +99,6 @@ namespace Web.Upnp.Control
                 .AddJsonProtocol(options => ConfigureJsonSerializer(options.PayloadSerializerOptions, customConverters));
 
             services.AddResponseCaching();
-            services.AddSpaStaticFiles(config => { config.RootPath = "ClientApp/build"; });
             services.AddImageLoaderProxyMiddleware();
             services.AddContentProxyMiddleware();
             services.AddCertificateDownloadMiddleware();
@@ -148,7 +146,6 @@ namespace Web.Upnp.Control
             }
 
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
 
             app.UseRouting();
 
@@ -169,16 +166,6 @@ namespace Web.Upnp.Control
             {
                 c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "UPnP Control API V1");
                 c.RoutePrefix = "api/swagger";
-            });
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if(env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer("start");
-                }
             });
         }
     }

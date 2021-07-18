@@ -7,6 +7,8 @@
         <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
         <IsPackable>false</IsPackable>
         <SpaRoot>ClientApp\</SpaRoot>
+        <SpaProxyServerUrl>http://localhost:8082</SpaProxyServerUrl>
+        <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
         <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**;**/appsettings.Secrets.json;**/appsettings.Development.json;package.json;package-lock.json</DefaultItemExcludes>
         <!-- Trimming settings -->
         <TrimMode>Link</TrimMode>
@@ -30,13 +32,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0-preview.5.21301.5" />
-        <PackageReference Include="System.Threading.Channels" Version="6.0.0-preview.5.21301.5" />
-        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.0-preview.5.21301.17" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0-preview.5.21301.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-preview.5.21301.9" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0-preview.5.21301.5" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0-preview.5.21301.5" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0-preview.6.21352.12" />
+        <PackageReference Include="System.Threading.Channels" Version="6.0.0-preview.6.21352.12" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.0-preview.6.21355.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0-preview.6.21352.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-preview.6.21352.1" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0-preview.6.21352.12" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0-preview.6.21352.12" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
     </ItemGroup>
 
@@ -72,9 +74,9 @@
 
         <!-- Include the newly-built files in the publish output -->
         <ItemGroup>
-            <DistFiles Include="$(SpaRoot)build\**; $(SpaRoot)build-ssr\**" />
+            <DistFiles Include="$(SpaRoot)build\**" />
             <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-                <RelativePath>%(DistFiles.Identity)</RelativePath>
+                <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
                 <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
                 <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             </ResolvedFileToPublish>
