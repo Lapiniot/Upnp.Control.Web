@@ -12,7 +12,7 @@ using Web.Upnp.Control.Services;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-await Host
+var hostBuilder = Host
     .CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((ctx, cb) =>
     {
@@ -26,9 +26,15 @@ await Host
         sources.Insert(index, new JsonConfigurationSource() { Path = $"appsettings.{environmentName}.Https.json", Optional = true });
     })
     .ConfigureWebHostDefaults(whb => whb.UseStartup<Startup>())
-    .ConfigureServices(cd => cd.AddHostedService<UpnpDiscoveryService>())
-    .UseWindowsService()
-    .UseSystemd()
-    .Build()
-    .RunAsync()
-    .ConfigureAwait(false);
+    .ConfigureServices(cd => cd.AddHostedService<UpnpDiscoveryService>());
+
+if(OperatingSystem.IsLinux())
+{
+    hostBuilder = hostBuilder.UseSystemd();
+}
+else if(OperatingSystem.IsWindows())
+{
+    hostBuilder = hostBuilder.UseWindowsService();
+}
+
+await hostBuilder.Build().RunAsync().ConfigureAwait(false);
