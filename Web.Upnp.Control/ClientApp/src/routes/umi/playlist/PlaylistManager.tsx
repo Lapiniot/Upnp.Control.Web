@@ -470,14 +470,14 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         const largeScreen = MediaQueries.largeScreen.matches;
         const hasTouch = MediaQueries.touchDevice.matches;
 
-        return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column" style={{ scrollPaddingBlock: "4rem" }}>
+        return <>
             <EditSvgSymbols />
             <PlaySvgSymbols />
             <PlaylistSvgSymbols />
             <PlayerSvgSymbols />
             <BrowserSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
-            <DropTarget className="flex-fill d-flex flex-column" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
+            <DropTarget className="flex-fill d-flex flex-column overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <div className="d-flex flex-column sticky-top">
                     <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
                         {this.renderTopBar(largeScreen)}
@@ -513,7 +513,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                 </div>
                 <ModalHost ref={this.modalHostRef} />
             </DropTarget >
-        </div>;
+        </>;
     }
 }
 

@@ -167,7 +167,7 @@ $zindex-dropdown: $zindex-sticky + 5;
 }
 
 .safari-scroll-fix {
-    z-index: $zindex-sticky + 1;
+    transform: translate3d(0, 0, 0);
 }
 
 .stack {

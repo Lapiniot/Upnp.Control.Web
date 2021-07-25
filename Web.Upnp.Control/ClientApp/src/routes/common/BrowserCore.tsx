@@ -29,7 +29,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
 
     return <>
         {fetching && <LoadIndicatorOverlay />}
-        <div className={`flex-fill d-flex flex-column${className ? ` ${className}` : ""}`}>
+        <div className={`flex-fill d-flex flex-column overflow-hidden${className ? ` ${className}` : ""}`}>
             <div className="d-flex flex-column sticky-top">
                 <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
                     <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={navBackHandler} className="btn-round btn-icon btn-plain" />

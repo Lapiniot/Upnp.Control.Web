@@ -254,7 +254,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             deviceName: this.props.dataContext?.source.dev?.name
         };
 
-        return <div className="h-100 overflow-auto safari-scroll-fix d-flex flex-column">
+        return <>
             <BrowserSvgSymbols />
             <BrowserCore mainCellTemplate={Template} mainCellContext={ctx} withPagination={false} useCheckboxes multiSelect
                 rowStateProvider={this.state.rowState} selectionChanged={this.selectionChanged} open={this.openHandler}
@@ -271,6 +271,6 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 {MediaQueries.largeScreen.matches && parents.length > 1 && <Breadcrumb className="border-top" items={parents} path={match.path} params={match.params} />}
             </div>
             <ModalHost ref={this.modalHostRef} />
-        </div>;
+        </>;
     }
 }
