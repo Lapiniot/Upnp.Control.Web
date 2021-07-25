@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services
 {
-    [SuppressMessage("Microsoft.Design", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by infrastructure")]
-    internal class InMemorySubscriptionsRepository : IUpnpSubscriptionsRepository
+    public class InMemorySubscriptionsRepository : IUpnpSubscriptionsRepository
     {
         private readonly Dictionary<string, List<IAsyncCancelable>> storage;
 

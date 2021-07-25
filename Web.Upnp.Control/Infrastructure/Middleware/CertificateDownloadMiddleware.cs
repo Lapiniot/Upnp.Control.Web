@@ -11,8 +11,7 @@ using static System.Text.Encoding;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
 {
-    [SuppressMessage("Microsoft.Design", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by infrastructure")]
-    internal sealed class CertificateDownloadMiddleware : IMiddleware
+    public sealed class CertificateDownloadMiddleware : IMiddleware
     {
         const int ChunkSize = 48;
         private readonly IWebHostEnvironment environment;
@@ -26,7 +25,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             this.server = server ?? throw new System.ArgumentNullException(nameof(server));
         }
 
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public async Task InvokeAsync([NotNull] HttpContext context, RequestDelegate next)
         {
             using var certificate = KestrelCertificateLoader.LoadFromConfiguration(configuration, environment.ContentRootFileProvider);
 

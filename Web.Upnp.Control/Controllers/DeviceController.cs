@@ -14,7 +14,6 @@ namespace Web.Upnp.Control.Controllers
     [ApiController]
     [Route("api/devices")]
     [Produces("application/json")]
-    [SuppressMessage("Microsoft.Design", "CA1062: Validate arguments of public methods")]
     public class DeviceController : ControllerBase
     {
         /// <summary>
@@ -26,7 +25,7 @@ namespace Web.Upnp.Control.Controllers
         /// <returns>Device information enumerator</returns>
         [HttpGet]
         [Produces("application/json")]
-        public IAsyncEnumerable<UpnpDevice> GetAllAsync([FromServices] IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
+        public IAsyncEnumerable<UpnpDevice> GetAllAsync([FromServices][NotNull] IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
             string category = "upnp", CancellationToken cancellationToken = default)
         {
             return handler.ExecuteAsync(new GetDevicesQuery(category), cancellationToken);
@@ -41,7 +40,7 @@ namespace Web.Upnp.Control.Controllers
         /// <returns>Device information</returns>
         [HttpGet("{id}")]
         [Produces("application/json")]
-        public Task<UpnpDevice> GetAsync([FromServices] IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
+        public Task<UpnpDevice> GetAsync([FromServices][NotNull] IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
             string id, CancellationToken cancellationToken = default)
         {
             return handler.ExecuteAsync(new GetDeviceQuery(id), cancellationToken);

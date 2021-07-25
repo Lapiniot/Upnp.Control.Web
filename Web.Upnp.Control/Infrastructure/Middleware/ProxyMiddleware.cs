@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -14,9 +15,8 @@ using static System.Globalization.CultureInfo;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
 {
-    internal abstract class ProxyMiddleware : IMiddleware
+    public abstract class ProxyMiddleware : IMiddleware
     {
-        protected int BufferSize;
         private readonly HttpClient client;
         private readonly ILogger<ProxyMiddleware> logger;
 
@@ -27,9 +27,11 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             BufferSize = 16 * 1024;
         }
 
+        protected int BufferSize { get; init; }
+
         #region Implementation of IMiddleware
 
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public async Task InvokeAsync([NotNull] HttpContext context, RequestDelegate next)
         {
             var id = context.Connection.Id;
 
@@ -98,7 +100,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             });
         }
 
-        protected virtual HttpRequestMessage CreateRequestMessage(HttpContext context, Uri requestUri, HttpMethod method)
+        protected virtual HttpRequestMessage CreateRequestMessage([NotNull] HttpContext context, Uri requestUri, HttpMethod method)
         {
             var requestMessage = new HttpRequestMessage(method, requestUri);
 
@@ -111,7 +113,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             return requestMessage;
         }
 
-        protected virtual void CopyHeaders(HttpResponseMessage responseMessage, HttpContext context)
+        protected virtual void CopyHeaders([NotNull] HttpResponseMessage responseMessage, [NotNull] HttpContext context)
         {
             var headers = context.Response.Headers;
 
@@ -126,7 +128,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             }
         }
 
-        protected virtual async Task CopyContentAsync(HttpResponseMessage responseMessage, HttpContext context, CancellationToken cancellationToken)
+        protected virtual async Task CopyContentAsync([NotNull] HttpResponseMessage responseMessage, [NotNull] HttpContext context, CancellationToken cancellationToken)
         {
             if(!context.Response.HasStarted)
             {
@@ -139,7 +141,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             }
         }
 
-        protected async Task CopyContentAsync(Stream source, HttpContext context, int bufferSize, CancellationToken cancellationToken)
+        protected async Task CopyContentAsync([NotNull] Stream source, [NotNull] HttpContext context, int bufferSize, CancellationToken cancellationToken)
         {
             var id = context.Connection.Id;
             var writer = context.Response.BodyWriter;

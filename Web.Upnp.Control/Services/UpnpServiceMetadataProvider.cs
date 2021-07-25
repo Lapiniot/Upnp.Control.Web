@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,8 +7,7 @@ using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services
 {
-    [SuppressMessage("Microsoft.Design", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by infrastructure")]
-    internal class UpnpServiceMetadataProvider : IUpnpServiceMetadataProvider
+    public class UpnpServiceMetadataProvider : IUpnpServiceMetadataProvider
     {
         private readonly HttpClient client;
 

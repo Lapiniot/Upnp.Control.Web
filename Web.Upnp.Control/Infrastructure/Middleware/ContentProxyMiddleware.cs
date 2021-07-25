@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -14,8 +13,7 @@ using static System.StringComparison;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
 {
-    [SuppressMessage("Microsoft.Design", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by infrastructure")]
-    internal sealed class ContentProxyMiddleware : ProxyMiddleware
+    public sealed class ContentProxyMiddleware : ProxyMiddleware
     {
         private const string OptionChunked = "chunked";
         private const string OptionNoLength = "no-length";

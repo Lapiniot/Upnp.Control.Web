@@ -11,14 +11,13 @@ namespace Web.Upnp.Control.Controllers
     [ApiController]
     [Route("api/push-subscriptions")]
     [Produces("application/json")]
-    [SuppressMessage("Microsoft.Design", "CA1062: Validate arguments of public methods")]
     public class PushNotificationSubscribeController : ControllerBase
     {
         [HttpPost]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task SubscribeAsync([FromServices] IAsyncCommandHandler<PSAddCommand> handler,
+        public async Task SubscribeAsync([FromServices][NotNull] IAsyncCommandHandler<PSAddCommand> handler,
             PushSubscription subscription, CancellationToken cancellationToken)
         {
             try
@@ -37,7 +36,7 @@ namespace Web.Upnp.Control.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task UnsubscribeAsync([FromServices] IAsyncCommandHandler<PSRemoveCommand> handler,
+        public async Task UnsubscribeAsync([FromServices][NotNull] IAsyncCommandHandler<PSRemoveCommand> handler,
             PushSubscription subscription, CancellationToken cancellationToken)
         {
             try
@@ -56,7 +55,7 @@ namespace Web.Upnp.Control.Controllers
         [Produces("application/octet-stream")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<byte[]> GetServerKeyAsync([FromServices] IAsyncQueryHandler<PSGetServerKeyQuery, byte[]> handler, CancellationToken cancellationToken)
+        public async Task<byte[]> GetServerKeyAsync([FromServices][NotNull] IAsyncQueryHandler<PSGetServerKeyQuery, byte[]> handler, CancellationToken cancellationToken)
         {
             try
             {

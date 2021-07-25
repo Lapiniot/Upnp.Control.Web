@@ -9,14 +9,13 @@ namespace Web.Upnp.Control.Controllers
 {
     [ApiController]
     [Route("api/devices/{deviceId}")]
-    [SuppressMessage("Microsoft.Design", "CA1062: Validate arguments of public methods")]
     public class UpnpControlController : ControllerBase
     {
         #region AVTransport state related
 
         [HttpGet("state")]
         [Produces("application/json")]
-        public Task<AVState> GetStateAsync([FromServices] IAsyncQueryHandler<AVGetStateQuery, AVState> handler,
+        public Task<AVState> GetStateAsync([FromServices][NotNull] IAsyncQueryHandler<AVGetStateQuery, AVState> handler,
             string deviceId, CancellationToken cancellationToken, [FromQuery] bool? detailed = false)
         {
             return handler.ExecuteAsync(new AVGetStateQuery(deviceId, detailed), cancellationToken);
@@ -24,7 +23,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpPut("state")]
         [Consumes("application/json")]
-        public Task SetStateAsync([FromServices] IAsyncCommandHandler<AVSetStateCommand> handler,
+        public Task SetStateAsync([FromServices][NotNull] IAsyncCommandHandler<AVSetStateCommand> handler,
             string deviceId, AVStateParams @params, CancellationToken cancellationToken)
         {
             return handler.ExecuteAsync(new AVSetStateCommand(deviceId, @params), cancellationToken);
@@ -36,7 +35,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpGet("position")]
         [Produces("application/json")]
-        public Task<AVPosition> GetPositionAsync([FromServices] IAsyncQueryHandler<AVGetPositionQuery, AVPosition> handler,
+        public Task<AVPosition> GetPositionAsync([FromServices][NotNull] IAsyncQueryHandler<AVGetPositionQuery, AVPosition> handler,
             string deviceId, CancellationToken cancellationToken, bool? detailed = false)
         {
             return handler.ExecuteAsync(new AVGetPositionQuery(deviceId, detailed), cancellationToken);
@@ -44,7 +43,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpPut("position")]
         [Consumes("application/json")]
-        public Task SeekAsync([FromServices] IAsyncCommandHandler<AVSetPositionCommand> handler,
+        public Task SeekAsync([FromServices][NotNull] IAsyncCommandHandler<AVSetPositionCommand> handler,
             string deviceId, AVPositionParams @params, CancellationToken cancellationToken)
         {
             return handler.ExecuteAsync(new AVSetPositionCommand(deviceId, @params), cancellationToken);
@@ -56,7 +55,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpGet("play-mode")]
         [Produces("application/json")]
-        public Task<string> GetPlayModeAsync([FromServices] IAsyncQueryHandler<AVGetPlayModeQuery, string> handler,
+        public Task<string> GetPlayModeAsync([FromServices][NotNull] IAsyncQueryHandler<AVGetPlayModeQuery, string> handler,
             string deviceId, CancellationToken cancellationToken)
         {
             return handler.ExecuteAsync(new AVGetPlayModeQuery(deviceId), cancellationToken);
@@ -64,7 +63,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpPut("play-mode")]
         [Consumes("application/json")]
-        public Task SetPlayModeAsync([FromServices] IAsyncCommandHandler<AVSetPlayModeCommand> handler,
+        public Task SetPlayModeAsync([FromServices][NotNull] IAsyncCommandHandler<AVSetPlayModeCommand> handler,
             string deviceId, [FromBody] string mode, CancellationToken cancellationToken)
         {
             return handler.ExecuteAsync(new AVSetPlayModeCommand(deviceId, mode), cancellationToken);
@@ -76,7 +75,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpGet("volume")]
         [Produces("application/json")]
-        public Task<RCVolumeState> GetVolumeAsync([FromServices] IAsyncQueryHandler<RCGetVolumeQuery, RCVolumeState> handler,
+        public Task<RCVolumeState> GetVolumeAsync([FromServices][NotNull] IAsyncQueryHandler<RCGetVolumeQuery, RCVolumeState> handler,
             string deviceId, CancellationToken cancellationToken, bool? detailed = false)
         {
             return handler.ExecuteAsync(new RCGetVolumeQuery(deviceId, detailed), cancellationToken);
@@ -84,7 +83,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpPut("volume")]
         [Consumes("application/json")]
-        public Task SetVolumeAsync([FromServices] IAsyncCommandHandler<RCSetVolumeCommand> handler,
+        public Task SetVolumeAsync([FromServices][NotNull] IAsyncCommandHandler<RCSetVolumeCommand> handler,
             string deviceId, [FromBody] uint volume, CancellationToken cancellationToken)
         {
             return handler.ExecuteAsync(new RCSetVolumeCommand(deviceId, volume), cancellationToken);
@@ -96,7 +95,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpGet("mute")]
         [Produces("application/json")]
-        public Task<bool?> GetMuteAsync([FromServices] IAsyncQueryHandler<RCGetMuteQuery, bool?> handler,
+        public Task<bool?> GetMuteAsync([FromServices][NotNull] IAsyncQueryHandler<RCGetMuteQuery, bool?> handler,
             string deviceId, CancellationToken cancellationToken)
         {
             return handler.ExecuteAsync(new RCGetMuteQuery(deviceId), cancellationToken);
@@ -104,7 +103,7 @@ namespace Web.Upnp.Control.Controllers
 
         [HttpPut("mute")]
         [Consumes("application/json")]
-        public Task SetMuteAsync([FromServices] IAsyncCommandHandler<RCSetMuteCommand> handler,
+        public Task SetMuteAsync([FromServices][NotNull] IAsyncCommandHandler<RCSetMuteCommand> handler,
             string deviceId, [FromBody] bool muted, CancellationToken cancellationToken)
         {
             return handler.ExecuteAsync(new RCSetMuteCommand(deviceId, muted), cancellationToken);

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
 using System.IO;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
@@ -10,14 +10,14 @@ using Web.Upnp.Control.Infrastructure.HttpClients;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
 {
-    [SuppressMessage("Microsoft.Design", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by infrastructure")]
-    internal sealed class ImageLoaderProxyMiddleware : ProxyMiddleware
+    public sealed class ImageLoaderProxyMiddleware : ProxyMiddleware
     {
         private readonly IOptions<ImageProxyOptions> options;
 
-        public ImageLoaderProxyMiddleware(ImageLoaderProxyClient client, IOptions<ImageProxyOptions> options, ILogger<ProxyMiddleware> logger) : base(client.Client, logger)
+        public ImageLoaderProxyMiddleware(ImageLoaderProxyClient client, IOptions<ImageProxyOptions> options, ILogger<ProxyMiddleware> logger)
+            : base((client ?? throw new ArgumentNullException(nameof(client))).Client, logger)
         {
-            this.options = options ?? throw new System.ArgumentNullException(nameof(options));
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.BufferSize = options.Value.BufferSize;
         }
 

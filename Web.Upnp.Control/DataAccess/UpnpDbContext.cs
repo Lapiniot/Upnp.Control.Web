@@ -10,8 +10,7 @@ namespace Web.Upnp.Control.DataAccess
 
         public DbSet<UpnpDevice> UpnpDevices { get; set; }
 
-        [SuppressMessage("Microsoft.Design", "CA1062: Validate arguments of public methods")]
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new DeviceEntityTypeConfiguration());
         }

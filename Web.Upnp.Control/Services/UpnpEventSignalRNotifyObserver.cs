@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.SignalR;
@@ -9,8 +8,7 @@ using Web.Upnp.Control.Models.Events;
 
 namespace Web.Upnp.Control.Services
 {
-    [SuppressMessage("Microsoft.Design", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by infrastructure")]
-    internal class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
+    public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
     {
         private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
 
