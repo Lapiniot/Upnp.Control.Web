@@ -1,10 +1,9 @@
-﻿import { Route, Redirect, RouteComponentProps } from "react-router-dom"
-import PlaylistManager from "./playlist/PlaylistManager";
-import DeviceRouter from "../common/DeviceRouter";
+﻿import { Redirect, Route, RouteComponentProps } from "react-router-dom";
 import UmiDeviceCard from "../common/Device.Umi";
+import DeviceRouter from "../common/DeviceRouter";
 import { UmiActionSvgSymbols } from "../common/SvgSymbols";
 import { CategoryRouteParams, PlaylistRoutePath } from "../common/Types";
-import { strict } from "assert";
+import PlaylistManager from "./playlist/PlaylistManager";
 
 export default (props: RouteComponentProps<CategoryRouteParams>) => <>
     <UmiActionSvgSymbols />

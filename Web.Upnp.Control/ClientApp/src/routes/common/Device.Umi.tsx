@@ -1,4 +1,3 @@
-import React from "react";
 import PlayerWidget from "./PlayerWidget";
 import { DataSourceProps, UpnpDevice } from "./Types";
 import { BrowseContentAction } from "./actions/Actions";

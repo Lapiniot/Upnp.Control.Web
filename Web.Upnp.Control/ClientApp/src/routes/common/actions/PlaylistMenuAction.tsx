@@ -2,7 +2,6 @@ import { DeviceActionProps } from "./Actions";
 import $api from "../../../components/WebApi";
 import { DataFetchProps, withDataFetch, withMemoKey } from "../../../components/DataFetch";
 import { BrowseFetchResult, UpnpDevice } from "../Types";
-import React from "react";
 import AlbumArt from "../AlbumArt";
 import { DropdownMenu } from "../../../components/DropdownMenu";
 import { MicroLoader } from "../../../components/LoadIndicator";
@@ -22,7 +21,8 @@ function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & De
             <svg className="icon"><use href="#music" /></svg>
         </button>
         <DropdownMenu data-device={device.udn} placement="top-end"
-            style={{ overflowY: "auto", maxHeight: "calc(100% - 2.5rem)" }}>
+            modifiers={[{ name: "offset", options: { offset: [0, 4] } }]}
+            style={{ overflowY: "auto", maxWidth: "100vw", maxHeight: "calc(100% - 3rem)" }}>
             {d?.source.items?.map(i => <li key={i.id}>
                 <a className="dropdown-item" href="#" data-play-url={i.res?.url + "#play"} onClick={playUrlHandler}>
                     <AlbumArt itemClass={i.class} albumArts={i.albumArts} className="album-art align-middle rounded-1" />{i.title}</a>

@@ -1,4 +1,4 @@
-import { createPopper, Instance as PopperInstance } from "@popperjs/core/lib/popper";
+import { createPopper, Instance as PopperInstance, StrictModifiers } from "@popperjs/core/lib/popper";
 import { Placement } from "@popperjs/core/lib/enums";
 import React, { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 
@@ -8,6 +8,7 @@ const TOGGLE_ITEM_SELECTOR = "[data-bs-toggle='dropdown']";
 
 export type DropdownMenuProps = Omit<HTMLAttributes<HTMLUListElement>, "onSelect"> & {
     placement?: Placement;
+    modifiers?: StrictModifiers[];
     onSelected?: (item: HTMLElement, anchor?: HTMLElement) => void;
     render?: (anchor?: HTMLElement | null) => ReactNode;
 };
@@ -65,25 +66,41 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
     private update = (reference: HTMLElement | null, popper: HTMLElement, visibility?: boolean) => {
         if (reference && reference !== this.instance?.state?.elements?.reference) {
             this.instance?.destroy();
-            this.instance = createPopper(reference, popper, { placement: this.props.placement ?? "auto" });
+            this.instance = createPopper<StrictModifiers>(reference, popper, {
+                placement: this.props.placement ?? "auto",
+                modifiers: this.props.modifiers ?? []
+            });
         }
 
         if (popper.classList.toggle("show", visibility)) {
             document.addEventListener("click", this.documentClickListener, true);
             document.addEventListener("keydown", this.keydownListener, true);
             reference?.setAttribute("aria-expanded", "true");
-            this.instance?.setOptions({
-                modifiers: [{ name: 'eventListeners', enabled: true }],
-            });
-            this.instance?.update();
+            if (this.instance) {
+                const options = {
+                    ...this.instance.state.options,
+                    modifiers: [
+                        ...(this.props.modifiers ?? []),
+                        { name: 'eventListeners', enabled: true }]
+                };
+                this.instance.setOptions(options);
+                this.instance.update();
+            }
         }
         else {
             document.removeEventListener("click", this.documentClickListener, true);
             document.removeEventListener("keydown", this.keydownListener, true);
             reference?.setAttribute("aria-expanded", "false");
-            this.instance?.setOptions({
-                modifiers: [{ name: 'eventListeners', enabled: false }],
-            });
+            if (this.instance) {
+                const options = {
+                    ...this.instance.state.options,
+                    modifiers: [
+                        ...(this.props.modifiers ?? []),
+                        { name: 'eventListeners', enabled: false }]
+                };
+                this.instance.setOptions(options);
+                this.instance.update();
+            }
         }
     }
 
