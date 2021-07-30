@@ -154,9 +154,9 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
         const shuffleMode = playMode === "REPEAT_SHUFFLE";
 
-        return <React.Fragment>
+        return <>
             <PlayerSvgSymbols />
-            <SignalRListener handlers={this.handlers}>{null}</SignalRListener>
+            <SignalRListener handlers={this.handlers} />
             <div className="player-skeleton" ref={this.ref}>
                 <AlbumArt className="art" itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} />
                 <div className="title">
@@ -178,7 +178,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                     </li>
                 </DropdownMenu>
             </div>
-        </React.Fragment>;
+        </>;
     }
 }
 

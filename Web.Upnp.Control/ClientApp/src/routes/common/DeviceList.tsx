@@ -45,7 +45,7 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
         this.nhRef.current?.show({
             id: device, title: name, color: type === "appeared" ? "success" : "warning", delay: 120000,
             message: <>
-                <b>&laquo;{description}&raquo;</b> has { type === "appeared" ? "appeared on" : "disappeared from"} the network
+                <b>&laquo;{description}&raquo;</b> has {type === "appeared" ? "appeared on" : "disappeared from"} the network
             </>
         });
         this.props.dataContext?.reload?.();
@@ -57,12 +57,11 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
         const { dataContext, itemTemplate: Item, fetching, category, viewMode } = this.props;
         return <>
             {fetching && <LoadIndicatorOverlay />}
-            <SignalRListener handlers={this.handlers}>
-                <GridContainer viewMode={viewMode}>
-                    {[dataContext?.source.map(item => <Item key={item.udn} data-source={item} category={category} device={item.udn} />)]}
-                </GridContainer>
-                <NotificationsHost ref={this.nhRef} />
-            </SignalRListener>
+            <SignalRListener handlers={this.handlers} />
+            <GridContainer viewMode={viewMode}>
+                {[dataContext?.source.map(item => <Item key={item.udn} data-source={item} category={category} device={item.udn} />)]}
+            </GridContainer>
+            <NotificationsHost ref={this.nhRef} />
         </>
     }
 }

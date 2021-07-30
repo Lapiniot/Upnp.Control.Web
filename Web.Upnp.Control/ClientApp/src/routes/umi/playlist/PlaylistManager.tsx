@@ -476,6 +476,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <PlaylistSvgSymbols />
             <PlayerSvgSymbols />
             <BrowserSvgSymbols />
+            <SignalRListener handlers={this.handlers} />
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="flex-fill d-flex flex-column overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <div className="d-flex flex-column sticky-top">
@@ -483,14 +484,12 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         {this.renderTopBar(largeScreen)}
                     </Toolbar>
                 </div>
-                <SignalRListener handlers={this.handlers}>
-                    <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
-                        selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowStateProvider={this.state.rowStates}
-                        className={"flex-fill mb-1" + (largeScreen ? "" : " pb-5")} editMode={this.state.editMode} useLevelUpRow={false}
-                        useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
-                        <Browser.ItemActionMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
-                    </Browser>
-                </SignalRListener>
+                <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
+                    selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowStateProvider={this.state.rowStates}
+                    className={"flex-fill mb-1" + (largeScreen ? "" : " pb-5")} editMode={this.state.editMode} useLevelUpRow={false}
+                    useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
+                    <Browser.ItemActionMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
+                </Browser>
                 <div className="sticky-bottom d-flex flex-column">
                     {!largeScreen &&
                         <div className="position-relative d-flex justify-content-center justify-content-sm-end">

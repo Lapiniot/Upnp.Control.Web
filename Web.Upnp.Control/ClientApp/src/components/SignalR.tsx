@@ -74,6 +74,6 @@ export class SignalRListener extends React.Component<SignalRListenerProps> {
     }
 
     render() {
-        return this.props.children;
+        return this.props.children ?? null;
     }
 }
