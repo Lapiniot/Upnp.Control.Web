@@ -9,16 +9,20 @@ const target = env.ASPNETCORE_HTTPS_PORT
 
 const context = [
 	"/api",
-	"/upnpevents",
 	"/proxy",
 	"/dlna-proxy"
 ];
 
 module.exports = function (app) {
-	const appProxy = createProxyMiddleware(context, {
+
+	app.use(createProxyMiddleware(context, {
 		target,
 		secure: false
-	});
+	}));
 
-	app.use(appProxy);
+	app.use(createProxyMiddleware("/upnpevents", {
+		target,
+		secure: false,
+		ws: true
+	}));
 };
