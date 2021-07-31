@@ -3,6 +3,7 @@
     height: 100%;
     place-items: center;
     gap: 0 0;
+    overflow: hidden;
     grid:
         "art art art art art" 1fr
         "title title title title title" auto
@@ -12,10 +13,9 @@
 
     .art {
         grid-area: art;
-        height: unquote("calc(100% - #{2 * map-get($spacers, 3)})");
-        width: auto;
-        aspect-ratio: 1 / 1;
-        font-size: 3em;
+        width: 100%;
+        height: calc(100% - #{map-get($spacers, 3)});
+        object-fit: contain;
 
         @media (max-height: 320px) {
             display: none;
@@ -23,6 +23,7 @@
 
         @include unify-parent(svg) {
             color: $gray-300;
+            max-width: 50%;
         }
     }
 
@@ -94,6 +95,10 @@
             height: 4rem;
             width: 4rem;
             margin-inline: map-get($spacers, 1);
+
+            @include unify-parent(svg) {
+                max-width: unset;
+            }
         }
 
         .title {
