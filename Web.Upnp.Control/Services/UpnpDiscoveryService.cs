@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,6 @@ using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Services.Abstractions;
 using Icon = Web.Upnp.Control.Models.Icon;
 using static System.StringComparison;
-using System;
 
 namespace Web.Upnp.Control.Services
 {

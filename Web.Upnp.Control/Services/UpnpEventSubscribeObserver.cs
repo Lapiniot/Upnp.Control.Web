@@ -43,17 +43,25 @@ namespace Web.Upnp.Control.Services
 
         private void SubscribeToEvents(string deviceId, IEnumerable<Service> services)
         {
-            var baseUrl = $"api/events/{Uri.EscapeDataString(deviceId)}/notify";
+            try
+            {
+                var baseUrl = $"api/events/{Uri.EscapeDataString(deviceId)}/notify";
 
-            var rcService = services.Single(s => s.ServiceType == UpnpServices.RenderingControl);
-            var avtService = services.Single(s => s.ServiceType == UpnpServices.AVTransport);
+                var rcService = services.Single(s => s.ServiceType == UpnpServices.RenderingControl);
+                var avtService = services.Single(s => s.ServiceType == UpnpServices.AVTransport);
 
-            var sessionTimeout = optionsMonitor.CurrentValue.SessionTimeout;
+                var sessionTimeout = optionsMonitor.CurrentValue.SessionTimeout;
 
-            repository.Add(deviceId,
-                factory.Subscribe(rcService.EventsUrl, new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout),
-                factory.Subscribe(avtService.EventsUrl, new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout)
-            );
+                repository.Add(deviceId,
+                    factory.Subscribe(rcService.EventsUrl, new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout),
+                    factory.Subscribe(avtService.EventsUrl, new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout)
+                );
+            }
+            catch(Exception exception)
+            {
+                logger.LogError(exception, "Error subscribing to UPnP events for device {0}", deviceId);
+                throw;
+            }
         }
 
         private async Task RenewSubscriptionsAsync(string deviceId, IEnumerable<Service> services)
