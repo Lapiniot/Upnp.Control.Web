@@ -15,7 +15,7 @@ function GridContainer({ viewMode, className, children, ...other }: HTMLAttribut
         : viewMode === "carousel"
             ? "grid-carousel"
             : "grid-carousel grid-responsive-auto-lg";
-    return <div {...other} className={`h-100 d-grid grid-scroll-snap ${viewClass}${className ? " " + className : ""}`}>
+    return <div {...other} className={`d-grid grid-scroll-snap ${viewClass}${className ? " " + className : ""}`}>
         {children}
     </div>;
 }
