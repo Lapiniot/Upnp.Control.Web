@@ -1,15 +1,15 @@
 import React, { HTMLAttributes, ReactNode } from "react";
-import { MemoryRouter, Switch, Route, Redirect } from "react-router-dom";
-import Modal, { ModalProps } from "../../components/Modal";
-import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import DeviceIcon from "../common/DeviceIcon";
-import { RouteLink } from "../../components/NavLink";
+import { MemoryRouter, Route, Switch } from "react-router-dom";
 import { DataFetchProps, withDataFetch } from "../../components/DataFetch";
-import { withBrowserDataFetch } from "./BrowserUtils";
-import BrowserCore from "./BrowserCore";
+import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
+import Modal, { ModalProps } from "../../components/Modal";
+import { RouteLink } from "../../components/NavLink";
 import $api from "../../components/WebApi";
-import { BrowseRoutePath, UpnpDevice } from "./Types";
+import DeviceIcon from "../common/DeviceIcon";
+import BrowserCore from "./BrowserCore";
+import { withBrowserDataFetch } from "./BrowserUtils";
 import { BrowserProps } from "./BrowserView";
+import { BrowseRoutePath, UpnpDevice } from "./Types";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;
@@ -68,11 +68,8 @@ export default class BrowserDialog extends React.Component<BrowserDialogProps, {
             <Modal.Body className="vstack overflow-hidden p-0 position-relative border-bottom border-top" style={{ height: "60vh" }}>
                 <MemoryRouter initialEntries={["/sources"]} initialIndex={0}>
                     <Switch>
-                        <Route path="/sources" exact>
+                        <Route path={["/sources", "/sources/:device/-1"]} exact>
                             <MediaSourceList />
-                        </Route>
-                        <Route path="/sources/:device/-1" exact>
-                            <Redirect to="/sources" />
                         </Route>
                         <Route path={"/sources/:device/:id(.*)?" as BrowseRoutePath} render={props =>
                             <Browser {...props} ref={this.browserRef}

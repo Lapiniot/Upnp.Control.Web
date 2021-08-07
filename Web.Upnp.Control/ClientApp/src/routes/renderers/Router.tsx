@@ -1,10 +1,10 @@
-﻿import { Redirect, Route, useHistory, useLocation, useRouteMatch } from "react-router";
-import RendererDeviceCard from "../common/Device.Renderer";
-import UmiDeviceCard from "../common/Device.Umi";
-import DeviceRouter from "../common/DeviceRouter";
+﻿import { Redirect, Route, useRouteMatch } from "react-router";
+import RendererDeviceCard from "./Device";
+import UmiDeviceCard from "../umi/Device";
+import DeviceRouter from "../upnp/Router";
 import { UmiActionSvgSymbols } from "../common/SvgSymbols";
 import { CategoryRouteParams, DataSourceProps, Services, UpnpDevice } from "../common/Types";
-import { PlaylistPage } from "../umi/playlist/PlaylistPage";
+import PlaylistPage from "../umi/playlist/Playlist";
 
 function TemplateSelector(props: DataSourceProps<UpnpDevice>) {
     if (props["data-source"].services.find(s => s.type.startsWith(Services.UmiPlaylist)))
@@ -14,18 +14,16 @@ function TemplateSelector(props: DataSourceProps<UpnpDevice>) {
 }
 
 export default function () {
-    const location = useLocation();
-    const history = useHistory();
-    const match = useRouteMatch<CategoryRouteParams>();
+    const { path, params: { category } } = useRouteMatch<CategoryRouteParams>();
     return <>
         <UmiActionSvgSymbols />
-        <DeviceRouter location={location} history={history} match={match} deviceTemplate={TemplateSelector} listViewMode="auto">
-            <Route path={`${match.path}/:device/playlists/(0|-1)`} exact>
-                <Redirect to={`/${match.params.category}`} />
+        <DeviceRouter deviceTemplate={TemplateSelector} listViewMode="auto">
+            <Route path={`${path}/:device/playlists/(0|-1)`} exact>
+                <Redirect to={`/${category}`} />
             </Route>
-            <Route path={`${match.path}/:device/playlists/:id(.*)*`}>
+            <Route path={`${path}/:device/playlists/:id(.*)*`}>
                 <PlaylistPage />
             </Route>
         </DeviceRouter>
-    </>;
+    </>
 }

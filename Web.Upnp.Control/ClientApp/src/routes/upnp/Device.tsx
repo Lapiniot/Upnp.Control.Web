@@ -1,8 +1,8 @@
-import DeviceInfo from "./DeviceInfo";
-import ServicesList from "./DeviceServiceList";
-import { DataSourceProps, UpnpDevice } from "./Types";
-import { DownloadMetadataAction, BrowseContentAction } from "./actions/Actions";
-import { ActionDescriptor, DeviceCard } from "./DeviceCard";
+import DeviceInfo from "../common/DeviceInfo";
+import ServicesList from "../common/DeviceServiceList";
+import { DataSourceProps, UpnpDevice } from "../common/Types";
+import { DownloadMetadataAction, BrowseContentAction } from "../common/actions/Actions";
+import { ActionDescriptor, DeviceCard } from "../common/DeviceCard";
 
 const upnpActions: ActionDescriptor[] = [
     ["download", DownloadMetadataAction],

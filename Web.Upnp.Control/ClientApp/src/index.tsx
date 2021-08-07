@@ -1,6 +1,6 @@
 ﻿import "./css/index.css";
 import ReactDOM from "react-dom";
-import { Redirect, Route, Switch } from "react-router";
+import { Route, Switch } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalR";
@@ -33,7 +33,7 @@ ReactDOM.render(
                 <div id="notifications-root" className="nt-host gap-3 pe-none" />
                 <SignalRConnection hubUrl="/upnpevents">
                     <Switch>
-                        <Route exact path="/">
+                        <Route exact path={["/", "/index.html"]}>
                             <HomePage />
                         </Route>
                         <Route path="/:category(upnp)">
@@ -47,9 +47,6 @@ ReactDOM.render(
                         </Route>
                         <Route path="/settings">
                             <SettingsPage />
-                        </Route>
-                        <Route path="/index.html">
-                            <Redirect to="/" />
                         </Route>
                         <Route path="*">
                             <div className="m-2 text-danger">

@@ -1,7 +1,7 @@
-import { OpenMediaAction } from "./actions/OpenMediaAction";
-import { ActionDescriptor, DeviceCard } from "./DeviceCard";
-import PlayerWidget from "./PlayerWidget";
-import { DataSourceProps, UpnpDevice } from "./Types";
+import { OpenMediaAction } from "../common/actions/OpenMediaAction";
+import { ActionDescriptor, DeviceCard } from "../common/DeviceCard";
+import PlayerWidget from "../common/PlayerWidget";
+import { DataSourceProps, UpnpDevice } from "../common/Types";
 
 const rendererActions: ActionDescriptor[] = [["open", OpenMediaAction]];
 
