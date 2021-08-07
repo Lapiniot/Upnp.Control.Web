@@ -170,7 +170,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                 <Button title={nextTitle} className="next-btn" glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
                 <Button title={volumeStr} className="volume-btn" glyph={volumeIcon} disabled={disabled} data-bs-toggle="dropdown" />
                 <DropdownMenu className="volume-ctrl" placement="left">
-                    <li className="d-flex align-items-center">
+                    <li className="hstack">
                         <button type="button" style={{ zIndex: 1000 }} className="btn btn-plain btn-round" onClick={this.toggleMute}>
                             <svg><use href={"#" + (muted ? "volume-up" : "volume-mute")} /></svg>
                         </button>

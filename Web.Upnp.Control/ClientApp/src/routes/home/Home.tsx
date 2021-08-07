@@ -68,7 +68,7 @@ export default function () {
                         <DataList className="accordion-body" tag={id} onDelete={deleteHandler}>
                             {value.map(({ key, widget, props }) => React.createElement(Widgets[widget] as any, { ...props, key: key }))}
                         </DataList> :
-                        <div className="d-flex text-muted p-3 justify-content-center">[No items bookmarked yet]</div>}
+                        <div className="text-muted p-3 text-center">[No items bookmarked yet]</div>}
                 </div>
             </div>)}
         </div>

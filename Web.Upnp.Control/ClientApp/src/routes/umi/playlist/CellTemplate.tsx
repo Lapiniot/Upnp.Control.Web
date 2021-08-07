@@ -18,7 +18,7 @@ const BookmarkItemButton = useBookmarkButton("PlaylistBookmarkWidget", playlistB
 
 export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
     const artist = d.artists?.[0] ?? d.creator;
-    return <div className="d-flex align-items-center">
+    return <div className="hstack">
         <div className="playback-aa-ctrl stack me-2">
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} />
             {rowState & RowState.Active

@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, ElementType, HTMLAttributes, MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { ElementType, HTMLAttributes, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PressHoldGestureRecognizer } from "./gestures/PressHoldGestureRecognizer";
 
 type DataListProps = HTMLAttributes<HTMLDivElement> & {
@@ -29,12 +29,10 @@ export function DataList({ children, className, editable, template, tag, onDelet
     return <div {...other} className={`d-grid grid-auto-m15 align-items-start p-3${className ? ` ${className}` : ""}`} ref={ref}>
         {React.Children.map(children, (child, index) => <Container className="d-grid grid-1fr-auto-shrunk gap-0 border rounded-2 shadow-sm overflow-hidden">
             {child}
-            {editMode && <div className="d-flex px-2">
-                <button type="button" className="btn btn-round btn-plain ms-auto" onClick={deleteHandler}
-                    data-index={index} data-key={(child && typeof child === "object" && "key" in child) ? child.key : undefined}>
-                    <svg><use href="#trash" /></svg>
-                </button>
-            </div>}
+            {editMode && <button type="button" className="btn btn-round btn-plain ms-auto mx-2" onClick={deleteHandler}
+                data-index={index} data-key={(child && typeof child === "object" && "key" in child) ? child.key : undefined}>
+                <svg><use href="#trash" /></svg>
+            </button>}
         </Container>)}
     </div>;
 }

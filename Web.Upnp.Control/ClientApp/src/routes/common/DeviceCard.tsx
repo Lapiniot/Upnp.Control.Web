@@ -16,7 +16,7 @@ export type DeviceCardProps = DataSourceProps<UpnpDevice> & {
 
 export function DeviceCard({ "data-source": d, category, children, actions, className, ...other }: DeviceCardProps & HTMLAttributes<HTMLDivElement>) {
     return <div className={`card${className ? ` ${className}` : ""}`} {...other}>
-        <div className="card-header d-flex bg-transparent border-0">
+        <div className="card-header hstack bg-transparent border-0">
             <DeviceIcon service={d.type} icons={d.icons} />
             <div className="flex-fill overflow-hidden">
                 <h5 className="card-title text-truncate">{d.presentUrl ? <NavLink to={d.presentUrl} className="p-0">{d.name}</NavLink> : d.name}</h5>
@@ -27,11 +27,9 @@ export function DeviceCard({ "data-source": d, category, children, actions, clas
         <div className="card-body min-h-0">
             {children}
         </div>
-        <div className="card-footer d-flex bg-transparent border-0">
-            <div className="flex-grow-1 d-flex flex-wrap align-items-center align-content-center gap-2">
-                {actions?.map(({ 0: key, 1: ActionWidget, 2: props }) =>
-                    <ActionWidget key={key} device={d} category={category} {...props} />)}
-            </div>
+        <div className="card-footer hstack flex-wrap gap-2 bg-transparent border-0">
+            {actions?.map(({ 0: key, 1: ActionWidget, 2: props }) =>
+                <ActionWidget key={key} device={d} category={category} {...props} />)}
         </div>
     </div>;
 }
