@@ -367,7 +367,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             states[i] |= flag;
     }
 
-    private renderTopBar = (expanded: boolean) => {
+    private renderTopBar = (expanded: boolean, fetching: boolean) => {
         const className = "btn-round btn-icon btn-plain flex-grow-0";
         const selectedCount = this.state.selection.length;
         const hasNoSelection = selectedCount === 0;
@@ -386,24 +386,24 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
         </> : <>
             <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={this.navigateBackHandler} className={className} />
             <div className="vstack align-items-stretch overflow-hidden text-center text-md-start mx-2">
-                <h6 className="mb-0 text-truncate">{this.props.dataContext?.source.parents?.[0]?.title}</h6>
-                <small className="text-muted text-truncate">{this.props.dataContext?.source.dev?.name}</small>
+                <h6 className="mb-0 text-truncate">{this.props.dataContext?.source.parents?.[0]?.title ?? "\xa0"}</h6>
+                <small className="text-muted text-truncate">{this.props.dataContext?.source.dev?.name ?? "\xa0"}</small>
             </div>
             {expanded ? <>{
                 this.props.id === "PL:" ? <>
-                    <Toolbar.Button glyph="plus" title="Add new" onClick={this.addClickHandler} className={className} />
-                    <Toolbar.Button glyph="trash" title="Delete" onClick={this.removeClickHandler} className={className} disabled={hasNoSelection} />
-                    <Toolbar.Button glyph="edit" title="Rename" onClick={this.renameClickHandler} className={className} disabled={!onlySelected} />
-                    <Toolbar.Button glyph="copy" title="Copy" onClick={this.copyClickHandler} className={className} disabled={!onlySelected} />
+                    <Toolbar.Button glyph="plus" title="Add new" onClick={this.addClickHandler} className={className} disabled={fetching} />
+                    <Toolbar.Button glyph="trash" title="Delete" onClick={this.removeClickHandler} className={className} disabled={fetching || hasNoSelection} />
+                    <Toolbar.Button glyph="edit" title="Rename" onClick={this.renameClickHandler} className={className} disabled={fetching || !onlySelected} />
+                    <Toolbar.Button glyph="copy" title="Copy" onClick={this.copyClickHandler} className={className} disabled={fetching || !onlySelected} />
                 </> : <>
-                    <Toolbar.Button glyph="plus" title="Add from media server" onClick={this.addItemsClickHandler} className={className} />
-                    <Toolbar.Button glyph="broadcast-tower" title="Add Internet stream url" onClick={this.addUrlClickHandler} className={className} />
-                    <Toolbar.Button glyph="list" title="Add from playlist file" onClick={this.uploadPlaylistClickHandler} className={className} />
-                    <Toolbar.Button glyph="trash" title="Delete items" onClick={this.removeItemsClickHandler} className={className} disabled={hasNoSelection} />
+                    <Toolbar.Button glyph="plus" title="Add from media server" onClick={this.addItemsClickHandler} className={className} disabled={fetching} />
+                    <Toolbar.Button glyph="broadcast-tower" title="Add Internet stream url" onClick={this.addUrlClickHandler} className={className} disabled={fetching} />
+                    <Toolbar.Button glyph="list" title="Add from playlist file" onClick={this.uploadPlaylistClickHandler} className={className} disabled={fetching} />
+                    <Toolbar.Button glyph="trash" title="Delete items" onClick={this.removeItemsClickHandler} className={className} disabled={fetching || hasNoSelection} />
                 </>
             }
             </> :
-                <Toolbar.Button key="edit-mode" glyph="pen" onClick={this.toggleEditMode} className={className} />}
+                <Toolbar.Button key="edit-mode" glyph="pen" onClick={this.toggleEditMode} className={className} disabled={fetching} />}
         </>;
     }
 
@@ -480,7 +480,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="vstack overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
-                    {this.renderTopBar(largeScreen)}
+                    {this.renderTopBar(largeScreen, fetching)}
                 </Toolbar>
                 <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error} mainCellTemplate={MainCell} mainCellContext={ctx}
                     selectionChanged={this.selectionChanged} navigate={navigate} open={this.playItem} rowStateProvider={this.state.rowStates}
@@ -489,7 +489,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                     <Browser.ItemActionMenu onSelected={this.menuSelectedHandler} render={this.renderContextMenu} />
                 </Browser>
                 <div className="sticky-bottom">
-                    {!largeScreen &&
+                    {!largeScreen && !fetching &&
                         <div className="position-relative d-flex justify-content-center justify-content-sm-end">
                             <div className="float-container position-absolute bottom-0">
                                 <button type="button" className="btn btn-round btn-primary"
