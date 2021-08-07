@@ -479,7 +479,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
             <SignalRListener handlers={this.handlers} />
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="flex-fill d-flex flex-column overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
-                <div className="d-flex flex-column sticky-top">
+                <div className="d-flex flex-column">
                     <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
                         {this.renderTopBar(largeScreen)}
                     </Toolbar>

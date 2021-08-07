@@ -335,7 +335,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     }
 
     static Caption({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
-        return <div className={`table-caption sticky-top${className ? ` ${className}` : ""}`} {...other} />;
+        return <div className={`table-caption${className ? ` ${className}` : ""}`} {...other} />;
     }
 
     static Footer(props: HTMLAttributes<HTMLDivElement>) {

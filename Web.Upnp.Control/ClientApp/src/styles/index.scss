@@ -1,24 +1,20 @@
 ﻿$enable-gradients: true;
 $enable-shadows: true;
 $enable-grid-classes: false;
+
 $breadcrumb-divider: quote("\276f");
 $breadcrumb-item-padding-x: 0.25rem !default;
 $breadcrumb-border-radius: 0 !default;
-$generate-grid-layout-responsive-styles: false;
 
 $backdrops: ("", primary, secondary, danger);
 $backdrop-opacity: 0.6;
 
-$display-none-before-width-breakpoints: ();
-$display-none-before-height-breakpoints: (sm, md);
-$display-none-after-height-breakpoints: (md, lg);
 $primary: #6f42c1;
 
 // Configuration
 @import "../../node_modules/bootstrap/scss/functions";
 @import "../../node_modules/bootstrap/scss/variables";
 @import "../../node_modules/bootstrap/scss/mixins";
-
 @import "../../node_modules/bootstrap/scss/utilities";
 
 // Layout & components
@@ -26,8 +22,6 @@ $primary: #6f42c1;
 @import "../../node_modules/bootstrap/scss/reboot";
 @import "../../node_modules/bootstrap/scss/type";
 @import "../../node_modules/bootstrap/scss/forms";
-$accordion-button-active-bg: $light;
-@import "../../node_modules/bootstrap/scss/accordion";
 @import "../../node_modules/bootstrap/scss/buttons";
 @import "../../node_modules/bootstrap/scss/transitions";
 @import "../../node_modules/bootstrap/scss/button-group";
@@ -41,12 +35,17 @@ $accordion-button-active-bg: $light;
 @import "../../node_modules/bootstrap/scss/list-group";
 @import "../../node_modules/bootstrap/scss/close";
 @import "../../node_modules/bootstrap/scss/modal";
-@import "../../node_modules/bootstrap/scss/spinners";
+
+$accordion-button-active-bg: $light;
+@import "../../node_modules/bootstrap/scss/accordion";
+
 $zindex-dropdown: $zindex-sticky + 5;
 @import "../../node_modules/bootstrap/scss/dropdown";
 
 // Helpers
-@import "../../node_modules/bootstrap/scss/helpers";
+@import "../../node_modules/bootstrap/scss/helpers/stacks";
+@import "../../node_modules/bootstrap/scss/helpers/text-truncation";
+@import "../../node_modules/bootstrap/scss/helpers/visually-hidden";
 
 // Utilities
 @import "../../node_modules/bootstrap/scss/utilities/api";
