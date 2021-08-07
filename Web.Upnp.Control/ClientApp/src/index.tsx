@@ -4,13 +4,13 @@ import { Redirect, Route, Switch } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalR";
+import { NavBarSvgSymbols } from "./routes/common/SvgSymbols";
 import HomePage from "./routes/home/Home";
-import UpnpPage from "./routes/upnp/Router";
-import UmiPage from "./routes/umi/Router";
 import RenderersPage from "./routes/renderers/Router";
 import SettingsPage from "./routes/settings/Settings";
-import { NavBarSvgSymbols } from "./routes/common/SvgSymbols";
-import * as SWRegistration from "./serviceWorkerRegistration";
+import UmiPage from "./routes/umi/Router";
+import UpnpPage from "./routes/upnp/Router";
+import * as SW from "./serviceWorkerRegistration";
 
 const baseUrl: string = document.getElementsByTagName("base")[0].getAttribute("href") as string;
 const container: HTMLElement = document.getElementById("main-root") as HTMLElement;
@@ -33,20 +33,30 @@ ReactDOM.render(
                 <div id="notifications-root" className="nt-host gap-3 pe-none" />
                 <SignalRConnection hubUrl="/upnpevents">
                     <Switch>
-                        <Route exact path="/" component={HomePage} />
-                        <Route path="/:category(upnp)" component={UpnpPage} />
+                        <Route exact path="/">
+                            <HomePage />
+                        </Route>
+                        <Route path="/:category(upnp)">
+                            <UpnpPage />
+                        </Route>
                         <Route path="/:category(umi)" component={UmiPage} />
                         <Route path="/:category(renderers)" component={RenderersPage} />
-                        <Route path="/settings" component={SettingsPage} />
-                        <Route path="/index.html" render={() => <Redirect to="/" />} />
-                        <Route path="*" render={() => <div className="m-2 text-danger">
-                            <h3>404 - Not Found</h3>
-                            <h5>Page you are looking for is not found</h5>
-                        </div>} />
+                        <Route path="/settings">
+                            <SettingsPage />
+                        </Route>
+                        <Route path="/index.html">
+                            <Redirect to="/" />
+                        </Route>
+                        <Route path="*">
+                            <div className="m-2 text-danger">
+                                <h3>404 - Not Found</h3>
+                                <h5>Page you are looking for is not found</h5>
+                            </div>
+                        </Route>
                     </Switch>
                 </SignalRConnection>
             </main>
         </div>
     </BrowserRouter>, container);
 
-SWRegistration.register();
+SW.register();
