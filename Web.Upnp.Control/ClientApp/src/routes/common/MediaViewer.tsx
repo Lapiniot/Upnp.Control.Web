@@ -14,7 +14,7 @@ export function MediaViewer({ dataContext: ctx, fetching, error, category, devic
 
     const { title, res: { url } } = item;
 
-    return <figure className={`flex-fill overflow-hidden p-3 d-flex flex-column align-items-center${className ? ` ${className}` : ""}`} {...other}>
+    return <figure className={`vstack overflow-hidden p-3 align-items-center${className ? ` ${className}` : ""}`} {...other}>
         <figcaption className="h5">{title}</figcaption>
         {DIDLUtils.isMusicTrack(item) ?
             <audio controls>

@@ -13,7 +13,7 @@ export class MicroLoader extends React.Component {
 }
 
 export function Indicator({ children, className, ...others }: HTMLAttributes<HTMLDivElement>) {
-    return <div className={`d-inline-flex justify-content-center align-items-center${className ? ` ${className}` : ""}`} {...others}>
+    return <div className={`d-inline-flex flex-column justify-content-center align-items-center${className ? ` ${className}` : ""}`} {...others}>
         {children}
     </div>
 }
@@ -30,6 +30,6 @@ export function LoadIndicator({ children, ...others }: HTMLAttributes<HTMLDivEle
 
 export function LoadIndicatorOverlay({ children, className, ...other }: HTMLAttributes<HTMLDivElement>) {
     return <div className={`backdrop d-flex justify-content-center${className ? ` ${className}` : ""}`} {...other}>
-        <LoadIndicator className="flex-column">{children}</LoadIndicator>
+        <LoadIndicator>{children}</LoadIndicator>
     </div>
 }

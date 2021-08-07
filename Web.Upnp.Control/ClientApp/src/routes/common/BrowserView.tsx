@@ -360,7 +360,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const tableMode = displayMode === "table" || displayMode === "responsive" && MediaQueries.largeScreen.matches;
         const optimizeForTouch = MediaQueries.touchDevice.matches;
 
-        return <div ref={nodeRef} className={`d-flex flex-column pb-3 safari-scroll-fix overflow-auto${className ? ` ${className}` : ""}`} style={style}
+        return <div ref={nodeRef} className={`vstack pb-3 safari-scroll-fix overflow-auto${className ? ` ${className}` : ""}`} style={style}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
             <div className={`auto-table at-material user-select-none position-sticky${optimizeForTouch ? " at-touch-friendly" : ""}`}
                 ref={this.tableRef} onFocus={this.focusHandler}>

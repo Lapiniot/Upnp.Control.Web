@@ -262,7 +262,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 fetching={this.state.fetching || this.props.fetching}>
                 <BrowserView.ItemActionMenu render={this.renderItemMenuHandler} onSelected={this.itemMenuSelectedHandler} placement="left" />
             </BrowserCore>
-            <div className="d-flex flex-column sticky-bottom">
+            <div className="sticky-bottom">
                 <BottomBar>
                     <TablePagination location={location} history={history}
                         total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}

@@ -27,7 +27,7 @@ function setUseProxy(useProxy: boolean) {
 
 export default () => {
     return <div className="overflow-auto">
-        <div className="m-0 m-sm-3 d-flex flex-column w-md-50">
+        <div className="vstack m-0 m-sm-3 w-md-50">
             <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                     <small>General</small>
@@ -50,16 +50,16 @@ export default () => {
                 </li>
                 <li className="list-group-item">
                     <small>Tools</small>
-                    <div className="d-flex flex-column mt-1 gap-2">
-                        <div className="d-flex flex-column">
+                    <div className="vstack mt-1 gap-2">
+                        <div className="vstack">
                             <a className="btn-link" href="api/swagger" target="_blank" rel="noopener noreferrer">Open SwaggerUI</a>
                             <small className="form-text">Offers a web-based UI that provides information about the service, using the generated OpenAPI specification</small>
                         </div>
-                        <div className="d-flex flex-column">
+                        <div className="vstack">
                             <a className="btn-link" href="api/cert">Download Certificate</a>
                             <small className="form-text">You can obtain a copy of SSL certificate used by this site - this is especially useful if you need to add it manually to the trusted store on your device</small>
                         </div>
-                        <div className="d-flex flex-column">
+                        <div className="vstack">
                             <a className="btn-link" href="api/health" rel="noopener noreferrer">Server Health</a>
                             <small className="form-text">Health checks are usually used with an external monitoring service or container orchestrator to check the status of an app</small>
                         </div>

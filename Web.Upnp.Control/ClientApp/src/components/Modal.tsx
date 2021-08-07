@@ -89,7 +89,7 @@ export default class Modal extends React.Component<ModalProps> {
         return <div className="modal fade" tabIndex={-1} ref={this.modalRef} role="dialog" aria-hidden="true" {...other}>
             <div className={`modal-dialog modal-dialog-centered${className ? ` ${className}` : ""}`} role="document">
                 <div className="modal-content">
-                    <form action="#" noValidate onSubmit={this.onSubmit} className="d-flex flex-column flex-grow-1 overflow-hidden">
+                    <form action="#" noValidate onSubmit={this.onSubmit}>
                         {header ? header : <Modal.Header><h5 className="modal-title text-truncate">{title}</h5></Modal.Header>}
                         {body ? body : <Modal.Body>{children}</Modal.Body>}
                         {footer ? footer : <Modal.Footer>

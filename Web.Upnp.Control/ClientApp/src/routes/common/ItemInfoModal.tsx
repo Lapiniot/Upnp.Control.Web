@@ -13,7 +13,7 @@ export default function ItemInfoModal({ item, ...other }: ModalProps & { item: D
         }), []);
 
     return <Modal title={item.title} {...other} className="modal-fullscreen-sm-down modal-dialog-scrollable">
-        <Modal.Body className="d-flex flex-column">
+        <Modal.Body className="vstack">
             <ItemInfo item={item} />
         </Modal.Body>
         <Modal.Footer>

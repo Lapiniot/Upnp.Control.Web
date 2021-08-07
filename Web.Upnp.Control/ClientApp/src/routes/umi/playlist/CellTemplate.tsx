@@ -43,7 +43,7 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
                     <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                 </button>}
         </div>
-        <span className="flex-fill d-flex flex-column overflow-hidden">
+        <span className="vstack overflow-hidden">
             <span className="text-truncate">{d.title}</span>
             {(d.album || artist) && <small className="text-truncate">{artist}{artist && <>&nbsp;&bull;&nbsp;</>}{d.album}</small>}
         </span>
