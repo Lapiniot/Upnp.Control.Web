@@ -39,8 +39,12 @@ ReactDOM.render(
                         <Route path="/:category(upnp)">
                             <UpnpPage />
                         </Route>
-                        <Route path="/:category(umi)" component={UmiPage} />
-                        <Route path="/:category(renderers)" component={RenderersPage} />
+                        <Route path="/:category(umi)">
+                            <UmiPage />
+                        </Route>
+                        <Route path="/:category(renderers)">
+                            <RenderersPage />
+                        </Route>
                         <Route path="/settings">
                             <SettingsPage />
                         </Route>
