@@ -1,16 +1,9 @@
-﻿import { Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from "react-router-dom";
+﻿import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { Browser as BrowserBase } from "../common/Browser";
 import { withBrowserDataFetch } from "../common/BrowserUtils";
-import { BrowseRouteParams, DeviceRouteParams } from "../common/Types";
+import { DeviceRouteParams } from "../common/Types";
 
-const BrowserDataView = withBrowserDataFetch(BrowserBase, false);
-
-function Browser() {
-    const location = useLocation();
-    const history = useHistory();
-    const match = useRouteMatch<BrowseRouteParams>();
-    return <BrowserDataView location={location} history={history} match={match} />
-}
+const Browser = withBrowserDataFetch(BrowserBase, false);
 
 export default function () {
     const { path, params: { category } } = useRouteMatch<DeviceRouteParams>();

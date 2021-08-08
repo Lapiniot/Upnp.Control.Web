@@ -1,5 +1,4 @@
 import React, { EventHandler, HTMLAttributes, ReactElement, UIEvent } from "react";
-import { RouteComponentProps } from "react-router";
 import { DataContext, DataFetchProps } from "../../../components/DataFetch";
 import { TextValueEditDialog } from "../../../components/Dialogs";
 import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
@@ -22,7 +21,7 @@ import { NavigatorProps } from "../../common/Navigator";
 import { TablePagination } from "../../common/Pagination";
 import $s from "../../common/Settings";
 import { BrowserSvgSymbols, EditSvgSymbols, PlayerSvgSymbols, PlaylistSvgSymbols, PlaySvgSymbols } from "../../common/SvgSymbols";
-import { AVState, BrowseFetchResult, DIDLItem, PlaylistRouteParams, PropertyBag, RowState, UpnpDevice } from "../../common/Types";
+import { AVState, BrowseFetchResult, DIDLItem, PlaylistRouteParams, PropertyBag, RowState } from "../../common/Types";
 import MainCell from "./CellTemplate";
 import { AddItemsModal } from "./dialogs/AddItemsModal";
 import { AddUrlModal } from "./dialogs/AddUrlModal";
@@ -32,8 +31,7 @@ import { UploadPlaylistModal } from "./dialogs/UploadPlaylistModal";
 type PlaylistManagerProps = PlaylistRouteParams &
     DataFetchProps<BrowseFetchResult> &
     HTMLAttributes<HTMLDivElement> &
-    NavigatorProps &
-    RouteComponentProps;
+    NavigatorProps;
 
 type PlaylistManagerState = {
     selection: string[];
@@ -439,7 +437,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     render() {
 
-        const { dataContext: data, match, navigate, fetching, error, id, s, p, device } = this.props;
+        const { dataContext: data, navigate, fetching, error, id, s, p, device } = this.props;
         const { playlist, currentTrack } = this.state;
         const { source: { total = 0, items = [], parents = [], dev = undefined } = {} } = data || {};
         const pageSize = s ? parseInt(s) : $s.get("pageSize");
@@ -504,7 +502,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         {this.state.selection.length > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${this.state.selection.length} of ${fetched} selected`}</span> : null}
                         <TablePagination total={total} current={page} pageSize={pageSize} />
                     </BottomBar>
-                    {largeScreen && <Breadcrumb className="border-top" items={parents} path={match.path} params={match.params} />}
+                    {largeScreen && <Breadcrumb className="border-top" items={parents} />}
                 </div>
                 <ModalHost ref={this.modalHostRef} />
             </DropTarget >

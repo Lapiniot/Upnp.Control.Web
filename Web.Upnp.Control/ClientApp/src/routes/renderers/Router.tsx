@@ -4,7 +4,7 @@ import UmiDeviceCard from "../umi/Device";
 import DeviceRouter from "../upnp/Router";
 import { UmiActionSvgSymbols } from "../common/SvgSymbols";
 import { CategoryRouteParams, DataSourceProps, Services, UpnpDevice } from "../common/Types";
-import PlaylistPage from "../umi/playlist/Playlist";
+import PlaylistManager from "../umi/playlist/PlaylistManager";
 
 function TemplateSelector(props: DataSourceProps<UpnpDevice>) {
     if (props["data-source"].services.find(s => s.type.startsWith(Services.UmiPlaylist)))
@@ -22,7 +22,7 @@ export default function () {
                 <Redirect to={`/${category}`} />
             </Route>
             <Route path={`${path}/:device/playlists/:id(.*)*`}>
-                <PlaylistPage />
+                <PlaylistManager />
             </Route>
         </DeviceRouter>
     </>

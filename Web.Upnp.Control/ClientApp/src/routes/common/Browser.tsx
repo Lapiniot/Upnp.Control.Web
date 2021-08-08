@@ -2,21 +2,20 @@ import React from "react";
 import { itemBookmarks } from "../../components/BookmarkService";
 import { DataContext } from "../../components/DataFetch";
 import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
+import { MediaQueries } from "../../components/MediaQueries";
+import ModalHost from "../../components/ModalHost";
 import WebApi from "../../components/WebApi";
 import { useBookmarkButton } from "./BookmarkButton";
-import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { BottomBar } from "./BottomBar";
+import Breadcrumb from "./Breadcrumb";
+import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { DIDLUtils } from "./BrowserUtils";
 import BrowserView, { CellTemplate, CellTemplateProps } from "./BrowserView";
+import ItemInfoModal from "./ItemInfoModal";
 import { TablePagination } from "./Pagination";
 import $s from "./Settings";
 import { BrowserSvgSymbols } from "./SvgSymbols";
 import { BrowseFetchResult, DIDLItem, RowState, Services, UpnpDevice } from "./Types";
-import ModalHost from "../../components/ModalHost";
-import ItemInfoModal from "./ItemInfoModal";
-import { MediaQueries } from "../../components/MediaQueries";
-import Breadcrumb from "./Breadcrumb";
-import { RouteComponentProps } from "react-router";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);
@@ -67,7 +66,7 @@ type BrowserState = {
     rowState: (item: DIDLItem) => RowState;
 };
 
-type BrowserProps = BrowserCoreProps<CellContext> & RouteComponentProps & { device: string; };
+type BrowserProps = BrowserCoreProps<CellContext> & { device: string; };
 
 export class Browser extends React.Component<BrowserProps, BrowserState> {
     modalHostRef = React.createRef<ModalHost>();
@@ -242,7 +241,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     }
 
     render() {
-        const { dataContext: data, p: page, s: size, match } = this.props;
+        const { dataContext: data, p: page, s: size } = this.props;
         const { selection: { umiCompatible, rendererCompatible }, umis, renderers } = this.state;
         const parents = data?.source.parents ?? [];
         const actionButtonEnabled = (umis.length && umiCompatible) || (renderers.length && rendererCompatible);
@@ -266,7 +265,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                     <TablePagination total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
                         pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
                 </BottomBar>
-                {MediaQueries.largeScreen.matches && parents.length > 1 && <Breadcrumb className="border-top" items={parents} path={match.path} params={match.params} />}
+                {MediaQueries.largeScreen.matches && parents.length > 1 && <Breadcrumb className="border-top" items={parents} />}
             </div>
             <ModalHost ref={this.modalHostRef} />
         </>;

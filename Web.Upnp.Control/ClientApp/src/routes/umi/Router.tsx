@@ -1,9 +1,9 @@
 ﻿import { Redirect, Route, useRouteMatch } from "react-router-dom";
-import UmiDeviceCard from "./Device";
-import DeviceRouter from "../upnp/Router";
 import { UmiActionSvgSymbols } from "../common/SvgSymbols";
 import { CategoryRouteParams } from "../common/Types";
-import PlaylistPage from "./playlist/Playlist";
+import DeviceRouter from "../upnp/Router";
+import UmiDeviceCard from "./Device";
+import PlaylistManager from "./playlist/PlaylistManager";
 
 export default function () {
     const { path, params: { category } } = useRouteMatch<CategoryRouteParams>();
@@ -14,7 +14,7 @@ export default function () {
                 <Redirect to={`/${category}`} />
             </Route>
             <Route path={`${path}/:device/playlists/:id(.*)*`}>
-                <PlaylistPage />
+                <PlaylistManager />
             </Route>
         </DeviceRouter>
     </>;
