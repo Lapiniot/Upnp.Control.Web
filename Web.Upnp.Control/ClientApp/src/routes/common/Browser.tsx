@@ -242,7 +242,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     }
 
     render() {
-        const { dataContext: data, location, history, p: page, s: size, match } = this.props;
+        const { dataContext: data, p: page, s: size, match } = this.props;
         const { selection: { umiCompatible, rendererCompatible }, umis, renderers } = this.state;
         const parents = data?.source.parents ?? [];
         const actionButtonEnabled = (umis.length && umiCompatible) || (renderers.length && rendererCompatible);
@@ -263,8 +263,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             </BrowserCore>
             <div className="sticky-bottom">
                 <BottomBar>
-                    <TablePagination location={location} history={history}
-                        total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
+                    <TablePagination total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
                         pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
                 </BottomBar>
                 {MediaQueries.largeScreen.matches && parents.length > 1 && <Breadcrumb className="border-top" items={parents} path={match.path} params={match.params} />}

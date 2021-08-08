@@ -1,8 +1,9 @@
-import React, { ChangeEvent, HTMLProps } from "react";
-import { LinkProps, NavLink, RouteLink } from "../../components/NavLink";
-import { ChevronSvgSymbols } from "./SvgSymbols";
 import H from "history";
+import { ChangeEvent, HTMLProps, useCallback, useRef } from "react";
+import { useHistory, useLocation } from "react-router";
+import { LinkProps, NavLink, RouteLink } from "../../components/NavLink";
 import $s from "./Settings";
+import { ChevronSvgSymbols } from "./SvgSymbols";
 
 type PageLinkProps = LinkProps & {
     current: boolean
@@ -73,49 +74,52 @@ const RelativePageLink = ({ title, to, label, children, className, ...other }: L
         {label && <span className="visually-hidden">{label}</span>}
     </RouteLink>;
 
-export class TablePagination extends React.Component<PaginationProps & NavigationProps & { pageSizes?: number[] }> {
+function getBaseUrl(location: H.Location, pageSize: number) {
+    const sp = new window.URLSearchParams(location.search);
+    sp.set("s", pageSize.toString());
+    sp.delete("p");
+    return `${location.pathname}?${sp.toString()}`;
+}
 
-    private pageSizeChangedHandler = (event: ChangeEvent<HTMLSelectElement>) => {
+export function TablePagination(props: PaginationProps & { pageSizes?: number[] }) {
+    const history = useHistory();
+    const location = useLocation();
+
+    const ref = useRef({ history, location });
+    ref.current = { history, location };
+
+    const changeHandler = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+        const { location, history } = ref.current;
         const pageSize = parseInt(event.target.value);
-        const url = this.getBaseUrl(pageSize);
+        const url = getBaseUrl(location, pageSize);
         $s.set("pageSize", pageSize);
-        this.props.history.push(url);
-    }
+        history.push(url);
+    }, []);
 
-    private getBaseUrl(pageSize: number) {
-        const sp = new window.URLSearchParams(this.props.location.search);
-        sp.set("s", pageSize.toString());
-        sp.delete("p");
-        return `${this.props.location.pathname}?${sp.toString()}`;
-    }
+    const { total, current, pageSize = $s.get("pageSize"), className, pageSizes = $s.get("pageSizes"), ...other } = props;
+    const pattern = `${getBaseUrl(location, pageSize).toString()}&p=`;
+    const pages = Math.ceil(total / pageSize);
 
-    render() {
-        const { total, current, pageSize = $s.get("pageSize"), className, pageSizes = $s.get("pageSizes"), ...other } = this.props;
-
-        const pattern = `${this.getBaseUrl(pageSize).toString()}&p=`;
-        const pages = Math.ceil(total / pageSize);
-
-        return <>
-            <ChevronSvgSymbols />
-            <label className="text-nowrap text-muted small pe-2 d-none d-md-inline">Items per page</label>
-            <select className="form-select form-select-sm me-2 my-0 w-auto" aria-label="Items per page" value={pageSize} onChange={this.pageSizeChangedHandler} >
-                {pageSizes.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-            <span className="text-muted small pe-2 overflow-hidden text-wrap lines-2">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
-            <nav aria-label="Page navigation" className={`hstack${className ? ` ${className}` : ""}`} {...other}>
-                <RelativePageLink to={`${pattern}${1}`} label="First" disabled={current === 1}>
-                    <svg><use href="#chevron-bar-left" /></svg>
-                </RelativePageLink>
-                <RelativePageLink to={`${pattern}${current - 1}`} label="Previous" disabled={current === 1}>
-                    <svg><use href="#chevron-left" /></svg>
-                </RelativePageLink>
-                <RelativePageLink to={`${pattern}${current + 1}`} label="Next" disabled={current >= pages}>
-                    <svg><use href="#chevron-right" /></svg>
-                </RelativePageLink>
-                <RelativePageLink to={`${pattern}${pages}`} label="Last" disabled={current >= pages}>
-                    <svg><use href="#chevron-bar-right" /></svg>
-                </RelativePageLink>
-            </nav>
-        </>;
-    }
+    return <>
+        <ChevronSvgSymbols />
+        <label className="text-nowrap text-muted small pe-2 d-none d-md-inline">Items per page</label>
+        <select className="form-select form-select-sm me-2 my-0 w-auto" aria-label="Items per page" value={pageSize} onChange={changeHandler} >
+            {pageSizes.map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <span className="text-muted small pe-2 overflow-hidden text-wrap lines-2">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
+        <nav aria-label="Page navigation" className={`hstack${className ? ` ${className}` : ""}`} {...other}>
+            <RelativePageLink to={`${pattern}${1}`} label="First" disabled={current === 1}>
+                <svg><use href="#chevron-bar-left" /></svg>
+            </RelativePageLink>
+            <RelativePageLink to={`${pattern}${current - 1}`} label="Previous" disabled={current === 1}>
+                <svg><use href="#chevron-left" /></svg>
+            </RelativePageLink>
+            <RelativePageLink to={`${pattern}${current + 1}`} label="Next" disabled={current >= pages}>
+                <svg><use href="#chevron-right" /></svg>
+            </RelativePageLink>
+            <RelativePageLink to={`${pattern}${pages}`} label="Last" disabled={current >= pages}>
+                <svg><use href="#chevron-bar-right" /></svg>
+            </RelativePageLink>
+        </nav>
+    </>;
 }

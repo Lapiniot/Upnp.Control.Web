@@ -439,7 +439,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
 
     render() {
 
-        const { dataContext: data, match, navigate, fetching, error, id, s, p, device, location, history } = this.props;
+        const { dataContext: data, match, navigate, fetching, error, id, s, p, device } = this.props;
         const { playlist, currentTrack } = this.state;
         const { source: { total = 0, items = [], parents = [], dev = undefined } = {} } = data || {};
         const pageSize = s ? parseInt(s) : $s.get("pageSize");
@@ -502,7 +502,7 @@ export class PlaylistManagerCore extends React.Component<PlaylistManagerProps, P
                         </div>}
                     <BottomBar>
                         {this.state.selection.length > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${this.state.selection.length} of ${fetched} selected`}</span> : null}
-                        <TablePagination location={location} history={history} total={total} current={page} pageSize={pageSize} />
+                        <TablePagination total={total} current={page} pageSize={pageSize} />
                     </BottomBar>
                     {largeScreen && <Breadcrumb className="border-top" items={parents} path={match.path} params={match.params} />}
                 </div>
