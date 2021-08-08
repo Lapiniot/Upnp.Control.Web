@@ -1,6 +1,5 @@
 import React, { ComponentType } from "react";
-import { RouteComponentProps } from "react-router";
-import { generatePath } from "../../components/Extensions";
+import { generatePath, RouteComponentProps } from "react-router";
 
 export type NavigatorProps = { navigate: (data: { [key: string]: string | undefined }) => void }
 

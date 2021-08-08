@@ -7,12 +7,6 @@ export function reversemap<T, R>(array: T[], fn: (currentValue: T, index: number
     }, new Array<R>());
 }
 
-const pathRegex = new RegExp(":([\\w]+)[^/]*", "g");
-
-export function generatePath<Params extends { [K in keyof any]: any }>(path: string, params: Params): string {
-    return path.replace(pathRegex, (_, name) => params[name]);
-}
-
 export function parseMilliseconds(time: string): number {
     return new Date(`1970-01-01T${time}Z`).getTime();
 }

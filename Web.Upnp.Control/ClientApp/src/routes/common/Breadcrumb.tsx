@@ -1,6 +1,7 @@
 import { HTMLAttributes } from "react";
+import { generatePath } from "react-router";
 import { NavLink } from "react-router-dom";
-import { reversemap, generatePath } from "../../components/Extensions";
+import { reversemap } from "../../components/Extensions";
 
 type BreadcrumbItemProps = {
     title: string;
