@@ -16,6 +16,7 @@ import ModalHost from "../../components/ModalHost";
 import ItemInfoModal from "./ItemInfoModal";
 import { MediaQueries } from "../../components/MediaQueries";
 import Breadcrumb from "./Breadcrumb";
+import { RouteComponentProps } from "react-router";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);
@@ -66,14 +67,12 @@ type BrowserState = {
     rowState: (item: DIDLItem) => RowState;
 };
 
-type BrowserProps = BrowserCoreProps<CellContext> & {
-    device: string;
-};
+type BrowserProps = BrowserCoreProps<CellContext> & RouteComponentProps & { device: string; };
 
 export class Browser extends React.Component<BrowserProps, BrowserState> {
     modalHostRef = React.createRef<ModalHost>();
 
-    constructor(props: BrowserProps | Readonly<BrowserProps>) {
+    constructor(props: BrowserProps) {
         super(props);
         this.state = {
             umis: [],

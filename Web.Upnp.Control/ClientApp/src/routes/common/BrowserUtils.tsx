@@ -111,7 +111,9 @@ export function fromBaseQuery(baseFetchQuery: FetchFunction) {
 const browseFetchOptions = { withParents: true, withResourceProps: true };
 const defaultQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id).withOptions(browseFetchOptions));
 
-export function withBrowserDataFetch<P extends DataFetchProps & NavigatorProps>(BrowserComponent: ComponentType<P>, usePreloader = true,
+export function withBrowserDataFetch<P extends DataFetchProps & NavigatorProps>(
+    BrowserComponent: ComponentType<P>,
+    usePreloader = true,
     builder = defaultQueryBuilder) {
     return withNavigation<Omit<P, keyof DataFetchProps> & BrowseRouteParams, BrowseRouteParams>(
         withDataFetch<P, BrowseRouteParams>(BrowserComponent, builder,

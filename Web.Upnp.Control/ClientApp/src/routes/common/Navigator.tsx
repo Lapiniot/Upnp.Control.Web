@@ -1,25 +1,27 @@
-import React, { ComponentType } from "react";
-import { generatePath, RouteComponentProps } from "react-router";
+import { ComponentType, useCallback, useRef } from "react";
+import { generatePath, useHistory, useLocation, useRouteMatch } from "react-router";
 
-export type NavigatorProps = { navigate: (data: { [key: string]: string | undefined }) => void }
+export type NavigatorProps = { navigate: (data: { [key: string]: string }, pattern?: string) => void }
 
 type InjectedProps<Params> = NavigatorProps & Params;
 
 export default function withNavigator<P extends InjectedProps<Params>, Params extends { [K in keyof Params]?: any }>(Component: ComponentType<P>) {
+    return function (props: Omit<P, keyof InjectedProps<Params>>) {
+        const { search } = useLocation();
+        const history = useHistory();
+        const match = useRouteMatch<Params>();
+        const ref = useRef({ history, match });
+        ref.current = { history, match };
 
-    type ConstructedProps = Omit<P, keyof InjectedProps<Params>> & RouteComponentProps<Params>;
+        const handler = useCallback((data, pattern) => {
+            const { history, match: { path, params } } = ref.current;
+            history.push(generatePath(pattern ?? path, { ...params, ...data }));
+        }, []);
 
-    return class extends React.Component<ConstructedProps> {
+        const params: { [K: string]: any } = { ...match.params };
 
-        navigate = (data: { [key: string]: string | undefined }, template?: string) => {
-            const { match: { path, params }, history } = this.props;
-            history.push(generatePath(template ?? path, { ...params, ...data }));
-        }
+        new window.URLSearchParams(search).forEach((value, key) => params[key] = value);
 
-        render() {
-            const { location: { search }, match: { params: { ...params } } } = this.props;
-            new window.URLSearchParams(search).forEach((value, key) => params[key] = value);
-            return <Component {...(this.props as unknown as P)} {...params} navigate={this.navigate} />;
-        }
+        return <Component {...(props as unknown as P)} {...params} navigate={handler} />;
     };
 }

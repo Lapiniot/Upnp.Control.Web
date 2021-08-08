@@ -1,7 +1,7 @@
 import { TablePagination } from "./Pagination";
 import BrowserView, { BrowserViewProps } from "./BrowserView";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { RouteComponentProps } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import $s from "./Settings";
 import { BottomBar } from "./BottomBar";
 import { ReactNode, useCallback } from "react";
@@ -15,13 +15,14 @@ type FetchProps = {
 type RenderFlags = "withBreadcrumb" | "withPagination";
 
 export type BrowserCoreProps<TContext> =
-    BrowserViewProps<TContext> &
-    RouteComponentProps<FetchProps> &
-    FetchProps &
+    BrowserViewProps<TContext> & FetchProps &
     { [K in RenderFlags]?: boolean; } &
     { renderActionMenu?: () => ReactNode };
 
 export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>) {
+    const location = useLocation();
+    const history = useHistory();
+
     const { dataContext: data, s: size, p: page, fetching, navigate, renderActionMenu } = props;
     const { withBreadcrumb = true, withPagination = true, className, ...forwardProps } = props;
     const { source: { total = 0, parents = undefined, dev = undefined } = {} } = data || {};
@@ -42,7 +43,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
             </Toolbar>
             <BrowserView className="flex-fill" {...forwardProps} />
             {withPagination && <BottomBar>
-                <TablePagination location={props.location} history={props.history}
+                <TablePagination location={location} history={history}
                     total={total} current={typeof page === "string" ? parseInt(page) : 1}
                     pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
             </BottomBar>}
