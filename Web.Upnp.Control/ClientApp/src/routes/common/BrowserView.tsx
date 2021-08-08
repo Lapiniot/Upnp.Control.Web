@@ -44,13 +44,14 @@ type RowStateProvider = ((item: DIDLItem, index: number) => RowState) | (RowStat
 export type BrowserProps<TContext> = {
     rowStateProvider?: RowStateProvider;
     open?: (index: number) => boolean;
-    selectionChanged?: (ids: string[]) => boolean | undefined | void;
+    selectionChanged?: (ids: string[], extraState: any) => boolean | undefined | void;
     mainCellTemplate?: ComponentType<CellTemplateProps<TContext>>;
     mainCellContext?: TContext;
     displayMode?: DisplayMode;
     navigationMode?: NavigationMode;
     editMode?: boolean;
     nodeRef?: RefObject<HTMLDivElement>;
+    extraState?: any;
 } & { [K in ModeFlags]?: boolean }
 
 export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
@@ -101,7 +102,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const { dataContext, selectionChanged, displayMode, useCheckboxes } = this.props;
 
         if (dataContext && selectionChanged && prevDataContext !== dataContext) {
-            selectionChanged([]);
+            selectionChanged([], this.props.extraState);
         }
 
         if (prevDisplayMode !== displayMode) {
@@ -307,7 +308,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
         const { source: { items } } = ctx;
 
-        if (selectionChanged?.(getSelectedIds(items, this.state.states)) !== false) {
+        if (selectionChanged?.(getSelectedIds(items, this.state.states), this.props.extraState) !== false) {
             this.forceUpdate();
         }
     }
