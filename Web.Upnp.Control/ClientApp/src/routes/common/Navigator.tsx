@@ -1,10 +1,10 @@
-import React, { ComponentType, PropsWithChildren, useCallback, useContext, useRef } from "react";
+import { ComponentType, createContext, PropsWithChildren, useCallback, useContext, useRef } from "react";
 import { generatePath, useHistory, useLocation, useRouteMatch } from "react-router";
 
 type NavigationHandler = (data: { [key: string]: string; }, pattern?: string) => void;
 export type NavigationContextState = { navigate: NavigationHandler, params: { [K: string]: string | undefined } };
 
-const NavigationContext = React.createContext<NavigationContextState>({ navigate: () => { }, params: {} });
+const NavigationContext = createContext<NavigationContextState>({ navigate: () => { }, params: {} });
 
 export { NavigationContext };
 

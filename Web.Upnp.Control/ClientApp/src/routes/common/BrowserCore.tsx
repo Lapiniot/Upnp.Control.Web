@@ -4,6 +4,7 @@ import Toolbar from "../../components/Toolbar";
 import { BottomBar } from "./BottomBar";
 import BrowserView, { BrowserViewProps } from "./BrowserView";
 import { TablePagination } from "./Pagination";
+import { useRowStates } from "./RowStateContext";
 import $s from "./Settings";
 
 type FetchProps = {
@@ -19,7 +20,8 @@ export type BrowserCoreProps<TContext> =
     { renderActionMenu?: () => ReactNode };
 
 export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>) {
-    const { dataContext: data, s: size, p: page, fetching, navigate, renderActionMenu } = props;
+    useRowStates();
+    const { dataContext: data, s: size, p: page, fetching, navigate, renderActionMenu, children } = props;
     const { withBreadcrumb = true, withPagination = true, className, ...forwardProps } = props;
     const { source: { total = 0, parents = undefined, dev = undefined } = {} } = data || {};
     const navBackHandler = useCallback(() => navigate({ id: parents?.[1]?.id ?? "-1" }), [navigate, parents]);
@@ -33,11 +35,11 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
                     <h6 className="mb-0 text-truncate">{parents?.[0]?.title ?? ""}</h6>
                     <small className="text-muted text-truncate">{dev?.name ?? ""}</small>
                 </div>
-                <Toolbar.Button key="main-menu" glyph="ellipsis-v" data-bs-toggle="dropdown"
-                    className="btn-round btn-icon btn-plain ms-auto" disabled={!renderActionMenu} />
                 {renderActionMenu?.()}
             </Toolbar>
-            <BrowserView className="flex-fill" {...forwardProps} />
+            <BrowserView className="flex-fill" {...forwardProps}>
+                {children}
+            </BrowserView>
             {withPagination && <BottomBar>
                 <TablePagination total={total} current={typeof page === "string" ? parseInt(page) : 1}
                     pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />

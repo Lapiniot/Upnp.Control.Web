@@ -1,21 +1,19 @@
 import { useCallback, useRef } from "react";
-import WebApi from "../../../components/WebApi";
-import { BrowserProps } from "../BrowserView";
-import BrowserDialog, { BrowseResult } from "../BrowserDialog";
-import { DeviceActionProps } from "./Actions";
-import { DIDLUtils } from "../BrowserUtils";
 import ModalHost from "../../../components/ModalHost";
-import { RowState } from "../Types";
+import WebApi from "../../../components/WebApi";
+import BrowserDialog, { BrowseResult } from "../BrowserDialog";
+import { DIDLUtils } from "../BrowserUtils";
+import { BrowserProps } from "../BrowserView";
+import { RowStateMapper } from "../RowStateContext";
+import { DIDLItem, RowState } from "../Types";
+import { DeviceActionProps } from "./Actions";
 
-const browserProps: BrowserProps<unknown> = {
-    rowStateProvider: () => RowState.Navigable | RowState.Selectable
+type OpenActionProps = DeviceActionProps & {
+    browserProps?: BrowserProps<unknown>,
+    rowStateMapper?: RowStateMapper
 }
 
-const audioBrowserProps: BrowserProps<unknown> = {
-    rowStateProvider: (item) => DIDLUtils.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
-}
-
-export function OpenAction({ children, className, browserProps, device, category, ...other }: DeviceActionProps & { browserProps: BrowserProps<unknown> }) {
+export function OpenAction({ children, className, browserProps, device, category, rowStateMapper, ...other }: OpenActionProps) {
     const modalHostRef = useRef<ModalHost>(null);
     const playHandler = useCallback((data: BrowseResult) => {
         const deviceId = device.udn;
@@ -26,7 +24,7 @@ export function OpenAction({ children, className, browserProps, device, category
     const browseClickHandler = useCallback(() =>
         modalHostRef.current?.show(
             <BrowserDialog className="modal-lg modal-fullscreen-sm-down" title="Select media to play"
-                onConfirmed={playHandler} browserProps={browserProps}>
+                onConfirmed={playHandler} browserProps={browserProps} rowStateMapper={rowStateMapper}>
             </BrowserDialog>)
         , [device]);
     return <>
@@ -39,13 +37,17 @@ export function OpenAction({ children, className, browserProps, device, category
 }
 
 export function OpenMediaAction(props: DeviceActionProps) {
-    return <OpenAction {...props} browserProps={browserProps}>
+    return <OpenAction {...props}>
         <svg className="icon"><use href="#photo-video" /></svg>
     </OpenAction>
 }
 
+function pickAudioMapper(item: DIDLItem) {
+    return DIDLUtils.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
+}
+
 export function OpenAudioAction(props: DeviceActionProps) {
-    return <OpenAction {...props} browserProps={audioBrowserProps}>
+    return <OpenAction {...props} rowStateMapper={pickAudioMapper}>
         <svg className="icon"><use href="#folder-open" /></svg>
     </OpenAction>
 }

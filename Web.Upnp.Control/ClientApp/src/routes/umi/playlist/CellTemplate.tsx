@@ -9,7 +9,7 @@ type CellContext = {
     state?: PlaybackState;
     play?: EventHandler<UIEvent<HTMLElement>>;
     pause?: EventHandler<UIEvent<HTMLElement>>;
-    playUrl?: EventHandler<UIEvent<HTMLElement>>;
+    playItem?: EventHandler<UIEvent<HTMLElement>>;
     device: string;
     deviceName?: string;
 }
@@ -39,11 +39,11 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
                             <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                         </button>
                     </React.Fragment>
-                : <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.playUrl} data-index={index}>
+                : <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.playItem} data-index={index}>
                     <svg className="icon m-auto icon-lg"><use href="#play-circle" /></svg>
                 </button>}
         </div>
-        <span className="vstack overflow-hidden">
+        <span className="vstack overflow-hidden justify-content-center">
             <span className="text-truncate">{d.title}</span>
             {(d.album || artist) && <small className="text-truncate">{artist}{artist && <>&nbsp;&bull;&nbsp;</>}{d.album}</small>}
         </span>

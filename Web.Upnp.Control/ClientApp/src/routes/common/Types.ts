@@ -86,7 +86,7 @@ export type BrowseFetchResult = {
     parents?: DIDLItem[];
 }
 
-export type PlaybackState = "STOPPED" | "PLAYING" | "TRANSITIONING" | "PAUSED_PLAYBACK" | "PAUSED_RECORDING" | "RECORDING" | "NO_MEDIA_PRESENT" | "CUSTOM"
+export type PlaybackState = "STOPPED" | "PLAYING" | "TRANSITIONING" | "PAUSED_PLAYBACK" | "PAUSED_RECORDING" | "RECORDING" | "NO_MEDIA_PRESENT" | "CUSTOM" | "UNKNOWN"
 
 export type PlaybackStatus = "OK" | "ERROR_OCCURRED" | "CUSTOM"
 
