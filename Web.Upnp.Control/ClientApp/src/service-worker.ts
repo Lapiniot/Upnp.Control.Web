@@ -55,20 +55,21 @@ async function cleanup() {
 async function enablePreload() {
     // Enable navigation preload if it's supported.
     // See https://developers.google.com/web/updates/2017/02/navigation-preload
-    if ('navigationPreload' in self.registration) {
+    if ("navigationPreload" in self.registration) {
         await self.registration.navigationPreload.enable();
         console.info("navigation preload has beeen enabled");
     }
 }
 
 async function fetchWithPreload(event: FetchEvent): Promise<Response> {
-    const response = await Promise.resolve<Response>(event.preloadResponse);
-    if (response) {
-        return response;
+    if ("preloadResponse" in event) {
+        var response = await event.preloadResponse;
+        if (response) {
+            return response;
+        }
     }
-    else {
-        return await fetch(event.request);
-    }
+
+    return await fetch(event.request);
 }
 
 self.addEventListener("install", event => {

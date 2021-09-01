@@ -26,7 +26,7 @@ export class SignalRConnection extends React.Component<SignalRConnectionProps, {
             console.info(`Established SignalR connection to the hub at '${this.hub.baseUrl}'`);
             this.setState({ error: null, connected: true });
         } catch (error) {
-            console.error(`Error connecting to a SignalR hub at '${this.hub.baseUrl}': ${error.message}`);
+            console.error(`Error connecting to a SignalR hub at '${this.hub.baseUrl}': ${error instanceof Error ? error.message : error}`);
             this.setState({ error: `Cannot establish connection to the server. Some features may not work as expected.`, connected: false });
         }
     }

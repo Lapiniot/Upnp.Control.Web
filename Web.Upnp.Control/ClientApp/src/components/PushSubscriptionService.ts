@@ -10,7 +10,7 @@ export default {
                 applicationServerKey: key
             });
             if (!ps) throw new Error("PushManager subscription failed");
-            const response = await WebApi.notifications().subscribe(ps.endpoint, ps.getKey("p256dh"), ps.getKey("auth"), ps.expirationTime).fetch();
+            const response = await WebApi.notifications().subscribe(ps.endpoint, ps.getKey("p256dh"), ps.getKey("auth")).fetch();
             if (!response.ok) {
                 throw new Error(`Subscription request failed: HTTP ${response.status} - ${response.statusText}`);
             }

@@ -61,7 +61,7 @@ type BrowserState = {
     umis: UpnpDevice[],
     renderers: UpnpDevice[],
     fetching?: boolean,
-    error?: Error
+    error?: any
 }
 
 type BrowserProps = BrowserCoreProps<CellContext> & { device: string; };

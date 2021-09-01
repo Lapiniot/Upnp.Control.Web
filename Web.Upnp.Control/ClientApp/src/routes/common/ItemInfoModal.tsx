@@ -1,12 +1,12 @@
-import { DIDLItem } from "./Types";
+import { useCallback } from "react";
 import Modal, { ModalProps } from "../../components/Modal";
 import { DIDLUtils } from "./BrowserUtils";
-import { useCallback } from "react";
 import { ItemInfo } from "./ItemInfo";
+import { DIDLItem } from "./Types";
 
 export default function ItemInfoModal({ item, ...other }: ModalProps & { item: DIDLItem; }) {
     const clickHandler = useCallback(() => navigator.permissions
-        .query({ name: "clipboard-read" })
+        .query({ name: "clipboard-read" as PermissionName })
         .then(result => {
             if (result.state === "granted" || result.state === "prompt")
                 navigator.clipboard.writeText(item.res?.url as string);

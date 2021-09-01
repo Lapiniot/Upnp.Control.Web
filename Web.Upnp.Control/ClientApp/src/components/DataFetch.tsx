@@ -28,7 +28,7 @@ type DataFetchState = {
     fetching: boolean;
     dataContext: DataContext | null;
     fetch: FunctionWithKey | null;
-    error: Error | null;
+    error: any
 }
 
 export function withMemoKey(func: (...args: any[]) => any, key: string) {

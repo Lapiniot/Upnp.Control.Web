@@ -43,7 +43,7 @@ export interface QueueApiProvider {
 
 export interface PushSubscriptionApiProvider {
     serverKey(): HttpFetch;
-    subscribe: (endpoint: string, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null, expiration?: number | null) => JsonPostFetch;
+    subscribe: (endpoint: string, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) => JsonPostFetch;
     unsubscribe: (endpoint: string) => JsonDeleteFetch;
 }
 
@@ -126,8 +126,8 @@ export default class WebApi {
 }
 
 const pushSubscriber = {
-    subscribe: (endpoint: string, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null, expiration?: number | null) =>
-        new JsonPostFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint, p256dhKey: toBase64(p256dh), authKey: toBase64(auth), expiration }) }),
+    subscribe: (endpoint: string, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) =>
+        new JsonPostFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint, p256dhKey: toBase64(p256dh), authKey: toBase64(auth) }) }),
     unsubscribe: (endpoint: string) =>
         new JsonDeleteFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint }) }),
     serverKey: () => new HttpFetch(`${baseUri}/push-subscriptions/server-key`)
