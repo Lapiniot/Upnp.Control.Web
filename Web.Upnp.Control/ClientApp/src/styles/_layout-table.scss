@@ -2,6 +2,7 @@
 
 .auto-table {
     --auto-table-bg: #{$table-bg};
+    --auto-table-caption-bg: #{$light};
     --auto-table-header-bg: #{$light};
     --auto-table-accent-bg: transparent;
     --auto-table-striped-color: #{$table-striped-color};
@@ -63,9 +64,15 @@
     & > .table-caption:first-of-type {
         display: table-caption;
         color: $table-caption-color;
+        background-color: var(--auto-table-caption-bg);
         padding: $table-cell-padding-y $table-cell-padding-x;
         caption-side: top;
         border: none;
+        &.sticky {
+            position: sticky;
+            top: 0;
+            z-index: $zindex-sticky;
+        }
     }
 
     /* Table header */
@@ -84,7 +91,7 @@
             }
         }
 
-        &.sticky-header > * > * {
+        &.sticky > * > * {
             position: sticky;
             top: 0;
             z-index: $zindex-sticky;
@@ -193,9 +200,15 @@
     }
 
     &.at-material {
+        & > .table-caption:first-of-type {
+            &.sticky {
+                --auto-table-caption-bg: var(--bs-white);
+            }
+        }
+
         @include at-header() {
             --auto-table-header-bg: var(--auto-table-bg);
-            &.sticky-header {
+            &.sticky {
                 --auto-table-header-bg: var(--bs-white);
             }
             & > * > * {

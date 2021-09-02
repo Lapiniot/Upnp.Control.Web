@@ -1,6 +1,5 @@
 ﻿import React, { ChangeEventHandler, ComponentType, FocusEvent, HTMLAttributes, MouseEvent, ReactNode, RefObject } from "react";
 import { DataFetchProps } from "../../components/DataFetch";
-import { findScrollParent } from "../../components/Extensions";
 import { MediaQueries } from "../../components/MediaQueries";
 import AlbumArt from "./AlbumArt";
 import { DIDLUtils as utils } from "./BrowserUtils";
@@ -13,7 +12,7 @@ const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
 const HEADER_SELECTOR = ":scope > div.table-caption";
 const HEADER_CELLS_SELECTOR = ":scope > div:not(.table-caption):first-of-type > div > *, :scope > div.table-caption:first-of-type + div > div > *";
 
-type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode" | "useLevelUpRow";
+type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode" | "useLevelUpRow" | "stickyCaption" | "stickyHeaders";
 
 type DisplayMode = "table" | "list" | "responsive";
 
@@ -56,6 +55,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         multiSelect: true,
         useCheckboxes: false,
         useLevelUpRow: false,
+        stickyCaption: true,
+        stickyHeaders: true,
         mainCellTemplate: CellTemplate
     };
 
@@ -116,22 +117,22 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const table = this.tableRef.current;
         if (!table) return;
 
-        const scrollParent = findScrollParent(table as HTMLElement);
-        if (!scrollParent) return;
+        let offset = table.offsetTop;
 
-        let offset = table.getBoundingClientRect().top + table.clientTop
-            - scrollParent.getBoundingClientRect().top - scrollParent.clientTop;
-
-        const caption = table.querySelector<HTMLDivElement>(HEADER_SELECTOR);
-        if (caption) {
-            const rect = caption.getBoundingClientRect();
-            caption.style.top = `${Math.round(offset)}px`;
-            offset += rect.height;
+        if (this.props.stickyCaption) {
+            const caption = table.querySelector<HTMLDivElement>(HEADER_SELECTOR);
+            if (caption) {
+                const rect = caption.getBoundingClientRect();
+                caption.style.top = `${Math.round(offset)}px`;
+                offset += rect.height;
+            }
         }
 
-        const top = `${Math.round(offset)}px`;
-        const headers = table.querySelectorAll<HTMLElement>(HEADER_CELLS_SELECTOR);
-        headers.forEach(cell => { cell.style.top = top; });
+        if (this.props.stickyHeaders) {
+            const top = `${Math.round(offset)}px`;
+            const headers = table.querySelectorAll<HTMLElement>(HEADER_CELLS_SELECTOR);
+            headers.forEach(cell => { cell.style.top = top; });
+        }
     }
 
     onCheckboxChanged: ChangeEventHandler<HTMLInputElement> = e => {
@@ -290,7 +291,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     render() {
 
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes, useLevelUpRow, displayMode, style, nodeRef,
+            useCheckboxes, useLevelUpRow, stickyCaption, stickyHeaders, displayMode, style, nodeRef,
             renderCaption, renderFooter, children } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
@@ -302,8 +303,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
             <div className={`auto-table at-material user-select-none position-sticky${optimizeForTouch ? " at-touch-friendly" : ""}`}
                 ref={this.tableRef} onFocus={this.focusHandler}>
-                {renderCaption && <div className="table-caption">{renderCaption()}</div>}
-                <div className={tableMode ? "sticky-header" : "d-none"}>
+                {renderCaption && <div className={`table-caption${stickyCaption ? " sticky" : ""}`}>{renderCaption()}</div>}
+                <div className={tableMode ? (stickyHeaders ? "sticky" : "") : "d-none"}>
                     <div>
                         {useCheckboxes &&
                             <label className="cb-wrap">
@@ -352,7 +353,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 {renderFooter && <div className="table-footer">{renderFooter()}</div>}
             </div>
             {children}
-        </div>;
+        </div >;
     }
 }
 
