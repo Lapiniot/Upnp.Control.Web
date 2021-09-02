@@ -49,6 +49,7 @@
                 "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
                 "--configuration=\"$CONFIG\"",
                 "--runtime=${input:rid}",
+                "--self-contained",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
                 "/property:PublishTrimmed=true"
