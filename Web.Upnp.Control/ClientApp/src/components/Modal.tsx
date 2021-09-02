@@ -86,20 +86,20 @@ export default class Modal extends React.Component<ModalProps> {
                 else children.push(child);
             });
 
-        return <div className="modal fade" tabIndex={-1} ref={this.modalRef} role="dialog" aria-hidden="true" {...other}>
-            <div className={`modal-dialog modal-dialog-centered${className ? ` ${className}` : ""}`} role="document">
-                <div className="modal-content">
-                    <form action="#" noValidate onSubmit={this.onSubmit}>
+        return <form action="#" noValidate onSubmit={this.onSubmit}>
+            <div className="modal fade" tabIndex={-1} ref={this.modalRef} role="dialog" aria-hidden={true} {...other}>
+                <div className={`modal-dialog modal-dialog-centered${className ? ` ${className}` : ""}`} role="document">
+                    <div className="modal-content">
                         {header ? header : <Modal.Header><h5 className="modal-title text-truncate">{title}</h5></Modal.Header>}
                         {body ? body : <Modal.Body>{children}</Modal.Body>}
                         {footer ? footer : <Modal.Footer>
                             <Modal.Button className="dismiss" dismiss>Cancel</Modal.Button>
                             <Modal.Button className="confirm" type="submit" name="action" value="ok">Ok</Modal.Button>
                         </Modal.Footer>}
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div >;
+        </form>
     }
 
     static Button = ({ dismiss, className, icon, children, ...other }: { dismiss?: boolean; icon?: string } & ButtonHTMLAttributes<HTMLButtonElement>) =>

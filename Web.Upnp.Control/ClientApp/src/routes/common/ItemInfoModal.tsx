@@ -17,7 +17,9 @@ export default function ItemInfoModal({ item, ...other }: ModalProps & { item: D
             <ItemInfo item={item} />
         </Modal.Body>
         <Modal.Footer>
-            {DIDLUtils.isMediaItem(item) && window.isSecureContext ? <Modal.Button className="me-auto" onClick={clickHandler}>Copy media url</Modal.Button> : undefined}
+            {DIDLUtils.isMediaItem(item) && window.isSecureContext
+                ? <Modal.Button className="me-auto" onClick={clickHandler}>Copy media url</Modal.Button>
+                : undefined}
             <Modal.Button className="confirm" dismiss>Ok</Modal.Button>
         </Modal.Footer>
     </Modal>;
