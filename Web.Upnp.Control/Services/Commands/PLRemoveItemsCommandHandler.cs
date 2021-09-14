@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp;
 using IoT.Protocol.Upnp.Services;
@@ -24,7 +22,7 @@ namespace Web.Upnp.Control.Services.Commands
             var updateId = await UpnpUtils.GetUpdateIdAsync(cds, playlistId, cancellationToken).ConfigureAwait(false);
             var indices = await UpnpUtils.GetItemIndicesAsync(cds, playlistId, items, cancellationToken).ConfigureAwait(false);
 
-            await pls.RemoveItemsAsync(objectId: playlistId, updateId: updateId, indices: indices, cancellationToken: cancellationToken).ConfigureAwait(false);
+            await pls.RemoveItemsAsync(indices, objectId: playlistId, updateId: updateId, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }
