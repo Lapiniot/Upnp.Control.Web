@@ -1,10 +1,5 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting.Server;
+﻿using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Services.Abstractions;
 
@@ -20,7 +15,7 @@ namespace Web.Upnp.Control.Services
         public UpnpEventSubscriptionFactory(IEventSubscribeClient subscribeClient, IServer server, ILogger<UpnpEventSubscriptionFactory> logger)
         {
             this.subscribeClient = subscribeClient ?? throw new ArgumentNullException(nameof(subscribeClient));
-            this.serverAddresses = (server ?? throw new ArgumentNullException(nameof(server))).Features.Get<IServerAddressesFeature>();
+            serverAddresses = (server ?? throw new ArgumentNullException(nameof(server))).Features.Get<IServerAddressesFeature>();
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 

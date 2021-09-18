@@ -1,15 +1,7 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Channels;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Json;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.DataAccess;
@@ -64,7 +56,6 @@ namespace Web.Upnp.Control.Services
 
         #endregion
 
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "None of the exceptions should break worker loop")]
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while(!stoppingToken.IsCancellationRequested)
@@ -74,41 +65,39 @@ namespace Web.Upnp.Control.Services
                     var message = await channel.Reader.ReadAsync(stoppingToken).ConfigureAwait(false);
                     var payload = JsonSerializer.SerializeToUtf8Bytes(message, jsonOptions.Value.SerializerOptions);
 
-                    using(var scope = this.services.CreateScope())
-                    {
-                        var context = scope.ServiceProvider.GetRequiredService<PushSubscriptionDbContext>();
-                        var client = scope.ServiceProvider.GetRequiredService<IWebPushClient>();
+                    using var scope = services.CreateScope();
+                    var context = scope.ServiceProvider.GetRequiredService<PushSubscriptionDbContext>();
+                    var client = scope.ServiceProvider.GetRequiredService<IWebPushClient>();
 
-                        try
+                    try
+                    {
+                        await foreach(var subscription in context.Subscriptions.AsAsyncEnumerable().WithCancellation(stoppingToken).ConfigureAwait(false))
                         {
-                            await foreach(var subscription in context.Subscriptions.AsAsyncEnumerable().WithCancellation(stoppingToken).ConfigureAwait(false))
+                            Uri endpoint = subscription.Endpoint;
+                            var keys = new SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);
+                            try
                             {
-                                Uri endpoint = subscription.Endpoint;
-                                var keys = new SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);
-                                try
-                                {
-                                    await client.SendAsync(endpoint, keys, payload, wpOptions.Value.TTLSeconds, stoppingToken).ConfigureAwait(false);
-                                }
-                                catch(OperationCanceledException)
-                                {
-                                    // expected
-                                }
-                                catch(HttpRequestException hre) when(hre.StatusCode == HttpStatusCode.Gone || hre.StatusCode == HttpStatusCode.Forbidden)
-                                {
-                                    context.Remove(subscription);
-                                }
-                                catch(Exception ex)
-                                {
-                                    logger.LogError(ex, "Error pushing message to endpoint: " + endpoint);
-                                }
+                                await client.SendAsync(endpoint, keys, payload, wpOptions.Value.TTLSeconds, stoppingToken).ConfigureAwait(false);
+                            }
+                            catch(OperationCanceledException)
+                            {
+                                // expected
+                            }
+                            catch(HttpRequestException hre) when(hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
+                            {
+                                context.Remove(subscription);
+                            }
+                            catch(Exception ex)
+                            {
+                                logger.LogError(ex, "Error pushing message to endpoint: " + endpoint);
                             }
                         }
-                        finally
+                    }
+                    finally
+                    {
+                        if(context.ChangeTracker.HasChanges())
                         {
-                            if(context.ChangeTracker.HasChanges())
-                            {
-                                await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
-                            }
+                            await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
                         }
                     }
                 }
@@ -129,7 +118,6 @@ namespace Web.Upnp.Control.Services
             }
         }
 
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Should be never-throw by design")]
         private async void Post(UpnpDiscoveryMessage message)
         {
             try

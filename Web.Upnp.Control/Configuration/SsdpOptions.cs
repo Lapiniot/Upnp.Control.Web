@@ -1,4 +1,3 @@
-using System;
 using System.Net.NetworkInformation;
 using static System.Net.NetworkInterfaceExtensions;
 
@@ -11,7 +10,7 @@ namespace Web.Upnp.Control.Configuration
 
         public string MulticastInterface
         {
-            get { return mcastInterface; }
+            get => mcastInterface;
             init
             {
                 mcastInterface = value;
@@ -25,7 +24,7 @@ namespace Web.Upnp.Control.Configuration
 
         private static int GetInterfaceIndex(string nameOrIdOrAddress)
         {
-            var mcastInterface = (nameOrIdOrAddress == "any" || nameOrIdOrAddress == "auto"
+            var mcastInterface = (nameOrIdOrAddress is "any" or "auto"
                 ? FindBestMulticastInterface()
                 : FindByName(nameOrIdOrAddress) ?? FindByAddress(nameOrIdOrAddress) ?? FindById(nameOrIdOrAddress))
                 ?? throw new ArgumentException("Requested interface was not found");
@@ -44,11 +43,11 @@ namespace Web.Upnp.Control.Configuration
             var ipv4props = ipProps.GetIPv4Properties();
             if(ipv4props is not null) return ipv4props.Index;
             var ipv6props = ipProps.GetIPv6Properties();
-            if(ipv6props is not null) return ipv6props.Index;
-
-            throw new InvalidOperationException("Cannot get interface index by interface name");
+            return ipv6props is not null
+                ? ipv6props.Index
+                : throw new InvalidOperationException("Cannot get interface index by interface name");
         }
 
-        public int MulticastInterfaceIndex => (mcastInterfaceIndex ??= GetInterfaceIndex(mcastInterface));
+        public int MulticastInterfaceIndex => mcastInterfaceIndex ??= GetInterfaceIndex(mcastInterface);
     }
 }

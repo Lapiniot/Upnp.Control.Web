@@ -1,7 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Web.Upnp.Control.Models;
@@ -70,7 +66,7 @@ namespace Web.Upnp.Control.Services.Commands
                 var result = await cd.BrowseAsync(id, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
                 string metadata = result["Result"];
                 var item = DIDLXmlParser.Parse(metadata, true, false).FirstOrDefault();
-                if(!(item is { Resource: { Url: { } resUrl } })) throw new InvalidOperationException();
+                if(item is not { Resource: { Url: { } resUrl } }) throw new InvalidOperationException();
                 await avt.SetAVTransportUriAsync(0, resUrl, metadata, cancellationToken).ConfigureAwait(false);
             }
 

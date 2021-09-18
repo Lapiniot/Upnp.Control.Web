@@ -1,14 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using static System.Globalization.CultureInfo;
@@ -44,7 +34,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
                 var cancellationToken = context.RequestAborted;
 
-                if(method != "GET" && method != "HEAD")
+                if(method is not "GET" and not "HEAD")
                 {
                     logger.LogUnsupportedMethod(id, method);
 
@@ -135,10 +125,8 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
                 await context.Response.StartAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            using(var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false))
-            {
-                await CopyContentAsync(stream, context, BufferSize, cancellationToken).ConfigureAwait(false);
-            }
+            using var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            await CopyContentAsync(stream, context, BufferSize, cancellationToken).ConfigureAwait(false);
         }
 
         protected async Task CopyContentAsync([NotNull] Stream source, [NotNull] HttpContext context, int bufferSize, CancellationToken cancellationToken)
@@ -153,7 +141,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
 
                 while(available < bufferSize)
                 {
-                    var bytes = await source.ReadAsync(buffer.Slice(available), cancellationToken).ConfigureAwait(false);
+                    var bytes = await source.ReadAsync(buffer[available..], cancellationToken).ConfigureAwait(false);
                     if(bytes == 0) break;
                     available += bytes;
                 }

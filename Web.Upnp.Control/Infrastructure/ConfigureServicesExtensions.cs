@@ -1,9 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
-using Web.Upnp.Control.Configuration;
+﻿using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Infrastructure.HttpClients;
 using Web.Upnp.Control.Infrastructure.Middleware;
 using Web.Upnp.Control.Services.Abstractions;
@@ -84,7 +79,7 @@ namespace Web.Upnp.Control.Infrastructure
 
         public static IEndpointConventionBuilder MapImageLoaderProxy(this IEndpointRouteBuilder routeBuilder, string route)
         {
-            if(routeBuilder is null) throw new ArgumentNullException(nameof(routeBuilder));
+            ArgumentNullException.ThrowIfNull(routeBuilder);
 
             return routeBuilder.Map(route, routeBuilder
                     .CreateApplicationBuilder()
@@ -95,7 +90,7 @@ namespace Web.Upnp.Control.Infrastructure
 
         public static IEndpointConventionBuilder MapContentProxy(this IEndpointRouteBuilder routeBuilder, string route)
         {
-            if(routeBuilder is null) throw new ArgumentNullException(nameof(routeBuilder));
+            ArgumentNullException.ThrowIfNull(routeBuilder);
 
             return routeBuilder.Map(route, routeBuilder
                     .CreateApplicationBuilder()
@@ -106,7 +101,7 @@ namespace Web.Upnp.Control.Infrastructure
 
         public static IEndpointConventionBuilder MapCertificateDownloadMiddleware(this IEndpointRouteBuilder routeBuilder, string pattern)
         {
-            if(routeBuilder is null) throw new ArgumentNullException(nameof(routeBuilder));
+            ArgumentNullException.ThrowIfNull(routeBuilder);
 
             return routeBuilder.Map(pattern, routeBuilder
                     .CreateApplicationBuilder()

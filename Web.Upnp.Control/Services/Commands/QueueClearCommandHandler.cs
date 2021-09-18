@@ -1,7 +1,4 @@
-using System;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using IoT.Device.Xiaomi.Umi.Services;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;

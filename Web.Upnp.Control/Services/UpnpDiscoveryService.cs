@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Text;
 using IoT.Protocol.Upnp;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Models.Events;
@@ -32,7 +23,6 @@ namespace Web.Upnp.Control.Services
             this.metadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.LogInformation("Started UPnP device discovery service...");
@@ -155,7 +145,6 @@ namespace Web.Upnp.Control.Services
             return i2 < 0 ? usn[i1..] : usn[i1..i2];
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private void Notify(IEnumerable<IObserver<UpnpDiscoveryEvent>> observers, UpnpDiscoveryEvent discoveryEvent)
         {
             foreach(var observer in observers)
@@ -171,7 +160,6 @@ namespace Web.Upnp.Control.Services
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private void NotifyCompletion(IEnumerable<IObserver<UpnpDiscoveryEvent>> observers)
         {
             foreach(var observer in observers)

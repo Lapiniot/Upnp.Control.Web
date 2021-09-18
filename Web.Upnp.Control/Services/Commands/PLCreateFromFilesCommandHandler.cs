@@ -1,13 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Models;
@@ -29,7 +21,7 @@ namespace Web.Upnp.Control.Services.Commands
             return command switch
             {
                 null => throw new ArgumentNullException(nameof(command)),
-                { DeviceId: null or "" } => throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
+                { DeviceId: null or "" } => throw new ArgumentException(Format(CultureInfo.InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
                 { DeviceId: { } deviceId, Source: { Files: { } files, UseProxy: var useProxy }, Title: var title, Merge: var merge } =>
                     CreateFromFilesAsync(deviceId, files, title, useProxy, merge, cancellationToken),
                 _ => throw new ArgumentException("Valid file source must be provided")

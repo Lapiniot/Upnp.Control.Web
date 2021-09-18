@@ -1,9 +1,4 @@
-using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Models;

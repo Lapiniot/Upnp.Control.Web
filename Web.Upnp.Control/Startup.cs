@@ -36,7 +36,7 @@ namespace Web.Upnp.Control
         {
             services
                 .AddHostedService<ApplicationInitService>()
-                .AddHostedService<WebPushSenderService>(sp => sp.GetRequiredService<WebPushSenderService>())
+                .AddHostedService(sp => sp.GetRequiredService<WebPushSenderService>())
                 .AddSingleton<WebPushSenderService>()
                 .AddDbContext<UpnpDbContext>(builder => builder
                     .UseSqlite("Data Source=./data/upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
@@ -52,7 +52,7 @@ namespace Web.Upnp.Control
                 .AddSingleton<IObserver<UpnpDiscoveryEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
                 .AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
                 .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
-                .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => SsdpEnumeratorFactory(sp))
+                .AddTransient(sp => SsdpEnumeratorFactory(sp))
                 .AddSoapHttpClient()
                 .AddEventSubscribeClient()
                 .AddWebPushClient()

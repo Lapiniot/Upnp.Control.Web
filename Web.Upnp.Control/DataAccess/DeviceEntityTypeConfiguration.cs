@@ -8,7 +8,7 @@ namespace Web.Upnp.Control.DataAccess
     {
         public void Configure(EntityTypeBuilder<UpnpDevice> builder)
         {
-            builder.HasKey(d => d.Udn);
+            _ = builder.HasKey(d => d.Udn);
 
             builder.OwnsMany(d => d.Icons, i =>
             {

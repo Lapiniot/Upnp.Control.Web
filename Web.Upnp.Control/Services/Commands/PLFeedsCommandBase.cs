@@ -1,18 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Pipelines;
-using System.Linq;
-using System.Net.Http;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Infrastructure;
@@ -24,20 +15,23 @@ namespace Web.Upnp.Control.Services.Commands
     public abstract class PLFeedsCommandBase : PLCommandBase
     {
         private readonly ILogger<PLFeedsCommandBase> logger;
-        private readonly IHttpClientFactory httpClientFactory;
         private readonly IOptionsSnapshot<PlaylistOptions> options;
-        private HttpClient client;
+        private readonly HttpClient client;
 
         protected PLFeedsCommandBase(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
             IServer server, IOptionsSnapshot<PlaylistOptions> options, ILogger<PLFeedsCommandBase> logger) : base(serviceFactory)
         {
-            if(server is null) throw new ArgumentNullException(nameof(server));
+            ArgumentNullException.ThrowIfNull(serviceFactory);
+            ArgumentNullException.ThrowIfNull(httpClientFactory);
+            ArgumentNullException.ThrowIfNull(server);
+            ArgumentNullException.ThrowIfNull(options);
+            ArgumentNullException.ThrowIfNull(logger);
+
+            this.options = options;
+            this.logger = logger;
 
             var serverAddresses = server.Features.Get<IServerAddressesFeature>() ?? throw new InvalidOperationException("Get server addresses feature is not available");
             BindingUri = ResolveExternalBindingAddress(serverAddresses.Addresses, "http");
-            this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             client = httpClientFactory.CreateClient();
             client.Timeout = options.Value.FeedMetadataRequestTimeout;
         }
@@ -50,9 +44,7 @@ namespace Web.Upnp.Control.Services.Commands
 
             using var stream = file.OpenReadStream();
 
-#pragma warning disable CA2000 // TODO: Review after some future .NET update,- seems to be an issue with analyzer itself
             var reader = new StreamPipeReader(stream);
-#pragma warning restore CA2000
 
             await using(reader.ConfigureAwait(false))
             {

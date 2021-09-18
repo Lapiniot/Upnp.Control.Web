@@ -13,6 +13,17 @@ csharp_space_between_square_brackets=false
 csharp_space_within_empty_braces=false
 csharp_space_within_single_line_array_initializer_braces=false
 
+# Default severity for analyzer diagnostics with category 'Style' (escalated to build warnings)
+dotnet_analyzer_diagnostic.category-Style.severity=warning
+dotnet_diagnostic.IDE0160.severity=none
+dotnet_diagnostic.IDE0058.severity=none
+dotnet_diagnostic.IDE0008.severity=default
+dotnet_diagnostic.IDE0010.severity=default
+dotnet_diagnostic.IDE0011.severity=default
+dotnet_diagnostic.IDE0032.severity=default
+dotnet_diagnostic.IDE0048.severity=default
+dotnet_diagnostic.IDE0072.severity=default
+
 [*.proto]
 indent_style=tab
 indent_size=tab
@@ -48,4 +59,7 @@ dotnet_style_require_accessibility_modifiers=for_non_interface_members:hint
 
 # Code analysis rules to ignore
 
-dotnet_diagnostic.CA1303.severity=none
+# CA1308: Normalize strings to uppercase
+dotnet_diagnostic.CA1308.severity=warning
+# CA1819: Properties should not return arrays
+dotnet_diagnostic.CA1819.severity=warning

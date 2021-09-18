@@ -1,6 +1,4 @@
-using System;
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
 namespace Web.Upnp.Control.Infrastructure
@@ -54,14 +52,11 @@ namespace Web.Upnp.Control.Infrastructure
             }
 
             var subject = section[SubjectKey];
-            if(!string.IsNullOrEmpty(subject))
-            {
-                return CertificateLoader.LoadFromStore(section[StoreKey] ?? "My",
+            return !string.IsNullOrEmpty(subject)
+                ? CertificateLoader.LoadFromStore(section[StoreKey] ?? "My",
                     section[LocationKey] ?? "CurrentUser", subject,
-                    section.GetValue<bool?>(AllowInvalidKey) ?? false);
-            }
-
-            return null;
+                    section.GetValue<bool?>(AllowInvalidKey) ?? false)
+                : null;
         }
     }
 }

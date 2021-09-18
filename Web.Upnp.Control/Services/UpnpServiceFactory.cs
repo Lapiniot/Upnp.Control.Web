@@ -1,10 +1,4 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.Services;
 using Web.Upnp.Control.DataAccess;
@@ -16,7 +10,7 @@ namespace Web.Upnp.Control.Services
 {
     public class UpnpServiceFactory : IUpnpServiceFactory
     {
-        private static readonly ConcurrentDictionary<Type, string> Cache = new ConcurrentDictionary<Type, string>();
+        private static readonly ConcurrentDictionary<Type, string> Cache = new();
 
         private static readonly IDictionary<string, string> UmiMappings = new Dictionary<string, string>
         {

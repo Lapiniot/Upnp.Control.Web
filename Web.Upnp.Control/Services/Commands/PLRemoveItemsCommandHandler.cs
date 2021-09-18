@@ -12,7 +12,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public async Task ExecuteAsync(PLRemoveItemsCommand command, CancellationToken cancellationToken)
         {
-            if(command is null) throw new System.ArgumentNullException(nameof(command));
+            if(command is null) throw new ArgumentNullException(nameof(command));
 
             var (deviceId, playlistId, items) = command;
 

@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Xml;
 using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Web.Upnp.Control.Infrastructure.Routing;
 using Web.Upnp.Control.Models.Events;
 
@@ -56,7 +49,6 @@ namespace Web.Upnp.Control.Controllers
             NotifyObservers<T>(deviceId, properties, vendorProperties);
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private void NotifyObservers<T>(string deviceId, IReadOnlyDictionary<string, string> properties,
             IReadOnlyDictionary<string, string> vendorProperties)
             where T : UpnpPropertyChangedEvent, new()

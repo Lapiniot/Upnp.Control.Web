@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Web.Upnp.Control.Models
 {
     public record AVSetStateCommand(string DeviceId, AVStateParams State);

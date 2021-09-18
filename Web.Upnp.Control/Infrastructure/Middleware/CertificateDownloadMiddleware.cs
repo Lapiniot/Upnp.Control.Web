@@ -1,28 +1,23 @@
-using System;
 using System.Buffers.Text;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using static System.Text.Encoding;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware
 {
     public sealed class CertificateDownloadMiddleware : IMiddleware
     {
-        const int ChunkSize = 48;
+        private const int ChunkSize = 48;
         private readonly IWebHostEnvironment environment;
         private readonly IConfiguration configuration;
         private readonly IServer server;
 
         public CertificateDownloadMiddleware(IWebHostEnvironment environment, IConfiguration configuration, IServer server)
         {
-            this.environment = environment ?? throw new System.ArgumentNullException(nameof(environment));
-            this.configuration = configuration ?? throw new System.ArgumentNullException(nameof(configuration));
-            this.server = server ?? throw new System.ArgumentNullException(nameof(server));
+            this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.server = server ?? throw new ArgumentNullException(nameof(server));
         }
 
         public async Task InvokeAsync([NotNull] HttpContext context, RequestDelegate next)
@@ -61,7 +56,7 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             {
                 var source = bytes.Length - index > ChunkSize
                     ? bytes.Slice(index, ChunkSize)
-                    : bytes.Slice(index);
+                    : bytes[index..];
                 Base64.EncodeToUtf8(source, utf8[total..], out _, out var bytesWritten);
                 total += bytesWritten;
                 utf8[total++] = (byte)'\n';

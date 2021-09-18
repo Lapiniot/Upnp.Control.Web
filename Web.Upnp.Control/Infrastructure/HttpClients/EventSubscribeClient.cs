@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using Web.Upnp.Control.Services.Abstractions;
 using static System.Globalization.CultureInfo;
 using static System.Globalization.NumberStyles;

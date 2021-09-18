@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using IoT.Protocol.Soap;
 using Web.Upnp.Control.Models;
 

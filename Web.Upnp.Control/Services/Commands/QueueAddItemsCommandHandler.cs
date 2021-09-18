@@ -1,7 +1,4 @@
-using System;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp;
 using IoT.Protocol.Upnp.DIDL;

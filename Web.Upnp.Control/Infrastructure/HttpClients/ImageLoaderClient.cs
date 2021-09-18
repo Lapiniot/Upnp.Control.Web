@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-
-namespace Web.Upnp.Control.Infrastructure.HttpClients
+﻿namespace Web.Upnp.Control.Infrastructure.HttpClients
 {
     public class ImageLoaderProxyClient
     {
@@ -8,7 +6,7 @@ namespace Web.Upnp.Control.Infrastructure.HttpClients
 
         public ImageLoaderProxyClient(HttpClient client)
         {
-            this.client = client ?? throw new System.ArgumentNullException(nameof(client));
+            this.client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         public HttpClient Client => client;

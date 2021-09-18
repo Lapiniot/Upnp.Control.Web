@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Web.Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Hubs

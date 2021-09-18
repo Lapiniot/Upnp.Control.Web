@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Soap;
@@ -14,13 +10,12 @@ namespace Web.Upnp.Control.Services.Commands
     public abstract class PLCommandBase
     {
         protected const string MissingArgumentErrorFormat = "{0} must be provided";
+        private readonly IUpnpServiceFactory serviceFactory;
 
         protected PLCommandBase(IUpnpServiceFactory serviceFactory)
         {
             this.serviceFactory = serviceFactory ?? throw new ArgumentNullException(nameof(serviceFactory));
         }
-
-        private IUpnpServiceFactory serviceFactory { get; }
 
         protected Task<T> GetServiceAsync<T>(string deviceId, CancellationToken cancellationToken) where T : SoapActionInvoker
         {

@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
@@ -14,7 +12,7 @@ namespace Web.Upnp.Control.Services.Queries
 
         public PSGetServerKeyQueryHandler(IOptions<VAPIDSecretOptions> options)
         {
-            this.options = options ?? throw new System.ArgumentNullException(nameof(options));
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public Task<byte[]> ExecuteAsync(PSGetServerKeyQuery query, CancellationToken cancellationToken)

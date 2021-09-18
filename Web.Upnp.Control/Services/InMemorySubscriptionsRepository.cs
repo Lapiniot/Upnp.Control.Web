@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services

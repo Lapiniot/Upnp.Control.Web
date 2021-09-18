@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http;
-
-namespace Web.Upnp.Control.Infrastructure.HttpClients
+﻿namespace Web.Upnp.Control.Infrastructure.HttpClients
 {
     public class HttpSoapClient
     {

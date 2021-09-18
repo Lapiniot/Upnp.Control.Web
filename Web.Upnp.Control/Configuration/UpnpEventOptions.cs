@@ -1,5 +1,3 @@
-using System;
-
 namespace Web.Upnp.Control.Configuration
 {
     public record UpnpEventOptions

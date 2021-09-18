@@ -1,10 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using Microsoft.AspNetCore.Hosting;
+﻿using System.Text;
 using Microsoft.Extensions.Configuration.Json;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Web.Upnp.Control;
 using Web.Upnp.Control.Services;
 

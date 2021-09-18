@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Infrastructure.HttpClients;
@@ -18,12 +13,12 @@ namespace Web.Upnp.Control.Infrastructure.Middleware
             : base((client ?? throw new ArgumentNullException(nameof(client))).Client, logger)
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
-            this.BufferSize = options.Value.BufferSize;
+            BufferSize = options.Value.BufferSize;
         }
 
         protected override void CopyHeaders(HttpResponseMessage responseMessage, HttpContext context)
         {
-            if(!responseMessage.Content.Headers.ContentType.MediaType.StartsWith("image/", System.StringComparison.InvariantCulture))
+            if(!responseMessage.Content.Headers.ContentType.MediaType.StartsWith("image/", StringComparison.InvariantCulture))
             {
                 throw new InvalidDataException("Invalid data. Content of type image/* was expected.");
             }

@@ -1,8 +1,5 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Web.Upnp.Control.Infrastructure
 {
@@ -12,7 +9,7 @@ namespace Web.Upnp.Control.Infrastructure
 
         public override void OnException(ExceptionContext context)
         {
-            if(!(context.Exception is OperationCanceledException)) return;
+            if(context.Exception is not OperationCanceledException) return;
             var logger = context.HttpContext.RequestServices.GetService<ILogger<RequestCancelledExceptionFilterAttribute>>();
             logger.LogWarning("Request cancelled by client");
             context.ExceptionHandled = true;

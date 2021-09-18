@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.SignalR;
 using Web.Upnp.Control.Hubs;
@@ -50,7 +48,7 @@ namespace Web.Upnp.Control.Services
             var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
 
             var state = new AVState(map.TryGetValue("TransportState", out value) ? value : null, null,
-                map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : (int?)null, null,
+                map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : null, null,
                 map.TryGetValue("CurrentPlayMode", out value) ? value : null)
             {
                 Actions = map.TryGetValue("CurrentTransportActions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
@@ -72,7 +70,7 @@ namespace Web.Upnp.Control.Services
             var _ = hub.Clients.All.RenderingControlEvent(rce.DeviceId,
                 new RCStateMessage(new RCVolumeState(
                     rce.Properties.TryGetValue("Volume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
-                    rce.Properties.TryGetValue("Mute", out v) ? v == "1" || v == "true" || v == "True" : null)));
+                    rce.Properties.TryGetValue("Mute", out v) ? v is "1" or "true" or "True" : null)));
         }
     }
 }

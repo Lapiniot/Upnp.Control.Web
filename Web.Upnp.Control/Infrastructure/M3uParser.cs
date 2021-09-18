@@ -1,7 +1,5 @@
-using System;
 using System.Buffers;
 using System.Buffers.Text;
-using System.Collections.Generic;
 using System.IO.Pipelines;
 using System.Memory;
 using System.Text;
@@ -10,8 +8,8 @@ namespace Web.Upnp.Control.Infrastructure
 {
     public class M3uParser : ByteSequenceParser<(string Path, string Info, int Duration)>
     {
-        private static byte[] EXTINF = new byte[] { 0x45, 0x58, 0x54, 0x49, 0x4E, 0x46, 0x3A };
-        private Encoding encoding;
+        private static readonly byte[] EXTINF = new byte[] { 0x45, 0x58, 0x54, 0x49, 0x4E, 0x46, 0x3A };
+        private readonly Encoding encoding;
 
         public M3uParser(PipeReader reader, Encoding encoding = null) : base(reader)
         {

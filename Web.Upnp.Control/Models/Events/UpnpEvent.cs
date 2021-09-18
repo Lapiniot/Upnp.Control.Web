@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Web.Upnp.Control.Models.Events
 {
     public abstract record UpnpEvent
@@ -13,7 +11,7 @@ namespace Web.Upnp.Control.Models.Events
         public IReadOnlyDictionary<string, string> VendorProperties { get; init; }
     }
 
-    public record UpnpAVTransportPropertyChangedEvent : UpnpPropertyChangedEvent {}
+    public record UpnpAVTransportPropertyChangedEvent : UpnpPropertyChangedEvent { }
 
-    public record UpnpRenderingControlPropertyChangedEvent : UpnpPropertyChangedEvent {}
+    public record UpnpRenderingControlPropertyChangedEvent : UpnpPropertyChangedEvent { }
 }

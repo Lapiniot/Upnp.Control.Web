@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -39,7 +36,7 @@ namespace Web.Upnp.Control.Infrastructure
 
             // Or there should be at least IPAddress.IPv6Any specified if we want external endpoint for IPv6,
             // and IPv6Any|IPv4Any if we need IPv4 binding
-            if(!(addresses.FirstOrDefault(condition) is { Endpoint: { Port: var port }, Address: { Scheme: var scheme } }))
+            if(addresses.FirstOrDefault(condition) is not { Endpoint: { Port: var port }, Address: { Scheme: var scheme } })
             {
                 throw new InvalidOperationException("Cannot find suitable listening address for callback URI");
             }

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Models.Events;
@@ -17,9 +16,9 @@ namespace Web.Upnp.Control.Services
 
         #region Implementation of IObserver<UpnpDiscoveryEvent>
 
-        public void OnCompleted() {}
+        public void OnCompleted() { }
 
-        public void OnError(Exception error) {}
+        public void OnError(Exception error) { }
 
         public void OnNext(UpnpDiscoveryEvent value)
         {

@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using IoT.Protocol.Upnp.DIDL;
-using IoT.Protocol.Upnp.Services;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Models;
@@ -38,7 +33,6 @@ namespace Web.Upnp.Control.Services.Commands
         private async Task AddItemsAsync(string deviceId, string playlistId, string sourceDeviceId, IEnumerable<string> items, int? maxDepth, CancellationToken cancellationToken)
         {
             var depth = maxDepth ?? options.Value.MaxContainerScanDepth;
-            var sourceCDService = await GetServiceAsync<ContentDirectoryService>(sourceDeviceId, cancellationToken).ConfigureAwait(false);
 
             var sb = new StringBuilder();
 

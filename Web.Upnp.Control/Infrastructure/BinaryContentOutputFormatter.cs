@@ -1,7 +1,6 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
-namespace Web.Upnp.Control
+namespace Web.Upnp.Control.Infrastructure
 {
     internal class BinaryContentOutputFormatter : IOutputFormatter
     {

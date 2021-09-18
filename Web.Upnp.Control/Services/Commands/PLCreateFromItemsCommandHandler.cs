@@ -1,6 +1,4 @@
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using IoT.Protocol.Upnp.DIDL;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
@@ -16,12 +14,12 @@ namespace Web.Upnp.Control.Services.Commands
         public PLCreateFromItemsCommandHandler(IUpnpServiceFactory serviceFactory, IOptionsSnapshot<PlaylistOptions> options) :
             base(serviceFactory)
         {
-            this.options = options ?? throw new System.ArgumentNullException(nameof(options));
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task ExecuteAsync(PLCreateFromItemsCommand command, CancellationToken cancellationToken)
         {
-            if(command is null) throw new System.ArgumentNullException(nameof(command));
+            if(command is null) throw new ArgumentNullException(nameof(command));
 
             var (deviceId, (title, (sourceDeviceId, ids, depth))) = command;
             var maxDepth = depth ?? options.Value.MaxContainerScanDepth;

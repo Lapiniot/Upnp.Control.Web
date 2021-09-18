@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-
-namespace Web.Upnp.Control.Services.Abstractions
+﻿namespace Web.Upnp.Control.Services.Abstractions
 {
     public interface IUpnpSubscriptionsRepository
     {

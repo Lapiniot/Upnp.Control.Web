@@ -1,4 +1,3 @@
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -21,7 +20,7 @@ namespace Web.Upnp.Control.Models.Converters
                 writer.WriteNullValue();
                 return;
             }
-            
+
             writer.WriteStartObject();
             writer.WriteString("url", value.Url.AbsoluteUri);
             writer.WriteString("mime", value.Mime);
