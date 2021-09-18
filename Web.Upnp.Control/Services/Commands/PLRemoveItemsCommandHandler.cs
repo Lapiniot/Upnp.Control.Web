@@ -12,7 +12,7 @@ public sealed class PLRemoveItemsCommandHandler : PLCommandBase, IAsyncCommandHa
 
     public async Task ExecuteAsync(PLRemoveItemsCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
 
         var (deviceId, playlistId, items) = command;
 

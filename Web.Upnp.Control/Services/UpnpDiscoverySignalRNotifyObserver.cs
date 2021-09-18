@@ -11,7 +11,9 @@ public class UpnpDiscoverySignalRNotifyObserver : IObserver<UpnpDiscoveryEvent>
 
     public UpnpDiscoverySignalRNotifyObserver(IHubContext<UpnpEventsHub, IUpnpEventClient> context)
     {
-        this.context = context ?? throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
+
+        this.context = context;
     }
 
     #region Implementation of IObserver<UpnpDiscoveryEvent>

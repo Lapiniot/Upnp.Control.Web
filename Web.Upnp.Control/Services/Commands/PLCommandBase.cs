@@ -14,7 +14,9 @@ public abstract class PLCommandBase
 
     protected PLCommandBase(IUpnpServiceFactory serviceFactory)
     {
-        this.serviceFactory = serviceFactory ?? throw new ArgumentNullException(nameof(serviceFactory));
+        ArgumentNullException.ThrowIfNull(serviceFactory);
+
+        this.serviceFactory = serviceFactory;
     }
 
     protected Task<T> GetServiceAsync<T>(string deviceId, CancellationToken cancellationToken) where T : SoapActionInvoker

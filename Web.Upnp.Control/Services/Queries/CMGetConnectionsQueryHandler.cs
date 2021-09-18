@@ -12,12 +12,15 @@ public sealed class CMGetConnectionsQueryHandler : IAsyncQueryHandler<CMGetConne
 
     public CMGetConnectionsQueryHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task<IEnumerable<string>> ExecuteAsync(CMGetConnectionsQuery query, CancellationToken cancellationToken)
     {
-        if(query is null) throw new ArgumentNullException(nameof(query));
+        ArgumentNullException.ThrowIfNull(query);
+
         var service = await factory.GetServiceAsync<ConnectionManagerService>(query.DeviceId, cancellationToken).ConfigureAwait(false);
         var result = await service.GetCurrentConnectionIDsAsync(cancellationToken).ConfigureAwait(false);
         return result["ConnectionIDs"].Split(',', RemoveEmptyEntries | TrimEntries);

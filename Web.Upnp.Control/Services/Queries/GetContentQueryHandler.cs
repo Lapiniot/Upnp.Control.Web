@@ -15,13 +15,17 @@ public sealed class GetContentQueryHandler : IAsyncQueryHandler<CDGetContentQuer
 
     public GetContentQueryHandler(IUpnpServiceFactory factory, ILogger<GetContentQueryHandler> logger)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(factory);
+        ArgumentNullException.ThrowIfNull(logger);
+
+        this.factory = factory;
+        this.logger = logger;
     }
 
     public async Task<CDContent> ExecuteAsync(CDGetContentQuery query, CancellationToken cancellationToken)
     {
-        if(query is null) throw new ArgumentNullException(nameof(query));
+        ArgumentNullException.ThrowIfNull(query);
+
         var (deviceId, path, (withParents, withResource, withVendor, withMetadata, _, take, skip)) = query;
 
         path ??= "0";

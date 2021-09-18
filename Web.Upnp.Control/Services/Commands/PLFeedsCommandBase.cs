@@ -41,7 +41,7 @@ public abstract class PLFeedsCommandBase : PLCommandBase
 
     protected async Task AppendFromFileAsync(XmlWriter writer, IFormFile file, bool? useProxy, CancellationToken cancellationToken)
     {
-        if(file is null) throw new ArgumentNullException(nameof(file));
+        ArgumentNullException.ThrowIfNull(file);
 
         using var stream = file.OpenReadStream();
 
@@ -60,7 +60,7 @@ public abstract class PLFeedsCommandBase : PLCommandBase
 
     protected async Task AppendFeedItemAsync(XmlWriter writer, Uri mediaUri, string title, bool? useProxy, CancellationToken cancellationToken)
     {
-        if(mediaUri is null) throw new ArgumentNullException(nameof(mediaUri));
+        ArgumentNullException.ThrowIfNull(mediaUri);
 
         try
         {
@@ -100,7 +100,7 @@ public abstract class PLFeedsCommandBase : PLCommandBase
 
     protected async Task<string> GetMetadataAsync(IEnumerable<IFormFile> files, bool? useProxy, CancellationToken cancellationToken)
     {
-        if(files is null) throw new ArgumentNullException(nameof(files));
+        ArgumentNullException.ThrowIfNull(files);
 
         var sb = new StringBuilder();
 

@@ -13,12 +13,14 @@ public sealed class AVSetStateCommandHandler : IAsyncCommandHandler<AVSetStateCo
 
     public AVSetStateCommandHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task ExecuteAsync(AVSetStateCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
 
         var (deviceId, state) = command;
         var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
@@ -52,6 +54,8 @@ public sealed class AVSetStateCommandHandler : IAsyncCommandHandler<AVSetStateCo
             case "playing-prev":
                 await avt.PreviousAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
                 break;
+            default:
+                throw new NotSupportedException($"Unsupported state '{state.State}'");
         }
     }
 

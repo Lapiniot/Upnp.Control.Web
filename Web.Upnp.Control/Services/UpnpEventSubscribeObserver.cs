@@ -15,14 +15,18 @@ public sealed class UpnpEventSubscribeObserver : IObserver<UpnpDiscoveryEvent>, 
     private readonly IOptionsMonitor<UpnpEventOptions> optionsMonitor;
     private readonly IUpnpSubscriptionsRepository repository;
 
-    public UpnpEventSubscribeObserver(ILogger<UpnpEventSubscribeObserver> logger,
-        IUpnpSubscriptionsRepository repository, IUpnpEventSubscriptionFactory factory,
-        IOptionsMonitor<UpnpEventOptions> optionsMonitor)
+    public UpnpEventSubscribeObserver(IUpnpSubscriptionsRepository repository, IUpnpEventSubscriptionFactory factory,
+        IOptionsMonitor<UpnpEventOptions> optionsMonitor, ILogger<UpnpEventSubscribeObserver> logger)
     {
-        this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        this.optionsMonitor = optionsMonitor ?? throw new ArgumentNullException(nameof(optionsMonitor));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(factory);
+        ArgumentNullException.ThrowIfNull(optionsMonitor);
+        ArgumentNullException.ThrowIfNull(logger);
+
+        this.repository = repository;
+        this.factory = factory;
+        this.optionsMonitor = optionsMonitor;
+        this.logger = logger;
     }
 
     #region Implementation of IAsyncDisposable

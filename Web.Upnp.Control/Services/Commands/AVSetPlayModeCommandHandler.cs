@@ -10,12 +10,15 @@ public sealed class AVSetPlayModeCommandHandler : IAsyncCommandHandler<AVSetPlay
 
     public AVSetPlayModeCommandHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task ExecuteAsync(AVSetPlayModeCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
+
         var avt = await factory.GetServiceAsync<AVTransportService>(command.DeviceId, cancellationToken).ConfigureAwait(false);
         await avt.SetPlayModeAsync(0, command.PlayMode, cancellationToken).ConfigureAwait(false);
     }

@@ -10,12 +10,15 @@ public sealed class PSRemoveCommandHandler : IAsyncCommandHandler<PSRemoveComman
 
     public PSRemoveCommandHandler(PushSubscriptionDbContext context)
     {
-        this.context = context ?? throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
+
+        this.context = context;
     }
 
     public async Task ExecuteAsync(PSRemoveCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
+
         var subscription = await context.Subscriptions.FindAsync(new object[] { command.Subscription.Endpoint }, cancellationToken).ConfigureAwait(false);
         if(subscription != null)
         {

@@ -10,9 +10,11 @@ public sealed class ImageLoaderProxyMiddleware : ProxyMiddleware
     private readonly IOptions<ImageProxyOptions> options;
 
     public ImageLoaderProxyMiddleware(ImageLoaderProxyClient client, IOptions<ImageProxyOptions> options, ILogger<ProxyMiddleware> logger)
-        : base((client ?? throw new ArgumentNullException(nameof(client))).Client, logger)
+        : base(client?.Client, logger)
     {
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(options);
+
+        this.options = options;
         BufferSize = options.Value.BufferSize;
     }
 

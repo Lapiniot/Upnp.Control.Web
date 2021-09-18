@@ -22,9 +22,10 @@ public sealed class PLAddFeedsCommandHandler : PLFeedsCommandBase,
 
     Task IAsyncCommandHandler<PLAddPlaylistFilesCommand>.ExecuteAsync(PLAddPlaylistFilesCommand command, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         return command switch
         {
-            null => throw new ArgumentNullException(nameof(command)),
             { DeviceId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
             { PlaylistId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
             { DeviceId: { } deviceId, PlaylistId: { } playlistId, Source: { Files: { } files, UseProxy: var useProxy } } =>

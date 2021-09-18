@@ -12,7 +12,9 @@ public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
 
     public UpnpEventSignalRNotifyObserver(IHubContext<UpnpEventsHub, IUpnpEventClient> hub)
     {
-        this.hub = hub ?? throw new ArgumentNullException(nameof(hub));
+        ArgumentNullException.ThrowIfNull(hub);
+
+        this.hub = hub;
     }
 
     public void OnCompleted() { }

@@ -10,12 +10,15 @@ public sealed class PLRenameCommandHandler : IAsyncCommandHandler<PLRenameComman
 
     public PLRenameCommandHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task ExecuteAsync(PLRenameCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
+
         var (deviceId, playlistId, title) = command;
         var service = await factory.GetServiceAsync<PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
         var result = await service.RenameAsync(objectId: playlistId, title: title, cancellationToken: cancellationToken).ConfigureAwait(false);

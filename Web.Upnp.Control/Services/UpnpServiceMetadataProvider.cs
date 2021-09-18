@@ -9,7 +9,9 @@ public class UpnpServiceMetadataProvider : IUpnpServiceMetadataProvider
 
     public UpnpServiceMetadataProvider(HttpClient client)
     {
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
+        ArgumentNullException.ThrowIfNull(client);
+
+        this.client = client;
     }
 
     public async Task<UpnpDeviceDescription> GetDescriptionAsync(Uri location, CancellationToken cancellationToken)

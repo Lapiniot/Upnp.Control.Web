@@ -12,7 +12,8 @@ public class PSGetServerKeyQueryHandler : IAsyncQueryHandler<PSGetServerKeyQuery
 
     public PSGetServerKeyQueryHandler(IOptions<VAPIDSecretOptions> options)
     {
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(options);
+        this.options = options;
     }
 
     public Task<byte[]> ExecuteAsync(PSGetServerKeyQuery query, CancellationToken cancellationToken)

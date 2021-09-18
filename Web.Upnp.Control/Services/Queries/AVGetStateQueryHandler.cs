@@ -11,12 +11,14 @@ public sealed class AVGetStateQueryHandler : IAsyncQueryHandler<AVGetStateQuery,
 
     public AVGetStateQueryHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task<AVState> ExecuteAsync(AVGetStateQuery query, CancellationToken cancellationToken)
     {
-        if(query is null) throw new ArgumentNullException(nameof(query));
+        ArgumentNullException.ThrowIfNull(query);
 
         var (deviceId, detailed) = query;
         var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);

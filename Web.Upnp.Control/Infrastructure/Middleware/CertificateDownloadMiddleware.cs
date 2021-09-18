@@ -16,9 +16,13 @@ public sealed class CertificateDownloadMiddleware : IMiddleware
 
     public CertificateDownloadMiddleware(IWebHostEnvironment environment, IConfiguration configuration, IServer server)
     {
-        this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
-        this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        this.server = server ?? throw new ArgumentNullException(nameof(server));
+        ArgumentNullException.ThrowIfNull(environment);
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(server);
+
+        this.environment = environment;
+        this.configuration = configuration;
+        this.server = server;
     }
 
     public async Task InvokeAsync([NotNull] HttpContext context, RequestDelegate next)

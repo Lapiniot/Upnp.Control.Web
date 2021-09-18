@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -10,11 +11,8 @@ public sealed class IconJsonConverter : JsonConverter<Icon>
         throw new NotImplementedException();
     }
 
-    public override void Write(Utf8JsonWriter writer, Icon value, JsonSerializerOptions options)
+    public override void Write([NotNull] Utf8JsonWriter writer, Icon value, [NotNull] JsonSerializerOptions options)
     {
-        if(writer is null) throw new ArgumentNullException(nameof(writer));
-        if(options is null) throw new ArgumentNullException(nameof(options));
-
         if(value is null)
         {
             writer.WriteNullValue();

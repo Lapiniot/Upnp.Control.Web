@@ -13,12 +13,14 @@ public sealed class AVSetPositionCommandHandler : IAsyncCommandHandler<AVSetPosi
 
     public AVSetPositionCommandHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task ExecuteAsync(AVSetPositionCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
 
         var (deviceId, (position, time)) = command;
         var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);

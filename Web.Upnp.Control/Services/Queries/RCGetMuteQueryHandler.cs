@@ -10,12 +10,15 @@ public sealed class RCGetMuteQueryHandler : IAsyncQueryHandler<RCGetMuteQuery, b
 
     public RCGetMuteQueryHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task<bool?> ExecuteAsync(RCGetMuteQuery query, CancellationToken cancellationToken)
     {
-        if(query is null) throw new ArgumentNullException(nameof(query));
+        ArgumentNullException.ThrowIfNull(query);
+
         var service = await factory.GetServiceAsync<RenderingControlService>(query.DeviceId, cancellationToken).ConfigureAwait(false);
         var result = await service.GetMuteAsync(0, cancellationToken).ConfigureAwait(false);
         return result.TryGetValue("CurrentMute", out var value) && bool.TryParse(value, out var muted) ? muted : null;

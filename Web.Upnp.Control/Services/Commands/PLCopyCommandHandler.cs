@@ -13,12 +13,15 @@ public sealed class PLCopyCommandHandler : IAsyncCommandHandler<PLCopyCommand>
 
     public PLCopyCommandHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task ExecuteAsync(PLCopyCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
+
         var (deviceId, playlistId, title) = command;
         var (cdService, plService) = await factory.GetServicesAsync<ContentDirectoryService, PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
 

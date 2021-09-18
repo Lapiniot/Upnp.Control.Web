@@ -14,12 +14,14 @@ public sealed class PLCreateFromItemsCommandHandler : PLCommandBase, IAsyncComma
     public PLCreateFromItemsCommandHandler(IUpnpServiceFactory serviceFactory, IOptionsSnapshot<PlaylistOptions> options) :
         base(serviceFactory)
     {
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(options);
+
+        this.options = options;
     }
 
     public async Task ExecuteAsync(PLCreateFromItemsCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
 
         var (deviceId, (title, (sourceDeviceId, ids, depth))) = command;
         var maxDepth = depth ?? options.Value.MaxContainerScanDepth;

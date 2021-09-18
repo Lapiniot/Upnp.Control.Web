@@ -13,8 +13,11 @@ public abstract class ProxyMiddleware : IMiddleware
 
     protected ProxyMiddleware(HttpClient client, ILogger<ProxyMiddleware> logger)
     {
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(client);
+        ArgumentNullException.ThrowIfNull(logger);
+
+        this.client = client;
+        this.logger = logger;
         BufferSize = 16 * 1024;
     }
 

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,11 +13,8 @@ public sealed class ResourceJsonConverter : JsonConverter<Resource>
         throw new NotSupportedException();
     }
 
-    public override void Write(Utf8JsonWriter writer, Resource value, JsonSerializerOptions options)
+    public override void Write([NotNull] Utf8JsonWriter writer, Resource value, [NotNull] JsonSerializerOptions options)
     {
-        if(writer is null) throw new ArgumentNullException(nameof(writer));
-        if(options is null) throw new ArgumentNullException(nameof(options));
-
         if(value is null)
         {
             writer.WriteNullValue();

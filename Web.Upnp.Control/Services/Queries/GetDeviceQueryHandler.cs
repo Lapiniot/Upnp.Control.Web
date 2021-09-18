@@ -24,12 +24,15 @@ public sealed class GetDeviceQueryHandler : IAsyncEnumerableQueryHandler<GetDevi
 
     public GetDeviceQueryHandler(UpnpDbContext context)
     {
-        this.context = context ?? throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
+
+        this.context = context;
     }
 
     public async IAsyncEnumerable<UpnpDevice> ExecuteAsync(GetDevicesQuery query, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        if(query is null) throw new ArgumentNullException(nameof(query));
+        ArgumentNullException.ThrowIfNull(query);
+
         await foreach(var device in GetQuery(query.Category).AsAsyncEnumerable().WithCancellation(cancellationToken).ConfigureAwait(false))
         {
             yield return device;

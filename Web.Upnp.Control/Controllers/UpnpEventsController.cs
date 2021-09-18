@@ -18,7 +18,9 @@ public class UpnpEventsController : ControllerBase
 
     public UpnpEventsController(ILogger<UpnpEventsController> logger, IEnumerable<IObserver<UpnpEvent>> observers)
     {
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(logger);
+
+        this.logger = logger;
         this.observers = observers?.ToArray() ?? Array.Empty<IObserver<UpnpEvent>>();
     }
 

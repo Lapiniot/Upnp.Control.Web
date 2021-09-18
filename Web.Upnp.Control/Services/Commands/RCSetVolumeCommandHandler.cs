@@ -10,12 +10,15 @@ public sealed class RCSetVolumeCommandHandler : IAsyncCommandHandler<RCSetVolume
 
     public RCSetVolumeCommandHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task ExecuteAsync(RCSetVolumeCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
+
         var (deviceId, volume) = command;
         var service = await factory.GetServiceAsync<RenderingControlService>(deviceId, cancellationToken).ConfigureAwait(false);
         await service.SetVolumeAsync(0, volume, cancellationToken).ConfigureAwait(false);

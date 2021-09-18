@@ -10,12 +10,15 @@ public sealed class AVGetPlayModeQueryHandler : IAsyncQueryHandler<AVGetPlayMode
 
     public AVGetPlayModeQueryHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task<string> ExecuteAsync(AVGetPlayModeQuery query, CancellationToken cancellationToken)
     {
-        if(query is null) throw new ArgumentNullException(nameof(query));
+        ArgumentNullException.ThrowIfNull(query);
+
         var avt = await factory.GetServiceAsync<AVTransportService>(query.DeviceId, cancellationToken).ConfigureAwait(false);
         var settings = await avt.GetTransportSettingsAsync(0, cancellationToken).ConfigureAwait(false);
         return settings.TryGetValue("PlayMode", out var value) ? value : null;

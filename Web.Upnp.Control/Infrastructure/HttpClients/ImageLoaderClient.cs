@@ -6,7 +6,9 @@ public class ImageLoaderProxyClient
 
     public ImageLoaderProxyClient(HttpClient client)
     {
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
+        ArgumentNullException.ThrowIfNull(client);
+
+        this.client = client;
     }
 
     public HttpClient Client => client;

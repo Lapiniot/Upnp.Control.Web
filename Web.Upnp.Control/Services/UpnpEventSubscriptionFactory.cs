@@ -14,14 +14,18 @@ public sealed class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
 
     public UpnpEventSubscriptionFactory(IEventSubscribeClient subscribeClient, IServer server, ILogger<UpnpEventSubscriptionFactory> logger)
     {
-        this.subscribeClient = subscribeClient ?? throw new ArgumentNullException(nameof(subscribeClient));
-        serverAddresses = (server ?? throw new ArgumentNullException(nameof(server))).Features.Get<IServerAddressesFeature>();
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(subscribeClient);
+        ArgumentNullException.ThrowIfNull(server);
+        ArgumentNullException.ThrowIfNull(logger);
+
+        this.subscribeClient = subscribeClient;
+        serverAddresses = server.Features.Get<IServerAddressesFeature>();
+        this.logger = logger;
     }
 
     public IAsyncCancelable Subscribe(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken stoppingToken)
     {
-        if(callbackUri is null) throw new ArgumentNullException(nameof(callbackUri));
+        ArgumentNullException.ThrowIfNull(callbackUri);
 
         if(!callbackUri.IsAbsoluteUri)
         {

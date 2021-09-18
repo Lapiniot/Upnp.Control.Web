@@ -1,6 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
+
 using static Web.Upnp.Control.Models.Converters.DIDLWriterUtils;
 
 namespace Web.Upnp.Control.Models.Converters;
@@ -12,11 +14,8 @@ public sealed class ContainerJsonConverter : JsonConverter<Container>
         throw new NotSupportedException();
     }
 
-    public override void Write(Utf8JsonWriter writer, Container value, JsonSerializerOptions options)
+    public override void Write([NotNull] Utf8JsonWriter writer, Container value, [NotNull] JsonSerializerOptions options)
     {
-        if(writer is null) throw new ArgumentNullException(nameof(writer));
-        if(options is null) throw new ArgumentNullException(nameof(options));
-
         if(value is null)
         {
             writer.WriteNullValue();

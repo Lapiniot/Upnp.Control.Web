@@ -19,9 +19,10 @@ public sealed class PLCreateFromFilesCommandHandler : PLFeedsCommandBase, IAsync
 
     public Task ExecuteAsync(PLCreateFromFilesCommand command, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         return command switch
         {
-            null => throw new ArgumentNullException(nameof(command)),
             { DeviceId: null or "" } => throw new ArgumentException(Format(CultureInfo.InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
             { DeviceId: { } deviceId, Source: { Files: { } files, UseProxy: var useProxy }, Title: var title, Merge: var merge } =>
                 CreateFromFilesAsync(deviceId, files, title, useProxy, merge, cancellationToken),

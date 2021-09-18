@@ -11,9 +11,13 @@ public class ApplicationInitService : IHostedService
 
     public ApplicationInitService(IServiceProvider services, IHostEnvironment environment, IConfiguration configuration)
     {
-        this.services = services ?? throw new ArgumentNullException(nameof(services));
-        this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
-        this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(environment);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        this.services = services;
+        this.environment = environment;
+        this.configuration = configuration;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)

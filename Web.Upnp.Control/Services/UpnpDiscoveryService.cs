@@ -20,9 +20,13 @@ public class UpnpDiscoveryService : BackgroundService
 
     public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger, IUpnpServiceMetadataProvider metadataProvider)
     {
-        this.services = services ?? throw new ArgumentNullException(nameof(services));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        this.metadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(metadataProvider);
+
+        this.services = services;
+        this.logger = logger;
+        this.metadataProvider = metadataProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

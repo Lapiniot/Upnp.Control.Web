@@ -17,13 +17,17 @@ public sealed class QueueAddItemsCommandHandler : IAsyncCommandHandler<QAddItems
 
     public QueueAddItemsCommandHandler(IUpnpServiceFactory factory, IOptionsSnapshot<PlaylistOptions> options)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(factory);
+        ArgumentNullException.ThrowIfNull(options);
+
+        this.factory = factory;
+        this.options = options;
     }
 
     public async Task ExecuteAsync(QAddItemsCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
+
         var (deviceId, queueId, source) = command;
 
         var sourceCds = await factory.GetServiceAsync<ContentDirectoryService>(source.DeviceId, cancellationToken).ConfigureAwait(false);

@@ -11,12 +11,14 @@ public class EventSubscribeClient : IEventSubscribeClient
 
     public EventSubscribeClient(HttpClient client)
     {
-        this.client = client ?? throw new ArgumentNullException(nameof(client));
+        ArgumentNullException.ThrowIfNull(client);
+
+        this.client = client;
     }
 
     public async Task<(string Sid, int Timeout)> SubscribeAsync(Uri subscribeUri, Uri deliveryUri, TimeSpan timeout, CancellationToken cancellationToken = default)
     {
-        if(deliveryUri is null) throw new ArgumentNullException(nameof(deliveryUri));
+        ArgumentNullException.ThrowIfNull(deliveryUri);
 
         if(!deliveryUri.IsAbsoluteUri)
         {

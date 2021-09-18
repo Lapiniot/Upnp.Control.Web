@@ -18,8 +18,8 @@ public static class KestrelCertificateLoader
 
     public static X509Certificate2 LoadFromConfiguration(IConfiguration configuration, IFileProvider contentRootFileProvider)
     {
-        if(configuration is null) throw new ArgumentNullException(nameof(configuration));
-        if(contentRootFileProvider is null) throw new ArgumentNullException(nameof(contentRootFileProvider));
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(contentRootFileProvider);
 
         foreach(var endpoint in configuration.GetSection(EndpointsSectionName).GetChildren())
         {

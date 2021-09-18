@@ -10,7 +10,7 @@ public sealed class PLRemoveCommandHandler : PLCommandBase, IAsyncCommandHandler
 
     public async Task ExecuteAsync(PLRemoveCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
 
         var (deviceId, ids) = command;
 

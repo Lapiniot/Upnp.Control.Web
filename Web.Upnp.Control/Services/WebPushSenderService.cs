@@ -22,10 +22,15 @@ public sealed class WebPushSenderService : BackgroundService, IObserver<UpnpDisc
     public WebPushSenderService(IServiceProvider services, ILogger<WebPushSenderService> logger,
         IOptions<JsonOptions> jsonOptions, IOptions<WebPushOptions> wpOptions)
     {
-        this.services = services ?? throw new ArgumentNullException(nameof(services));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        this.jsonOptions = jsonOptions ?? throw new ArgumentNullException(nameof(jsonOptions));
-        this.wpOptions = wpOptions ?? throw new ArgumentNullException(nameof(wpOptions));
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(jsonOptions);
+        ArgumentNullException.ThrowIfNull(wpOptions);
+
+        this.services = services;
+        this.logger = logger;
+        this.jsonOptions = jsonOptions;
+        this.wpOptions = wpOptions;
 
         channel = Channel.CreateBounded<UpnpDiscoveryMessage>(new BoundedChannelOptions(100)
         {

@@ -10,12 +10,15 @@ public sealed class PLCreateCommandHandler : IAsyncCommandHandler<PLCreateComman
 
     public PLCreateCommandHandler(IUpnpServiceFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        ArgumentNullException.ThrowIfNull(factory);
+
+        this.factory = factory;
     }
 
     public async Task ExecuteAsync(PLCreateCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
+
         var service = await factory.GetServiceAsync<PlaylistService>(command.DeviceId, cancellationToken).ConfigureAwait(false);
         await service.CreateAsync(title: command.Title, cancellationToken: cancellationToken).ConfigureAwait(false);
     }

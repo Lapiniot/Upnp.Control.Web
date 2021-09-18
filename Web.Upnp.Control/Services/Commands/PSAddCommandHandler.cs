@@ -11,12 +11,14 @@ public sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
 
     public PSAddCommandHandler(PushSubscriptionDbContext context)
     {
-        this.context = context ?? throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
+
+        this.context = context;
     }
 
     public async Task ExecuteAsync(PSAddCommand command, CancellationToken cancellationToken)
     {
-        if(command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
 
         var (endpoint, expiration, p256dhKey, authKey) = command.Subscription;
 
