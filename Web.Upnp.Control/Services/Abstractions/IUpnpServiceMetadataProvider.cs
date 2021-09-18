@@ -1,9 +1,8 @@
 using IoT.Protocol.Upnp;
 
-namespace Web.Upnp.Control.Services.Abstractions
+namespace Web.Upnp.Control.Services.Abstractions;
+
+public interface IUpnpServiceMetadataProvider
 {
-    public interface IUpnpServiceMetadataProvider
-    {
-        Task<UpnpDeviceDescription> GetDescriptionAsync(Uri location, CancellationToken cancellationToken);
-    }
+    Task<UpnpDeviceDescription> GetDescriptionAsync(Uri location, CancellationToken cancellationToken);
 }

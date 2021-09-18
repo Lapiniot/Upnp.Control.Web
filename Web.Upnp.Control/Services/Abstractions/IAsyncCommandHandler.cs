@@ -1,7 +1,6 @@
-namespace Web.Upnp.Control.Services.Abstractions
+namespace Web.Upnp.Control.Services.Abstractions;
+
+public interface IAsyncCommandHandler<in TCommand>
 {
-    public interface IAsyncCommandHandler<in TCommand>
-    {
-        Task ExecuteAsync(TCommand command, CancellationToken cancellationToken);
-    }
+    Task ExecuteAsync(TCommand command, CancellationToken cancellationToken);
 }

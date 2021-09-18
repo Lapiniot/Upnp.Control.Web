@@ -1,7 +1,6 @@
-namespace Web.Upnp.Control.Configuration
+namespace Web.Upnp.Control.Configuration;
+
+public record ContentProxyOptions
 {
-    public record ContentProxyOptions
-    {
-        public int BufferSize { get; init; } = 16 * 1024;
-    }
+    public int BufferSize { get; init; } = 16 * 1024;
 }

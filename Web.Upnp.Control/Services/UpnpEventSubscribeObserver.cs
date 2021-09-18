@@ -6,113 +6,112 @@ using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Services.Abstractions;
 
-namespace Web.Upnp.Control.Services
+namespace Web.Upnp.Control.Services;
+
+public sealed class UpnpEventSubscribeObserver : IObserver<UpnpDiscoveryEvent>, IAsyncDisposable
 {
-    public sealed class UpnpEventSubscribeObserver : IObserver<UpnpDiscoveryEvent>, IAsyncDisposable
+    private readonly IUpnpEventSubscriptionFactory factory;
+    private readonly ILogger<UpnpEventSubscribeObserver> logger;
+    private readonly IOptionsMonitor<UpnpEventOptions> optionsMonitor;
+    private readonly IUpnpSubscriptionsRepository repository;
+
+    public UpnpEventSubscribeObserver(ILogger<UpnpEventSubscribeObserver> logger,
+        IUpnpSubscriptionsRepository repository, IUpnpEventSubscriptionFactory factory,
+        IOptionsMonitor<UpnpEventOptions> optionsMonitor)
     {
-        private readonly IUpnpEventSubscriptionFactory factory;
-        private readonly ILogger<UpnpEventSubscribeObserver> logger;
-        private readonly IOptionsMonitor<UpnpEventOptions> optionsMonitor;
-        private readonly IUpnpSubscriptionsRepository repository;
+        this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        this.optionsMonitor = optionsMonitor ?? throw new ArgumentNullException(nameof(optionsMonitor));
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public UpnpEventSubscribeObserver(ILogger<UpnpEventSubscribeObserver> logger,
-            IUpnpSubscriptionsRepository repository, IUpnpEventSubscriptionFactory factory,
-            IOptionsMonitor<UpnpEventOptions> optionsMonitor)
+    #region Implementation of IAsyncDisposable
+
+    public async ValueTask DisposeAsync()
+    {
+        await TerminateAsync(repository.GetAll()).ConfigureAwait(false);
+        repository.Clear();
+    }
+
+    #endregion
+
+    private void SubscribeToEvents(string deviceId, IEnumerable<Service> services)
+    {
+        try
         {
-            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            this.optionsMonitor = optionsMonitor ?? throw new ArgumentNullException(nameof(optionsMonitor));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            var baseUrl = $"api/events/{Uri.EscapeDataString(deviceId)}/notify";
+
+            var rcService = services.Single(s => s.ServiceType == UpnpServices.RenderingControl);
+            var avtService = services.Single(s => s.ServiceType == UpnpServices.AVTransport);
+
+            var sessionTimeout = optionsMonitor.CurrentValue.SessionTimeout;
+
+            repository.Add(deviceId,
+                factory.Subscribe(rcService.EventsUrl, new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout),
+                factory.Subscribe(avtService.EventsUrl, new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout)
+            );
         }
-
-        #region Implementation of IAsyncDisposable
-
-        public async ValueTask DisposeAsync()
+        catch(Exception exception)
         {
-            await TerminateAsync(repository.GetAll()).ConfigureAwait(false);
-            repository.Clear();
+            logger.LogError(exception, "Error subscribing to UPnP events for device {0}", deviceId);
+            throw;
         }
+    }
 
-        #endregion
+    private async Task RenewSubscriptionsAsync(string deviceId, IEnumerable<Service> services)
+    {
+        var sessions = repository.GetById(deviceId).ToList();
 
-        private void SubscribeToEvents(string deviceId, IEnumerable<Service> services)
+        if(!sessions.Any() || sessions.Any(s => s.IsCompleted))
+        {
+            await TerminateAsync(sessions).ConfigureAwait(false);
+            SubscribeToEvents(deviceId, services);
+        }
+    }
+
+    private async Task TerminateAsync(IEnumerable<IAsyncDisposable> subscriptions)
+    {
+        foreach(var subscription in subscriptions)
         {
             try
             {
-                var baseUrl = $"api/events/{Uri.EscapeDataString(deviceId)}/notify";
-
-                var rcService = services.Single(s => s.ServiceType == UpnpServices.RenderingControl);
-                var avtService = services.Single(s => s.ServiceType == UpnpServices.AVTransport);
-
-                var sessionTimeout = optionsMonitor.CurrentValue.SessionTimeout;
-
-                repository.Add(deviceId,
-                    factory.Subscribe(rcService.EventsUrl, new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout),
-                    factory.Subscribe(avtService.EventsUrl, new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout)
-                );
+                await subscription.DisposeAsync().ConfigureAwait(false);
             }
             catch(Exception exception)
             {
-                logger.LogError(exception, "Error subscribing to UPnP events for device {0}", deviceId);
-                throw;
+                logger.LogError(exception, "Error terminating maintenance worker for UPnP event subscription");
             }
         }
-
-        private async Task RenewSubscriptionsAsync(string deviceId, IEnumerable<Service> services)
-        {
-            var sessions = repository.GetById(deviceId).ToList();
-
-            if(!sessions.Any() || sessions.Any(s => s.IsCompleted))
-            {
-                await TerminateAsync(sessions).ConfigureAwait(false);
-                SubscribeToEvents(deviceId, services);
-            }
-        }
-
-        private async Task TerminateAsync(IEnumerable<IAsyncDisposable> subscriptions)
-        {
-            foreach(var subscription in subscriptions)
-            {
-                try
-                {
-                    await subscription.DisposeAsync().ConfigureAwait(false);
-                }
-                catch(Exception exception)
-                {
-                    logger.LogError(exception, "Error terminating maintenance worker for UPnP event subscription");
-                }
-            }
-        }
-
-        #region Implementation of IObserver<UpnpDiscoveryEvent>
-
-        public void OnCompleted() { }
-
-        public void OnError(Exception error) { }
-
-        public void OnNext(UpnpDiscoveryEvent value)
-        {
-            switch(value)
-            {
-                case UpnpDeviceAppearedEvent dae when IsRenderer(dae.Device):
-                    SubscribeToEvents(dae.DeviceId, dae.Device.Services);
-                    break;
-                case UpnpDeviceUpdatedEvent due when IsRenderer(due.Device):
-                    _ = RenewSubscriptionsAsync(due.DeviceId, due.Device.Services);
-                    break;
-                case UpnpDeviceDisappearedEvent dde:
-                    _ = repository.Remove(dde.DeviceId, out var subscriptions);
-                    _ = TerminateAsync(subscriptions);
-                    break;
-            }
-        }
-
-        private static bool IsRenderer(UpnpDevice device)
-        {
-            return device.DeviceType == UpnpServices.MediaRenderer ||
-                device.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema);
-        }
-
-        #endregion
     }
+
+    #region Implementation of IObserver<UpnpDiscoveryEvent>
+
+    public void OnCompleted() { }
+
+    public void OnError(Exception error) { }
+
+    public void OnNext(UpnpDiscoveryEvent value)
+    {
+        switch(value)
+        {
+            case UpnpDeviceAppearedEvent dae when IsRenderer(dae.Device):
+                SubscribeToEvents(dae.DeviceId, dae.Device.Services);
+                break;
+            case UpnpDeviceUpdatedEvent due when IsRenderer(due.Device):
+                _ = RenewSubscriptionsAsync(due.DeviceId, due.Device.Services);
+                break;
+            case UpnpDeviceDisappearedEvent dde:
+                _ = repository.Remove(dde.DeviceId, out var subscriptions);
+                _ = TerminateAsync(subscriptions);
+                break;
+        }
+    }
+
+    private static bool IsRenderer(UpnpDevice device)
+    {
+        return device.DeviceType == UpnpServices.MediaRenderer ||
+            device.Services.Any(s => s.ServiceType == PlaylistService.ServiceSchema);
+    }
+
+    #endregion
 }

@@ -3,44 +3,43 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 
-namespace Web.Upnp.Control.Controllers
+namespace Web.Upnp.Control.Controllers;
+
+/// <summary>
+/// Provides information about UPnP devices discovered and currently available in the network
+/// </summary>
+[ApiController]
+[Route("api/devices")]
+[Produces("application/json")]
+public class DeviceController : ControllerBase
 {
     /// <summary>
-    /// Provides information about UPnP devices discovered and currently available in the network
+    /// Provides the list of all available UPnP devices that belong to the <paramref name="category" />
     /// </summary>
-    [ApiController]
-    [Route("api/devices")]
+    /// <param name="handler">Query implementation</param>
+    /// <param name="category">Device category filter</param>
+    /// <param name="cancellationToken">Request cancellation token</param>
+    /// <returns>Device information enumerator</returns>
+    [HttpGet]
     [Produces("application/json")]
-    public class DeviceController : ControllerBase
+    public IAsyncEnumerable<UpnpDevice> GetAllAsync([FromServices][NotNull] IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
+        string category = "upnp", CancellationToken cancellationToken = default)
     {
-        /// <summary>
-        /// Provides the list of all available UPnP devices that belong to the <paramref name="category" />
-        /// </summary>
-        /// <param name="handler">Query implementation</param>
-        /// <param name="category">Device category filter</param>
-        /// <param name="cancellationToken">Request cancellation token</param>
-        /// <returns>Device information enumerator</returns>
-        [HttpGet]
-        [Produces("application/json")]
-        public IAsyncEnumerable<UpnpDevice> GetAllAsync([FromServices][NotNull] IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
-            string category = "upnp", CancellationToken cancellationToken = default)
-        {
-            return handler.ExecuteAsync(new GetDevicesQuery(category), cancellationToken);
-        }
+        return handler.ExecuteAsync(new GetDevicesQuery(category), cancellationToken);
+    }
 
-        /// <summary>
-        /// Provides information about UPnP device with <paramref name="id" /> unique id
-        /// </summary>
-        /// <param name="handler">Query implementation</param>
-        /// <param name="id">Device id</param>
-        /// <param name="cancellationToken">Request cancellation token</param>
-        /// <returns>Device information</returns>
-        [HttpGet("{id}")]
-        [Produces("application/json")]
-        public Task<UpnpDevice> GetAsync([FromServices][NotNull] IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
-            string id, CancellationToken cancellationToken = default)
-        {
-            return handler.ExecuteAsync(new GetDeviceQuery(id), cancellationToken);
-        }
+    /// <summary>
+    /// Provides information about UPnP device with <paramref name="id" /> unique id
+    /// </summary>
+    /// <param name="handler">Query implementation</param>
+    /// <param name="id">Device id</param>
+    /// <param name="cancellationToken">Request cancellation token</param>
+    /// <returns>Device information</returns>
+    [HttpGet("{id}")]
+    [Produces("application/json")]
+    public Task<UpnpDevice> GetAsync([FromServices][NotNull] IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
+        string id, CancellationToken cancellationToken = default)
+    {
+        return handler.ExecuteAsync(new GetDeviceQuery(id), cancellationToken);
     }
 }

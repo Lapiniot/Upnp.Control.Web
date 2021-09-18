@@ -1,11 +1,10 @@
 using Web.Upnp.Control.Models;
 
-namespace Web.Upnp.Control.Hubs
+namespace Web.Upnp.Control.Hubs;
+
+public interface IUpnpEventClient
 {
-    public interface IUpnpEventClient
-    {
-        Task AVTransportEvent(string device, AVStateMessage message);
-        Task RenderingControlEvent(string device, RCStateMessage message);
-        Task SsdpDiscoveryEvent(string device, UpnpDiscoveryMessage message);
-    }
+    Task AVTransportEvent(string device, AVStateMessage message);
+    Task RenderingControlEvent(string device, RCStateMessage message);
+    Task SsdpDiscoveryEvent(string device, UpnpDiscoveryMessage message);
 }

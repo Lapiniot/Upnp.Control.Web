@@ -3,23 +3,22 @@ using IoT.Device.Xiaomi.Umi.Services;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 
-namespace Web.Upnp.Control.Services.Commands
+namespace Web.Upnp.Control.Services.Commands;
+
+public sealed class QueueClearCommandHandler : IAsyncCommandHandler<QClearCommand>
 {
-    public sealed class QueueClearCommandHandler : IAsyncCommandHandler<QClearCommand>
+    private readonly IUpnpServiceFactory factory;
+
+    public QueueClearCommandHandler(IUpnpServiceFactory factory)
     {
-        private readonly IUpnpServiceFactory factory;
+        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+    }
 
-        public QueueClearCommandHandler(IUpnpServiceFactory factory)
-        {
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        }
-
-        public async Task ExecuteAsync(QClearCommand command, CancellationToken cancellationToken)
-        {
-            if(command is null) throw new ArgumentNullException(nameof(command));
-            var service = await factory.GetServiceAsync<QueueService>(command.DeviceId, cancellationToken).ConfigureAwait(false);
-            var result = await service.RemoveAllAsync(0, command.QueueId, 0, cancellationToken).ConfigureAwait(false);
-            await service.RemoveAllAsync(0, command.QueueId, uint.Parse(result["NewUpdateID"], CultureInfo.InvariantCulture), cancellationToken).ConfigureAwait(false);
-        }
+    public async Task ExecuteAsync(QClearCommand command, CancellationToken cancellationToken)
+    {
+        if(command is null) throw new ArgumentNullException(nameof(command));
+        var service = await factory.GetServiceAsync<QueueService>(command.DeviceId, cancellationToken).ConfigureAwait(false);
+        var result = await service.RemoveAllAsync(0, command.QueueId, 0, cancellationToken).ConfigureAwait(false);
+        await service.RemoveAllAsync(0, command.QueueId, uint.Parse(result["NewUpdateID"], CultureInfo.InvariantCulture), cancellationToken).ConfigureAwait(false);
     }
 }

@@ -1,14 +1,13 @@
-﻿namespace Web.Upnp.Control.Infrastructure.HttpClients
-{
-    public class HttpSoapClient
-    {
-        public HttpSoapClient(HttpClient client)
-        {
-            Client = client ?? throw new ArgumentNullException(nameof(client));
-            Client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip,deflate");
-            Client.DefaultRequestVersion = new Version(1, 1);
-        }
+﻿namespace Web.Upnp.Control.Infrastructure.HttpClients;
 
-        public HttpClient Client { get; }
+public class HttpSoapClient
+{
+    public HttpSoapClient(HttpClient client)
+    {
+        Client = client ?? throw new ArgumentNullException(nameof(client));
+        Client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip,deflate");
+        Client.DefaultRequestVersion = new Version(1, 1);
     }
+
+    public HttpClient Client { get; }
 }

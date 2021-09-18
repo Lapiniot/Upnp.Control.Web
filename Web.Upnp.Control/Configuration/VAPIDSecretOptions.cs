@@ -1,8 +1,7 @@
-namespace Web.Upnp.Control.Configuration
+namespace Web.Upnp.Control.Configuration;
+
+public record VAPIDSecretOptions
 {
-    public record VAPIDSecretOptions
-    {
-        public string PublicKey { get; init; }
-        public string PrivateKey { get; init; }
-    }
+    public string PublicKey { get; init; }
+    public string PrivateKey { get; init; }
 }

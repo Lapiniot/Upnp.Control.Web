@@ -3,45 +3,44 @@ using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 
-namespace Web.Upnp.Control.Services.Commands
+namespace Web.Upnp.Control.Services.Commands;
+
+public sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
 {
-    public sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
+    private readonly PushSubscriptionDbContext context;
+
+    public PSAddCommandHandler(PushSubscriptionDbContext context)
     {
-        private readonly PushSubscriptionDbContext context;
+        this.context = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
-        public PSAddCommandHandler(PushSubscriptionDbContext context)
+    public async Task ExecuteAsync(PSAddCommand command, CancellationToken cancellationToken)
+    {
+        if(command is null) throw new ArgumentNullException(nameof(command));
+
+        var (endpoint, expiration, p256dhKey, authKey) = command.Subscription;
+
+        DateTimeOffset? expires = expiration.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value) : null;
+        var subscription = await context.Subscriptions.FindAsync(new object[] { endpoint }, cancellationToken).ConfigureAwait(false);
+        if(subscription != null)
         {
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            context.Remove(subscription);
+            subscription = subscription with
+            {
+                Created = DateTimeOffset.UtcNow,
+                Expires = expires,
+                P256dhKey = WebEncoders.Base64UrlDecode(p256dhKey),
+                AuthKey = WebEncoders.Base64UrlDecode(authKey)
+            };
+            context.Update(subscription);
+        }
+        else
+        {
+            subscription = new PushNotificationSubscription(endpoint, DateTimeOffset.UtcNow, expires,
+                WebEncoders.Base64UrlDecode(p256dhKey), WebEncoders.Base64UrlDecode(authKey));
+            context.Subscriptions.Add(subscription);
         }
 
-        public async Task ExecuteAsync(PSAddCommand command, CancellationToken cancellationToken)
-        {
-            if(command is null) throw new ArgumentNullException(nameof(command));
-
-            var (endpoint, expiration, p256dhKey, authKey) = command.Subscription;
-
-            DateTimeOffset? expires = expiration.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value) : null;
-            var subscription = await context.Subscriptions.FindAsync(new object[] { endpoint }, cancellationToken).ConfigureAwait(false);
-            if(subscription != null)
-            {
-                context.Remove(subscription);
-                subscription = subscription with
-                {
-                    Created = DateTimeOffset.UtcNow,
-                    Expires = expires,
-                    P256dhKey = WebEncoders.Base64UrlDecode(p256dhKey),
-                    AuthKey = WebEncoders.Base64UrlDecode(authKey)
-                };
-                context.Update(subscription);
-            }
-            else
-            {
-                subscription = new PushNotificationSubscription(endpoint, DateTimeOffset.UtcNow, expires,
-                    WebEncoders.Base64UrlDecode(p256dhKey), WebEncoders.Base64UrlDecode(authKey));
-                context.Subscriptions.Add(subscription);
-            }
-
-            await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        }
+        await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 }

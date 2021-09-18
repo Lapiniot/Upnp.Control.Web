@@ -3,38 +3,37 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 
-namespace Web.Upnp.Control.Controllers
+namespace Web.Upnp.Control.Controllers;
+
+[ApiController]
+[Route("api/devices/{id}")]
+[Produces("application/json")]
+public class UpnpConnectionsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/devices/{id}")]
+    [HttpGet("protocol-info")]
     [Produces("application/json")]
-    public class UpnpConnectionsController : ControllerBase
+    public Task<CMProtocolInfo> GetProtocolInfoAsync(
+        [FromServices][NotNull] IAsyncQueryHandler<CMGetProtocolInfoQuery, CMProtocolInfo> handler,
+        string id, CancellationToken cancellationToken)
     {
-        [HttpGet("protocol-info")]
-        [Produces("application/json")]
-        public Task<CMProtocolInfo> GetProtocolInfoAsync(
-            [FromServices][NotNull] IAsyncQueryHandler<CMGetProtocolInfoQuery, CMProtocolInfo> handler,
-            string id, CancellationToken cancellationToken)
-        {
-            return handler.ExecuteAsync(new CMGetProtocolInfoQuery(id), cancellationToken);
-        }
+        return handler.ExecuteAsync(new CMGetProtocolInfoQuery(id), cancellationToken);
+    }
 
-        [HttpGet("connections")]
-        [Produces("application/json")]
-        public Task<IEnumerable<string>> GetConnectionsAsync(
-            [FromServices][NotNull] IAsyncQueryHandler<CMGetConnectionsQuery, IEnumerable<string>> handler,
-            string id, CancellationToken cancellationToken)
-        {
-            return handler.ExecuteAsync(new CMGetConnectionsQuery(id), cancellationToken);
-        }
+    [HttpGet("connections")]
+    [Produces("application/json")]
+    public Task<IEnumerable<string>> GetConnectionsAsync(
+        [FromServices][NotNull] IAsyncQueryHandler<CMGetConnectionsQuery, IEnumerable<string>> handler,
+        string id, CancellationToken cancellationToken)
+    {
+        return handler.ExecuteAsync(new CMGetConnectionsQuery(id), cancellationToken);
+    }
 
-        [HttpGet("connections/{connectionId}")]
-        [Produces("application/json")]
-        public Task<CMConnectionInfo> GetConnectionInfoAsync(
-            [FromServices][NotNull] IAsyncQueryHandler<CMGetConnectionInfoQuery, CMConnectionInfo> handler,
-            string id, string connectionId, CancellationToken cancellationToken)
-        {
-            return handler.ExecuteAsync(new CMGetConnectionInfoQuery(id, connectionId), cancellationToken);
-        }
+    [HttpGet("connections/{connectionId}")]
+    [Produces("application/json")]
+    public Task<CMConnectionInfo> GetConnectionInfoAsync(
+        [FromServices][NotNull] IAsyncQueryHandler<CMGetConnectionInfoQuery, CMConnectionInfo> handler,
+        string id, string connectionId, CancellationToken cancellationToken)
+    {
+        return handler.ExecuteAsync(new CMGetConnectionInfoQuery(id, connectionId), cancellationToken);
     }
 }

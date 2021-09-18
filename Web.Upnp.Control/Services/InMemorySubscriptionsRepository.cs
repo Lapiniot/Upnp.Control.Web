@@ -1,68 +1,67 @@
 using Web.Upnp.Control.Services.Abstractions;
 
-namespace Web.Upnp.Control.Services
+namespace Web.Upnp.Control.Services;
+
+public class InMemorySubscriptionsRepository : IUpnpSubscriptionsRepository
 {
-    public class InMemorySubscriptionsRepository : IUpnpSubscriptionsRepository
+    private readonly Dictionary<string, List<IAsyncCancelable>> storage;
+
+    public InMemorySubscriptionsRepository()
     {
-        private readonly Dictionary<string, List<IAsyncCancelable>> storage;
+        storage = new Dictionary<string, List<IAsyncCancelable>>();
+    }
 
-        public InMemorySubscriptionsRepository()
+    public void Add(string udn, params IAsyncCancelable[] sessions)
+    {
+        lock(storage)
         {
-            storage = new Dictionary<string, List<IAsyncCancelable>>();
-        }
-
-        public void Add(string udn, params IAsyncCancelable[] sessions)
-        {
-            lock(storage)
+            if(storage.TryGetValue(udn, out var list))
             {
-                if(storage.TryGetValue(udn, out var list))
-                {
-                    list.AddRange(sessions);
-                }
-                else
-                {
-                    storage[udn] = new List<IAsyncCancelable>(sessions);
-                }
+                list.AddRange(sessions);
+            }
+            else
+            {
+                storage[udn] = new List<IAsyncCancelable>(sessions);
             }
         }
+    }
 
-        public void Clear()
+    public void Clear()
+    {
+        lock(storage)
         {
-            lock(storage)
-            {
-                storage.Clear();
-            }
+            storage.Clear();
         }
+    }
 
-        public IEnumerable<IAsyncCancelable> GetById(string udn)
+    public IEnumerable<IAsyncCancelable> GetById(string udn)
+    {
+        lock(storage)
         {
-            lock(storage)
-            {
-                return storage.TryGetValue(udn, out var list) ? list : Array.Empty<IAsyncCancelable>();
-            }
+            return storage.TryGetValue(udn, out var list) ? list : Array.Empty<IAsyncCancelable>();
         }
+    }
 
-        public IEnumerable<IAsyncCancelable> GetAll()
+    public IEnumerable<IAsyncCancelable> GetAll()
+    {
+        lock(storage)
         {
-            lock(storage)
-            {
-                return storage.Values.SelectMany(v => v).ToList();
-            }
+            return storage.Values.SelectMany(v => v).ToList();
         }
+    }
 
-        public bool Remove(string udn, out IEnumerable<IAsyncCancelable> sessions)
+    public bool Remove(string udn, out IEnumerable<IAsyncCancelable> sessions)
+    {
+        lock(storage)
         {
-            lock(storage)
+            if(storage.Remove(udn, out var list))
             {
-                if(storage.Remove(udn, out var list))
-                {
-                    sessions = list;
-                    return true;
-                }
-
-                sessions = null;
-                return false;
+                sessions = list;
+                return true;
             }
+
+            sessions = null;
+            return false;
         }
     }
 }
