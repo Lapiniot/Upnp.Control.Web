@@ -40,8 +40,9 @@ public sealed class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
         try
         {
             var (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
-            logger.LogInformation($"Successfully subscribed to events from {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds, Callback: {callbackUri}.");
-            logger.LogInformation($"Starting refresh loop for session: {sid}.");
+            logger.LogInformation("Successfully subscribed to events from {uri}. SID: {sid}, Timeout: {timeout} seconds, Callback: {callbackUri}.",
+                subscribeUri, sid, seconds, callbackUri);
+            logger.LogInformation("Starting refresh loop for session: {sid}.", sid);
             try
             {
                 while(!cancellationToken.IsCancellationRequested)
@@ -49,16 +50,17 @@ public sealed class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
                     try
                     {
                         await Task.Delay(TimeSpan.FromSeconds(seconds - 5), cancellationToken).ConfigureAwait(false);
-                        logger.LogInformation($"Refreshing subscription for session: {sid}.");
+                        logger.LogInformation("Refreshing subscription for session: {sid}.", sid);
                         (sid, seconds) = await subscribeClient.RenewAsync(subscribeUri, sid, timeout, cancellationToken).ConfigureAwait(false);
-                        logger.LogInformation($"Successfully refreshed subscription for session: {sid}. Timeout: {seconds} seconds.");
+                        logger.LogInformation("Successfully refreshed subscription for session: {sid}. Timeout: {seconds} seconds.", sid, seconds);
                     }
                     catch(HttpRequestException hre)
                     {
-                        logger.LogWarning($"Failed to refresh subscription for {sid}. {hre.Message}");
-                        logger.LogWarning($"Requesting new subscription session at {subscribeUri}.");
+                        logger.LogWarning("Failed to refresh subscription for {sid}. {message}", sid, hre.Message);
+                        logger.LogWarning("Requesting new subscription session at {uri}.", subscribeUri);
                         (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
-                        logger.LogInformation($"Successfully requested new subscription for {subscribeUri}. SID: {sid}, Timeout: {seconds} seconds.");
+                        logger.LogInformation("Successfully requested new subscription for {uri}. SID: {sid}, Timeout: {timeout} seconds.",
+                            subscribeUri, sid, seconds);
                     }
                     catch(OperationCanceledException) { }
                 }
@@ -67,12 +69,12 @@ public sealed class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
             {
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
                 await subscribeClient.UnsubscribeAsync(subscribeUri, sid, cts.Token).ConfigureAwait(false);
-                logger.LogInformation($"Successfully cancelled subscription for SID: {sid}.");
+                logger.LogInformation("Successfully cancelled subscription for SID: {sid}.", sid);
             }
         }
         catch(Exception ex)
         {
-            logger.LogError(ex, $"Breaking error in the session loop for {subscribeUri}");
+            logger.LogError(ex, "Breaking error in the session loop for {uri}", subscribeUri);
             throw;
         }
     }

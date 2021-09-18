@@ -65,7 +65,7 @@ public class UpnpEventsController : ControllerBase
             }
             catch(Exception exception)
             {
-                logger.LogError(exception, $"Error sending UPnP event notification to observer {observer}");
+                logger.LogError(exception, "Error sending UPnP event notification to observer {observer}", observer);
             }
         }
     }

@@ -86,7 +86,7 @@ public class UpnpDiscoveryService : BackgroundService
 
                                 Notify(observers, new UpnpDeviceUpdatedEvent(udn, device));
 
-                                logger.LogInformation($"Device expiration updated for UDN='{udn}'");
+                                logger.LogInformation("Device expiration updated for UDN='{udn}'", udn);
 
                                 continue;
                             }
@@ -106,13 +106,13 @@ public class UpnpDiscoveryService : BackgroundService
                             await context.AddAsync(device, stoppingToken).ConfigureAwait(false);
                             await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
 
-                            logger.LogInformation($"New device discovered with UDN='{desc.Udn}'");
+                            logger.LogInformation("New device discovered with UDN='{udn}'", desc.Udn);
 
                             Notify(observers, new UpnpDeviceAppearedEvent(udn, device));
                         }
                         catch(Exception exception)
                         {
-                            logger.LogError(exception, $"Error processing SSDP reply {reply.StartLine} for USN={reply.UniqueServiceName}");
+                            logger.LogError(exception, "Error processing SSDP reply {startline} for USN={usn}", reply.StartLine, reply.UniqueServiceName);
                         }
                     }
                 }
@@ -140,7 +140,7 @@ public class UpnpDiscoveryService : BackgroundService
             sb.AppendLine($"{key}: {value}");
         }
 
-        logger.Log(logLevel, sb.ToString());
+        logger.Log(logLevel, "{dump}", sb.ToString());
     }
 
     private static string ExtractUdn(string usn)
@@ -161,7 +161,7 @@ public class UpnpDiscoveryService : BackgroundService
             }
             catch(Exception exception)
             {
-                logger.LogError(exception, $"Error providing new data to the observer: {observer}");
+                logger.LogError(exception, "Error providing new data to the observer: {observer}", observer);
             }
         }
     }
@@ -176,7 +176,7 @@ public class UpnpDiscoveryService : BackgroundService
             }
             catch(Exception exception)
             {
-                logger.LogError(exception, $"Error sending completion notification to the observer: {observer}");
+                logger.LogError(exception, "Error sending completion notification to the observer: {observer}", observer);
             }
         }
     }

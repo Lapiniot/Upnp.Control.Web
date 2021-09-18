@@ -57,7 +57,7 @@ public sealed class UpnpEventSubscribeObserver : IObserver<UpnpDiscoveryEvent>, 
         }
         catch(Exception exception)
         {
-            logger.LogError(exception, "Error subscribing to UPnP events for device {0}", deviceId);
+            logger.LogError(exception, "Error subscribing to UPnP events for device {deviceId}", deviceId);
             throw;
         }
     }

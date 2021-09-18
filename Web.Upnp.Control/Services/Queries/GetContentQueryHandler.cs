@@ -84,7 +84,7 @@ public sealed class GetContentQueryHandler : IAsyncQueryHandler<CDGetContentQuer
             {
                 errorLimit--;
                 parent = "0";
-                logger.LogError(ex, $"Query BrowseMetadata failed for item '{parent}'");
+                logger.LogError(ex, "Query BrowseMetadata failed for item '{parent}'", parent);
             }
         }
 

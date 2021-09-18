@@ -114,7 +114,7 @@ public abstract class PLFeedsCommandBase : PLCommandBase
                 }
                 catch(Exception exception)
                 {
-                    logger.LogError(exception, $"Error processing playlist file '{file.FileName}'");
+                    logger.LogError(exception, "Error processing playlist file '{filename}'", file.FileName);
                     throw;
                 }
             }

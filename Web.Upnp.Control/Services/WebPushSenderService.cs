@@ -94,7 +94,7 @@ public sealed class WebPushSenderService : BackgroundService, IObserver<UpnpDisc
                         }
                         catch(Exception ex)
                         {
-                            logger.LogError(ex, "Error pushing message to endpoint: " + endpoint);
+                            logger.LogError(ex, "Error pushing message to endpoint: {endpoint}", endpoint);
                         }
                     }
                 }
