@@ -4,69 +4,73 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Upnp.Control.Infrastructure.Routing;
 using Web.Upnp.Control.Models.Events;
 
-namespace Web.Upnp.Control.Controllers;
-
-[ApiExplorerSettings(IgnoreApi = true)]
-[ApiController]
-[Route("api/events/{deviceId}")]
-[Consumes("application/xml", "text/xml")]
-public class UpnpEventsController : ControllerBase
+namespace Web.Upnp.Control.Controllers
 {
-    private readonly ILogger<UpnpEventsController> logger;
-    private readonly IEnumerable<IObserver<UpnpEvent>> observers;
-    private readonly XmlReaderSettings settings = new() { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
-
-    public UpnpEventsController(ILogger<UpnpEventsController> logger, IEnumerable<IObserver<UpnpEvent>> observers)
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [ApiController]
+    [Route("api/events/{deviceId}")]
+    [Consumes("application/xml", "text/xml")]
+    public partial class UpnpEventsController : ControllerBase
     {
-        ArgumentNullException.ThrowIfNull(logger);
+        private readonly ILogger<UpnpEventsController> logger;
+        private readonly IEnumerable<IObserver<UpnpEvent>> observers;
+        private readonly XmlReaderSettings settings = new() { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
 
-        this.logger = logger;
-        this.observers = observers?.ToArray() ?? Array.Empty<IObserver<UpnpEvent>>();
-    }
-
-    [HttpNotify("notify/rc")]
-    public Task NotifyRenderingControlAsync(string deviceId)
-    {
-        return ProcessRequestStreamAsync<UpnpRenderingControlPropertyChangedEvent>(HttpContext.Request.Body, deviceId);
-    }
-
-    [HttpNotify("notify/avt")]
-    public Task NotifyAVTransportAsync(string deviceId)
-    {
-        return ProcessRequestStreamAsync<UpnpAVTransportPropertyChangedEvent>(HttpContext.Request.Body, deviceId);
-    }
-
-    private async Task ProcessRequestStreamAsync<T>(Stream stream, string deviceId) where T : UpnpPropertyChangedEvent, new()
-    {
-        IReadOnlyDictionary<string, string> properties;
-        IReadOnlyDictionary<string, string> vendorProperties;
-
-        using(var reader = XmlReader.Create(stream, settings))
+        public UpnpEventsController(ILogger<UpnpEventsController> logger, IEnumerable<IObserver<UpnpEvent>> observers)
         {
-            (_, properties, vendorProperties) = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
+            ArgumentNullException.ThrowIfNull(logger);
+
+            this.logger = logger;
+            this.observers = observers?.ToArray() ?? Array.Empty<IObserver<UpnpEvent>>();
         }
 
-        if(properties == null || properties.Count == 0) return;
-
-        NotifyObservers<T>(deviceId, properties, vendorProperties);
-    }
-
-    private void NotifyObservers<T>(string deviceId, IReadOnlyDictionary<string, string> properties,
-        IReadOnlyDictionary<string, string> vendorProperties)
-        where T : UpnpPropertyChangedEvent, new()
-    {
-        var @event = new T { DeviceId = deviceId, Properties = properties, VendorProperties = vendorProperties };
-
-        foreach(var observer in observers)
+        [HttpNotify("notify/rc")]
+        public Task NotifyRenderingControlAsync(string deviceId)
         {
-            try
+            return ProcessRequestStreamAsync<UpnpRenderingControlPropertyChangedEvent>(HttpContext.Request.Body, deviceId);
+        }
+
+        [HttpNotify("notify/avt")]
+        public Task NotifyAVTransportAsync(string deviceId)
+        {
+            return ProcessRequestStreamAsync<UpnpAVTransportPropertyChangedEvent>(HttpContext.Request.Body, deviceId);
+        }
+
+        private async Task ProcessRequestStreamAsync<T>(Stream stream, string deviceId) where T : UpnpPropertyChangedEvent, new()
+        {
+            IReadOnlyDictionary<string, string> properties;
+            IReadOnlyDictionary<string, string> vendorProperties;
+
+            using(var reader = XmlReader.Create(stream, settings))
             {
-                observer.OnNext(@event);
+                (_, properties, vendorProperties) = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
             }
-            catch(Exception exception)
+
+            if(properties == null || properties.Count == 0) return;
+
+            NotifyObservers<T>(deviceId, properties, vendorProperties);
+        }
+
+        private void NotifyObservers<T>(string deviceId, IReadOnlyDictionary<string, string> properties,
+            IReadOnlyDictionary<string, string> vendorProperties)
+            where T : UpnpPropertyChangedEvent, new()
+        {
+            var @event = new T { DeviceId = deviceId, Properties = properties, VendorProperties = vendorProperties };
+
+            foreach(var observer in observers)
             {
-                logger.LogError(exception, "Error sending UPnP event notification to observer {observer}", observer);
+                try
+                {
+                    observer.OnNext(@event);
+                }
+                catch(Exception exception)
+                {
+                    LogError(exception, observer);
+                }
             }
         }
+
+        [LoggerMessage(1, LogLevel.Error, "Error sending UPnP event notification to observer {observer}")]
+        private partial void LogError(Exception exception, IObserver<UpnpEvent> observer);
     }
 }

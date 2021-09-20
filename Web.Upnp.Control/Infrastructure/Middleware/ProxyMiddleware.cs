@@ -6,10 +6,9 @@ using static System.Globalization.CultureInfo;
 
 namespace Web.Upnp.Control.Infrastructure.Middleware;
 
-public abstract class ProxyMiddleware : IMiddleware
+public abstract partial class ProxyMiddleware : IMiddleware
 {
     private readonly HttpClient client;
-    private readonly ILogger<ProxyMiddleware> logger;
 
     protected ProxyMiddleware(HttpClient client, ILogger<ProxyMiddleware> logger)
     {
@@ -34,13 +33,13 @@ public abstract class ProxyMiddleware : IMiddleware
             var requestUri = GetTargetUri(context);
             var method = context.Request.Method;
 
-            logger.LogStartRequest(id, method, requestUri);
+            LogStartRequest(id, method, requestUri);
 
             var cancellationToken = context.RequestAborted;
 
             if(method is not "GET" and not "HEAD")
             {
-                logger.LogUnsupportedMethod(id, method);
+                LogUnsupportedMethod(id, method);
 
                 context.Response.StatusCode = 405;
                 await context.Response.CompleteAsync().ConfigureAwait(false);
@@ -62,21 +61,21 @@ public abstract class ProxyMiddleware : IMiddleware
 
             await context.Response.CompleteAsync().ConfigureAwait(false);
 
-            logger.LogCompleted(id);
+            LogCompleted(id);
         }
         catch(OperationCanceledException)
         {
-            logger.LogAborted(id);
+            LogAborted(id);
         }
         catch(InvalidDataException ide)
         {
-            logger.LogError(id, ide);
+            LogError(id, ide);
             context.Response.StatusCode = StatusCodes.Status502BadGateway;
             await context.Response.CompleteAsync().ConfigureAwait(false);
         }
         catch(Exception e)
         {
-            logger.LogError(id, e);
+            LogError(id, e);
             throw;
         }
     }
@@ -152,15 +151,15 @@ public abstract class ProxyMiddleware : IMiddleware
 
             writer.Advance(available);
 
-            logger.LogBuffered(id, available);
+            LogBuffered(id, available);
 
             await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
 
-            logger.LogFlushed(id, available);
+            LogFlushed(id, available);
 
             if(available < bufferSize) break;
         }
 
-        logger.LogDone(id);
+        LogDone(id);
     }
 }

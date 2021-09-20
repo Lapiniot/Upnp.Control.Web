@@ -1,5 +1,4 @@
-﻿using System.Text;
-using IoT.Protocol.Upnp;
+﻿using IoT.Protocol.Upnp;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Models.Events;
@@ -11,10 +10,9 @@ using Icon = Web.Upnp.Control.Models.Icon;
 
 namespace Web.Upnp.Control.Services;
 
-public class UpnpDiscoveryService : BackgroundService
+public partial class UpnpDiscoveryService : BackgroundService
 {
     private const string RootDevice = "upnp:rootdevice";
-    private readonly ILogger<UpnpDiscoveryService> logger;
     private readonly IUpnpServiceMetadataProvider metadataProvider;
     private readonly IServiceProvider services;
 
@@ -31,7 +29,7 @@ public class UpnpDiscoveryService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("Started UPnP device discovery service...");
+        LogStarted();
 
         try
         {
@@ -49,7 +47,7 @@ public class UpnpDiscoveryService : BackgroundService
                     {
                         try
                         {
-                            if(logger.IsEnabled(LogLevel.Trace)) DebugDump(reply, LogLevel.Trace);
+                            TraceReply(reply);
 
                             if(reply.StartLine.StartsWith("M-SEARCH", InvariantCulture)) continue;
 
@@ -86,7 +84,7 @@ public class UpnpDiscoveryService : BackgroundService
 
                                 Notify(observers, new UpnpDeviceUpdatedEvent(udn, device));
 
-                                logger.LogInformation("Device expiration updated for UDN='{udn}'", udn);
+                                LogExpirationUpdated(udn);
 
                                 continue;
                             }
@@ -106,13 +104,13 @@ public class UpnpDiscoveryService : BackgroundService
                             await context.AddAsync(device, stoppingToken).ConfigureAwait(false);
                             await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
 
-                            logger.LogInformation("New device discovered with UDN='{udn}'", desc.Udn);
+                            LogDeviceDiscovered(desc.Udn);
 
                             Notify(observers, new UpnpDeviceAppearedEvent(udn, device));
                         }
                         catch(Exception exception)
                         {
-                            logger.LogError(exception, "Error processing SSDP reply {startline} for USN={usn}", reply.StartLine, reply.UniqueServiceName);
+                            LogReplyError(exception, reply.StartLine, reply.UniqueServiceName);
                         }
                     }
                 }
@@ -123,24 +121,11 @@ public class UpnpDiscoveryService : BackgroundService
                 }
             }
         }
-        catch(Exception ex)
+        catch(Exception exception)
         {
-            logger.LogError(ex, "Error discovering UPnP devices and services!");
+            LogError(exception);
             throw;
         }
-    }
-
-    private void DebugDump(SsdpReply reply, LogLevel logLevel)
-    {
-        var sb = new StringBuilder();
-        sb.AppendLine();
-        sb.AppendLine($"***** {reply.StartLine} *****");
-        foreach(var (key, value) in reply)
-        {
-            sb.AppendLine($"{key}: {value}");
-        }
-
-        logger.Log(logLevel, "{dump}", sb.ToString());
     }
 
     private static string ExtractUdn(string usn)
@@ -161,7 +146,7 @@ public class UpnpDiscoveryService : BackgroundService
             }
             catch(Exception exception)
             {
-                logger.LogError(exception, "Error providing new data to the observer: {observer}", observer);
+                LogNotifyError(exception, observer);
             }
         }
     }
@@ -176,7 +161,7 @@ public class UpnpDiscoveryService : BackgroundService
             }
             catch(Exception exception)
             {
-                logger.LogError(exception, "Error sending completion notification to the observer: {observer}", observer);
+                LogNotifyCompleteError(exception, observer);
             }
         }
     }
