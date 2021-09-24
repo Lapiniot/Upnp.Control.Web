@@ -25,12 +25,6 @@ export function viaProxy(url: string) {
     return `/proxy/${encodeURIComponent(url)}`;
 }
 
-const getSafeContentUrl = global.isSecureContext
-    ? viaProxy
-    : function (originalUrl: string) { return originalUrl; }
-
-export { getSafeContentUrl };
-
 /**
  * Finds first element in the DOM tree starting from 'element'
  * which acts as scrolling container (literally has effective values 

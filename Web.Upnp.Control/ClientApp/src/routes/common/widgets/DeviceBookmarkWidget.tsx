@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { getSafeContentUrl } from "../../../components/Extensions";
+import { viaProxy } from "../../../components/Extensions";
 import { RouteLink } from "../../../components/NavLink";
 
 type DeviceBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
@@ -11,7 +11,7 @@ type DeviceBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 export default function ({ category, device, name, description, icon }: DeviceBookmarkWidgetProps) {
-    const iconUrl = icon.startsWith("http") ? getSafeContentUrl(icon) : icon;
+    const iconUrl = icon.startsWith("http") ? viaProxy(icon) : icon;
     return <RouteLink to={`/${category}/${device}`} className="hstack text-decoration-none p-2">
         <img src={iconUrl} className="upnp-dev-icon me-2" alt="" />
         <div className="overflow-hidden">

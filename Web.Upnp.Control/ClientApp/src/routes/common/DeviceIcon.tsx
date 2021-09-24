@@ -1,4 +1,4 @@
-import { getSafeContentUrl } from "../../components/Extensions";
+import { viaProxy } from "../../components/Extensions";
 import { Icon, Services } from "./Types";
 
 export function getOptimalIcon(icons: Icon[], preferredSize: number = 48): Icon | null {
@@ -12,6 +12,6 @@ export function getFallbackIcon(service: string): string {
 
 export default ({ icons = [], service }: { icons: Icon[], service: string }) => {
     const icon = getOptimalIcon(icons);
-    const attr: object = icon ? { src: getSafeContentUrl(icon.url) } : { src: getFallbackIcon(service), style: { objectFit: "unset" } };
+    const attr: object = icon ? { src: viaProxy(icon.url) } : { src: getFallbackIcon(service), style: { objectFit: "unset" } };
     return <img {...attr} className="upnp-dev-icon" alt="" />;
 }
