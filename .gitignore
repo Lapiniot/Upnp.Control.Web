@@ -23,4 +23,5 @@ Web.Upnp.Control/ClientApp/public/service-worker.js.map
 *.key
 *.pfx
 Web.Upnp.Control/**/appsettings.Secrets.json
-Web.Upnp.Control/data/**/*
+Web.Upnp.Control/data/upnp.db3-shm
+Web.Upnp.Control/data/upnp.db3-wal
