@@ -1,5 +1,5 @@
 FROM node:latest AS node_base
-FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS publish
+FROM mcr.microsoft.com/dotnet/sdk:6.0-buster-slim AS publish
 COPY --from=node_base . .
 
 WORKDIR /src
@@ -26,7 +26,7 @@ RUN npm install && npm install -g gulp && gulp sass
 
 RUN dotnet publish "Web.Upnp.Control.csproj" -c Release -r alpine-x64 /p:PublishTrimmed=true -o /app/publish --no-restore
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:5.0-alpine AS final
+FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-alpine AS final
 RUN adduser -u 5678 --disabled-password --home /app --gecos "" upnp-dashboard && chown -R upnp-dashboard /app
 USER upnp-dashboard
 WORKDIR /app

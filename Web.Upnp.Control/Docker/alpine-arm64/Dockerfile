@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/runtime-deps:5.0-alpine-arm64v8 AS base
+FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-alpine-arm64v8 AS base
 
 RUN adduser -u 5678 --disabled-password --home /app --gecos "" upnp-dashboard
 
@@ -7,9 +7,7 @@ WORKDIR /app
 COPY . .
 
 RUN apk update && \
-    apk add openssl bash sqlite-dev && \
-    cp /usr/lib/libsqlite3.so ./libe_sqlite3.so && \
-    apk del sqlite-dev && \
+    apk add openssl bash && \
     openssl version
 
 RUN chmod -R 755 scripts && \

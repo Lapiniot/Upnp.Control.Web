@@ -1,5 +1,5 @@
 FROM node:latest AS node_base
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 
 WORKDIR /app
 EXPOSE 8080
@@ -10,7 +10,7 @@ EXPOSE 8081
 RUN adduser -u 5678 --disabled-password --gecos "" upnp-dashboard && chown -R upnp-dashboard /app
 USER upnp-dashboard
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 COPY --from=node_base . .
 
 #RUN apt-get update -yq && apt-get install curl gnupg -yq \
