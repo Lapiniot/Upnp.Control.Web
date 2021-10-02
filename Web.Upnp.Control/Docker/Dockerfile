@@ -1,20 +1,9 @@
-FROM node:latest AS node_base
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-# Creates a non-root user with an explicit UID and adds permission to access the /app folder
-# For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
-RUN adduser -u 5678 --disabled-password --gecos "" upnp-dashboard && chown -R upnp-dashboard /app
-USER upnp-dashboard
-
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-COPY --from=node_base . .
-
-#RUN apt-get update -yq && apt-get install curl gnupg -yq \
-#    && curl -sL https://deb.nodesource.com/setup_16.x | bash && apt-get install nodejs -yq
+RUN apt-get update -yq && \
+    apt-get install curl gnupg -yq && \
+    curl -sL https://deb.nodesource.com/setup_current.x | bash && \
+    apt-get install nodejs -yq
 
 WORKDIR /src
 COPY "IoT.Device/IoT.Protocol/System.Common/common.props" "IoT.Device/IoT.Protocol/System.Common/"
@@ -32,17 +21,28 @@ COPY "IoT.Device/IoT.Device.Xiaomi.Umi/IoT.Device.Xiaomi.Umi.csproj" "IoT.Device
 COPY "Web.Upnp.Control/Web.Upnp.Control.csproj" "Web.Upnp.Control/"
 RUN dotnet restore "Web.Upnp.Control/Web.Upnp.Control.csproj"
 COPY . .
-WORKDIR "/src/Web.Upnp.Control"
-RUN dotnet build "Web.Upnp.Control.csproj" -c Release -o /app/build
 
 FROM build AS publish
 WORKDIR "/src/Web.Upnp.Control/ClientApp"
-RUN npm install
-WORKDIR "/src/Web.Upnp.Control"
 RUN npm install && npm install -g gulp && gulp sass
+WORKDIR "/src/Web.Upnp.Control"
 RUN dotnet publish "Web.Upnp.Control.csproj" -c Release -o /app/publish
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine AS final
+
+EXPOSE 8080
+EXPOSE 8081
+
+WORKDIR /app/data
+WORKDIR /app/config
+VOLUME [ "/app/config", "/app/data" ]
+
 WORKDIR /app
+
+# Creates a non-root user with an explicit UID and adds permission to access the /app folder
+# For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
+RUN adduser -u 5678 --disabled-password --gecos "" upnp-dashboard && chown -R upnp-dashboard /app
+USER upnp-dashboard
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["dotnet", "Web.Upnp.Control.dll"]

@@ -1,6 +1,13 @@
-FROM node:latest AS node_base
-FROM mcr.microsoft.com/dotnet/sdk:6.0-buster-slim AS publish
-COPY --from=node_base . .
+ARG RID=alpine-x64
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+RUN apt-get update -yq && \
+    apt-get install curl gnupg -yq && \
+    curl -sL https://deb.nodesource.com/setup_current.x | bash && \
+    apt-get install nodejs -yq
+
+ARG RID
 
 WORKDIR /src
 COPY "IoT.Device/IoT.Protocol/System.Common/common.props" "IoT.Device/IoT.Protocol/System.Common/"
@@ -16,24 +23,30 @@ COPY "IoT.Device/IoT.Device/IoT.Device.csproj" "IoT.Device/IoT.Device/"
 COPY "IoT.Device/IoT.Device.Upnp/IoT.Device.Upnp.csproj" "IoT.Device/IoT.Device.Upnp/"
 COPY "IoT.Device/IoT.Device.Xiaomi.Umi/IoT.Device.Xiaomi.Umi.csproj" "IoT.Device/IoT.Device.Xiaomi.Umi/"
 COPY "Web.Upnp.Control/Web.Upnp.Control.csproj" "Web.Upnp.Control/"
-RUN dotnet restore "Web.Upnp.Control/Web.Upnp.Control.csproj" -r alpine-x64
+RUN dotnet restore "Web.Upnp.Control/Web.Upnp.Control.csproj" -r ${RID}
 COPY . .
 
+FROM build AS publish
 WORKDIR "/src/Web.Upnp.Control/ClientApp"
-RUN npm install
-WORKDIR "/src/Web.Upnp.Control"
 RUN npm install && npm install -g gulp && gulp sass
-
-RUN dotnet publish "Web.Upnp.Control.csproj" -c Release -r alpine-x64 /p:PublishTrimmed=true -o /app/publish --no-restore
+WORKDIR "/src/Web.Upnp.Control"
+RUN dotnet publish "Web.Upnp.Control.csproj" -c Release -r ${RID} /p:PublishTrimmed=true --self-contained=true --no-restore -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-alpine AS final
-RUN adduser -u 5678 --disabled-password --home /app --gecos "" upnp-dashboard && chown -R upnp-dashboard /app
-USER upnp-dashboard
-WORKDIR /app
 
 EXPOSE 8080
 EXPOSE 8081
 
+WORKDIR /app/data
+WORKDIR /app/config
+VOLUME [ "/app/config", "/app/data" ]
+
+WORKDIR /app
+
+# Creates a non-root user with an explicit UID and adds permission to access the /app folder
+# For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
+RUN adduser -u 5678 --disabled-password --gecos "" upnp-dashboard && chown -R upnp-dashboard /app
+USER upnp-dashboard
 COPY --from=publish /app/publish .
 
-ENTRYPOINT ["./Web.Upnp.Control"]
+ENTRYPOINT "./Web.Upnp.Control"
