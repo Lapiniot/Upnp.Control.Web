@@ -1,4 +1,6 @@
-FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-buster-slim-amd64 AS base
+ARG NET_VERSION
+
+FROM mcr.microsoft.com/dotnet/runtime-deps:${NET_VERSION}-bullseye-slim-amd64 AS base
 
 RUN adduser -u 5678 --disabled-password --home /app --gecos "" upnp-dashboard
 

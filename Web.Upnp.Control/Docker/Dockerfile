@@ -1,4 +1,6 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+ARG NET_VERSION
+
+FROM mcr.microsoft.com/dotnet/sdk:${NET_VERSION} AS build
 
 RUN apt-get update -yq && \
     apt-get install curl gnupg -yq && \
@@ -28,7 +30,7 @@ RUN npm install && npm install -g gulp && gulp sass
 WORKDIR "/src/Web.Upnp.Control"
 RUN dotnet publish "Web.Upnp.Control.csproj" -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine AS final
+FROM mcr.microsoft.com/dotnet/aspnet:${NET_VERSION}-alpine AS final
 
 EXPOSE 8080
 EXPOSE 8081

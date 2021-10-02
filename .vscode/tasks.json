@@ -136,6 +136,9 @@
                 "labels": {
                     "includeDefaults": false
                 },
+                "buildArgs": {
+                    "NET_VERSION": "6.0"
+                },
                 "pull": true
             },
             "netCore": {
@@ -151,6 +154,9 @@
                 "context": "${workspaceFolder}",
                 "labels": {
                     "includeDefaults": false
+                },
+                "buildArgs": {
+                    "NET_VERSION": "6.0"
                 },
                 "pull": true
             },
@@ -168,6 +174,9 @@
                 "labels": {
                     "includeDefaults": false
                 },
+                "buildArgs": {
+                    "NET_VERSION": "6.0"
+                },
                 "pull": true
             },
             "netCore": {
@@ -183,6 +192,9 @@
                 "context": "${workspaceFolder}/Web.Upnp.Control/bin/Release/net6.0/${input:rid}/publish",
                 "labels": {
                     "includeDefaults": false
+                },
+                "buildArgs": {
+                    "NET_VERSION": "6.0"
                 },
                 "pull": true
             },
