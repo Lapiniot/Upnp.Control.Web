@@ -2,8 +2,8 @@ import { FlagEditor } from "../../components/editors/FlagEditor";
 import { InputHTMLAttributes, useCallback, useEffect, useState } from "react";
 import PushSubService from "../../components/PushSubscriptionService";
 
-export function PushSubscriptionToggle({ disabled: disabledProp, checked: checkedProp, ...other }: InputHTMLAttributes<HTMLInputElement>) {
-    const [value, setValue] = useState(checkedProp);
+export function PushSubscriptionToggle({ disabled: disabledProp, ...other }: InputHTMLAttributes<HTMLInputElement>) {
+    const [value, setValue] = useState(false);
     const [disabled, setDisabled] = useState(disabledProp);
 
     const callback = useCallback((subscribe) => {
