@@ -11,7 +11,7 @@ type Notification = {
     delay?: number;
 };
 
-export default class NotificationsHost extends React.Component<{}> {
+export default class extends React.Component<{}> {
 
     state = { notifications: new Map<string, Notification>() };
     onDissmissed = ({ dataset: { id } }: HTMLDivElement) => {
