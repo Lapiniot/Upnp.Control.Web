@@ -129,10 +129,13 @@
             "type": "docker-build",
             "label": "docker-build: debug",
             "dockerBuild": {
-                "tag": "webupnpcontrol:dev",
+                "tag": "upnp-dashboard:dev",
                 "target": "base",
                 "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile",
                 "context": "${workspaceFolder}",
+                "labels": {
+                    "includeDefaults": false
+                },
                 "pull": true
             },
             "netCore": {
@@ -143,9 +146,12 @@
             "type": "docker-build",
             "label": "docker-build: release",
             "dockerBuild": {
-                "tag": "webupnpcontrol:latest",
+                "tag": "upnp-dashboard:latest",
                 "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile",
                 "context": "${workspaceFolder}",
+                "labels": {
+                    "includeDefaults": false
+                },
                 "pull": true
             },
             "netCore": {
@@ -156,9 +162,12 @@
             "type": "docker-build",
             "label": "docker-build: release, self-contained",
             "dockerBuild": {
-                "tag": "webupnpcontrol:latest-scd",
+                "tag": "upnp-dashboard:latest-scd",
                 "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile.SCD",
                 "context": "${workspaceFolder}",
+                "labels": {
+                    "includeDefaults": false
+                },
                 "pull": true
             },
             "netCore": {
@@ -169,9 +178,12 @@
             "type": "docker-build",
             "label": "docker-build-outside: release, self-contained",
             "dockerBuild": {
-                "tag": "webupnpcontrol:latest-scd-${input:rid}",
+                "tag": "upnp-dashboard:latest-scd-${input:rid}",
                 "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/${input:rid}/Dockerfile",
                 "context": "${workspaceFolder}/Web.Upnp.Control/bin/Release/net6.0/${input:rid}/publish",
+                "labels": {
+                    "includeDefaults": false
+                },
                 "pull": true
             },
             "netCore": {
@@ -200,7 +212,7 @@
                 "docker-build-outside: release, self-contained"
             ],
             "dockerRun": {
-                "image": "webupnpcontrol:latest-scd-${input:rid}",
+                "image": "upnp-dashboard:latest-scd-${input:rid}",
                 "volumes": [
                     {
                         "containerPath": "/app/config",
