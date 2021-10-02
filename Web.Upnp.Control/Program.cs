@@ -3,8 +3,6 @@ using Microsoft.Extensions.Configuration.Json;
 using Web.Upnp.Control;
 using Web.Upnp.Control.Services;
 
-[assembly: CLSCompliant(false)]
-
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var hostBuilder = Host
