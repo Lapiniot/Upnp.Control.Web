@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Policies;
 using System.Reflection;
 using System.Text.Json;
@@ -33,9 +32,6 @@ public class Startup
     public IConfiguration Configuration { get; }
 
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-    [DynamicDependency("AddYears", typeof(DateOnly))]
-    [DynamicDependency("AddMonths", typeof(DateOnly))]
-    [DynamicDependency("AddDays", typeof(DateOnly))]
     public void ConfigureServices(IServiceCollection services)
     {
         services

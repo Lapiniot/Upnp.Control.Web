@@ -10,6 +10,9 @@ public class UpnpDbContext : DbContext
 
     public DbSet<UpnpDevice> UpnpDevices { get; set; }
 
+    [DynamicDependency("AddYears", typeof(DateOnly))]
+    [DynamicDependency("AddMonths", typeof(DateOnly))]
+    [DynamicDependency("AddDays", typeof(DateOnly))]
     protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new DeviceEntityTypeConfiguration());
