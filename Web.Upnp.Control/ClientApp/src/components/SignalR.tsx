@@ -1,9 +1,9 @@
 import * as signalR from "@microsoft/signalr";
 import React from "react";
 
-export type SignalRMessageHandler = (...args: any) => void;
+type MessageCallback = (...args: any) => void;
 type SignalRConnectionProps = { hubUrl: string }
-type SignalRListenerProps = { handlers: Iterable<[string, SignalRMessageHandler]> }
+type SignalRListenerProps = { callbacks: { [K: string]: MessageCallback } }
 
 const SignalRContext = React.createContext<signalR.HubConnection | null>(null);
 
@@ -68,9 +68,13 @@ export class SignalRListener extends React.Component<SignalRListenerProps> {
         });
     }
 
-    foreach(func: (key: string, handler: SignalRMessageHandler) => void) {
-        for (let [key, handler] of this.props.handlers)
-            func(key, handler);
+    foreach(action: (key: string, callback: MessageCallback) => void) {
+        for (const key in this.props.callbacks) {
+            const value = this.props.callbacks[key];
+            if (typeof value === "function") {
+                action(key, value);
+            }
+        }
     }
 
     render() {

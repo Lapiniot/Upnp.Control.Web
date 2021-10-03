@@ -35,9 +35,10 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
     constructor(props: PlayerProps) {
         super(props);
-        this.handlers = new Map<string, (...args: any[]) => void>([
-            ["AVTransportEvent", this.onAVTransportEvent],
-            ["RenderingControlEvent", this.onRenderingControlEvent]]);
+        this.handlers = {
+            "AVTransportEvent": this.onAVTransportEvent,
+            "RenderingControlEvent": this.onRenderingControlEvent
+        };
         this.ctrl = $api.control(this.props.udn);
         this.state = {};
         this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler);
@@ -156,7 +157,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
         return <>
             <PlayerSvgSymbols />
-            <SignalRListener handlers={this.handlers} />
+            <SignalRListener callbacks={this.handlers} />
             <div className="player-skeleton" ref={this.ref}>
                 <AlbumArt className="art" itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} />
                 <div className="title">

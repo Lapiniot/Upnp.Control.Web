@@ -78,8 +78,8 @@ export function PlaybackStateProvider({ device, getTrackUrlHook, ...other }: Pla
         })();
     }, [device]);
 
-    const handlers = useMemo(() => new Map<string, (...args: any[]) => void>([["AVTransportEvent",
-        (target: string, { state, vendorProps = {} }: { state: AVState, vendorProps: PropertyBag }) => {
+    const handlers = useMemo(() => ({
+        "AVTransportEvent": (target: string, { state, vendorProps = {} }: { state: AVState, vendorProps: PropertyBag }) => {
             if (device !== target) return;
             const { state: playbackState, currentTrack: track } = state;
             const { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = vendorProps;
@@ -87,7 +87,8 @@ export function PlaybackStateProvider({ device, getTrackUrlHook, ...other }: Pla
                 type: "UPDATE",
                 state: { playbackState, track, playlist: transport === "AUX" ? "aux" : playlist }
             });
-        }]]), [device]);
+        }
+    }), [device]);
 
     const uiHandlers = useMemo(() => {
         const ctrl = $api.control(device);
@@ -115,7 +116,7 @@ export function PlaybackStateProvider({ device, getTrackUrlHook, ...other }: Pla
     }), [state.playbackState, state.playlist, state.track, uiHandlers]);
 
     return <>
-        <SignalRListener handlers={handlers} />
+        <SignalRListener callbacks={handlers} />
         <PlaybackStateContext.Provider {...other} value={value} />
     </>
 }
