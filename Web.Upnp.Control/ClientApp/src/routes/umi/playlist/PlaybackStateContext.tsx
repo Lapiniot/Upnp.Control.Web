@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, UIEvent, UIEventHandler, useContext, useEffect, useMemo, useReducer } from "react";
 import { nopropagation } from "../../../components/Extensions";
-import SignalRListener from "../../../components/SignalRListener";
+import { useSignalR } from "../../../components/SignalRListener";
 import $api from "../../../components/WebApi";
 import $s from "../../common/Settings";
 import { AVState, PlaybackState, PropertyBag } from "../../common/Types";
@@ -90,6 +90,8 @@ export function PlaybackStateProvider({ device, getTrackUrlHook, ...other }: Pla
         }
     }), [device]);
 
+    useSignalR(handlers);
+
     const uiHandlers = useMemo(() => {
         const ctrl = $api.control(device);
         return {
@@ -115,10 +117,7 @@ export function PlaybackStateProvider({ device, getTrackUrlHook, ...other }: Pla
         handlers: uiHandlers
     }), [state.playbackState, state.playlist, state.track, uiHandlers]);
 
-    return <>
-        <SignalRListener callbacks={handlers} />
-        <PlaybackStateContext.Provider {...other} value={value} />
-    </>
+    return <PlaybackStateContext.Provider {...other} value={value} />;
 }
 
 export function usePlaybackState() {

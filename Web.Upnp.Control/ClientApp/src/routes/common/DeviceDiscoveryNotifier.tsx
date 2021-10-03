@@ -1,6 +1,6 @@
 import { forwardRef, useMemo, useRef } from "react";
 import NotificationsHostCore, { INotificationHost } from "../../components/NotificationsHost";
-import SignalRListener from "../../components/SignalRListener";
+import { useSignalR } from "../../components/SignalRListener";
 import { DiscoveryMessage, UpnpDevice } from "./Types";
 
 const NotificationsHost = forwardRef(NotificationsHostCore);
@@ -24,8 +24,7 @@ export function DeviceDiscoveryNotifier({ callback }: { callback?: DiscoveryCall
         }
     }), [callback]);
 
-    return <>
-        <SignalRListener callbacks={handlers} />
-        <NotificationsHost ref={ref} />
-    </>;
+    useSignalR(handlers);
+
+    return <NotificationsHost ref={ref} />;
 }

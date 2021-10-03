@@ -1,4 +1,4 @@
-import React, { ContextType } from "react";
+import React, { ContextType, useContext, useEffect, useRef } from "react";
 import { SignalRContext } from "./SignalRConnection";
 
 type MessageCallback = (...args: any) => void;
@@ -51,4 +51,26 @@ export default class SignalRListener extends React.PureComponent<SignalRListener
     render() {
         return this.props.children ?? null;
     }
+}
+
+export function useSignalR(callbacks: IMessageCallbackSet) {
+    const hub = useContext(SignalRContext);
+
+    const prevRef = useRef<IMessageCallbackSet>();
+
+    useEffect(() => {
+        if (prevRef.current) {
+            apply(prevRef.current, (methodName, method) => hub?.off(methodName, method));
+        }
+
+        apply(callbacks, (methodName, method) => hub?.on(methodName, method));
+
+        prevRef.current = callbacks;
+
+        return () => {
+            if (prevRef.current) {
+                apply(prevRef.current, (methodName, method) => hub?.off(methodName, method));
+            }
+        }
+    }, [callbacks]);
 }
