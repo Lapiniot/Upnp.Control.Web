@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Route, Switch } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { RouteLink } from "./components/NavLink";
-import { SignalRConnection } from "./components/SignalR";
+import { SignalRConnection } from "./components/SignalRConnection";
 import { NavBarSvgSymbols } from "./routes/common/SvgSymbols";
 import HomePage from "./routes/home/Home";
 import RenderersPage from "./routes/renderers/Router";

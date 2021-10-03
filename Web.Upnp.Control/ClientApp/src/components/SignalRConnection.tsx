@@ -1,11 +1,9 @@
-import * as signalR from "@microsoft/signalr";
 import React from "react";
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
-type MessageCallback = (...args: any) => void;
 type SignalRConnectionProps = { hubUrl: string }
-type SignalRListenerProps = { callbacks: { [K: string]: MessageCallback } }
 
-const SignalRContext = React.createContext<signalR.HubConnection | null>(null);
+export const SignalRContext = React.createContext<HubConnection | null>(null);
 
 export class SignalRConnection extends React.Component<SignalRConnectionProps, { connected: boolean; error: Error | string | null; }> {
 
@@ -14,7 +12,7 @@ export class SignalRConnection extends React.Component<SignalRConnectionProps, {
 
     constructor(props: SignalRConnectionProps) {
         super(props);
-        this.hub = new signalR.HubConnectionBuilder()
+        this.hub = new HubConnectionBuilder()
             .withUrl(props.hubUrl)
             .withAutomaticReconnect([2, 4, 8, 15, 30, 60])
             .build();
@@ -41,43 +39,11 @@ export class SignalRConnection extends React.Component<SignalRConnectionProps, {
     }
 
     render() {
-        return <React.Fragment>
+        return <>
             {this.state.error && <div className="alert alert-warning rounded-0 py-1 py-md-2 m-0 text-center" role="alert">
                 <strong>Connection problems!</strong> {this.state.error}
             </div>}
             <SignalRContext.Provider value={this.hub}>{this.props.children}</SignalRContext.Provider>
-        </React.Fragment>
-    }
-}
-
-export class SignalRListener extends React.Component<SignalRListenerProps> {
-
-    static contextType = SignalRContext;
-
-    componentDidMount() {
-        this.foreach((e, h) => {
-            this.context.on(e, h);
-            console.info(`Subscibed to event '${e}'`);
-        });
-    }
-
-    componentWillUnmount() {
-        this.foreach((e, h) => {
-            this.context.off(e, h);
-            console.info(`Unsubscibed from event '${e}'`);
-        });
-    }
-
-    foreach(action: (key: string, callback: MessageCallback) => void) {
-        for (const key in this.props.callbacks) {
-            const value = this.props.callbacks[key];
-            if (typeof value === "function") {
-                action(key, value);
-            }
-        }
-    }
-
-    render() {
-        return this.props.children ?? null;
+        </>
     }
 }

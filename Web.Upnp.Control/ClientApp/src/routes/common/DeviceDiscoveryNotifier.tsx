@@ -1,6 +1,6 @@
 import { forwardRef, useMemo, useRef } from "react";
 import NotificationsHostCore, { INotificationHost } from "../../components/NotificationsHost";
-import { SignalRListener } from "../../components/SignalR";
+import SignalRListener from "../../components/SignalRListener";
 import { DiscoveryMessage, UpnpDevice } from "./Types";
 
 const NotificationsHost = forwardRef(NotificationsHostCore);

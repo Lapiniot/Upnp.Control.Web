@@ -1,6 +1,6 @@
 import React, { ButtonHTMLAttributes, createRef } from "react";
 import { DataContext, DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
-import { SignalRListener } from "../../components/SignalR";
+import SignalRListener from "../../components/SignalRListener";
 import $api from "../../components/WebApi";
 import SeekBar from "./SeekBar";
 import { AVPositionState, AVState, RCState } from "./Types";

@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, UIEvent, UIEventHandler, useContext, useEffect, useMemo, useReducer } from "react";
 import { nopropagation } from "../../../components/Extensions";
-import { SignalRListener } from "../../../components/SignalR";
+import SignalRListener from "../../../components/SignalRListener";
 import $api from "../../../components/WebApi";
 import $s from "../../common/Settings";
 import { AVState, PlaybackState, PropertyBag } from "../../common/Types";
