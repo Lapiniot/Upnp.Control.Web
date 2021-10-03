@@ -1,9 +1,8 @@
-﻿import React, { ComponentType, createRef, forwardRef, HTMLAttributes } from "react";
-import { SignalRListener, SignalRMessageHandler } from "../../components/SignalR";
+﻿import React, { ComponentType, HTMLAttributes } from "react";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { CategoryRouteParams, DataSourceProps, DeviceRouteParams, DiscoveryMessage, UpnpDevice } from "./Types";
+import { CategoryRouteParams, DataSourceProps, DeviceRouteParams, UpnpDevice } from "./Types";
 import { DataFetchProps } from "../../components/DataFetch";
-import NotificationsHostCore, { INotificationHost } from "../../components/NotificationsHost";
+import { DeviceDiscoveryNotifier } from "./DeviceDiscoveryNotifier";
 
 export type TemplatedDataComponentProps<T = any, P = {}> = { itemTemplate: ComponentType<DataSourceProps<T> & P> }
 
@@ -37,33 +36,21 @@ type DeviceListContainerProps = DataFetchProps<UpnpDevice[]> &
     TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> &
     CategoryRouteParams & { viewMode?: ViewMode };
 
-const NotificationsHost = forwardRef(NotificationsHostCore);
-
 export class DeviceListContainer extends React.Component<DeviceListContainerProps> {
     static defaultProps: Partial<DeviceListContainerProps> = { viewMode: "grid" }
-    nhRef = createRef<INotificationHost>();
 
-    onDiscoveryEvent = (device: string, { device: { name, description }, type }: DiscoveryMessage) => {
-        this.nhRef.current?.push({
-            id: device, title: name, color: type === "appeared" ? "success" : "warning", delay: 120000,
-            message: <>
-                <b>&laquo;{description}&raquo;</b> has {type === "appeared" ? "appeared on" : "disappeared from"} the network
-            </>
-        });
-        this.props.dataContext?.reload?.();
+    reload = () => {
+        this.props.dataContext?.reload();
     }
-
-    handlers: Map<string, SignalRMessageHandler> = new Map([["SsdpDiscoveryEvent", this.onDiscoveryEvent]]);
 
     render() {
         const { dataContext, itemTemplate: Item, fetching, category, viewMode } = this.props;
         return <>
             {fetching && <LoadIndicatorOverlay />}
-            <SignalRListener handlers={this.handlers} />
             <GridContainer viewMode={viewMode}>
                 {[dataContext?.source.map(item => <Item key={item.udn} data-source={item} category={category} device={item.udn} />)]}
             </GridContainer>
-            <NotificationsHost ref={this.nhRef} />
+            <DeviceDiscoveryNotifier callback={this.reload} />
         </>
     }
 }
