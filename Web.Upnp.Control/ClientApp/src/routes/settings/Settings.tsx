@@ -1,7 +1,8 @@
-﻿import $s from "../common/Settings";
-import { FlagEditor } from "../../components/editors/FlagEditor";
+﻿import { FlagEditor } from "../../components/editors/FlagEditor";
 import { NumberEditor } from "../../components/editors/NumberEditor";
 import { OptionsEditor } from "../../components/editors/OptionsEditor";
+import { NotificationType } from "../../components/WebApi";
+import $s from "../common/Settings";
 import { PushSubscriptionToggle } from "./PushSubscriptionToggle";
 
 function setPageSize(value: string) {
@@ -42,12 +43,19 @@ export default () => {
                         <NumberEditor id="scan-timeout-editor" min="1000" max="90000" step="200" value={$s.get("containerScanTimeout")} callback={setScanTimeout} />
                         <label htmlFor="use-proxy-editor">Use DLNA proxy</label>
                         <FlagEditor id="use-proxy-editor" className="ms-auto" checked={$s.get("useDlnaProxy")} callback={setUseProxy} />
-                        {("serviceWorker" in navigator) && ("PushManager" in window) && <>
-                            <label htmlFor="use-pushes-editor">Enable push notifications</label>
-                            <PushSubscriptionToggle id="use-pushes-editor" className="ms-auto" />
-                        </>}
                     </div>
                 </li>
+                {("serviceWorker" in navigator) && ("PushManager" in window) && <>
+                    <li className="list-group-item">
+                        <small>Push notifications</small>
+                        <div className="d-grid grid-1fr-auto gap-3 mt-1 align-items-center">
+                            <label htmlFor="discovery-pushes-editor">Device discovery</label>
+                            <PushSubscriptionToggle notificationType={NotificationType.DeviceDiscovery} id="discovery-pushes-editor" className="ms-auto" />
+                            <label htmlFor="playback-pushes-editor">Playback state changes</label>
+                            <PushSubscriptionToggle notificationType={NotificationType.PlaybackStateChange} id="playback-pushes-editor" className="ms-auto" />
+                        </div>
+                    </li>
+                </>}
                 <li className="list-group-item">
                     <small>Tools</small>
                     <div className="vstack mt-1 gap-2">

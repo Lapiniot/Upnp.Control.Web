@@ -1,19 +1,24 @@
-import { FlagEditor } from "../../components/editors/FlagEditor";
 import { InputHTMLAttributes, useCallback, useEffect, useState } from "react";
+import { FlagEditor } from "../../components/editors/FlagEditor";
 import PushSubService from "../../components/PushSubscriptionService";
+import { NotificationType } from "../../components/WebApi";
 
-export function PushSubscriptionToggle({ disabled: disabledProp, ...other }: InputHTMLAttributes<HTMLInputElement>) {
+type PushSubscriptionToggleProps = InputHTMLAttributes<HTMLInputElement> & {
+    notificationType: NotificationType
+};
+
+export function PushSubscriptionToggle({ disabled: disabledProp, notificationType: type, ...other }: PushSubscriptionToggleProps) {
     const [value, setValue] = useState(false);
     const [disabled, setDisabled] = useState(disabledProp);
 
     const callback = useCallback((subscribe) => {
         setDisabled(true);
-        PushSubService.unsubscribe()
+        PushSubService.unsubscribe(type)
             .then(() => {
                 if (subscribe) {
                     Notification.requestPermission().then(v => {
                         if (v === "granted") {
-                            return PushSubService.subscribe();
+                            return PushSubService.subscribe(type);
                         }
                     })
                 }
@@ -21,7 +26,7 @@ export function PushSubscriptionToggle({ disabled: disabledProp, ...other }: Inp
             .then(() => setDisabled(undefined));
     }, []);
 
-    useEffect(() => { PushSubService.isSubscribed().then(v => setValue(v)); }, []);
+    useEffect(() => { PushSubService.isSubscribed(type).then(v => setValue(v)); }, [type]);
     useEffect(() => { setDisabled(disabledProp); }, [disabledProp]);
 
     return <FlagEditor {...other} checked={value} disabled={disabled} callback={callback} />;
