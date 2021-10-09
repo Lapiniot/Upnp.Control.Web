@@ -16,3 +16,4 @@ public record PSGetServerKeyQuery()
 {
     public static PSGetServerKeyQuery Instance { get; } = new PSGetServerKeyQuery();
 }
+public record PSGetStateQuery(Uri Endpoint, NotificationType Type);

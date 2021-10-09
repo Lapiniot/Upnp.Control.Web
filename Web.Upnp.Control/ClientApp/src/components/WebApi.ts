@@ -49,8 +49,9 @@ export enum NotificationType {
 
 export interface PushSubscriptionApiProvider {
     serverKey(): HttpFetch;
-    subscribe: (endpoint: string, type: NotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) => JsonPostFetch;
-    unsubscribe: (endpoint: string, type: NotificationType) => JsonDeleteFetch;
+    subscribe(endpoint: string, type: NotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null): JsonPostFetch;
+    unsubscribe(endpoint: string, type: NotificationType): JsonDeleteFetch;
+    subscribed(endpoint: string, type: NotificationType): JsonFetch;
 }
 
 export default class WebApi {
@@ -136,6 +137,7 @@ const pushSubscriber = {
         new JsonPostFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint, type, p256dhKey: toBase64(p256dh), authKey: toBase64(auth) }) }),
     unsubscribe: (endpoint: string, type: NotificationType) =>
         new JsonDeleteFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint, type }) }),
+    subscribed: (endpoint: string, type: NotificationType) => new JsonFetch(`${baseUri}/push-subscriptions`, { endpoint, type }),
     serverKey: () => new HttpFetch(`${baseUri}/push-subscriptions/server-key`)
 }
 

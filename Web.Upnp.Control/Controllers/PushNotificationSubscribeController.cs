@@ -10,6 +10,24 @@ namespace Web.Upnp.Control.Controllers;
 [Produces("application/json")]
 public class PushNotificationSubscribeController : ControllerBase
 {
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<bool> GetStateAsync([FromServices][NotNull] IAsyncQueryHandler<PSGetStateQuery, bool> handler,
+        Uri endpoint, NotificationType type, CancellationToken cancellationToken)
+    {
+        try
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            return await handler.ExecuteAsync(new PSGetStateQuery(endpoint, type), cancellationToken).ConfigureAwait(false);
+        }
+        catch
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            throw;
+        }
+    }
+
     [HttpPost]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status201Created)]
