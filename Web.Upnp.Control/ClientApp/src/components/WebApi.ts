@@ -41,10 +41,16 @@ export interface QueueApiProvider {
     clear: (queueId: string) => JsonDeleteFetch;
 }
 
+export enum NotificationType {
+    DeviceDiscovery,
+    PlaybackStateChange,
+    ContentUpdated
+}
+
 export interface PushSubscriptionApiProvider {
     serverKey(): HttpFetch;
-    subscribe: (endpoint: string, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) => JsonPostFetch;
-    unsubscribe: (endpoint: string) => JsonDeleteFetch;
+    subscribe: (endpoint: string, type: NotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) => JsonPostFetch;
+    unsubscribe: (endpoint: string, type: NotificationType) => JsonDeleteFetch;
 }
 
 export default class WebApi {
@@ -126,10 +132,10 @@ export default class WebApi {
 }
 
 const pushSubscriber = {
-    subscribe: (endpoint: string, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) =>
-        new JsonPostFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint, p256dhKey: toBase64(p256dh), authKey: toBase64(auth) }) }),
-    unsubscribe: (endpoint: string) =>
-        new JsonDeleteFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint }) }),
+    subscribe: (endpoint: string, type: NotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) =>
+        new JsonPostFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint, type, p256dhKey: toBase64(p256dh), authKey: toBase64(auth) }) }),
+    unsubscribe: (endpoint: string, type: NotificationType) =>
+        new JsonDeleteFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint, type }) }),
     serverKey: () => new HttpFetch(`${baseUri}/push-subscriptions/server-key`)
 }
 

@@ -1,4 +1,4 @@
-import WebApi from "./WebApi";
+import WebApi, { NotificationType } from "./WebApi";
 
 export default {
     subscribe: async () => {
@@ -10,7 +10,7 @@ export default {
                 applicationServerKey: key
             });
             if (!ps) throw new Error("PushManager subscription failed");
-            const response = await WebApi.notifications().subscribe(ps.endpoint, ps.getKey("p256dh"), ps.getKey("auth")).fetch();
+            const response = await WebApi.notifications().subscribe(ps.endpoint, NotificationType.DeviceDiscovery, ps.getKey("p256dh"), ps.getKey("auth")).fetch();
             if (!response.ok) {
                 throw new Error(`Subscription request failed: HTTP ${response.status} - ${response.statusText}`);
             }
@@ -22,7 +22,7 @@ export default {
             const ps = await reg.pushManager.getSubscription();
             if (ps) {
                 await Promise.all([
-                    WebApi.notifications().unsubscribe(ps.endpoint).fetch().then(r => {
+                    WebApi.notifications().unsubscribe(ps.endpoint, NotificationType.DeviceDiscovery).fetch().then(r => {
                         if (!r.ok) throw new Error(`Unsubscription request failed: HTTP ${r.status} - ${r.statusText}`);
                     }),
                     ps.unsubscribe()
