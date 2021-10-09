@@ -1,7 +1,9 @@
+using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Channels;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.DataAccess;
@@ -52,7 +54,7 @@ namespace Web.Upnp.Control.Services
 
         void IObserver<UpnpDiscoveryEvent>.OnNext(UpnpDiscoveryEvent value)
         {
-            switch(value)
+            switch (value)
             {
                 case UpnpDeviceAppearedEvent dae: Post(new UpnpDiscoveryMessage("appeared", dae.Device)); break;
                 case UpnpDeviceDisappearedEvent dde: Post(new UpnpDiscoveryMessage("disappeared", dde.Device)); break;
@@ -63,7 +65,7 @@ namespace Web.Upnp.Control.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while(!stoppingToken.IsCancellationRequested)
+            while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
@@ -76,7 +78,7 @@ namespace Web.Upnp.Control.Services
 
                     try
                     {
-                        await foreach(var subscription in context.Subscriptions.AsAsyncEnumerable().WithCancellation(stoppingToken).ConfigureAwait(false))
+                        await foreach (var subscription in context.Subscriptions.Where(s => s.Type == NotificationType.DeviceDiscovery).AsAsyncEnumerable().WithCancellation(stoppingToken).ConfigureAwait(false))
                         {
                             Uri endpoint = subscription.Endpoint;
                             var keys = new SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);
@@ -84,15 +86,15 @@ namespace Web.Upnp.Control.Services
                             {
                                 await client.SendAsync(endpoint, keys, payload, wpOptions.Value.TTLSeconds, stoppingToken).ConfigureAwait(false);
                             }
-                            catch(OperationCanceledException)
+                            catch (OperationCanceledException)
                             {
                                 // expected
                             }
-                            catch(HttpRequestException hre) when(hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
+                            catch (HttpRequestException hre) when (hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
                             {
                                 context.Remove(subscription);
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 LogPushError(ex, endpoint);
                             }
@@ -100,23 +102,23 @@ namespace Web.Upnp.Control.Services
                     }
                     finally
                     {
-                        if(context.ChangeTracker.HasChanges())
+                        if (context.ChangeTracker.HasChanges())
                         {
                             await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
                         }
                     }
                 }
-                catch(OperationCanceledException oce) when(oce.CancellationToken == stoppingToken)
+                catch (OperationCanceledException oce) when (oce.CancellationToken == stoppingToken)
                 {
                     // expected
                     break;
                 }
-                catch(ChannelClosedException)
+                catch (ChannelClosedException)
                 {
                     LogChannelClosed();
                     break;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     LogError(ex);
                 }
@@ -128,9 +130,9 @@ namespace Web.Upnp.Control.Services
             try
             {
                 var vt = channel.Writer.WriteAsync(message);
-                if(!vt.IsCompletedSuccessfully) await vt.ConfigureAwait(false);
+                if (!vt.IsCompletedSuccessfully) await vt.ConfigureAwait(false);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogMessageQueueingError(ex);
             }

@@ -19,7 +19,7 @@ public sealed class PSRemoveCommandHandler : IAsyncCommandHandler<PSRemoveComman
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        var subscription = await context.Subscriptions.FindAsync(new object[] { command.Subscription.Endpoint }, cancellationToken).ConfigureAwait(false);
+        var subscription = await context.Subscriptions.FindAsync(new object[] { command.Subscription.Endpoint, command.Subscription.Type }, cancellationToken).ConfigureAwait(false);
         if(subscription != null)
         {
             context.Remove(subscription);

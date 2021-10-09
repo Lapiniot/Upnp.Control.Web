@@ -20,17 +20,16 @@ public sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        var (endpoint, expiration, p256dhKey, authKey) = command.Subscription;
+        var (type, endpoint, p256dhKey, authKey) = command.Subscription;
 
-        DateTimeOffset? expires = expiration.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value) : null;
-        var subscription = await context.Subscriptions.FindAsync(new object[] { endpoint }, cancellationToken).ConfigureAwait(false);
-        if(subscription != null)
+        var subscription = await context.Subscriptions.FindAsync(new object[] { endpoint, type }, cancellationToken).ConfigureAwait(false);
+
+        if (subscription != null)
         {
             context.Remove(subscription);
             subscription = subscription with
             {
                 Created = DateTimeOffset.UtcNow,
-                Expires = expires,
                 P256dhKey = WebEncoders.Base64UrlDecode(p256dhKey),
                 AuthKey = WebEncoders.Base64UrlDecode(authKey)
             };
@@ -38,7 +37,7 @@ public sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
         }
         else
         {
-            subscription = new PushNotificationSubscription(endpoint, DateTimeOffset.UtcNow, expires,
+            subscription = new PushNotificationSubscription(endpoint, type, DateTimeOffset.UtcNow,
                 WebEncoders.Base64UrlDecode(p256dhKey), WebEncoders.Base64UrlDecode(authKey));
             context.Subscriptions.Add(subscription);
         }

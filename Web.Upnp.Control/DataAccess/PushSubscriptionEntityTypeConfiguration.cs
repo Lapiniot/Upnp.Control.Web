@@ -8,7 +8,7 @@ internal class PushSubscriptionEntityTypeConfiguration : IEntityTypeConfiguratio
 {
     public void Configure(EntityTypeBuilder<PushNotificationSubscription> builder)
     {
-        builder.HasKey(e => e.Endpoint);
+        builder.HasKey(new[] { nameof(PushNotificationSubscription.Endpoint), nameof(PushNotificationSubscription.Type) });
         builder.Property(e => e.P256dhKey).IsRequired();
         builder.Property(e => e.AuthKey).IsRequired();
     }

@@ -29,4 +29,12 @@ public record CreatePlaylistParams(string Title, MediaSource Source);
 public record MediaSource(string DeviceId, IEnumerable<string> Items, int? MaxDepth);
 public record PlaylistFilesSource(IEnumerable<IFormFile> Files, bool? UseProxy);
 public record FeedUrlSource(Uri Url, string Title, bool? UseProxy);
-public record PushSubscription(Uri Endpoint, long? Expiration, string P256dhKey, string AuthKey);
+
+public enum NotificationType
+{
+    DeviceDiscovery,
+    PlaybackStateChange,
+    ContentUpdated
+}
+
+public record PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
