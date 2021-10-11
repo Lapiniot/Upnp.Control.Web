@@ -13,13 +13,15 @@ using Web.Upnp.Control.Models.Events;
 
 namespace Web.Upnp.Control.Services
 {
+    public record PushMessage(NotificationType Type, byte[] Payload);
+
     public sealed partial class WebPushSenderService : BackgroundService, IObserver<UpnpDiscoveryEvent>
     {
         private readonly IServiceProvider services;
         private readonly ILogger<WebPushSenderService> logger;
         private readonly IOptions<JsonOptions> jsonOptions;
         private readonly IOptions<WebPushOptions> wpOptions;
-        private readonly Channel<UpnpDiscoveryMessage> channel;
+        private readonly Channel<PushMessage> channel;
 
         public WebPushSenderService(IServiceProvider services, ILogger<WebPushSenderService> logger,
             IOptions<JsonOptions> jsonOptions, IOptions<WebPushOptions> wpOptions)
@@ -34,7 +36,7 @@ namespace Web.Upnp.Control.Services
             this.jsonOptions = jsonOptions;
             this.wpOptions = wpOptions;
 
-            channel = Channel.CreateBounded<UpnpDiscoveryMessage>(new BoundedChannelOptions(100)
+            channel = Channel.CreateBounded<PushMessage>(new BoundedChannelOptions(100)
             {
                 FullMode = BoundedChannelFullMode.DropOldest,
                 SingleReader = true,
@@ -56,8 +58,8 @@ namespace Web.Upnp.Control.Services
         {
             switch (value)
             {
-                case UpnpDeviceAppearedEvent dae: Post(new UpnpDiscoveryMessage("appeared", dae.Device)); break;
-                case UpnpDeviceDisappearedEvent dde: Post(new UpnpDiscoveryMessage("disappeared", dde.Device)); break;
+                case UpnpDeviceAppearedEvent dae: Post(new PushMessage(NotificationType.DeviceDiscovery, JsonSerializer.SerializeToUtf8Bytes(new UpnpDiscoveryMessage("appeared", dae.Device), jsonOptions.Value.SerializerOptions))); break;
+                case UpnpDeviceDisappearedEvent dde: Post(new PushMessage(NotificationType.DeviceDiscovery, JsonSerializer.SerializeToUtf8Bytes(new UpnpDiscoveryMessage("disappeared", dde.Device), jsonOptions.Value.SerializerOptions))); break;
             }
         }
 
@@ -78,9 +80,10 @@ namespace Web.Upnp.Control.Services
 
                     try
                     {
-                        await foreach (var subscription in context.Subscriptions.Where(s => s.Type == NotificationType.DeviceDiscovery).AsAsyncEnumerable().WithCancellation(stoppingToken).ConfigureAwait(false))
+                        var subscriptions = context.Subscriptions.Where(s => s.Type == message.Type).AsAsyncEnumerable();
+                        await foreach (var subscription in subscriptions.WithCancellation(stoppingToken).ConfigureAwait(false))
                         {
-                            Uri endpoint = subscription.Endpoint;
+                            var endpoint = subscription.Endpoint;
                             var keys = new SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);
                             try
                             {
@@ -125,7 +128,7 @@ namespace Web.Upnp.Control.Services
             }
         }
 
-        private async void Post(UpnpDiscoveryMessage message)
+        private async void Post(PushMessage message)
         {
             try
             {
