@@ -153,7 +153,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const target = e.target as HTMLElement;
 
         if (target === e.currentTarget && e.type === "mousedown") {
-            requestAnimationFrame(() => this.context.dispatch({ type: "SET_ALL", selected: false }));
+            this.context.dispatch({ type: "SET_ALL", selected: false });
             return;
         }
 
@@ -173,23 +173,21 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         switch (e.type) {
             case "mousedown":
                 if ((e.ctrlKey || e.metaKey) && this.props.multiSelect)
-                    requestAnimationFrame(() => this.context.dispatch({ type: "TOGGLE", index }));
+                    this.context.dispatch({ type: "TOGGLE", index });
                 else if (e.shiftKey && this.props.multiSelect)
-                    requestAnimationFrame(() => this.context.dispatch({ type: "EXPAND_TO", index }));
+                    this.context.dispatch({ type: "EXPAND_TO", index });
+                else if (this.editMode)
+                    this.context.dispatch({ type: "TOGGLE", index })
                 else
-                    requestAnimationFrame(() => this.editMode
-                        ? this.context.dispatch({ type: "TOGGLE", index })
-                        : this.context.dispatch({ type: "SET_ONLY", index }));
+                    this.context.dispatch({ type: "SET_ONLY", index });
                 break;
             case "mouseup":
-                if (!this.dblClickNavMode && !this.editMode) {
-                    requestAnimationFrame(() => this.navigateTo(index));
-                }
+                if (!this.dblClickNavMode && !this.editMode)
+                    this.navigateTo(index);
                 break;
             case "dblclick":
-                if (this.dblClickNavMode && !this.editMode) {
-                    requestAnimationFrame(() => this.navigateTo(index));
-                }
+                if (this.dblClickNavMode && !this.editMode)
+                    this.navigateTo(index);
                 break;
         }
     }
@@ -204,7 +202,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
                 if (!focusedRow) {
                     if (event.code === "ArrowRight")
-                        requestAnimationFrame(() => this.context.dispatch({ type: "SET_ONLY", index: 0 }));
+                        this.context.dispatch({ type: "SET_ONLY", index: 0 });
                     return;
                 }
 
@@ -231,22 +229,22 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             case "KeyA":
                 if (this.props.multiSelect && !event.cancelBubble && (event.metaKey || event.ctrlKey)) {
                     event.preventDefault();
-                    requestAnimationFrame(() => this.context.dispatch({ type: "SET_ALL", selected: true }));
+                    this.context.dispatch({ type: "SET_ALL", selected: true });
                 }
                 break;
             case "ArrowUp":
                 event.preventDefault();
                 if (event.shiftKey && this.props.multiSelect)
-                    requestAnimationFrame(() => this.context.dispatch({ type: "EXPAND_UP" }));
+                    this.context.dispatch({ type: "EXPAND_UP" });
                 else
-                    requestAnimationFrame(() => this.context.dispatch({ type: "PREV" }));
+                    this.context.dispatch({ type: "PREV" });
                 break;
             case "ArrowDown":
                 event.preventDefault();
                 if (event.shiftKey && this.props.multiSelect)
-                    requestAnimationFrame(() => this.context.dispatch({ type: "EXPAND_DOWN" }));
+                    this.context.dispatch({ type: "EXPAND_DOWN" });
                 else
-                    requestAnimationFrame(() => this.context.dispatch({ type: "NEXT" }));
+                    this.context.dispatch({ type: "NEXT" });
                 break;
             default: return;
         }
@@ -261,7 +259,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 // last tracked focused item id doesn't match currently focused row -
                 // thus we came here as a result of focus switch via keyboard Tab or Shift+Tab
                 // which we don't emulate programmatically. So lets synchronize selection with news focus
-                requestAnimationFrame(() => this.context.dispatch({ type: "SET_ONLY", index }));
+                this.context.dispatch({ type: "SET_ONLY", index });
             }
         }
     }
