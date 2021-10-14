@@ -26,6 +26,10 @@ function setUseProxy(useProxy: boolean) {
     $s.set("useDlnaProxy", useProxy);
 }
 
+function setShowDiscoveryNotifications(value: boolean) {
+    $s.set("showDiscoveryNotifications", value);
+}
+
 export default () => {
     return <div className="overflow-auto">
         <div className="vstack m-0 m-sm-3 w-md-50">
@@ -43,6 +47,13 @@ export default () => {
                         <NumberEditor id="scan-timeout-editor" min="1000" max="90000" step="200" value={$s.get("containerScanTimeout")} callback={setScanTimeout} />
                         <label htmlFor="use-proxy-editor">Use DLNA proxy</label>
                         <FlagEditor id="use-proxy-editor" className="ms-auto" checked={$s.get("useDlnaProxy")} callback={setUseProxy} />
+                    </div>
+                </li>
+                <li className="list-group-item">
+                    <small>In-app notifications</small>
+                    <div className="d-grid grid-1fr-auto gap-3 mt-1 align-items-center">
+                        <label htmlFor="discovery-nt">Device discovery</label>
+                        <FlagEditor id="discovery-nt" className="ms-auto" checked={$s.get("showDiscoveryNotifications")} callback={setShowDiscoveryNotifications} />
                     </div>
                 </li>
                 {("serviceWorker" in navigator) && ("PushManager" in window) && <>

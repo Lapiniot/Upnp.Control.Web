@@ -3,6 +3,7 @@ import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { CategoryRouteParams, DataSourceProps, DeviceRouteParams, UpnpDevice } from "./Types";
 import { DataFetchProps } from "../../components/DataFetch";
 import { DeviceDiscoveryNotifier } from "./DeviceDiscoveryNotifier";
+import $s from "./Settings";
 
 export type TemplatedDataComponentProps<T = any, P = {}> = { itemTemplate: ComponentType<DataSourceProps<T> & P> }
 
@@ -41,6 +42,7 @@ export class DeviceListContainer extends React.Component<DeviceListContainerProp
 
     reload = () => {
         this.props.dataContext?.reload();
+        return $s.get("showDiscoveryNotifications");
     }
 
     render() {
