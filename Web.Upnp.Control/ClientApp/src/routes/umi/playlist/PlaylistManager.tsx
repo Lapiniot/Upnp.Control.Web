@@ -16,6 +16,7 @@ import Browser, { BrowserProps } from "../../common/BrowserView";
 import ItemInfoModal from "../../common/ItemInfoModal";
 import { NavigatorProps } from "../../common/Navigator";
 import { TablePagination } from "../../common/Pagination";
+import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext from "../../common/RowStateContext";
 import $s from "../../common/Settings";
 import { BrowserSvgSymbols, EditSvgSymbols, PlayerSvgSymbols, PlaylistSvgSymbols, PlaySvgSymbols } from "../../common/SvgSymbols";
@@ -55,14 +56,6 @@ function getBrowserDialogRowState(item: DIDLItem) {
 }
 
 const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"];
-
-type PlaylistAction = "create" | "add-items" | "add-url" | "add-files" | "rename" | "delete" | "copy";
-
-type ItemAction = "remove";
-
-type PlaybackAction = "play" | "pause" | "stop";
-
-type Action = PlaylistAction | ItemAction | PlaybackAction | "info";
 
 export class PlaylistManagerCore
     extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
@@ -282,6 +275,10 @@ export class PlaylistManagerCore
             : `${parents[0]?.res?.url}#tracknr=${(p ? parseInt(p) - 1 : 0) * (s ? parseInt(s) : $s.get("pageSize")) + index + 1},play`;
     }
 
+    private playbackStateChanged = () => {
+        return $s.get("showPlaybackNotifications");
+    }
+
     render() {
 
         const { dataContext: data, navigate, fetching, error, id, s, p, device } = this.props;
@@ -303,6 +300,7 @@ export class PlaylistManagerCore
             <BrowserSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="vstack overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
+                <PlaybackStateNotifier device={device} callback={this.playbackStateChanged} />
                 <PlaybackStateProvider device={device} getTrackUrlHook={this.getPlayUrl} >
                     <PlaylistRowStateProvider items={data?.source.items} getActiveTrackIndexHook={data?.source.items && this.getActiveTrackIndex}>
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} rootLevel={isRootLevel}

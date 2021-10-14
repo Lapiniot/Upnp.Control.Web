@@ -30,6 +30,10 @@ function setShowDiscoveryNotifications(value: boolean) {
     $s.set("showDiscoveryNotifications", value);
 }
 
+function setShowPlaybackNotifications(value: boolean) {
+    $s.set("showPlaybackNotifications", value);
+}
+
 export default () => {
     return <div className="overflow-auto">
         <div className="vstack m-0 m-sm-3 w-md-50">
@@ -54,6 +58,8 @@ export default () => {
                     <div className="d-grid grid-1fr-auto gap-3 mt-1 align-items-center">
                         <label htmlFor="discovery-nt">Device discovery</label>
                         <FlagEditor id="discovery-nt" className="ms-auto" checked={$s.get("showDiscoveryNotifications")} callback={setShowDiscoveryNotifications} />
+                        <label htmlFor="playback-nt">Playback state changes</label>
+                        <FlagEditor id="playback-nt" className="ms-auto" checked={$s.get("showPlaybackNotifications")} callback={setShowPlaybackNotifications} />
                     </div>
                 </li>
                 {("serviceWorker" in navigator) && ("PushManager" in window) && <>
