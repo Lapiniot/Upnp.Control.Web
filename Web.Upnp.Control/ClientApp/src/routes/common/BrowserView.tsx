@@ -9,8 +9,8 @@ import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
-const HEADER_SELECTOR = ":scope > div.table-caption";
-const HEADER_CELLS_SELECTOR = ":scope > div:not(.table-caption):first-of-type > div > *, :scope > div.table-caption:first-of-type + div > div > *";
+const CAPTION_SELECTOR = ":scope > div.table-caption";
+const HEADER_GROUP_SELECTOR = ":scope > div:not(.table-caption):first-of-type, :scope > div.table-caption:first-of-type + div";
 
 type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode" | "useLevelUpRow" | "stickyCaption" | "stickyHeaders";
 
@@ -120,7 +120,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         let offset = table.offsetTop;
 
         if (this.props.stickyCaption) {
-            const caption = table.querySelector<HTMLDivElement>(HEADER_SELECTOR);
+            const caption = table.querySelector<HTMLDivElement>(CAPTION_SELECTOR);
             if (caption) {
                 const rect = caption.getBoundingClientRect();
                 caption.style.top = `${Math.round(offset)}px`;
@@ -130,8 +130,10 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
         if (this.props.stickyHeaders) {
             const top = `${Math.round(offset)}px`;
-            const headers = table.querySelectorAll<HTMLElement>(HEADER_CELLS_SELECTOR);
-            headers.forEach(cell => { cell.style.top = top; });
+            const header = table.querySelector<HTMLElement>(HEADER_GROUP_SELECTOR);
+            if (header) {
+                header.style.top = top;
+            }
         }
     }
 
