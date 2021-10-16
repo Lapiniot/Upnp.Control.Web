@@ -1,6 +1,7 @@
 import { forwardRef, useMemo, useRef } from "react";
 import NotificationsHostCore, { INotificationHost } from "../../components/NotificationsHost";
 import { useSignalR } from "../../components/SignalRListener";
+import { TrackInfoLine } from "./TrackInfoLine";
 import { AVState, PropertyBag } from "./Types";
 
 const NotificationsHost = forwardRef(NotificationsHostCore);
@@ -16,14 +17,11 @@ export function PlaybackStateNotifier({ callback, device }: { device: string; ca
             const { current, state: playbackState } = state;
             if (callback?.(state, vendorProps) !== false) {
                 if (current && current.id !== idRef.current && playbackState === "PLAYING") {
-                    const artist = current.artists?.[0] ?? current.creator;
-                    const album = current.album;
-                    const year = current.date;
                     ntRef.current?.push({
                         id: device, title: "Now playing", color: "success", delay: 5000,
                         message: <span className="vstack overflow-hidden justify-content-center">
                             <b className="text-truncate">&laquo;{current.title}&raquo;</b>
-                            {(album || artist) && <small className="text-truncate">{artist}{artist && <>&nbsp;&bull;&nbsp;</>}{year}{year && <>&nbsp;&bull;&nbsp;</>}{album}</small>}
+                            <TrackInfoLine item={current} />
                         </span>
                     });
                     idRef.current = current.id;

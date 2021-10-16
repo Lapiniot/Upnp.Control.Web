@@ -3,6 +3,7 @@ import { playlistBookmarks } from "../../../components/BookmarkService";
 import AlbumArt from "../../common/AlbumArt";
 import { useBookmarkButton } from "../../common/BookmarkButton";
 import { CellTemplateProps } from "../../common/BrowserView";
+import { TrackInfoLine } from "../../common/TrackInfoLine";
 import { PlaybackState, RowState } from "../../common/Types";
 
 type CellContext = {
@@ -45,7 +46,7 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
         </div>
         <span className="vstack overflow-hidden justify-content-center">
             <span className="text-truncate">{d.title}</span>
-            {(d.album || artist) && <small className="text-truncate">{artist}{artist && <>&nbsp;&bull;&nbsp;</>}{d.album}</small>}
+            <TrackInfoLine item={d} />
         </span>
         {d.container && ctx?.deviceName && <BookmarkItemButton item={d} device={ctx?.device as string} deviceName={ctx?.deviceName as string} />}
         <button type="button" className="btn btn-round btn-plain" data-id={d.id} data-index={index} data-bs-toggle="dropdown" disabled={!!(rowState & RowState.Readonly)}>
