@@ -33,14 +33,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0-rc.1.21451.13" />
-        <PackageReference Include="System.Threading.Channels" Version="6.0.0-rc.1.21451.13" />
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.0-rc.1.21452.15" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0-rc.1.21452.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-rc.1.21452.10" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0-rc.1.21451.13" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0-rc.1.21451.13" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.1" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0-rc.2.21480.5" />
+        <PackageReference Include="System.Threading.Channels" Version="6.0.0-rc.2.21480.5" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.0-rc.2.21480.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0-rc.2.21480.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-rc.2.21480.5" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0-rc.2.21480.5" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0-rc.2.21480.5" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
