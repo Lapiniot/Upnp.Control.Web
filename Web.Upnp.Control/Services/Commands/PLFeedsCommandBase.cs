@@ -47,7 +47,7 @@ namespace Web.Upnp.Control.Services.Commands
 
             var reader = new StreamPipeReader(stream);
 
-            await using(reader.ConfigureAwait(false))
+            try
             {
                 reader.Start();
                 var encoding = Path.GetExtension(file.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
@@ -55,6 +55,10 @@ namespace Web.Upnp.Control.Services.Commands
                 {
                     await AppendFeedItemAsync(writer, new Uri(path), info, useProxy, cancellationToken).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await reader.DisposeAsync().ConfigureAwait(false);
             }
         }
 

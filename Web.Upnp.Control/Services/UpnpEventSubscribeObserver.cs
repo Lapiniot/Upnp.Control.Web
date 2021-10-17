@@ -1,4 +1,5 @@
-﻿using IoT.Device.Xiaomi.Umi.Services;
+﻿using System.Diagnostics.CodeAnalysis;
+using IoT.Device.Xiaomi.Umi.Services;
 using IoT.Protocol.Upnp;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
@@ -73,6 +74,7 @@ namespace Web.Upnp.Control.Services
             }
         }
 
+        [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private async Task TerminateAsync(IEnumerable<IAsyncDisposable> subscriptions)
         {
             foreach(var subscription in subscriptions)

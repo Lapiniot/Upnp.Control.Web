@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http.Features;
@@ -15,7 +16,7 @@ public sealed class ContentProxyMiddleware : ProxyMiddleware
     private const string OptionStipIcyMetadata = "strip-icy-metadata";
     private const string OptionAddDlnaMetadata = "add-dlna-metadata";
 
-    public ContentProxyMiddleware(HttpClient client, IOptions<ContentProxyOptions> options, ILogger<ProxyMiddleware> logger) : base(client, logger)
+    public ContentProxyMiddleware(HttpClient client, [NotNull] IOptions<ContentProxyOptions> options, ILogger<ProxyMiddleware> logger) : base(client, logger)
     {
         BufferSize = options.Value.BufferSize;
     }

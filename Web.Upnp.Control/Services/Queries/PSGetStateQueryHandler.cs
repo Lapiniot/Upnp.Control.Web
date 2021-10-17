@@ -18,6 +18,8 @@ public class PSGetStateQueryHandler : IAsyncQueryHandler<PSGetStateQuery, bool>
 
     public async Task<bool> ExecuteAsync(PSGetStateQuery query, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(query);
+
         return await context.FindAsync<PushNotificationSubscription>(new object[] { query.Endpoint, query.Type }).ConfigureAwait(false) is not null;
     }
 }

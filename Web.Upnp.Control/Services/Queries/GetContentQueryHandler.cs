@@ -1,5 +1,6 @@
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
+using System.Diagnostics.CodeAnalysis;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 
@@ -59,8 +60,9 @@ namespace Web.Upnp.Control.Services.Queries
             return new CDContent(total, description, metadata, items, parents);
         }
 
+        [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private async Task<IEnumerable<Item>> GetParentsAsync(ContentDirectoryService service, string parent, string filter,
-                    bool withResource, bool withVendor, CancellationToken cancellationToken)
+            bool withResource, bool withVendor, CancellationToken cancellationToken)
         {
             var parents = new List<Item>();
 

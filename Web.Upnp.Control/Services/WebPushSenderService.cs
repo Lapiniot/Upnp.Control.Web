@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
@@ -65,6 +66,7 @@ namespace Web.Upnp.Control.Services
 
         #endregion
 
+        [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
@@ -128,6 +130,7 @@ namespace Web.Upnp.Control.Services
             }
         }
 
+        [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private async void Post(PushMessage message)
         {
             try
