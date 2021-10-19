@@ -1,5 +1,7 @@
 namespace Web.Upnp.Control.Models;
 
-public record AVStateMessage(AVState State, AVPosition Position, IReadOnlyDictionary<string, string> VendorProps);
-public record RCStateMessage(RCVolumeState State);
-public record UpnpDiscoveryMessage(string Type, UpnpDevice Device);
+
+public abstract record NotificationMessage(string Type);
+public record AVStateMessage(AVState State, AVPosition Position, IReadOnlyDictionary<string, string> VendorProps) : NotificationMessage("av-state");
+public record RCStateMessage(RCVolumeState State) : NotificationMessage("rc-state");
+public record UpnpDiscoveryMessage(string Type, UpnpDevice Device) : NotificationMessage(Type);

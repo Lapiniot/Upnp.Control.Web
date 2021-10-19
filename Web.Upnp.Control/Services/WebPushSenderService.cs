@@ -22,10 +22,11 @@ namespace Web.Upnp.Control.Services
         private readonly ILogger<WebPushSenderService> logger;
         private readonly IOptions<JsonOptions> jsonOptions;
         private readonly IOptions<WebPushOptions> wpOptions;
-        private readonly Channel<PushMessage> channel;
+        private readonly Channel<(NotificationType Type, byte[] Payload)> channel;
 
-        public WebPushSenderService(IServiceProvider services, ILogger<WebPushSenderService> logger,
-            IOptions<JsonOptions> jsonOptions, IOptions<WebPushOptions> wpOptions)
+        public WebPushSenderService(IServiceProvider services,
+            IOptions<JsonOptions> jsonOptions, IOptions<WebPushOptions> wpOptions,
+            ILogger<WebPushSenderService> logger)
         {
             ArgumentNullException.ThrowIfNull(services);
             ArgumentNullException.ThrowIfNull(logger);
@@ -37,7 +38,7 @@ namespace Web.Upnp.Control.Services
             this.jsonOptions = jsonOptions;
             this.wpOptions = wpOptions;
 
-            channel = Channel.CreateBounded<PushMessage>(new BoundedChannelOptions(100)
+            channel = Channel.CreateBounded<(NotificationType Type, byte[] Payload)>(new BoundedChannelOptions(100)
             {
                 FullMode = BoundedChannelFullMode.DropOldest,
                 SingleReader = true,
@@ -59,8 +60,12 @@ namespace Web.Upnp.Control.Services
         {
             switch (value)
             {
-                case UpnpDeviceAppearedEvent dae: Post(new PushMessage(NotificationType.DeviceDiscovery, JsonSerializer.SerializeToUtf8Bytes(new UpnpDiscoveryMessage("appeared", dae.Device), jsonOptions.Value.SerializerOptions))); break;
-                case UpnpDeviceDisappearedEvent dde: Post(new PushMessage(NotificationType.DeviceDiscovery, JsonSerializer.SerializeToUtf8Bytes(new UpnpDiscoveryMessage("disappeared", dde.Device), jsonOptions.Value.SerializerOptions))); break;
+                case UpnpDeviceAppearedEvent dae:
+                    Post(NotificationType.DeviceDiscovery, new UpnpDiscoveryMessage("appeared", dae.Device));
+                    break;
+                case UpnpDeviceDisappearedEvent dde:
+                    Post(NotificationType.DeviceDiscovery, new UpnpDiscoveryMessage("disappeared", dde.Device));
+                    break;
             }
         }
 
@@ -131,11 +136,11 @@ namespace Web.Upnp.Control.Services
         }
 
         [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
-        private async void Post(PushMessage message)
+        private async void Post<T>(NotificationType type, T message) where T : NotificationMessage
         {
             try
             {
-                var vt = channel.Writer.WriteAsync(message);
+                var vt = channel.Writer.WriteAsync((type, JsonSerializer.SerializeToUtf8Bytes(message, jsonOptions.Value.SerializerOptions)));
                 if (!vt.IsCompletedSuccessfully) await vt.ConfigureAwait(false);
             }
             catch (Exception ex)
