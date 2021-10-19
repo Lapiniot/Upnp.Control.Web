@@ -1,4 +1,3 @@
-using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.SignalR;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Models;
@@ -45,26 +44,11 @@ public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
             return;
         }
 
-        var map = avtEvent.Properties;
-        var current = map.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
-        var next = map.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
-
-        var state = new AVState(map.TryGetValue("TransportState", out value) ? value : null, null,
-            map.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : null, null,
-            map.TryGetValue("CurrentPlayMode", out value) ? value : null)
-        {
-            Actions = map.TryGetValue("CurrentTransportActions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-            Current = current,
-            Next = next,
-            CurrentTrack = map.TryGetValue("CurrentTrack", out value) ? value : null,
-            CurrentTrackUri = map.TryGetValue("CurrentTrackURI", out value) && !string.IsNullOrEmpty(value) ? new Uri(value) : null,
-        };
-
-        var position = new AVPosition(map.TryGetValue("CurrentTrack", out value) ? value : null,
-            map.TryGetValue("CurrentTrackDuration", out value) ? value : null,
-            map.TryGetValue("RelativeTimePosition", out value) ? value : null);
-
-        var _ = hub.Clients.All.AVTransportEvent(avtEvent.DeviceId, new AVStateMessage(state, position, avtEvent.VendorProperties));
+        var _ = hub.Clients.All.AVTransportEvent(avtEvent.DeviceId,
+            new AVStateMessage(
+                Factories.CreateAVState(avtEvent.Properties),
+                Factories.CreateAVPosition(avtEvent.Properties),
+                avtEvent.VendorProperties));
     }
 
     private void NotifyRenderingControlEvent(UpnpPropertyChangedEvent rce)

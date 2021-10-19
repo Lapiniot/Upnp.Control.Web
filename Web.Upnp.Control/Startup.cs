@@ -51,6 +51,7 @@ public class Startup
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
             .AddSingleton<IObserver<UpnpDiscoveryEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
+            .AddSingleton<IObserver<UpnpEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
             .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
             .AddTransient(sp => SsdpEnumeratorFactory(sp))

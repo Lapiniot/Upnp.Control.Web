@@ -16,7 +16,9 @@ namespace Web.Upnp.Control.Services
 {
     public record PushMessage(NotificationType Type, byte[] Payload);
 
-    public sealed partial class WebPushSenderService : BackgroundService, IObserver<UpnpDiscoveryEvent>
+    public sealed partial class WebPushSenderService : BackgroundService,
+        IObserver<UpnpDiscoveryEvent>,
+        IObserver<UpnpEvent>
     {
         private readonly IServiceProvider services;
         private readonly ILogger<WebPushSenderService> logger;
@@ -48,11 +50,11 @@ namespace Web.Upnp.Control.Services
 
         #region Implementation of IObserver<UpnpDiscoveryEvent>
 
-        void IObserver<UpnpDiscoveryEvent>.OnCompleted()
+        public void OnCompleted()
         {
         }
 
-        void IObserver<UpnpDiscoveryEvent>.OnError(Exception error)
+        public void OnError(Exception error)
         {
         }
 
@@ -66,6 +68,37 @@ namespace Web.Upnp.Control.Services
                 case UpnpDeviceDisappearedEvent dde:
                     Post(NotificationType.DeviceDiscovery, new UpnpDiscoveryMessage("disappeared", dde.Device));
                     break;
+            }
+        }
+
+        #endregion
+
+        #region Implementation of IObserver<UpnpAVTransportPropertyChangedEvent>
+
+        void IObserver<UpnpEvent>.OnNext(UpnpEvent value)
+        {
+            if (value is UpnpAVTransportPropertyChangedEvent @event)
+            {
+                var bag = @event.Properties;
+
+                if (bag.Count == 1 && (bag.ContainsKey("RelativeTimePosition") || bag.ContainsKey("AbsoluteTimePosition")))
+                {
+                    // Workaround for some quirky renderers that report position changes every second during playback
+                    // via state variable changes. Some way of throttling is definitely needed here :(
+                    return;
+                }
+
+                if (!bag.TryGetValue("TransportState", out var state) || state != "PLAYING")
+                {
+                    // We currently send pushes for "PLAYING" state
+                    return;
+                }
+
+                Post(NotificationType.PlaybackStateChange,
+                    new AVStateMessage(
+                        Factories.CreateAVState(bag),
+                        Factories.CreateAVPosition(bag),
+                        @event.VendorProperties));
             }
         }
 
