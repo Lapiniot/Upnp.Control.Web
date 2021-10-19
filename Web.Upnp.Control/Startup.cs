@@ -13,6 +13,7 @@ using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Infrastructure;
+using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Models.Converters;
 using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Services;
@@ -123,10 +124,13 @@ public class Startup
     {
         options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+
         foreach(var converter in converters)
         {
             options.Converters.Add(converter);
         }
+
+        options.AddContext<JsonContext>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
