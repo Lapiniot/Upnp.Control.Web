@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using IoT.Device.Xiaomi.Umi.Services;
+using IoT.Device.Upnp.Umi.Services;
 using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models;

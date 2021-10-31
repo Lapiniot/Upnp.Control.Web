@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using IoT.Device.Xiaomi.Umi.Services;
+using IoT.Device.Upnp.Umi.Services;
 using IoT.Protocol.Upnp;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;

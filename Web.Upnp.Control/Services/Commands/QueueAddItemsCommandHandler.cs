@@ -1,5 +1,5 @@
 using System.Globalization;
-using IoT.Device.Xiaomi.Umi.Services;
+using IoT.Device.Upnp.Umi.Services;
 using IoT.Protocol.Upnp;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;

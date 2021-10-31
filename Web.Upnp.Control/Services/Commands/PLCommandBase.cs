@@ -1,5 +1,5 @@
 using System.Xml;
-using IoT.Device.Xiaomi.Umi.Services;
+using IoT.Device.Upnp.Umi.Services;
 using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp;
 using IoT.Protocol.Upnp.Services;

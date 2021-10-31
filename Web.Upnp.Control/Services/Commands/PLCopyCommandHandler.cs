@@ -1,5 +1,5 @@
 using System.Text;
-using IoT.Device.Xiaomi.Umi.Services;
+using IoT.Device.Upnp.Umi.Services;
 using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Web.Upnp.Control.Models;

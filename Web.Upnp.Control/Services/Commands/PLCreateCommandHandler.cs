@@ -1,4 +1,4 @@
-using IoT.Device.Xiaomi.Umi.Services;
+using IoT.Device.Upnp.Umi.Services;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
 
