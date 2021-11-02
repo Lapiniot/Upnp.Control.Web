@@ -38,6 +38,10 @@
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.0-rc.2.21480.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0-rc.2.21480.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-rc.2.21480.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0-rc.2.21480.5">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0-rc.2.21480.5" />
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0-rc.2.21480.5" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />

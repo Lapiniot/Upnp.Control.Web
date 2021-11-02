@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration.Json;
 using Web.Upnp.Control;
 using Web.Upnp.Control.Services;
 
+#pragma warning disable CA1812 // False warning due to the bug in the rule's analyzer
+
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var hostBuilder = Host

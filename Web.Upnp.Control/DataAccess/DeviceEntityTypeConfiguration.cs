@@ -13,14 +13,12 @@ internal class DeviceEntityTypeConfiguration : IEntityTypeConfiguration<UpnpDevi
         builder.OwnsMany(d => d.Icons, i =>
         {
             i.WithOwner().HasForeignKey("Udn");
-            i.Property<int>("Id").ValueGeneratedOnAdd();
             i.HasKey("Id");
         });
 
         builder.OwnsMany(d => d.Services, s =>
         {
             s.WithOwner().HasForeignKey("Udn");
-            s.Property<int>("Id").ValueGeneratedOnAdd();
             s.HasKey("Id");
         });
     }

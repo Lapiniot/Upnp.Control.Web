@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.DataAccess;
 
@@ -36,10 +37,8 @@ public class ApplicationInitService : IHostedService
     {
         using var scope = services.CreateScope();
         var serviceProvider = scope.ServiceProvider;
-        var upnpDb = serviceProvider.GetRequiredService<UpnpDbContext>();
-        await upnpDb.Database.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
-        var pushDb = serviceProvider.GetRequiredService<PushSubscriptionDbContext>();
-        await pushDb.Database.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
+        await serviceProvider.GetRequiredService<UpnpDbContext>().Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+        await serviceProvider.GetRequiredService<PushSubscriptionDbContext>().Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
