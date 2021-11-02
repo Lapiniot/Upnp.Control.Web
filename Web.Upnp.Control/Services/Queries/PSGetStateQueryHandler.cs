@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ public class PSGetStateQueryHandler : IAsyncQueryHandler<PSGetStateQuery, bool>
     public PSGetStateQueryHandler(PushSubscriptionDbContext context)
     {
         this.context = context ?? throw new ArgumentNullException(nameof(context));
+        this.context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
     public async Task<bool> ExecuteAsync(PSGetStateQuery query, CancellationToken cancellationToken)

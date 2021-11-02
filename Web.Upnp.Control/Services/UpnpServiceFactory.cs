@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.Services;
+using Microsoft.EntityFrameworkCore;
 using Web.Upnp.Control.DataAccess;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Services.Abstractions;
@@ -29,6 +30,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     public UpnpServiceFactory(UpnpDbContext context, IHttpClientFactory clientFactory)
     {
         this.context = context;
+        this.context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         this.clientFactory = clientFactory;
     }
 

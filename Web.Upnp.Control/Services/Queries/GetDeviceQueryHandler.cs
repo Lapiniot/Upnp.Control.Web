@@ -27,6 +27,7 @@ public sealed class GetDeviceQueryHandler : IAsyncEnumerableQueryHandler<GetDevi
         ArgumentNullException.ThrowIfNull(context);
 
         this.context = context;
+        this.context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
     public async IAsyncEnumerable<UpnpDevice> ExecuteAsync(GetDevicesQuery query, [EnumeratorCancellation] CancellationToken cancellationToken)

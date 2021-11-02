@@ -118,36 +118,27 @@ namespace Web.Upnp.Control.Services
                     var context = scope.ServiceProvider.GetRequiredService<PushSubscriptionDbContext>();
                     var client = scope.ServiceProvider.GetRequiredService<IWebPushClient>();
 
-                    try
+                    var subscriptions = context.Subscriptions.Where(s => s.Type == message.Type).AsAsyncEnumerable();
+                    await foreach (var subscription in subscriptions.WithCancellation(stoppingToken).ConfigureAwait(false))
                     {
-                        var subscriptions = context.Subscriptions.Where(s => s.Type == message.Type).AsAsyncEnumerable();
-                        await foreach (var subscription in subscriptions.WithCancellation(stoppingToken).ConfigureAwait(false))
+                        Uri endpoint = subscription.Endpoint;
+                        var keys = new SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);
+                        try
                         {
-                            var endpoint = subscription.Endpoint;
-                            var keys = new SubscriptionKeys(subscription.P256dhKey, subscription.AuthKey);
-                            try
-                            {
-                                await client.SendAsync(endpoint, keys, payload, wpOptions.Value.TTLSeconds, stoppingToken).ConfigureAwait(false);
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                // expected
-                            }
-                            catch (HttpRequestException hre) when (hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
-                            {
-                                context.Remove(subscription);
-                            }
-                            catch (Exception ex)
-                            {
-                                LogPushError(ex, endpoint);
-                            }
+                            await client.SendAsync(endpoint, keys, message.Payload, wpOptions.Value.TTLSeconds, stoppingToken).ConfigureAwait(false);
                         }
-                    }
-                    finally
-                    {
-                        if (context.ChangeTracker.HasChanges())
+                        catch (OperationCanceledException)
                         {
+                            // expected
+                        }
+                        catch (HttpRequestException hre) when (hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
+                        {
+                            context.Remove(subscription);
                             await context.SaveChangesAsync(stoppingToken).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogPushError(ex, endpoint);
                         }
                     }
                 }
