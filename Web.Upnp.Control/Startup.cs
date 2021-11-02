@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.DataAccess;
+using Web.Upnp.Control.DataAccess.CompiledModels;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models;
@@ -41,9 +42,11 @@ public class Startup
             .AddSingleton<WebPushSenderService>()
             .AddDbContext<UpnpDbContext>(builder => builder
                 .UseSqlite("Data Source=./data/upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                .UseModel(UpnpDbContextModel.Instance)
                 .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))
             .AddDbContext<PushSubscriptionDbContext>(builder => builder
                 .UseSqlite("Data Source=./data/subscriptions.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                .UseModel(PushSubscriptionDbContextModel.Instance)
                 .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))
             .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
             .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
