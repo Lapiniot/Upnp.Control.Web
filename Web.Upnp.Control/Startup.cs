@@ -6,12 +6,9 @@ using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Http.Json;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
+using Upnp.Control.DataAccess;
 using Web.Upnp.Control.Configuration;
-using Web.Upnp.Control.DataAccess;
-using Web.Upnp.Control.DataAccess.CompiledModels;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models;
@@ -26,12 +23,14 @@ namespace Web.Upnp.Control;
 
 public class Startup
 {
-    public Startup(IConfiguration configuration)
+    public Startup(IConfiguration configuration, IWebHostEnvironment environment)
     {
         Configuration = configuration;
+        Environment = environment;
     }
 
     public IConfiguration Configuration { get; }
+    public IWebHostEnvironment Environment { get; }
 
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
@@ -40,14 +39,8 @@ public class Startup
             .AddHostedService<ApplicationInitService>()
             .AddHostedService(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddSingleton<WebPushSenderService>()
-            .AddDbContext<UpnpDbContext>(builder => builder
-                .UseSqlite("Data Source=./data/upnp.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-                .UseModel(UpnpDbContextModel.Instance)
-                .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))
-            .AddDbContext<PushSubscriptionDbContext>(builder => builder
-                .UseSqlite("Data Source=./data/subscriptions.db3;", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-                .UseModel(PushSubscriptionDbContextModel.Instance)
-                .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))
+            .AddUpnpDeviceSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/upnp.db3"))
+            .AddPushSubscriptionSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/subscriptions.db3"))
             .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
             .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
             .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()

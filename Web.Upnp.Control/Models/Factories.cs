@@ -2,10 +2,12 @@ using IoT.Protocol.Upnp.DIDL;
 
 namespace Web.Upnp.Control.Models;
 
-internal static class Factories
+public static class Factories
 {
     public static AVState CreateAVState(IReadOnlyDictionary<string, string> bag)
     {
+        ArgumentNullException.ThrowIfNull(bag);
+
         var current = bag.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
 
         var next = bag.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
@@ -24,6 +26,8 @@ internal static class Factories
 
     public static AVPosition CreateAVPosition(IReadOnlyDictionary<string, string> bag)
     {
+        ArgumentNullException.ThrowIfNull(bag);
+
         return new AVPosition(bag.TryGetValue("CurrentTrack", out var value) ? value : null,
             bag.TryGetValue("CurrentTrackDuration", out value) ? value : null,
             bag.TryGetValue("RelativeTimePosition", out value) ? value : null);

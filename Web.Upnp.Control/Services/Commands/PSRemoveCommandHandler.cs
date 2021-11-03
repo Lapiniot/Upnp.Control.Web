@@ -1,29 +1,27 @@
-using Web.Upnp.Control.DataAccess;
+using Upnp.Control.Services;
 using Web.Upnp.Control.Models;
-using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands;
 
 public sealed class PSRemoveCommandHandler : IAsyncCommandHandler<PSRemoveCommand>
 {
-    private readonly PushSubscriptionDbContext context;
+    private readonly IPushSubscriptionRepository repository;
 
-    public PSRemoveCommandHandler(PushSubscriptionDbContext context)
+    public PSRemoveCommandHandler(IPushSubscriptionRepository repository)
     {
-        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(repository);
 
-        this.context = context;
+        this.repository = repository;
     }
 
     public async Task ExecuteAsync(PSRemoveCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        var subscription = await context.Subscriptions.FindAsync(new object[] { command.Subscription.Endpoint, command.Subscription.Type }, cancellationToken).ConfigureAwait(false);
-        if(subscription != null)
+        var subscription = await repository.FindAsync(command.Subscription.Endpoint, command.Subscription.Type, cancellationToken).ConfigureAwait(false);
+        if(subscription is not null)
         {
-            context.Remove(subscription);
-            await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await repository.RemoveAsync(subscription, cancellationToken).ConfigureAwait(false);
         }
     }
 }

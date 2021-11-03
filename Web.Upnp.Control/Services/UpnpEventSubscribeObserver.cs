@@ -2,8 +2,8 @@
 using IoT.Device.Upnp.Umi.Services;
 using IoT.Protocol.Upnp;
 using Microsoft.Extensions.Options;
+using Upnp.Control.Models;
 using Web.Upnp.Control.Configuration;
-using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Services.Abstractions;
 

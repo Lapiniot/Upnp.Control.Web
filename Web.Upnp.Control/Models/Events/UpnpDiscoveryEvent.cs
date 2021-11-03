@@ -1,3 +1,5 @@
+using Upnp.Control.Models;
+
 namespace Web.Upnp.Control.Models.Events;
 
 public abstract record UpnpDiscoveryEvent(string DeviceId);

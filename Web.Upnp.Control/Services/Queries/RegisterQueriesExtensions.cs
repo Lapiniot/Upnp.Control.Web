@@ -1,5 +1,6 @@
-﻿using Web.Upnp.Control.Models;
-using Web.Upnp.Control.Services.Abstractions;
+﻿using Upnp.Control.Models;
+using Upnp.Control.Services;
+using Web.Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Services.Queries;
 

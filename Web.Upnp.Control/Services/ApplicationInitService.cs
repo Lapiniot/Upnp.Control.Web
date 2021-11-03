@@ -1,10 +1,9 @@
-using Microsoft.EntityFrameworkCore;
+using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
-using Web.Upnp.Control.DataAccess;
 
 namespace Web.Upnp.Control.Services;
 
-public class ApplicationInitService : IHostedService
+public class ApplicationInitService : BackgroundService
 {
     private readonly IServiceProvider services;
     private readonly IHostEnvironment environment;
@@ -21,28 +20,16 @@ public class ApplicationInitService : IHostedService
         this.configuration = configuration;
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         string root = environment.ContentRootPath;
 
-        Directory.CreateDirectory(Path.Combine(root, "data"));
-        await InitializeDatabasesAsync(cancellationToken).ConfigureAwait(false);
+        using var scope = services.CreateScope();
+        await Task.WhenAll(scope.ServiceProvider.GetServices<IServiceInitializer>()
+            .Select(initializer => initializer.InitializeAsync(stoppingToken))).ConfigureAwait(false);
 
         var configRoot = Path.Combine(root, "config");
         Directory.CreateDirectory(configRoot);
         await ConfigMigrations.EnsureVapidConfigExistsAsync(Path.Combine(configRoot, "appsettings.Secrets.json"), configuration).ConfigureAwait(false);
-    }
-
-    private async Task InitializeDatabasesAsync(CancellationToken cancellationToken)
-    {
-        using var scope = services.CreateScope();
-        var serviceProvider = scope.ServiceProvider;
-        await serviceProvider.GetRequiredService<UpnpDbContext>().Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
-        await serviceProvider.GetRequiredService<PushSubscriptionDbContext>().Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
     }
 }

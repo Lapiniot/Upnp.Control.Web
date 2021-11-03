@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.WebUtilities;
-using Web.Upnp.Control.DataAccess;
+using Upnp.Control.Models;
+using Upnp.Control.Services;
 using Web.Upnp.Control.Models;
-using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Commands;
 
 public sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
 {
-    private readonly PushSubscriptionDbContext context;
+    private readonly IPushSubscriptionRepository repository;
 
-    public PSAddCommandHandler(PushSubscriptionDbContext context)
+    public PSAddCommandHandler(IPushSubscriptionRepository repository)
     {
-        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(repository);
 
-        this.context = context;
+        this.repository = repository;
     }
 
     public async Task ExecuteAsync(PSAddCommand command, CancellationToken cancellationToken)
@@ -22,26 +22,24 @@ public sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
 
         var (type, endpoint, p256dhKey, authKey) = command.Subscription;
 
-        var subscription = await context.Subscriptions.FindAsync(new object[] { endpoint, type }, cancellationToken).ConfigureAwait(false);
+        var subscription = await repository.FindAsync(endpoint, type, cancellationToken).ConfigureAwait(false);
 
         if (subscription != null)
         {
-            context.Remove(subscription);
-            subscription = subscription with
+
+            await repository.RemoveAsync(subscription, cancellationToken).ConfigureAwait(false);
+            await repository.AddAsync(subscription with
             {
                 Created = DateTimeOffset.UtcNow,
                 P256dhKey = WebEncoders.Base64UrlDecode(p256dhKey),
                 AuthKey = WebEncoders.Base64UrlDecode(authKey)
-            };
-            context.Update(subscription);
+            }, cancellationToken).ConfigureAwait(false);
         }
         else
         {
             subscription = new PushNotificationSubscription(endpoint, type, DateTimeOffset.UtcNow,
                 WebEncoders.Base64UrlDecode(p256dhKey), WebEncoders.Base64UrlDecode(authKey));
-            context.Subscriptions.Add(subscription);
+            await repository.AddAsync(subscription, cancellationToken).ConfigureAwait(false);
         }
-
-        await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 }

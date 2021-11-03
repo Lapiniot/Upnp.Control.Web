@@ -1,4 +1,5 @@
 using IoT.Protocol.Upnp.DIDL;
+using Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Models;
 
@@ -29,12 +30,4 @@ public record CreatePlaylistParams(string Title, MediaSource Source);
 public record MediaSource(string DeviceId, IEnumerable<string> Items, int? MaxDepth);
 public record PlaylistFilesSource(IEnumerable<IFormFile> Files, bool? UseProxy);
 public record FeedUrlSource(Uri Url, string Title, bool? UseProxy);
-
-public enum NotificationType
-{
-    DeviceDiscovery,
-    PlaybackStateChange,
-    ContentUpdated
-}
-
 public record PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
