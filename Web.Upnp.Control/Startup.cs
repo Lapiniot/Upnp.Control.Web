@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Options;
 using Upnp.Control.DataAccess;
+using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Infrastructure;
@@ -51,6 +52,7 @@ public class Startup
             .AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
             .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
             .AddTransient(sp => SsdpEnumeratorFactory(sp))
+            .AddTransient<IServiceInitializer, VAPIDKeyConfigInitializer>()
             .AddSoapHttpClient()
             .AddEventSubscribeClient()
             .AddWebPushClient()
