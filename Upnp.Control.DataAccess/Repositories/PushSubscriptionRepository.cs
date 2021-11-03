@@ -29,16 +29,29 @@ internal sealed class PushSubscriptionRepository : IPushSubscriptionRepository
         }
     }
 
-    public Task AddAsync(PushNotificationSubscription subscription, CancellationToken cancellationToken)
-    {
-        context.Subscriptions.Add(subscription);
-        return context.SaveChangesAsync(cancellationToken);
-    }
-
     public Task RemoveAsync(PushNotificationSubscription subscription, CancellationToken cancellationToken)
     {
         context.Subscriptions.Remove(subscription);
         return context.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task AddOrUpdateAsync(Uri endpoint, NotificationType type,
+        Func<Uri, NotificationType, PushNotificationSubscription> addFactory,
+        Func<PushNotificationSubscription, PushNotificationSubscription> updateFactory,
+        CancellationToken cancellationToken)
+    {
+        var entity = await FindAsync(endpoint, type, cancellationToken).ConfigureAwait(false);
+
+        if(entity is not null)
+        {
+            context.Subscriptions.Remove(entity);
+            context.Subscriptions.Add(updateFactory(entity));
+        }
+        else
+        {
+            context.Subscriptions.Add(addFactory(endpoint, type));
+        }
+
+        await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
 }

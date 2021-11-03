@@ -77,7 +77,7 @@ public partial class UpnpDiscoveryService : BackgroundService
 
                         if(device != null)
                         {
-                            await repository.UpdateExpirationAsync(device, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10), stoppingToken).ConfigureAwait(false);
+                            await repository.PatchAsync(device, d => d.ExpiresAt, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10), stoppingToken).ConfigureAwait(false);
 
                             Notify(observers, new UpnpDeviceUpdatedEvent(udn, device));
 

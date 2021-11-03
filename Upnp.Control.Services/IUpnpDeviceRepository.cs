@@ -9,5 +9,5 @@ public interface IUpnpDeviceRepository
     Task<UpnpDevice> FindAsync(string udn, CancellationToken cancellationToken);
     Task RemoveAsync(UpnpDevice device, CancellationToken cancellationToken);
     Task AddAsync(UpnpDevice device, CancellationToken cancellationToken);
-    Task UpdateExpirationAsync(UpnpDevice device, DateTime value, CancellationToken cancellationToken);
+    Task PatchAsync<T>(UpnpDevice device, Expression<Func<UpnpDevice, T>> accessor, T value, CancellationToken cancellationToken);
 }

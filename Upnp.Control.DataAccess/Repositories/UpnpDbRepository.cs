@@ -14,8 +14,6 @@ internal sealed class UpnpDbRepository : IUpnpDeviceRepository
 
     public UpnpDbRepository(UpnpDbContext context)
     {
-        ArgumentNullException.ThrowIfNull(context);
-
         this.context = context;
     }
 
@@ -40,15 +38,15 @@ internal sealed class UpnpDbRepository : IUpnpDeviceRepository
         return CreateBaseQuery().Where(d => d.Udn == udn).FirstOrDefaultAsync(cancellationToken);
     }
 
-    public Task RemoveAsync(UpnpDevice device, CancellationToken cancellationToken)
+    public Task PatchAsync<T>(UpnpDevice device, Expression<Func<UpnpDevice, T>> accessor, T value, CancellationToken cancellationToken)
     {
-        context.Remove(device);
+        context.Entry(device).Property(accessor).CurrentValue = value;
         return context.SaveChangesAsync(cancellationToken);
     }
 
-    public Task UpdateExpirationAsync(UpnpDevice device, DateTime value, CancellationToken cancellationToken)
+    public Task RemoveAsync(UpnpDevice device, CancellationToken cancellationToken)
     {
-        context.Entry(device).Property(d => d.ExpiresAt).CurrentValue = value;
+        context.Remove(device);
         return context.SaveChangesAsync(cancellationToken);
     }
 
