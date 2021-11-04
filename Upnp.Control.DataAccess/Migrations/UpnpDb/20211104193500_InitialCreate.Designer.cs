@@ -11,7 +11,7 @@ using Upnp.Control.DataAccess;
 namespace Upnp.Control.DataAccess.Migrations.UpnpDb
 {
     [DbContext(typeof(UpnpDbContext))]
-    [Migration("20211103105712_InitialCreate")]
+    [Migration("20211104193500_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
