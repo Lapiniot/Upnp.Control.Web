@@ -58,11 +58,9 @@ public partial class UpnpDiscoveryService : BackgroundService
 
                             if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
                             {
-                                var existing = await repository.FindAsync(udn, stoppingToken).ConfigureAwait(false);
-                                if(existing != null)
+                                if(await repository.TryRemoveAsync(udn, stoppingToken).ConfigureAwait(false) is { } removed)
                                 {
-                                    await repository.RemoveAsync(existing, stoppingToken).ConfigureAwait(false);
-                                    Notify(observers, new UpnpDeviceDisappearedEvent(udn, existing));
+                                    Notify(observers, new UpnpDeviceDisappearedEvent(udn, removed));
                                 }
 
                                 continue;

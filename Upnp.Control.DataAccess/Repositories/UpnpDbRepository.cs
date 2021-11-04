@@ -25,17 +25,22 @@ internal sealed class UpnpDbRepository : IUpnpDeviceRepository
 
     public async IAsyncEnumerable<UpnpDevice> EnumerateAsync(Expression<Func<UpnpDevice, bool>> filter, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var queryable = filter is not null ? CreateBaseQuery().Where(filter) : CreateBaseQuery();
+        var queryable = context.UpnpDevices.AsNoTracking();
 
-        await foreach(var device in queryable.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        if(filter is not null)
+        {
+            queryable = queryable.Where(filter);
+        }
+
+        await foreach(var device in queryable.AsAsyncEnumerable().WithCancellation(cancellationToken).ConfigureAwait(false))
         {
             yield return device;
         }
     }
 
-    public Task<UpnpDevice> FindAsync(string udn, CancellationToken cancellationToken)
+    public async Task<UpnpDevice> FindAsync(string udn, CancellationToken cancellationToken)
     {
-        return CreateBaseQuery().Where(d => d.Udn == udn).FirstOrDefaultAsync(cancellationToken);
+        return await context.UpnpDevices.FindAsync(new object[] { udn }, cancellationToken).ConfigureAwait(false);
     }
 
     public Task PatchAsync<T>(UpnpDevice device, Expression<Func<UpnpDevice, T>> accessor, T value, CancellationToken cancellationToken)
@@ -44,14 +49,15 @@ internal sealed class UpnpDbRepository : IUpnpDeviceRepository
         return context.SaveChangesAsync(cancellationToken);
     }
 
-    public Task RemoveAsync(UpnpDevice device, CancellationToken cancellationToken)
+    public async Task<UpnpDevice> TryRemoveAsync(string udn, CancellationToken cancellationToken)
     {
-        context.Remove(device);
-        return context.SaveChangesAsync(cancellationToken);
-    }
+        var entity = await context.UpnpDevices.FindAsync(new object[] { udn }, cancellationToken).ConfigureAwait(false);
+        if(entity is not null)
+        {
 
-    private IQueryable<UpnpDevice> CreateBaseQuery()
-    {
-        return context.UpnpDevices.AsNoTracking().Include(d => d.Icons).Include(d => d.Services).Where(d => d.ExpiresAt > DateTime.UtcNow);
+            context.Remove(entity);
+            await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+        return entity;
     }
 }
