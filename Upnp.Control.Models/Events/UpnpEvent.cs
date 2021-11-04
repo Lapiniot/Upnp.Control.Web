@@ -1,4 +1,4 @@
-namespace Web.Upnp.Control.Models.Events;
+namespace Upnp.Control.Models.Events;
 
 public abstract record UpnpEvent
 {

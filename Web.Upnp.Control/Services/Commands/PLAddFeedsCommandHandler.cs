@@ -29,7 +29,7 @@ public sealed class PLAddFeedsCommandHandler : PLFeedsCommandBase,
         {
             { DeviceId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
             { PlaylistId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
-            { DeviceId: { } deviceId, PlaylistId: { } playlistId, Source: { Files: { } files, UseProxy: var useProxy } } =>
+            { DeviceId: { } deviceId, PlaylistId: { } playlistId, Files: { } files, UseProxy: var useProxy } =>
                 AddFromFilesAsync(deviceId, playlistId, files, useProxy, cancellationToken),
             _ => throw new ArgumentException("Valid file must be provided")
         };

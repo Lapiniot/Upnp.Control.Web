@@ -1,4 +1,4 @@
-namespace Web.Upnp.Control.Configuration;
+namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 public record VAPIDSecretOptions
 {

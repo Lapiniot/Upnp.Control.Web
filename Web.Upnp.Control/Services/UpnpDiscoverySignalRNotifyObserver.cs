@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Upnp.Control.Models;
+using Upnp.Control.Models.Events;
 using Web.Upnp.Control.Hubs;
-using Web.Upnp.Control.Models;
-using Web.Upnp.Control.Models.Events;
 
 namespace Web.Upnp.Control.Services;
 

@@ -5,6 +5,7 @@ using IoT.Protocol.Upnp.DIDL;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Options;
+using Upnp.Control.Models;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Services.Abstractions;
@@ -39,11 +40,11 @@ namespace Web.Upnp.Control.Services.Commands
 
         public Uri BindingUri { get; }
 
-        protected async Task AppendFromFileAsync(XmlWriter writer, IFormFile file, bool? useProxy, CancellationToken cancellationToken)
+        protected async Task AppendFromFileAsync(XmlWriter writer, IFileSource file, bool? useProxy, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(file);
 
-            using var stream = file.OpenReadStream();
+            using var stream = file.GetStream();
 
             var reader = new StreamPipeReader(stream);
 
@@ -102,7 +103,7 @@ namespace Web.Upnp.Control.Services.Commands
             }.Uri;
         }
 
-        protected async Task<string> GetMetadataAsync(IEnumerable<IFormFile> files, bool? useProxy, CancellationToken cancellationToken)
+        protected async Task<string> GetMetadataAsync(IEnumerable<IFileSource> files, bool? useProxy, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(files);
 
@@ -139,13 +140,13 @@ namespace Web.Upnp.Control.Services.Commands
             await AddItemAsync(deviceId, playlistId, sb.ToString(), cancellationToken).ConfigureAwait(false);
         }
 
-        protected async Task AddFromFilesAsync(string deviceId, string playlistId, IEnumerable<IFormFile> files, bool? useProxy, CancellationToken cancellationToken)
+        protected async Task AddFromFilesAsync(string deviceId, string playlistId, IEnumerable<IFileSource> files, bool? useProxy, CancellationToken cancellationToken)
         {
             var metadata = await GetMetadataAsync(files, useProxy, cancellationToken).ConfigureAwait(false);
             await AddItemAsync(deviceId, playlistId, metadata, cancellationToken).ConfigureAwait(false);
         }
 
-        protected async Task CreateFromFilesAsync(string deviceId, IEnumerable<IFormFile> files, string title, bool? useProxy, CancellationToken cancellationToken)
+        protected async Task CreateFromFilesAsync(string deviceId, IEnumerable<IFileSource> files, string title, bool? useProxy, CancellationToken cancellationToken)
         {
             var metadata = await GetMetadataAsync(files, useProxy, cancellationToken).ConfigureAwait(false);
             await CreatePlaylistAsync(deviceId, title, metadata, cancellationToken).ConfigureAwait(false);

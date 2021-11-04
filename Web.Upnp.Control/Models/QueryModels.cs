@@ -1,4 +1,5 @@
 using Upnp.Control.Models;
+using Upnp.Control.Models.PushNotifications;
 
 namespace Web.Upnp.Control.Models;
 

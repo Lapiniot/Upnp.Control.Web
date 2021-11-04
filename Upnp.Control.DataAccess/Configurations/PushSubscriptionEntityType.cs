@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Upnp.Control.Models;
+using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.DataAccess.Configurations;
 

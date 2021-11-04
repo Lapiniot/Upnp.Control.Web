@@ -1,8 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
-using Upnp.Control.Models;
-using Upnp.Control.Services;
+using Upnp.Control.Models.PushNotifications;
+using Upnp.Control.Services.PushNotifications;
 
 namespace Upnp.Control.DataAccess.Repositories;
 

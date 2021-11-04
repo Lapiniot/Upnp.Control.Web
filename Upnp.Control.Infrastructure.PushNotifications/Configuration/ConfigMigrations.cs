@@ -1,7 +1,7 @@
 using System.Text.Json;
-using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 
-namespace Web.Upnp.Control.Configuration;
+namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 internal static class ConfigMigrations
 {
@@ -41,8 +41,8 @@ internal static class ConfigMigrations
                 item.WriteTo(writer);
         }
         writer.WriteStartObject("VAPID");
-        writer.WriteString("PublicKey", WebEncoders.Base64UrlEncode(publicKey));
-        writer.WriteString("PrivateKey", WebEncoders.Base64UrlEncode(privateKey));
+        writer.WriteString("PublicKey", Encoders.ToBase64String(publicKey));
+        writer.WriteString("PrivateKey", Encoders.ToBase64String(privateKey));
         writer.WriteEndObject();
         writer.WriteEndObject();
         await writer.FlushAsync().ConfigureAwait(false);

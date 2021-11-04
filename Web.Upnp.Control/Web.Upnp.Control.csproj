@@ -45,6 +45,7 @@
         <ProjectReference Include="../IoT.Device/IoT.Device.Upnp.Umi/IoT.Device.Upnp.Umi.csproj" />
         <ProjectReference Include="../IoT.Device/IoT.Protocol/System.Common/System.Common.Net.Http/System.Common.Net.Http.csproj" />
         <ProjectReference Include="../Upnp.Control.DataAccess/Upnp.Control.DataAccess.csproj" />
+        <ProjectReference Include="../Upnp.Control.Infrastructure.PushNotifications/Upnp.Control.Infrastructure.PushNotifications.csproj" />
     </ItemGroup>
 
     <ItemGroup>

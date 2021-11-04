@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="../common.props" />
+
   <ItemGroup>
     <ProjectReference Include="../Upnp.Control.Models/Upnp.Control.Models.csproj" />
   </ItemGroup>
-
-  <Import Project="../common.props" />
 
 </Project>

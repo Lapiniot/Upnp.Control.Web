@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using IoT.Protocol.Upnp;
-using Web.Upnp.Control.Models.Events;
+using Upnp.Control.Models.Events;
 
 namespace Web.Upnp.Control.Services
 {

@@ -1,7 +1,6 @@
 using IoT.Protocol.Upnp.DIDL;
-using Upnp.Control.Models;
 
-namespace Web.Upnp.Control.Models;
+namespace Upnp.Control.Models;
 
 public record DeviceDescription(string Name, string Description);
 public record GetContentOptions(bool? WithParents, bool? WithResourceProps, bool? WithVendorProps, bool? WithMetadata, bool? WithDevice, uint Take = 50, uint Skip = 0);
@@ -28,6 +27,4 @@ public record CMProtocolInfo(IEnumerable<string> Source, IEnumerable<string> Sin
 public record CMConnectionInfo(string RcsID, string AVTransportID, string PeerConnectionID, string Direction, string Status);
 public record CreatePlaylistParams(string Title, MediaSource Source);
 public record MediaSource(string DeviceId, IEnumerable<string> Items, int? MaxDepth);
-public record PlaylistFilesSource(IEnumerable<IFormFile> Files, bool? UseProxy);
 public record FeedUrlSource(Uri Url, string Title, bool? UseProxy);
-public record PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);

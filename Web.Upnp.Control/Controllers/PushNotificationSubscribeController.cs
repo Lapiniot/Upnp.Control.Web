@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
-using Upnp.Control.Models;
+using Upnp.Control.Models.PushNotifications;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Models;
 

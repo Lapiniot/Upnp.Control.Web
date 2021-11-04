@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
+using Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Models.Converters;
 

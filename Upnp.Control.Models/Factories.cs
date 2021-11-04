@@ -1,6 +1,6 @@
 using IoT.Protocol.Upnp.DIDL;
 
-namespace Web.Upnp.Control.Models;
+namespace Upnp.Control.Models;
 
 public static class Factories
 {

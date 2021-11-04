@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using Upnp.Control.Models;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Models;
 
@@ -42,10 +43,11 @@ public class PlaylistController : ControllerBase
     [HttpPost("files")]
     [Consumes("multipart/form-data")]
     public Task CreateAsync([FromServices][NotNull] IAsyncCommandHandler<PLCreateFromFilesCommand> handler,
-        string deviceId, [FromForm] PlaylistFilesSource source, [FromForm] string title, [FromForm] bool? merge,
+        string deviceId, [FromForm] IEnumerable<IFormFile> files,
+        [FromForm] string title, [FromForm] bool? useProxy, [FromForm] bool? merge,
         CancellationToken cancellationToken)
     {
-        return handler.ExecuteAsync(new PLCreateFromFilesCommand(deviceId, source, title, merge), cancellationToken);
+        return handler.ExecuteAsync(new PLCreateFromFilesCommand(deviceId, files.Select(f => new FormFileSource(f)), title, merge, useProxy), cancellationToken);
     }
 
     [HttpPut("{playlistId}")]
@@ -88,9 +90,10 @@ public class PlaylistController : ControllerBase
     [HttpPost("{playlistId}/files")]
     [Consumes("multipart/form-data")]
     public Task AddFromFilesAsync([FromServices][NotNull] IAsyncCommandHandler<PLAddPlaylistFilesCommand> handler,
-        string deviceId, string playlistId, [FromForm] PlaylistFilesSource source, CancellationToken cancellationToken = default)
+        string deviceId, string playlistId, [FromForm] IEnumerable<IFormFile> files, [FromForm] bool? useProxy,
+        CancellationToken cancellationToken = default)
     {
-        return handler.ExecuteAsync(new PLAddPlaylistFilesCommand(deviceId, playlistId, source), cancellationToken);
+        return handler.ExecuteAsync(new PLAddPlaylistFilesCommand(deviceId, playlistId, files.Select(f => new FormFileSource(f)), useProxy), cancellationToken);
     }
 
     [HttpDelete("{playlistId}/items")]

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.WebUtilities;
-using Upnp.Control.Models;
+using Upnp.Control.Models.PushNotifications;
 using Upnp.Control.Services;
+using Upnp.Control.Services.PushNotifications;
 using Web.Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Services.Commands;

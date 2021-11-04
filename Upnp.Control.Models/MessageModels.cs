@@ -1,7 +1,4 @@
-using Upnp.Control.Models;
-
-namespace Web.Upnp.Control.Models;
-
+namespace Upnp.Control.Models;
 
 public abstract record NotificationMessage(string Type);
 public record AVStateMessage(AVState State, AVPosition Position, IReadOnlyDictionary<string, string> VendorProps) : NotificationMessage("av-state");

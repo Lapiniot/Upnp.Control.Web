@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.Extensions.Options;
+using Upnp.Control.Models;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Models;
@@ -25,13 +26,13 @@ public sealed class PLCreateFromFilesCommandHandler : PLFeedsCommandBase, IAsync
         return command switch
         {
             { DeviceId: null or "" } => throw new ArgumentException(Format(CultureInfo.InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
-            { DeviceId: { } deviceId, Source: { Files: { } files, UseProxy: var useProxy }, Title: var title, Merge: var merge } =>
+            { DeviceId: { } deviceId, Files: { } files, UseProxy: var useProxy, Title: var title, Merge: var merge } =>
                 CreateFromFilesAsync(deviceId, files, title, useProxy, merge, cancellationToken),
             _ => throw new ArgumentException("Valid file source must be provided")
         };
     }
 
-    private async Task CreateFromFilesAsync(string deviceId, IEnumerable<IFormFile> files, string title, bool? useProxy, bool? merge, CancellationToken cancellationToken)
+    private async Task CreateFromFilesAsync(string deviceId, IEnumerable<IFileSource> files, string title, bool? useProxy, bool? merge, CancellationToken cancellationToken)
     {
         if(merge == true)
         {

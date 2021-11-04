@@ -1,5 +1,5 @@
 using IoT.Protocol.Soap;
-using Web.Upnp.Control.Models;
+using Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Services.Abstractions;
 

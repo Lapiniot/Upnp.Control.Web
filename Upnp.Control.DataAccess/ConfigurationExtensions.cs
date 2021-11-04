@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Upnp.Control.DataAccess.CompiledModels;
 using Upnp.Control.DataAccess.Repositories;
 using Upnp.Control.Services;
+using Upnp.Control.Services.PushNotifications;
 
 namespace Upnp.Control.DataAccess;
 

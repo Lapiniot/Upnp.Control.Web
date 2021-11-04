@@ -5,8 +5,6 @@ using Web.Upnp.Control.Services.Abstractions;
 
 using static System.Net.DecompressionMethods;
 
-using WebPushClient = Web.Upnp.Control.Infrastructure.HttpClients.WebPushClient;
-
 namespace Web.Upnp.Control.Infrastructure;
 
 public static class ConfigureServicesExtensions
@@ -42,14 +40,6 @@ public static class ConfigureServicesExtensions
                 AllowAutoRedirect = false
             });
 
-        return services;
-    }
-
-    public static IServiceCollection AddWebPushClient(this IServiceCollection services)
-    {
-        services.AddHttpClient<IWebPushClient, WebPushClient>();
-        services.AddOptions<VAPIDSecretOptions>().BindConfiguration("VAPID");
-        services.AddOptions<WebPushOptions>().BindConfiguration("WebPush");
         return services;
     }
 

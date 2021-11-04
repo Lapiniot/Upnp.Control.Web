@@ -1,4 +1,4 @@
-using Web.Upnp.Control.Models;
+using Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Hubs;
 

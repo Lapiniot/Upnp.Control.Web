@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Upnp.Control.Models;
+using Upnp.Control.Models.PushNotifications;
 
 #pragma warning disable 219, 612, 618
 #nullable disable
@@ -14,7 +14,7 @@ namespace Upnp.Control.DataAccess.CompiledModels
         public static RuntimeEntityType Create(RuntimeModel model, RuntimeEntityType baseEntityType = null)
         {
             var runtimeEntityType = model.AddEntityType(
-                "Upnp.Control.Models.PushNotificationSubscription",
+                "Upnp.Control.Models.PushNotifications.PushNotificationSubscription",
                 typeof(PushNotificationSubscription),
                 baseEntityType);
 

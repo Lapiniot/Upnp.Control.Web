@@ -1,6 +1,6 @@
-using Upnp.Control.Models;
+using Upnp.Control.Models.PushNotifications;
 
-namespace Upnp.Control.Services;
+namespace Upnp.Control.Services.PushNotifications;
 
 public interface IPushSubscriptionRepository
 {

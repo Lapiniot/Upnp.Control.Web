@@ -1,9 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Upnp.Control.Services;
-using Web.Upnp.Control.Configuration;
+
+namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
-internal class VAPIDKeyConfigInitializer : IServiceInitializer
+public class VAPIDKeyConfigInitializer : IServiceInitializer
 {
     private readonly IHostEnvironment environment;
     private readonly IConfiguration configuration;

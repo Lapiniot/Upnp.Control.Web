@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using IoT.Protocol.Upnp;
 using Upnp.Control.Models;
+using Upnp.Control.Models.Events;
 using Upnp.Control.Services;
-using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Services.Abstractions;
 
 using static System.StringComparison;

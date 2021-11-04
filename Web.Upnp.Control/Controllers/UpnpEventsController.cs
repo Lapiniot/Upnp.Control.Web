@@ -2,8 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Xml;
 using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Mvc;
+using Upnp.Control.Models.Events;
 using Web.Upnp.Control.Infrastructure.Routing;
-using Web.Upnp.Control.Models.Events;
 
 namespace Web.Upnp.Control.Controllers
 {

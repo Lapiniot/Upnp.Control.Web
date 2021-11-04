@@ -5,16 +5,16 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Http.Connections;
-using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Options;
 using Upnp.Control.DataAccess;
-using Upnp.Control.Services;
+using Upnp.Control.Infrastructure.PushNotifications;
+using Upnp.Control.Infrastructure.PushNotifications.Configuration;
+using Upnp.Control.Models.Events;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models;
 using Web.Upnp.Control.Models.Converters;
-using Web.Upnp.Control.Models.Events;
 using Web.Upnp.Control.Services;
 using Web.Upnp.Control.Services.Abstractions;
 using Web.Upnp.Control.Services.Commands;
@@ -38,8 +38,7 @@ public class Startup
     {
         services
             .AddHostedService<ApplicationInitService>()
-            .AddHostedService(sp => sp.GetRequiredService<WebPushSenderService>())
-            .AddSingleton<WebPushSenderService>()
+            .AddWebPushSenderService()
             .AddUpnpDeviceSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/upnp.db3"))
             .AddPushSubscriptionSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/subscriptions.db3"))
             .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
@@ -47,15 +46,11 @@ public class Startup
             .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
-            .AddSingleton<IObserver<UpnpDiscoveryEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
-            .AddSingleton<IObserver<UpnpEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
             .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
             .AddTransient(sp => SsdpEnumeratorFactory(sp))
-            .AddTransient<IServiceInitializer, VAPIDKeyConfigInitializer>()
             .AddSoapHttpClient()
             .AddEventSubscribeClient()
-            .AddWebPushClient()
             .AddQueryServices()
             .AddCommandServices();
 
