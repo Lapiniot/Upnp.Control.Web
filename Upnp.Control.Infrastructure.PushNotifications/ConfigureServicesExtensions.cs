@@ -6,9 +6,9 @@ using Upnp.Control.Services.PushNotifications;
 
 namespace Upnp.Control.Infrastructure.PushNotifications;
 
-public static class ConfigurationExtensions
+public static class ConfigureServicesExtensions
 {
-    public static IServiceCollection AddWebPushSenderService(this IServiceCollection services)
+    public static IServiceCollection AddWebPushSender(this IServiceCollection services)
     {
         services.AddOptions<JsonOptions>();
         return services

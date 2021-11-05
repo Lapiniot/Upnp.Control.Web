@@ -1,6 +1,6 @@
-﻿namespace Web.Upnp.Control.Services.Abstractions;
+﻿namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-public interface IUpnpSubscriptionsRepository
+public interface IUpnpEventSubscriptionRepository
 {
     IEnumerable<IAsyncCancelable> GetById(string udn);
     IEnumerable<IAsyncCancelable> GetAll();

@@ -1,23 +1,21 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using IoT.Device.Upnp.Umi.Services;
 using IoT.Protocol.Upnp;
-using Microsoft.Extensions.Options;
+using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 using Upnp.Control.Models;
 using Upnp.Control.Models.Events;
-using Web.Upnp.Control.Configuration;
-using Web.Upnp.Control.Services.Abstractions;
 
-namespace Web.Upnp.Control.Services
+namespace Upnp.Control.Infrastructure.UpnpEvents
 {
-    public sealed partial class UpnpEventSubscribeObserver : IObserver<UpnpDiscoveryEvent>, IAsyncDisposable
+    public sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDiscoveryEvent>, IAsyncDisposable
     {
         private readonly IUpnpEventSubscriptionFactory factory;
-        private readonly ILogger<UpnpEventSubscribeObserver> logger;
-        private readonly IOptionsMonitor<UpnpEventOptions> optionsMonitor;
-        private readonly IUpnpSubscriptionsRepository repository;
+        private readonly ILogger<UpnpEventSubscriptionService> logger;
+        private readonly IOptionsMonitor<UpnpEventsOptions> optionsMonitor;
+        private readonly IUpnpEventSubscriptionRepository repository;
 
-        public UpnpEventSubscribeObserver(IUpnpSubscriptionsRepository repository, IUpnpEventSubscriptionFactory factory,
-            IOptionsMonitor<UpnpEventOptions> optionsMonitor, ILogger<UpnpEventSubscribeObserver> logger)
+        public UpnpEventSubscriptionService(IUpnpEventSubscriptionRepository repository, IUpnpEventSubscriptionFactory factory,
+            IOptionsMonitor<UpnpEventsOptions> optionsMonitor, ILogger<UpnpEventSubscriptionService> logger)
         {
             ArgumentNullException.ThrowIfNull(repository);
             ArgumentNullException.ThrowIfNull(factory);

@@ -1,8 +1,6 @@
-using Web.Upnp.Control.Services.Abstractions;
+namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-namespace Web.Upnp.Control.Services;
-
-public class InMemorySubscriptionsRepository : IUpnpSubscriptionsRepository
+public class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepository
 {
     private readonly Dictionary<string, List<IAsyncCancelable>> storage;
 

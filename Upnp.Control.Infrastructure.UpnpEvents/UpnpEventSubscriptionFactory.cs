@@ -1,24 +1,23 @@
-﻿using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Web.Upnp.Control.Infrastructure;
-using Web.Upnp.Control.Services.Abstractions;
+﻿using Upnp.Control.Services;
 
-namespace Web.Upnp.Control.Services;
+namespace Upnp.Control.Infrastructure.UpnpEvents;
 
 public sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
 {
     private readonly IEventSubscribeClient subscribeClient;
-    private readonly IServerAddressesFeature serverAddresses;
+    private readonly IServerAddressesProvider serverAddressesProvider;
     private Uri bindingAddress;
 
-    public UpnpEventSubscriptionFactory(IEventSubscribeClient subscribeClient, IServer server, ILogger<UpnpEventSubscriptionFactory> logger)
+    public UpnpEventSubscriptionFactory(IEventSubscribeClient subscribeClient,
+        IServerAddressesProvider serverAddressesProvider,
+        ILogger<UpnpEventSubscriptionFactory> logger)
     {
         ArgumentNullException.ThrowIfNull(subscribeClient);
-        ArgumentNullException.ThrowIfNull(server);
+        ArgumentNullException.ThrowIfNull(serverAddressesProvider);
         ArgumentNullException.ThrowIfNull(logger);
 
         this.subscribeClient = subscribeClient;
-        serverAddresses = server.Features.Get<IServerAddressesFeature>();
+        this.serverAddressesProvider = serverAddressesProvider;
         this.logger = logger;
     }
 
@@ -28,7 +27,7 @@ public sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscriptio
 
         if(!callbackUri.IsAbsoluteUri)
         {
-            callbackUri = new Uri(bindingAddress ??= HostingExtensions.ResolveExternalBindingAddress(serverAddresses.Addresses, "http"), callbackUri);
+            callbackUri = new Uri(bindingAddress ??= serverAddressesProvider.ResolveExternalBindingAddress("http"), callbackUri);
         }
 
         return CancelableOperationScope.StartInScope(token => StartSubscriptionLoopAsync(subscribeUri, callbackUri, timeout, token), stoppingToken);

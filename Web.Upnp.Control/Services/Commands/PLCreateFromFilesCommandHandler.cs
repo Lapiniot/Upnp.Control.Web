@@ -1,5 +1,4 @@
 using System.Globalization;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.Extensions.Options;
 using Upnp.Control.Models;
 using Upnp.Control.Services;
@@ -14,8 +13,9 @@ namespace Web.Upnp.Control.Services.Commands;
 public sealed class PLCreateFromFilesCommandHandler : PLFeedsCommandBase, IAsyncCommandHandler<PLCreateFromFilesCommand>
 {
     public PLCreateFromFilesCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
-        IServer server, IOptionsSnapshot<PlaylistOptions> options, ILogger<PLCreateFromFilesCommandHandler> logger) :
-        base(serviceFactory, httpClientFactory, server, options, logger)
+        IServerAddressesProvider serverAddressesProvider, IOptionsSnapshot<PlaylistOptions> options,
+        ILogger<PLCreateFromFilesCommandHandler> logger) :
+        base(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger)
     {
     }
 

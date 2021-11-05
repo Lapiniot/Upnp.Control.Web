@@ -1,9 +1,7 @@
-using Web.Upnp.Control.Services.Abstractions;
-
 using static System.Globalization.CultureInfo;
 using static System.Globalization.NumberStyles;
 
-namespace Web.Upnp.Control.Infrastructure.HttpClients;
+namespace Upnp.Control.Infrastructure.UpnpEvents;
 
 public class EventSubscribeClient : IEventSubscribeClient
 {

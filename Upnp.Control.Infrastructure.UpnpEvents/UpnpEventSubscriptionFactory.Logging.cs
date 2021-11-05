@@ -1,4 +1,4 @@
-namespace Web.Upnp.Control.Services
+namespace Upnp.Control.Infrastructure.UpnpEvents
 {
     public partial class UpnpEventSubscriptionFactory
     {

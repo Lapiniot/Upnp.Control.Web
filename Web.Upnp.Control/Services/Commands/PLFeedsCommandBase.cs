@@ -2,15 +2,12 @@ using System.IO.Pipelines;
 using System.Text;
 using System.Xml;
 using IoT.Protocol.Upnp.DIDL;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Options;
 using Upnp.Control.Models;
+using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Services.Abstractions;
-
-using static Web.Upnp.Control.Infrastructure.HostingExtensions;
 
 namespace Web.Upnp.Control.Services.Commands
 {
@@ -21,19 +18,19 @@ namespace Web.Upnp.Control.Services.Commands
         private readonly HttpClient client;
 
         protected PLFeedsCommandBase(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
-            IServer server, IOptionsSnapshot<PlaylistOptions> options, ILogger<PLFeedsCommandBase> logger) : base(serviceFactory)
+            IServerAddressesProvider serverAddressesProvider, IOptionsSnapshot<PlaylistOptions> options,
+            ILogger<PLFeedsCommandBase> logger) : base(serviceFactory)
         {
             ArgumentNullException.ThrowIfNull(serviceFactory);
             ArgumentNullException.ThrowIfNull(httpClientFactory);
-            ArgumentNullException.ThrowIfNull(server);
+            ArgumentNullException.ThrowIfNull(serverAddressesProvider);
             ArgumentNullException.ThrowIfNull(options);
             ArgumentNullException.ThrowIfNull(logger);
 
             this.options = options;
             this.logger = logger;
 
-            var serverAddresses = server.Features.Get<IServerAddressesFeature>() ?? throw new InvalidOperationException("Get server addresses feature is not available");
-            BindingUri = ResolveExternalBindingAddress(serverAddresses.Addresses, "http");
+            BindingUri = serverAddressesProvider.ResolveExternalBindingAddress("http");
             client = httpClientFactory.CreateClient();
             client.Timeout = options.Value.FeedMetadataRequestTimeout;
         }

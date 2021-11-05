@@ -10,13 +10,14 @@ using Upnp.Control.DataAccess;
 using Upnp.Control.Infrastructure.Middleware;
 using Upnp.Control.Infrastructure.PushNotifications;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
+using Upnp.Control.Infrastructure.UpnpEvents;
 using Upnp.Control.Models.Events;
+using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models.Converters;
 using Web.Upnp.Control.Services;
-using Web.Upnp.Control.Services.Abstractions;
 using Web.Upnp.Control.Services.Commands;
 using Web.Upnp.Control.Services.Queries;
 
@@ -38,22 +39,18 @@ public class Startup
     {
         services
             .AddHostedService<ApplicationInitService>()
-            .AddWebPushSenderService()
+            .AddWebPushSender()
+            .AddUpnpEventsSubscription()
             .AddUpnpDeviceSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/upnp.db3"))
             .AddPushSubscriptionSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/subscriptions.db3"))
-            .AddScoped<IUpnpServiceFactory, UpnpServiceFactory>()
-            .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
-            .AddTransient<IUpnpSubscriptionsRepository, InMemorySubscriptionsRepository>()
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
-            .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
             .AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
+            .AddTransient<IServerAddressesProvider, ServerAddressesProvider>()
             .AddTransient(sp => SsdpEnumeratorFactory(sp))
-            .AddSoapHttpClient()
-            .AddEventSubscribeClient()
+            .AddUpnpServiceFactory()
             .AddQueryServices()
             .AddCommandServices();
 
-        services.AddOptions<UpnpEventOptions>().BindConfiguration("UpnpEventSubscriptions");
         services.AddOptions<PlaylistOptions>().BindConfiguration("Playlists");
         services.AddOptions<SsdpOptions>().BindConfiguration("SSDP");
 

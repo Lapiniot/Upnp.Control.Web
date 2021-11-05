@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.Extensions.Options;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
@@ -14,8 +13,8 @@ public sealed class PLAddFeedsCommandHandler : PLFeedsCommandBase,
     IAsyncCommandHandler<PLAddFeedUrlCommand>
 {
     public PLAddFeedsCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
-        IServer server, ILogger<PLAddFeedsCommandHandler> logger, IOptionsSnapshot<PlaylistOptions> options) :
-        base(serviceFactory, httpClientFactory, server, options, logger)
+        IServerAddressesProvider serverAddressesProvider, ILogger<PLAddFeedsCommandHandler> logger, IOptionsSnapshot<PlaylistOptions> options) :
+        base(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger)
     {
     }
 

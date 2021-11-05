@@ -21,7 +21,7 @@ var hostBuilder = Host
         sources.Insert(index, new JsonConfigurationSource() { Path = $"appsettings.{environmentName}.Https.json", Optional = true });
     })
     .ConfigureWebHostDefaults(whb => whb.UseStartup<Startup>())
-    .ConfigureServices(cd => cd.AddUpnpDiscoveryService());
+    .ConfigureServices(cd => cd.AddUpnpDiscovery());
 
 if(OperatingSystem.IsLinux())
 {

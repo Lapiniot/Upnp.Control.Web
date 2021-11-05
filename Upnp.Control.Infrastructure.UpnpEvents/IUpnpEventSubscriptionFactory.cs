@@ -1,4 +1,4 @@
-namespace Web.Upnp.Control.Services.Abstractions;
+namespace Upnp.Control.Infrastructure.UpnpEvents;
 
 public interface IUpnpEventSubscriptionFactory
 {
