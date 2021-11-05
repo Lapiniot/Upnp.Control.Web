@@ -1,4 +1,5 @@
-﻿using Web.Upnp.Control.Infrastructure.HttpClients;
+﻿using IoT.Protocol.Soap;
+using Web.Upnp.Control.Infrastructure.HttpClients;
 using Web.Upnp.Control.Services.Abstractions;
 
 using static System.Net.DecompressionMethods;
@@ -9,7 +10,7 @@ public static class ConfigureServicesExtensions
 {
     public static IServiceCollection AddSoapHttpClient(this IServiceCollection services)
     {
-        services.AddHttpClient<HttpSoapClient>()
+        services.AddHttpClient<SoapHttpClient>()
             .SetHandlerLifetime(TimeSpan.FromMinutes(5))
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {
@@ -26,8 +27,7 @@ public static class ConfigureServicesExtensions
 
     public static IServiceCollection AddEventSubscribeClient(this IServiceCollection services)
     {
-        services.AddTransient<IEventSubscribeClient>(sp => sp.GetRequiredService<EventSubscribeClient>())
-            .AddHttpClient<EventSubscribeClient>()
+        services.AddHttpClient<IEventSubscribeClient, EventSubscribeClient>()
             .SetHandlerLifetime(TimeSpan.FromMinutes(5))
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {

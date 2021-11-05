@@ -81,11 +81,11 @@ public class UpnpServiceFactory : IUpnpServiceFactory
 
     private T GetService<T>(Uri controlUrl)
     {
-        var httpClient = clientFactory.CreateClient("HttpSoapClient");
+        var httpClient = clientFactory.CreateClient(nameof(SoapHttpClient));
 
         httpClient.BaseAddress = controlUrl;
 
-        var endpoint = new SoapControlEndpoint(httpClient);
+        var endpoint = new SoapControlEndpoint(new SoapHttpClient(httpClient));
 
         return (T)Activator.CreateInstance(typeof(T), endpoint);
     }
