@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using IoT.Protocol.Upnp;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
-public class UpnpServiceMetadataProvider : IUpnpServiceMetadataProvider
+[SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
+internal class UpnpServiceMetadataProvider : IUpnpServiceMetadataProvider
 {
     private readonly HttpClient client;
 

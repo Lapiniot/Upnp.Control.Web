@@ -5,7 +5,7 @@ using Upnp.Control.Models.Events;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery
 {
-    public partial class UpnpDiscoveryService
+    internal partial class UpnpDiscoveryService
     {
         private readonly ILogger<UpnpDiscoveryService> logger;
 
