@@ -11,6 +11,7 @@ using Upnp.Control.Infrastructure.Middleware;
 using Upnp.Control.Infrastructure.PushNotifications;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Infrastructure.UpnpEvents;
+using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
@@ -40,7 +41,9 @@ public class Startup
         services
             .AddHostedService<ApplicationInitService>()
             .AddWebPushSender()
-            .AddUpnpEventsSubscription()
+            .AddUpnpEventsSubscription(o => o
+                .Map(UpnpServices.RenderingControl, "api/events/{0}/notify/rc")
+                .Map(UpnpServices.AVTransport, "api/events/{0}/notify/avt"))
             .AddUpnpDeviceSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/upnp.db3"))
             .AddPushSubscriptionSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/subscriptions.db3"))
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()

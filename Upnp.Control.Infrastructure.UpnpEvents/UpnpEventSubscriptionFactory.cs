@@ -1,8 +1,10 @@
-﻿using Upnp.Control.Services;
+﻿using System.Diagnostics.CodeAnalysis;
+using Upnp.Control.Services;
 
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-public sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
+[SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
+internal sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
 {
     private readonly IEventSubscribeClient subscribeClient;
     private readonly IServerAddressesProvider serverAddressesProvider;

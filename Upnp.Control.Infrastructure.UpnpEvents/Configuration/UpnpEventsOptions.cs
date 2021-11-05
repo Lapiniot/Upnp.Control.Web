@@ -1,6 +1,7 @@
 namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 
-public record UpnpEventsOptions
+public class UpnpEventsOptions
 {
-    public TimeSpan SessionTimeout { get; init; } = TimeSpan.FromMinutes(15);
+    public TimeSpan SessionTimeout { get; set; } = TimeSpan.FromMinutes(15);
+    public IDictionary<string, string> CallbackMappings { get; } = new Dictionary<string, string>();
 }

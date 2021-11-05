@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using IoT.Device.Upnp.Umi.Services;
 using IoT.Protocol.Upnp;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
@@ -7,7 +8,8 @@ using Upnp.Control.Models.Events;
 
 namespace Upnp.Control.Infrastructure.UpnpEvents
 {
-    public sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDiscoveryEvent>, IAsyncDisposable
+    [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
+    internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDiscoveryEvent>, IAsyncDisposable
     {
         private readonly IUpnpEventSubscriptionFactory factory;
         private readonly ILogger<UpnpEventSubscriptionService> logger;
@@ -42,17 +44,14 @@ namespace Upnp.Control.Infrastructure.UpnpEvents
         {
             try
             {
-                var baseUrl = $"api/events/{Uri.EscapeDataString(deviceId)}/notify";
+                var options = optionsMonitor.CurrentValue;
+                var sessionTimeout = options.SessionTimeout;
 
-                var rcService = services.Single(s => s.ServiceType == UpnpServices.RenderingControl);
-                var avtService = services.Single(s => s.ServiceType == UpnpServices.AVTransport);
-
-                var sessionTimeout = optionsMonitor.CurrentValue.SessionTimeout;
-
-                repository.Add(deviceId,
-                    factory.Subscribe(rcService.EventsUrl, new Uri(baseUrl + "/rc", UriKind.Relative), sessionTimeout),
-                    factory.Subscribe(avtService.EventsUrl, new Uri(baseUrl + "/avt", UriKind.Relative), sessionTimeout)
-                );
+                foreach(var (serviceType, template) in options.CallbackMappings)
+                {
+                    var service = services.Single(s => s.ServiceType == serviceType);
+                    repository.Add(deviceId, factory.Subscribe(service.EventsUrl, new Uri(string.Format(CultureInfo.InvariantCulture, template, deviceId), UriKind.Relative), sessionTimeout));
+                }
             }
             catch(Exception exception)
             {

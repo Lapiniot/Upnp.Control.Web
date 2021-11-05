@@ -1,6 +1,6 @@
 namespace Upnp.Control.Infrastructure.UpnpEvents
 {
-    public partial class UpnpEventSubscriptionFactory
+    internal partial class UpnpEventSubscriptionFactory
     {
         private readonly ILogger<UpnpEventSubscriptionFactory> logger;
 
