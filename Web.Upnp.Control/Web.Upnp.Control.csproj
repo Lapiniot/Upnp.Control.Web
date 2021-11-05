@@ -47,6 +47,7 @@
         <ProjectReference Include="../Upnp.Control.DataAccess/Upnp.Control.DataAccess.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.PushNotifications/Upnp.Control.Infrastructure.PushNotifications.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.Middleware/Upnp.Control.Infrastructure.Middleware.csproj" />
+        <ProjectReference Include="../Upnp.Control.Infrastructure.UpnpDiscovery/Upnp.Control.Infrastructure.UpnpDiscovery.csproj" />
     </ItemGroup>
 
     <ItemGroup>

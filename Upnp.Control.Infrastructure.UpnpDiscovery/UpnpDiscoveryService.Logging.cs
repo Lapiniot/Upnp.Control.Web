@@ -1,8 +1,9 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using IoT.Protocol.Upnp;
 using Upnp.Control.Models.Events;
 
-namespace Web.Upnp.Control.Services
+namespace Upnp.Control.Infrastructure.UpnpDiscovery
 {
     public partial class UpnpDiscoveryService
     {
@@ -37,7 +38,8 @@ namespace Web.Upnp.Control.Services
             var sb = new StringBuilder();
 
             sb.AppendLine();
-            sb.AppendLine($"***** {reply.StartLine} *****");
+            sb.AppendLine(CultureInfo.InvariantCulture, $"***** {reply.StartLine} *****");
+
             foreach(var (key, value) in reply)
             {
                 sb.Append(key);

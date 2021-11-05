@@ -47,7 +47,6 @@ public class Startup
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscribeObserver>()
             .AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
-            .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
             .AddTransient(sp => SsdpEnumeratorFactory(sp))
             .AddSoapHttpClient()
             .AddEventSubscribeClient()

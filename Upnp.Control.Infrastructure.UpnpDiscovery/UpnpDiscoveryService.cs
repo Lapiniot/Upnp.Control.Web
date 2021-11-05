@@ -3,13 +3,12 @@ using IoT.Protocol.Upnp;
 using Upnp.Control.Models;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Services;
-using Web.Upnp.Control.Services.Abstractions;
 
 using static System.StringComparison;
 
 using Icon = Upnp.Control.Models.Icon;
 
-namespace Web.Upnp.Control.Services;
+namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
 public partial class UpnpDiscoveryService : BackgroundService
 {

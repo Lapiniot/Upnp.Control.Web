@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Configuration.Json;
+using Upnp.Control.Infrastructure.UpnpDiscovery;
 using Web.Upnp.Control;
-using Web.Upnp.Control.Services;
 
 #pragma warning disable CA1812 // False warning due to the bug in the rule's analyzer
 
@@ -21,7 +21,7 @@ var hostBuilder = Host
         sources.Insert(index, new JsonConfigurationSource() { Path = $"appsettings.{environmentName}.Https.json", Optional = true });
     })
     .ConfigureWebHostDefaults(whb => whb.UseStartup<Startup>())
-    .ConfigureServices(cd => cd.AddHostedService<UpnpDiscoveryService>());
+    .ConfigureServices(cd => cd.AddUpnpDiscoveryService());
 
 if(OperatingSystem.IsLinux())
 {

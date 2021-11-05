@@ -1,6 +1,6 @@
 using IoT.Protocol.Upnp;
 
-namespace Web.Upnp.Control.Services.Abstractions;
+namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
 public interface IUpnpServiceMetadataProvider
 {
