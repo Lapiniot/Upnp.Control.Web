@@ -15,11 +15,11 @@ public static class ConfigureServicesExtensions
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {
                 AutomaticDecompression = All,
+                AllowAutoRedirect = false,
                 UseProxy = false,
                 Proxy = null,
                 UseCookies = false,
-                CookieContainer = null!,
-                AllowAutoRedirect = false
+                CookieContainer = null
             });
 
         return services;
