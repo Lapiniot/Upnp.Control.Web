@@ -1,4 +1,4 @@
-﻿namespace Web.Upnp.Control.Infrastructure.HttpClients;
+﻿namespace Upnp.Control.Infrastructure.Middleware;
 
 public class ImageLoaderProxyClient
 {

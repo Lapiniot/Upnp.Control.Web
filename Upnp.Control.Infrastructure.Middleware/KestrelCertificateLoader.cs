@@ -1,9 +1,9 @@
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.FileProviders;
 
-namespace Web.Upnp.Control.Infrastructure;
+namespace Upnp.Control.Infrastructure.Middleware;
 
-public static class KestrelCertificateLoader
+internal static class KestrelCertificateLoader
 {
     private const string EndpointsSectionName = "Kestrel:Endpoints";
     private const string CertificatesSectionName = "Kestrel:Certificates";

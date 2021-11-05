@@ -3,9 +3,9 @@ using Microsoft.Extensions.FileProviders;
 
 using static Microsoft.AspNetCore.Server.Kestrel.Https.CertificateLoader;
 
-namespace Web.Upnp.Control.Infrastructure;
+namespace Upnp.Control.Infrastructure.Middleware;
 
-public static class CertificateLoader
+internal static class CertificateLoader
 {
     public static X509Certificate2 LoadFromFile(string path, string password)
     {

@@ -1,15 +1,13 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
-using Web.Upnp.Control.Configuration;
-using Web.Upnp.Control.Infrastructure.HttpClients;
+﻿using Microsoft.Net.Http.Headers;
+using Upnp.Control.Infrastructure.Middleware.Configuration;
 
-namespace Web.Upnp.Control.Infrastructure.Middleware;
+namespace Upnp.Control.Infrastructure.Middleware;
 
 public sealed class ImageLoaderProxyMiddleware : ProxyMiddleware
 {
     private readonly IOptions<ImageProxyOptions> options;
 
-    public ImageLoaderProxyMiddleware(ImageLoaderProxyClient client, IOptions<ImageProxyOptions> options, ILogger<ProxyMiddleware> logger)
+    public ImageLoaderProxyMiddleware(ImageLoaderProxyClient client, IOptions<ImageProxyOptions> options, ILogger<ImageLoaderProxyMiddleware> logger)
         : base(client?.Client, logger)
     {
         ArgumentNullException.ThrowIfNull(options);

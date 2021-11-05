@@ -1,11 +1,9 @@
 using System.Buffers.Text;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Hosting.Server;
-
 using static System.Text.Encoding;
 
-namespace Web.Upnp.Control.Infrastructure.Middleware;
+namespace Upnp.Control.Infrastructure.Middleware;
 
 public sealed class CertificateDownloadMiddleware : IMiddleware
 {
@@ -46,7 +44,7 @@ public sealed class CertificateDownloadMiddleware : IMiddleware
 
         var writer = response.BodyWriter;
 
-        var memory = writer.GetMemory(Base64.GetMaxEncodedToUtf8Length(bytes.Length) + 55 + (bytes.Length / ChunkSize));
+        var memory = writer.GetMemory(Base64.GetMaxEncodedToUtf8Length(bytes.Length) + 55 + bytes.Length / ChunkSize);
 
         writer.Advance(PemEncode(bytes, memory.Span));
 

@@ -2,21 +2,19 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Options;
-using Web.Upnp.Control.Configuration;
-
+using Upnp.Control.Infrastructure.Middleware.Configuration;
 using static System.StringComparison;
 
-namespace Web.Upnp.Control.Infrastructure.Middleware;
+namespace Upnp.Control.Infrastructure.Middleware;
 
 public sealed class ContentProxyMiddleware : ProxyMiddleware
 {
     private const string OptionChunked = "chunked";
     private const string OptionNoLength = "no-length";
-    private const string OptionStipIcyMetadata = "strip-icy-metadata";
+    private const string OptionStripIcyMetadata = "strip-icy-metadata";
     private const string OptionAddDlnaMetadata = "add-dlna-metadata";
 
-    public ContentProxyMiddleware(HttpClient client, [NotNull] IOptions<ContentProxyOptions> options, ILogger<ProxyMiddleware> logger) : base(client, logger)
+    public ContentProxyMiddleware(HttpClient client, [NotNull] IOptions<ContentProxyOptions> options, ILogger<ContentProxyMiddleware> logger) : base(client, logger)
     {
         BufferSize = options.Value.BufferSize;
     }
@@ -58,7 +56,7 @@ public sealed class ContentProxyMiddleware : ProxyMiddleware
             context.Response.Headers["Transfer-Encoding"] = "chunked";
         }
 
-        if(HasOptionEnabled(context, OptionStipIcyMetadata))
+        if(HasOptionEnabled(context, OptionStripIcyMetadata))
         {
             foreach(var (header, _) in responseMessage.Headers)
             {

@@ -1,4 +1,4 @@
-namespace Web.Upnp.Control.Infrastructure.Middleware
+namespace Upnp.Control.Infrastructure.Middleware
 {
     public partial class ProxyMiddleware
     {
