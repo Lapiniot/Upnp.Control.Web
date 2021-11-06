@@ -1,11 +1,39 @@
+using System.Net.Sockets;
+using System.Policies;
+using IoT.Protocol.Upnp;
+
 namespace Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    public static IServiceCollection AddUpnpDiscovery(this IServiceCollection services)
+    public static IServiceCollection AddUpnpDiscovery(this IServiceCollection services, Action<OptionsBuilder<SsdpOptions>> configure = null)
     {
         return services
+            .ConfigureSsdpOptions(configure)
             .AddHostedService<UpnpDiscoveryService>()
-            .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>();
+            .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
+            .AddTransient(sp => SsdpEnumeratorFactory(sp));
+    }
+
+    public static IServiceCollection ConfigureSsdpOptions(this IServiceCollection services, Action<OptionsBuilder<SsdpOptions>> configure = null)
+    {
+        var builder = services.AddOptions<SsdpOptions>().BindConfiguration("SSDP");
+        configure?.Invoke(builder);
+        return services;
+    }
+
+    private static IAsyncEnumerable<SsdpReply> SsdpEnumeratorFactory(IServiceProvider serviceProvider)
+    {
+        var options = serviceProvider.GetRequiredService<IOptions<SsdpOptions>>().Value;
+
+        return new SsdpSearchEnumerator(UpnpServices.RootDevice,
+            new RepeatPolicyBuilder()
+                .WithExponentialInterval(2, options.SearchIntervalSeconds)
+                .WithJitter(500, 1000)
+                .Build(),
+            ep => SocketBuilderExtensions
+                .CreateUdp(ep.AddressFamily)
+                .ConfigureMulticast(options.MulticastInterfaceIndex, options.MulticastTTL)
+                .JoinMulticastGroup(ep));
     }
 }

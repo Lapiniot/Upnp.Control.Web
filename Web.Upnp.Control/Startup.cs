@@ -1,11 +1,7 @@
-﻿using System.Net.Sockets;
-using System.Policies;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Http.Connections;
-using Microsoft.Extensions.Options;
 using Upnp.Control.DataAccess.Configurations;
 using Upnp.Control.Infrastructure.Middleware.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
@@ -45,13 +41,11 @@ public class Startup
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
             .AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
             .AddTransient<IServerAddressesProvider, ServerAddressesProvider>()
-            .AddTransient(sp => SsdpEnumeratorFactory(sp))
             .AddUpnpServiceFactory()
             .AddQueryServices()
             .AddCommandServices();
 
         services.AddOptions<PlaylistOptions>().BindConfiguration("Playlists");
-        services.AddOptions<SsdpOptions>().BindConfiguration("SSDP");
 
         var customConverters = new JsonConverter[]
         {
@@ -93,20 +87,6 @@ public class Startup
         });
 
         services.AddHealthChecks();
-    }
-
-    private static IAsyncEnumerable<SsdpReply> SsdpEnumeratorFactory(IServiceProvider serviceProvider)
-    {
-        var options = serviceProvider.GetRequiredService<IOptions<SsdpOptions>>().Value;
-        return new SsdpSearchEnumerator(UpnpServices.RootDevice,
-            new RepeatPolicyBuilder()
-                .WithExponentialInterval(2, options.SearchIntervalSeconds)
-                .WithJitter(500, 1000)
-                .Build(),
-            ep => SocketBuilderExtensions
-                .CreateUdp(ep.AddressFamily)
-                .ConfigureMulticast(options.MulticastInterfaceIndex, options.MulticastTTL)
-                .JoinMulticastGroup(ep));
     }
 
     private static void ConfigureJsonSerializer(JsonSerializerOptions options, IEnumerable<JsonConverter> converters)

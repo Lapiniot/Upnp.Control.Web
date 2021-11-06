@@ -10,26 +10,26 @@ public static class ConfigureServicesExtensions
     public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services,
         Action<OptionsBuilder<UpnpEventsOptions>> configure = null)
     {
-        var builder = services.AddOptions<UpnpEventsOptions>();
-
-        if(configure is not null)
-        {
-            configure(builder);
-        }
-
-        builder.Configure(binder, "UpnpEventSubscriptions");
-
-        return services.AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>()
+        return services
+            .ConfigureUpnpEventsOptions(configure)
+            .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>()
             .AddTransient<IUpnpEventSubscriptionRepository, InMemorySubscriptionsRepository>()
             .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
             .AddEventSubscribeClient();
     }
 
-    public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services,
-        Action<UpnpEventsOptions> configureOptions)
+    public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services, Action<UpnpEventsOptions> configureOptions)
     {
         ArgumentNullException.ThrowIfNull(configureOptions);
+
         return services.AddUpnpEventsSubscription(builder => builder.Configure(configureOptions));
+    }
+
+    public static IServiceCollection ConfigureUpnpEventsOptions(this IServiceCollection services, Action<OptionsBuilder<UpnpEventsOptions>> configure)
+    {
+        var builder = services.AddOptions<UpnpEventsOptions>().Configure(binder, "UpnpEventSubscriptions");
+        configure?.Invoke(builder);
+        return services;
     }
 
     public static IServiceCollection AddEventSubscribeClient(this IServiceCollection services)

@@ -2,7 +2,7 @@ using System.Net.NetworkInformation;
 
 using static System.Net.NetworkInterfaceExtensions;
 
-namespace Web.Upnp.Control.Configuration;
+namespace Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
 
 public record SsdpOptions
 {
