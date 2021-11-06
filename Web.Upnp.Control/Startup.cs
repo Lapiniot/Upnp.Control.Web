@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Upnp.Control.DataAccess.Configurations;
+using Upnp.Control.Infrastructure.Configuration;
 using Upnp.Control.Infrastructure.Middleware.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Infrastructure.SignalR.Configuration;
@@ -11,7 +12,6 @@ using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models.Converters;
-using Web.Upnp.Control.Services;
 using Web.Upnp.Control.Services.Commands;
 using Web.Upnp.Control.Services.Queries;
 
@@ -31,7 +31,8 @@ public class Startup
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddHostedService<ApplicationInitService>()
+        services
+            .AddServicesInit()
             .AddWebPushSender()
             .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/notify/rc").MapAVTransport("api/events/{0}/notify/avt"))
             .AddUpnpDeviceSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/upnp.db3"))
