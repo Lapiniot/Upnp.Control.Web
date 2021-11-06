@@ -3,7 +3,7 @@ using Upnp.Control.Models.PushNotifications;
 
 namespace Web.Upnp.Control.Models;
 
-public record GetDevicesQuery(string Category);
+public record GetDevicesQuery(string Category, bool WithOffline);
 public record GetDeviceQuery(string DeviceId);
 public record CDGetContentQuery(string DeviceId, string Path, GetContentOptions Options);
 public record AVGetStateQuery(string DeviceId, bool? Detailed);

@@ -19,14 +19,15 @@ public class DeviceController : ControllerBase
     /// </summary>
     /// <param name="handler">Query implementation</param>
     /// <param name="category">Device category filter</param>
+    /// <param name="withOffline">Include offline devices</param>
     /// <param name="cancellationToken">Request cancellation token</param>
     /// <returns>Device information enumerator</returns>
     [HttpGet]
     [Produces("application/json")]
     public IAsyncEnumerable<UpnpDevice> GetAllAsync([FromServices][NotNull] IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
-        string category = "upnp", CancellationToken cancellationToken = default)
+        string category = "upnp", bool? withOffline = false, CancellationToken cancellationToken = default)
     {
-        return handler.ExecuteAsync(new GetDevicesQuery(category), cancellationToken);
+        return handler.ExecuteAsync(new GetDevicesQuery(category, withOffline != false), cancellationToken);
     }
 
     /// <summary>
