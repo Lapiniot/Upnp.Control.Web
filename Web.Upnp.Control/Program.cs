@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Configuration.Json;
-using Upnp.Control.Infrastructure.UpnpDiscovery;
+using Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
 using Web.Upnp.Control;
 
 #pragma warning disable CA1812 // False warning due to the bug in the rule's analyzer

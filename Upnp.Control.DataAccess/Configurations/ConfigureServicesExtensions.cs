@@ -7,9 +7,9 @@ using Upnp.Control.DataAccess.Repositories;
 using Upnp.Control.Services;
 using Upnp.Control.Services.PushNotifications;
 
-namespace Upnp.Control.DataAccess;
+namespace Upnp.Control.DataAccess.Configurations;
 
-public static class ConfigurationExtensions
+public static class ConfigureServicesExtensions
 {
     public static IServiceCollection AddUpnpDeviceSqliteDatabase(this IServiceCollection services, string fileName)
     {

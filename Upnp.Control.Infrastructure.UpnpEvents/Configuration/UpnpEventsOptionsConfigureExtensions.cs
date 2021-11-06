@@ -1,10 +1,10 @@
-namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
+using IoT.Protocol.Upnp;
 
-#pragma warning disable CA1054
+namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 
 public static class UpnpEventsOptionsConfigureExtensions
 {
-    public static UpnpEventsOptions Map(this UpnpEventsOptions options, string serviceType, string callbackUrlTemplate)
+    public static UpnpEventsOptions Map(this UpnpEventsOptions options, string serviceType, string callbackTemplate)
     {
         ArgumentNullException.ThrowIfNull(options);
 
@@ -13,12 +13,27 @@ public static class UpnpEventsOptionsConfigureExtensions
             throw new ArgumentException($"'{nameof(serviceType)}' cannot be null or empty.", nameof(serviceType));
         }
 
-        if(string.IsNullOrEmpty(callbackUrlTemplate))
+        if(string.IsNullOrEmpty(callbackTemplate))
         {
-            throw new ArgumentException($"'{nameof(callbackUrlTemplate)}' cannot be null or empty.", nameof(callbackUrlTemplate));
+            throw new ArgumentException($"'{nameof(callbackTemplate)}' cannot be null or empty.", nameof(callbackTemplate));
         }
 
-        options.CallbackMappings[serviceType] = callbackUrlTemplate;
+        options.CallbackMappings[serviceType] = callbackTemplate;
         return options;
+    }
+
+    public static UpnpEventsOptions MapRenderingControl(this UpnpEventsOptions options, string callbackTemplate)
+    {
+        return options.Map(UpnpServices.RenderingControl, callbackTemplate);
+    }
+
+    public static UpnpEventsOptions MapAVTransport(this UpnpEventsOptions options, string callbackTemplate)
+    {
+        return options.Map(UpnpServices.AVTransport, callbackTemplate);
+    }
+
+    public static UpnpEventsOptions MapContentDirectory(this UpnpEventsOptions options, string callbackTemplate)
+    {
+        return options.Map(UpnpServices.ContentDirectory, callbackTemplate);
     }
 }

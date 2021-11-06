@@ -1,22 +1,25 @@
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 using Upnp.Control.Models.Events;
 
-namespace Upnp.Control.Infrastructure.UpnpEvents;
+namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 
 public static class ConfigureServicesExtensions
 {
+    private static readonly UpnpEventsOptionsBinder binder = new();
+
     public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services,
         Action<OptionsBuilder<UpnpEventsOptions>> configure = null)
     {
         var builder = services.AddOptions<UpnpEventsOptions>();
+
         if(configure is not null)
         {
             configure(builder);
         }
-        builder.BindConfiguration("UpnpEventSubscriptions");
+
+        builder.Configure(binder, "UpnpEventSubscriptions");
 
         return services.AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>()
-            .AddTransient<IPostConfigureOptions<UpnpEventsOptions>, PostConfigureUpnpEventsOptions>()
             .AddTransient<IUpnpEventSubscriptionRepository, InMemorySubscriptionsRepository>()
             .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
             .AddEventSubscribeClient();

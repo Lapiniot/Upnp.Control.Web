@@ -1,10 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
-using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Services;
 using Upnp.Control.Services.PushNotifications;
 
-namespace Upnp.Control.Infrastructure.PushNotifications;
+namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 public static class ConfigureServicesExtensions
 {

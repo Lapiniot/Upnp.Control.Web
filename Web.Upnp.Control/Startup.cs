@@ -6,11 +6,9 @@ using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.Options;
-using Upnp.Control.DataAccess;
-using Upnp.Control.Infrastructure.Middleware;
-using Upnp.Control.Infrastructure.PushNotifications;
+using Upnp.Control.DataAccess.Configurations;
+using Upnp.Control.Infrastructure.Middleware.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
-using Upnp.Control.Infrastructure.UpnpEvents;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Services;
@@ -41,9 +39,7 @@ public class Startup
         services
             .AddHostedService<ApplicationInitService>()
             .AddWebPushSender()
-            .AddUpnpEventsSubscription(o => o
-                .Map(UpnpServices.RenderingControl, "api/events/{0}/notify/rc")
-                .Map(UpnpServices.AVTransport, "api/events/{0}/notify/avt"))
+            .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/notify/rc").MapAVTransport("api/events/{0}/notify/avt"))
             .AddUpnpDeviceSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/upnp.db3"))
             .AddPushSubscriptionSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/subscriptions.db3"))
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()

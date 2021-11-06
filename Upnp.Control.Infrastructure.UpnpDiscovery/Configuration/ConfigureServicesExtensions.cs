@@ -1,4 +1,4 @@
-namespace Upnp.Control.Infrastructure.UpnpDiscovery;
+namespace Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
 
 public static class ConfigureServicesExtensions
 {

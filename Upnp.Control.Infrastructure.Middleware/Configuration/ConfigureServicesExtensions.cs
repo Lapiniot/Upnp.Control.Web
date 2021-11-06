@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Upnp.Control.Infrastructure.Middleware.Configuration;
 
 using static System.Net.DecompressionMethods;
 
-namespace Upnp.Control.Infrastructure.Middleware;
+namespace Upnp.Control.Infrastructure.Middleware.Configuration;
 
 public static class ConfigureServicesExtensions
 {
