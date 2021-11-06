@@ -1,16 +1,14 @@
 ﻿using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Http.Connections;
 using Upnp.Control.DataAccess.Configurations;
 using Upnp.Control.Infrastructure.Middleware.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
+using Upnp.Control.Infrastructure.SignalR.Configuration;
 using Upnp.Control.Infrastructure.Upnp.Configuration;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
-using Upnp.Control.Models.Events;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
-using Web.Upnp.Control.Hubs;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models.Converters;
 using Web.Upnp.Control.Services;
@@ -38,8 +36,8 @@ public class Startup
             .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/notify/rc").MapAVTransport("api/events/{0}/notify/avt"))
             .AddUpnpDeviceSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/upnp.db3"))
             .AddPushSubscriptionSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/subscriptions.db3"))
-            .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>()
-            .AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>()
+            .AddSignalRUpnpDiscoveryNotifications()
+            .AddSignalRUpnpEventNotifications()
             .AddTransient<IServerAddressesProvider, ServerAddressesProvider>()
             .AddUpnpServiceFactory()
             .AddQueryServices()
@@ -116,7 +114,7 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapDefaultControllerRoute();
-            endpoints.MapHub<UpnpEventsHub>("upnpevents", o => o.Transports = HttpTransportType.WebSockets);
+            endpoints.MapUpnpEventsHub("upnpevents");
             endpoints.MapImageLoaderProxy("proxy/{*url}");
             endpoints.MapContentProxy("dlna-proxy/{*url}");
             endpoints.MapHealthChecks("api/health");

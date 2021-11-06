@@ -1,6 +1,6 @@
 using Upnp.Control.Models;
 
-namespace Web.Upnp.Control.Hubs;
+namespace Upnp.Control.Infrastructure.SignalR;
 
 public interface IUpnpEventClient
 {

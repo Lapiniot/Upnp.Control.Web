@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Upnp.Control.Models;
+﻿using Upnp.Control.Models;
 using Upnp.Control.Models.Events;
-using Web.Upnp.Control.Hubs;
 
-namespace Web.Upnp.Control.Services;
+namespace Upnp.Control.Infrastructure.SignalR;
 
 public class UpnpDiscoverySignalRNotifyObserver : IObserver<UpnpDiscoveryEvent>
 {
