@@ -2,7 +2,6 @@ using IoT.Protocol.Upnp.DIDL;
 using IoT.Protocol.Upnp.Services;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Models;
-using Web.Upnp.Control.Services.Abstractions;
 
 using static IoT.Protocol.Upnp.Services.BrowseMode;
 

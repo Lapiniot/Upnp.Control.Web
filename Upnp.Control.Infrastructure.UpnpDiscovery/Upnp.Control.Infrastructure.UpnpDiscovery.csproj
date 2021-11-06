@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Upnp.Control.Models/Upnp.Control.Models.csproj" />
     <ProjectReference Include="../Upnp.Control.Services/Upnp.Control.Services.csproj" />
   </ItemGroup>
 

@@ -1,10 +1,7 @@
 ﻿using IoT.Protocol.Soap;
-using Web.Upnp.Control.Services;
-using Web.Upnp.Control.Services.Abstractions;
+using Upnp.Control.Services;
 
-using static System.Net.DecompressionMethods;
-
-namespace Web.Upnp.Control.Infrastructure;
+namespace Upnp.Control.Infrastructure.Upnp.Configuration;
 
 public static class ConfigureServicesExtensions
 {
@@ -15,7 +12,7 @@ public static class ConfigureServicesExtensions
             .SetHandlerLifetime(TimeSpan.FromMinutes(5))
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {
-                AutomaticDecompression = All,
+                AutomaticDecompression = System.Net.DecompressionMethods.All,
                 AllowAutoRedirect = false,
                 UseProxy = false,
                 Proxy = null,

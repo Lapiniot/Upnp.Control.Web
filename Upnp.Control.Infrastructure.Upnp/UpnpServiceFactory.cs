@@ -3,11 +3,10 @@ using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.Services;
 using Upnp.Control.Models;
 using Upnp.Control.Services;
-using Web.Upnp.Control.Services.Abstractions;
 
 using static System.Globalization.CultureInfo;
 
-namespace Web.Upnp.Control.Services;
+namespace Upnp.Control.Infrastructure.Upnp;
 
 public class UpnpServiceFactory : IUpnpServiceFactory
 {

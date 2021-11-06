@@ -49,6 +49,7 @@
         <ProjectReference Include="../Upnp.Control.Infrastructure.Middleware/Upnp.Control.Infrastructure.Middleware.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.UpnpDiscovery/Upnp.Control.Infrastructure.UpnpDiscovery.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.UpnpEvents/Upnp.Control.Infrastructure.UpnpEvents.csproj" />
+        <ProjectReference Include="../Upnp.Control.Infrastructure.Upnp/Upnp.Control.Infrastructure.Upnp.csproj" />
     </ItemGroup>
 
     <ItemGroup>

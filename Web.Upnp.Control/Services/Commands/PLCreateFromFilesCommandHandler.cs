@@ -4,7 +4,6 @@ using Upnp.Control.Models;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Models;
-using Web.Upnp.Control.Services.Abstractions;
 
 using static System.String;
 

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.Connections;
 using Upnp.Control.DataAccess.Configurations;
 using Upnp.Control.Infrastructure.Middleware.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
+using Upnp.Control.Infrastructure.Upnp.Configuration;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Services;
@@ -32,8 +33,7 @@ public class Startup
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
-        services
-            .AddHostedService<ApplicationInitService>()
+        services.AddHostedService<ApplicationInitService>()
             .AddWebPushSender()
             .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/notify/rc").MapAVTransport("api/events/{0}/notify/avt"))
             .AddUpnpDeviceSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/upnp.db3"))
@@ -59,19 +59,16 @@ public class Startup
                 new CDContentConverter()
         };
 
-        services
-            .Configure<JsonOptions>(options => ConfigureJsonSerializer(options.SerializerOptions, customConverters));
+        services.Configure<JsonOptions>(options => ConfigureJsonSerializer(options.SerializerOptions, customConverters));
 
-        services
-            .AddControllers(options =>
+        services.AddControllers(options =>
             {
                 options.Filters.Add<RequestCancelledExceptionFilterAttribute>();
                 options.OutputFormatters.Add(new BinaryContentOutputFormatter());
             })
             .AddJsonOptions(options => ConfigureJsonSerializer(options.JsonSerializerOptions, customConverters));
 
-        services
-            .AddSignalR()
+        services.AddSignalR()
             .AddJsonProtocol(options => ConfigureJsonSerializer(options.PayloadSerializerOptions, customConverters));
 
         services.AddResponseCaching();

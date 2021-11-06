@@ -1,7 +1,7 @@
 using IoT.Protocol.Soap;
 using Upnp.Control.Models;
 
-namespace Web.Upnp.Control.Services.Abstractions;
+namespace Upnp.Control.Services;
 
 public interface IUpnpServiceFactory
 {

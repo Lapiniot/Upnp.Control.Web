@@ -3,7 +3,7 @@ using IoT.Device.Upnp.Umi.Services;
 using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp;
 using IoT.Protocol.Upnp.Services;
-using Web.Upnp.Control.Services.Abstractions;
+using Upnp.Control.Services;
 
 namespace Web.Upnp.Control.Services.Commands;
 

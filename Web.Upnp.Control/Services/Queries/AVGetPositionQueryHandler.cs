@@ -3,7 +3,6 @@ using IoT.Protocol.Upnp.Services;
 using Upnp.Control.Models;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Models;
-using Web.Upnp.Control.Services.Abstractions;
 
 namespace Web.Upnp.Control.Services.Queries;
 

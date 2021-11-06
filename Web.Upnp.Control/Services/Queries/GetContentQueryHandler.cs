@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using Upnp.Control.Models;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Models;
-using Web.Upnp.Control.Services.Abstractions;
 
 using static IoT.Protocol.Upnp.Services.BrowseMode;
 using static System.Globalization.CultureInfo;
