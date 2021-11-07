@@ -2,7 +2,7 @@ using Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Models;
 
-public class FormFileSource : IFileSource
+public class FormFileSource : FileSource
 {
     private readonly IFormFile formFile;
 
@@ -13,9 +13,9 @@ public class FormFileSource : IFileSource
         this.formFile = formFile;
     }
 
-    public string FileName => formFile.FileName;
+    public override string FileName => formFile.FileName;
 
-    public Stream GetStream()
+    public override Stream GetStream()
     {
         return formFile.OpenReadStream();
     }

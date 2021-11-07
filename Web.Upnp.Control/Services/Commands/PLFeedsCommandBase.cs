@@ -36,7 +36,7 @@ namespace Web.Upnp.Control.Services.Commands
 
         public Uri BindingUri { get; }
 
-        protected async Task AppendFromFileAsync(XmlWriter writer, IFileSource file, bool? useProxy, CancellationToken cancellationToken)
+        protected async Task AppendFromFileAsync(XmlWriter writer, FileSource file, bool? useProxy, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(file);
 
@@ -99,7 +99,7 @@ namespace Web.Upnp.Control.Services.Commands
             }.Uri;
         }
 
-        protected async Task<string> GetMetadataAsync(IEnumerable<IFileSource> files, bool? useProxy, CancellationToken cancellationToken)
+        protected async Task<string> GetMetadataAsync(IEnumerable<FileSource> files, bool? useProxy, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(files);
 
@@ -136,13 +136,13 @@ namespace Web.Upnp.Control.Services.Commands
             await AddItemAsync(deviceId, playlistId, sb.ToString(), cancellationToken).ConfigureAwait(false);
         }
 
-        protected async Task AddFromFilesAsync(string deviceId, string playlistId, IEnumerable<IFileSource> files, bool? useProxy, CancellationToken cancellationToken)
+        protected async Task AddFromFilesAsync(string deviceId, string playlistId, IEnumerable<FileSource> files, bool? useProxy, CancellationToken cancellationToken)
         {
             var metadata = await GetMetadataAsync(files, useProxy, cancellationToken).ConfigureAwait(false);
             await AddItemAsync(deviceId, playlistId, metadata, cancellationToken).ConfigureAwait(false);
         }
 
-        protected async Task CreateFromFilesAsync(string deviceId, IEnumerable<IFileSource> files, string title, bool? useProxy, CancellationToken cancellationToken)
+        protected async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool? useProxy, CancellationToken cancellationToken)
         {
             var metadata = await GetMetadataAsync(files, useProxy, cancellationToken).ConfigureAwait(false);
             await CreatePlaylistAsync(deviceId, title, metadata, cancellationToken).ConfigureAwait(false);

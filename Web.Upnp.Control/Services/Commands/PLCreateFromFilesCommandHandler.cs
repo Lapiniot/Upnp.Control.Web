@@ -31,7 +31,7 @@ public sealed class PLCreateFromFilesCommandHandler : PLFeedsCommandBase, IAsync
         };
     }
 
-    private async Task CreateFromFilesAsync(string deviceId, IEnumerable<IFileSource> files, string title, bool? useProxy, bool? merge, CancellationToken cancellationToken)
+    private async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool? useProxy, bool? merge, CancellationToken cancellationToken)
     {
         if(merge == true)
         {
