@@ -1,4 +1,4 @@
-namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
+namespace Upnp.Control.Infrastructure.Configuration;
 
 public static class OptionsBuilderExtensions
 {

@@ -3,15 +3,13 @@
   <Import Project="../common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0-rc.2.21480.5" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0-rc.2.21480.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Upnp.Control.Services/Upnp.Control.Services.csproj" />
     <ProjectReference Include="../IoT.Device/IoT.Protocol/System.Common/System.Common/System.Common.csproj" />
     <ProjectReference Include="../IoT.Device/IoT.Device.Upnp.Umi/IoT.Device.Upnp.Umi.csproj" />
+    <ProjectReference Include="../Upnp.Control.Infrastructure/Upnp.Control.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

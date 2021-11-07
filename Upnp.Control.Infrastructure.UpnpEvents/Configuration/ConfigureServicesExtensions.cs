@@ -1,4 +1,4 @@
-using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
+using Upnp.Control.Infrastructure.Configuration;
 using Upnp.Control.Models.Events;
 
 namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
