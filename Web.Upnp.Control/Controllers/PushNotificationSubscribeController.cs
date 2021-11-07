@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Upnp.Control.Models.PushNotifications;
 using Upnp.Control.Services;
 
@@ -35,15 +34,17 @@ public class PushNotificationSubscribeController : ControllerBase
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task SubscribeAsync([FromServices][NotNull] IAsyncCommandHandler<PSAddCommand> handler,
-        [NotNull] PushSubscription subscription, CancellationToken cancellationToken)
+    public async Task SubscribeAsync([NotNull] PushSubscription subscription,
+        [FromServices][NotNull] IAsyncCommandHandler<PSAddCommand> handler,
+        [FromServices][NotNull] IBase64UrlDecoder decoder,
+        CancellationToken cancellationToken)
     {
         try
         {
             HttpContext.Response.StatusCode = StatusCodes.Status201Created;
             await handler.ExecuteAsync(new PSAddCommand(subscription.Type, subscription.Endpoint,
-                WebEncoders.Base64UrlDecode(subscription.P256dhKey),
-                WebEncoders.Base64UrlDecode(subscription.AuthKey)),
+                decoder.Decode(subscription.P256dhKey),
+                decoder.Decode(subscription.AuthKey)),
                 cancellationToken).ConfigureAwait(false);
         }
         catch

@@ -52,6 +52,7 @@
         <ProjectReference Include="../Upnp.Control.Infrastructure.Upnp/Upnp.Control.Infrastructure.Upnp.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.SignalR/Upnp.Control.Infrastructure.SignalR.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure/Upnp.Control.Infrastructure.csproj" />
+        <ProjectReference Include="../Upnp.Control.Infrastructure.AspNetCore/Upnp.Control.Infrastructure.AspNetCore.csproj" />
     </ItemGroup>
 
     <ItemGroup>

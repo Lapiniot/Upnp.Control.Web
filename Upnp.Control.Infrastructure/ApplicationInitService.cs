@@ -2,7 +2,8 @@ using Upnp.Control.Services;
 
 namespace Upnp.Control.Infrastructure;
 
-public class ApplicationInitService : BackgroundService
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes: instantiated by DI container
+internal class ApplicationInitService : BackgroundService
 {
     private readonly IServiceProvider services;
 

@@ -1,17 +1,14 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Upnp.Control.Services;
 
 using static System.Net.Sockets.AddressFamily;
 using static System.Net.IPAddress;
 
-namespace Web.Upnp.Control.Infrastructure;
+namespace Upnp.Control.Infrastructure.AspNetCore;
 
-[SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes: instantiated by DI container
 internal class ServerAddressesProvider : IServerAddressesProvider
 {
     private readonly IServer server;
@@ -23,7 +20,7 @@ internal class ServerAddressesProvider : IServerAddressesProvider
 
     public IEnumerable<string> GetServerAddresses()
     {
-        return server.Features.Get<IServerAddressesFeature>().Addresses;
+        return server.Features.Get<IServerAddressesFeature>()?.Addresses ?? Array.Empty<string>();
     }
 
     private const string NoProtocolExternalEndpoint = "Server is not listening for specified protocol on external addresses";
@@ -35,7 +32,7 @@ internal class ServerAddressesProvider : IServerAddressesProvider
                 Uri.TryCreate(a, UriKind.Absolute, out var uri) && IPEndPoint.TryParse(uri.Authority, out var ep) && !IsLoopback(ep.Address)
                     ? (Address: uri, Endpoint: ep)
                     : (uri, null))
-            .Where(a => a.Endpoint != null && a.Address.Scheme == protocol)
+            .Where(a => a.Endpoint != null && a.Address != null && a.Address.Scheme == protocol)
             .ToArray();
 
         if(addresses.Length == 0) throw new InvalidOperationException(NoProtocolExternalEndpoint);
@@ -43,7 +40,7 @@ internal class ServerAddressesProvider : IServerAddressesProvider
         var any = addressFamily == InterNetworkV6 ? IPv6Any : Any;
 
         // Check whether we have explicitely configured address (not IPAddress.Any) which matches protocol scheme and family
-        if(addresses.FirstOrDefault(a => a.Endpoint.AddressFamily == addressFamily && !a.Endpoint.Address.Equals(any)) is { Address: { } match })
+        if(addresses.FirstOrDefault(a => a.Endpoint!.AddressFamily == addressFamily && !a.Endpoint.Address.Equals(any)) is { Address: { } match })
         {
             return match;
         }
@@ -54,7 +51,7 @@ internal class ServerAddressesProvider : IServerAddressesProvider
 
         // Or there should be at least IPAddress.IPv6Any specified if we want external endpoint for IPv6,
         // and IPv6Any|IPv4Any if we need IPv4 binding
-        if(addresses.FirstOrDefault(condition) is not { Endpoint: { Port: var port }, Address: { Scheme: var scheme } })
+        if(addresses!.FirstOrDefault(condition) is not { Endpoint: { Port: var port }, Address: { Scheme: var scheme } })
         {
             throw new InvalidOperationException("Cannot find suitable listening address for callback URI");
         }

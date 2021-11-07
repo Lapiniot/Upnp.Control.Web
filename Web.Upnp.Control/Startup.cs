@@ -2,13 +2,13 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Upnp.Control.DataAccess.Configurations;
+using Upnp.Control.Infrastructure.AspNetCore.Configuration;
 using Upnp.Control.Infrastructure.Configuration;
 using Upnp.Control.Infrastructure.Middleware.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Infrastructure.SignalR.Configuration;
 using Upnp.Control.Infrastructure.Upnp.Configuration;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
-using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models.Converters;
@@ -39,7 +39,8 @@ public class Startup
             .AddPushSubscriptionSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/subscriptions.db3"))
             .AddSignalRUpnpDiscoveryNotifications()
             .AddSignalRUpnpEventNotifications()
-            .AddTransient<IServerAddressesProvider, ServerAddressesProvider>()
+            .AddBase64Encoders()
+            .AddServerAddressesProvider()
             .AddUpnpServiceFactory()
             .AddQueryServices()
             .AddCommandServices();
