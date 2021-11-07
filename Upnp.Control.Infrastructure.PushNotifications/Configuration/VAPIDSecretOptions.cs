@@ -1,7 +1,9 @@
 namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
-public record VAPIDSecretOptions
+#pragma warning disable CA1819 // Properties should not return arrays
+
+public class VAPIDSecretOptions
 {
-    public string PublicKey { get; init; }
-    public string PrivateKey { get; init; }
+    public byte[] PublicKey { get; set; }
+    public byte[] PrivateKey { get; set; }
 }

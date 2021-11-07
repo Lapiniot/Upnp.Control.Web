@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Models.PushNotifications;
@@ -18,6 +17,6 @@ public class PSGetServerKeyQueryHandler : IAsyncQueryHandler<PSGetServerKeyQuery
 
     public Task<byte[]> ExecuteAsync(PSGetServerKeyQuery query, CancellationToken cancellationToken)
     {
-        return Task.FromResult(WebEncoders.Base64UrlDecode(options.Value.PublicKey));
+        return Task.FromResult(options.Value.PublicKey);
     }
 }

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Services;
 
@@ -20,9 +19,9 @@ public static class ConfigureServicesExtensions
 
     public static IServiceCollection AddWebPushClient(this IServiceCollection services)
     {
-        services.AddHttpClient<IWebPushClient, WebPushClient>();
-        services.AddOptions<VAPIDSecretOptions>().BindConfiguration("VAPID");
+        services.AddOptions<VAPIDSecretOptions>();
         services.AddOptions<WebPushOptions>().BindConfiguration("WebPush");
-        return services;
+        services.AddHttpClient<IWebPushClient, WebPushClient>();
+        return services.AddTransient<IConfigureOptions<VAPIDSecretOptions>, ConfigureVAPIDSecretOptions>();
     }
 }

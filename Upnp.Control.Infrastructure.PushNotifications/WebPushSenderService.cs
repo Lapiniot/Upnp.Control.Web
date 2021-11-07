@@ -1,20 +1,18 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Channels;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Models;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Models.PushNotifications;
 using Upnp.Control.Services;
 
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes: instantiated by DI container
+#pragma warning disable CA1031 // Do not catch general exception types: by design
+
 namespace Upnp.Control.Infrastructure.PushNotifications
 {
-    public sealed partial class WebPushSenderService : BackgroundService, IObserver<UpnpDiscoveryEvent>, IObserver<UpnpEvent>
+    internal sealed partial class WebPushSenderService : BackgroundService, IObserver<UpnpDiscoveryEvent>, IObserver<UpnpEvent>
     {
         private readonly IServiceProvider services;
         private readonly ILogger<WebPushSenderService> logger;
@@ -100,7 +98,6 @@ namespace Upnp.Control.Infrastructure.PushNotifications
 
         #endregion
 
-        [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while(!stoppingToken.IsCancellationRequested)
@@ -151,7 +148,6 @@ namespace Upnp.Control.Infrastructure.PushNotifications
             }
         }
 
-        [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
         private async void Post<T>(NotificationType type, T message) where T : NotificationMessage
         {
             try
