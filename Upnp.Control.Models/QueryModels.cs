@@ -1,6 +1,4 @@
-using Upnp.Control.Models;
-
-namespace Web.Upnp.Control.Models;
+namespace Upnp.Control.Models;
 
 public record GetDevicesQuery(string Category, bool WithOffline);
 public record GetDeviceQuery(string DeviceId);

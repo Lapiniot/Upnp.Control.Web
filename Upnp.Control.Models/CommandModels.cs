@@ -1,6 +1,4 @@
-using Upnp.Control.Models;
-
-namespace Web.Upnp.Control.Models;
+namespace Upnp.Control.Models;
 
 public record AVSetStateCommand(string DeviceId, AVStateParams State);
 public record AVSetPositionCommand(string DeviceId, AVPositionParams Position);

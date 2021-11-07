@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using Upnp.Control.Models;
 using Upnp.Control.Services;
 using Web.Upnp.Control.Configuration;
-using Web.Upnp.Control.Models;
 
 using static System.String;
 

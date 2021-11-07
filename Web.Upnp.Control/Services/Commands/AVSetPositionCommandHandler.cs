@@ -1,7 +1,7 @@
 using IoT.Protocol.Soap;
 using IoT.Protocol.Upnp.Services;
+using Upnp.Control.Models;
 using Upnp.Control.Services;
-using Web.Upnp.Control.Models;
 
 using static System.Globalization.CultureInfo;
 

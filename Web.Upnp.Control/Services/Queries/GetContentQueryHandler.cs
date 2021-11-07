@@ -3,7 +3,6 @@ using IoT.Protocol.Upnp.Services;
 using System.Diagnostics.CodeAnalysis;
 using Upnp.Control.Models;
 using Upnp.Control.Services;
-using Web.Upnp.Control.Models;
 
 using static IoT.Protocol.Upnp.Services.BrowseMode;
 using static System.Globalization.CultureInfo;
