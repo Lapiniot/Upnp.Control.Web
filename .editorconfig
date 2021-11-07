@@ -23,6 +23,7 @@ dotnet_diagnostic.IDE0046.severity=default
 dotnet_diagnostic.IDE0048.severity=default
 dotnet_diagnostic.IDE0058.severity=default
 dotnet_diagnostic.IDE0072.severity=default
+dotnet_diagnostic.IDE0078.severity=default
 dotnet_diagnostic.IDE0160.severity=default
 
 [*.proto]

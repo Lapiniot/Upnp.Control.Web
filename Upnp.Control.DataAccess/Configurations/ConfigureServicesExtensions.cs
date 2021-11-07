@@ -2,10 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
+using Upnp.Control.DataAccess.Commands;
 using Upnp.Control.DataAccess.CompiledModels;
+using Upnp.Control.DataAccess.Queries;
 using Upnp.Control.DataAccess.Repositories;
+using Upnp.Control.Models.PushNotifications;
 using Upnp.Control.Services;
-using Upnp.Control.Services.PushNotifications;
 
 namespace Upnp.Control.DataAccess.Configurations;
 
@@ -20,7 +22,10 @@ public static class ConfigureServicesExtensions
     public static IServiceCollection AddPushSubscriptionSqliteDatabase(this IServiceCollection services, string fileName)
     {
         return services.AddSqliteDatabase<PushSubscriptionDbContext>(fileName, PushSubscriptionDbContextModel.Instance)
-            .AddTransient<IPushSubscriptionRepository, PushSubscriptionRepository>();
+            .AddTransient<IAsyncQueryHandler<PSGetQuery, PushNotificationSubscription>, PSGetQueryHandler>()
+            .AddTransient<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>, PSEnumerateQueryHandler>()
+            .AddTransient<IAsyncCommandHandler<PSAddCommand>, PSAddCommandHandler>()
+            .AddTransient<IAsyncCommandHandler<PSRemoveCommand>, PSRemoveCommandHandler>();
     }
 
     public static IServiceCollection AddSqliteDatabase<TContext>(this IServiceCollection services, string fileName, IModel model) where TContext : DbContext

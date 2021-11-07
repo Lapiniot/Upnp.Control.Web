@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Options;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
-using Upnp.Control.Services.PushNotifications;
 
 namespace Upnp.Control.Infrastructure.PushNotifications;
 

@@ -1,5 +1,4 @@
 using Upnp.Control.Models;
-using Upnp.Control.Models.PushNotifications;
 
 namespace Web.Upnp.Control.Models;
 
@@ -20,5 +19,3 @@ public record PLAddPlaylistFilesCommand(string DeviceId, string PlaylistId, IEnu
 public record PLRemoveItemsCommand(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
 public record QAddItemsCommand(string DeviceId, string QueueId, MediaSource Source);
 public record QClearCommand(string DeviceId, string QueueId);
-public record PSAddCommand(PushSubscription Subscription);
-public record PSRemoveCommand(PushSubscription Subscription);

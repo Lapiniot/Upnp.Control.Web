@@ -10,7 +10,7 @@ using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Models;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Models.PushNotifications;
-using Upnp.Control.Services.PushNotifications;
+using Upnp.Control.Services;
 
 namespace Upnp.Control.Infrastructure.PushNotifications
 {
@@ -110,23 +110,23 @@ namespace Upnp.Control.Infrastructure.PushNotifications
                     var message = await channel.Reader.ReadAsync(stoppingToken).ConfigureAwait(false);
 
                     using var scope = services.CreateScope();
-                    var repository = scope.ServiceProvider.GetRequiredService<IPushSubscriptionRepository>();
                     var client = scope.ServiceProvider.GetRequiredService<IWebPushClient>();
+                    var enumerateHandler = scope.ServiceProvider.GetRequiredService<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
 
-                    await foreach(var subscription in repository.EnumerateAsync(message.Type, stoppingToken).ConfigureAwait(false))
+                    await foreach(var (endpoint, type, _, p256dhKey, authKey) in enumerateHandler.ExecuteAsync(new PSEnumerateQuery(message.Type), stoppingToken).ConfigureAwait(false))
                     {
-                        Uri endpoint = subscription.Endpoint;
                         try
                         {
-                            await client.SendAsync(endpoint, subscription.P256dhKey, subscription.AuthKey, message.Payload, wpOptions.Value.TTLSeconds, stoppingToken).ConfigureAwait(false);
+                            await client.SendAsync(endpoint, p256dhKey, authKey, message.Payload, wpOptions.Value.TTLSeconds, stoppingToken).ConfigureAwait(false);
                         }
                         catch(OperationCanceledException)
                         {
                             // expected
                         }
-                        catch(HttpRequestException hre) when(hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
+                        catch(HttpRequestException hre) when(hre.StatusCode == HttpStatusCode.Gone || hre.StatusCode == HttpStatusCode.Forbidden)
                         {
-                            await repository.RemoveAsync(subscription, stoppingToken).ConfigureAwait(false);
+                            var commandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
+                            await commandHandler.ExecuteAsync(new PSRemoveCommand(type, endpoint), stoppingToken).ConfigureAwait(false);
                         }
                         catch(Exception ex)
                         {

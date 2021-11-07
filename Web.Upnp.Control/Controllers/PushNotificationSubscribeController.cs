@@ -1,10 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Upnp.Control.Models.PushNotifications;
 using Upnp.Control.Services;
-using Web.Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Controllers;
+
+public record PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
 
 [ApiController]
 [Route("api/push-subscriptions")]
@@ -14,13 +16,13 @@ public class PushNotificationSubscribeController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<bool> GetStateAsync([FromServices][NotNull] IAsyncQueryHandler<PSGetStateQuery, bool> handler,
+    public async Task<bool> GetStateAsync([FromServices][NotNull] IAsyncQueryHandler<PSGetQuery, PushNotificationSubscription> handler,
         Uri endpoint, NotificationType type, CancellationToken cancellationToken)
     {
         try
         {
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
-            return await handler.ExecuteAsync(new PSGetStateQuery(endpoint, type), cancellationToken).ConfigureAwait(false);
+            return await handler.ExecuteAsync(new PSGetQuery(type, endpoint), cancellationToken).ConfigureAwait(false) is not null;
         }
         catch
         {
@@ -34,12 +36,15 @@ public class PushNotificationSubscribeController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task SubscribeAsync([FromServices][NotNull] IAsyncCommandHandler<PSAddCommand> handler,
-        PushSubscription subscription, CancellationToken cancellationToken)
+        [NotNull] PushSubscription subscription, CancellationToken cancellationToken)
     {
         try
         {
             HttpContext.Response.StatusCode = StatusCodes.Status201Created;
-            await handler.ExecuteAsync(new PSAddCommand(subscription), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new PSAddCommand(subscription.Type, subscription.Endpoint,
+                WebEncoders.Base64UrlDecode(subscription.P256dhKey),
+                WebEncoders.Base64UrlDecode(subscription.AuthKey)),
+                cancellationToken).ConfigureAwait(false);
         }
         catch
         {
@@ -53,12 +58,12 @@ public class PushNotificationSubscribeController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task UnsubscribeAsync([FromServices][NotNull] IAsyncCommandHandler<PSRemoveCommand> handler,
-        PushSubscription subscription, CancellationToken cancellationToken)
+        [NotNull] PushSubscription subscription, CancellationToken cancellationToken)
     {
         try
         {
             HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
-            await handler.ExecuteAsync(new PSRemoveCommand(subscription), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new PSRemoveCommand(subscription.Type, subscription.Endpoint), cancellationToken).ConfigureAwait(false);
         }
         catch
         {

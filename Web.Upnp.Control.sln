@@ -35,8 +35,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Models.PushNotifications", "Upnp.Control.Models.PushNotifications\Upnp.Control.Models.PushNotifications.csproj", "{75DA5E12-2AFF-4E39-8918-BD333F808F47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Services.PushNotifications", "Upnp.Control.Services.PushNotifications\Upnp.Control.Services.PushNotifications.csproj", "{F13EFA73-B704-4627-B678-233A810D0BB9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.UpnpEvents", "Upnp.Control.Infrastructure.UpnpEvents\Upnp.Control.Infrastructure.UpnpEvents.csproj", "{EFF8DBEB-CEA6-45CE-ACDF-2BC03B4DF04F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.Upnp", "Upnp.Control.Infrastructure.Upnp\Upnp.Control.Infrastructure.Upnp.csproj", "{39692779-C3DA-4364-A210-6EE13F96850D}"
@@ -250,18 +248,6 @@ Global
 		{75DA5E12-2AFF-4E39-8918-BD333F808F47}.Release|x64.Build.0 = Release|Any CPU
 		{75DA5E12-2AFF-4E39-8918-BD333F808F47}.Release|x86.ActiveCfg = Release|Any CPU
 		{75DA5E12-2AFF-4E39-8918-BD333F808F47}.Release|x86.Build.0 = Release|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Debug|x64.Build.0 = Debug|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Debug|x86.Build.0 = Debug|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Release|x64.ActiveCfg = Release|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Release|x64.Build.0 = Release|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Release|x86.ActiveCfg = Release|Any CPU
-		{F13EFA73-B704-4627-B678-233A810D0BB9}.Release|x86.Build.0 = Release|Any CPU
 		{EFF8DBEB-CEA6-45CE-ACDF-2BC03B4DF04F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFF8DBEB-CEA6-45CE-ACDF-2BC03B4DF04F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFF8DBEB-CEA6-45CE-ACDF-2BC03B4DF04F}.Debug|x64.ActiveCfg = Debug|Any CPU

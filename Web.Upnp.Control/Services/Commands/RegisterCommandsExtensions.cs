@@ -24,8 +24,6 @@ public static class RegisterCommandsExtensions
             .AddTransient<IAsyncCommandHandler<PLAddFeedUrlCommand>, PLAddFeedsCommandHandler>()
             .AddTransient<IAsyncCommandHandler<PLRemoveItemsCommand>, PLRemoveItemsCommandHandler>()
             .AddTransient<IAsyncCommandHandler<QAddItemsCommand>, QueueAddItemsCommandHandler>()
-            .AddTransient<IAsyncCommandHandler<QClearCommand>, QueueClearCommandHandler>()
-            .AddTransient<IAsyncCommandHandler<PSAddCommand>, PSAddCommandHandler>()
-            .AddTransient<IAsyncCommandHandler<PSRemoveCommand>, PSRemoveCommandHandler>();
+            .AddTransient<IAsyncCommandHandler<QClearCommand>, QueueClearCommandHandler>();
     }
 }

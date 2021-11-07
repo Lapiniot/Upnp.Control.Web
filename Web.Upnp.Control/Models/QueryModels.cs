@@ -1,5 +1,4 @@
 using Upnp.Control.Models;
-using Upnp.Control.Models.PushNotifications;
 
 namespace Web.Upnp.Control.Models;
 
@@ -15,8 +14,3 @@ public record RCGetMuteQuery(string DeviceId);
 public record CMGetProtocolInfoQuery(string DeviceId);
 public record CMGetConnectionsQuery(string DeviceId);
 public record CMGetConnectionInfoQuery(string DeviceId, string ConnectionId);
-public record PSGetServerKeyQuery()
-{
-    public static PSGetServerKeyQuery Instance { get; } = new PSGetServerKeyQuery();
-}
-public record PSGetStateQuery(Uri Endpoint, NotificationType Type);
