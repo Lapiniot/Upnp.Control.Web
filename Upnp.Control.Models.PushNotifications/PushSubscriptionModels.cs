@@ -2,11 +2,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Upnp.Control.Models.PushNotifications;
 
+[Flags]
 public enum NotificationType
 {
-    DeviceDiscovery,
-    PlaybackStateChange,
-    ContentUpdated
+    None,
+    DeviceDiscovery = 0x1,
+    PlaybackStateChange = 0x2,
+    ContentUpdated = 0x4
 }
 
 [SuppressMessage("Performance", "CA1819: Properties should not return arrays")]

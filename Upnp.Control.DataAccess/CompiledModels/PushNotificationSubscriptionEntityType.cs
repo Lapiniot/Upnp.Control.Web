@@ -25,13 +25,6 @@ namespace Upnp.Control.DataAccess.CompiledModels
                 fieldInfo: typeof(PushNotificationSubscription).GetField("<Endpoint>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 afterSaveBehavior: PropertySaveBehavior.Throw);
 
-            var type = runtimeEntityType.AddProperty(
-                "Type",
-                typeof(NotificationType),
-                propertyInfo: typeof(PushNotificationSubscription).GetProperty("Type", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(PushNotificationSubscription).GetField("<Type>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                afterSaveBehavior: PropertySaveBehavior.Throw);
-
             var authKey = runtimeEntityType.AddProperty(
                 "AuthKey",
                 typeof(byte[]),
@@ -50,8 +43,14 @@ namespace Upnp.Control.DataAccess.CompiledModels
                 propertyInfo: typeof(PushNotificationSubscription).GetProperty("P256dhKey", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(PushNotificationSubscription).GetField("<P256dhKey>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 
+            var type = runtimeEntityType.AddProperty(
+                "Type",
+                typeof(NotificationType),
+                propertyInfo: typeof(PushNotificationSubscription).GetProperty("Type", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(PushNotificationSubscription).GetField("<Type>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
             var key = runtimeEntityType.AddKey(
-                new[] { endpoint, type });
+                new[] { endpoint });
             runtimeEntityType.SetPrimaryKey(key);
 
             return runtimeEntityType;

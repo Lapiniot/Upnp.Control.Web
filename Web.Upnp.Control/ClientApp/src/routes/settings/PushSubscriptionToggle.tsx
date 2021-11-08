@@ -13,17 +13,15 @@ export function PushSubscriptionToggle({ disabled: disabledProp, notificationTyp
 
     const callback = useCallback((subscribe) => {
         setDisabled(true);
-        PushSubService.unsubscribe(type)
-            .then(() => {
-                if (subscribe) {
-                    Notification.requestPermission().then(v => {
-                        if (v === "granted") {
-                            return PushSubService.subscribe(type);
-                        }
-                    })
+        if (subscribe) {
+            Notification.requestPermission().then(v => {
+                if (v === "granted") {
+                    return PushSubService.subscribe(type);
                 }
-            })
-            .then(() => setDisabled(undefined));
+            }).then(() => setDisabled(undefined));
+        } else {
+            PushSubService.unsubscribe(type).then(() => setDisabled(undefined));
+        }
     }, []);
 
     useEffect(() => { PushSubService.isSubscribed(type).then(v => setValue(v)); }, [type]);

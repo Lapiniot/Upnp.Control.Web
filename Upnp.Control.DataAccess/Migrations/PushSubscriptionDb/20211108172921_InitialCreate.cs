@@ -21,7 +21,7 @@ namespace Upnp.Control.DataAccess.Migrations.PushSubscriptionDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subscriptions", x => new { x.Endpoint, x.Type });
+                    table.PrimaryKey("PK_Subscriptions", x => x.Endpoint);
                 });
         }
 

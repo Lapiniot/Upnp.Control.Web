@@ -42,9 +42,10 @@ export interface QueueApiProvider {
 }
 
 export enum NotificationType {
-    DeviceDiscovery,
-    PlaybackStateChange,
-    ContentUpdated
+    None = 0x0,
+    DeviceDiscovery = 0x1,
+    PlaybackStateChange = 0x2,
+    ContentUpdated = 0x4
 }
 
 export interface PushSubscriptionApiProvider {

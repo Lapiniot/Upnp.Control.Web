@@ -11,7 +11,7 @@ using Upnp.Control.DataAccess;
 namespace Upnp.Control.DataAccess.Migrations.PushSubscriptionDb
 {
     [DbContext(typeof(PushSubscriptionDbContext))]
-    [Migration("20211104193547_InitialCreate")]
+    [Migration("20211108172921_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,9 +24,6 @@ namespace Upnp.Control.DataAccess.Migrations.PushSubscriptionDb
                     b.Property<string>("Endpoint")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
                     b.Property<byte[]>("AuthKey")
                         .IsRequired()
                         .HasColumnType("BLOB");
@@ -38,7 +35,10 @@ namespace Upnp.Control.DataAccess.Migrations.PushSubscriptionDb
                         .IsRequired()
                         .HasColumnType("BLOB");
 
-                    b.HasKey("Endpoint", "Type");
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Endpoint");
 
                     b.ToTable("Subscriptions");
                 });

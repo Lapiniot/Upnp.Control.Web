@@ -22,9 +22,6 @@ namespace Upnp.Control.DataAccess.Migrations.PushSubscriptionDb
                     b.Property<string>("Endpoint")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
                     b.Property<byte[]>("AuthKey")
                         .IsRequired()
                         .HasColumnType("BLOB");
@@ -36,7 +33,10 @@ namespace Upnp.Control.DataAccess.Migrations.PushSubscriptionDb
                         .IsRequired()
                         .HasColumnType("BLOB");
 
-                    b.HasKey("Endpoint", "Type");
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Endpoint");
 
                     b.ToTable("Subscriptions");
                 });

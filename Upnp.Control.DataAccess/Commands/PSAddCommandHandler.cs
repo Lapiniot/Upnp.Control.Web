@@ -22,16 +22,14 @@ internal sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
 
         var (type, endpoint, p256dhKey, authKey) = command;
 
-        var entity = await context.Subscriptions.FindAsync(new object[] { endpoint, type }, cancellationToken).ConfigureAwait(false);
+        var entity = await context.Subscriptions.FindAsync(new object[] { endpoint }, cancellationToken).ConfigureAwait(false);
 
         if(entity is not null)
         {
-            context.Subscriptions.Remove(entity);
-            context.Subscriptions.Add(entity with
-            {
-                P256dhKey = p256dhKey,
-                AuthKey = authKey,
-            });
+            var entry = context.Entry(entity);
+            entry.Property(e => e.Type).CurrentValue |= type;
+            entry.Property(e => e.P256dhKey).CurrentValue = p256dhKey;
+            entry.Property(e => e.AuthKey).CurrentValue = authKey;
         }
         else
         {
