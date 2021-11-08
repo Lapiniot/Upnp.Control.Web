@@ -1,10 +1,8 @@
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
 using Upnp.Control.Services;
 
 namespace Upnp.Control.DataAccess;
 
-[SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class SqliteMigrateDbInitializer<TContext> : IServiceInitializer where TContext : DbContext
 {
     private readonly TContext context;

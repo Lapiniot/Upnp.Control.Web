@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
 using Upnp.Control.DataAccess.Configurations;
 using Upnp.Control.Models.PushNotifications;
 

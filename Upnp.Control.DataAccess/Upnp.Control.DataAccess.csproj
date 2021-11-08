@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="Microsoft.EntityFrameworkCore" />
   </ItemGroup>
 

@@ -5,7 +5,6 @@ using Upnp.Control.Services;
 namespace Upnp.Control.DataAccess.Queries;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
-
 internal class PSEnumerateQueryHandler : IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>
 {
     private readonly PushSubscriptionDbContext context;

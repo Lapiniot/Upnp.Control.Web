@@ -1,13 +1,11 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore;
 using Upnp.Control.Models;
 using Upnp.Control.Services;
 
 namespace Upnp.Control.DataAccess.Repositories;
 
-[SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class UpnpDbRepository : IUpnpDeviceRepository
 {
     private readonly UpnpDbContext context;

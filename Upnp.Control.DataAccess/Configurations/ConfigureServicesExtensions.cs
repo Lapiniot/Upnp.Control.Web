@@ -1,7 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.DependencyInjection;
 using Upnp.Control.DataAccess.Commands;
 using Upnp.Control.DataAccess.CompiledModels;
 using Upnp.Control.DataAccess.Queries;

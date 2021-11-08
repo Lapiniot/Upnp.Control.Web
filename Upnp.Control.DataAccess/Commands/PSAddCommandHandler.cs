@@ -4,7 +4,6 @@ using Upnp.Control.Services;
 namespace Upnp.Control.DataAccess.Commands;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
-
 internal sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
 {
     private readonly PushSubscriptionDbContext context;
