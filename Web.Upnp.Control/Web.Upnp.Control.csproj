@@ -33,17 +33,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0-rc.2.21480.5" />
-        <PackageReference Include="System.Threading.Channels" Version="6.0.0-rc.2.21480.5" />
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.0-rc.2.21480.10" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0-rc.2.21480.5" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0-rc.2.21480.5" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+        <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../IoT.Device/IoT.Device.Upnp.Umi/IoT.Device.Upnp.Umi.csproj" />
-        <ProjectReference Include="../IoT.Device/IoT.Protocol/System.Common/System.Common.Net.Http/System.Common.Net.Http.csproj" />
         <ProjectReference Include="../Upnp.Control.DataAccess/Upnp.Control.DataAccess.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.PushNotifications/Upnp.Control.Infrastructure.PushNotifications.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.Middleware/Upnp.Control.Infrastructure.Middleware.csproj" />
@@ -51,7 +49,6 @@
         <ProjectReference Include="../Upnp.Control.Infrastructure.UpnpEvents/Upnp.Control.Infrastructure.UpnpEvents.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.Upnp/Upnp.Control.Infrastructure.Upnp.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.SignalR/Upnp.Control.Infrastructure.SignalR.csproj" />
-        <ProjectReference Include="../Upnp.Control.Infrastructure/Upnp.Control.Infrastructure.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.AspNetCore/Upnp.Control.Infrastructure.AspNetCore.csproj" />
     </ItemGroup>
 
