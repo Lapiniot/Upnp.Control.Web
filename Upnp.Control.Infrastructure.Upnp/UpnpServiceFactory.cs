@@ -22,17 +22,17 @@ public class UpnpServiceFactory : IUpnpServiceFactory
         };
 
     private readonly IHttpClientFactory clientFactory;
-    private readonly IUpnpDeviceRepository repository;
+    private readonly IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> queryHandler;
 
-    public UpnpServiceFactory(IHttpClientFactory clientFactory, IUpnpDeviceRepository repository)
+    public UpnpServiceFactory(IHttpClientFactory clientFactory, IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> queryHandler)
     {
         this.clientFactory = clientFactory;
-        this.repository = repository;
+        this.queryHandler = queryHandler;
     }
 
     public async Task<(TService, DeviceDescription)> GetAsync<TService>(string deviceId, CancellationToken cancellationToken) where TService : SoapActionInvoker
     {
-        var device = await repository.FindAsync(deviceId, cancellationToken).ConfigureAwait(false);
+        var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
 
         return (GetService<TService>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService), t => ServiceSchemaAttribute.GetSchema(t)))),
             new DeviceDescription(device.FriendlyName, device.Description));
@@ -41,7 +41,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     public async Task<TService> GetServiceAsync<TService>(string deviceId, CancellationToken cancellationToken)
         where TService : SoapActionInvoker
     {
-        var device = await repository.FindAsync(deviceId, cancellationToken).ConfigureAwait(false);
+        var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
 
         return GetService<TService>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService), t => ServiceSchemaAttribute.GetSchema(t))));
     }
@@ -49,7 +49,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     public async Task<(TService1, TService2)> GetServicesAsync<TService1, TService2>(string deviceId, CancellationToken cancellationToken)
         where TService1 : SoapActionInvoker where TService2 : SoapActionInvoker
     {
-        var device = await repository.FindAsync(deviceId, cancellationToken).ConfigureAwait(false);
+        var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
 
         return (GetService<TService1>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService1), t => ServiceSchemaAttribute.GetSchema(t)))),
             GetService<TService2>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService2), t => ServiceSchemaAttribute.GetSchema(t)))));
@@ -60,7 +60,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
         where TService2 : SoapActionInvoker
         where TService3 : SoapActionInvoker
     {
-        var device = await repository.FindAsync(deviceId, cancellationToken).ConfigureAwait(false);
+        var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
 
         return (GetService<TService1>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService1), t => ServiceSchemaAttribute.GetSchema(t)))),
             GetService<TService2>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService2), t => ServiceSchemaAttribute.GetSchema(t)))),

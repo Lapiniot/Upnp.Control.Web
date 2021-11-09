@@ -1,5 +1,8 @@
 namespace Upnp.Control.Models;
 
+public record RemoveDeviceCommand(string DeviceId);
+public record AddDeviceCommand(UpnpDevice Device);
+public record UpdateDeviceExpirationCommand(string DeviceId, DateTime ExpiresAt);
 public record AVSetStateCommand(string DeviceId, AVStateParams State);
 public record AVSetPositionCommand(string DeviceId, AVPositionParams Position);
 public record AVSetPlayModeCommand(string DeviceId, string PlayMode);
