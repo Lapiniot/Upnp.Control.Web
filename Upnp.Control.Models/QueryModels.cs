@@ -1,7 +1,7 @@
 namespace Upnp.Control.Models;
 
-public record GetDevicesQuery(string Category, bool WithOffline);
-public record GetDeviceQuery(string DeviceId);
+public record struct GetDevicesQuery(string Category, bool WithOffline);
+public record struct GetDeviceQuery(string DeviceId);
 public record CDGetContentQuery(string DeviceId, string Path, GetContentOptions Options);
 public record AVGetStateQuery(string DeviceId, bool? Detailed);
 public record AVGetPositionQuery(string DeviceId, bool? Detailed);

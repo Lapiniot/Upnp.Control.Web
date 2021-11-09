@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Upnp.Control.DataAccess.Commands;
 using Upnp.Control.DataAccess.CompiledModels;
 using Upnp.Control.DataAccess.Queries;
-using Upnp.Control.DataAccess.Repositories;
 using Upnp.Control.Models;
 using Upnp.Control.Models.PushNotifications;
 using Upnp.Control.Services;
@@ -15,7 +14,6 @@ public static class ConfigureServicesExtensions
     public static IServiceCollection AddUpnpDeviceSqliteDatabase(this IServiceCollection services, string fileName)
     {
         return services.AddSqliteDatabase<UpnpDbContext>(fileName, UpnpDbContextModel.Instance)
-            .AddTransient<IUpnpDeviceRepository, UpnpDbRepository>()
             .AddTransient<IAsyncQueryHandler<GetDeviceQuery, UpnpDevice>, GetDeviceQueryHandler>()
             .AddTransient<IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice>, GetDeviceQueryHandler>()
             .AddTransient<IAsyncCommandHandler<AddDeviceCommand>, AddDeviceCommandHandler>()

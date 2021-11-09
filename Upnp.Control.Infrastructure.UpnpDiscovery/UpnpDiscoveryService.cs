@@ -17,7 +17,7 @@ internal partial class UpnpDiscoveryService : BackgroundService
     private readonly IUpnpServiceMetadataProvider metadataProvider;
     private readonly IServiceProvider services;
 
-    public UpnpDiscoveryService(IServiceProvider services, ILogger<UpnpDiscoveryService> logger, IUpnpServiceMetadataProvider metadataProvider)
+    public UpnpDiscoveryService(IServiceProvider services, IUpnpServiceMetadataProvider metadataProvider, ILogger<UpnpDiscoveryService> logger)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(logger);
@@ -36,7 +36,10 @@ internal partial class UpnpDiscoveryService : BackgroundService
         try
         {
             using var scope = services.CreateScope();
-            var repository = scope.ServiceProvider.GetRequiredService<IUpnpDeviceRepository>();
+            var getQueryHandler = scope.ServiceProvider.GetRequiredService<IAsyncQueryHandler<GetDeviceQuery, UpnpDevice>>();
+            var addCommandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<AddDeviceCommand>>();
+            var removeCommandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<RemoveDeviceCommand>>();
+            var updateCommandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<UpdateDeviceExpirationCommand>>();
             var enumerator = scope.ServiceProvider.GetRequiredService<IAsyncEnumerable<SsdpReply>>();
             var observers = scope.ServiceProvider.GetServices<IObserver<UpnpDiscoveryEvent>>().ToArray();
 
@@ -58,9 +61,10 @@ internal partial class UpnpDiscoveryService : BackgroundService
 
                             if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
                             {
-                                if(await repository.TryRemoveAsync(udn, stoppingToken).ConfigureAwait(false) is { } removed)
+                                if(await getQueryHandler.ExecuteAsync(new GetDeviceQuery(udn), stoppingToken).ConfigureAwait(false) is { } existing)
                                 {
-                                    Notify(observers, new UpnpDeviceDisappearedEvent(udn, removed));
+                                    await removeCommandHandler.ExecuteAsync(new RemoveDeviceCommand(udn), stoppingToken).ConfigureAwait(false);
+                                    Notify(observers, new UpnpDeviceDisappearedEvent(udn, existing));
                                 }
 
                                 continue;
@@ -71,11 +75,15 @@ internal partial class UpnpDiscoveryService : BackgroundService
                             continue;
                         }
 
-                        var device = await repository.FindAsync(udn, stoppingToken).ConfigureAwait(false);
+                        var device = await getQueryHandler.ExecuteAsync(new GetDeviceQuery(udn), stoppingToken).ConfigureAwait(false);
 
                         if(device != null)
                         {
-                            await repository.PatchAsync(device, d => d.ExpiresAt, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10), stoppingToken).ConfigureAwait(false);
+                            var command = new UpdateDeviceExpirationCommand(udn, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10));
+
+                            await updateCommandHandler.ExecuteAsync(command, stoppingToken).ConfigureAwait(false);
+
+                            device = await getQueryHandler.ExecuteAsync(new GetDeviceQuery(udn), stoppingToken).ConfigureAwait(false);
 
                             Notify(observers, new UpnpDeviceUpdatedEvent(udn, device));
 
@@ -96,7 +104,7 @@ internal partial class UpnpDiscoveryService : BackgroundService
                             Services = desc.Services.Select(s => new Service(s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
                         };
 
-                        await repository.AddAsync(device, stoppingToken).ConfigureAwait(false);
+                        await addCommandHandler.ExecuteAsync(new AddDeviceCommand(device), stoppingToken).ConfigureAwait(false);
 
                         LogDeviceDiscovered(desc.Udn);
 
