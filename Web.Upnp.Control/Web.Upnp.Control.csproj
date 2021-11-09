@@ -55,6 +55,15 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Using Include="Upnp.Control.Models" />
+        <Using Include="Upnp.Control.Models.Events" />
+        <Using Include="Upnp.Control.Services" />
+        <Using Include="Upnp.Control.Infrastructure.AspNetCore" />
+        <Using Include="Upnp.Control.Infrastructure.AspNetCore.Routing" />
+        <Using Include="Microsoft.AspNetCore.Mvc" />
+    </ItemGroup>
+
+    <ItemGroup>
         <!-- Don't publish the SPA source files, but do show them in the project files list -->
         <Content Remove="$(SpaRoot)**" />
         <None Remove="$(SpaRoot)**" />

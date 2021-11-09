@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Upnp.Control.Models;
 
 namespace Web.Upnp.Control.Models
 {

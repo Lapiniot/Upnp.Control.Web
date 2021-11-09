@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Routing;
 
-namespace Web.Upnp.Control.Infrastructure.Routing;
+namespace Upnp.Control.Infrastructure.AspNetCore.Routing;
 
 public sealed class HttpNotifyAttribute : HttpMethodAttribute
 {

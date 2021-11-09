@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Mvc;
 using Upnp.Control.Models.PushNotifications;
-using Upnp.Control.Services;
 
 namespace Web.Upnp.Control.Controllers;
 

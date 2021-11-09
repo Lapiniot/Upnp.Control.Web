@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Web.Upnp.Control.Infrastructure.Routing;
+namespace Upnp.Control.Infrastructure.AspNetCore.Routing;
 
 [AttributeUsage(AttributeTargets.Parameter)]
 public sealed class FromRouteOrQueryAttribute : Attribute, IBindingSourceMetadata, IModelNameProvider
@@ -8,5 +8,5 @@ public sealed class FromRouteOrQueryAttribute : Attribute, IBindingSourceMetadat
     public BindingSource BindingSource { get; } = CompositeBindingSource.Create(
         new[] { BindingSource.Path, BindingSource.Query }, "PathAndQuery");
 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }

@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Web.Upnp.Control.Infrastructure
+namespace Upnp.Control.Infrastructure.AspNetCore
 {
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
     internal sealed partial class RequestCancelledExceptionFilterAttribute : ExceptionFilterAttribute
     {
         #region Overrides of ExceptionFilterAttribute
 
-        public override void OnException(ExceptionContext context)
+        public override void OnException([NotNull] ExceptionContext context)
         {
             if(context.Exception is not OperationCanceledException) return;
 
-            LogCancelled(context.HttpContext.RequestServices.GetService<ILogger<RequestCancelledExceptionFilterAttribute>>());
+            LogCancelled(context.HttpContext.RequestServices.GetService<ILogger<RequestCancelledExceptionFilterAttribute>>()!);
 
             context.ExceptionHandled = true;
             context.Result = new StatusCodeResult(499);

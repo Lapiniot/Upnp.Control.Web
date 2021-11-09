@@ -28,6 +28,8 @@ public static class RegisterCommandsExtensions
 
     public static IServiceCollection AddPlaylistCommands(this IServiceCollection services)
     {
+        services.AddOptions<PlaylistOptions>().BindConfiguration("Playlists");
+
         return services
             .AddTransient<IAsyncCommandHandler<PLCreateCommand>, PLCreateCommandHandler>()
             .AddTransient<IAsyncCommandHandler<PLCreateFromItemsCommand>, PLCreateFromItemsCommandHandler>()

@@ -11,8 +11,8 @@ using Upnp.Control.Infrastructure.Upnp.Configuration;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 using Upnp.Control.Services.Commands.Configuration;
 using Upnp.Control.Services.Queries.Configuration;
-using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models.Converters;
+using PushConfiguration = Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 namespace Web.Upnp.Control;
 
@@ -44,8 +44,6 @@ public class Startup
             .AddQueries()
             .AddCommands();
 
-        services.AddOptions<PlaylistOptions>().BindConfiguration("Playlists");
-
         var customConverters = new JsonConverter[]
         {
                 new IconJsonConverter(),
@@ -58,13 +56,11 @@ public class Startup
                 new CDContentConverter()
         };
 
-        services.Configure<JsonOptions>(options => ConfigureJsonSerializer(options.SerializerOptions, customConverters));
+        services.Configure<PushConfiguration.JsonOptions>(options => ConfigureJsonSerializer(options.SerializerOptions, customConverters));
 
-        services.AddControllers(options =>
-            {
-                options.Filters.Add<RequestCancelledExceptionFilterAttribute>();
-                options.OutputFormatters.Add(new BinaryContentOutputFormatter());
-            })
+        services.AddControllers(options => options
+                .AddBinaryContentFormatter()
+                .AddRequestCancelledExceptionFilter())
             .AddJsonOptions(options => ConfigureJsonSerializer(options.JsonSerializerOptions, customConverters));
 
         services.AddSignalR()
