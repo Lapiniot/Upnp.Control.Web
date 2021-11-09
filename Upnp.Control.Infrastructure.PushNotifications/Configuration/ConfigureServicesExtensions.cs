@@ -1,4 +1,5 @@
 using Upnp.Control.Models.Events;
+using Upnp.Control.Models.PushNotifications;
 using Upnp.Control.Services;
 
 namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
@@ -14,6 +15,7 @@ public static class ConfigureServicesExtensions
             .AddSingleton<IObserver<UpnpDiscoveryEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddSingleton<IObserver<UpnpEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddTransient<IServiceInitializer, VAPIDKeyConfigInitializer>()
+            .AddTransient<IAsyncQueryHandler<PSGetServerKeyQuery, byte[]>, PSGetServerKeyQueryHandler>()
             .AddWebPushClient();
     }
 

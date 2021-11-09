@@ -9,11 +9,10 @@ using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Infrastructure.SignalR.Configuration;
 using Upnp.Control.Infrastructure.Upnp.Configuration;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
-using Web.Upnp.Control.Configuration;
+using Upnp.Control.Services.Commands.Configuration;
+using Upnp.Control.Services.Queries.Configuration;
 using Web.Upnp.Control.Infrastructure;
 using Web.Upnp.Control.Models.Converters;
-using Web.Upnp.Control.Services.Commands;
-using Web.Upnp.Control.Services.Queries;
 
 namespace Web.Upnp.Control;
 
@@ -42,8 +41,8 @@ public class Startup
             .AddBase64Encoders()
             .AddServerAddressesProvider()
             .AddUpnpServiceFactory()
-            .AddQueryServices()
-            .AddCommandServices();
+            .AddQueries()
+            .AddCommands();
 
         services.AddOptions<PlaylistOptions>().BindConfiguration("Playlists");
 

@@ -43,6 +43,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.AspNetCore", "Upnp.Control.Infrastructure.AspNetCore\Upnp.Control.Infrastructure.AspNetCore.csproj", "{84CA9B55-683C-48DD-8274-16B9117783B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Services.Commands", "Upnp.Control.Services.Commands\Upnp.Control.Services.Commands.csproj", "{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Services.Queries", "Upnp.Control.Services.Queries\Upnp.Control.Services.Queries.csproj", "{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0216E868-52F5-4838-89E9-1900673E2A0F}"
 	ProjectSection(SolutionItems) = preProject
 		IoT.Device\IoT.Protocol\.editorconfig = IoT.Device\IoT.Protocol\.editorconfig
@@ -298,6 +302,30 @@ Global
 		{84CA9B55-683C-48DD-8274-16B9117783B1}.Release|x64.Build.0 = Release|Any CPU
 		{84CA9B55-683C-48DD-8274-16B9117783B1}.Release|x86.ActiveCfg = Release|Any CPU
 		{84CA9B55-683C-48DD-8274-16B9117783B1}.Release|x86.Build.0 = Release|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Debug|x64.Build.0 = Debug|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Debug|x86.Build.0 = Debug|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Release|x64.ActiveCfg = Release|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Release|x64.Build.0 = Release|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Release|x86.ActiveCfg = Release|Any CPU
+		{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}.Release|x86.Build.0 = Release|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Debug|x64.Build.0 = Debug|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Debug|x86.Build.0 = Debug|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Release|x64.ActiveCfg = Release|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Release|x64.Build.0 = Release|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Release|x86.ActiveCfg = Release|Any CPU
+		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
