@@ -33,7 +33,7 @@ public class Startup
         services
             .AddServicesInit()
             .AddWebPushSender()
-            .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/notify/rc").MapAVTransport("api/events/{0}/notify/avt"))
+            .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/rc").MapAVTransport("api/events/{0}/avt"))
             .AddUpnpDeviceSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/upnp.db3"))
             .AddPushSubscriptionSqliteDatabase(Path.Combine(Environment.ContentRootPath, "data/subscriptions.db3"))
             .AddSignalRUpnpDiscoveryNotifications()

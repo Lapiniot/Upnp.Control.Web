@@ -1,5 +1,4 @@
 using Upnp.Control.Infrastructure.Configuration;
-using Upnp.Control.Models.Events;
 
 namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 
@@ -15,6 +14,8 @@ public static class ConfigureServicesExtensions
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>()
             .AddTransient<IUpnpEventSubscriptionRepository, InMemorySubscriptionsRepository>()
             .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
+            .AddTransient<IAsyncCommandHandler<PropChangedUpnpEventCommand<AVTPropChangedEvent>>, PropChangedUpnpEventCommandHandler<AVTPropChangedEvent>>()
+            .AddTransient<IAsyncCommandHandler<PropChangedUpnpEventCommand<RCPropChangedEvent>>, PropChangedUpnpEventCommandHandler<RCPropChangedEvent>>()
             .AddEventSubscribeClient();
     }
 

@@ -22,16 +22,16 @@ public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
     {
         switch(value)
         {
-            case UpnpAVTransportPropertyChangedEvent avt:
+            case AVTPropChangedEvent avt:
                 NotifyAVTransportEvent(avt);
                 break;
-            case UpnpRenderingControlPropertyChangedEvent rce:
+            case RCPropChangedEvent rce:
                 NotifyRenderingControlEvent(rce);
                 break;
         }
     }
 
-    private void NotifyAVTransportEvent(UpnpPropertyChangedEvent avtEvent)
+    private void NotifyAVTransportEvent(PropChangedUpnpEvent avtEvent)
     {
         if(avtEvent.Properties.Count == 1 &&
             (avtEvent.Properties.ContainsKey("RelativeTimePosition") ||
@@ -49,7 +49,7 @@ public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
                 avtEvent.VendorProperties));
     }
 
-    private void NotifyRenderingControlEvent(UpnpPropertyChangedEvent rce)
+    private void NotifyRenderingControlEvent(PropChangedUpnpEvent rce)
     {
         var _ = hub.Clients.All.RenderingControlEvent(rce.DeviceId,
             new RCStateMessage(new RCVolumeState(

@@ -71,7 +71,7 @@ namespace Upnp.Control.Infrastructure.PushNotifications
 
         void IObserver<UpnpEvent>.OnNext(UpnpEvent value)
         {
-            if(value is UpnpAVTransportPropertyChangedEvent @event)
+            if(value is AVTPropChangedEvent @event)
             {
                 var bag = @event.Properties;
 

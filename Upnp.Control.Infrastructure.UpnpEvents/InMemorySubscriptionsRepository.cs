@@ -1,8 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-[SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
+#pragma warning disable CA1812 // instantiated by DI container
 internal class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepository
 {
     private readonly Dictionary<string, List<IAsyncCancelable>> storage;

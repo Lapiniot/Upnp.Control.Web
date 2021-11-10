@@ -1,5 +1,3 @@
-using IoT.Protocol.Upnp;
-
 namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 
 public static class UpnpEventsOptionsConfigureExtensions
