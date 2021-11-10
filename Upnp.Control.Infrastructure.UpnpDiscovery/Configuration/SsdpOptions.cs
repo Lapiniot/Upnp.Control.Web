@@ -4,7 +4,7 @@ using static System.Net.NetworkInterfaceExtensions;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
 
-public record SsdpOptions
+public class SsdpOptions
 {
     private string mcastInterface = "auto";
     private int? mcastInterfaceIndex;
@@ -12,16 +12,16 @@ public record SsdpOptions
     public string MulticastInterface
     {
         get => mcastInterface;
-        init
+        set
         {
             mcastInterface = value;
             mcastInterfaceIndex = GetInterfaceIndex(value);
         }
     }
 
-    public int SearchIntervalSeconds { get; init; } = 60;
+    public int SearchIntervalSeconds { get; set; } = 60;
 
-    public byte MulticastTTL { get; init; } = 1;
+    public byte MulticastTTL { get; set; } = 1;
 
     private static int GetInterfaceIndex(string nameOrIdOrAddress)
     {

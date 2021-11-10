@@ -5,17 +5,12 @@ namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 public class JsonOptions
 {
-    public JsonOptions()
+    public JsonSerializerOptions SerializerOptions { get; } = new JsonSerializerOptions()
     {
-        SerializerOptions = new JsonSerializerOptions()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
-            IncludeFields = false,
-            ReadCommentHandling = JsonCommentHandling.Skip,
-        };
-    }
-
-    public JsonSerializerOptions SerializerOptions { get; }
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+        IncludeFields = false,
+        ReadCommentHandling = JsonCommentHandling.Skip
+    };
 }

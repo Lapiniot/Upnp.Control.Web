@@ -1,3 +1,6 @@
 namespace Upnp.Control.Infrastructure.AspNetCore.Configuration;
 
-public record ContentProxyOptions(int BufferSize = 16 * 1024);
+public class ContentProxyOptions
+{
+    public int BufferSize { get; set; } = 16 * 1024;
+}
