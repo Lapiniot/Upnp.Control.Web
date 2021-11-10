@@ -1,4 +1,4 @@
-﻿namespace Upnp.Control.Infrastructure.Middleware;
+﻿namespace Upnp.Control.Infrastructure.AspNetCore;
 
 public class ImageLoaderProxyClient
 {

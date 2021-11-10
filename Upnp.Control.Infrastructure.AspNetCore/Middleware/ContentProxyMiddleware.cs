@@ -1,11 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Http.Features;
-using Upnp.Control.Infrastructure.Middleware.Configuration;
+
 using static System.StringComparison;
 
-namespace Upnp.Control.Infrastructure.Middleware;
+namespace Upnp.Control.Infrastructure.AspNetCore.Middleware;
 
 public sealed class ContentProxyMiddleware : ProxyMiddleware
 {
@@ -14,12 +13,12 @@ public sealed class ContentProxyMiddleware : ProxyMiddleware
     private const string OptionStripIcyMetadata = "strip-icy-metadata";
     private const string OptionAddDlnaMetadata = "add-dlna-metadata";
 
-    public ContentProxyMiddleware(HttpClient client, [NotNull] IOptions<ContentProxyOptions> options, ILogger<ContentProxyMiddleware> logger) : base(client, logger)
+    public ContentProxyMiddleware(HttpClient client, [NotNull] IOptions<Configuration.ContentProxyOptions> options, ILogger<ContentProxyMiddleware> logger) : base(client, logger)
     {
         BufferSize = options.Value.BufferSize;
     }
 
-    protected override HttpRequestMessage CreateRequestMessage(HttpContext context, Uri requestUri, HttpMethod method)
+    protected override HttpRequestMessage CreateRequestMessage([NotNull] HttpContext context, Uri requestUri, HttpMethod method)
     {
         return new HttpRequestMessage(context.Request.Method == "HEAD" ? HttpMethod.Head : HttpMethod.Get, requestUri)
         {
@@ -32,7 +31,7 @@ public sealed class ContentProxyMiddleware : ProxyMiddleware
         };
     }
 
-    protected override void CopyHeaders(HttpResponseMessage responseMessage, HttpContext context)
+    protected override void CopyHeaders([NotNull] HttpResponseMessage responseMessage, [NotNull] HttpContext context)
     {
         base.CopyHeaders(responseMessage, context);
 
@@ -77,9 +76,9 @@ public sealed class ContentProxyMiddleware : ProxyMiddleware
             //headers.Add("contentFeatures.dlna.org", "DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000");
         }
     }
-    protected override Task CopyContentAsync(HttpResponseMessage responseMessage, HttpContext context, CancellationToken cancellationToken)
+    protected override Task CopyContentAsync([NotNull] HttpResponseMessage responseMessage, [NotNull] HttpContext context, CancellationToken cancellationToken)
     {
-        context.Features.Get<IHttpResponseBodyFeature>().DisableBuffering();
+        context.Features.Get<IHttpResponseBodyFeature>()?.DisableBuffering();
         return base.CopyContentAsync(responseMessage, context, cancellationToken);
     }
 

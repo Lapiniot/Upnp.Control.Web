@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 using Upnp.Control.DataAccess.Configurations;
 using Upnp.Control.Infrastructure.AspNetCore.Configuration;
 using Upnp.Control.Infrastructure.Configuration;
-using Upnp.Control.Infrastructure.Middleware.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Infrastructure.SignalR.Configuration;
 using Upnp.Control.Infrastructure.Upnp.Configuration;

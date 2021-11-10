@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.DataAccess", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.UpnpDiscovery", "Upnp.Control.Infrastructure.UpnpDiscovery\Upnp.Control.Infrastructure.UpnpDiscovery.csproj", "{88DA8A06-8E53-4368-89F1-8109AAC7A48E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.Middleware", "Upnp.Control.Infrastructure.Middleware\Upnp.Control.Infrastructure.Middleware.csproj", "{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.PushNotifications", "Upnp.Control.Infrastructure.PushNotifications\Upnp.Control.Infrastructure.PushNotifications.csproj", "{A3566FA2-6109-40C6-8F0A-365E3B43921B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Models.PushNotifications", "Upnp.Control.Models.PushNotifications\Upnp.Control.Models.PushNotifications.csproj", "{75DA5E12-2AFF-4E39-8918-BD333F808F47}"
@@ -218,18 +216,6 @@ Global
 		{88DA8A06-8E53-4368-89F1-8109AAC7A48E}.Release|x64.Build.0 = Release|Any CPU
 		{88DA8A06-8E53-4368-89F1-8109AAC7A48E}.Release|x86.ActiveCfg = Release|Any CPU
 		{88DA8A06-8E53-4368-89F1-8109AAC7A48E}.Release|x86.Build.0 = Release|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Debug|x64.Build.0 = Debug|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Debug|x86.Build.0 = Debug|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Release|x64.ActiveCfg = Release|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Release|x64.Build.0 = Release|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Release|x86.ActiveCfg = Release|Any CPU
-		{8BD6ED97-24D3-4824-ACF6-6CD8193EDDA8}.Release|x86.Build.0 = Release|Any CPU
 		{A3566FA2-6109-40C6-8F0A-365E3B43921B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A3566FA2-6109-40C6-8F0A-365E3B43921B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3566FA2-6109-40C6-8F0A-365E3B43921B}.Debug|x64.ActiveCfg = Debug|Any CPU

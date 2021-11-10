@@ -16,9 +16,11 @@
 
   <ItemGroup>
     <Using Include="Microsoft.AspNetCore.Http" />
+    <Using Include="Microsoft.AspNetCore.Http.Features" />
     <Using Include="Microsoft.AspNetCore.Mvc" />
     <Using Include="Microsoft.AspNetCore.Routing" />
     <Using Include="Microsoft.AspNetCore.Hosting" />
+    <Using Include="Microsoft.AspNetCore.Builder" />
     <Using Include="Microsoft.AspNetCore.Hosting.Server" />
     <Using Include="Microsoft.AspNetCore.Hosting.Server.Features" />
     <Using Include="Microsoft.Extensions.Logging" />

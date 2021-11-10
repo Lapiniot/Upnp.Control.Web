@@ -3,7 +3,7 @@ using Microsoft.Extensions.FileProviders;
 
 using static Microsoft.AspNetCore.Server.Kestrel.Https.CertificateLoader;
 
-namespace Upnp.Control.Infrastructure.Middleware;
+namespace Upnp.Control.Infrastructure.AspNetCore;
 
 internal static class CertificateLoader
 {

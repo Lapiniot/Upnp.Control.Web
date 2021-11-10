@@ -1,9 +1,10 @@
 using System.Buffers.Text;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
+
 using static System.Text.Encoding;
 
-namespace Upnp.Control.Infrastructure.Middleware;
+namespace Upnp.Control.Infrastructure.AspNetCore.Middleware;
 
 public sealed class CertificateDownloadMiddleware : IMiddleware
 {

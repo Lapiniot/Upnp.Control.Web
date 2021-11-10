@@ -1,7 +1,7 @@
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.FileProviders;
 
-namespace Upnp.Control.Infrastructure.Middleware;
+namespace Upnp.Control.Infrastructure.AspNetCore;
 
 internal static class KestrelCertificateLoader
 {
@@ -16,7 +16,7 @@ internal static class KestrelCertificateLoader
     private const string SubjectKey = "Subject";
     private const string AllowInvalidKey = "AllowInvalid";
 
-    public static X509Certificate2 LoadFromConfiguration(IConfiguration configuration, IFileProvider contentRootFileProvider)
+    public static X509Certificate2? LoadFromConfiguration(IConfiguration configuration, IFileProvider contentRootFileProvider)
     {
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(contentRootFileProvider);
@@ -43,7 +43,7 @@ internal static class KestrelCertificateLoader
         return null;
     }
 
-    private static X509Certificate2 LoadFromConfiguration(IConfigurationSection section, IFileProvider contentRootFileProvider)
+    private static X509Certificate2? LoadFromConfiguration(IConfigurationSection section, IFileProvider contentRootFileProvider)
     {
         var path = section[PathKey];
         if(!string.IsNullOrEmpty(path))
