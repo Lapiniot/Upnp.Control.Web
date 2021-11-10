@@ -11,13 +11,13 @@ using Upnp.Control.DataAccess;
 namespace Upnp.Control.DataAccess.Migrations.PushSubscriptionDb
 {
     [DbContext(typeof(PushSubscriptionDbContext))]
-    [Migration("20211108172921_InitialCreate")]
+    [Migration("20211110102217_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.0-rc.2.21480.5");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
 
             modelBuilder.Entity("Upnp.Control.Models.PushNotifications.PushNotificationSubscription", b =>
                 {

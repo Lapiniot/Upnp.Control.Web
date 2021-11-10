@@ -11,13 +11,13 @@ using Upnp.Control.DataAccess;
 namespace Upnp.Control.DataAccess.Migrations.UpnpDb
 {
     [DbContext(typeof(UpnpDbContext))]
-    [Migration("20211104193500_InitialCreate")]
+    [Migration("20211110102250_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.0-rc.2.21480.5");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
 
             modelBuilder.Entity("Upnp.Control.Models.UpnpDevice", b =>
                 {
