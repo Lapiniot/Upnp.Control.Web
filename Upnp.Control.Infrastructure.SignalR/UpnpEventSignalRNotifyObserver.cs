@@ -31,29 +31,20 @@ public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
         }
     }
 
-    private void NotifyAVTransportEvent(PropChangedUpnpEvent avtEvent)
+    private void NotifyAVTransportEvent(AVTPropChangedEvent @event)
     {
-        if(avtEvent.Properties.Count == 1 &&
-            (avtEvent.Properties.ContainsKey("RelativeTimePosition") ||
-            avtEvent.Properties.ContainsKey("AbsoluteTimePosition")))
-        {
-            // Workaround for some quirky renderers that report position changes every second during playback
-            // via state variable changes. Some way of throttling is definitely needed here :(
-            return;
-        }
-
-        var _ = hub.Clients.All.AVTransportEvent(avtEvent.DeviceId,
+        hub.Clients.All.AVTransportEvent(@event.DeviceId,
             new AVStateMessage(
-                Factories.CreateAVState(avtEvent.Properties),
-                Factories.CreateAVPosition(avtEvent.Properties),
-                avtEvent.VendorProperties));
+                Factories.CreateAVState(@event.Properties),
+                Factories.CreateAVPosition(@event.Properties),
+                @event.VendorProperties));
     }
 
-    private void NotifyRenderingControlEvent(PropChangedUpnpEvent rce)
+    private void NotifyRenderingControlEvent(RCPropChangedEvent @event)
     {
-        var _ = hub.Clients.All.RenderingControlEvent(rce.DeviceId,
+        hub.Clients.All.RenderingControlEvent(@event.DeviceId,
             new RCStateMessage(new RCVolumeState(
-                rce.Properties.TryGetValue("Volume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
-                rce.Properties.TryGetValue("Mute", out v) ? v is "1" or "true" or "True" : null)));
+                @event.Properties.TryGetValue("Volume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
+                @event.Properties.TryGetValue("Mute", out v) ? v is "1" or "true" or "True" : null)));
     }
 }

@@ -31,7 +31,13 @@ internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncComman
             return;
         }
 
-        var @event = new TEvent() { DeviceId = command.DeviceId, Properties = properties, VendorProperties = vendorProperties };
+        NotifyObservers(observers, command.DeviceId, properties, vendorProperties);
+    }
+
+    protected virtual void NotifyObservers(IEnumerable<IObserver<UpnpEvent>> observers, string deviceId,
+        IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, string> vendorProperties)
+    {
+        var @event = new TEvent() { DeviceId = deviceId, Properties = properties, VendorProperties = vendorProperties };
 
         foreach(var observer in observers)
         {

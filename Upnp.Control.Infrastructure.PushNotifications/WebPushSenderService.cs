@@ -70,29 +70,16 @@ internal sealed partial class WebPushSenderService : BackgroundService, IObserve
 
     void IObserver<UpnpEvent>.OnNext(UpnpEvent value)
     {
-        if(value is AVTPropChangedEvent @event)
+        if((value is not AVTPropChangedEvent @event) || !@event.Properties.TryGetValue("TransportState", out var state) || state != "PLAYING")
         {
-            var bag = @event.Properties;
-
-            if(bag.Count == 1 && (bag.ContainsKey("RelativeTimePosition") || bag.ContainsKey("AbsoluteTimePosition")))
-            {
-                // Workaround for some quirky renderers that report position changes every second during playback
-                // via state variable changes. Some way of throttling is definitely needed here :(
-                return;
-            }
-
-            if(!bag.TryGetValue("TransportState", out var state) || state != "PLAYING")
-            {
-                // We currently send pushes for "PLAYING" state
-                return;
-            }
-
-            Post(NotificationType.PlaybackStateChange,
-                new AVStateMessage(
-                    Factories.CreateAVState(bag),
-                    Factories.CreateAVPosition(bag),
-                    @event.VendorProperties));
+            return;
         }
+
+        Post(NotificationType.PlaybackStateChange,
+            new AVStateMessage(
+                Factories.CreateAVState(@event.Properties),
+                Factories.CreateAVPosition(@event.Properties),
+                @event.VendorProperties));
     }
 
     #endregion
