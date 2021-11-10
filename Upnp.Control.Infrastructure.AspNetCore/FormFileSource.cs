@@ -1,6 +1,6 @@
-namespace Web.Upnp.Control.Models;
+namespace Upnp.Control.Infrastructure.AspNetCore;
 
-public class FormFileSource : FileSource
+public class FormFileSource : Models.FileSource
 {
     private readonly IFormFile formFile;
 

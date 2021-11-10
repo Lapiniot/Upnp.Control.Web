@@ -3,9 +3,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
 
-using static Web.Upnp.Control.Models.Converters.DIDLWriterUtils;
+using static Upnp.Control.Models.Converters.DIDLWriterUtils;
 
-namespace Web.Upnp.Control.Models.Converters;
+namespace Upnp.Control.Models.Converters;
 
 public sealed class ContainerJsonConverter : JsonConverter<Container>
 {

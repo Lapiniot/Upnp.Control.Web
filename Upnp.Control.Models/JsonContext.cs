@@ -1,7 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace Web.Upnp.Control.Models;
+namespace Upnp.Control.Models;
 
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(UpnpDiscoveryMessage))]
 [JsonSerializable(typeof(AVStateMessage))]
 [JsonSerializable(typeof(RCStateMessage))]

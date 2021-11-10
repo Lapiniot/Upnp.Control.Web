@@ -8,9 +8,9 @@ using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Infrastructure.SignalR.Configuration;
 using Upnp.Control.Infrastructure.Upnp.Configuration;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
+using Upnp.Control.Models.Converters;
 using Upnp.Control.Services.Commands.Configuration;
 using Upnp.Control.Services.Queries.Configuration;
-using Web.Upnp.Control.Models.Converters;
 using PushConfiguration = Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 namespace Web.Upnp.Control;
@@ -90,7 +90,7 @@ public class Startup
             options.Converters.Add(converter);
         }
 
-        //options.AddContext<JsonContext>();
+        options.AddContext<JsonContext>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

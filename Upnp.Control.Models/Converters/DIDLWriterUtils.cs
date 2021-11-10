@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
 
-namespace Web.Upnp.Control.Models.Converters;
+namespace Upnp.Control.Models.Converters;
 
 internal static class DIDLWriterUtils
 {

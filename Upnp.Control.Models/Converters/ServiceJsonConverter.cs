@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Web.Upnp.Control.Models.Converters;
+namespace Upnp.Control.Models.Converters;
 
 public sealed class ServiceJsonConverter : JsonConverter<Service>
 {
