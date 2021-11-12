@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Models.PushNotifications;
 using Upnp.Control.Services;
@@ -6,9 +7,15 @@ namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    public static IServiceCollection AddWebPushSender(this IServiceCollection services)
+    public static IServiceCollection AddWebPushSender(this IServiceCollection services, Action<JsonSerializerOptions> configureJsonOptions = null)
     {
-        services.AddOptions<JsonOptions>();
+        var builder = services.AddOptions<JsonOptions>();
+
+        if(configureJsonOptions is not null)
+        {
+            builder.Configure(o => configureJsonOptions(o.SerializerOptions));
+        }
+
         return services
             .AddHostedService(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddSingleton<WebPushSenderService>()
