@@ -135,10 +135,7 @@ else if(OperatingSystem.IsWindows())
 
 var app = builder.Build();
 
-if(builder.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
+#region WebApplication specific configuration
 
 app.UseStaticFiles();
 app.UseResponseCaching();
@@ -155,5 +152,7 @@ app.MapContentProxy("dlna-proxy/{*url}");
 app.MapHealthChecks("api/health");
 app.MapCertificateDownloadMiddleware("api/cert");
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
+
+#endregion
 
 await app.RunAsync().ConfigureAwait(false);
