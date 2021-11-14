@@ -92,16 +92,22 @@ internal partial class UpnpDiscoveryService : BackgroundService
                             continue;
                         }
 
-                        var desc = await metadataProvider.GetDescriptionAsync(new Uri(reply.Location), stoppingToken).ConfigureAwait(false);
+                        var location = new Uri(reply.Location);
+                        var desc = await metadataProvider.GetDescriptionAsync(location, stoppingToken).ConfigureAwait(false);
 
-                        device = new UpnpDevice(udn, desc.Location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
+                        device = new UpnpDevice(udn, location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
                             desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10),
-                            desc.ManufacturerUri, desc.ModelUri, desc.PresentationUri)
+                            GetAbsoluteUri(desc.ManufacturerUrl, location),
+                            GetAbsoluteUri(desc.ModelUrl, location),
+                            GetAbsoluteUri(desc.PresentationUrl, location))
                         {
                             BootId = reply.BootId,
                             ConfigId = reply.ConfigId,
-                            Icons = desc.Icons.Select(i => new Icon(i.Width, i.Height, i.Uri, i.Mime)).ToList(),
-                            Services = desc.Services.Select(s => new Service(s.ServiceId, s.ServiceType, s.MetadataUri, s.ControlUri, s.EventSubscribeUri)).ToList()
+                            Icons = desc.Icons?.Select(i => new Icon(i.Width, i.Height, GetAbsoluteUri(i.Uri, location), i.Mime)).ToList(),
+                            Services = desc.Services?.Select(s => new Service(s.ServiceId, s.ServiceType,
+                                GetAbsoluteUri(s.MetadataUrl, location),
+                                GetAbsoluteUri(s.ControlUrl, location),
+                                GetAbsoluteUri(s.EventSubscribeUrl, location))).ToList()
                         };
 
                         await addCommandHandler.ExecuteAsync(new AddDeviceCommand(device), stoppingToken).ConfigureAwait(false);
@@ -127,6 +133,13 @@ internal partial class UpnpDiscoveryService : BackgroundService
             LogError(exception);
             throw;
         }
+    }
+
+    private static Uri GetAbsoluteUri(Uri uri, Uri baseUri)
+    {
+        return uri is not null and { IsAbsoluteUri: false }
+            ? Uri.TryCreate(baseUri, uri, out var absoluteUri) ? absoluteUri : uri
+            : uri;
     }
 
     private static string ExtractUdn(string usn)

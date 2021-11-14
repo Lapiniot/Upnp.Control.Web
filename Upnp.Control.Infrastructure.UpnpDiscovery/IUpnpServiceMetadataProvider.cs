@@ -4,5 +4,5 @@ namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
 public interface IUpnpServiceMetadataProvider
 {
-    Task<UpnpDeviceDescription> GetDescriptionAsync(Uri location, CancellationToken cancellationToken);
+    Task<DeviceDescription> GetDescriptionAsync(Uri location, CancellationToken cancellationToken);
 }
