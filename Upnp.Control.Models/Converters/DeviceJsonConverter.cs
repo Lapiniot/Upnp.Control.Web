@@ -32,25 +32,27 @@ public sealed class DeviceJsonConverter : JsonConverter<UpnpDevice>
         writer.WriteString("modelNumber", value.ModelNumber);
         if(value.PresentationUri is { AbsoluteUri: { } presentationUrl }) writer.WriteString("presentUrl", presentationUrl);
 
-        var serviceConverter = (JsonConverter<Service>)options.GetConverter(typeof(Service));
-
-        writer.WriteStartArray("services");
-        foreach(var service in value.Services)
+        if(value.Services is not null)
         {
-            serviceConverter.Write(writer, service, options);
+            var serviceConverter = (JsonConverter<Service>)options.GetConverter(typeof(Service));
+            writer.WriteStartArray("services");
+            foreach(var service in value.Services)
+            {
+                serviceConverter.Write(writer, service, options);
+            }
+            writer.WriteEndArray();
         }
 
-        writer.WriteEndArray();
-
-        var iconConverter = (JsonConverter<Icon>)options.GetConverter(typeof(Icon));
-
-        writer.WriteStartArray("icons");
-        foreach(var icon in value.Icons)
+        if(value.Icons is not null)
         {
-            iconConverter.Write(writer, icon, options);
+            var iconConverter = (JsonConverter<Icon>)options.GetConverter(typeof(Icon));
+            writer.WriteStartArray("icons");
+            foreach(var icon in value.Icons)
+            {
+                iconConverter.Write(writer, icon, options);
+            }
+            writer.WriteEndArray();
         }
-
-        writer.WriteEndArray();
 
         writer.WriteEndObject();
     }
