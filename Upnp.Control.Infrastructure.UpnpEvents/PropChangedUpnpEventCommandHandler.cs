@@ -23,7 +23,7 @@ internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncComman
 
         using(var reader = XmlReader.Create(command.Stream, settings))
         {
-            (_, properties, vendorProperties) = await EventMessageParser.ParseAsync(reader).ConfigureAwait(false);
+            (_, properties, vendorProperties) = await EventMessageXmlReader.ReadAsync(reader).ConfigureAwait(false);
         }
 
         if(properties == null || properties.Count == 0)

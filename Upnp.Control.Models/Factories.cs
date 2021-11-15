@@ -8,9 +8,9 @@ public static class Factories
     {
         ArgumentNullException.ThrowIfNull(bag);
 
-        var current = bag.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
+        var current = bag.TryGetValue("CurrentTrackMetaData", out var value) ? DIDLXmlReader.Read(value, true, true).FirstOrDefault() : null;
 
-        var next = bag.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlParser.Parse(value, true, true).FirstOrDefault() : null;
+        var next = bag.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlReader.Read(value, true, true).FirstOrDefault() : null;
 
         return new AVState(bag.TryGetValue("TransportState", out value) ? value : null, null,
                     bag.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : null, null,

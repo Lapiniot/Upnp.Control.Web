@@ -36,7 +36,7 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
         if(withMetadata == true)
         {
             var mr = await service.BrowseAsync(path, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
-            metadata = DIDLXmlParser.Parse(mr["Result"], withResource == true, withVendor == true).FirstOrDefault();
+            metadata = DIDLXmlReader.Read(mr["Result"], withResource == true, withVendor == true).FirstOrDefault();
         }
 
         IEnumerable<Item> items = null;
@@ -44,7 +44,7 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
         if(metadata is null or Container)
         {
             var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
-            items = DIDLXmlParser.Parse(result["Result"], withResource == true, withVendor == true).ToArray();
+            items = DIDLXmlReader.Read(result["Result"], withResource == true, withVendor == true).ToArray();
             total = int.Parse(result["TotalMatches"], InvariantCulture);
         }
 
@@ -71,7 +71,7 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
             {
                 var metadataResult = await service.BrowseAsync(parent, mode: BrowseMetadata, filter: filter, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                var metadata = DIDLXmlParser.Parse(metadataResult["Result"], withResource, withVendor).FirstOrDefault();
+                var metadata = DIDLXmlReader.Read(metadataResult["Result"], withResource, withVendor).FirstOrDefault();
 
                 if(metadata == null) break;
 

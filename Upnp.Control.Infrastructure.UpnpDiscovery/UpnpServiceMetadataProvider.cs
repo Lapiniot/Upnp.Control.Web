@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using IoT.Protocol.Upnp;
+using IoT.Protocol.Upnp.Metadata;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
@@ -20,6 +20,6 @@ internal class UpnpServiceMetadataProvider : IUpnpServiceMetadataProvider
         using var response = await client.GetAsync(location, cancellationToken).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
         using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        return await DeviceDescriptionXmlReader.ReadAsync(stream, cancellationToken).ConfigureAwait(false);
+        return await DeviceDescriptionReader.ReadAsync(stream, cancellationToken).ConfigureAwait(false);
     }
 }

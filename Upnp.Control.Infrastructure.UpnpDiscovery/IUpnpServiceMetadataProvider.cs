@@ -1,4 +1,4 @@
-using IoT.Protocol.Upnp;
+using IoT.Protocol.Upnp.Metadata;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
