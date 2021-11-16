@@ -1,4 +1,4 @@
-using static IoT.Protocol.Upnp.Services.BrowseMode;
+using static IoT.Device.Upnp.Services.BrowseMode;
 
 namespace Upnp.Control.Services.Commands;
 

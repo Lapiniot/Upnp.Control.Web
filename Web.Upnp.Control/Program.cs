@@ -18,6 +18,9 @@ using Upnp.Control.Services.Queries.Configuration;
 
 #pragma warning disable CA1812 // False warning due to the bug in the rule's analyzer
 
+IoT.Device.Upnp.Library.Init();
+IoT.Device.Upnp.Umi.Library.Init();
+
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var builder = WebApplication.CreateBuilder(args);

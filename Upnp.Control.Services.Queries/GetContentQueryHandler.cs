@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-using static IoT.Protocol.Upnp.Services.BrowseMode;
+using static IoT.Device.Upnp.Services.BrowseMode;
 using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Services.Queries;

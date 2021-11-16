@@ -1,17 +1,14 @@
-using System.Collections.Concurrent;
 using IoT.Protocol.Soap;
-using IoT.Protocol.Upnp.Services;
 using Upnp.Control.Models;
 using Upnp.Control.Services;
 
+using static IoT.Device.DeviceFactory<IoT.Protocol.Soap.SoapActionInvoker>;
 using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Infrastructure.Upnp;
 
 public class UpnpServiceFactory : IUpnpServiceFactory
 {
-    private static readonly ConcurrentDictionary<Type, string> Cache = new();
-
     private static readonly IDictionary<string, string> UmiMappings = new Dictionary<string, string>
         {
             {"urn:schemas-upnp-org:service:ContentDirectory:1", "{0}-MS/upnp.org-ContentDirectory-1/control"},
@@ -34,7 +31,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     {
         var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
 
-        return (GetService<TService>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService), t => ServiceSchemaAttribute.GetSchema(t)))),
+        return (GetService<TService>(GetControlUrl(device, GetModelName<TService>())),
             new DeviceDescription(device.FriendlyName, device.Description));
     }
 
@@ -43,7 +40,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     {
         var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
 
-        return GetService<TService>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService), t => ServiceSchemaAttribute.GetSchema(t))));
+        return GetService<TService>(GetControlUrl(device, GetModelName<TService>()));
     }
 
     public async Task<(TService1, TService2)> GetServicesAsync<TService1, TService2>(string deviceId, CancellationToken cancellationToken)
@@ -51,8 +48,8 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     {
         var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
 
-        return (GetService<TService1>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService1), t => ServiceSchemaAttribute.GetSchema(t)))),
-            GetService<TService2>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService2), t => ServiceSchemaAttribute.GetSchema(t)))));
+        return (GetService<TService1>(GetControlUrl(device, GetModelName<TService1>())),
+            GetService<TService2>(GetControlUrl(device, GetModelName<TService2>())));
     }
 
     public async Task<(TService1, TService2, TService3)> GetServicesAsync<TService1, TService2, TService3>(string deviceId, CancellationToken cancellationToken)
@@ -62,9 +59,9 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     {
         var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
 
-        return (GetService<TService1>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService1), t => ServiceSchemaAttribute.GetSchema(t)))),
-            GetService<TService2>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService2), t => ServiceSchemaAttribute.GetSchema(t)))),
-            GetService<TService3>(GetControlUrl(device, Cache.GetOrAdd(typeof(TService3), t => ServiceSchemaAttribute.GetSchema(t)))));
+        return (GetService<TService1>(GetControlUrl(device, GetModelName<TService1>())),
+            GetService<TService2>(GetControlUrl(device, GetModelName<TService2>())),
+            GetService<TService3>(GetControlUrl(device, GetModelName<TService3>())));
     }
 
     private static Uri GetControlUrl(UpnpDevice device, string schema)

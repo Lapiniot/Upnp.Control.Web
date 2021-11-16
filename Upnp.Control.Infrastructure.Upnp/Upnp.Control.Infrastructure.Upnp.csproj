@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Upnp.Control.Services/Upnp.Control.Services.csproj" />
+    <ProjectReference Include="../IoT.Device/IoT.Device.Upnp/IoT.Device.Upnp.csproj" />
   </ItemGroup>
 
   <ItemGroup>

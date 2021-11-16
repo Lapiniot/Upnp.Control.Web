@@ -17,7 +17,8 @@
     <Using Include="IoT.Protocol.Soap" />
     <Using Include="IoT.Protocol.Upnp" />
     <Using Include="IoT.Protocol.Upnp.DIDL" />
-    <Using Include="IoT.Protocol.Upnp.Services" />
+    <Using Include="IoT.Device.Upnp" />
+    <Using Include="IoT.Device.Upnp.Services" />
     <Using Include="IoT.Device.Upnp.Umi.Services" />
     <Using Include="Upnp.Control.Models" />
     <Using Include="Microsoft.Extensions.Logging" />
