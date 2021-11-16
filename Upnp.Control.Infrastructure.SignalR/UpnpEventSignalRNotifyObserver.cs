@@ -33,8 +33,9 @@ public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
 
     private void NotifyAVTransportEvent(AVTPropChangedEvent @event)
     {
-        hub.Clients.All.AVTransportEvent(@event.DeviceId,
+        hub.Clients.All.AVTransportEvent(@event.Device.Udn,
             new AVStateMessage(
+                @event.Device,
                 Factories.CreateAVState(@event.Properties),
                 Factories.CreateAVPosition(@event.Properties),
                 @event.VendorProperties));
@@ -42,8 +43,10 @@ public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
 
     private void NotifyRenderingControlEvent(RCPropChangedEvent @event)
     {
-        hub.Clients.All.RenderingControlEvent(@event.DeviceId,
-            new RCStateMessage(new RCVolumeState(
+        hub.Clients.All.RenderingControlEvent(@event.Device.Udn,
+            new RCStateMessage(
+                @event.Device,
+                new RCVolumeState(
                 @event.Properties.TryGetValue("Volume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
                 @event.Properties.TryGetValue("Mute", out v) ? v is "1" or "true" or "True" : null)));
     }

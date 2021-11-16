@@ -2,7 +2,7 @@ namespace Upnp.Control.Models.Events;
 
 public abstract record UpnpEvent
 {
-    public string DeviceId { get; init; }
+    public DeviceDescription Device { get; init; }
 }
 
 public record PropChangedUpnpEvent : UpnpEvent

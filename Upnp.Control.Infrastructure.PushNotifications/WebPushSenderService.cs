@@ -76,7 +76,7 @@ internal sealed partial class WebPushSenderService : BackgroundService, IObserve
         }
 
         Post(NotificationType.PlaybackStateChange,
-            new AVStateMessage(
+            new AVStateMessage(value.Device,
                 Factories.CreateAVState(@event.Properties),
                 Factories.CreateAVPosition(@event.Properties),
                 @event.VendorProperties));

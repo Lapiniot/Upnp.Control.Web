@@ -8,11 +8,15 @@ internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncComman
 {
     private readonly ILogger<PropChangedUpnpEventCommandHandler<TEvent>> logger;
     private readonly IEnumerable<IObserver<UpnpEvent>> observers;
+    private readonly IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler;
     private readonly XmlReaderSettings settings = new() { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
 
-    public PropChangedUpnpEventCommandHandler(IEnumerable<IObserver<UpnpEvent>> observers, ILogger<PropChangedUpnpEventCommandHandler<TEvent>> logger)
+    public PropChangedUpnpEventCommandHandler(IEnumerable<IObserver<UpnpEvent>> observers,
+        IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
+        ILogger<PropChangedUpnpEventCommandHandler<TEvent>> logger)
     {
         this.observers = observers;
+        this.handler = handler;
         this.logger = logger;
     }
 
@@ -31,13 +35,25 @@ internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncComman
             return;
         }
 
-        NotifyObservers(observers, command.DeviceId, properties, vendorProperties);
+        var vt = NotifyObserversAsync(observers, command.DeviceId, properties, vendorProperties, cancellationToken);
+        if(!vt.IsCompletedSuccessfully)
+        {
+            await vt.ConfigureAwait(false);
+        }
     }
 
-    protected virtual void NotifyObservers(IEnumerable<IObserver<UpnpEvent>> observers, string deviceId,
-        IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, string> vendorProperties)
+    protected virtual async ValueTask NotifyObserversAsync(IEnumerable<IObserver<UpnpEvent>> observers, string deviceId,
+        IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, string> vendorProperties,
+        CancellationToken cancellationToken)
     {
-        var @event = new TEvent() { DeviceId = deviceId, Properties = properties, VendorProperties = vendorProperties };
+        var device = await handler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
+
+        var @event = new TEvent()
+        {
+            Device = new DeviceDescription(device.Udn, device.FriendlyName, device.Description),
+            Properties = properties,
+            VendorProperties = vendorProperties
+        };
 
         foreach(var observer in observers)
         {

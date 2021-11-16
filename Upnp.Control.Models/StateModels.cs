@@ -2,7 +2,7 @@ using IoT.Protocol.Upnp.DIDL;
 
 namespace Upnp.Control.Models;
 
-public record DeviceDescription(string Name, string Description);
+public record DeviceDescription(string Udn, string Name, string Description);
 public record GetContentOptions(bool? WithParents, bool? WithResourceProps, bool? WithVendorProps, bool? WithMetadata, bool? WithDevice, uint Take = 50, uint Skip = 0);
 public record CDContent(int Total, DeviceDescription Device, Item Metadata, IEnumerable<Item> Items, IEnumerable<Item> Parents);
 

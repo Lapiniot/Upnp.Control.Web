@@ -32,7 +32,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
         var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
 
         return (GetService<TService>(GetControlUrl(device, GetModelName<TService>())),
-            new DeviceDescription(device.FriendlyName, device.Description));
+            new DeviceDescription(device.Udn, device.FriendlyName, device.Description));
     }
 
     public async Task<TService> GetServiceAsync<TService>(string deviceId, CancellationToken cancellationToken)
