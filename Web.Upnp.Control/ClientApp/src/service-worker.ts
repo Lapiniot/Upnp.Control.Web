@@ -1,9 +1,9 @@
 /// <reference lib="webworker" />
 /* eslint-disable no-restricted-globals */
 
-import { viaProxy } from "./components/Extensions";
+import { formatTrackInfoLine, viaProxy } from "./components/Extensions";
 import { getFallbackIcon, getOptimalIcon } from "./routes/common/DeviceIcon";
-import { Services, UpnpDevice } from "./routes/common/Types";
+import { AVState, NotificationType, Services, UpnpDevice } from "./routes/common/Types";
 
 interface PrecacheEntry {
     integrity?: string;
@@ -126,7 +126,11 @@ self.addEventListener("fetch", event => {
 self.addEventListener("push", event => {
     const data = event.data?.json();
 
-    if ("type" in data && "device" in data) {
+    if (!("type" in data)) return;
+
+    const type: NotificationType = data.type;
+
+    if ((type === "appeared" || type === "disappeared") && "device" in data) {
 
         const device = data.device as UpnpDevice;
         const title = `UPnP discovery: ${device.name}`;
@@ -137,7 +141,7 @@ self.addEventListener("push", event => {
                 ? "renderers"
                 : "upnp";
 
-        const options: NotificationOptions = data.type === "appeared" ? {
+        const options: NotificationOptions = type === "appeared" ? {
             body: `'${device.description}' has appeared on the network`,
             icon: icon ? viaProxy(icon.url) : getFallbackIcon(device.type),
             data: { url: `/${category}/${device.udn}` }
@@ -145,6 +149,15 @@ self.addEventListener("push", event => {
             body: `'${device.description}' has disappeared from the network`,
             icon: `/${getFallbackIcon(device.type)}`,
             data: { url: `/${category}` }
+        };
+
+        event.waitUntil(self.registration.showNotification(title, options));
+    } else if (type === "av-state" && "state" in data) {
+        const state: AVState = data.state;
+        const title = `\u00AB${data.device.description}\u00BB now playing`;
+        const { artists, creator, album, date, title: track } = state.current ?? {};
+        const options: NotificationOptions = {
+            body: `${track}\n${formatTrackInfoLine(artists?.[0] ?? creator, album, date)}`
         };
 
         event.waitUntil(self.registration.showNotification(title, options));

@@ -21,6 +21,10 @@ export function formatTime(seconds: number): string {
         : `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
+export function formatTrackInfoLine(artist: string | undefined, album: string | undefined, date: string | undefined) {
+    return `${artist ?? ""}${date ? `${artist ? "\xA0\u2022\xA0" : ""}${date}` : ""}${album ? `${artist || date ? "\xA0\u2022\xA0" : ""}${album}` : ""}`;
+}
+
 export function viaProxy(url: string) {
     return `/proxy/${encodeURIComponent(url)}`;
 }

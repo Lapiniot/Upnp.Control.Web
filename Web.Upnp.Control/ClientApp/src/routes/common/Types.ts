@@ -86,6 +86,12 @@ export type BrowseFetchResult = {
     parents?: DIDLItem[];
 }
 
+export type DeviceDescription = {
+    udn: string;
+    name: string;
+    description: string;
+}
+
 export type PlaybackState = "STOPPED" | "PLAYING" | "TRANSITIONING" | "PAUSED_PLAYBACK" | "PAUSED_RECORDING" | "RECORDING" | "NO_MEDIA_PRESENT" | "CUSTOM" | "UNKNOWN"
 
 export type PlaybackStatus = "OK" | "ERROR_OCCURRED" | "CUSTOM"
@@ -119,6 +125,8 @@ export type DiscoveryMessage = {
     type: string;
     device: UpnpDevice;
 }
+
+export type NotificationType = "appeared" | "disappeared" | "av-state" | "rc-state";
 
 export enum Services {
     MediaRenderer = "urn:schemas-upnp-org:device:MediaRenderer",
