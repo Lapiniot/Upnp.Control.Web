@@ -9,14 +9,15 @@ import { BottomBar } from "./BottomBar";
 import Breadcrumb from "./Breadcrumb";
 import { BrowserActionMenu, renderActionMenuItem } from "./BrowserActionMenu";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
-import { DIDLUtils } from "./BrowserUtils";
+import { DIDLTools } from "./DIDLTools";
 import { CellTemplate, CellTemplateProps } from "./BrowserView";
 import ItemInfoModal from "./ItemInfoModal";
 import { TablePagination } from "./Pagination";
 import { RowStateProvider } from "./RowStateContext";
 import $s from "./Settings";
 import { BrowserSvgSymbols } from "./SvgSymbols";
-import { DIDLItem, Services, UpnpDevice } from "./Types";
+import { DIDLItem, UpnpDevice } from "./Types";
+import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);
@@ -32,10 +33,6 @@ function umiCreatePlaylist(target: string, title: string, source: string, items:
 
 function playItem(target: string, source: string, id: string) {
     return WebApi.control(target).play(id, source).fetch($s.get("timeout"));
-}
-
-function isUmiDevice(device: UpnpDevice) {
-    return device.services.some(s => s.type.startsWith(Services.UmiPlaylist));
 }
 
 type CellContext = {
@@ -78,7 +75,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         try {
             const timeout = $s.get("timeout");
             const devices: UpnpDevice[] = await WebApi.devices("renderers").jsonFetch(timeout);
-            this.setState({ umis: devices.filter(isUmiDevice), renderers: devices.filter(d => !isUmiDevice(d)) })
+            this.setState({ umis: devices.filter(UDT.isUmiDevice), renderers: devices.filter(d => !UDT.isUmiDevice(d)) })
         }
         catch (error) {
             console.error(error);
@@ -116,7 +113,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     }
 
     actionMenuSelectedHandler = async (action: string, udn: string, selection: DIDLItem[]) => {
-        const items = selection.filter(i => DIDLUtils.isContainer(i) || DIDLUtils.isMusicTrack(i))
+        const items = selection.filter(i => DIDLTools.isContainer(i) || DIDLTools.isMusicTrack(i))
 
         if (action.startsWith("send.")) {
             const title = items?.map(i => i?.title).join(";");
@@ -141,8 +138,8 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         const item = ctx?.source?.items?.find(i => i.id === id);
         if (!item) return;
 
-        const umiAcceptable = !!umis.length && (DIDLUtils.isContainer(item) || DIDLUtils.isMusicTrack(item));
-        const rendererAcceptable = !!renderers.length && DIDLUtils.isMediaItem(item);
+        const umiAcceptable = !!umis.length && (DIDLTools.isContainer(item) || DIDLTools.isMusicTrack(item));
+        const rendererAcceptable = !!renderers.length && DIDLTools.isMediaItem(item);
 
         return <>
             {this.renderMenu(umiAcceptable, rendererAcceptable, umis, renderers)}

@@ -3,11 +3,12 @@ import RendererDeviceCard from "./Device";
 import UmiDeviceCard from "../umi/Device";
 import DeviceRouter from "../upnp/Router";
 import { UmiActionSvgSymbols } from "../common/SvgSymbols";
-import { CategoryRouteParams, DataSourceProps, Services, UpnpDevice } from "../common/Types";
+import { CategoryRouteParams, DataSourceProps, UpnpDevice } from "../common/Types";
 import PlaylistManager from "../umi/playlist/PlaylistManager";
+import { UpnpDeviceTools as UDT } from "../common/UpnpDeviceTools";
 
 function TemplateSelector(props: DataSourceProps<UpnpDevice>) {
-    if (props["data-source"].services.find(s => s.type.startsWith(Services.UmiPlaylist)))
+    if (UDT.isUmiDevice(props["data-source"]))
         return <UmiDeviceCard {...props} />
     else
         return <RendererDeviceCard {...props} />

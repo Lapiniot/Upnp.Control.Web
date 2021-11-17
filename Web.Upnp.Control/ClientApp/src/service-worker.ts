@@ -2,8 +2,8 @@
 /* eslint-disable no-restricted-globals */
 
 import { formatTrackInfoLine, viaProxy } from "./components/Extensions";
-import { getFallbackIcon, getOptimalIcon } from "./routes/common/DeviceIcon";
-import { AVState, NotificationType, Services, UpnpDevice } from "./routes/common/Types";
+import { AVState, DeviceDescription, NotificationType, UpnpDevice } from "./routes/common/Types";
+import { UpnpDeviceTools as UDT } from "./routes/common/UpnpDeviceTools";
 
 interface PrecacheEntry {
     integrity?: string;
@@ -134,30 +134,31 @@ self.addEventListener("push", event => {
 
         const device = data.device as UpnpDevice;
         const title = `UPnP discovery: ${device.name}`;
-        const icon = getOptimalIcon(device.icons, 192);
-        const category = device.services.some(s => s.type.startsWith(Services.UmiPlaylist))
-            ? "umi"
-            : device.services.some(s => s.type.startsWith(Services.MediaRenderer))
-                ? "renderers"
-                : "upnp";
+        const icon = UDT.getOptimalIcon(device.icons, 192);
+        const category = UDT.getCategory(device);
 
         const options: NotificationOptions = type === "appeared" ? {
             body: `'${device.description}' has appeared on the network`,
-            icon: icon ? viaProxy(icon.url) : getFallbackIcon(device.type),
+            icon: icon ? viaProxy(icon.url) : UDT.getFallbackIcon(device.type),
             data: { url: `/${category}/${device.udn}` }
         } : {
             body: `'${device.description}' has disappeared from the network`,
-            icon: `/${getFallbackIcon(device.type)}`,
+            icon: `/${UDT.getFallbackIcon(device.type)}`,
             data: { url: `/${category}` }
         };
 
         event.waitUntil(self.registration.showNotification(title, options));
-    } else if (type === "av-state" && "state" in data) {
+    } else if (type === "av-state" && "state" in data && "device" in data) {
         const state: AVState = data.state;
-        const title = `\u00AB${data.device.description}\u00BB now playing`;
+        const { udn, description } = data.device as DeviceDescription;
+        const title = `\u00AB${description}\u00BB now playing`;
         const { artists, creator, album, date, title: track } = state.current ?? {};
+        const uri: string = data.vendorProps?.["mi:playlist_transport_uri"];
+        const url = uri ? `/umi/${udn}/playlists/PL:${uri.substr(uri.lastIndexOf("=") + 1)}` : `/renderers/${udn}`;
+
         const options: NotificationOptions = {
-            body: `${track}\n${formatTrackInfoLine(artists?.[0] ?? creator, album, date)}`
+            body: `${track}\n${formatTrackInfoLine(artists?.[0] ?? creator, album, date)}`,
+            data: { url }
         };
 
         event.waitUntil(self.registration.showNotification(title, options));
@@ -169,15 +170,18 @@ self.addEventListener("notificationclick", event => {
     if (relativeUrl) {
         const url = new URL(relativeUrl, self.origin).href;
         event.waitUntil((async () => {
-            const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-            for (let index = 0; index < clients.length; index++) {
-                const client = clients[index];
-                if (client.url === url) {
-                    client.focus();
-                    return;
+            const clients = await self.clients.matchAll({ type: "window" });
+            if (clients.length) {
+                const client = clients[0];
+                client.focus();
+                if (client.url !== url) {
+                    client.navigate(url);
                 }
             }
-            self.clients.openWindow(url);
+            else {
+                self.clients.openWindow(url);
+            }
+            event.notification.close();
         })());
     }
 })

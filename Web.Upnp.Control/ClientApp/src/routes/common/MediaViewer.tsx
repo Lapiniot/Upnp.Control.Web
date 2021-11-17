@@ -1,6 +1,6 @@
 import { HTMLAttributes } from "react";
 import { DataFetchProps } from "../../components/DataFetch";
-import { DIDLUtils } from "./BrowserUtils";
+import { DIDLTools } from "./DIDLTools";
 import { BrowseFetchResult, ViewRouteParams } from "./Types";
 
 type MediaViewerProps = HTMLAttributes<HTMLDivElement> &
@@ -16,7 +16,7 @@ export function MediaViewer({ dataContext: ctx, fetching, error, category, devic
 
     return <figure className={`vstack overflow-hidden p-3 align-items-center${className ? ` ${className}` : ""}`} {...other}>
         <figcaption className="h5">{title}</figcaption>
-        {DIDLUtils.isMusicTrack(item) ?
+        {DIDLTools.isMusicTrack(item) ?
             <audio controls>
                 <source src={url} type="audio/mp4" />
             </audio> :

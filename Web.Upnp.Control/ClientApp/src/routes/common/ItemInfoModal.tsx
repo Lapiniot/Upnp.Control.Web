@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import Modal, { ModalProps } from "../../components/Modal";
-import { DIDLUtils } from "./BrowserUtils";
+import { DIDLTools } from "./DIDLTools";
 import { ItemInfo } from "./ItemInfo";
 import { DIDLItem } from "./Types";
 
@@ -17,7 +17,7 @@ export default function ItemInfoModal({ item, ...other }: ModalProps & { item: D
             <ItemInfo item={item} />
         </Modal.Body>
         <Modal.Footer>
-            {DIDLUtils.isMediaItem(item) && window.isSecureContext
+            {DIDLTools.isMediaItem(item) && window.isSecureContext
                 ? <Modal.Button className="me-auto" onClick={clickHandler}>Copy media url</Modal.Button>
                 : undefined}
             <Modal.Button className="confirm" dismiss>Ok</Modal.Button>

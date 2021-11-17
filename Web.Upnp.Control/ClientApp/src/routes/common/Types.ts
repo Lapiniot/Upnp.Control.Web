@@ -25,6 +25,8 @@ export type UpnpDevice = {
     icons: Icon[];
 }
 
+export type UpnpDeviceCategory = "umi" | "renderers" | "upnp";
+
 export type UpnpService = {
     usn: string;
     url: string;

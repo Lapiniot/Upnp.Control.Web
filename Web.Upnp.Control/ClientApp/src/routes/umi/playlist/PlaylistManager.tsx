@@ -11,7 +11,8 @@ import ModalHost from "../../../components/ModalHost";
 import $api from "../../../components/WebApi";
 import { BottomBar } from "../../common/BottomBar";
 import Breadcrumb from "../../common/Breadcrumb";
-import { DIDLUtils, fromBaseQuery, withBrowserDataFetch } from "../../common/BrowserUtils";
+import { fromBaseQuery, withBrowserDataFetch } from "../../common/BrowserUtils";
+import { DIDLTools } from "../../common/DIDLTools";
 import Browser, { BrowserProps } from "../../common/BrowserView";
 import ItemInfoModal from "../../common/ItemInfoModal";
 import { NavigatorProps } from "../../common/Navigator";
@@ -50,7 +51,7 @@ const dialogBrowserProps: BrowserProps<unknown> = {
 function getBrowserDialogRowState(item: DIDLItem) {
     return item.container
         ? RowState.Navigable | RowState.Selectable
-        : DIDLUtils.isMusicTrack(item)
+        : DIDLTools.isMusicTrack(item)
             ? RowState.Selectable
             : RowState.None
 }

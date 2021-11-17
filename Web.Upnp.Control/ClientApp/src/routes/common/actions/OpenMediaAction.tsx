@@ -2,7 +2,7 @@ import { useCallback, useRef } from "react";
 import ModalHost from "../../../components/ModalHost";
 import WebApi from "../../../components/WebApi";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
-import { DIDLUtils } from "../BrowserUtils";
+import { DIDLTools } from "../DIDLTools";
 import { BrowserProps } from "../BrowserView";
 import { RowStateMapper } from "../RowStateContext";
 import { DIDLItem, RowState } from "../Types";
@@ -43,7 +43,7 @@ export function OpenMediaAction(props: DeviceActionProps) {
 }
 
 function pickAudioMapper(item: DIDLItem) {
-    return DIDLUtils.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
+    return DIDLTools.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
 }
 
 export function OpenAudioAction(props: DeviceActionProps) {

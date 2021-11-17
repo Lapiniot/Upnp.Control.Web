@@ -1,6 +1,6 @@
 import { DIDLItem, DIDLResource } from "./Types";
 import AlbumArt from "./AlbumArt";
-import { DIDLUtils } from "./BrowserUtils";
+import { DIDLTools as DT } from "./DIDLTools";
 
 function asis(value: any): string {
     return value;
@@ -19,12 +19,12 @@ type AttributeDescriptor<T> = [name: keyof T, title: string, converter: (value: 
 const attributes: [key: string, title: string, formatters: AttributeDescriptor<DIDLItem>[]][] = [
     ["general", "General", [
         ["title", "Title", asis],
-        ["class", "Kind", DIDLUtils.getDisplayName],
+        ["class", "Kind", DT.getDisplayName],
         ["id", "Id", asis],
         ["storageMedium", "Storage", asis],
-        ["storageUsed", "Storage Used", DIDLUtils.formatSize],
-        ["storageTotal", "Storage Total", DIDLUtils.formatSize],
-        ["storageFree", "Storage Free", DIDLUtils.formatSize]
+        ["storageUsed", "Storage Used", DT.formatSize],
+        ["storageTotal", "Storage Total", DT.formatSize],
+        ["storageFree", "Storage Free", DT.formatSize]
     ]],
     ["metadata", "Metadata", [
         ["creator", "Creator", asis],
@@ -35,7 +35,7 @@ const attributes: [key: string, title: string, formatters: AttributeDescriptor<D
         ["actors", "Actors", join],
         ["publishers", "Publishers", join],
         ["album", "Album", asis],
-        ["date", "Year", DIDLUtils.getYear],
+        ["date", "Year", DT.getYear],
         ["genre", "Genre", asis],
         ["genres", "Genres", join],
         ["track", "Track", asis],
@@ -48,12 +48,12 @@ const attributes: [key: string, title: string, formatters: AttributeDescriptor<D
 const resAttributes: [key: string, title: string, formatters: AttributeDescriptor<DIDLResource>[]][] = [
     ["res-general", "Media Info", [
         ["url", "Media Url", url()],
-        ["proto", "Type", DIDLUtils.getContentType],
-        ["size", "Size", DIDLUtils.formatSizeFull],
-        ["duration", "Duration", DIDLUtils.formatTime],
-        ["bitrate", "Bitrate", DIDLUtils.formatBitrate],
-        ["freq", "Sample Freq.", DIDLUtils.formatSampleFrequency],
-        ["channels", "Channels", DIDLUtils.formatChannels],
+        ["proto", "Type", DT.getContentType],
+        ["size", "Size", DT.formatSizeFull],
+        ["duration", "Duration", DT.formatTime],
+        ["bitrate", "Bitrate", DT.formatBitrate],
+        ["freq", "Sample Freq.", DT.formatSampleFrequency],
+        ["channels", "Channels", DT.formatChannels],
         ["bits", "Bits/sample", asis],
         ["resolution", "Resolution", asis],
         ["depth", "Color Depth", asis],

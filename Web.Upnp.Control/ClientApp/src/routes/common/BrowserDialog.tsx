@@ -39,10 +39,10 @@ const MediaSourceList = withDataFetch(({ dataContext: ctx, fetching }: DataFetch
     fetching
         ? <LoadIndicatorOverlay />
         : <ul className="list-group list-group-flush overflow-auto">
-            {ctx?.source?.map(({ udn, name, type, description, icons }) =>
-                <RouteLink key={udn} to={`/sources/${udn}`} className="nav-link list-group-item list-group-item-action hstack">
-                    <DeviceIcon icons={icons} service={type} />
-                    {name}{description && ` (${description})`}
+            {ctx?.source?.map(d =>
+                <RouteLink key={d.udn} to={`/sources/${d.udn}`} className="nav-link list-group-item list-group-item-action hstack">
+                    <DeviceIcon device={d} />
+                    {d.name}{d.description && ` (${d.description})`}
                 </RouteLink>)}
         </ul>
     , () => serversFetch, { usePreloader: true });

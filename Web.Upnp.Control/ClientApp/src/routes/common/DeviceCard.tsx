@@ -17,7 +17,7 @@ export type DeviceCardProps = DataSourceProps<UpnpDevice> & {
 export function DeviceCard({ "data-source": d, category, children, actions, className, ...other }: DeviceCardProps & HTMLAttributes<HTMLDivElement>) {
     return <div className={`card${className ? ` ${className}` : ""}`} {...other}>
         <div className="card-header hstack bg-transparent border-0">
-            <DeviceIcon service={d.type} icons={d.icons} />
+            <DeviceIcon device={d} />
             <div className="flex-fill overflow-hidden">
                 <h5 className="card-title text-truncate">{d.presentUrl ? <NavLink to={d.presentUrl} className="p-0">{d.name}</NavLink> : d.name}</h5>
                 <h6 className="card-subtitle text-truncate">{d.description}</h6>

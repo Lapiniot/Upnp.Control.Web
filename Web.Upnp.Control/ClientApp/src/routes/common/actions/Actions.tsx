@@ -1,6 +1,7 @@
-import React, { HTMLAttributes } from "react";
+import { HTMLAttributes } from "react";
 import { NavLink, RouteLink } from "../../../components/NavLink";
-import { Services, UpnpDevice } from "../Types";
+import { UpnpDevice } from "../Types";
+import { UpnpDeviceTools as UDT } from "../UpnpDeviceTools";
 
 export type DeviceActionProps = HTMLAttributes<HTMLElement> & {
     device: UpnpDevice;
@@ -8,8 +9,7 @@ export type DeviceActionProps = HTMLAttributes<HTMLElement> & {
 };
 
 export function BrowseContentAction({ device, category, className, ...other }: DeviceActionProps) {
-    const isMediaServer = device.services && device.services.some(
-        s => s.type.startsWith(Services.ContentDirectory) || s.type.startsWith(Services.UmiPlaylist));
+    const isMediaServer = UDT.isMediaServer(device);
     return isMediaServer
         ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="folder" className={`py-0 p-1 nav-link${className ? ` ${className}` : ""}`} {...other}>Browse</RouteLink>
         : null;
