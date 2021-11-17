@@ -140,14 +140,16 @@ self.addEventListener("push", event => {
         const options: NotificationOptions = type === "appeared" ? {
             body: `'${device.description}' has appeared on the network`,
             icon: icon ? viaProxy(icon.url) : UDT.getFallbackIcon(device.type),
-            data: { url: `/${category}/${device.udn}` }
+            data: { url: `/${category}/${device.udn}` },
+            tag: "discovery"
         } : {
             body: `'${device.description}' has disappeared from the network`,
             icon: `/${UDT.getFallbackIcon(device.type)}`,
-            data: { url: `/${category}` }
+            data: { url: `/${category}` },
+            tag: "discovery"
         };
 
-        event.waitUntil(self.registration.showNotification(title, options));
+        event.waitUntil(showNotification(title, options));
     } else if (type === "av-state" && "state" in data && "device" in data) {
         const state: AVState = data.state;
         const { udn, description } = data.device as DeviceDescription;
@@ -158,12 +160,19 @@ self.addEventListener("push", event => {
 
         const options: NotificationOptions = {
             body: `${track}\n${formatTrackInfoLine(artists?.[0] ?? creator, album, date)}`,
-            data: { url }
+            data: { url },
+            tag: "av-state"
         };
 
-        event.waitUntil(self.registration.showNotification(title, options));
+        event.waitUntil(showNotification(title, options));
     }
 })
+
+function showNotification(title: string, options: NotificationOptions) {
+    return self.registration.getNotifications({ "tag": options.tag })
+        .then(notifications => notifications.forEach(n => n.close()))
+        .then(() => self.registration.showNotification(title, options));
+}
 
 self.addEventListener("notificationclick", event => {
     const relativeUrl = event.notification.data?.url;
@@ -187,3 +196,4 @@ self.addEventListener("notificationclick", event => {
 })
 
 export { }
+
