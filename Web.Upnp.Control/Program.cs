@@ -53,6 +53,7 @@ void ConfigureJsonSerializer(JsonSerializerOptions options)
 builder.Services.AddServicesInit()
     .AddWebPushSender(ConfigureJsonSerializer)
     .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/rc").MapAVTransport("api/events/{0}/avt"))
+    .AddUpnpDiscovery()
     .AddUpnpDeviceSqliteDatabase(Path.Combine(builder.Environment.ContentRootPath, "data/upnp.db3"))
     .AddPushSubscriptionSqliteDatabase(Path.Combine(builder.Environment.ContentRootPath, "data/subscriptions.db3"))
     .AddSignalRUpnpDiscoveryNotifications()
@@ -118,8 +119,6 @@ builder.Host.ConfigureAppConfiguration((ctx, cb) =>
     sources.Insert(index, new JsonConfigurationSource() { Path = $"appsettings.Secrets.json", Optional = true, ReloadOnChange = true });
     sources.Insert(index, new JsonConfigurationSource() { Path = $"appsettings.{environmentName}.Https.json", Optional = true });
 });
-
-builder.Host.ConfigureServices(cd => cd.AddUpnpDiscovery());
 
 #endregion
 

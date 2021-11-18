@@ -16,21 +16,41 @@ internal partial class UpnpDiscoveryService : BackgroundServiceBase
     private const string RootDevice = "upnp:rootdevice";
     private readonly IUpnpServiceMetadataProvider metadataProvider;
     private readonly IServiceProvider services;
+    private readonly IHostApplicationLifetime applicationLifetime;
 
-    public UpnpDiscoveryService(IServiceProvider services, IUpnpServiceMetadataProvider metadataProvider, ILogger<UpnpDiscoveryService> logger) : base(logger)
+    public UpnpDiscoveryService(IServiceProvider services,
+        IUpnpServiceMetadataProvider metadataProvider,
+        IHostApplicationLifetime applicationLifetime,
+        ILogger<UpnpDiscoveryService> logger) : base(logger)
     {
-        ArgumentNullException.ThrowIfNull(services);
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(metadataProvider);
-
         this.services = services;
-        this.logger = logger;
         this.metadataProvider = metadataProvider;
+        this.applicationLifetime = applicationLifetime;
+        this.logger = logger;
     }
 
     [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        // This service drives all other application parts, 
+        // so we must reliably start processing only when all other services (including Kestrel) are up&running 
+        // and application is completely started. Previouse workaround with service registration 
+        // in the Host.ConfigureServices after GenericWebHostSevice seems doesn't work anymore since .NET 6
+
+        using(var semaphore = new SemaphoreSlim(initialCount: 0))
+        using(stoppingToken.Register(() => semaphore.Release()))
+        using(applicationLifetime.ApplicationStarted.Register(() => semaphore.Release()))
+        {
+            await semaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false);
+            if(stoppingToken.IsCancellationRequested)
+            {
+                // Exiting immidiately due to the abnormal external cancellation of the service itself, happening before host completely started
+                return;
+            }
+        }
+
+        LogStarted();
+
         try
         {
             using var scope = services.CreateScope();
@@ -63,7 +83,10 @@ internal partial class UpnpDiscoveryService : BackgroundServiceBase
                                 if(await getQueryHandler.ExecuteAsync(new GetDeviceQuery(udn), stoppingToken).ConfigureAwait(false) is { } existing)
                                 {
                                     await removeCommandHandler.ExecuteAsync(new RemoveDeviceCommand(udn), stoppingToken).ConfigureAwait(false);
+
                                     Notify(observers, new UpnpDeviceDisappearedEvent(udn, existing));
+
+                                    LogDeviceDisappeared(udn);
                                 }
 
                                 continue;
