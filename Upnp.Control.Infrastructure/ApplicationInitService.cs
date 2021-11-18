@@ -3,21 +3,44 @@ using Upnp.Control.Services;
 namespace Upnp.Control.Infrastructure;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes: instantiated by DI container
-internal class ApplicationInitService : BackgroundService
+internal partial class ApplicationInitService : IHostedService
 {
     private readonly IServiceProvider services;
+    private readonly ILogger<ApplicationInitService> logger;
 
-    public ApplicationInitService(IServiceProvider services)
+    public ApplicationInitService(IServiceProvider services, ILogger<ApplicationInitService> logger)
     {
-        ArgumentNullException.ThrowIfNull(services);
-
         this.services = services;
+        this.logger = logger;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
+        LogStarted();
+
         using var scope = services.CreateScope();
+
         await Task.WhenAll(scope.ServiceProvider.GetServices<IServiceInitializer>()
-            .Select(initializer => initializer.InitializeAsync(stoppingToken))).ConfigureAwait(false);
+            .Select(initializer =>
+            {
+                LogStartInit(initializer.GetType().Name);
+                return initializer.InitializeAsync(cancellationToken);
+            })).ConfigureAwait(false);
+
+        LogDone();
     }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
+
+    [LoggerMessage(1, LogLevel.Information, $"Started {nameof(ApplicationInitService)} service")]
+    private partial void LogStarted();
+
+    [LoggerMessage(2, LogLevel.Information, "Starting '{initializerName}' initializer")]
+    private partial void LogStartInit(string initializerName);
+
+    [LoggerMessage(3, LogLevel.Information, "Initialization is done")]
+    private partial void LogDone();
 }

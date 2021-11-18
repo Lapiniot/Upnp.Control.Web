@@ -11,7 +11,7 @@ namespace Upnp.Control.Infrastructure.PushNotifications;
 
 #pragma warning disable CA1031 // by design
 #pragma warning disable CA1812 // instantiated by DI container
-internal sealed partial class WebPushSenderService : BackgroundService, IObserver<UpnpDiscoveryEvent>, IObserver<UpnpEvent>
+internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObserver<UpnpDiscoveryEvent>, IObserver<UpnpEvent>
 {
     private readonly IServiceProvider services;
     private readonly ILogger<WebPushSenderService> logger;
@@ -21,7 +21,7 @@ internal sealed partial class WebPushSenderService : BackgroundService, IObserve
 
     public WebPushSenderService(IServiceProvider services,
         IOptions<JsonOptions> jsonOptions, IOptions<WebPushOptions> wpOptions,
-        ILogger<WebPushSenderService> logger)
+        ILogger<WebPushSenderService> logger) : base(logger)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(logger);
@@ -153,15 +153,15 @@ internal sealed partial class WebPushSenderService : BackgroundService, IObserve
         base.Dispose();
     }
 
-    [LoggerMessage(1, LogLevel.Error, "Error pushing message to endpoint: {endpoint}")]
+    [LoggerMessage(11, LogLevel.Error, "Error pushing message to endpoint: {endpoint}")]
     private partial void LogPushError(Exception ex, Uri endpoint);
 
-    [LoggerMessage(2, LogLevel.Error, "Error pushing message")]
+    [LoggerMessage(12, LogLevel.Error, "Error pushing message")]
     private partial void LogError(Exception ex);
 
-    [LoggerMessage(3, LogLevel.Error, "Error writing message to the queue")]
+    [LoggerMessage(13, LogLevel.Error, "Error writing message to the queue")]
     private partial void LogMessageQueueingError(Exception ex);
 
-    [LoggerMessage(4, LogLevel.Warning, "Channel closed. Terminating push dispatch loop")]
+    [LoggerMessage(14, LogLevel.Warning, "Channel closed. Terminating push dispatch loop")]
     private partial void LogChannelClosed();
 }

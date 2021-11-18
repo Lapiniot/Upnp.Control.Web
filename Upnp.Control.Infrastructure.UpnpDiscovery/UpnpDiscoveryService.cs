@@ -11,13 +11,13 @@ using Icon = Upnp.Control.Models.Icon;
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
-internal partial class UpnpDiscoveryService : BackgroundService
+internal partial class UpnpDiscoveryService : BackgroundServiceBase
 {
     private const string RootDevice = "upnp:rootdevice";
     private readonly IUpnpServiceMetadataProvider metadataProvider;
     private readonly IServiceProvider services;
 
-    public UpnpDiscoveryService(IServiceProvider services, IUpnpServiceMetadataProvider metadataProvider, ILogger<UpnpDiscoveryService> logger)
+    public UpnpDiscoveryService(IServiceProvider services, IUpnpServiceMetadataProvider metadataProvider, ILogger<UpnpDiscoveryService> logger) : base(logger)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(logger);
@@ -31,11 +31,10 @@ internal partial class UpnpDiscoveryService : BackgroundService
     [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        LogStarted();
-
         try
         {
             using var scope = services.CreateScope();
+
             var getQueryHandler = scope.ServiceProvider.GetRequiredService<IAsyncQueryHandler<GetDeviceQuery, UpnpDevice>>();
             var addCommandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<AddDeviceCommand>>();
             var removeCommandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<RemoveDeviceCommand>>();
