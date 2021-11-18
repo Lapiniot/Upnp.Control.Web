@@ -2,7 +2,6 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.Configuration.Json;
 using Upnp.Control.DataAccess.Configurations;
 using Upnp.Control.Infrastructure.AspNetCore.Configuration;
 using Upnp.Control.Infrastructure.Configuration;
@@ -148,6 +147,7 @@ app.MapContentProxy("dlna-proxy/{*url}");
 app.MapHealthChecks("api/health");
 app.MapCertificateDownloadMiddleware("api/cert");
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
+app.MapFallbackToFile("index.html");
 
 #endregion
 
