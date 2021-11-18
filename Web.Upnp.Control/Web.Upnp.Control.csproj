@@ -30,6 +30,7 @@
         <AnalysisLevel>latest</AnalysisLevel>
         <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
         <ImplicitUsings>true</ImplicitUsings>
+        <EnablePreviewFeatures>True</EnablePreviewFeatures>
     </PropertyGroup>
 
     <ItemGroup>

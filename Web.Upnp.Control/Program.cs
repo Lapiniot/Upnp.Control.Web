@@ -108,17 +108,11 @@ builder.Services.AddHealthChecks();
 
 #region Application configuration
 
-builder.Host.ConfigureAppConfiguration((ctx, cb) =>
-{
-    var sources = cb.Sources;
-    var index = sources.IndexOf(sources.Last(s => s is JsonConfigurationSource)) + 1;
-    var environmentName = ctx.HostingEnvironment.EnvironmentName;
-    sources.Insert(index, new JsonConfigurationSource() { Path = "config/appsettings.Secrets.json", Optional = true, ReloadOnChange = true });
-    sources.Insert(index, new JsonConfigurationSource() { Path = $"config/appsettings.{environmentName}.Https.json", Optional = true });
-    sources.Insert(index, new JsonConfigurationSource() { Path = $"config/appsettings.{environmentName}.json", Optional = true });
-    sources.Insert(index, new JsonConfigurationSource() { Path = $"appsettings.Secrets.json", Optional = true, ReloadOnChange = true });
-    sources.Insert(index, new JsonConfigurationSource() { Path = $"appsettings.{environmentName}.Https.json", Optional = true });
-});
+builder.Host.ConfigureAppConfiguration((ctx, cb) => cb
+    .AddJsonFile("config/appsettings.json", true, true)
+    .AddJsonFile($"config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", true, true)
+    .AddJsonFile("config/appsettings.Secrets.json", true, true)
+    .AddEnvironmentVariables("UPNP_DASHBOARD_"));
 
 #endregion
 
