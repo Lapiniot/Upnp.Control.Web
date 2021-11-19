@@ -9,11 +9,12 @@
         "**/bin/": true,
         "**/obj/": true,
         "**/package-lock.json": true,
-        "**/node_modules": true,
+        "**/node_modules": false,
         "**/*.user": true,
         "*/**/.vscode": true,
         "**/*.sln": true,
         "**/.gitmodules": true,
+        "IoT.Device/IoT.Device.Generators": true,
         "IoT.Device/IoT.Device.Lumi": true,
         "IoT.Device/IoT.Device.Yeelight": true,
         "IoT.Device/IoT.Protocol/IoT.Protocol.Lumi": true,
@@ -30,7 +31,7 @@
         "**/src/index.js": "javascriptreact",
         "**/src/styles/**/*.scss": "scss"
     },
-    "typescript.tsdk": "./Upnp.Control.Web/Upnp.Control.Web/ClientApp/node_modules/typescript/lib",
+    "typescript.tsdk": "./Upnp.Control.Web/ClientApp/node_modules/typescript/lib",
     "css.styleSheets": [
         "/Upnp.Control.Web/ClientApp/src/css/index.css"
     ],
