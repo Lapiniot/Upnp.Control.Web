@@ -3,7 +3,7 @@
   <Import Project="../common.props" />
 
   <ItemGroup>
-    <ProjectReference Include="../Upnp.Control.Services/Upnp.Control.Services.csproj" />
+    <ProjectReference Include="../Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,4 @@
 using Upnp.Control.Infrastructure.AspNetCore.Middleware;
-using Upnp.Control.Services;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Configuration;
 

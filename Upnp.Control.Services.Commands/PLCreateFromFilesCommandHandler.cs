@@ -1,5 +1,4 @@
 using System.Globalization;
-
 using static System.String;
 
 namespace Upnp.Control.Services.Commands;

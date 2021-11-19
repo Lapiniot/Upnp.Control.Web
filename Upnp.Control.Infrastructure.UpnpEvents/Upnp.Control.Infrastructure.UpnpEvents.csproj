@@ -14,9 +14,9 @@
 
   <ItemGroup>
     <Using Include="IoT.Protocol.Upnp" />
+    <Using Include="Upnp.Control.Abstractions" />
     <Using Include="Upnp.Control.Models" />
     <Using Include="Upnp.Control.Models.Events" />
-    <Using Include="Upnp.Control.Services" />
     <Using Include="Microsoft.Extensions.Logging" />
     <Using Include="Microsoft.Extensions.Options" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />

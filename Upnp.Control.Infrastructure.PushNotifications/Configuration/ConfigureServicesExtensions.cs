@@ -1,7 +1,7 @@
 using System.Text.Json;
+using Upnp.Control.Abstractions;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Models.PushNotifications;
-using Upnp.Control.Services;
 
 namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 

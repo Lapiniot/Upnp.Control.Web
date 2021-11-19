@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using Upnp.Control.Models.PushNotifications;
-using Upnp.Control.Services;
 
 namespace Upnp.Control.DataAccess.Queries;
 

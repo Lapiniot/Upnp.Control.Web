@@ -1,6 +1,6 @@
 using IoT.Protocol.Soap;
+using Upnp.Control.Abstractions;
 using Upnp.Control.Models;
-using Upnp.Control.Services;
 
 using static IoT.Device.DeviceFactory<IoT.Protocol.Soap.SoapActionInvoker>;
 using static System.Globalization.CultureInfo;

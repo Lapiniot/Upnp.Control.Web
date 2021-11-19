@@ -1,4 +1,4 @@
-namespace Upnp.Control.Services;
+namespace Upnp.Control.Abstractions;
 
 public interface IBase64UrlDecoder
 {

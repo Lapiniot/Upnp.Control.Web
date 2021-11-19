@@ -1,7 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using Upnp.Control.Models;
-using Upnp.Control.Services;
 
 using static IoT.Protocol.Upnp.UpnpServices;
 using static System.DateTime;

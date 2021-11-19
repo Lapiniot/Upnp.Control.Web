@@ -1,6 +1,6 @@
 using System.Net.Sockets;
 
-namespace Upnp.Control.Services;
+namespace Upnp.Control.Abstractions;
 
 public interface IServerAddressesProvider
 {

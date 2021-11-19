@@ -1,4 +1,4 @@
-using Upnp.Control.Services;
+using Upnp.Control.Abstractions;
 
 namespace Upnp.Control.Infrastructure;
 

@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Upnp.Control.Abstractions;
 using Upnp.Control.Models.PushNotifications;
 
 namespace Web.Upnp.Control.Controllers;

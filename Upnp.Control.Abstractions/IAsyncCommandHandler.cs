@@ -1,4 +1,4 @@
-namespace Upnp.Control.Services;
+namespace Upnp.Control.Abstractions;
 
 public interface IAsyncCommandHandler<in TCommand>
 {

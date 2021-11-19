@@ -1,5 +1,4 @@
 using System.Text;
-
 using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Services.Commands;

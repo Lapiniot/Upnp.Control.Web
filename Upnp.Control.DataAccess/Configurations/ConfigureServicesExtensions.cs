@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Upnp.Control.DataAccess.Commands;
 using Upnp.Control.DataAccess.CompiledModels;
 using Upnp.Control.DataAccess.Queries;
-using Upnp.Control.Models;
 using Upnp.Control.Models.PushNotifications;
-using Upnp.Control.Services;
 
 namespace Upnp.Control.DataAccess.Configurations;
 

@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
-using Upnp.Control.Services;
 
 using static System.Net.Sockets.AddressFamily;
 using static System.Net.IPAddress;

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Upnp.Control.Services/Upnp.Control.Services.csproj" />
+    <ProjectReference Include="../Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Upnp.Control.Abstractions" />
     <Using Include="Microsoft.AspNetCore.Http" />
     <Using Include="Microsoft.AspNetCore.Http.Features" />
     <Using Include="Microsoft.AspNetCore.Mvc" />
