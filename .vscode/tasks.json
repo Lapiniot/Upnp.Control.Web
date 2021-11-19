@@ -20,7 +20,7 @@
             },
             "args": [
                 "build",
-                "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
+                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +32,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
+                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
                 "--configuration=Release",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
@@ -46,7 +46,7 @@
             "type": "shell",
             "args": [
                 "publish",
-                "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
+                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
                 "--configuration=\"$CONFIG\"",
                 "--runtime=${input:rid}",
                 "--self-contained",
@@ -78,7 +78,7 @@
                 "--filter=\"protect **/appsettings.Production*.json\"",
                 "--filter=\"protect **/*.service\"",
                 "--rsh=ssh",
-                "\"${workspaceFolder}/Web.Upnp.Control/bin/$CONFIG/$FRAMEWORK/${input:rid}/publish/\"",
+                "\"${workspaceFolder}/Upnp.Control.Web/bin/$CONFIG/$FRAMEWORK/${input:rid}/publish/\"",
                 "${input:remote-url}"
             ]
         },
@@ -89,7 +89,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
+                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -102,7 +102,7 @@
             "task": "sass",
             "group": "build",
             "options": {
-                "cwd": "${workspaceFolder}/Web.Upnp.Control/ClientApp"
+                "cwd": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
             },
             "problemMatcher": "$gulp-tsc"
         },
@@ -113,7 +113,7 @@
             "task": "watch",
             "isBackground": true,
             "options": {
-                "cwd": "${workspaceFolder}/Web.Upnp.Control/ClientApp"
+                "cwd": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
             },
             "presentation": {
                 "echo": true,
@@ -131,7 +131,7 @@
             "dockerBuild": {
                 "tag": "upnp-dashboard:dev",
                 "target": "base",
-                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile",
+                "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/Dockerfile",
                 "context": "${workspaceFolder}",
                 "labels": {
                     "includeDefaults": false
@@ -142,7 +142,7 @@
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
             }
         },
         {
@@ -150,7 +150,7 @@
             "label": "docker-build: release",
             "dockerBuild": {
                 "tag": "upnp-dashboard:latest",
-                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile",
+                "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/Dockerfile",
                 "context": "${workspaceFolder}",
                 "labels": {
                     "includeDefaults": false
@@ -161,7 +161,7 @@
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
             }
         },
         {
@@ -169,7 +169,7 @@
             "label": "docker-build: release, self-contained",
             "dockerBuild": {
                 "tag": "upnp-dashboard:latest-scd",
-                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/Dockerfile.SCD",
+                "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/Dockerfile.SCD",
                 "context": "${workspaceFolder}",
                 "labels": {
                     "includeDefaults": false
@@ -180,7 +180,7 @@
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
             }
         },
         {
@@ -188,8 +188,8 @@
             "label": "docker-build-outside: release, self-contained",
             "dockerBuild": {
                 "tag": "upnp-dashboard:latest-scd-${input:rid}",
-                "dockerfile": "${workspaceFolder}/Web.Upnp.Control/Docker/${input:rid}/Dockerfile",
-                "context": "${workspaceFolder}/Web.Upnp.Control/bin/Release/net6.0/${input:rid}/publish",
+                "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/${input:rid}/Dockerfile",
+                "context": "${workspaceFolder}/Upnp.Control.Web/bin/Release/net6.0/${input:rid}/publish",
                 "labels": {
                     "includeDefaults": false
                 },
@@ -199,7 +199,7 @@
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
             },
             "dependsOn": [
                 "Publish (self-contained)"
@@ -213,7 +213,7 @@
             ],
             "dockerRun": {},
             "netCore": {
-                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj",
+                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
                 "enableDebugging": true
             }
         },
@@ -249,18 +249,18 @@
                 ]
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
             }
         },
         {
             "type": "npm",
             "script": "build",
-            "path": "Web.Upnp.Control/ClientApp/",
+            "path": "Upnp.Control.Web/ClientApp/",
             "problemMatcher": [
                 "$tsc"
             ],
             "group": "build",
-            "label": "npm: build - Web.Upnp.Control/ClientApp",
+            "label": "npm: build - Upnp.Control.Web/ClientApp",
             "detail": "react-scripts build"
         }
     ],

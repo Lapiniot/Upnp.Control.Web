@@ -14,4 +14,4 @@ export ASPNETCORE_ENVIRONMENT=Production \
     ASPNETCORE_Kestrel__Certificates__Default__Path=config/upnp-dashboard.pfx \
     ASPNETCORE_Kestrel__Certificates__Default__Password=crupnppw
 
-exec ./Web.Upnp.Control
+exec ./Upnp.Control.Web

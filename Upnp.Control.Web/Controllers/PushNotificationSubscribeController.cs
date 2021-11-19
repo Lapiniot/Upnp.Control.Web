@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Upnp.Control.Abstractions;
 using Upnp.Control.Models.PushNotifications;
 
-namespace Web.Upnp.Control.Controllers;
+namespace Upnp.Control.Web.Controllers;
 
 public record PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
 

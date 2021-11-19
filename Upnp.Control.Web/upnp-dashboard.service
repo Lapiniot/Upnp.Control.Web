@@ -6,7 +6,7 @@ After=network-online.target
 [Service]
 Type=notify
 WorkingDirectory=/var/www/upnp-dashboard
-ExecStart=/var/www/upnp-dashboard/Web.Upnp.Control
+ExecStart=/var/www/upnp-dashboard/Upnp.Control.Web
 Restart=always
 RestartSec=10
 User=upnp-dashboard

@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "Build",
-            "program": "${workspaceFolder}/Web.Upnp.Control/bin/Debug/net6.0/Web.Upnp.Control.dll",
+            "program": "${workspaceFolder}/Upnp.Control.Web/bin/Debug/net6.0/Upnp.Control.Web.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Web.Upnp.Control",
+            "cwd": "${workspaceFolder}/Upnp.Control.Web",
             "stopAtEntry": false,
             "allowFastEvaluate": true,
             "logging": {
@@ -45,7 +45,7 @@
             "request": "launch",
             "preLaunchTask": "docker-run: debug",
             "netCore": {
-                "appProject": "${workspaceFolder}/Web.Upnp.Control/Web.Upnp.Control.csproj"
+                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
             }
         }
     ]

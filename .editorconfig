@@ -66,3 +66,8 @@ dotnet_style_require_accessibility_modifiers=for_non_interface_members:hint
 dotnet_diagnostic.CA1308.severity=warning
 # CA1819: Properties should not return arrays
 dotnet_diagnostic.CA1819.severity=warning
+
+# Compiler warnings to ignore
+
+#CS1591: Missing XML comment for publicly visible type or member
+dotnet_diagnostic.CS1591.severity=silent

@@ -7,7 +7,7 @@ services:
     image: webupnpcontrol
     build:
       context: .
-      dockerfile: Web.Upnp.Control/Dockerfile
+      dockerfile: Upnp.Control.Web/Dockerfile
     ports:
       - 8080
       - 8081

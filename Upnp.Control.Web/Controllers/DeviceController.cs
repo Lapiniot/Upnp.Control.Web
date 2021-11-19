@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Upnp.Control.Abstractions;
 
-namespace Web.Upnp.Control.Controllers;
+namespace Upnp.Control.Web.Controllers;
 
 /// <summary>
 /// Provides information about UPnP devices discovered and currently available in the network

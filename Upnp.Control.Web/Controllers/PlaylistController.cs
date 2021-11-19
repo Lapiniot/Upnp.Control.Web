@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Upnp.Control.Abstractions;
 
-namespace Web.Upnp.Control.Controllers;
+namespace Upnp.Control.Web.Controllers;
 
 [ApiController]
 [Route("api/devices/{deviceId}/playlists")]

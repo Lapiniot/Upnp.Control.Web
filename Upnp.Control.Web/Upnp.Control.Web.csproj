@@ -23,7 +23,6 @@
         <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
         <!-- XML documentation settings -->
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <NoWarn>$(NoWarn);1591</NoWarn>
         <!-- .NET Analyzers settings -->
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <AnalysisMode>AllEnabledByDefault</AnalysisMode>

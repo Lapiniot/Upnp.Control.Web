@@ -20,15 +20,15 @@ COPY "IoT.Device/common.props" "IoT.Device/"
 COPY "IoT.Device/IoT.Device/IoT.Device.csproj" "IoT.Device/IoT.Device/"
 COPY "IoT.Device/IoT.Device.Upnp/IoT.Device.Upnp.csproj" "IoT.Device/IoT.Device.Upnp/"
 COPY "IoT.Device/IoT.Device.Xiaomi.Umi/IoT.Device.Xiaomi.Umi.csproj" "IoT.Device/IoT.Device.Xiaomi.Umi/"
-COPY "Web.Upnp.Control/Web.Upnp.Control.csproj" "Web.Upnp.Control/"
-RUN dotnet restore "Web.Upnp.Control/Web.Upnp.Control.csproj"
+COPY "Upnp.Control.Web/Upnp.Control.Web.csproj" "Upnp.Control.Web/"
+RUN dotnet restore "Upnp.Control.Web/Upnp.Control.Web.csproj"
 COPY . .
 
 FROM build AS publish
-WORKDIR "/src/Web.Upnp.Control/ClientApp"
+WORKDIR "/src/Upnp.Control.Web/ClientApp"
 RUN npm install && npm install -g gulp && gulp sass
-WORKDIR "/src/Web.Upnp.Control"
-RUN dotnet publish "Web.Upnp.Control.csproj" -c Release -o /app/publish
+WORKDIR "/src/Upnp.Control.Web"
+RUN dotnet publish "Upnp.Control.Web.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:${NET_VERSION}-alpine AS final
 
@@ -47,4 +47,4 @@ RUN adduser -u 5678 --disabled-password --gecos "" upnp-dashboard && chown -R up
 USER upnp-dashboard
 COPY --from=publish /app/publish .
 
-ENTRYPOINT ["dotnet", "Web.Upnp.Control.dll"]
+ENTRYPOINT ["dotnet", "Upnp.Control.Web.dll"]

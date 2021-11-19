@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Upnp.Control.Abstractions;
 
-namespace Web.Upnp.Control.Controllers;
+namespace Upnp.Control.Web.Controllers;
 
 [ApiExplorerSettings(IgnoreApi = true)]
 [ApiController]
