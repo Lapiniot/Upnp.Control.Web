@@ -10,10 +10,9 @@ import { ModalProps } from "../../../components/Modal";
 import ModalHost from "../../../components/ModalHost";
 import $api from "../../../components/WebApi";
 import { BottomBar } from "../../common/BottomBar";
-import Breadcrumb from "../../common/Breadcrumb";
-import { fromBaseQuery, withBrowserDataFetch } from "../../common/BrowserUtils";
-import { DIDLTools } from "../../common/DIDLTools";
+import { fromBaseQuery, withBrowserDataFetchNavigation } from "../../common/BrowserUtils";
 import Browser, { BrowserProps } from "../../common/BrowserView";
+import { DIDLTools } from "../../common/DIDLTools";
 import ItemInfoModal from "../../common/ItemInfoModal";
 import { NavigatorProps } from "../../common/Navigator";
 import { TablePagination } from "../../common/Pagination";
@@ -88,7 +87,7 @@ export class PlaylistManagerCore
             addPlaylistFiles: () => this.addPlaylistFiles(this.props.id),
             deleteItems: this.deletePlaylistItems,
             toggleEditMode: () => this.setState(({ editMode }) => ({ editMode: !editMode })),
-            navigateBack: () => this.props.navigate?.({ id: this.props.dataContext?.source.parents?.[1]?.id ?? "-1" })
+            navigateBack: () => this.props.navigate?.(`../${this.props.dataContext?.source.parents?.[1]?.id ?? "-1"}`)
         };
         this.actionHandlers = {
             addItems: this.createHandler(i => this.addPlaylistItems(i.id)),
@@ -339,7 +338,7 @@ export class PlaylistManagerCore
                                     </BottomBar>
                                 </>}
                             </RowStateContext.Consumer>
-                            {largeScreen && <Breadcrumb className="border-top" items={parents} />}
+                            {/* {largeScreen && <Breadcrumb className="border-top" items={parents} />} */}
                         </div>
                     </PlaylistRowStateProvider>
                 </PlaybackStateProvider>
@@ -353,4 +352,4 @@ const queryBuilder = fromBaseQuery((device, id) => $api.browse(device)
     .get(id ?? PlaylistManagerCore.defaultProps.id)
     .withOptions({ withParents: true, withResourceProps: true, withVendorProps: true }));
 
-export default withBrowserDataFetch(PlaylistManagerCore, false, queryBuilder);
+export default withBrowserDataFetchNavigation(PlaylistManagerCore, false, queryBuilder);

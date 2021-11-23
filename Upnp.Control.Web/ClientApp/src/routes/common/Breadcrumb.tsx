@@ -1,5 +1,4 @@
 import { HTMLAttributes } from "react";
-import { generatePath, useRouteMatch } from "react-router";
 import { NavLink } from "react-router-dom";
 import { reversemap } from "../../components/Extensions";
 
@@ -21,10 +20,9 @@ const ItemTemplate = ({ disabled, title, url }: BreadcrumbItemProps) => disabled
     </li>;
 
 export default ({ items = [], disabled, ...other }: BreadcrumbParams & HTMLAttributes<HTMLDivElement>) => {
-    const { path, params } = useRouteMatch();
     return <nav aria-label="breadcrumb" {...other}>
         <ol className="breadcrumb my-0 p-1 px-2 bg-white bg-gradient">
-            {reversemap(items, ({ title, id }, i) => <ItemTemplate key={i} title={title !== "" ? title : "..."} url={generatePath(path, { ...params, id })} disabled={disabled || i === 0} />)}
+            {reversemap(items, ({ title, id }, i) => <ItemTemplate key={i} title={title !== "" ? title : "..."} url={`../${id}`} disabled={disabled || i === 0} />)}
             &nbsp;
         </ol>
     </nav>

@@ -1,11 +1,12 @@
-﻿import { Redirect, Route, useRouteMatch } from "react-router";
-import RendererDeviceCard from "./Device";
-import UmiDeviceCard from "../umi/Device";
-import DeviceRouter from "../upnp/Router";
-import { UmiActionSvgSymbols } from "../common/SvgSymbols";
-import { CategoryRouteParams, DataSourceProps, UpnpDevice } from "../common/Types";
-import PlaylistManager from "../umi/playlist/PlaylistManager";
+﻿import { Navigate, Route, Routes } from "react-router-dom";
+import BrowserPage from "../common/BrowserPage";
+import DeviceListPage from "../common/DeviceListPage";
+import DevicePage from "../common/DevicePage";
+import { DataSourceProps, UpnpDevice } from "../common/Types";
 import { UpnpDeviceTools as UDT } from "../common/UpnpDeviceTools";
+import ViewerPage from "../common/ViewerPage";
+import UmiDeviceCard from "../umi/Device";
+import RendererDeviceCard from "./Device";
 
 function TemplateSelector(props: DataSourceProps<UpnpDevice>) {
     if (UDT.isUmiDevice(props["data-source"]))
@@ -15,16 +16,19 @@ function TemplateSelector(props: DataSourceProps<UpnpDevice>) {
 }
 
 export default function () {
-    const { path, params: { category } } = useRouteMatch<CategoryRouteParams>();
-    return <>
-        <UmiActionSvgSymbols />
-        <DeviceRouter deviceTemplate={TemplateSelector} listViewMode="auto">
-            <Route path={`${path}/:device/playlists/(0|-1)`} exact>
-                <Redirect to={`/${category}`} />
+    return <Routes>
+        <Route index element={<DeviceListPage category="renderers" key="renderers" itemTemplate={TemplateSelector} viewMode="auto" />} />
+        <Route path=":device">
+            <Route index element={<DevicePage itemTemplate={TemplateSelector} viewMode="auto" />} />
+            <Route path="browse">
+                <Route index element={<BrowserPage />} />
+                <Route path=":id/*" element={<BrowserPage />} />
+                <Route path="-1" element={<Navigate to="../../.." />} />
             </Route>
-            <Route path={`${path}/:device/playlists/:id(.*)*`}>
-                <PlaylistManager />
+            <Route path="view">
+                <Route path=":id/*" element={<ViewerPage />} />
+                <Route path="-1" element={<Navigate to="../../.." />} />
             </Route>
-        </DeviceRouter>
-    </>
+        </Route>
+    </Routes>
 }

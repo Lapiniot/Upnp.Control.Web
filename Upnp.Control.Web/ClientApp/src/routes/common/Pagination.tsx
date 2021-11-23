@@ -1,6 +1,5 @@
-import H from "history";
 import { ChangeEvent, HTMLProps, useCallback, useRef } from "react";
-import { useHistory, useLocation } from "react-router";
+import { createSearchParams, useSearchParams } from "react-router-dom";
 import { LinkProps, NavLink, RouteLink } from "../../components/NavLink";
 import $s from "./Settings";
 import { ChevronSvgSymbols } from "./SvgSymbols";
@@ -19,11 +18,6 @@ type PaginationProps = HTMLProps<HTMLHtmlElement> & {
     pageSize: number;
     current: number;
 };
-
-type NavigationProps = {
-    location: H.Location;
-    history: H.History;
-}
 
 const PageLink = ({ current, title, to }: PageLinkProps) => current
     ? <li className="page-item active">
@@ -63,42 +57,32 @@ export default ({ total, baseUrl, current, pageSize, className, ...other }: Pagi
     </nav>;
 }
 
-function noActive() {
-    return false;
-}
-
 const RelativePageLink = ({ title, to, label, children, className, ...other }: LinkProps & { label?: string }) =>
-    <RouteLink to={to} aria-label={label} className={`btn btn-round btn-icon btn-plain${className ? ` ${className}` : ""}`} isActive={noActive} {...other}>
+    <RouteLink to={to} aria-label={label} className={`btn btn-round btn-icon btn-plain${className ? ` ${className}` : ""}`} {...other}>
         {children}
         {title && <span aria-hidden="true">{title}</span>}
         {label && <span className="visually-hidden">{label}</span>}
     </RouteLink>;
 
-function getBaseUrl(location: H.Location, pageSize: number) {
-    const sp = new window.URLSearchParams(location.search);
-    sp.set("s", pageSize.toString());
-    sp.delete("p");
-    return `${location.pathname}?${sp.toString()}`;
-}
-
 export function TablePagination(props: PaginationProps & { pageSizes?: number[] }) {
-    const history = useHistory();
-    const location = useLocation();
+    const [search, setSearch] = useSearchParams();
 
-    const ref = useRef({ history, location });
-    ref.current = { history, location };
+    const ref = useRef({ search, setSearch });
+    ref.current = { search, setSearch };
 
     const changeHandler = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-        const { location, history } = ref.current;
         const pageSize = parseInt(event.target.value);
-        const url = getBaseUrl(location, pageSize);
         $s.set("pageSize", pageSize);
-        history.push(url);
+        const search: { [K in string]: string } = {};
+        ref.current.search.forEach((value, key) => search[key] = value);
+        const { s, p, ...init } = search;
+        ref.current.setSearch({ ...init, s: pageSize.toString() });
     }, []);
 
     const { total, current, pageSize = $s.get("pageSize"), className, pageSizes = $s.get("pageSizes"), ...other } = props;
-    const pattern = `${getBaseUrl(location, pageSize).toString()}&p=`;
     const pages = Math.ceil(total / pageSize);
+    const init: { [K in string]: string } = {};
+    search.forEach((value, key) => init[key] = value);
 
     return <>
         <ChevronSvgSymbols />
@@ -108,18 +92,18 @@ export function TablePagination(props: PaginationProps & { pageSizes?: number[] 
         </select>
         <span className="text-muted small pe-2 overflow-hidden text-wrap lines-2">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
         <nav aria-label="Page navigation" className={`hstack${className ? ` ${className}` : ""}`} {...other}>
-            <RelativePageLink to={`${pattern}${1}`} label="First" disabled={current === 1}>
+            <RelativePageLink to={`?${createSearchParams({ ...init, p: "1" })}`} label="First" disabled={current === 1}>
                 <svg><use href="#chevron-bar-left" /></svg>
             </RelativePageLink>
-            <RelativePageLink to={`${pattern}${current - 1}`} label="Previous" disabled={current === 1}>
+            <RelativePageLink to={`?${createSearchParams({ ...init, p: (current - 1).toString() })}`} label="Previous" disabled={current === 1}>
                 <svg><use href="#chevron-left" /></svg>
             </RelativePageLink>
-            <RelativePageLink to={`${pattern}${current + 1}`} label="Next" disabled={current >= pages}>
+            <RelativePageLink to={`?${createSearchParams({ ...init, p: (current + 1).toString() })}`} label="Next" disabled={current >= pages}>
                 <svg><use href="#chevron-right" /></svg>
             </RelativePageLink>
-            <RelativePageLink to={`${pattern}${pages}`} label="Last" disabled={current >= pages}>
+            <RelativePageLink to={`?${createSearchParams({ ...init, p: pages.toString() })}`} label="Last" disabled={current >= pages}>
                 <svg><use href="#chevron-bar-right" /></svg>
             </RelativePageLink>
         </nav>
-    </>;
+    </>
 }

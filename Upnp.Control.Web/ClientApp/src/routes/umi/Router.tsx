@@ -1,21 +1,35 @@
-﻿import { Redirect, Route, useRouteMatch } from "react-router-dom";
-import { UmiActionSvgSymbols } from "../common/SvgSymbols";
-import { CategoryRouteParams } from "../common/Types";
-import DeviceRouter from "../upnp/Router";
+﻿import { Navigate, Route, Routes } from "react-router-dom";
+import { GridViewMode } from "../../components/GridView";
+import BrowserPage from "../common/BrowserPage";
+import DeviceListPage from "../common/DeviceListPage";
+import DevicePage from "../common/DevicePage";
+import ViewerPage from "../common/ViewerPage";
 import UmiDeviceCard from "./Device";
 import PlaylistManager from "./playlist/PlaylistManager";
 
 export default function () {
-    const { path, params: { category } } = useRouteMatch<CategoryRouteParams>();
-    return <>
-        <UmiActionSvgSymbols />
-        <DeviceRouter deviceTemplate={UmiDeviceCard} listViewMode="auto">
-            <Route path={`${path}/:device/playlists/(0|-1)`} exact>
-                <Redirect to={`/${category}`} />
+    const category = "umi";
+    const viewMode: GridViewMode = "auto";
+    const template = UmiDeviceCard;
+    return <Routes>
+        <Route index element={<DeviceListPage category={category} key={category} itemTemplate={template} viewMode={viewMode} />} />
+        <Route path=":device">
+            <Route index element={<DevicePage itemTemplate={template} viewMode={viewMode} />} />
+            <Route path="browse">
+                <Route index element={<BrowserPage />} />
+                <Route path=":id/*" element={<BrowserPage />} />
+                <Route path="-1" element={<Navigate to="../../.." />} />
             </Route>
-            <Route path={`${path}/:device/playlists/:id(.*)*`}>
-                <PlaylistManager />
+            <Route path="view">
+                <Route path=":id/*" element={<ViewerPage />} />
+                <Route path="-1" element={<Navigate to="../../.." />} />
             </Route>
-        </DeviceRouter>
-    </>;
+            <Route path="playlists">
+                <Route index element={<PlaylistManager />} />
+                <Route path=":id/*" element={<PlaylistManager />} />
+                <Route path="0" element={<Navigate to="../../.." />} />
+                <Route path="-1" element={<Navigate to="../../.." />} />
+            </Route>
+        </Route>
+    </Routes>
 }

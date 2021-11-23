@@ -1,15 +1,14 @@
 ﻿import "./css/index.css";
 import ReactDOM from "react-dom";
-import { Route, Switch } from "react-router";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalRConnection";
-import { NavBarSvgSymbols } from "./routes/common/SvgSymbols";
+import { ChevronSvgSymbols, NavBarSvgSymbols, UmiActionSvgSymbols, UpnpActionSvgSymbols } from "./routes/common/SvgSymbols";
 import HomePage from "./routes/home/Home";
-import RenderersPage from "./routes/renderers/Router";
+import RendererDevicesPage from "./routes/renderers/Router";
 import SettingsPage from "./routes/settings/Settings";
-import UmiPage from "./routes/umi/Router";
-import UpnpPage from "./routes/upnp/Router";
+import UmiDevicesPage from "./routes/umi/Router";
+import UpnpDevicesPage from "./routes/upnp/Router";
 import * as SW from "./serviceWorkerRegistration";
 
 const baseUrl: string = document.getElementsByTagName("base")[0].getAttribute("href") as string;
@@ -21,7 +20,7 @@ ReactDOM.render(
             <div className="navbar">
                 <a className="navbar-brand d-none d-lg-inline" href="/">UPnP Dashboard</a>
                 <nav>
-                    <RouteLink to="/" exact glyph="home" className="nav-link">Home</RouteLink>
+                    <RouteLink to="/" glyph="home" className="nav-link">Home</RouteLink>
                     <RouteLink to="/upnp" glyph="server" className="nav-link"><span><span className="d-none d-lg-inline">UPnP&nbsp;</span>Devices</span></RouteLink>
                     <RouteLink to="/renderers" glyph="tv" className="nav-link"><span><span className="d-none d-lg-inline">Network&nbsp;</span>Players</span></RouteLink>
                     <RouteLink to="/umi" glyph="music" className="nav-link"><span><span className="d-none d-lg-inline">Xiaomi&nbsp;</span>Speakers</span></RouteLink>
@@ -31,30 +30,23 @@ ReactDOM.render(
             </div>
             <main>
                 <div id="notifications-root" className="nt-host gap-3 pe-none" />
+                <ChevronSvgSymbols />
+                <UpnpActionSvgSymbols />
+                <UmiActionSvgSymbols />
                 <SignalRConnection hubUrl="/upnpevents">
-                    <Switch>
-                        <Route exact path={["/", "/index.html"]}>
-                            <HomePage />
-                        </Route>
-                        <Route path="/:category(upnp)">
-                            <UpnpPage />
-                        </Route>
-                        <Route path="/:category(umi)">
-                            <UmiPage />
-                        </Route>
-                        <Route path="/:category(renderers)">
-                            <RenderersPage />
-                        </Route>
-                        <Route path="/settings">
-                            <SettingsPage />
-                        </Route>
-                        <Route path="*">
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/index.html" element={<HomePage />} />
+                        <Route path="/upnp/*" element={<UpnpDevicesPage />} />
+                        <Route path="/renderers/*" element={<RendererDevicesPage />} />
+                        <Route path="/umi/*" element={<UmiDevicesPage />} />
+                        <Route path="/settings" element={<SettingsPage />} />
+                        <Route path="*" element={
                             <div className="m-2 text-danger">
                                 <h3>404 - Not Found</h3>
                                 <h5>Page you are looking for is not found</h5>
-                            </div>
-                        </Route>
-                    </Switch>
+                            </div>} />
+                    </Routes>
                 </SignalRConnection>
             </main>
         </div>

@@ -1,10 +1,10 @@
+import { ComponentType } from "react";
 import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
-import withNavigation, { NavigatorProps } from "./Navigator";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $api, { BrowseFetch } from "../../components/WebApi";
-import { BrowseRouteParams, ViewRouteParams } from "./Types";
-import { ComponentType } from "react";
+import withNavigation, { NavigatorProps } from "./Navigator";
 import $s from "./Settings";
+import { BrowseRouteParams } from "./Types";
 
 type FetchFunction = (device: string, id: string) => BrowseFetch;
 
@@ -26,9 +26,11 @@ export function fromBaseQuery(baseFetchQuery: FetchFunction) {
 }
 
 const browseFetchOptions = { withParents: true, withResourceProps: true };
-const defaultQueryBuilder = fromBaseQuery((device, id) => $api.browse(device).get(id).withOptions(browseFetchOptions));
+const defaultQueryBuilder = fromBaseQuery((device, id) => {
+    return $api.browse(device).get(id).withOptions(browseFetchOptions);
+});
 
-export function withBrowserDataFetch<P extends DataFetchProps & NavigatorProps>(
+export function withBrowserDataFetchNavigation<P extends DataFetchProps & NavigatorProps>(
     BrowserComponent: ComponentType<P>,
     usePreloader = true,
     builder = defaultQueryBuilder) {
@@ -37,11 +39,7 @@ export function withBrowserDataFetch<P extends DataFetchProps & NavigatorProps>(
             { template: LoadIndicatorOverlay, usePreloader }));
 }
 
-const viewFetchOptions = { withParents: true, withMetadata: true, withResourceProps: true };
-const defaultViewQueryBuilder = ({ device, id }: ViewRouteParams) => withMemoKey(
-    $api.browse(device).get(id).withOptions(viewFetchOptions).jsonFetch, device + "|" + id);
-
-export function withViewerDataFetch<P extends DataFetchProps>(ViewerComponent: ComponentType<P>, usePreloader = true,
-    builder = defaultViewQueryBuilder) {
-    return withDataFetch<P, ViewRouteParams>(ViewerComponent, builder, { template: LoadIndicatorOverlay, usePreloader });
+export function withBrowserDataFetch<P extends DataFetchProps>(BrowserComponent: ComponentType<P>,
+    usePreloader = true, builder = defaultQueryBuilder) {
+    return withDataFetch<P, BrowseRouteParams>(BrowserComponent, builder, { template: LoadIndicatorOverlay, usePreloader });
 }
