@@ -1,4 +1,4 @@
-import { MouseEvent, ComponentType, createContext, useCallback, useContext } from "react";
+import { ComponentType, createContext, MouseEvent, useCallback, useContext } from "react";
 import { Params, useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 interface NavigateHandler {
@@ -30,9 +30,9 @@ export default function withNavigator<P extends InjectedProps<Params>, Params ex
     };
 }
 
-export function useNavigator() {
+export function useNavigator<TKey extends string = string>() {
     const { navigate, params } = useContext(NavigationContext);
-    return { navigate, params };
+    return { navigate, params: params as Params<TKey> };
 }
 
 export function useNavigatorClickHandler() {
