@@ -1,10 +1,10 @@
-import { ComponentType } from "react";
-import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
+import { ComponentType, useCallback } from "react";
+import { DataFetchProps, useDataFetch, withDataFetch, withMemoKey } from "../../components/DataFetch";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import $api, { BrowseFetch } from "../../components/WebApi";
-import withNavigation, { NavigatorProps } from "./Navigator";
+import withNavigation, { NavigatorProps, useNavigator } from "./Navigator";
 import $s from "./Settings";
-import { BrowseRouteParams } from "./Types";
+import { BrowseFetchResult, BrowseRouteParams } from "./Types";
 
 type FetchFunction = (device: string, id: string) => BrowseFetch;
 
@@ -25,6 +25,19 @@ export function fromBaseQuery(baseFetchQuery: FetchFunction) {
     }
 }
 
+function fetchContent(device: string, id: string | undefined,
+    pageSize: string | undefined, page: string | undefined): Promise<BrowseFetchResult> {
+
+    if (!device) throw new Error("Missing value for mandatory parameter 'device'");
+
+    const s = parse(pageSize) ?? $s.get("pageSize") ?? 50;
+    const p = parse(page) ?? 1;
+
+    return $api.browse(device).get(id).take(s).skip((p - 1) * s)
+        .withOptions({ withParents: true, withResourceProps: true })
+        .jsonFetch();
+}
+
 const browseFetchOptions = { withParents: true, withResourceProps: true };
 const defaultQueryBuilder = fromBaseQuery((device, id) => {
     return $api.browse(device).get(id).withOptions(browseFetchOptions);
@@ -42,4 +55,12 @@ export function withBrowserDataFetchNavigation<P extends DataFetchProps & Naviga
 export function withBrowserDataFetch<P extends DataFetchProps>(BrowserComponent: ComponentType<P>,
     usePreloader = true, builder = defaultQueryBuilder) {
     return withDataFetch<P, BrowseRouteParams>(BrowserComponent, builder, { template: LoadIndicatorOverlay, usePreloader });
+}
+
+export function useContentBrowser() {
+    const { navigate, params } = useNavigator<"device" | "id" | "s" | "p">();
+    const { device, id, s, p } = params;
+    const loader = useCallback(() => fetchContent(device as string, id, s, p), [device, id, s, p]);
+    const data = useDataFetch(loader);
+    return { ...data, navigate, params };
 }
