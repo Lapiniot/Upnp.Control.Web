@@ -9,7 +9,7 @@
         "**/bin/": true,
         "**/obj/": true,
         "**/package-lock.json": true,
-        "**/node_modules": false,
+        "**/node_modules": true,
         "**/*.user": true,
         "*/**/.vscode": true,
         "**/*.sln": true,

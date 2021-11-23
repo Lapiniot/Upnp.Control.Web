@@ -1,4 +1,4 @@
-import React, { ComponentType, ElementType } from "react";
+import React, { ComponentType, ElementType, useEffect, useMemo, useState } from "react";
 
 interface FunctionWithKey {
     (...args: any[]): any;
@@ -19,9 +19,9 @@ export type DataContext<T = {}> = {
 }
 
 export type DataFetchProps<T = {}> = {
-    dataContext: DataContext<T> | null;
+    dataContext: DataContext<T> | null | undefined;
     fetching: boolean;
-    error: Error | null;
+    error: unknown;
 }
 
 type DataFetchState = {
@@ -100,4 +100,28 @@ export function withDataFetch<P extends DataFetchProps<T>, Params = {}, T = {}>(
                 : <Component {...(this.props as unknown as P)} dataContext={this.state.dataContext} fetching={this.state.fetching} error={this.state.error} />;
         }
     };
+}
+
+type FetchState<T> = { fetching: boolean, dataContext: DataContext<T> | undefined, error: unknown }
+interface LoaderFunction<T> { (): Promise<T> };
+
+export function useDataFetch<T>(loader: LoaderFunction<T>): FetchState<T> {
+    const [state, setState] = useState<FetchState<T>>({ fetching: true, dataContext: undefined, error: undefined });
+    const fetchData = useMemo(() => (async (action?: (() => Promise<any>) | null) => {
+        try {
+            await action?.();
+            const data = await loader();
+            setState({ fetching: false, dataContext: { source: data, reload: fetchData }, error: undefined });
+            return data;
+        }
+        catch (error) {
+            console.error(error);
+            setState(state => ({ ...state, fetching: false, error: error }));
+            throw error;
+        }
+    }), [loader]);
+
+    useEffect(() => { fetchData(); }, [fetchData]);
+
+    return state;
 }
