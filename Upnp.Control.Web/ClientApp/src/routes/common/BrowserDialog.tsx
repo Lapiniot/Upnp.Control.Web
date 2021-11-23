@@ -1,14 +1,14 @@
 import React, { HTMLAttributes, ReactNode, useCallback } from "react";
-import { DataFetchProps, withDataFetch } from "../../components/DataFetch";
+import { useDataFetch } from "../../components/DataFetch";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import Modal, { ModalProps } from "../../components/Modal";
 import { usePortal } from "../../components/Portal";
 import $api from "../../components/WebApi";
 import DeviceIcon from "../common/DeviceIcon";
-import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
-import { withBrowserDataFetch } from "./BrowserUtils";
+import BrowserCore from "./BrowserCore";
+import { useContentBrowser } from "./BrowserUtils";
 import { BrowserProps } from "./BrowserView";
-import { useNavigator, useNavigatorClickHandler } from "./Navigator";
+import { useNavigatorClickHandler } from "./Navigator";
 import { RowStateMapper, RowStateProvider, useRowStates } from "./RowStateContext";
 import { DIDLItem, UpnpDevice } from "./Types";
 import { Route, VirtualRouter } from "./VirtualRouter";
@@ -26,33 +26,24 @@ type ConfirmProps = {
     onConfirmed?: (selection: BrowseResult) => void;
 };
 
-type BrowserWrapperProps<TContext> = BrowserCoreProps<TContext> & { mapper?: RowStateMapper, device: string } & ConfirmProps;
-
 export type BrowseResult = {
     device: string;
     keys: string[];
 };
 
-const serversFetch = $api.devices("servers").jsonFetch;
+const fetchContentServers = $api.devices("servers").jsonFetch;
 
-const MediaSourceList = withDataFetch(({ dataContext: ctx, fetching }: DataFetchProps<UpnpDevice[]>) => {
+function MediaSourceList() {
+    const { fetching, dataContext } = useDataFetch<UpnpDevice[]>(fetchContentServers);
     const handler = useNavigatorClickHandler();
     return fetching
         ? <LoadIndicatorOverlay />
         : <ul className="list-group list-group-flush overflow-auto">
-            {ctx?.source?.map(d => <a key={d.udn} href={`/sources/${d.udn}/0`} onClick={handler} className="nav-link list-group-item list-group-item-action hstack">
+            {dataContext?.source?.map(d => <a key={d.udn} href={`/sources/${d.udn}/0`} onClick={handler} className="nav-link list-group-item list-group-item-action hstack">
                 <DeviceIcon device={d} />
                 {d.name}{d.description && ` (${d.description})`}
             </a>)}
         </ul>;
-}, () => serversFetch, { usePreloader: true });
-
-
-function BrowserWrapper<TContext>({ confirmContent, onConfirmed, mapper, dataContext, device, ...other }: BrowserWrapperProps<TContext>) {
-    return <RowStateProvider items={dataContext?.source.items} mapper={mapper}>
-        <BrowserCore {...other} dataContext={dataContext} />
-        <ConfirmButton device={device} confirmContent={confirmContent} onConfirmed={onConfirmed} />
-    </RowStateProvider>
 }
 
 function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: ConfirmProps & { device: string }) {
@@ -66,11 +57,12 @@ function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: Confirm
         </Modal.Button>)
 }
 
-const BrowserWithData = withBrowserDataFetch(BrowserWrapper, false);
-
-function Browser(props: BrowserProps<any> & { mapper?: RowStateMapper } & ConfirmProps) {
-    const { navigate, params } = useNavigator();
-    return <BrowserWithData {...props} {...params} navigate={navigate} category="upnp" device={params.device as string} />
+function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps<any> & { mapper?: RowStateMapper } & ConfirmProps) {
+    const { params: { device }, ...other } = useContentBrowser();
+    return <RowStateProvider items={other.dataContext?.source.items} mapper={mapper}>
+        <BrowserCore {...props} {...other} />
+        <ConfirmButton device={device as string} confirmContent={confirmContent} onConfirmed={onConfirmed} />
+    </RowStateProvider>
 }
 
 export default function BrowserDialog(props: BrowserDialogProps) {
