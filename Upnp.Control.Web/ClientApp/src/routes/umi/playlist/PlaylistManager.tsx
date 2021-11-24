@@ -10,11 +10,12 @@ import { ModalProps } from "../../../components/Modal";
 import ModalHost from "../../../components/ModalHost";
 import $api from "../../../components/WebApi";
 import { BottomBar } from "../../common/BottomBar";
-import { fromBaseQuery, withBrowserDataFetchNavigation } from "../../common/BrowserUtils";
+import Breadcrumb from "../../common/Breadcrumb";
+import { useContentBrowser } from "../../common/BrowserUtils";
 import Browser, { BrowserProps } from "../../common/BrowserView";
 import { DIDLTools } from "../../common/DIDLTools";
 import ItemInfoModal from "../../common/ItemInfoModal";
-import { NavigatorProps } from "../../common/Navigator";
+import { BrowserRouterNavigationContextProvider, NavigatorProps } from "../../common/Navigator";
 import { TablePagination } from "../../common/Pagination";
 import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext from "../../common/RowStateContext";
@@ -33,7 +34,7 @@ import { PlaylistManagerToolbar } from "./PlaylistManagerToolbar";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
 import { PlaylistRowStateProvider } from "./PlaylistRowStateProvider";
 
-type PlaylistManagerProps = PlaylistRouteParams &
+type PlaylistManagerProps = Omit<PlaylistRouteParams, "category"> &
     DataFetchProps<BrowseFetchResult> &
     HTMLAttributes<HTMLDivElement> &
     NavigatorProps;
@@ -338,7 +339,7 @@ export class PlaylistManagerCore
                                     </BottomBar>
                                 </>}
                             </RowStateContext.Consumer>
-                            {/* {largeScreen && <Breadcrumb className="border-top" items={parents} />} */}
+                            {largeScreen && <Breadcrumb className="border-top" items={parents} />}
                         </div>
                     </PlaylistRowStateProvider>
                 </PlaybackStateProvider>
@@ -348,8 +349,16 @@ export class PlaylistManagerCore
     }
 }
 
-const queryBuilder = fromBaseQuery((device, id) => $api.browse(device)
-    .get(id ?? PlaylistManagerCore.defaultProps.id)
-    .withOptions({ withParents: true, withResourceProps: true, withVendorProps: true }));
+const options = { withParents: true, withResourceProps: true, withVendorProps: true };
+const defaults = { id: PlaylistManagerCore.defaultProps.id };
 
-export default withBrowserDataFetchNavigation(PlaylistManagerCore, false, queryBuilder);
+function PlaylistManager() {
+    const { params: { device, ...routeParams }, ...other } = useContentBrowser(options, defaults);
+    return <PlaylistManagerCore {...routeParams} {...other} device={device as string} />
+}
+
+export default function () {
+    return <BrowserRouterNavigationContextProvider>
+        <PlaylistManager />
+    </BrowserRouterNavigationContextProvider>
+}

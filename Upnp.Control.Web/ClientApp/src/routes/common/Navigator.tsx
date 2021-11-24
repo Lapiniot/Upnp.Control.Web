@@ -1,34 +1,30 @@
-import { ComponentType, createContext, MouseEvent, useCallback, useContext } from "react";
-import { Params, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { createContext, MouseEvent, PropsWithChildren, useCallback, useContext } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 interface NavigateHandler {
-    (to: string): void
+    (to: string): void;
 }
 
-export type NavigationContextState = { navigate: NavigateHandler, params: Readonly<Params<string>> };
+type Params<TKey extends string = string> = { readonly [K in TKey]: string | undefined };
 
-const NavigationContext = createContext<NavigationContextState>({ navigate: () => { }, params: {} });
+type NavigationContextObject = { navigate: NavigateHandler, params: Params };
+
+const NavigationContext = createContext<NavigationContextObject>({ navigate: () => { }, params: {} });
 
 export { NavigationContext };
 
 export type NavigatorProps = { navigate: NavigateHandler }
 
-type InjectedProps<Params> = NavigatorProps & Params;
+export function BrowserRouterNavigationContextProvider({ children }: PropsWithChildren<{}>) {
+    const navigate = useNavigate();
+    const params = useParams();
+    const [search] = useSearchParams()
 
-export default function withNavigator<P extends InjectedProps<Params>, Params extends { [K in keyof Params]?: any }>(Component: ComponentType<P>) {
-    return function (props: Omit<P, keyof InjectedProps<Params>>) {
-        const navigate = useNavigate();
-        const params = useParams();
-        const [search] = useSearchParams()
+    const merged = { ...params };
+    search.forEach((value, key) => merged[key] = value);
 
-        const merged = { ...params };
-        search.forEach((value, key) => merged[key] = value);
-
-        return <NavigationContext.Provider value={{ navigate, params: merged }}>
-            <Component {...(props as unknown as P)} {...merged} navigate={navigate} />
-        </NavigationContext.Provider>
-    };
-}
+    return <NavigationContext.Provider value={{ navigate, params: merged }}>{children}</NavigationContext.Provider>
+};
 
 export function useNavigator<TKey extends string = string>() {
     const { navigate, params } = useContext(NavigationContext);

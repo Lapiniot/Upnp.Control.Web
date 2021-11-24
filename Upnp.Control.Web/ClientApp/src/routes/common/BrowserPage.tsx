@@ -1,6 +1,14 @@
 import { Browser } from "./Browser";
-import { withBrowserDataFetchNavigation } from "./BrowserUtils";
+import { useContentBrowser } from "./BrowserUtils";
+import { BrowserRouterNavigationContextProvider } from "./Navigator";
 
-const BrowserPage = withBrowserDataFetchNavigation(Browser, false);
+function ContentBrowser() {
+    const { params: { device, ...navParams }, ...other } = useContentBrowser();
+    return <Browser {...other} {...navParams} device={device as string} />
+}
 
-export default BrowserPage;
+export default function () {
+    return <BrowserRouterNavigationContextProvider>
+        <ContentBrowser />
+    </BrowserRouterNavigationContextProvider>
+}

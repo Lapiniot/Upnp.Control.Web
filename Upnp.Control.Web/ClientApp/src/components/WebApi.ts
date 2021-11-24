@@ -144,7 +144,7 @@ const pushSubscriber = {
 
 type BrowseOptionFlags = "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata" | "withDevice";
 
-type BrowseOptions = { [K in BrowseOptionFlags]?: boolean };
+export type BrowseOptions = { [K in BrowseOptionFlags]?: boolean };
 
 export class BrowseFetch extends HttpFetch {
     constructor(path: string, query: RequestQuery = {}) {
