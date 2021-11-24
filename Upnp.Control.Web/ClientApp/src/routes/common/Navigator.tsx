@@ -1,4 +1,4 @@
-import { createContext, MouseEvent, PropsWithChildren, useCallback, useContext } from "react";
+import { createContext, MouseEvent, PropsWithChildren, useCallback, useContext, useRef } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 interface NavigateHandler {
@@ -18,12 +18,16 @@ export type NavigatorProps = { navigate: NavigateHandler }
 export function BrowserRouterNavigationContextProvider({ children }: PropsWithChildren<{}>) {
     const navigate = useNavigate();
     const params = useParams();
-    const [search] = useSearchParams()
+    const [search] = useSearchParams();
+    const ref = useRef(navigate);
+    const callback = useCallback((to) => ref.current(to), []);
+
+    ref.current = navigate;
 
     const merged = { ...params };
     search.forEach((value, key) => merged[key] = value);
 
-    return <NavigationContext.Provider value={{ navigate, params: merged }}>{children}</NavigationContext.Provider>
+    return <NavigationContext.Provider value={{ navigate: callback, params: merged }}>{children}</NavigationContext.Provider>
 };
 
 export function useNavigator<TKey extends string = string>() {
