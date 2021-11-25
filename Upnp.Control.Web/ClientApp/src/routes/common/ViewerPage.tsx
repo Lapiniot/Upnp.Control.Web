@@ -1,6 +1,7 @@
 import { HTMLAttributes, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useDataFetch } from "../../components/DataFetch";
+import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import WebApi from "../../components/WebApi";
 import { MediaViewer } from "./MediaViewer";
 
@@ -12,5 +13,5 @@ export default function (props: HTMLAttributes<HTMLDivElement>) {
     if (!id) throw new Error("Missing mandatory parameter 'id'");
     const loader = useCallback(() => WebApi.browse(device).get(id).withOptions(options).jsonFetch(), [device, id]);
     const data = useDataFetch(loader);
-    return <MediaViewer {...data} {...props} device={device} id={id} />;
+    return !data.fetching ? <MediaViewer {...data} {...props} device={device} id={id} /> : <LoadIndicatorOverlay />;
 }

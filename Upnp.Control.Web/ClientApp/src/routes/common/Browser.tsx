@@ -90,7 +90,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
 
     openHandler = (index: number) => {
         const item = this.props.dataContext?.source.items?.[index];
-        if (item) this.props.navigate(`../${item.id}`);
+        if (item) this.props.navigate(`../../view/${item.id}`);
         return true;
     }
 
