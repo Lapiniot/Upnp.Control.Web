@@ -3,7 +3,7 @@ import { DataFetchProps } from "../../components/DataFetch";
 import { MediaQueries } from "../../components/MediaQueries";
 import AlbumArt from "./AlbumArt";
 import { DIDLTools as utils } from "./DIDLTools";
-import { NavigatorProps } from "./Navigator";
+import { NavigatorProps } from "../../components/Navigator";
 import RowStateContext from "./RowStateContext";
 import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
 

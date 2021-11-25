@@ -1,5 +1,6 @@
 import { AnchorHTMLAttributes } from "react";
-import { NavLink as RNavLink, NavLinkProps } from "react-router-dom";
+import { NavLink as RNavLink } from "react-router-dom";
+import { useNavigatorClickHandler, useNavigatorResolvedPath } from "./Navigator";
 
 export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
     to: string;
@@ -12,15 +13,22 @@ function BuildClass(className: string | undefined, active: boolean | undefined, 
     return `${className ? className : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`.trim();
 }
 
-const NavLink = ({ to, glyph, className, active, disabled, children, ...other }: LinkProps) =>
-    <a href={!disabled ? to : undefined} className={BuildClass(className, active, disabled)} {...other}>
+function Link({ to, glyph, className, active, disabled, children, ...other }: LinkProps) {
+    return <a href={!disabled ? to : undefined} className={BuildClass(className, active, disabled)} {...other}>
         {glyph && <svg className="icon"><use href={`#${glyph}`} /></svg>}{children}
     </a>;
+}
 
-const RouteLink = ({ glyph, className, active, disabled, children, ...other }: NavLinkProps & LinkProps) => {
+function RouteLink({ glyph, className, active, disabled, children, ...other }: LinkProps) {
     return <RNavLink className={BuildClass(className, active, disabled)} {...other}>
         {glyph && <svg className="icon"><use href={`#${glyph}`} /></svg>}{children}
     </RNavLink>;
 }
 
-export { NavLink, RouteLink }
+function NavigatorLink({ to, ...other }: LinkProps) {
+    const { pathname, search, hash } = useNavigatorResolvedPath(to);
+    const handler = useNavigatorClickHandler();
+    return <Link {...other} to={pathname + hash + search} onClick={handler} />;
+}
+
+export { Link, RouteLink, NavigatorLink }

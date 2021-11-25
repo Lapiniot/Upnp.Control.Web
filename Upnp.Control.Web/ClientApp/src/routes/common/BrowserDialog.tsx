@@ -8,7 +8,7 @@ import DeviceIcon from "../common/DeviceIcon";
 import BrowserCore from "./BrowserCore";
 import { useContentBrowser } from "./BrowserUtils";
 import { BrowserProps } from "./BrowserView";
-import { useNavigatorClickHandler } from "./Navigator";
+import { useNavigatorClickHandler } from "../../components/Navigator";
 import { RowStateMapper, RowStateProvider, useRowStates } from "./RowStateContext";
 import { DIDLItem, UpnpDevice } from "./Types";
 import { Route, VirtualRouter } from "./VirtualRouter";

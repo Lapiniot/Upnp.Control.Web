@@ -1,4 +1,4 @@
-import { NavLink } from "../../components/NavLink";
+import { Link } from "../../components/NavLink";
 import { DataSourceProps, UpnpDevice } from "./Types";
 
 export default function ({ "data-source": { udn, type, maker, makerUrl, model, modelUrl, modelNumber } }: DataSourceProps<UpnpDevice>) {
@@ -8,9 +8,9 @@ export default function ({ "data-source": { udn, type, maker, makerUrl, model, m
         <div>Type</div>
         <div>{type}</div>
         <div>Maker</div>
-        <div>{makerUrl ? <NavLink to={makerUrl} className="p-0">{maker}</NavLink> : maker}</div>
+        <div>{makerUrl ? <Link to={makerUrl} className="p-0">{maker}</Link> : maker}</div>
         <div>Model</div>
-        <div>{modelUrl ? <NavLink to={modelUrl} className="p-0">{model}</NavLink> : model}</div>
+        <div>{modelUrl ? <Link to={modelUrl} className="p-0">{model}</Link> : model}</div>
         <div>Model #</div>
         <div>{modelNumber}</div>
     </div>;

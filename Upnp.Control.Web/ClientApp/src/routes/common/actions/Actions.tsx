@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { NavLink, RouteLink } from "../../../components/NavLink";
+import { Link, RouteLink } from "../../../components/NavLink";
 import { UpnpDevice } from "../Types";
 import { UpnpDeviceTools as UDT } from "../UpnpDeviceTools";
 
@@ -16,5 +16,5 @@ export function BrowseContentAction({ device, category, className, ...other }: D
 }
 
 export function DownloadMetadataAction({ device, category, className, ...other }: DeviceActionProps) {
-    return <NavLink to={device.url} glyph="download" className={`py-0 px-1${className ? ` ${className}` : ""}`} {...other}>Metadata</NavLink>;
+    return <Link to={device.url} glyph="download" className={`py-0 px-1${className ? ` ${className}` : ""}`} {...other}>Metadata</Link>;
 }

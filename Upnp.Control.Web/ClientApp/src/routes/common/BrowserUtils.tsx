@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useDataFetch } from "../../components/DataFetch";
 import WebApi, { BrowseOptions } from "../../components/WebApi";
-import { useNavigator } from "./Navigator";
+import { useNavigator } from "../../components/Navigator";
 import Settings from "./Settings";
 import { BrowseFetchResult } from "./Types";
 

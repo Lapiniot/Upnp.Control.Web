@@ -15,7 +15,7 @@ import { useContentBrowser } from "../../common/BrowserUtils";
 import Browser, { BrowserProps } from "../../common/BrowserView";
 import { DIDLTools } from "../../common/DIDLTools";
 import ItemInfoModal from "../../common/ItemInfoModal";
-import { BrowserRouterNavigationContextProvider, NavigatorProps } from "../../common/Navigator";
+import { BrowserRouterNavigationContextProvider, NavigatorProps } from "../../../components/Navigator";
 import { TablePagination } from "../../common/Pagination";
 import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext from "../../common/RowStateContext";

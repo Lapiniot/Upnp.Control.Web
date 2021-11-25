@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, ReactElement, useCallback, useState } from "react";
 import { matchPath, PathMatch } from "react-router-dom";
-import { NavigationContext } from "./Navigator";
+import { NavigationContext } from "../../components/Navigator";
 
 type VirtualRouterProps = {
     initialPath: string;
@@ -17,7 +17,7 @@ function matchRoutes(location: string, routes: ReactElement[]) {
 export function VirtualRouter(props: PropsWithChildren<VirtualRouterProps>) {
     const [location, setLocation] = useState(new URL(props.initialPath, window.location.origin));
     const navigate = useCallback((to) => {
-        const url = new URL(to, location.href+"/");
+        const url = new URL(to, location.href + "/");
         if (url.origin === window.location.origin)
             return setLocation(url);
         else
@@ -27,7 +27,7 @@ export function VirtualRouter(props: PropsWithChildren<VirtualRouterProps>) {
     const routes = React.Children.toArray(props.children).filter(r => (r as ReactElement).type === Route) as ReactElement[];
     const bestMatch = matchRoutes(location.pathname, routes);
 
-    return <NavigationContext.Provider value={{ navigate, params: { ...bestMatch?.match?.params } }}>
+    return <NavigationContext.Provider value={{ navigate, resolver: to => ({ pathname: "", search: "", hash: "" }), params: { ...bestMatch?.match?.params }, search: location.searchParams }}>
         {bestMatch?.route}
     </NavigationContext.Provider>;
 }

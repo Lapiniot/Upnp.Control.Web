@@ -1,6 +1,6 @@
 import { ChangeEvent, HTMLProps, useCallback, useRef } from "react";
-import { createSearchParams, useSearchParams } from "react-router-dom";
-import { LinkProps, NavLink, RouteLink } from "../../components/NavLink";
+import { createSearchParams, useNavigator } from "../../components/Navigator";
+import { Link, LinkProps, NavigatorLink } from "../../components/NavLink";
 import $s from "./Settings";
 import { ChevronSvgSymbols } from "./SvgSymbols";
 
@@ -26,14 +26,14 @@ const PageLink = ({ current, title, to }: PageLinkProps) => current
         </span>
     </li>
     : <li className="page-item">
-        <NavLink to={to} className="page-link">{title}</NavLink>
+        <Link to={to} className="page-link">{title}</Link>
     </li>;
 
 const RelativePageItem = ({ enabled, title, to, label }: RelativePageLinkProps) => enabled
     ? <li className="page-item">
-        <NavLink to={to} className="page-link" aria-label={label}>
+        <Link to={to} className="page-link" aria-label={label}>
             <span aria-hidden="true">{title}</span><span className="visually-hidden">{label}</span>
-        </NavLink>
+        </Link>
     </li>
     : <li className="page-item disabled">
         <span className="page-link">{title}</span>
@@ -57,26 +57,26 @@ export default ({ total, baseUrl, current, pageSize, className, ...other }: Pagi
     </nav>;
 }
 
-const RelativePageLink = ({ title, to, label, children, className, ...other }: LinkProps & { label?: string }) =>
-    <RouteLink to={to} aria-label={label} className={`btn btn-round btn-icon btn-plain${className ? ` ${className}` : ""}`} {...other}>
+function RelativePageLink({ title, to, label, children, className, ...other }: LinkProps & { label?: string; }) {
+    return <NavigatorLink to={to} aria-label={label} className={`btn btn-round btn-icon btn-plain${className ? ` ${className}` : ""}`} {...other}>
         {children}
         {title && <span aria-hidden="true">{title}</span>}
         {label && <span className="visually-hidden">{label}</span>}
-    </RouteLink>;
+    </NavigatorLink>;
+}
 
 export function TablePagination(props: PaginationProps & { pageSizes?: number[] }) {
-    const [search, setSearch] = useSearchParams();
-
-    const ref = useRef({ search, setSearch });
-    ref.current = { search, setSearch };
+    const { navigate, search } = useNavigator();
+    const ref = useRef({ navigate, search });
+    ref.current = { navigate, search };
 
     const changeHandler = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
         const pageSize = parseInt(event.target.value);
         $s.set("pageSize", pageSize);
-        const search: { [K in string]: string } = {};
-        ref.current.search.forEach((value, key) => search[key] = value);
-        const { s, p, ...init } = search;
-        ref.current.setSearch({ ...init, s: pageSize.toString() });
+        const search = new URLSearchParams(ref.current.search);
+        search.set("s", pageSize.toString());
+        search.delete("p");
+        ref.current.navigate({ search: search.toString() });
     }, []);
 
     const { total, current, pageSize = $s.get("pageSize"), className, pageSizes = $s.get("pageSizes"), ...other } = props;
