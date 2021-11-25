@@ -1,14 +1,7 @@
 import { Browser } from "./Browser";
 import { useContentBrowser } from "./BrowserUtils";
-import { BrowserRouterNavigationContextProvider } from "../../components/Navigator";
 
-function ContentBrowser() {
+export default function ContentBrowser() {
     const { params: { device, ...navParams }, ...other } = useContentBrowser();
     return <Browser {...other} {...navParams} device={device as string} />
-}
-
-export default function () {
-    return <BrowserRouterNavigationContextProvider>
-        <ContentBrowser />
-    </BrowserRouterNavigationContextProvider>
 }

@@ -1,12 +1,12 @@
-import React, { PropsWithChildren, ReactElement, useCallback, useState } from "react";
-import { matchPath, PathMatch } from "react-router-dom";
-import { NavigationContext } from "../../components/Navigator";
+import React, { createContext, PropsWithChildren, ReactElement, useCallback, useContext, useState } from "react";
+import { matchPath, PathMatch, resolvePath } from "react-router-dom";
+import { NavigationContext, Path } from "../../components/Navigator";
 
 type VirtualRouterProps = {
     initialPath: string;
 };
 
-function matchRoutes(location: string, routes: ReactElement[]) {
+function matchRoutes(location: string, routes: ReactElement[]): { route: ReactElement; match: PathMatch<string>; } | undefined {
     const matches = routes.map(route => ({ route, match: matchPath({ path: route.props.path }, location) }))
         .filter(m => m.match !== null) as { route: ReactElement, match: PathMatch<string> }[];
     return matches.find(({ match: { pattern: { path } } }) => path.indexOf("*") < 0 && path.indexOf(":") < 0) ??
@@ -14,22 +14,61 @@ function matchRoutes(location: string, routes: ReactElement[]) {
         matches[0];
 }
 
+interface NavigationLocationContextObject {
+    location: URL;
+    setLocation(to: URL): void;
+    match: PathMatch<string> | undefined;
+}
+
+const RouterContext = createContext<NavigationLocationContextObject>({
+    location: new URL(".", location.href),
+    setLocation: (to: URL) => { },
+    match: undefined
+});
+
+function resolveUrl(to: string | Partial<Path>, baseUrl: URL) {
+    const path = resolvePath(to, baseUrl.pathname);
+    const url = new URL(path.pathname, location.origin);
+    url.hash = path.hash;
+    url.search = path.search;
+    return url;
+}
+
+function useNavigateImpl() {
+    const { location, setLocation } = useContext(RouterContext);
+    const navigate = useCallback((to) => {
+        const url = resolveUrl(to, location);
+        return setLocation(url);
+    }, [location]);
+    return navigate;
+}
+
+function useParamsImpl() {
+    const { match } = useContext(RouterContext);
+    return match?.params ?? {};
+}
+
+function useSearchParamsImpl(): readonly [URLSearchParams, (nextInit: URLSearchParams) => void] {
+    const { location } = useContext(RouterContext);
+    return [location.searchParams, (init: URLSearchParams) => { }]
+}
+
+function useResolvedPathImpl(to: string | Partial<Path>) {
+    const { location } = useContext(RouterContext);
+    const path = resolvePath(to, location.pathname);
+    return path;
+}
+
 export function VirtualRouter(props: PropsWithChildren<VirtualRouterProps>) {
     const [location, setLocation] = useState(new URL(props.initialPath, window.location.origin));
-    const navigate = useCallback((to) => {
-        const url = new URL(to, location.href + "/");
-        if (url.origin === window.location.origin)
-            return setLocation(url);
-        else
-            window.history.pushState(null, "", url);
-    }, [location]);
-
-    const routes = React.Children.toArray(props.children).filter(r => (r as ReactElement).type === Route) as ReactElement[];
+    const routes = React.Children.toArray(props.children).filter(c => (c as ReactElement).type === Route) as ReactElement[];
     const bestMatch = matchRoutes(location.pathname, routes);
 
-    return <NavigationContext.Provider value={{ navigate, resolver: to => ({ pathname: "", search: "", hash: "" }), params: { ...bestMatch?.match?.params }, search: location.searchParams }}>
-        {bestMatch?.route}
-    </NavigationContext.Provider>;
+    return <RouterContext.Provider value={{ location, setLocation, match: bestMatch?.match }}>
+        <NavigationContext.Provider value={{ useNavigateImpl, useParamsImpl, useSearchParamsImpl, useResolvedPathImpl }}>
+            {bestMatch?.route}
+        </NavigationContext.Provider>
+    </RouterContext.Provider>
 }
 
 type RouteProps = {

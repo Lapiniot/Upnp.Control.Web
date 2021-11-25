@@ -39,7 +39,7 @@ function MediaSourceList() {
     return fetching
         ? <LoadIndicatorOverlay />
         : <ul className="list-group list-group-flush overflow-auto">
-            {dataContext?.source?.map(d => <a key={d.udn} href={`/sources/${d.udn}/0`} onClick={handler} className="nav-link list-group-item list-group-item-action hstack">
+            {dataContext?.source?.map(d => <a key={d.udn} href={`/sources/${d.udn}/browse/0`} onClick={handler} className="nav-link list-group-item list-group-item-action hstack">
                 <DeviceIcon device={d} />
                 {d.name}{d.description && ` (${d.description})`}
             </a>)}
@@ -58,10 +58,10 @@ function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: Confirm
 }
 
 function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps<any> & { mapper?: RowStateMapper } & ConfirmProps) {
-    const { params: { device }, ...other } = useContentBrowser();
+    const { params, ...other } = useContentBrowser();
     return <RowStateProvider items={other.dataContext?.source.items} mapper={mapper}>
-        <BrowserCore {...props} {...other} />
-        <ConfirmButton device={device as string} confirmContent={confirmContent} onConfirmed={onConfirmed} />
+        <BrowserCore {...props} {...params} {...other} />
+        <ConfirmButton device={params.device as string} confirmContent={confirmContent} onConfirmed={onConfirmed} />
     </RowStateProvider>
 }
 
@@ -71,8 +71,8 @@ export default function BrowserDialog(props: BrowserDialogProps) {
         <Modal.Body className="vstack overflow-hidden p-0 position-relative border-bottom border-top" style={{ height: "60vh" }}>
             <VirtualRouter initialPath="/sources">
                 <Route path="/sources" element={<MediaSourceList />} />
-                <Route path="/sources/:device/-1" element={<MediaSourceList />} />
-                <Route path="/sources/:device/:id/*" element={<Browser {...browserProps}
+                <Route path="/sources/:device/browse/-1" element={<MediaSourceList />} />
+                <Route path="/sources/:device/browse/:id/*" element={<Browser {...browserProps}
                     mapper={rowStateMapper} modalDialogMode
                     confirmContent={confirmContent} onConfirmed={onConfirmed} />} />
             </VirtualRouter>

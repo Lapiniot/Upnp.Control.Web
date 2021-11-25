@@ -15,7 +15,7 @@ import { useContentBrowser } from "../../common/BrowserUtils";
 import Browser, { BrowserProps } from "../../common/BrowserView";
 import { DIDLTools } from "../../common/DIDLTools";
 import ItemInfoModal from "../../common/ItemInfoModal";
-import { BrowserRouterNavigationContextProvider, NavigatorProps } from "../../../components/Navigator";
+import { NavigatorProps } from "../../../components/Navigator";
 import { TablePagination } from "../../common/Pagination";
 import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext from "../../common/RowStateContext";
@@ -352,13 +352,7 @@ export class PlaylistManagerCore
 const options = { withParents: true, withResourceProps: true, withVendorProps: true };
 const defaults = { id: PlaylistManagerCore.defaultProps.id };
 
-function PlaylistManager() {
+export default function PlaylistManager() {
     const { params: { device, ...routeParams }, ...other } = useContentBrowser(options, defaults);
     return <PlaylistManagerCore {...routeParams} {...other} device={device as string} />
-}
-
-export default function () {
-    return <BrowserRouterNavigationContextProvider>
-        <PlaylistManager />
-    </BrowserRouterNavigationContextProvider>
 }
