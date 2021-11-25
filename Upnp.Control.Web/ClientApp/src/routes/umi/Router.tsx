@@ -1,5 +1,4 @@
 ﻿import { Navigate, Route, Routes } from "react-router-dom";
-import { GridViewMode } from "../../components/GridView";
 import BrowserPage from "../common/BrowserPage";
 import DeviceListPage from "../common/DeviceListPage";
 import DevicePage from "../common/DevicePage";
@@ -9,12 +8,11 @@ import PlaylistManager from "./playlist/PlaylistManager";
 
 export default function () {
     const category = "umi";
-    const viewMode: GridViewMode = "auto";
-    const template = UmiDeviceCard;
+    const viewMode = "auto";
     return <Routes>
-        <Route index element={<DeviceListPage category={category} key={category} itemTemplate={template} viewMode={viewMode} />} />
+        <Route index element={<DeviceListPage category={category} key={category} itemTemplate={UmiDeviceCard} viewMode={viewMode} />} />
         <Route path=":device">
-            <Route index element={<DevicePage itemTemplate={template} viewMode={viewMode} />} />
+            <Route index element={<DevicePage category={category} itemTemplate={UmiDeviceCard} viewMode={viewMode} />} />
             <Route path="browse">
                 <Route index element={<BrowserPage />} />
                 <Route path=":id/*" element={<BrowserPage />} />

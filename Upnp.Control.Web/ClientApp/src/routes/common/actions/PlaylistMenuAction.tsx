@@ -1,15 +1,16 @@
-import { DeviceActionProps } from "./Actions";
-import $api from "../../../components/WebApi";
-import { DataFetchProps, withDataFetch, withMemoKey } from "../../../components/DataFetch";
-import { BrowseFetchResult, UpnpDevice } from "../Types";
-import AlbumArt from "../AlbumArt";
+import { useCallback } from "react";
+import { DataFetchProps, useDataFetch } from "../../../components/DataFetch";
 import { DropdownMenu } from "../../../components/DropdownMenu";
 import { MicroLoader } from "../../../components/LoadIndicator";
+import WebApi from "../../../components/WebApi";
+import AlbumArt from "../AlbumArt";
+import { BrowseFetchResult } from "../Types";
+import { DeviceActionProps } from "./Actions";
 
 function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     const url = e.currentTarget.dataset["playUrl"];
     const device = e.currentTarget.parentElement?.parentElement?.dataset["device"];
-    if (device && url) $api.control(device).playUri(url).fetch();
+    if (device && url) WebApi.control(device).playUri(url).fetch();
     e.preventDefault();
     e.stopPropagation();
     return false;
@@ -31,12 +32,11 @@ function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & De
     </>
 }
 
-const builder = ({ device: { udn } }: { device: UpnpDevice }) => withMemoKey($api.browse(udn).get("PL:").withResource().withVendor().jsonFetch, udn);
-
-export const PlaylistMenu = withDataFetch(Menu, builder, { template: MicroLoader });
-
 export function PlaylistMenuAction({ className, device, category, ...other }: DeviceActionProps) {
+    const { udn } = device;
+    const loader = useCallback(() => WebApi.browse(udn).get("PL:").withResource().withVendor().jsonFetch(), [udn]);
+    const data = useDataFetch(loader);
     return <div className={className} {...other}>
-        <PlaylistMenu device={device} category={category} />
-    </div>;
+        {!data.fetching ? <Menu {...data} device={device} category={category} /> : <MicroLoader />}
+    </div>
 }

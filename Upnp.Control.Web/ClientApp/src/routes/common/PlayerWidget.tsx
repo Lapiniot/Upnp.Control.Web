@@ -1,16 +1,16 @@
-import React, { ButtonHTMLAttributes, createRef } from "react";
-import { DataContext, DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
-import SignalRListener from "../../components/SignalRListener";
-import $api from "../../components/WebApi";
-import SeekBar from "./SeekBar";
-import { AVPositionState, AVState, RCState } from "./Types";
-import { parseMilliseconds } from "../../components/Extensions";
-import { PlayerSvgSymbols } from "./SvgSymbols";
-import $s from "./Settings";
-import AlbumArt from "./AlbumArt";
+import React, { ButtonHTMLAttributes, createRef, useCallback } from "react";
+import { DataContext, DataFetchProps, useDataFetch } from "../../components/DataFetch";
 import { DropdownMenu } from "../../components/DropdownMenu";
-import Slider from "../../components/Slider";
+import { parseMilliseconds } from "../../components/Extensions";
 import { SwipeGestureRecognizer, SwipeGestures } from "../../components/gestures/SwipeGestureRecognizer";
+import SignalRListener from "../../components/SignalRListener";
+import Slider from "../../components/Slider";
+import $api from "../../components/WebApi";
+import AlbumArt from "./AlbumArt";
+import SeekBar from "./SeekBar";
+import $s from "./Settings";
+import { PlayerSvgSymbols } from "./SvgSymbols";
+import { AVPositionState, AVState, RCState } from "./Types";
 
 const STATE_UPDATE_DELAY_MS = 2000;
 
@@ -183,6 +183,8 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
     }
 }
 
-const fetchPromiseFactoryBuilder = ({ udn }: { udn: string }) => withMemoKey($api.control(udn as string).state(true).withTimeout($s.get("timeout")).jsonFetch, udn);
-
-export default withDataFetch(PlayerCore, fetchPromiseFactoryBuilder, { usePreloader: false });
+export default function ({ udn }: { udn: string }) {
+    const loader = useCallback(() => $api.control(udn).state(true).withTimeout($s.get("timeout")).jsonFetch(), [udn]);
+    const data = useDataFetch<AVState>(loader);
+    return <PlayerCore {...data} udn={udn} />
+}

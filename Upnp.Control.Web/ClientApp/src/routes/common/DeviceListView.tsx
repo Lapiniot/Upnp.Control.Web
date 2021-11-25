@@ -23,11 +23,10 @@ export function DeviceView({ itemTemplate: Item, dataContext, category, fetching
     </>;
 }
 
-export type DeviceListViewProps = DataFetchProps<UpnpDevice[]> &
-    TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> &
+export type DeviceListViewProps = TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> &
     CategoryRouteParams & { viewMode?: GridViewMode };
 
-export class DeviceListView extends Component<DeviceListViewProps> {
+export class DeviceListView extends Component<DeviceListViewProps & DataFetchProps<UpnpDevice[]>> {
     static defaultProps: Partial<DeviceListViewProps> = { viewMode: "grid" }
 
     reload = () => {

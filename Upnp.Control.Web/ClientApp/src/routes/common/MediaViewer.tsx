@@ -1,15 +1,12 @@
-import { ComponentType, HTMLAttributes } from "react";
-import { DataFetchProps, withDataFetch, withMemoKey } from "../../components/DataFetch";
-import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import $api from "../../components/WebApi";
+import { HTMLAttributes } from "react";
+import { DataFetchProps } from "../../components/DataFetch";
 import { DIDLTools } from "./DIDLTools";
-import { BrowseFetchResult, ViewRouteParams } from "./Types";
+import { BrowseFetchResult } from "./Types";
 
-type MediaViewerProps = HTMLAttributes<HTMLDivElement> &
-    DataFetchProps<BrowseFetchResult> &
-    ViewRouteParams;
+export type MediaViewerProps = HTMLAttributes<HTMLDivElement> & { device: string, id: string };
 
-export function MediaViewer({ dataContext: ctx, fetching, error, category, device, id, className, ...other }: MediaViewerProps) {
+export function MediaViewer({ dataContext: ctx, fetching, error, device, id, className, ...other }:
+    MediaViewerProps & DataFetchProps<BrowseFetchResult>) {
     const { source: { self: item = undefined } = {} } = ctx ?? {};
 
     if (!item || !item.res) return <div>Invalid data</div>;
@@ -26,12 +23,4 @@ export function MediaViewer({ dataContext: ctx, fetching, error, category, devic
                 <source src={url} />
             </video>}
     </figure>;
-}
-
-const viewFetchOptions = { withParents: true, withMetadata: true, withResourceProps: true };
-const defaultViewQueryBuilder = ({ device, id }: ViewRouteParams) => withMemoKey(
-    $api.browse(device).get(id).withOptions(viewFetchOptions).jsonFetch, device + "|" + id);
-export function withViewerDataFetch<P extends DataFetchProps>(ViewerComponent: ComponentType<P>, usePreloader = true,
-    builder = defaultViewQueryBuilder) {
-    return withDataFetch<P, ViewRouteParams>(ViewerComponent, builder, { template: LoadIndicatorOverlay, usePreloader });
 }

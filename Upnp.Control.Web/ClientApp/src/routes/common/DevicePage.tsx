@@ -1,15 +1,16 @@
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { withDataFetch, withMemoKey } from "../../components/DataFetch";
+import { useDataFetch } from "../../components/DataFetch";
 import { GridViewMode } from "../../components/GridView";
 import WebApi from "../../components/WebApi";
 import { DeviceView, TemplatedDataComponentProps } from "./DeviceListView";
-import { DeviceRouteParams, UpnpDevice } from "./Types";
+import { CategoryRouteParams, DeviceRouteParams, UpnpDevice } from "./Types";
 
-const Device = withDataFetch(DeviceView,
-    ({ device, category }) => withMemoKey(WebApi.devices(category as string, device).jsonFetch, `${category}|${device}`),
-    { usePreloader: false });
-
-export default function (props: TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> & { viewMode: GridViewMode }) {
-    const params = useParams();
-    return <Device category={params.category as string} device={params.device as string} {...props} />;
+export default function ({ category, ...props }: TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> & { viewMode: GridViewMode } & CategoryRouteParams) {
+    const { device } = useParams<"device">();
+    if (!category) throw new Error("Missing mandatory parameter 'category'");
+    if (!device) throw new Error("Missing mandatory parameter 'device'");
+    const loader = useCallback(() => WebApi.devices(category, device).jsonFetch(), [category, device]);
+    const data = useDataFetch(loader);
+    return <DeviceView {...props} {...data} category={category} device={device} />;
 }

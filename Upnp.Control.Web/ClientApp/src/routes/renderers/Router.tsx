@@ -16,10 +16,12 @@ function TemplateSelector(props: DataSourceProps<UpnpDevice>) {
 }
 
 export default function () {
+    const category = "renderers";
+    const viewMode = "auto";
     return <Routes>
-        <Route index element={<DeviceListPage category="renderers" key="renderers" itemTemplate={TemplateSelector} viewMode="auto" />} />
+        <Route index element={<DeviceListPage category={category} key={category} itemTemplate={TemplateSelector} viewMode={viewMode} />} />
         <Route path=":device">
-            <Route index element={<DevicePage itemTemplate={TemplateSelector} viewMode="auto" />} />
+            <Route index element={<DevicePage category={category} itemTemplate={TemplateSelector} viewMode={viewMode} />} />
             <Route path="browse">
                 <Route index element={<BrowserPage />} />
                 <Route path=":id/*" element={<BrowserPage />} />

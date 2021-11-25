@@ -6,10 +6,12 @@ import ViewerPage from "../common/ViewerPage";
 import UpnpDeviceTemplate from "./Device";
 
 export default function () {
+    const category = "upnp";
+    const viewMode = "grid";
     return <Routes>
-        <Route index element={<DeviceListPage category="upnp" key="upnp" itemTemplate={UpnpDeviceTemplate} viewMode="grid" />} />
+        <Route index element={<DeviceListPage category={category} key={category} itemTemplate={UpnpDeviceTemplate} viewMode={viewMode} />} />
         <Route path=":device">
-            <Route index element={<DevicePage itemTemplate={UpnpDeviceTemplate} viewMode="grid" />} />
+            <Route index element={<DevicePage category={category} itemTemplate={UpnpDeviceTemplate} viewMode={viewMode} />} />
             <Route path="browse">
                 <Route index element={<BrowserPage />} />
                 <Route path=":id/*" element={<BrowserPage />} />

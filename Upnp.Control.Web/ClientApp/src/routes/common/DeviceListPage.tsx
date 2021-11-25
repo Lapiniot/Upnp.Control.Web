@@ -1,9 +1,10 @@
-import { withDataFetch, withMemoKey } from "../../components/DataFetch";
+import { useCallback } from "react";
+import { useDataFetch } from "../../components/DataFetch";
 import WebApi from "../../components/WebApi";
-import { DeviceListView } from "./DeviceListView";
+import { DeviceListView, DeviceListViewProps } from "./DeviceListView";
 
-const DeviceListPage = withDataFetch(DeviceListView,
-    ({ category }) => withMemoKey(WebApi.devices(category as string).jsonFetch, category as string),
-    { usePreloader: false });
-
-export default DeviceListPage;
+export default function DeviceListPage({ category, ...props }: DeviceListViewProps) {
+    const loader = useCallback(() => WebApi.devices(category).jsonFetch(), [category]);
+    const data = useDataFetch(loader);
+    return <DeviceListView {...props} {...data} category={category} />
+}

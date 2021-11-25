@@ -1,10 +1,16 @@
+import { HTMLAttributes, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { MediaViewer, withViewerDataFetch } from "./MediaViewer";
-import { ViewRouteParams } from "./Types";
+import { useDataFetch } from "../../components/DataFetch";
+import WebApi from "../../components/WebApi";
+import { MediaViewer } from "./MediaViewer";
 
-const Viewer = withViewerDataFetch(MediaViewer);
+const options = { withParents: true, withMetadata: true, withResourceProps: true };
 
-export default function () {
-    const params = useParams() as ViewRouteParams;
-    return <Viewer {...params} />;
+export default function (props: HTMLAttributes<HTMLDivElement>) {
+    const { device, id } = useParams<"device" | "id">();
+    if (!device) throw new Error("Missing mandatory parameter 'device'");
+    if (!id) throw new Error("Missing mandatory parameter 'id'");
+    const loader = useCallback(() => WebApi.browse(device).get(id).withOptions(options).jsonFetch(), [device, id]);
+    const data = useDataFetch(loader);
+    return <MediaViewer {...data} {...props} device={device} id={id} />;
 }
