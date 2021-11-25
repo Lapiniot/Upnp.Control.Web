@@ -21,6 +21,7 @@ export function useDataFetch<T>(loader: LoaderFunction<T>): FetchState<T> {
     const [state, setState] = useState<FetchState<T>>({ fetching: true, dataContext: undefined, error: undefined });
     const fetchData = useMemo(() => (async (action?: (() => Promise<any>) | null) => {
         try {
+            setState(state => ({ ...state, fetching: true, error: undefined }));
             await action?.();
             const data = await loader();
             setState({ fetching: false, dataContext: { source: data, reload: fetchData }, error: undefined });
