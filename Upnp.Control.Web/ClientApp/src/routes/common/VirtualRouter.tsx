@@ -48,20 +48,33 @@ const RouterMatchContext = createContext<RouterMatchContextObject>({
     level: 0
 })
 
-function resolveUrl(to: string | Partial<Path>, baseUrl: URL) {
-    const path = resolvePath(to, baseUrl.pathname);
-    const url = new URL(path.pathname, location.origin);
-    url.hash = path.hash;
-    url.search = path.search;
-    return url;
+function resolvePathMatches(to: string | Partial<Path>, matches: RouteMatch[]) {
+    if (!matches?.length) return undefined;
+
+    let match: RouteMatch = matches[matches.length - 1];
+    let pathname = typeof to === "string" ? to : to.pathname ?? "";
+    if (!pathname.startsWith("/")) {
+        let index = 1;
+        while ((pathname.startsWith("..")) && index < matches.length) {
+            pathname = pathname.substring(2);
+            pathname = pathname.startsWith("/") ? pathname.substring(1) : pathname;
+            match = matches[matches.length - ++index];
+        }
+    }
+
+    return resolvePath(typeof to === "string" ? pathname : { ...to, pathname }, match.pathname);
 }
 
 function useNavigateImpl() {
     const { location, setLocation } = useContext(RouterLocationContext);
+    const { matches } = useContext(RouterMatchContext);
     const navigate = useCallback((to) => {
-        const url = resolveUrl(to, location);
+        const path = (matches && resolvePathMatches(to, matches)) ?? resolvePath(to, location.pathname);
+        const url = new URL(path.pathname, location.origin);
+        url.hash = path.hash;
+        url.search = path.search;
         return setLocation(url);
-    }, [location]);
+    }, [location, matches]);
     return navigate;
 }
 
@@ -81,8 +94,8 @@ function useSearchParamsImpl(): readonly [URLSearchParams, (nextInit: URLSearchP
 
 function useResolvedPathImpl(to: string | Partial<Path>) {
     const { location } = useContext(RouterLocationContext);
-    const path = resolvePath(to, location.pathname);
-    return path;
+    const { matches } = useContext(RouterMatchContext);
+    return (matches && resolvePathMatches(to, matches)) ?? resolvePath(to, location.pathname);
 }
 
 export function VirtualRouter({ children, initialPath }: PropsWithChildren<VirtualRouterProps>) {
