@@ -11,7 +11,7 @@ import { BrowserProps } from "./BrowserView";
 import { useNavigatorClickHandler } from "../../components/Navigator";
 import { RowStateMapper, RowStateProvider, useRowStates } from "./RowStateContext";
 import { DIDLItem, UpnpDevice } from "./Types";
-import { Route, VirtualRouter } from "./VirtualRouter";
+import { Route, Routes, VirtualRouter } from "./VirtualRouter";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;
@@ -24,12 +24,12 @@ export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivEleme
 type ConfirmProps = {
     confirmContent?: ((items: DIDLItem[]) => ReactNode) | string;
     onConfirmed?: (selection: BrowseResult) => void;
-};
+}
 
 export type BrowseResult = {
     device: string;
     keys: string[];
-};
+}
 
 const fetchContentServers = $api.devices("servers").jsonFetch;
 
@@ -39,7 +39,7 @@ function MediaSourceList() {
     return fetching
         ? <LoadIndicatorOverlay />
         : <ul className="list-group list-group-flush overflow-auto">
-            {dataContext?.source?.map(d => <a key={d.udn} href={`/sources/${d.udn}/browse/0`} onClick={handler} className="nav-link list-group-item list-group-item-action hstack">
+            {dataContext?.source?.map(d => <a key={d.udn} href={`/upnp/${d.udn}/browse/0`} onClick={handler} className="nav-link list-group-item list-group-item-action hstack">
                 <DeviceIcon device={d} />
                 {d.name}{d.description && ` (${d.description})`}
             </a>)}
@@ -69,12 +69,17 @@ export default function BrowserDialog(props: BrowserDialogProps) {
     const { title, confirmContent, onConfirmed, browserProps = {}, rowStateMapper, ...other } = props;
     return <Modal title={title} {...other} data-bs-keyboard={true}>
         <Modal.Body className="vstack overflow-hidden p-0 position-relative border-bottom border-top" style={{ height: "60vh" }}>
-            <VirtualRouter initialPath="/sources">
-                <Route path="/sources" element={<MediaSourceList />} />
-                <Route path="/sources/:device/browse/-1" element={<MediaSourceList />} />
-                <Route path="/sources/:device/browse/:id/*" element={<Browser {...browserProps}
-                    mapper={rowStateMapper} modalDialogMode
-                    confirmContent={confirmContent} onConfirmed={onConfirmed} />} />
+            <VirtualRouter initialPath="/upnp">
+                <Routes>
+                    <Route path="upnp">
+                        <Route index element={<MediaSourceList />} />
+                        <Route path=":device/browse">
+                            <Route path="-1" element={<MediaSourceList />} />
+                            <Route path=":id/*" element={<Browser {...browserProps} mapper={rowStateMapper} modalDialogMode
+                                confirmContent={confirmContent} onConfirmed={onConfirmed} />} />
+                        </Route>
+                    </Route>
+                </Routes>
             </VirtualRouter>
         </Modal.Body>
         <Modal.Footer id="browser-dialog-footer">
