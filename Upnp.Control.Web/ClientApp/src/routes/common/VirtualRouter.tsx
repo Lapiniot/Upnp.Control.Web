@@ -30,7 +30,7 @@ function buildRoutes(children: ReactNode | undefined): RouteObject[] {
 
 interface RouterLocationContextObject {
     location: URL;
-    setLocation(to: URL): void;
+    setLocation(to: URL | ((current: URL) => URL)): void;
 }
 
 interface RouterMatchContextObject {
@@ -67,12 +67,16 @@ function useNavigateImpl() {
 
 function useParamsImpl() {
     const { matches } = useContext(RouterMatchContext);
-    return matches?.[0]?.params ?? {};
+    return matches?.[0].params ?? {};
 }
 
 function useSearchParamsImpl(): readonly [URLSearchParams, (nextInit: URLSearchParams) => void] {
-    const { location } = useContext(RouterLocationContext);
-    return [location.searchParams, (init: URLSearchParams) => { }]
+    const { location, setLocation } = useContext(RouterLocationContext);
+    return [location.searchParams, (init: URLSearchParams) => setLocation(location => {
+        const url = new URL(location);
+        url.search = init.toString();
+        return url;
+    })]
 }
 
 function useResolvedPathImpl(to: string | Partial<Path>) {
