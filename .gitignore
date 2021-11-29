@@ -10,3 +10,4 @@ package-lock.json
 *.crt
 *.key
 Upnp.Control.Web/data/*
+*.css

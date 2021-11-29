@@ -1,4 +1,4 @@
-import React, { createContext, PropsWithChildren, ReactElement, ReactFragment, ReactNode, useCallback, useContext, useState } from "react";
+import React, { createContext, PropsWithChildren, ReactElement, ReactFragment, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { matchRoutes, resolvePath, RouteMatch, RouteObject } from "react-router-dom";
 import { NavigationContext, Path } from "../../components/Navigator";
 
@@ -68,13 +68,16 @@ function resolvePathMatches(to: string | Partial<Path>, matches: RouteMatch[]) {
 function useNavigateImpl() {
     const { location, setLocation } = useContext(RouterLocationContext);
     const { matches } = useContext(RouterMatchContext);
+    const ref = useRef({ location, setLocation, matches });
+    ref.current = { location, setLocation, matches };
     const navigate = useCallback((to) => {
-        const path = (matches && resolvePathMatches(to, matches)) ?? resolvePath(to, location.pathname);
-        const url = new URL(path.pathname, location.origin);
+        const { matches, location: { pathname, origin }, setLocation } = ref.current;
+        const path = (matches && resolvePathMatches(to, matches)) ?? resolvePath(to, pathname);
+        const url = new URL(path.pathname, origin);
         url.hash = path.hash;
         url.search = path.search;
         return setLocation(url);
-    }, [location, matches]);
+    }, []);
     return navigate;
 }
 
@@ -98,9 +101,20 @@ function useResolvedPathImpl(to: string | Partial<Path>) {
     return (matches && resolvePathMatches(to, matches)) ?? resolvePath(to, location.pathname);
 }
 
+const hooks = { useNavigateImpl, useParamsImpl, useSearchParamsImpl, useResolvedPathImpl }
+
 export function VirtualRouter({ children, initialPath }: PropsWithChildren<VirtualRouterProps>) {
-    const [location, setLocation] = useState(new URL(initialPath, window.location.origin));
-    return <NavigationContext.Provider value={{ useNavigateImpl, useParamsImpl, useSearchParamsImpl, useResolvedPathImpl }}>
+    const [location, setLocation] = useState(() => new URL(initialPath, window.location.origin));
+    const ref = useRef(initialPath);
+
+    useEffect(() => {
+        if (initialPath !== ref.current) {
+            ref.current = initialPath;
+            setLocation(new URL(initialPath, window.location.origin));
+        }
+    }, [initialPath]);
+
+    return <NavigationContext.Provider value={hooks}>
         <RouterLocationContext.Provider value={{ location, setLocation }}>
             {children}
         </RouterLocationContext.Provider>
