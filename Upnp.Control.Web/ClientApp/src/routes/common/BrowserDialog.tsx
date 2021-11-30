@@ -9,13 +9,13 @@ import BrowserCore from "./BrowserCore";
 import { useContentBrowser } from "./BrowserUtils";
 import { BrowserProps } from "./BrowserView";
 import { useNavigatorClickHandler } from "../../components/Navigator";
-import { RowStateMapper, RowStateProvider, useRowStates } from "./RowStateContext";
+import { RowStateMapperFunction, RowStateProvider, useRowStates } from "./RowStateContext";
 import { DIDLItem, UpnpDevice } from "./Types";
 import { Route, Routes, VirtualRouter } from "./VirtualRouter";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;
-    rowStateMapper?: RowStateMapper;
+    rowStateMapper?: RowStateMapperFunction;
     confirmContent?: ((items: DIDLItem[]) => ReactNode) | string;
     onConfirmed?: (selection: BrowseResult) => void;
     dismissOnOpen?: boolean;
@@ -57,7 +57,7 @@ function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: Confirm
         </Modal.Button>)
 }
 
-function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps<any> & { mapper?: RowStateMapper } & ConfirmProps) {
+function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps<any> & { mapper?: RowStateMapperFunction } & ConfirmProps) {
     const { params, ...other } = useContentBrowser();
     return <RowStateProvider items={other.dataContext?.source.items} mapper={mapper}>
         <BrowserCore {...props} {...params} {...other} />

@@ -4,13 +4,13 @@ import WebApi from "../../../components/WebApi";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
 import { DIDLTools } from "../DIDLTools";
 import { BrowserProps } from "../BrowserView";
-import { RowStateMapper } from "../RowStateContext";
+import { RowStateMapperFunction } from "../RowStateContext";
 import { DIDLItem, RowState } from "../Types";
 import { DeviceActionProps } from "./Actions";
 
 type OpenActionProps = DeviceActionProps & {
     browserProps?: BrowserProps<unknown>,
-    rowStateMapper?: RowStateMapper
+    rowStateMapper?: RowStateMapperFunction
 }
 
 export function OpenAction({ children, className, browserProps, device, category, rowStateMapper, ...other }: OpenActionProps) {
