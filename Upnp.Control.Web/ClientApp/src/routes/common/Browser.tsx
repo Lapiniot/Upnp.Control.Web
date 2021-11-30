@@ -10,7 +10,7 @@ import Breadcrumb from "./Breadcrumb";
 import { BrowserActionMenu, renderActionMenuItem } from "./BrowserActionMenu";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { DIDLTools } from "./DIDLTools";
-import { CellTemplate, CellTemplateProps } from "./BrowserView";
+import { CellTemplate, CellTemplateProps, HotKey } from "./BrowserView";
 import ItemInfoModal from "./ItemInfoModal";
 import { TablePagination } from "./Pagination";
 import { RowStateProvider } from "./RowStateContext";
@@ -88,10 +88,16 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         deviceName: this.props.dataContext?.source.dev?.name
     });
 
-    openHandler = (index: number) => {
-        const item = this.props.dataContext?.source.items?.[index];
-        if (item) this.props.navigate(`../../view/${item.id}`);
+    openHandler = (item: DIDLItem) => {
+        this.props.navigate(`../../view/${item.id}`);
         return true;
+    }
+
+    hotKeyHandler = (items: DIDLItem[], focused: DIDLItem | undefined, { code }: HotKey) => {
+        if (code === "Space") {
+            this.modalHostRef.current?.show(<ItemInfoModal item={focused ?? items[0]} />);
+            return false;
+        }
     }
 
     itemMenuSelectedHandler = async ({ dataset: { action, udn } }: HTMLElement, anchor?: HTMLElement) => {
@@ -196,7 +202,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             <BrowserSvgSymbols />
             <RowStateProvider items={data?.source.items}>
                 <BrowserCore mainCellTemplate={Template} mainCellContext={this.getCellContext()} withPagination={false} useCheckboxes multiSelect
-                    {...this.props} fetching={this.state.fetching || this.props.fetching} open={this.openHandler}
+                    {...this.props} fetching={this.state.fetching || this.props.fetching} openHandler={this.openHandler} hotKeyHandler={this.hotKeyHandler}
                     renderActionMenu={this.renderActionMenu}>
                     <DropdownMenu render={this.renderItemActionMenuItems} onSelected={this.itemMenuSelectedHandler} placement="left" />
                 </BrowserCore>

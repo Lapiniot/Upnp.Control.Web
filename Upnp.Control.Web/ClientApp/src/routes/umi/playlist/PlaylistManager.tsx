@@ -12,7 +12,7 @@ import $api from "../../../components/WebApi";
 import { BottomBar } from "../../common/BottomBar";
 import Breadcrumb from "../../common/Breadcrumb";
 import { useContentBrowser } from "../../common/BrowserUtils";
-import Browser, { BrowserProps } from "../../common/BrowserView";
+import Browser, { BrowserProps, HotKey } from "../../common/BrowserView";
 import { DIDLTools } from "../../common/DIDLTools";
 import ItemInfoModal from "../../common/ItemInfoModal";
 import { NavigatorProps } from "../../../components/Navigator";
@@ -230,13 +230,29 @@ export class PlaylistManagerCore
 
     //#region Playback related row event handlers
 
-    private playItem = (index: number) => {
+    private playItem = (_: DIDLItem, index: number) => {
         const url = this.getPlayUrl(index);
         if (url) this.ctrl.playUri(url).fetch();
         return false;
     }
 
     //#endregion
+
+    hotKeyHandler = (selection: DIDLItem[], focused: DIDLItem | undefined, { code }: HotKey) => {
+        switch (code) {
+            case "Space":
+                this.modalHostRef.current?.show(<ItemInfoModal item={focused ?? selection[0]} />);
+                return false;
+            case "Delete":
+                if (this.props.id === "PL:")
+                    this.deletePlaylists(selection);
+                else
+                    this.deletePlaylistItems(selection);
+                return false;
+            default:
+                break;
+        }
+    }
 
     renderItemActionMenu = (anchor?: HTMLElement | null) => {
         return anchor?.dataset.index
@@ -314,7 +330,7 @@ export class PlaylistManagerCore
                                     state: psv.state,
                                     device: device,
                                     deviceName: this.props.dataContext?.source.dev?.name
-                                }} navigate={navigate} open={this.playItem}
+                                }} navigate={navigate} openHandler={this.playItem} hotKeyHandler={this.hotKeyHandler}
                                 editMode={this.state.editMode} useLevelUpRow={false} useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
                                 <DropdownMenu render={this.renderItemActionMenu} />
                             </Browser>}

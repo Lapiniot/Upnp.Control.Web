@@ -27,8 +27,13 @@ export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
 
 type RenderFunc = () => ReactNode;
 
+
+type KeyModifiers = "altKey" | "shiftKey" | "ctrlKey" | "metaKey";
+export type HotKey = { code: string } & { [K in KeyModifiers]: boolean };
+
 export type BrowserProps<TContext> = {
-    open?: (index: number) => boolean;
+    openHandler?: (item: DIDLItem, index: number) => boolean;
+    hotKeyHandler?: (selection: DIDLItem[], focused: DIDLItem | undefined, hotKey: HotKey) => boolean | void;
     mainCellTemplate?: ComponentType<CellTemplateProps<TContext>>;
     mainCellContext?: TContext;
     displayMode?: DisplayMode;
@@ -96,6 +101,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     componentDidMount() {
         document.body.addEventListener("keydown", this.onKeyDown);
+        document.body.addEventListener("keyup", this.onKeyUp);
         if (this.props.displayMode === "responsive") {
             MediaQueries.largeScreen.addEventListener("change", this.screenQueryChangedHandler);
         }
@@ -105,6 +111,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     componentWillUnmount() {
         MediaQueries.largeScreen.removeEventListener("change", this.screenQueryChangedHandler);
+        document.body.removeEventListener("keyup", this.onKeyUp);
         document.body.removeEventListener("keydown", this.onKeyDown);
         this.resizeObserver.disconnect();
     }
@@ -219,8 +226,10 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 const state = this.context.get(index);
                 if (item.container && state & RowState.Navigable)
                     this.props.navigate?.(`../${item.id}`);
-                else if (state ^ RowState.Readonly && event.code === "Enter")
-                    this.props.open?.(index);
+                else if (state ^ RowState.Readonly && event.code === "Enter" && this.props.openHandler) {
+                    const item = this.props.dataContext?.source.items?.[index];
+                    if (item) this.props.openHandler(item, index);
+                }
 
                 break;
             case "Backspace":
@@ -252,6 +261,16 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         }
     }
 
+    private onKeyUp = (event: KeyboardEvent) => {
+        const handler = this.props.hotKeyHandler;
+        if (!handler) return;
+        const { code, altKey, shiftKey, ctrlKey, metaKey } = event;
+        if (handler(this.context.selection, this.props.dataContext?.source.items?.[this.context.current ?? 0], { code, altKey, shiftKey, ctrlKey, metaKey }) == false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }
+
     private focusHandler = (event: FocusEvent<HTMLDivElement>) => {
         const row = event.target.matches(DATA_ROW_SELECTOR) && event.target as HTMLDivElement;
         if (row) {
@@ -275,8 +294,10 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             if (!item) return;
             if (item.container && this.context.get(index) & RowState.Navigable)
                 this.props.navigate?.(`../${item.id}`);
-            else
-                this.props.open?.(index);
+            else if (this.props.openHandler) {
+                const item = this.props.dataContext?.source.items?.[index];
+                if (item) this.props.openHandler(item, index);
+            }
         }
     }
 
