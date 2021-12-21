@@ -8,13 +8,13 @@ namespace Upnp.Control.Services.Commands;
 
 public readonly record struct M3uTrack(string Path, string Info, int Duration);
 
-public class M3uReader : IAsyncEnumerable<M3uTrack>
+public class M3uTrackReader : IAsyncEnumerable<M3uTrack>
 {
     private static readonly byte[] EXTINF = new byte[] { 0x45, 0x58, 0x54, 0x49, 0x4E, 0x46, 0x3A };
     private readonly PipeReader reader;
     private readonly Encoding encoding;
 
-    public M3uReader(PipeReader reader, Encoding encoding = null)
+    public M3uTrackReader(PipeReader reader, Encoding encoding = null)
     {
         ArgumentNullException.ThrowIfNull(reader);
         this.reader = reader;
@@ -59,14 +59,14 @@ public class M3uReader : IAsyncEnumerable<M3uTrack>
         }
     }
 
-    private bool TryReadTrack(in ReadOnlySequence<byte> buffer, bool isCompleted, out M3uTrack track, out long consumed)
+    private bool TryReadTrack(in ReadOnlySequence<byte> buffer, bool isFinalBlock, out M3uTrack track, out long consumed)
     {
         consumed = 0;
         track = default;
 
         var lineReader = new SequenceReader<byte>(buffer);
 
-        while(lineReader.TryReadLine(out ReadOnlySequence<byte> line, !isCompleted))
+        while(lineReader.TryReadLine(out ReadOnlySequence<byte> line, !isFinalBlock))
         {
             if(line.Length == 0) continue;
 
@@ -77,7 +77,7 @@ public class M3uReader : IAsyncEnumerable<M3uTrack>
                 reader.AdvancePast(0x20);
                 if(!(reader.TryReadTo(out ReadOnlySpan<byte> span, 0x2C) && Utf8Parser.TryParse(span, out int duration, out _))) continue;
                 reader.AdvancePast(0x20);
-                if(!lineReader.TryReadLine(out line, !isCompleted)) break;
+                if(!lineReader.TryReadLine(out line, !isFinalBlock)) break;
                 track = new(encoding.GetString(line), encoding.GetString(reader.UnreadSequence), duration);
             }
             else

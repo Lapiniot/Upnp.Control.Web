@@ -39,7 +39,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
         var reader = PipeReader.Create(stream);
 
         var encoding = Path.GetExtension(file.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
-        await foreach(var (path, info, _) in new M3uReader(reader, encoding).WithCancellation(cancellationToken).ConfigureAwait(false))
+        await foreach(var (path, info, _) in new M3uTrackReader(reader, encoding).WithCancellation(cancellationToken).ConfigureAwait(false))
         {
             await AppendFeedItemAsync(writer, new Uri(path), info, useProxy, cancellationToken).ConfigureAwait(false);
         }
