@@ -6,6 +6,7 @@ import { DIDLTools as utils } from "./DIDLTools";
 import { NavigatorProps } from "../../components/Navigator";
 import RowStateContext from "./RowStateContext";
 import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
+import { HotKey } from "../../components/HotKey";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
@@ -29,7 +30,6 @@ type RenderFunc = () => ReactNode;
 
 
 type KeyModifiers = "altKey" | "shiftKey" | "ctrlKey" | "metaKey";
-export type HotKey = { code: string } & { [K in KeyModifiers]: boolean };
 
 export type BrowserProps<TContext> = {
     openHandler?: (item: DIDLItem, index: number) => boolean;
@@ -259,11 +259,11 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         }
     }
 
-    private onKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    private captureHotKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
         const handler = this.props.hotKeyHandler;
         if (!handler) return;
         const { code, altKey, shiftKey, ctrlKey, metaKey } = event;
-        const hotKey = { code, altKey, shiftKey, ctrlKey, metaKey };
+        const hotKey = new HotKey(code, altKey, ctrlKey, shiftKey, metaKey);
         if (handler(this.context.selection, this.props.dataContext?.source.items?.[this.context.current ?? 0], hotKey) == false) {
             event.preventDefault();
             event.stopPropagation();
@@ -337,7 +337,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         <div>Kind</div>
                     </div>
                 </div>
-                <div onKeyUp={this.onKeyUp}>
+                <div onKeyDown={this.captureHotKey}>
                     {tableMode && useLevelUpRow && parents && parents.length > 0 &&
                         <div data-index={-1} title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ...">
                             {useCheckboxes && <div>&nbsp;</div>}

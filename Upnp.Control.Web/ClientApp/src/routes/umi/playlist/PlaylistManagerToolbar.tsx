@@ -1,4 +1,5 @@
 import { PropsWithChildren, useEffect, useMemo, useRef } from "react";
+import { HotKeys } from "../../../components/HotKey";
 import { MediaQueries } from "../../../components/MediaQueries";
 import Toolbar from "../../../components/Toolbar";
 import { RowStateAction, useRowStates } from "../../common/RowStateContext";
@@ -61,11 +62,11 @@ export function PlaylistManagerToolbar({ editMode, rootLevel: rootLevel, fetchin
             </div>
         </>}
         {rootLevel && largeScreen && !editMode &&
-            <Toolbar.Button glyph="plus" title="Add new" onClick={handlers.create} className={className} disabled={fetching} />}
+            <Toolbar.Button glyph="plus" title={`Add new (${HotKeys.createNew})`} onClick={handlers.create} className={className} disabled={fetching} />}
         {rootLevel && (editMode || largeScreen) && <>
-            <Toolbar.Button glyph="trash" title="Delete" onClick={handlers.deletePlaylists} className={className} disabled={hasNoSelection} />
-            <Toolbar.Button glyph="edit" title="Rename" onClick={handlers.rename} className={className} disabled={!onlySelected} />
-            <Toolbar.Button glyph="copy" title="Copy" onClick={handlers.copy} className={className} disabled={!onlySelected} />
+            <Toolbar.Button glyph="trash" title={`Delete (${HotKeys.delete})`} onClick={handlers.deletePlaylists} className={className} disabled={hasNoSelection} />
+            <Toolbar.Button glyph="edit" title={`Rename (${HotKeys.rename})`} onClick={handlers.rename} className={className} disabled={!onlySelected} />
+            <Toolbar.Button glyph="copy" title={`Duplicate (${HotKeys.duplicate})`} onClick={handlers.copy} className={className} disabled={!onlySelected} />
         </>}
         {!rootLevel && largeScreen && !editMode && <>
             <Toolbar.Button glyph="plus" onClick={handlers.addItems} title="Add from media server" className={className} disabled={fetching} />
@@ -73,7 +74,7 @@ export function PlaylistManagerToolbar({ editMode, rootLevel: rootLevel, fetchin
             <Toolbar.Button glyph="list" onClick={handlers.addItemsFromFiles} title="Add from playlist file" className={className} disabled={fetching} />
         </>}
         {!rootLevel && (editMode || largeScreen) &&
-            <Toolbar.Button glyph="trash" onClick={handlers.deleteItems} title="Delete items" className={className} disabled={hasNoSelection} />}
+            <Toolbar.Button glyph="trash" title={`Delete (${HotKeys.delete})`} onClick={handlers.deleteItems} className={className} disabled={hasNoSelection} />}
         {editMode &&
             <Toolbar.Button glyph="ui-checks" onClick={handlers.selectAll} className={className} />}
         {!editMode && !largeScreen &&

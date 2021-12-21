@@ -12,7 +12,7 @@ import $api from "../../../components/WebApi";
 import { BottomBar } from "../../common/BottomBar";
 import Breadcrumb from "../../common/Breadcrumb";
 import { useContentBrowser } from "../../common/BrowserUtils";
-import Browser, { BrowserProps, HotKey } from "../../common/BrowserView";
+import Browser, { BrowserProps } from "../../common/BrowserView";
 import { DIDLTools } from "../../common/DIDLTools";
 import ItemInfoModal from "../../common/ItemInfoModal";
 import { NavigatorProps } from "../../../components/Navigator";
@@ -33,6 +33,7 @@ import { PlaylistManagerService } from "./PlaylistManagerService";
 import { PlaylistManagerToolbar } from "./PlaylistManagerToolbar";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
 import { PlaylistRowStateProvider } from "./PlaylistRowStateProvider";
+import { HotKey, HotKeys } from "../../../components/HotKey";
 
 type PlaylistManagerProps = Omit<PlaylistRouteParams, "category"> &
     DataFetchProps<BrowseFetchResult> &
@@ -238,19 +239,33 @@ export class PlaylistManagerCore
 
     //#endregion
 
-    hotKeyHandler = (selection: DIDLItem[], focused: DIDLItem | undefined, { code }: HotKey) => {
-        switch (code) {
-            case "Space":
-                this.modalHostRef.current?.show(<ItemInfoModal item={focused ?? selection[0]} />);
-                return false;
-            case "Delete":
-                if (this.props.id === "PL:")
-                    this.deletePlaylists(selection);
-                else
-                    this.deletePlaylistItems(selection);
-                return false;
-            default:
-                break;
+    hotKeyHandler = (selection: DIDLItem[], focused: DIDLItem | undefined, hotKey: HotKey) => {
+        const rootLevel = this.props.id === "PL:";
+        if (hotKey.equals(HotKeys.showInfo)) {
+            this.modalHostRef.current?.show(<ItemInfoModal item={focused ?? selection[0]} />);
+            return false;
+        }
+        if (hotKey.equals(HotKeys.delete)) {
+            if (rootLevel)
+                this.deletePlaylists(selection);
+            else
+                this.deletePlaylistItems(selection);
+            return false;
+        }
+        if (hotKey.equals(HotKeys.createNew)) {
+            if (rootLevel)
+                this.createPlaylist();
+            return false;
+        }
+        if (hotKey.equals(HotKeys.rename)) {
+            if (rootLevel && focused)
+                this.renamePlaylist(focused);
+            return false;
+        }
+        if (hotKey.equals(HotKeys.duplicate)) {
+            if (rootLevel && focused)
+                this.copyPlaylist(focused);
+            return false;
         }
     }
 

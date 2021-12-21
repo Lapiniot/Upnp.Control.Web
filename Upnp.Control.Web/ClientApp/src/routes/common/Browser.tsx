@@ -10,7 +10,7 @@ import Breadcrumb from "./Breadcrumb";
 import { BrowserActionMenu, renderActionMenuItem } from "./BrowserActionMenu";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { DIDLTools } from "./DIDLTools";
-import { CellTemplate, CellTemplateProps, HotKey } from "./BrowserView";
+import { CellTemplate, CellTemplateProps } from "./BrowserView";
 import ItemInfoModal from "./ItemInfoModal";
 import { TablePagination } from "./Pagination";
 import { RowStateProvider } from "./RowStateContext";
@@ -18,6 +18,7 @@ import $s from "./Settings";
 import { BrowserSvgSymbols } from "./SvgSymbols";
 import { DIDLItem, UpnpDevice } from "./Types";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
+import { HotKey, HotKeys } from "../../components/HotKey";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);
@@ -93,8 +94,8 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         return true;
     }
 
-    hotKeyHandler = (items: DIDLItem[], focused: DIDLItem | undefined, { code }: HotKey) => {
-        if (code === "Space") {
+    hotKeyHandler = (items: DIDLItem[], focused: DIDLItem | undefined, hotKey: HotKey) => {
+        if (hotKey.equals(HotKeys.showInfo)) {
             this.modalHostRef.current?.show(<ItemInfoModal item={focused ?? items[0]} />);
             return false;
         }
