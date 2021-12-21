@@ -63,7 +63,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         stickyCaption: true,
         stickyHeaders: true,
         mainCellTemplate: CellTemplate
-    };
+    }
 
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
@@ -101,7 +101,6 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     componentDidMount() {
         document.body.addEventListener("keydown", this.onKeyDown);
-        document.body.addEventListener("keyup", this.onKeyUp);
         if (this.props.displayMode === "responsive") {
             MediaQueries.largeScreen.addEventListener("change", this.screenQueryChangedHandler);
         }
@@ -111,7 +110,6 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     componentWillUnmount() {
         MediaQueries.largeScreen.removeEventListener("change", this.screenQueryChangedHandler);
-        document.body.removeEventListener("keyup", this.onKeyUp);
         document.body.removeEventListener("keydown", this.onKeyDown);
         this.resizeObserver.disconnect();
     }
@@ -261,11 +259,12 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         }
     }
 
-    private onKeyUp = (event: KeyboardEvent) => {
+    private onKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
         const handler = this.props.hotKeyHandler;
         if (!handler) return;
         const { code, altKey, shiftKey, ctrlKey, metaKey } = event;
-        if (handler(this.context.selection, this.props.dataContext?.source.items?.[this.context.current ?? 0], { code, altKey, shiftKey, ctrlKey, metaKey }) == false) {
+        const hotKey = { code, altKey, shiftKey, ctrlKey, metaKey };
+        if (handler(this.context.selection, this.props.dataContext?.source.items?.[this.context.current ?? 0], hotKey) == false) {
             event.preventDefault();
             event.stopPropagation();
         }
@@ -338,7 +337,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         <div>Kind</div>
                     </div>
                 </div>
-                <div>
+                <div onKeyUp={this.onKeyUp}>
                     {tableMode && useLevelUpRow && parents && parents.length > 0 &&
                         <div data-index={-1} title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ...">
                             {useCheckboxes && <div>&nbsp;</div>}
