@@ -27,13 +27,12 @@ public static class ConfigureServicesExtensions
         var options = serviceProvider.GetRequiredService<IOptions<SsdpOptions>>().Value;
 
         return new SsdpSearchEnumerator(UpnpServices.RootDevice,
+            (socket, ep) => socket
+                .ConfigureMulticast(options.MulticastInterfaceIndex, options.MulticastTTL)
+                .JoinMulticastGroup(ep),
             new RepeatPolicyBuilder()
                 .WithExponentialInterval(2, options.SearchIntervalSeconds)
                 .WithJitter(500, 1000)
-                .Build(),
-            ep => SocketBuilderExtensions
-                .CreateUdp(ep.AddressFamily)
-                .ConfigureMulticast(options.MulticastInterfaceIndex, options.MulticastTTL)
-                .JoinMulticastGroup(ep));
+                .Build());
     }
 }
