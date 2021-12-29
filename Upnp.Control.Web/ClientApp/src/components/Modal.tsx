@@ -48,6 +48,13 @@ export default class Modal extends React.Component<ModalProps> {
     }
 
     onShown: EventListener = (event: Event) => {
+        var element = this.modalRef.current;
+        if (element) {
+            Array.from(element.querySelectorAll<HTMLElement>("[tabindex]"))
+                .filter(({ tabIndex }) => tabIndex > 1)
+                .sort((a, b) => a.tabIndex - b.tabIndex)
+            [0]?.focus();
+        }
         return this.props.onShown?.(event);
     }
 
@@ -86,8 +93,8 @@ export default class Modal extends React.Component<ModalProps> {
                 else children.push(child);
             });
 
-        return <form action="#" noValidate onSubmit={this.onSubmit}>
-            <div className="modal fade" tabIndex={-1} ref={this.modalRef} role="dialog" aria-hidden={true} {...other}>
+        return <form tabIndex={-1} action="#" noValidate onSubmit={this.onSubmit}>
+            <div className="modal fade" ref={this.modalRef} role="dialog" aria-hidden={true} {...other}>
                 <div className={`modal-dialog modal-dialog-centered${className ? ` ${className}` : ""}`} role="document">
                     <div className="modal-content">
                         {header ? header : <Modal.Header><h5 className="modal-title text-truncate">{title}</h5></Modal.Header>}
@@ -110,7 +117,7 @@ export default class Modal extends React.Component<ModalProps> {
     static Header = ({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) =>
         <div className={`modal-header border-0${className ? ` ${className}` : ""}`} {...other}>
             {children}
-            <button type="button" className="btn-close" tabIndex={200} data-bs-dismiss="modal" aria-label="Close" />
+            <button tabIndex={1} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
         </div>;
 
     static Body = ({ className, ...other }: HTMLAttributes<HTMLDivElement>) =>

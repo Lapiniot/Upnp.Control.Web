@@ -21,13 +21,13 @@ export class TextValueEditDialog extends React.Component<TextValueEditDialogProp
         return <Modal title={title} {...other} onSubmit={this.onSubmit}>
             <div className="input-group has-validation mb-3">
                 <span className="input-group-text" id="basic-addon1">{label}</span>
-                <input type="text" name="text-input" onChange={onChanged} className="form-control" defaultValue={defaultValue}
+                <input tabIndex={2} type="text" name="text-input" onChange={onChanged} className="form-control" defaultValue={defaultValue}
                     placeholder="[provide value]" aria-label={label} aria-describedby="basic-addon1" required={required} />
                 <div className="invalid-tooltip">Non-empty value is required</div>
             </div>
             <Modal.Footer>
-                <Modal.Button key="cancel" className="dismiss" dismiss>Cancel</Modal.Button>
-                <Modal.Button key="confirm" className="confirm" type="submit">{confirmText}</Modal.Button>
+                <Modal.Button tabIndex={4} key="cancel" className="dismiss" dismiss>Cancel</Modal.Button>
+                <Modal.Button tabIndex={3} key="confirm" className="confirm" type="submit">{confirmText}</Modal.Button>
             </Modal.Footer>
         </Modal>;
     }
