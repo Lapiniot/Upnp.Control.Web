@@ -35,7 +35,7 @@
     <ItemGroup>
         <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
         <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.1" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
