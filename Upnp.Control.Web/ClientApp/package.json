@@ -3,7 +3,7 @@
     "name": "upnp.control.web",
     "private": true,
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.15.4",
+        "@fortawesome/fontawesome-free": "6.0.0-beta3",
         "@microsoft/signalr": "^6.0.1",
         "@popperjs/core": "^2.11.2",
         "bootstrap": "^5.1.3",
