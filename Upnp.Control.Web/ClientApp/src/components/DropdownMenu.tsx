@@ -22,7 +22,7 @@ type DropdownMenuState = {
 export function MenuItem({ className, action, glyph, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action: string, glyph?: string }) {
     return <li>
         <button type="button" data-action={action} className={`dropdown-item${className ? ` ${className}` : ""}`} {...other}>
-            {glyph && <svg><use href={`#${glyph}`} /></svg>}{children}
+            {glyph && <svg><use href={glyph} /></svg>}{children}
         </button>
     </li>
 }

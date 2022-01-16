@@ -4,10 +4,12 @@ import { TextValueEditDialog } from "../../../components/Dialogs";
 import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
 import { DropTarget } from "../../../components/DropTarget";
 import { PressHoldGestureRecognizer } from "../../../components/gestures/PressHoldGestureRecognizer";
+import { HotKey, HotKeys } from "../../../components/HotKey";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import { MediaQueries } from "../../../components/MediaQueries";
 import { ModalProps } from "../../../components/Modal";
 import ModalHost from "../../../components/ModalHost";
+import { NavigatorProps } from "../../../components/Navigator";
 import $api from "../../../components/WebApi";
 import { BottomBar } from "../../common/BottomBar";
 import Breadcrumb from "../../common/Breadcrumb";
@@ -15,12 +17,10 @@ import { useContentBrowser } from "../../common/BrowserUtils";
 import Browser, { BrowserProps } from "../../common/BrowserView";
 import { DIDLTools } from "../../common/DIDLTools";
 import ItemInfoModal from "../../common/ItemInfoModal";
-import { NavigatorProps } from "../../../components/Navigator";
 import { TablePagination } from "../../common/Pagination";
 import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext from "../../common/RowStateContext";
 import $s from "../../common/Settings";
-import { BrowserSvgSymbols, EditSvgSymbols, PlayerSvgSymbols, PlaylistSvgSymbols, PlaySvgSymbols } from "../../common/SvgSymbols";
 import { BrowseFetchResult, DIDLItem, PlaylistRouteParams, RowState } from "../../common/Types";
 import MainCell from "./CellTemplate";
 import { AddItemsModal } from "./dialogs/AddItemsModal";
@@ -33,7 +33,6 @@ import { PlaylistManagerService } from "./PlaylistManagerService";
 import { PlaylistManagerToolbar } from "./PlaylistManagerToolbar";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
 import { PlaylistRowStateProvider } from "./PlaylistRowStateProvider";
-import { HotKey, HotKeys } from "../../../components/HotKey";
 
 type PlaylistManagerProps = Omit<PlaylistRouteParams, "category"> &
     DataFetchProps<BrowseFetchResult> &
@@ -277,9 +276,9 @@ export class PlaylistManagerCore
 
     renderActionMenu = () => {
         return <>
-            <MenuItem action="add-items" key="add-items" glyph="plus" onClick={this.service.addItems}>From media server</MenuItem>
-            <MenuItem action="add-url" key="add-url" glyph="broadcast-tower" onClick={this.service.addFeedUrl}>Internet stream url</MenuItem>
-            <MenuItem action="add-files" key="add-files" glyph="list" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
+            <MenuItem action="add-items" key="add-items" glyph="sprites.svg#plus" onClick={this.service.addItems}>From media server</MenuItem>
+            <MenuItem action="add-url" key="add-url" glyph="sprites.svg#tower-broadcast" onClick={this.service.addFeedUrl}>Internet stream url</MenuItem>
+            <MenuItem action="add-files" key="add-files" glyph="sprites.svg#list" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
         </>;
     }
 
@@ -325,11 +324,6 @@ export class PlaylistManagerCore
         const hasTouch = MediaQueries.touchDevice.matches;
 
         return <>
-            <EditSvgSymbols />
-            <PlaySvgSymbols />
-            <PlaylistSvgSymbols />
-            <PlayerSvgSymbols />
-            <BrowserSvgSymbols />
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="vstack overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <PlaybackStateNotifier device={device} callback={this.playbackStateChanged} />
@@ -359,7 +353,7 @@ export class PlaylistManagerCore
                                                 <button type="button" className="btn btn-round btn-primary"
                                                     onClick={isRootLevel && selected === 0 ? this.createPlaylist : undefined}
                                                     data-bs-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>
-                                                    <svg className="icon"><use href="#plus" /></svg>
+                                                    <svg className="icon"><use href="sprites.svg#plus" /></svg>
                                                 </button>
                                             </div>
                                             <DropdownMenu render={this.renderActionMenu} />

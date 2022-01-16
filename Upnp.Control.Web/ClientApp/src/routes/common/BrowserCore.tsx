@@ -30,7 +30,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
         {fetching && <LoadIndicatorOverlay />}
         <div className={`vstack overflow-hidden${className ? ` ${className}` : ""}`}>
             <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
-                <Toolbar.Button key="nav-parent" glyph="chevron-left" onClick={navBackHandler} className="btn-round btn-icon btn-plain" />
+                <Toolbar.Button key="nav-parent" glyph="sprites.svg#chevron-left" onClick={navBackHandler} className="btn-round btn-icon btn-plain" />
                 <div className="vstack align-items-stretch overflow-hidden text-center text-md-start mx-1">
                     <h6 className="mb-0 text-truncate">{parents?.[0]?.title ?? ""}</h6>
                     <small className="text-muted text-truncate">{dev?.name ?? ""}</small>

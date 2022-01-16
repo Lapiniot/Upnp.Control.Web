@@ -9,19 +9,19 @@ export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & 
     glyph?: string
 }
 
-function BuildClass(className: string | undefined, active: boolean | undefined, disabled: boolean | undefined) {
+function buildClass(className: string | undefined, active: boolean | undefined, disabled: boolean | undefined) {
     return `${className ? className : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`.trim();
 }
 
 function Link({ to, glyph, className, active, disabled, children, ...other }: LinkProps) {
-    return <a href={!disabled ? to : undefined} className={BuildClass(className, active, disabled)} {...other}>
-        {glyph && <svg className="icon"><use href={`#${glyph}`} /></svg>}{children}
+    return <a href={!disabled ? to : undefined} className={buildClass(className, active, disabled)} {...other}>
+        {glyph && <svg className="icon"><use href={glyph} /></svg>}{children}
     </a>;
 }
 
 function RouteLink({ glyph, className, active, disabled, children, ...other }: LinkProps) {
-    return <RNavLink className={BuildClass(className, active, disabled)} {...other}>
-        {glyph && <svg className="icon"><use href={`#${glyph}`} /></svg>}{children}
+    return <RNavLink className={buildClass(className, active, disabled)} {...other}>
+        {glyph && <svg className="icon"><use href={glyph} /></svg>}{children}
     </RNavLink>;
 }
 

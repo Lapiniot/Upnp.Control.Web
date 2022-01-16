@@ -36,7 +36,7 @@ export class AddUrlModal extends React.Component<AddUrlModalProps> {
             </div>
             <Modal.Footer>
                 <Modal.Button tabIndex={6} className="dismiss" dismiss>Cancel</Modal.Button>
-                <Modal.Button tabIndex={5} className="confirm" icon="plus" type="submit" name="action" value="add">Add</Modal.Button>
+                <Modal.Button tabIndex={5} className="confirm" icon="sprites.svg#plus" type="submit" name="action" value="add">Add</Modal.Button>
             </Modal.Footer>
         </Modal>;
     }

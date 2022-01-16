@@ -19,7 +19,7 @@ function playUrlHandler(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
 function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & DeviceActionProps) {
     return <>
         <button type="button" className="btn btn-round btn-plain" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
-            <svg className="icon"><use href="#music" /></svg>
+            <svg className="icon"><use href="sprites.svg#music" /></svg>
         </button>
         <DropdownMenu data-device={device.udn} placement="top-end"
             modifiers={[{ name: "offset", options: { offset: [0, 4] } }]}

@@ -15,7 +15,6 @@ import ItemInfoModal from "./ItemInfoModal";
 import { TablePagination } from "./Pagination";
 import { RowStateProvider } from "./RowStateContext";
 import $s from "./Settings";
-import { BrowserSvgSymbols } from "./SvgSymbols";
 import { DIDLItem, UpnpDevice } from "./Types";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 import { HotKey, HotKeys } from "../../components/HotKey";
@@ -50,7 +49,7 @@ function Template(props: CellTemplateProps<CellContext>) {
             <BookmarkItemButton item={props.data} device={props.context?.device as string} deviceName={props.context?.deviceName as string} />}
         <button type="button" className="btn btn-round btn-plain" data-id={props.data.id}
             data-bs-toggle="dropdown" disabled={props.context?.disabled}>
-            <svg><use href="#ellipsis-v" /></svg>
+            <svg><use href="sprites.svg#ellipsis-vertical" /></svg>
         </button>
     </CellTemplate>;
 }
@@ -152,7 +151,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             {this.renderMenu(umiAcceptable, rendererAcceptable, umis, renderers)}
             {(umiAcceptable || rendererAcceptable) &&
                 <li><hr className="dropdown-divider mx-2" /></li>}
-            <MenuItem action={"info"} glyph="info">Get Info</MenuItem>
+            <MenuItem action={"info"} glyph="sprites.svg#info">Get Info</MenuItem>
         </>;
     }
 
@@ -200,7 +199,6 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         const { dataContext: data, p: page, s: size } = this.props;
         const parents = data?.source.parents ?? [];
         return <>
-            <BrowserSvgSymbols />
             <RowStateProvider items={data?.source.items}>
                 <BrowserCore mainCellTemplate={Template} mainCellContext={this.getCellContext()} withPagination={false} useCheckboxes multiSelect
                     {...this.props} fetching={this.state.fetching || this.props.fetching} openHandler={this.openHandler} hotKeyHandler={this.hotKeyHandler}

@@ -9,7 +9,6 @@ import $api from "../../components/WebApi";
 import AlbumArt from "./AlbumArt";
 import SeekBar from "./SeekBar";
 import $s from "./Settings";
-import { PlayerSvgSymbols } from "./SvgSymbols";
 import { AVPositionState, AVState, RCState } from "./Types";
 
 const STATE_UPDATE_DELAY_MS = 2000;
@@ -17,7 +16,7 @@ const STATE_UPDATE_DELAY_MS = 2000;
 function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }) {
     const { className, glyph, children, active, ...other } = props;
     return <button type="button" className={`btn btn-round btn-icon btn-plain${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
-        {glyph && <svg><use href={`#${glyph}`} /></svg>}{children}
+        {glyph && <svg><use href={glyph} /></svg>}{children}
     </button>
 }
 
@@ -139,24 +138,23 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
         const { title, album, creator } = current || {};
         const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
         const volumeStr = muted ? "Muted" : `${volume}%`;
-        const volumeIcon = muted ? "volume-mute" : volume > 50 ? "volume-up" : volume > 20 ? "volume-down" : "volume-off";
+        const volumeIcon = muted ? "volume-xmark" : volume > 50 ? "volume-high" : volume > 20 ? "volume-low" : "volume-off";
         const disabled = !state;
 
         const currentTime = parseMilliseconds(relTime as string);
         const totalTime = parseMilliseconds(duration as string);
 
-        const button = state === "STOPPED" || state === "PAUSED_PLAYBACK"
-            ? { title: "Play", glyph: "play-circle", onClick: this.play }
+        const buttonProps = state === "STOPPED" || state === "PAUSED_PLAYBACK"
+            ? { title: "Play", glyph: "sprites.svg#circle-play", onClick: this.play }
             : state === "PLAYING"
                 ? Number.isFinite(currentTime) && Number.isFinite(totalTime) && totalTime > 0
-                    ? { title: "Pause", glyph: "pause-circle", onClick: this.pause }
-                    : { title: "Stop", glyph: "stop-circle", onClick: this.stop }
-                : { title: "Stop", glyph: "stop-circle", disabled: true };
+                    ? { title: "Pause", glyph: "sprites.svg#circle-pause", onClick: this.pause }
+                    : { title: "Stop", glyph: "sprites.svg#circle-stop", onClick: this.stop }
+                : { title: "Stop", glyph: "sprites.svg#circle-stop", disabled: true };
 
         const shuffleMode = playMode === "REPEAT_SHUFFLE";
 
         return <>
-            <PlayerSvgSymbols />
             <SignalRListener callbacks={this.handlers} />
             <div className="player-skeleton" ref={this.ref}>
                 <AlbumArt className="art" itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} />
@@ -165,15 +163,15 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                     {(creator || album) && <small className="text-truncate">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
                 </div>
                 <SeekBar className="progress" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChange={this.seek} />
-                <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="mode-btn" glyph={shuffleMode ? "random" : "retweet"} onClick={this.togglePlayMode} disabled={disabled} />
-                <Button title="Prev" className="prev-btn" glyph="step-backward" onClick={this.prev} disabled={!actions.includes("Previous")} />
-                <Button className="play-btn p-1" {...button} />
-                <Button title={nextTitle} className="next-btn" glyph="step-forward" onClick={this.next} disabled={!actions.includes("Next")} />
-                <Button title={volumeStr} className="volume-btn" glyph={volumeIcon} disabled={disabled} data-bs-toggle="dropdown" />
+                <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="mode-btn" glyph={`sprites.svg#${shuffleMode ? "shuffle" : "retweet"}`} onClick={this.togglePlayMode} disabled={disabled} />
+                <Button title="Prev" className="prev-btn" glyph="sprites.svg#backward-step" onClick={this.prev} disabled={!actions.includes("Previous")} />
+                <Button className="play-btn p-1" {...buttonProps} />
+                <Button title={nextTitle} className="next-btn" glyph="sprites.svg#forward-step" onClick={this.next} disabled={!actions.includes("Next")} />
+                <Button title={volumeStr} className="volume-btn" glyph={`sprites.svg#${volumeIcon}`} disabled={disabled} data-bs-toggle="dropdown" />
                 <DropdownMenu className="volume-ctrl" placement="left">
                     <li className="hstack">
                         <button type="button" style={{ zIndex: 1000 }} className="btn btn-plain btn-round" onClick={this.toggleMute}>
-                            <svg><use href={"#" + (muted ? "volume-up" : "volume-mute")} /></svg>
+                            <svg><use href={"sprites.svg#" + (muted ? "volume-high" : "volume-xmark")} /></svg>
                         </button>
                         <Slider className="flex-fill mx-2" style={{ width: "10rem" }} value={volume / 100} onChange={this.changeVolume} />
                     </li>

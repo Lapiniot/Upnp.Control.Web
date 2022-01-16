@@ -2,7 +2,6 @@
 import { deviceBookmarks, getBookmarkData, itemBookmarks, playlistBookmarks } from "../../components/BookmarkService";
 import { DataList } from "../../components/DataList";
 import { BookmarkGroup, profile } from "../common/Settings";
-import { EditSvgSymbols, PlaySvgSymbols } from "../common/SvgSymbols";
 import { KnownWidgets, Widgets } from "../common/widgets/Widgets";
 
 type WC<T> = { widget: string, props: T }[] | null
@@ -53,8 +52,6 @@ export default function () {
     const expanded = profile.home.get("expandSection");
 
     return <div className="overflow-auto">
-        <PlaySvgSymbols />
-        <EditSvgSymbols />
         <div className="accordion accordion-flush" id="bookmarks-section">
             {Object.entries(data).map(([id, value], i) => <div className="accordion-item" key={id}>
                 <h2 className="accordion-header" id={`h-${id}`}>
