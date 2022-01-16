@@ -23,7 +23,7 @@ const CACHE_STORE_NAME = "upnp-dashboard-store";
 
 const CACHE_STORE_ITEMS = self.__WB_MANIFEST
     .map(e => typeof e === "string" ? e : e.url)
-    .concat(["icons.svg", "icon.svg", "favicon.ico", "manifest.webmanifest",
+    .concat(["icons.svg", "icon.svg", "sprites.svg", "favicon.ico", "manifest.webmanifest",
         "192.png", "512.png", "apple-touch-icon.png"]);
 
 const CACHES = [CACHE_STORE_NAME];

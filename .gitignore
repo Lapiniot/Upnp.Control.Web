@@ -11,3 +11,4 @@ package-lock.json
 *.key
 Upnp.Control.Web/data/*
 *.css
+Upnp.Control.Web/ClientApp/public/service-worker.js
