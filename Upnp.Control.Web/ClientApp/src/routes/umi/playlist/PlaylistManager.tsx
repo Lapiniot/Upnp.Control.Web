@@ -325,26 +325,32 @@ export class PlaylistManagerCore
 
         return <>
             {fetching && <LoadIndicatorOverlay />}
-            <DropTarget className="vstack overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
+            <DropTarget className="browser-shell flex-fill overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <PlaybackStateNotifier device={device} callback={this.playbackStateChanged} />
                 <PlaybackStateProvider device={device} getTrackUrlHook={this.getPlayUrl} >
                     <PlaylistRowStateProvider items={data?.source.items} getActiveTrackIndexHook={data?.source.items && this.getActiveTrackIndex}>
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} rootLevel={isRootLevel}
                             fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.dev?.name} />
                         <PlaybackStateContext.Consumer>{psv =>
-                            <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
-                                className={"flex-fill mb-1" + (largeScreen ? "" : " pb-5")}
-                                mainCellTemplate={MainCell} mainCellContext={{
-                                    ...psv.handlers,
-                                    state: psv.state,
-                                    device: device,
-                                    deviceName: this.props.dataContext?.source.dev?.name
-                                }} navigate={navigate} openHandler={this.playItem} hotKeyHandler={this.hotKeyHandler}
-                                editMode={this.state.editMode} useLevelUpRow={false} useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
-                                <DropdownMenu render={this.renderItemActionMenu} />
-                            </Browser>}
+                            <>
+                                <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
+                                    className={"flex-fill mb-1 br-area-main" + (largeScreen ? "" : " pb-5")}
+                                    mainCellTemplate={MainCell} mainCellContext={{
+                                        ...psv.handlers,
+                                        state: psv.state,
+                                        device: device,
+                                        deviceName: this.props.dataContext?.source.dev?.name
+                                    }} navigate={navigate} openHandler={this.playItem} hotKeyHandler={this.hotKeyHandler}
+                                    editMode={this.state.editMode} useLevelUpRow={false} useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
+                                    <DropdownMenu render={this.renderItemActionMenu} />
+                                </Browser>
+                                {!fetching && data?.source.items?.length === 0 &&
+                                    <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
+                                        <svg className="icon icon-5x"><use href="sprites.svg#folder" /></svg>
+                                    </div>}
+                            </>}
                         </PlaybackStateContext.Consumer>
-                        <div className="sticky-bottom">
+                        <div className="sticky-bottom br-area-bottom">
                             <RowStateContext.Consumer>
                                 {({ selection: { length: selected } }) => <>
                                     {!largeScreen && !fetching &&
@@ -370,7 +376,7 @@ export class PlaylistManagerCore
                 </PlaybackStateProvider>
                 <ModalHost ref={this.modalHostRef} />
             </DropTarget >
-        </>;
+        </>
     }
 }
 

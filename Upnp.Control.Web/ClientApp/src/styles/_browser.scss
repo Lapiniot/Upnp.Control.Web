@@ -1,0 +1,16 @@
+.browser-shell {
+    display: grid;
+    grid: "top" auto "main" 1fr "bottom" auto / 1fr;
+}
+
+.br-area-top {
+    grid-area: top;
+}
+
+.br-area-main {
+    grid-area: main;
+}
+
+.br-area-bottom {
+    grid-area: bottom;
+}

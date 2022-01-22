@@ -329,7 +329,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         {useCheckboxes &&
                             <label className="cb-wrap">
                                 <input type="checkbox" onChange={this.onCheckboxAllChanged}
-                                    checked={this.context.allSelected} disabled={!this.context.enabled} />
+                                    checked={this.context.allSelected && items.length > 0} disabled={!this.context.enabled || items.length === 0} />
                             </label>}
                         <div className="w-100">Name</div>
                         <div>Size</div>
@@ -373,7 +373,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 {renderFooter && <div className="table-footer">{renderFooter()}</div>}
             </div>
             {children}
-        </div >;
+        </div>
     }
 }
 

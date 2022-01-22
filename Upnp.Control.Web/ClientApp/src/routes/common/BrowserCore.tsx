@@ -28,8 +28,8 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
 
     return <>
         {fetching && <LoadIndicatorOverlay />}
-        <div className={`vstack overflow-hidden${className ? ` ${className}` : ""}`}>
-            <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
+        <div className={`browser-shell flex-fill overflow-hidden${className ? ` ${className}` : ""}`}>
+            <Toolbar className="br px-2 py-1 bg-white border-bottom flex-nowrap">
                 <Toolbar.Button key="nav-parent" glyph="sprites.svg#chevron-left" onClick={navBackHandler} className="btn-round btn-icon btn-plain" />
                 <div className="vstack align-items-stretch overflow-hidden text-center text-md-start mx-1">
                     <h6 className="mb-0 text-truncate">{parents?.[0]?.title ?? ""}</h6>
@@ -37,10 +37,14 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
                 </div>
                 {renderActionMenu?.()}
             </Toolbar>
-            <BrowserView className="flex-fill" {...forwardProps}>
+            <BrowserView className="br-area-main" {...forwardProps}>
                 {children}
             </BrowserView>
-            {withPagination && <BottomBar>
+            {!fetching && data?.source.items?.length === 0 &&
+                <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
+                    <svg className="icon icon-5x"><use href="sprites.svg#folder" /></svg>
+                </div>}
+            {withPagination && <BottomBar className="br-area-bottom">
                 <TablePagination total={total} current={typeof page === "string" ? parseInt(page) : 1}
                     pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
             </BottomBar>}

@@ -32,8 +32,5 @@
         "**/src/styles/**/*.scss": "scss"
     },
     "typescript.tsdk": "Upnp.Control.Web/Upnp.Control.Web/ClientApp/node_modules/typescript/lib",
-    "css.styleSheets": [
-        "Upnp.Control.Web/Upnp.Control.Web/ClientApp/src/css/index.css"
-    ],
     "omnisharp.enableRoslynAnalyzers": true
 }

@@ -62,6 +62,7 @@ $zindex-dropdown: $zindex-sticky + 5;
 @import "slider";
 @import "albumart";
 @import "player";
+@import "browser";
 
 .min-h-0 {
     min-height: 0;
@@ -99,7 +100,7 @@ $zindex-dropdown: $zindex-sticky + 5;
     fill: currentColor;
 }
 
-@for $scale from 2 through 3 {
+@for $scale from 2 through 5 {
     .icon-#{$scale}x {
         @include font-scale($scale);
     }
