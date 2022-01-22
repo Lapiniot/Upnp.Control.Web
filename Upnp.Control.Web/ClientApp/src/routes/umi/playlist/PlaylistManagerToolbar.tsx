@@ -71,7 +71,7 @@ export function PlaylistManagerToolbar({ editMode, rootLevel: rootLevel, fetchin
         {!rootLevel && largeScreen && !editMode && <>
             <Toolbar.Button glyph="sprites.svg#plus" onClick={handlers.addItems} title="Add from media server" className={className} disabled={fetching} />
             <Toolbar.Button glyph="sprites.svg#tower-broadcast" onClick={handlers.addItemsFromUrl} title="Add Internet stream url" className={className} disabled={fetching} />
-            <Toolbar.Button glyph="sprites.svg#list" onClick={handlers.addItemsFromFiles} title="Add from playlist file" className={className} disabled={fetching} />
+            <Toolbar.Button glyph="sprites.svg#file-lines" onClick={handlers.addItemsFromFiles} title="Add from playlist file" className={className} disabled={fetching} />
         </>}
         {!rootLevel && (editMode || largeScreen) &&
             <Toolbar.Button glyph="sprites.svg#trash" title={`Delete (${HotKeys.delete})`} onClick={handlers.deleteItems} className={className} disabled={hasNoSelection} />}

@@ -278,7 +278,7 @@ export class PlaylistManagerCore
         return <>
             <MenuItem action="add-items" key="add-items" glyph="sprites.svg#plus" onClick={this.service.addItems}>From media server</MenuItem>
             <MenuItem action="add-url" key="add-url" glyph="sprites.svg#tower-broadcast" onClick={this.service.addFeedUrl}>Internet stream url</MenuItem>
-            <MenuItem action="add-files" key="add-files" glyph="sprites.svg#list" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
+            <MenuItem action="add-files" key="add-files" glyph="sprites.svg#file-lines" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
         </>;
     }
 
