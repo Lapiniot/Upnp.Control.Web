@@ -29,7 +29,7 @@ internal sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscript
             callbackUri = new Uri(bindingAddress ??= serverAddressesProvider.ResolveExternalBindingAddress("http"), callbackUri);
         }
 
-        return CancelableOperationScope.StartInScope(token => StartSubscriptionLoopAsync(subscribeUri, callbackUri, timeout, token), stoppingToken);
+        return CancelableOperationScope.Start(token => StartSubscriptionLoopAsync(subscribeUri, callbackUri, timeout, token), stoppingToken);
     }
 
     private async Task StartSubscriptionLoopAsync(Uri subscribeUri, Uri callbackUri, TimeSpan timeout, CancellationToken cancellationToken)
