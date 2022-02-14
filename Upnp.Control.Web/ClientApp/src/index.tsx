@@ -19,7 +19,7 @@ ReactDOM.render(
             <div className="navbar">
                 <a className="navbar-brand d-none d-lg-inline" href="/">UPnP Dashboard</a>
                 <nav>
-                    <RouteLink to="/" glyph="sprites.svg#home" className="nav-link">Home</RouteLink>
+                    <RouteLink to="/" glyph="sprites.svg#house-chimney" className="nav-link">Home</RouteLink>
                     <RouteLink to="/upnp" glyph="sprites.svg#server" className="nav-link"><span><span className="d-none d-lg-inline">UPnP&nbsp;</span>Devices</span></RouteLink>
                     <RouteLink to="/renderers" glyph="sprites.svg#tv" className="nav-link"><span><span className="d-none d-lg-inline">Network&nbsp;</span>Players</span></RouteLink>
                     <RouteLink to="/umi" glyph="sprites.svg#music" className="nav-link"><span><span className="d-none d-lg-inline">Xiaomi&nbsp;</span>Speakers</span></RouteLink>
