@@ -1,5 +1,5 @@
 ﻿import "./css/index.css";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalRConnection";
@@ -12,8 +12,9 @@ import * as SW from "./serviceWorkerRegistration";
 
 const baseUrl: string = document.getElementsByTagName("base")[0].getAttribute("href") as string;
 const container: HTMLElement = document.getElementById("main-root") as HTMLElement;
+const root = createRoot(container);
 
-ReactDOM.render(
+root.render(
     <BrowserRouter basename={baseUrl}>
         <div className="shell">
             <div className="navbar">
@@ -45,6 +46,6 @@ ReactDOM.render(
                 </SignalRConnection>
             </main>
         </div>
-    </BrowserRouter>, container);
+    </BrowserRouter>);
 
 SW.register();
