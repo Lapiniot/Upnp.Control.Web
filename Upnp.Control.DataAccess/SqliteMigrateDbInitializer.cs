@@ -5,10 +5,7 @@ internal sealed class SqliteMigrateDbInitializer<TContext> : IServiceInitializer
 {
     private readonly TContext context;
 
-    public SqliteMigrateDbInitializer(TContext context)
-    {
-        this.context = context;
-    }
+    public SqliteMigrateDbInitializer(TContext context) => this.context = context;
 
     public Task InitializeAsync(CancellationToken cancellationToken)
     {

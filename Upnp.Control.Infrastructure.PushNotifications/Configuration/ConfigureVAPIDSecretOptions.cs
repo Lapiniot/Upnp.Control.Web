@@ -16,22 +16,19 @@ internal class ConfigureVAPIDSecretOptions : IConfigureOptions<VAPIDSecretOption
 
     public void Configure(VAPIDSecretOptions options)
     {
-        if(configuration.GetSection("VAPID") is { } section && section.Exists())
+        if (configuration.GetSection("VAPID") is { } section && section.Exists())
         {
-            if(section.GetValue<string>("PublicKey") is { } publicKey)
+            if (section.GetValue<string>("PublicKey") is { } publicKey)
             {
                 options.PublicKey = decoder.Decode(publicKey);
             }
 
-            if(section.GetValue<string>("PrivateKey") is { } privateKey)
+            if (section.GetValue<string>("PrivateKey") is { } privateKey)
             {
                 options.PrivateKey = decoder.Decode(privateKey);
             }
         }
     }
 
-    byte[] IBase64UrlDecoder.Decode(string input)
-    {
-        return Encoders.FromBase64String(input);
-    }
+    byte[] IBase64UrlDecoder.Decode(string input) => Encoders.FromBase64String(input);
 }

@@ -17,7 +17,7 @@ internal class PSEnumerateQueryHandler : IAsyncEnumerableQueryHandler<PSEnumerat
 
     public async IAsyncEnumerable<PushNotificationSubscription> ExecuteAsync(PSEnumerateQuery query, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        await foreach(var entity in context.Subscriptions.Where(s => (s.Type & query.Type) == query.Type)
+        await foreach (var entity in context.Subscriptions.Where(s => (s.Type & query.Type) == query.Type)
             .AsNoTracking().AsAsyncEnumerable()
             .WithCancellation(cancellationToken).ConfigureAwait(false))
         {

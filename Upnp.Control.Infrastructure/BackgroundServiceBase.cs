@@ -4,10 +4,7 @@ public abstract partial class BackgroundServiceBase : BackgroundService
 {
     private readonly ILogger<BackgroundServiceBase> logger;
 
-    protected BackgroundServiceBase(ILogger<BackgroundServiceBase> logger)
-    {
-        this.logger = logger;
-    }
+    protected BackgroundServiceBase(ILogger<BackgroundServiceBase> logger) => this.logger = logger;
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {

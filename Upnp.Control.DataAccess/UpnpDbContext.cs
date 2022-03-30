@@ -12,8 +12,5 @@ internal sealed class UpnpDbContext : DbContext
     [DynamicDependency("AddYears", typeof(DateOnly))]
     [DynamicDependency("AddMonths", typeof(DateOnly))]
     [DynamicDependency("AddDays", typeof(DateOnly))]
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfiguration(new DeviceEntityType());
-    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder) => modelBuilder.ApplyConfiguration(new DeviceEntityType());
 }

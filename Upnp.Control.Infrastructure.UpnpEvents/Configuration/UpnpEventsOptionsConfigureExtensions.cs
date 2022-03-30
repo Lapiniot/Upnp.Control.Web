@@ -6,12 +6,12 @@ public static class UpnpEventsOptionsConfigureExtensions
     {
         ArgumentNullException.ThrowIfNull(options);
 
-        if(string.IsNullOrEmpty(serviceType))
+        if (string.IsNullOrEmpty(serviceType))
         {
             throw new ArgumentException($"'{nameof(serviceType)}' cannot be null or empty.", nameof(serviceType));
         }
 
-        if(string.IsNullOrEmpty(callbackTemplate))
+        if (string.IsNullOrEmpty(callbackTemplate))
         {
             throw new ArgumentException($"'{nameof(callbackTemplate)}' cannot be null or empty.", nameof(callbackTemplate));
         }
@@ -20,18 +20,12 @@ public static class UpnpEventsOptionsConfigureExtensions
         return options;
     }
 
-    public static UpnpEventsOptions MapRenderingControl(this UpnpEventsOptions options, string callbackTemplate)
-    {
-        return options.Map(UpnpServices.RenderingControl, callbackTemplate);
-    }
+    public static UpnpEventsOptions MapRenderingControl(this UpnpEventsOptions options, string callbackTemplate) =>
+        options.Map(UpnpServices.RenderingControl, callbackTemplate);
 
-    public static UpnpEventsOptions MapAVTransport(this UpnpEventsOptions options, string callbackTemplate)
-    {
-        return options.Map(UpnpServices.AVTransport, callbackTemplate);
-    }
+    public static UpnpEventsOptions MapAVTransport(this UpnpEventsOptions options, string callbackTemplate) =>
+        options.Map(UpnpServices.AVTransport, callbackTemplate);
 
-    public static UpnpEventsOptions MapContentDirectory(this UpnpEventsOptions options, string callbackTemplate)
-    {
-        return options.Map(UpnpServices.ContentDirectory, callbackTemplate);
-    }
+    public static UpnpEventsOptions MapContentDirectory(this UpnpEventsOptions options, string callbackTemplate) =>
+        options.Map(UpnpServices.ContentDirectory, callbackTemplate);
 }

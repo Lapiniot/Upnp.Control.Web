@@ -30,10 +30,7 @@ internal partial class ApplicationInitService : IHostedService
         LogDone();
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
+    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
     [LoggerMessage(1, LogLevel.Information, $"Started {nameof(ApplicationInitService)} service")]
     private partial void LogStarted();

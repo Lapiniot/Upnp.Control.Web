@@ -27,7 +27,7 @@ internal sealed class QueueAddItemsCommandHandler : IAsyncCommandHandler<QAddIte
         var (targetCds, queueService) = await factory.GetServicesAsync<ContentDirectoryService, QueueService>(deviceId, cancellationToken).ConfigureAwait(false);
 
         var sb = new System.Text.StringBuilder();
-        using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             await UpnpUtils.WriteItemsMetadataTreeAsync(sourceCds, source.Items, writer, options.Value.MaxContainerScanDepth, cancellationToken).ConfigureAwait(false);
         }

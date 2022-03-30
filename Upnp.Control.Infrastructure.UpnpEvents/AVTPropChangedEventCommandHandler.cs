@@ -12,7 +12,7 @@ internal sealed class AVTPropChangedEventCommandHandler : PropChangedUpnpEventCo
 
     protected override ValueTask NotifyObserversAsync(IEnumerable<IObserver<UpnpEvent>> observers, string deviceId, IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, string> vendorProperties, CancellationToken cancellationToken)
     {
-        if(properties.Count == 1 &&
+        if (properties.Count == 1 &&
             (properties.ContainsKey("RelativeTimePosition") ||
             properties.ContainsKey("AbsoluteTimePosition")))
         {

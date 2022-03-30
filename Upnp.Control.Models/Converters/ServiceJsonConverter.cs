@@ -6,14 +6,11 @@ namespace Upnp.Control.Models.Converters;
 
 public sealed class ServiceJsonConverter : JsonConverter<Service>
 {
-    public override Service Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        throw new NotSupportedException();
-    }
+    public override Service Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => throw new NotSupportedException();
 
     public override void Write([NotNull] Utf8JsonWriter writer, Service value, [NotNull] JsonSerializerOptions options)
     {
-        if(value is null)
+        if (value is null)
         {
             writer.WriteNullValue();
             return;

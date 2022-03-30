@@ -22,7 +22,7 @@ internal sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
 
         var entity = await context.Subscriptions.FindAsync(new object[] { endpoint }, cancellationToken).ConfigureAwait(false);
 
-        if(entity is not null)
+        if (entity is not null)
         {
             var entry = context.Entry(entity);
             entry.Property(e => e.Type).CurrentValue |= type;

@@ -22,7 +22,7 @@ public class UpnpDiscoverySignalRNotifyObserver : IObserver<UpnpDiscoveryEvent>
 
     public void OnNext(UpnpDiscoveryEvent value)
     {
-        switch(value)
+        switch (value)
         {
             case UpnpDeviceAppearedEvent dae:
                 _ = context.Clients.All.SsdpDiscoveryEvent(value.DeviceId, new UpnpDiscoveryMessage("appeared", dae.Device));

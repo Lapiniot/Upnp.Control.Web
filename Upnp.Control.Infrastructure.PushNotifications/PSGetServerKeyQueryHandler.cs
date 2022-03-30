@@ -14,8 +14,6 @@ public class PSGetServerKeyQueryHandler : IAsyncQueryHandler<PSGetServerKeyQuery
         this.options = options;
     }
 
-    public Task<byte[]> ExecuteAsync(PSGetServerKeyQuery query, CancellationToken cancellationToken)
-    {
-        return Task.FromResult(options.Value.PublicKey);
-    }
+    public Task<byte[]> ExecuteAsync(PSGetServerKeyQuery query, CancellationToken cancellationToken) =>
+        Task.FromResult(options.Value.PublicKey);
 }

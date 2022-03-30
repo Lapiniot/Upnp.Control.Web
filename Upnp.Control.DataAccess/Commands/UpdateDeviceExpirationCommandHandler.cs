@@ -5,16 +5,13 @@ internal class UpdateDeviceExpirationCommandHandler : IAsyncCommandHandler<Updat
 {
     private readonly UpnpDbContext context;
 
-    public UpdateDeviceExpirationCommandHandler(UpnpDbContext context)
-    {
-        this.context = context;
-    }
+    public UpdateDeviceExpirationCommandHandler(UpnpDbContext context) => this.context = context;
 
     public async Task ExecuteAsync(UpdateDeviceExpirationCommand command, CancellationToken cancellationToken)
     {
         var entity = await context.UpnpDevices.FindAsync(new object[] { command.DeviceId }, cancellationToken).ConfigureAwait(false);
 
-        if(entity is null)
+        if (entity is null)
         {
             throw new InvalidOperationException("Specified entity is not found");
         }

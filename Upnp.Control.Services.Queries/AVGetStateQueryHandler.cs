@@ -21,7 +21,7 @@ internal sealed class AVGetStateQueryHandler : IAsyncQueryHandler<AVGetStateQuer
         var actions = await avt.GetCurrentTransportActionsAsync(0, cancellationToken).ConfigureAwait(false);
         var transport = await avt.GetTransportInfoAsync(0, cancellationToken).ConfigureAwait(false);
 
-        if(detailed != false)
+        if (detailed != false)
         {
             var media = await avt.GetMediaInfoAsync(0, cancellationToken).ConfigureAwait(false);
             var settings = await avt.GetTransportSettingsAsync(0, cancellationToken).ConfigureAwait(false);

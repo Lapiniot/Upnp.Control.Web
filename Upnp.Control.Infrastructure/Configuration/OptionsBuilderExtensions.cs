@@ -17,7 +17,7 @@ public static class OptionsBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        if(string.IsNullOrEmpty(configSectionPath))
+        if (string.IsNullOrEmpty(configSectionPath))
         {
             throw new ArgumentException($"'{nameof(configSectionPath)}' cannot be null or empty.", nameof(configSectionPath));
         }
@@ -25,7 +25,7 @@ public static class OptionsBuilderExtensions
         return builder.Configure<IConfiguration>((options, configuration) =>
         {
             var section = configuration.GetSection(configSectionPath);
-            if(section.Exists())
+            if (section.Exists())
             {
                 new TBinder().Bind(options, section);
             }
@@ -37,7 +37,7 @@ public static class OptionsBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(binder);
-        if(string.IsNullOrEmpty(configSectionPath))
+        if (string.IsNullOrEmpty(configSectionPath))
         {
             throw new ArgumentException($"'{nameof(configSectionPath)}' cannot be null or empty.", nameof(configSectionPath));
         }
@@ -45,7 +45,7 @@ public static class OptionsBuilderExtensions
         return builder.Configure<IConfiguration>((options, configuration) =>
         {
             var section = configuration.GetSection(configSectionPath);
-            if(section.Exists())
+            if (section.Exists())
             {
                 binder.Bind(options, section);
             }

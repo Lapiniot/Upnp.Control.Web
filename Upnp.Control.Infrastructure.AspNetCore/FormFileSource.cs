@@ -13,8 +13,5 @@ public class FormFileSource : Models.FileSource
 
     public override string FileName => formFile.FileName;
 
-    public override Stream GetStream()
-    {
-        return formFile.OpenReadStream();
-    }
+    public override Stream GetStream() => formFile.OpenReadStream();
 }

@@ -6,10 +6,10 @@ internal static class ConfigMigrations
 {
     public static async Task EnsureVapidConfigExistsAsync(string path, IConfiguration configuration)
     {
-        if(File.Exists(path))
+        if (File.Exists(path))
         {
             using var doc = await ReadJsonAsync(path).ConfigureAwait(false);
-            if(!doc.RootElement.TryGetProperty("VAPID", out var vapid))
+            if (!doc.RootElement.TryGetProperty("VAPID", out var vapid))
             {
                 await WriteUpgradedConfigAsync(path, doc).ConfigureAwait(false);
                 (configuration as IConfigurationRoot)?.Reload();
@@ -34,11 +34,12 @@ internal static class ConfigMigrations
         using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions() { Indented = true });
         var (publicKey, privateKey) = CryptoExtensions.GenerateP256ECKeys();
         writer.WriteStartObject();
-        if(originalConfig is not null)
+        if (originalConfig is not null)
         {
-            foreach(var item in originalConfig.RootElement.EnumerateObject())
+            foreach (var item in originalConfig.RootElement.EnumerateObject())
                 item.WriteTo(writer);
         }
+
         writer.WriteStartObject("VAPID");
         writer.WriteString("PublicKey", Encoders.ToBase64String(publicKey));
         writer.WriteString("PrivateKey", Encoders.ToBase64String(privateKey));

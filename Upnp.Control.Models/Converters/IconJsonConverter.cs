@@ -6,14 +6,11 @@ namespace Upnp.Control.Models.Converters;
 
 public sealed class IconJsonConverter : JsonConverter<Icon>
 {
-    public override Icon Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        throw new NotImplementedException();
-    }
+    public override Icon Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => throw new NotImplementedException();
 
     public override void Write([NotNull] Utf8JsonWriter writer, Icon value, [NotNull] JsonSerializerOptions options)
     {
-        if(value is null)
+        if (value is null)
         {
             writer.WriteNullValue();
             return;

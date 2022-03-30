@@ -27,15 +27,11 @@ public static class RegisterQueriesExtensions
             .AddTransient<IAsyncQueryHandler<RCGetMuteQuery, bool?>, RCGetMuteQueryHandler>();
     }
 
-    public static IServiceCollection AddSystemPropertiesQueries(this IServiceCollection services)
-    {
-        return services.AddTransient<IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string>, SysPropsGetPlaylistStateQueryHandler>();
-    }
+    public static IServiceCollection AddSystemPropertiesQueries(this IServiceCollection services) =>
+        services.AddTransient<IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string>, SysPropsGetPlaylistStateQueryHandler>();
 
-    public static IServiceCollection AddContentDirectoryQueries(this IServiceCollection services)
-    {
-        return services.AddTransient<IAsyncQueryHandler<CDGetContentQuery, CDContent>, GetContentQueryHandler>();
-    }
+    public static IServiceCollection AddContentDirectoryQueries(this IServiceCollection services) =>
+        services.AddTransient<IAsyncQueryHandler<CDGetContentQuery, CDContent>, GetContentQueryHandler>();
 
     public static IServiceCollection AddConnectionManagerQueries(this IServiceCollection services)
     {

@@ -30,19 +30,19 @@ public class SsdpOptions
             : FindByName(nameOrIdOrAddress) ?? FindByAddress(nameOrIdOrAddress) ?? FindById(nameOrIdOrAddress))
             ?? throw new ArgumentException("Requested interface was not found");
 
-        if(!mcastInterface.SupportsMulticast)
+        if (!mcastInterface.SupportsMulticast)
         {
             throw new ArgumentException("Requested interface doesn't support multicast");
         }
 
-        if(mcastInterface.OperationalStatus != OperationalStatus.Up)
+        if (mcastInterface.OperationalStatus != OperationalStatus.Up)
         {
             throw new ArgumentException("Requested interface is not in operational state");
         }
 
         var ipProps = mcastInterface.GetIPProperties();
         var ipv4props = ipProps.GetIPv4Properties();
-        if(ipv4props is not null) return ipv4props.Index;
+        if (ipv4props is not null) return ipv4props.Index;
         var ipv6props = ipProps.GetIPv6Properties();
         return ipv6props is not null
             ? ipv6props.Index

@@ -32,7 +32,7 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
             (await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false), null);
 
         Item metadata = null;
-        if(withMetadata == true)
+        if (withMetadata == true)
         {
             var mr = await service.BrowseAsync(path, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
             metadata = DIDLXmlReader.Read(mr["Result"], withResource == true, withVendor == true).FirstOrDefault();
@@ -40,7 +40,7 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
 
         IEnumerable<Item> items = null;
         var total = 0;
-        if(metadata is null or Container)
+        if (metadata is null or Container)
         {
             var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
             items = DIDLXmlReader.Read(result["Result"], withResource == true, withVendor == true).ToArray();
@@ -48,7 +48,7 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
         }
 
         IEnumerable<Item> parents = null;
-        if(withParents != false)
+        if (withParents != false)
         {
             parents = await GetParentsAsync(service, path, "id,title,parentId,res", withResource == true, withVendor == true, cancellationToken).ConfigureAwait(false);
         }
@@ -64,7 +64,7 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
 
         var errorLimit = 1;
 
-        while(parent != "-1" && errorLimit > 0)
+        while (parent != "-1" && errorLimit > 0)
         {
             try
             {
@@ -72,13 +72,13 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
 
                 var metadata = DIDLXmlReader.Read(metadataResult["Result"], withResource, withVendor).FirstOrDefault();
 
-                if(metadata == null) break;
+                if (metadata == null) break;
 
                 parents.Add(metadata);
 
                 parent = metadata.ParentId;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 errorLimit--;
                 parent = "0";

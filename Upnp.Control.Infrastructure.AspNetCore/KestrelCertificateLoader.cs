@@ -21,20 +21,20 @@ internal static class KestrelCertificateLoader
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(contentRootFileProvider);
 
-        foreach(var endpoint in configuration.GetSection(EndpointsSectionName).GetChildren())
+        foreach (var endpoint in configuration.GetSection(EndpointsSectionName).GetChildren())
         {
             var url = endpoint[UrlKey];
 
-            if(string.IsNullOrEmpty(url) || !url.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase)) continue;
+            if (string.IsNullOrEmpty(url) || !url.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase)) continue;
 
             var certSection = endpoint.GetSection(CertificateSectionName);
 
-            if(!certSection.Exists())
+            if (!certSection.Exists())
             {
                 certSection = configuration.GetSection($"{CertificatesSectionName}:Default");
             }
 
-            if(certSection.Exists())
+            if (certSection.Exists())
             {
                 return LoadFromConfiguration(certSection, contentRootFileProvider);
             }
@@ -46,7 +46,7 @@ internal static class KestrelCertificateLoader
     private static X509Certificate2? LoadFromConfiguration(IConfigurationSection section, IFileProvider contentRootFileProvider)
     {
         var path = section[PathKey];
-        if(!string.IsNullOrEmpty(path))
+        if (!string.IsNullOrEmpty(path))
         {
             return CertificateLoader.LoadFromFile(contentRootFileProvider.GetFileInfo(path), section[PasswordKey]);
         }

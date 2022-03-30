@@ -24,7 +24,7 @@ internal sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscript
     {
         ArgumentNullException.ThrowIfNull(callbackUri);
 
-        if(!callbackUri.IsAbsoluteUri)
+        if (!callbackUri.IsAbsoluteUri)
         {
             callbackUri = new Uri(bindingAddress ??= serverAddressesProvider.ResolveExternalBindingAddress("http"), callbackUri);
         }
@@ -41,7 +41,7 @@ internal sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscript
             LogStarting(sid);
             try
             {
-                while(!cancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested)
                 {
                     try
                     {
@@ -50,14 +50,14 @@ internal sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscript
                         (sid, seconds) = await subscribeClient.RenewAsync(subscribeUri, sid, timeout, cancellationToken).ConfigureAwait(false);
                         LogRefreshed(sid, seconds);
                     }
-                    catch(HttpRequestException hre)
+                    catch (HttpRequestException hre)
                     {
                         LogRefreshFailed(sid, hre.Message);
                         LogRequestingNewSession(subscribeUri);
                         (sid, seconds) = await subscribeClient.SubscribeAsync(subscribeUri, callbackUri, timeout, cancellationToken).ConfigureAwait(false);
                         LogRequestedNewSession(subscribeUri, sid, seconds);
                     }
-                    catch(OperationCanceledException) { }
+                    catch (OperationCanceledException) { }
                 }
             }
             finally
@@ -67,7 +67,7 @@ internal sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscript
                 LogCanceled(sid);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LogError(ex, subscribeUri);
             throw;

@@ -12,15 +12,9 @@ internal class ServerAddressesProvider : IServerAddressesProvider
 {
     private readonly IServer server;
 
-    public ServerAddressesProvider(IServer server)
-    {
-        this.server = server;
-    }
+    public ServerAddressesProvider(IServer server) => this.server = server;
 
-    public IEnumerable<string> GetServerAddresses()
-    {
-        return server.Features.Get<IServerAddressesFeature>()?.Addresses ?? Array.Empty<string>();
-    }
+    public IEnumerable<string> GetServerAddresses() => server.Features.Get<IServerAddressesFeature>()?.Addresses ?? Array.Empty<string>();
 
     private const string NoProtocolExternalEndpoint = "Server is not listening for specified protocol on external addresses";
     private const string NoActiveExternalAddress = "Cannot find external address on active interface for requested address family";
@@ -34,12 +28,12 @@ internal class ServerAddressesProvider : IServerAddressesProvider
             .Where(a => a.Endpoint != null && a.Address != null && a.Address.Scheme == protocol)
             .ToArray();
 
-        if(addresses.Length == 0) throw new InvalidOperationException(NoProtocolExternalEndpoint);
+        if (addresses.Length == 0) throw new InvalidOperationException(NoProtocolExternalEndpoint);
 
         var any = addressFamily == InterNetworkV6 ? IPv6Any : Any;
 
         // Check whether we have explicitely configured address (not IPAddress.Any) which matches protocol scheme and family
-        if(addresses.FirstOrDefault(a => a.Endpoint!.AddressFamily == addressFamily && !a.Endpoint.Address.Equals(any)) is { Address: { } match })
+        if (addresses.FirstOrDefault(a => a.Endpoint!.AddressFamily == addressFamily && !a.Endpoint.Address.Equals(any)) is { Address: { } match })
         {
             return match;
         }
@@ -50,7 +44,7 @@ internal class ServerAddressesProvider : IServerAddressesProvider
 
         // Or there should be at least IPAddress.IPv6Any specified if we want external endpoint for IPv6,
         // and IPv6Any|IPv4Any if we need IPv4 binding
-        if(addresses!.FirstOrDefault(condition) is not { Endpoint: { Port: var port }, Address: { Scheme: var scheme } })
+        if (addresses!.FirstOrDefault(condition) is not { Endpoint.Port: var port, Address.Scheme: var scheme })
         {
             throw new InvalidOperationException("Cannot find suitable listening address for callback URI");
         }

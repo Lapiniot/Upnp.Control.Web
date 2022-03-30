@@ -21,10 +21,10 @@ internal sealed class AVSetStateCommandHandler : IAsyncCommandHandler<AVSetState
         var (deviceId, state) = command;
         var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
 
-        switch(state.State)
+        switch (state.State)
         {
             case "playing":
-                switch(state)
+                switch (state)
                 {
                     case { ObjectId: { } objectId, SourceDevice: var source }:
                         await PlayItemAsync(deviceId, source, objectId, cancellationToken).ConfigureAwait(false);
@@ -61,13 +61,13 @@ internal sealed class AVSetStateCommandHandler : IAsyncCommandHandler<AVSetState
 
         sourceDevice ??= targetDevice;
 
-        if(!string.IsNullOrWhiteSpace(id))
+        if (!string.IsNullOrWhiteSpace(id))
         {
             var cd = await factory.GetServiceAsync<ContentDirectoryService>(sourceDevice, cancellationToken).ConfigureAwait(false);
             var result = await cd.BrowseAsync(id, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
-            string metadata = result["Result"];
+            var metadata = result["Result"];
             var item = DIDLXmlReader.Read(metadata, true, false).FirstOrDefault();
-            if(item is not { Resource: { Url: { } resUrl } }) throw new InvalidOperationException();
+            if (item is not { Resource.Url: { } resUrl }) throw new InvalidOperationException();
             await avt.SetAVTransportUriAsync(0, resUrl, metadata, cancellationToken).ConfigureAwait(false);
         }
 

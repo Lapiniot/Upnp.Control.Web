@@ -10,7 +10,7 @@ internal sealed partial class RequestCancelledExceptionFilterAttribute : Excepti
 
     public override void OnException([NotNull] ExceptionContext context)
     {
-        if(context.Exception is not OperationCanceledException) return;
+        if (context.Exception is not OperationCanceledException) return;
 
         LogCancelled(context.HttpContext.RequestServices.GetService<ILogger<RequestCancelledExceptionFilterAttribute>>()!);
 

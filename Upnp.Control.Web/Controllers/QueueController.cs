@@ -11,15 +11,11 @@ public class QueueController : ControllerBase
     [HttpPost("{queueId}/items")]
     [Consumes("application/json")]
     public Task AddAsync([FromServices][NotNull] IAsyncCommandHandler<QAddItemsCommand> handler, string deviceId, string queueId,
-        [FromBody] MediaSource source, CancellationToken cancellationToken)
-    {
-        return handler.ExecuteAsync(new QAddItemsCommand(deviceId, queueId, source), cancellationToken);
-    }
+        [FromBody] MediaSource source, CancellationToken cancellationToken) =>
+        handler.ExecuteAsync(new QAddItemsCommand(deviceId, queueId, source), cancellationToken);
 
     [HttpDelete("{queueId}/items")]
     public Task RemoveAllAsync([FromServices][NotNull] IAsyncCommandHandler<QClearCommand> handler, string deviceId,
-        string queueId, CancellationToken cancellationToken)
-    {
-        return handler.ExecuteAsync(new QClearCommand(deviceId, queueId), cancellationToken);
-    }
+        string queueId, CancellationToken cancellationToken) =>
+        handler.ExecuteAsync(new QClearCommand(deviceId, queueId), cancellationToken);
 }

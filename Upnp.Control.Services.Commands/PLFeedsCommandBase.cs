@@ -39,7 +39,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
         var reader = PipeReader.Create(stream);
 
         var encoding = Path.GetExtension(file.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
-        await foreach(var (path, info, _) in new M3uTrackReader(reader, encoding).WithCancellation(cancellationToken).ConfigureAwait(false))
+        await foreach (var (path, info, _) in new M3uTrackReader(reader, encoding).WithCancellation(cancellationToken).ConfigureAwait(false))
         {
             await AppendFeedItemAsync(writer, new Uri(path), info, useProxy, cancellationToken).ConfigureAwait(false);
         }
@@ -65,7 +65,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
 
             DIDLUtils.WriteItem(writer, title, description, genre, url, length, contentType?.MediaType, br);
         }
-        catch(HttpRequestException exception)
+        catch (HttpRequestException exception)
         {
             LogFeedProbeRequestFailure(exception);
 
@@ -91,15 +91,15 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
 
         var sb = new StringBuilder();
 
-        using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 try
                 {
                     await AppendFromFileAsync(writer, file, useProxy, cancellationToken).ConfigureAwait(false);
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
                     LogFileProcessingFailure(exception, file.FileName);
                     throw;
@@ -114,7 +114,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
     {
         var sb = new StringBuilder();
 
-        using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             await AppendFeedItemAsync(writer, mediaUrl, title, useProxy, cancellationToken).ConfigureAwait(false);
         }

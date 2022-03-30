@@ -11,7 +11,7 @@ public static class ConfigureServicesExtensions
     {
         var builder = services.AddOptions<JsonOptions>();
 
-        if(configureJsonOptions is not null)
+        if (configureJsonOptions is not null)
         {
             builder.Configure(o => configureJsonOptions(o.SerializerOptions));
         }

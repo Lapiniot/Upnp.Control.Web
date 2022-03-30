@@ -5,15 +5,11 @@ namespace Upnp.Control.Infrastructure.SignalR.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    public static IServiceCollection AddSignalRUpnpDiscoveryNotifications(this IServiceCollection services)
-    {
-        return services.AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>();
-    }
+    public static IServiceCollection AddSignalRUpnpDiscoveryNotifications(this IServiceCollection services) =>
+        services.AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpDiscoverySignalRNotifyObserver>();
 
-    public static IServiceCollection AddSignalRUpnpEventNotifications(this IServiceCollection services)
-    {
-        return services.AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>();
-    }
+    public static IServiceCollection AddSignalRUpnpEventNotifications(this IServiceCollection services) =>
+        services.AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>();
 
     public static IEndpointConventionBuilder MapUpnpEventsHub(this IEndpointRouteBuilder routeBuilder, string route,
         Action<HttpConnectionDispatcherOptions>? configureOptions = null)
@@ -25,8 +21,6 @@ public static class ConfigureServicesExtensions
         });
     }
 
-    private static void ConfigureConnectionDefaults(HttpConnectionDispatcherOptions options)
-    {
+    private static void ConfigureConnectionDefaults(HttpConnectionDispatcherOptions options) =>
         options.Transports = HttpTransportType.WebSockets;
-    }
 }

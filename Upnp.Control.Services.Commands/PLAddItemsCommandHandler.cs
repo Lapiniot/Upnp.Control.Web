@@ -35,7 +35,7 @@ internal sealed class PLAddItemsCommandHandler : PLCommandBase, IAsyncCommandHan
 
         var sb = new StringBuilder();
 
-        using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             await WriteItemsMetadataTreeAsync(sourceDeviceId, items, writer, depth, cancellationToken).ConfigureAwait(false);
         }

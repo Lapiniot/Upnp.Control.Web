@@ -20,7 +20,7 @@ public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
 
     public void OnNext(UpnpEvent value)
     {
-        switch(value)
+        switch (value)
         {
             case AVTPropChangedEvent avt:
                 NotifyAVTransportEvent(avt);

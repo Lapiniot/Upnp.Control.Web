@@ -7,10 +7,10 @@ public static class ConfigurationSectionExtensions
         var stack = new Stack<IConfigurationSection>();
         stack.Push(section);
 
-        while(stack.TryPop(out section))
+        while (stack.TryPop(out section))
         {
             yield return section;
-            foreach(var child in section.GetChildren())
+            foreach (var child in section.GetChildren())
             {
                 stack.Push(child);
             }
@@ -22,10 +22,10 @@ public static class ConfigurationSectionExtensions
         var queue = new Queue<IConfigurationSection>();
         queue.Enqueue(section);
 
-        while(queue.TryDequeue(out section))
+        while (queue.TryDequeue(out section))
         {
             yield return section;
-            foreach(var child in section.GetChildren())
+            foreach (var child in section.GetChildren())
             {
                 queue.Enqueue(child);
             }

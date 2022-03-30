@@ -28,7 +28,7 @@ internal sealed class PLCreateFromFilesCommandHandler : PLFeedsCommandBase, IAsy
 
     private async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool? useProxy, bool? merge, CancellationToken cancellationToken)
     {
-        if(merge == true)
+        if (merge == true)
         {
             await CreateFromFilesAsync(deviceId, files,
                 !IsNullOrWhiteSpace(title) ? title : Join("; ", files.Select(f => f.FileName)),
@@ -37,7 +37,7 @@ internal sealed class PLCreateFromFilesCommandHandler : PLFeedsCommandBase, IAsy
         }
         else
         {
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 await CreateFromFilesAsync(deviceId, new[] { file },
                     !IsNullOrWhiteSpace(title) ? $"{title}: {file.FileName}" : file.FileName,

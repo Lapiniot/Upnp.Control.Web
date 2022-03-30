@@ -34,19 +34,19 @@ internal sealed class GetDeviceQueryHandler : IAsyncEnumerableQueryHandler<GetDe
 
         var (category, withOffline) = query;
 
-        if(!Filters.TryGetValue(category, out var filter))
+        if (!Filters.TryGetValue(category, out var filter))
         {
             throw new ArgumentException($"Unknown device category filter '{category}'");
         }
 
         var queryable = context.UpnpDevices.AsNoTracking().Where(filter);
 
-        if(!withOffline)
+        if (!withOffline)
         {
             queryable = queryable.Where(d => d.ExpiresAt > UtcNow);
         }
 
-        await foreach(var device in queryable.AsAsyncEnumerable().WithCancellation(cancellationToken).ConfigureAwait(false))
+        await foreach (var device in queryable.AsAsyncEnumerable().WithCancellation(cancellationToken).ConfigureAwait(false))
         {
             yield return device;
         }

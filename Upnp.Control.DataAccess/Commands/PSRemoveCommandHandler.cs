@@ -23,14 +23,15 @@ internal sealed class PSRemoveCommandHandler : IAsyncCommandHandler<PSRemoveComm
 
         var subscription = await context.Subscriptions.FindAsync(new object[] { endpoint }, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-        if(subscription is not null)
+        if (subscription is not null)
         {
             var property = context.Entry(subscription).Property(e => e.Type);
             property.CurrentValue ^= command.Type;
-            if(property.CurrentValue == NotificationType.None)
+            if (property.CurrentValue == NotificationType.None)
             {
                 context.Remove(subscription);
             }
+
             await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
     }

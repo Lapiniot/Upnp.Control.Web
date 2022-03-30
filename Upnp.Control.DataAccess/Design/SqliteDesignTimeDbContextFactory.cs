@@ -12,10 +12,7 @@ internal abstract class SqliteDesignTimeDbContextFactory<TContext> : IDesignTime
         return Create(builder.Options);
     }
 
-    protected virtual void OnConfigureOptions(DbContextOptionsBuilder<TContext> builder)
-    {
-        builder.UseSqlite("Data Source=db.db3;");
-    }
+    protected virtual void OnConfigureOptions(DbContextOptionsBuilder<TContext> builder) => builder.UseSqlite("Data Source=db.db3;");
 
     protected abstract TContext Create(DbContextOptions<TContext> options);
 }

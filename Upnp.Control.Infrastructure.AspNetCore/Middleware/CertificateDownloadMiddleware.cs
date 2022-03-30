@@ -11,24 +11,21 @@ public sealed class CertificateDownloadMiddleware : IMiddleware
     private const int ChunkSize = 48;
     private readonly IWebHostEnvironment environment;
     private readonly IConfiguration configuration;
-    private readonly IServer server;
 
-    public CertificateDownloadMiddleware(IWebHostEnvironment environment, IConfiguration configuration, IServer server)
+    public CertificateDownloadMiddleware(IWebHostEnvironment environment, IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(environment);
         ArgumentNullException.ThrowIfNull(configuration);
-        ArgumentNullException.ThrowIfNull(server);
 
         this.environment = environment;
         this.configuration = configuration;
-        this.server = server;
     }
 
     public async Task InvokeAsync([NotNull] HttpContext context, RequestDelegate next)
     {
         using var certificate = KestrelCertificateLoader.LoadFromConfiguration(configuration, environment.ContentRootFileProvider);
 
-        if(certificate != null)
+        if (certificate != null)
             await SendAsFileAsync(context.Response, certificate, $"{context.Request.Host.Host}.crt").ConfigureAwait(false);
         else
             context.Response.StatusCode = 404;
@@ -56,7 +53,7 @@ public sealed class CertificateDownloadMiddleware : IMiddleware
     {
         var total = ASCII.GetBytes("-----BEGIN CERTIFICATE-----\n", utf8);
 
-        for(var index = 0; index < bytes.Length; index += ChunkSize)
+        for (var index = 0; index < bytes.Length; index += ChunkSize)
         {
             var source = bytes.Length - index > ChunkSize
                 ? bytes.Slice(index, ChunkSize)

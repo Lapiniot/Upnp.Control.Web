@@ -18,7 +18,7 @@ public class EventSubscribeClient : IEventSubscribeClient
     {
         ArgumentNullException.ThrowIfNull(deliveryUri);
 
-        if(!deliveryUri.IsAbsoluteUri)
+        if (!deliveryUri.IsAbsoluteUri)
         {
             throw new ArgumentException("Only absolute uri is acceptable");
         }

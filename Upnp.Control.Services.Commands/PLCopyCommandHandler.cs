@@ -22,9 +22,9 @@ internal sealed class PLCopyCommandHandler : IAsyncCommandHandler<PLCopyCommand>
         var (cdService, plService) = await factory.GetServicesAsync<ContentDirectoryService, PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
 
         var sb = new StringBuilder();
-        using(var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
-            await foreach(var (content, _, _) in cdService.BrowseChildrenAsync(playlistId, pageSize: 100, cancellationToken: cancellationToken).ConfigureAwait(false))
+            await foreach (var (content, _, _) in cdService.BrowseChildrenAsync(playlistId, pageSize: 100, cancellationToken: cancellationToken).ConfigureAwait(false))
             {
                 DIDLUtils.CopyItems(content, writer, null, null);
             }

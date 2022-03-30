@@ -5,16 +5,13 @@ internal class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepositor
 {
     private readonly Dictionary<string, List<IAsyncCancelable>> storage;
 
-    public InMemorySubscriptionsRepository()
-    {
-        storage = new Dictionary<string, List<IAsyncCancelable>>();
-    }
+    public InMemorySubscriptionsRepository() => storage = new Dictionary<string, List<IAsyncCancelable>>();
 
     public void Add(string udn, params IAsyncCancelable[] sessions)
     {
-        lock(storage)
+        lock (storage)
         {
-            if(storage.TryGetValue(udn, out var list))
+            if (storage.TryGetValue(udn, out var list))
             {
                 list.AddRange(sessions);
             }
@@ -27,7 +24,7 @@ internal class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepositor
 
     public void Clear()
     {
-        lock(storage)
+        lock (storage)
         {
             storage.Clear();
         }
@@ -35,7 +32,7 @@ internal class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepositor
 
     public IEnumerable<IAsyncCancelable> GetById(string udn)
     {
-        lock(storage)
+        lock (storage)
         {
             return storage.TryGetValue(udn, out var list) ? list : Array.Empty<IAsyncCancelable>();
         }
@@ -43,7 +40,7 @@ internal class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepositor
 
     public IEnumerable<IAsyncCancelable> GetAll()
     {
-        lock(storage)
+        lock (storage)
         {
             return storage.Values.SelectMany(v => v).ToList();
         }
@@ -51,9 +48,9 @@ internal class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepositor
 
     public bool Remove(string udn, out IEnumerable<IAsyncCancelable> sessions)
     {
-        lock(storage)
+        lock (storage)
         {
-            if(storage.Remove(udn, out var list))
+            if (storage.Remove(udn, out var list))
             {
                 sessions = list;
                 return true;

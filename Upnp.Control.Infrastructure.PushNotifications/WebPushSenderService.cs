@@ -53,7 +53,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
 
     void IObserver<UpnpDiscoveryEvent>.OnNext(UpnpDiscoveryEvent value)
     {
-        switch(value)
+        switch (value)
         {
             case UpnpDeviceAppearedEvent dae:
                 Post(NotificationType.DeviceDiscovery, new UpnpDiscoveryMessage("appeared", dae.Device));
@@ -70,7 +70,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
 
     void IObserver<UpnpEvent>.OnNext(UpnpEvent value)
     {
-        if((value is not AVTPropChangedEvent @event) || !@event.Properties.TryGetValue("TransportState", out var state) || state != "PLAYING")
+        if (value is not AVTPropChangedEvent @event || !@event.Properties.TryGetValue("TransportState", out var state) || state != "PLAYING")
         {
             return;
         }
@@ -86,7 +86,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while(!stoppingToken.IsCancellationRequested)
+        while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
@@ -96,38 +96,38 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                 var client = scope.ServiceProvider.GetRequiredService<IWebPushClient>();
                 var enumerateHandler = scope.ServiceProvider.GetRequiredService<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
 
-                await foreach(var (endpoint, type, _, p256dhKey, authKey) in enumerateHandler.ExecuteAsync(new PSEnumerateQuery(message.Type), stoppingToken).ConfigureAwait(false))
+                await foreach (var (endpoint, type, _, p256dhKey, authKey) in enumerateHandler.ExecuteAsync(new PSEnumerateQuery(message.Type), stoppingToken).ConfigureAwait(false))
                 {
                     try
                     {
                         await client.SendAsync(endpoint, p256dhKey, authKey, message.Payload, wpOptions.Value.TTLSeconds, stoppingToken).ConfigureAwait(false);
                     }
-                    catch(OperationCanceledException)
+                    catch (OperationCanceledException)
                     {
                         // expected
                     }
-                    catch(HttpRequestException hre) when(hre.StatusCode == HttpStatusCode.Gone || hre.StatusCode == HttpStatusCode.Forbidden)
+                    catch (HttpRequestException hre) when (hre.StatusCode == HttpStatusCode.Gone || hre.StatusCode == HttpStatusCode.Forbidden)
                     {
                         var commandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
                         await commandHandler.ExecuteAsync(new PSRemoveCommand(type, endpoint), stoppingToken).ConfigureAwait(false);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         LogPushError(ex, endpoint);
                     }
                 }
             }
-            catch(OperationCanceledException oce) when(oce.CancellationToken == stoppingToken)
+            catch (OperationCanceledException oce) when (oce.CancellationToken == stoppingToken)
             {
                 // expected
                 break;
             }
-            catch(ChannelClosedException)
+            catch (ChannelClosedException)
             {
                 LogChannelClosed();
                 break;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogError(ex);
             }
@@ -139,9 +139,9 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
         try
         {
             var vt = channel.Writer.WriteAsync((type, JsonSerializer.SerializeToUtf8Bytes(message, jsonOptions.Value.SerializerOptions)));
-            if(!vt.IsCompletedSuccessfully) await vt.ConfigureAwait(false);
+            if (!vt.IsCompletedSuccessfully) await vt.ConfigureAwait(false);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LogMessageQueueingError(ex);
         }

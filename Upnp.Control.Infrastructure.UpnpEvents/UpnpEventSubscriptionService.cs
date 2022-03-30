@@ -43,13 +43,13 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
             var options = optionsMonitor.CurrentValue;
             var sessionTimeout = options.SessionTimeout;
 
-            foreach(var (serviceType, template) in options.CallbackMappings)
+            foreach (var (serviceType, template) in options.CallbackMappings)
             {
                 var service = services.Single(s => s.ServiceType == serviceType);
                 repository.Add(deviceId, factory.Subscribe(service.EventsUrl, new Uri(string.Format(CultureInfo.InvariantCulture, template, deviceId), UriKind.Relative), sessionTimeout));
             }
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
             LogError(exception, deviceId);
             throw;
@@ -60,7 +60,7 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
     {
         var sessions = repository.GetById(deviceId).ToList();
 
-        if(!sessions.Any() || sessions.Any(s => s.IsCompleted))
+        if (!sessions.Any() || sessions.Any(s => s.IsCompleted))
         {
             await TerminateAsync(sessions).ConfigureAwait(false);
             SubscribeToEvents(deviceId, services);
@@ -69,14 +69,14 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
 
     private async Task TerminateAsync(IEnumerable<IAsyncDisposable> subscriptions)
     {
-        foreach(var subscription in subscriptions)
+        foreach (var subscription in subscriptions)
         {
             try
             {
                 await subscription.DisposeAsync().ConfigureAwait(false);
             }
 #pragma warning disable CA1031 // By design
-            catch(Exception exception)
+            catch (Exception exception)
 #pragma warning restore CA1031
             {
                 LogTerminationError(exception);
@@ -92,7 +92,7 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
 
     public void OnNext(UpnpDiscoveryEvent value)
     {
-        switch(value)
+        switch (value)
         {
             case UpnpDeviceAppearedEvent dae when IsRenderer(dae.Device):
                 SubscribeToEvents(dae.DeviceId, dae.Device.Services);

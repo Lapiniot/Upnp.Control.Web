@@ -37,7 +37,7 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
             var cancellationToken = context.RequestAborted;
 
-            if(method is not "GET" and not "HEAD")
+            if (method is not "GET" and not "HEAD")
             {
                 LogUnsupportedMethod(id, method);
 
@@ -54,7 +54,7 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
             CopyHeaders(responseMessage, context);
 
-            if(method == "GET")
+            if (method == "GET")
             {
                 await CopyContentAsync(responseMessage, context, cancellationToken).ConfigureAwait(false);
             }
@@ -63,17 +63,17 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
             LogCompleted(id);
         }
-        catch(OperationCanceledException)
+        catch (OperationCanceledException)
         {
             LogAborted(id);
         }
-        catch(InvalidDataException ide)
+        catch (InvalidDataException ide)
         {
             LogError(id, ide);
             context.Response.StatusCode = StatusCodes.Status502BadGateway;
             await context.Response.CompleteAsync().ConfigureAwait(false);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             LogError(id, e);
             throw;
@@ -97,9 +97,9 @@ public abstract partial class ProxyMiddleware : IMiddleware
     {
         var requestMessage = new HttpRequestMessage(method, requestUri);
 
-        foreach(var (k, v) in context.Request.Headers)
+        foreach (var (k, v) in context.Request.Headers)
         {
-            if(k == HeaderNames.Host) continue;
+            if (k == HeaderNames.Host) continue;
             requestMessage.Headers.TryAddWithoutValidation(k, (IEnumerable<string>)v);
         }
 
@@ -110,12 +110,12 @@ public abstract partial class ProxyMiddleware : IMiddleware
     {
         var headers = context.Response.Headers;
 
-        foreach(var (key, value) in responseMessage.Headers)
+        foreach (var (key, value) in responseMessage.Headers)
         {
             headers[key] = new StringValues(value.ToArray());
         }
 
-        foreach(var (key, value) in responseMessage.Content.Headers)
+        foreach (var (key, value) in responseMessage.Content.Headers)
         {
             headers[key] = new StringValues(value.ToArray());
         }
@@ -123,7 +123,7 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
     protected virtual async Task CopyContentAsync([NotNull] HttpResponseMessage responseMessage, [NotNull] HttpContext context, CancellationToken cancellationToken)
     {
-        if(!context.Response.HasStarted)
+        if (!context.Response.HasStarted)
         {
             await context.Response.StartAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -137,15 +137,15 @@ public abstract partial class ProxyMiddleware : IMiddleware
         var id = context.Connection.Id;
         var writer = context.Response.BodyWriter;
 
-        while(!cancellationToken.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
             var available = 0;
             var buffer = writer.GetMemory(bufferSize);
 
-            while(available < bufferSize)
+            while (available < bufferSize)
             {
                 var bytes = await source.ReadAsync(buffer[available..], cancellationToken).ConfigureAwait(false);
-                if(bytes == 0) break;
+                if (bytes == 0) break;
                 available += bytes;
             }
 
@@ -157,7 +157,7 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
             LogFlushed(id, available);
 
-            if(available < bufferSize) break;
+            if (available < bufferSize) break;
         }
 
         LogDone(id);

@@ -13,8 +13,5 @@ internal sealed class PushSubscriptionDbContext : DbContext
     [DynamicDependency("AddYears", typeof(DateOnly))]
     [DynamicDependency("AddMonths", typeof(DateOnly))]
     [DynamicDependency("AddDays", typeof(DateOnly))]
-    protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfiguration(new PushSubscriptionEntityType());
-    }
+    protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder) => modelBuilder.ApplyConfiguration(new PushSubscriptionEntityType());
 }

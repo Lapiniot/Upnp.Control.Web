@@ -22,10 +22,8 @@ public class DeviceController : ControllerBase
     [HttpGet]
     [Produces("application/json")]
     public IAsyncEnumerable<UpnpDevice> GetAllAsync([FromServices][NotNull] IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
-        string category = "upnp", bool? withOffline = false, CancellationToken cancellationToken = default)
-    {
-        return handler.ExecuteAsync(new GetDevicesQuery(category, withOffline != false), cancellationToken);
-    }
+        string category = "upnp", bool? withOffline = false, CancellationToken cancellationToken = default) =>
+        handler.ExecuteAsync(new GetDevicesQuery(category, withOffline != false), cancellationToken);
 
     /// <summary>
     /// Provides information about UPnP device with <paramref name="id" /> unique id
@@ -37,8 +35,6 @@ public class DeviceController : ControllerBase
     [HttpGet("{id}")]
     [Produces("application/json")]
     public Task<UpnpDevice> GetAsync([FromServices][NotNull] IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
-        string id, CancellationToken cancellationToken = default)
-    {
-        return handler.ExecuteAsync(new GetDeviceQuery(id), cancellationToken);
-    }
+        string id, CancellationToken cancellationToken = default) =>
+        handler.ExecuteAsync(new GetDeviceQuery(id), cancellationToken);
 }

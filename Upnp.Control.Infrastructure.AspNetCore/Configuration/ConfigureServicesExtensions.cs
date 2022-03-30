@@ -11,16 +11,14 @@ public static class ConfigureServicesExtensions
             .AddTransient<IBase64UrlDecoder, Base64Encoders>();
     }
 
-    public static IServiceCollection AddServerAddressesProvider(this IServiceCollection services)
-    {
-        return services.AddTransient<IServerAddressesProvider, ServerAddressesProvider>();
-    }
+    public static IServiceCollection AddServerAddressesProvider(this IServiceCollection services) =>
+        services.AddTransient<IServerAddressesProvider, ServerAddressesProvider>();
 
     public static MvcOptions AddBinaryContentFormatter(this MvcOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
 
-        if(!options.OutputFormatters.Any(formatter => formatter is BinaryContentOutputFormatter))
+        if (!options.OutputFormatters.Any(formatter => formatter is BinaryContentOutputFormatter))
         {
             options.OutputFormatters.Add(new BinaryContentOutputFormatter());
         }
@@ -32,7 +30,7 @@ public static class ConfigureServicesExtensions
     {
         ArgumentNullException.ThrowIfNull(options);
 
-        if(!options.Filters.Any(filter => filter is RequestCancelledExceptionFilterAttribute))
+        if (!options.Filters.Any(filter => filter is RequestCancelledExceptionFilterAttribute))
         {
             options.Filters.Add<RequestCancelledExceptionFilterAttribute>();
         }
@@ -61,10 +59,8 @@ public static class ConfigureServicesExtensions
         return services.AddTransient<ContentProxyMiddleware>();
     }
 
-    public static IServiceCollection AddCertificateDownloadMiddleware(this IServiceCollection services)
-    {
-        return services.AddTransient<CertificateDownloadMiddleware>();
-    }
+    public static IServiceCollection AddCertificateDownloadMiddleware(this IServiceCollection services) =>
+        services.AddTransient<CertificateDownloadMiddleware>();
 
     public static IEndpointConventionBuilder MapImageLoaderProxy(this IEndpointRouteBuilder routeBuilder, string route)
     {

@@ -23,8 +23,6 @@ internal static class CertificateLoader
             : throw new InvalidOperationException("File doesn't exist at requested path");
     }
 
-    public static X509Certificate2 LoadFromStore(string storeName, string storeLocation, string subject, bool allowInvalid)
-    {
-        return LoadFromStoreCert(subject, storeName, Enum.Parse<StoreLocation>(storeLocation), allowInvalid);
-    }
+    public static X509Certificate2 LoadFromStore(string storeName, string storeLocation, string subject, bool allowInvalid) =>
+        LoadFromStoreCert(subject, storeName, Enum.Parse<StoreLocation>(storeLocation), allowInvalid);
 }

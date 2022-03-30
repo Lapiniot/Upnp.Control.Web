@@ -43,7 +43,7 @@ internal partial class UpnpDiscoveryService
         sb.AppendLine();
         sb.AppendLine(CultureInfo.InvariantCulture, $"***** {reply.StartLine} *****");
 
-        foreach(var (key, value) in reply)
+        foreach (var (key, value) in reply)
         {
             sb.Append(key);
             sb.Append(": ");

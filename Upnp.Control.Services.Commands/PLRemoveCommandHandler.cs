@@ -17,7 +17,7 @@ internal sealed class PLRemoveCommandHandler : PLCommandBase, IAsyncCommandHandl
 
         var result = await service.DeleteAsync(indices, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-        if(result["LengthChange"] == "0")
+        if (result["LengthChange"] == "0")
         {
             await service.DeleteAsync(indices, updateId: result["NewUpdateID"], cancellationToken: cancellationToken).ConfigureAwait(false);
         }

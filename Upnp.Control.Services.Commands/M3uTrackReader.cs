@@ -23,7 +23,7 @@ public class M3uTrackReader : IAsyncEnumerable<M3uTrack>
 
     public async IAsyncEnumerator<M3uTrack> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
-        while(!cancellationToken.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
             long total = 0;
             ReadResult result;
@@ -33,7 +33,7 @@ public class M3uTrackReader : IAsyncEnumerable<M3uTrack>
                 var vt = reader.ReadAsync(cancellationToken);
                 result = vt.IsCompletedSuccessfully ? vt.Result : await vt.ConfigureAwait(false);
             }
-            catch(OperationCanceledException)
+            catch (OperationCanceledException)
             {
                 yield break;
             }
@@ -41,18 +41,19 @@ public class M3uTrackReader : IAsyncEnumerable<M3uTrack>
             var buffer = result.Buffer;
             var isFinalBlock = result.IsCanceled | result.IsCompleted;
 
-            while(total < buffer.Length && TryReadTrack(buffer.Slice(total), isFinalBlock, out var track, out var consumed))
+            while (total < buffer.Length && TryReadTrack(buffer.Slice(total), isFinalBlock, out var track, out var consumed))
             {
-                if(track.Path is not null)
+                if (track.Path is not null)
                 {
                     yield return track;
                 }
+
                 total += consumed;
             }
 
             reader.AdvanceTo(buffer.GetPosition(total), buffer.End);
 
-            if(isFinalBlock)
+            if (isFinalBlock)
             {
                 yield break;
             }
@@ -66,18 +67,18 @@ public class M3uTrackReader : IAsyncEnumerable<M3uTrack>
 
         var lineReader = new SequenceReader<byte>(buffer);
 
-        while(lineReader.TryReadLine(out ReadOnlySequence<byte> line, !isFinalBlock))
+        while (lineReader.TryReadLine(out var line, !isFinalBlock))
         {
-            if(line.Length == 0) continue;
+            if (line.Length == 0) continue;
 
             var reader = new SequenceReader<byte>(line);
-            if(reader.IsNext(0x23, true)) // starts with '#'
+            if (reader.IsNext(0x23, true)) // starts with '#'
             {
-                if(!reader.IsNext(EXTINF, true)) continue;
+                if (!reader.IsNext(EXTINF, true)) continue;
                 reader.AdvancePast(0x20);
-                if(!(reader.TryReadTo(out ReadOnlySpan<byte> span, 0x2C) && Utf8Parser.TryParse(span, out int duration, out _))) continue;
+                if (!(reader.TryReadTo(out ReadOnlySpan<byte> span, 0x2C) && Utf8Parser.TryParse(span, out int duration, out _))) continue;
                 reader.AdvancePast(0x20);
-                if(!lineReader.TryReadLine(out line, !isFinalBlock)) break;
+                if (!lineReader.TryReadLine(out line, !isFinalBlock)) break;
                 track = new(encoding.GetString(line), encoding.GetString(reader.UnreadSequence), duration);
             }
             else

@@ -37,12 +37,12 @@ internal partial class UpnpDiscoveryService : BackgroundServiceBase
         // and application is completely started. Previouse workaround with service registration 
         // in the Host.ConfigureServices after GenericWebHostSevice seems doesn't work anymore since .NET 6
 
-        using(var semaphore = new SemaphoreSlim(initialCount: 0))
-        using(stoppingToken.Register(() => semaphore.Release()))
-        using(applicationLifetime.ApplicationStarted.Register(() => semaphore.Release()))
+        using (var semaphore = new SemaphoreSlim(initialCount: 0))
+        using (stoppingToken.Register(() => semaphore.Release()))
+        using (applicationLifetime.ApplicationStarted.Register(() => semaphore.Release()))
         {
             await semaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false);
-            if(stoppingToken.IsCancellationRequested)
+            if (stoppingToken.IsCancellationRequested)
             {
                 // Exiting immidiately due to the abnormal external cancellation of the service itself, happening before host completely started
                 return;
@@ -64,23 +64,23 @@ internal partial class UpnpDiscoveryService : BackgroundServiceBase
 
             try
             {
-                await foreach(var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
+                await foreach (var reply in enumerator.WithCancellation(stoppingToken).ConfigureAwait(false))
                 {
                     try
                     {
                         TraceReply(reply);
 
-                        if(reply.StartLine.StartsWith("M-SEARCH", InvariantCulture)) continue;
+                        if (reply.StartLine.StartsWith("M-SEARCH", InvariantCulture)) continue;
 
                         var udn = ExtractUdn(reply.UniqueServiceName);
 
-                        if(reply.StartLine.StartsWith("NOTIFY", InvariantCulture) && reply.TryGetValue("NT", out var nt))
+                        if (reply.StartLine.StartsWith("NOTIFY", InvariantCulture) && reply.TryGetValue("NT", out var nt))
                         {
-                            if(nt != RootDevice) continue;
+                            if (nt != RootDevice) continue;
 
-                            if(reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
+                            if (reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
                             {
-                                if(await getQueryHandler.ExecuteAsync(new GetDeviceQuery(udn), stoppingToken).ConfigureAwait(false) is { } existing)
+                                if (await getQueryHandler.ExecuteAsync(new GetDeviceQuery(udn), stoppingToken).ConfigureAwait(false) is { } existing)
                                 {
                                     await removeCommandHandler.ExecuteAsync(new RemoveDeviceCommand(udn), stoppingToken).ConfigureAwait(false);
 
@@ -92,14 +92,14 @@ internal partial class UpnpDiscoveryService : BackgroundServiceBase
                                 continue;
                             }
                         }
-                        else if(reply.TryGetValue("ST", out var st) && st != RootDevice)
+                        else if (reply.TryGetValue("ST", out var st) && st != RootDevice)
                         {
                             continue;
                         }
 
                         var device = await getQueryHandler.ExecuteAsync(new GetDeviceQuery(udn), stoppingToken).ConfigureAwait(false);
 
-                        if(device != null)
+                        if (device != null)
                         {
                             var command = new UpdateDeviceExpirationCommand(udn, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10));
 
@@ -138,19 +138,19 @@ internal partial class UpnpDiscoveryService : BackgroundServiceBase
 
                         Notify(observers, new UpnpDeviceAppearedEvent(udn, device));
                     }
-                    catch(Exception exception)
+                    catch (Exception exception)
                     {
                         LogReplyError(exception, reply.StartLine, reply.UniqueServiceName);
                     }
                 }
             }
-            catch(OperationCanceledException) { /* Expected */}
+            catch (OperationCanceledException) { /* Expected */}
             finally
             {
                 NotifyCompletion(observers);
             }
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
             LogError(exception);
             throw;
@@ -167,7 +167,7 @@ internal partial class UpnpDiscoveryService : BackgroundServiceBase
     private static string ExtractUdn(string usn)
     {
         var i1 = usn.IndexOf(':', InvariantCulture);
-        if(i1 < 0) return usn;
+        if (i1 < 0) return usn;
         var i2 = usn.IndexOf(':', ++i1);
         return i2 < 0 ? usn[i1..] : usn[i1..i2];
     }
@@ -175,13 +175,13 @@ internal partial class UpnpDiscoveryService : BackgroundServiceBase
     [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
     private void Notify(IEnumerable<IObserver<UpnpDiscoveryEvent>> observers, UpnpDiscoveryEvent discoveryEvent)
     {
-        foreach(var observer in observers)
+        foreach (var observer in observers)
         {
             try
             {
                 observer.OnNext(discoveryEvent);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 LogNotifyError(exception, observer);
             }
@@ -191,13 +191,13 @@ internal partial class UpnpDiscoveryService : BackgroundServiceBase
     [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
     private void NotifyCompletion(IEnumerable<IObserver<UpnpDiscoveryEvent>> observers)
     {
-        foreach(var observer in observers)
+        foreach (var observer in observers)
         {
             try
             {
                 observer.OnCompleted();
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 LogNotifyCompleteError(exception, observer);
             }

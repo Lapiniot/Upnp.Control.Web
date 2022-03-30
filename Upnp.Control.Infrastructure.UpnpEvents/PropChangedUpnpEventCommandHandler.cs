@@ -25,18 +25,18 @@ internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncComman
         IReadOnlyDictionary<string, string> properties;
         IReadOnlyDictionary<string, string> vendorProperties;
 
-        using(var reader = XmlReader.Create(command.Stream, settings))
+        using (var reader = XmlReader.Create(command.Stream, settings))
         {
             (_, properties, vendorProperties) = await EventMessageXmlReader.ReadAsync(reader).ConfigureAwait(false);
         }
 
-        if(properties == null || properties.Count == 0)
+        if (properties == null || properties.Count == 0)
         {
             return;
         }
 
         var vt = NotifyObserversAsync(observers, command.DeviceId, properties, vendorProperties, cancellationToken);
-        if(!vt.IsCompletedSuccessfully)
+        if (!vt.IsCompletedSuccessfully)
         {
             await vt.ConfigureAwait(false);
         }
@@ -55,14 +55,14 @@ internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncComman
             VendorProperties = vendorProperties
         };
 
-        foreach(var observer in observers)
+        foreach (var observer in observers)
         {
             try
             {
                 observer.OnNext(@event);
             }
 #pragma warning disable CA1031 // Do not catch general exception types: by design
-            catch(Exception exception)
+            catch (Exception exception)
 #pragma warning restore CA1031
             {
                 LogError(exception, observer);

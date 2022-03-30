@@ -37,7 +37,7 @@ void ConfigureJsonSerializer(JsonSerializerOptions options)
     options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
 
-    foreach(var converter in customConverters)
+    foreach (var converter in customConverters)
     {
         options.Converters.Add(converter);
     }
@@ -117,11 +117,11 @@ builder.Host.ConfigureAppConfiguration((ctx, cb) => cb
 
 #region Platform specific host lifetime configuration
 
-if(OperatingSystem.IsLinux())
+if (OperatingSystem.IsLinux())
 {
     builder.Host.UseSystemd();
 }
-else if(OperatingSystem.IsWindows())
+else if (OperatingSystem.IsWindows())
 {
     builder.Host.UseWindowsService();
 }
