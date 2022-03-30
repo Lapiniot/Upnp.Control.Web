@@ -11,7 +11,7 @@ export type DeviceActionProps = HTMLAttributes<HTMLElement> & {
 export function BrowseContentAction({ device, category, className, ...other }: DeviceActionProps) {
     const isMediaServer = UDT.isMediaServer(device);
     return isMediaServer
-        ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="sprites.svg#folder" className={`py-0 p-1 nav-link${className ? ` ${className}` : ""}`} {...other}>Browse</RouteLink>
+        ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="sprites.svg#folder-closed" className={`py-0 p-1 nav-link${className ? ` ${className}` : ""}`} {...other}>Browse</RouteLink>
         : null;
 }
 

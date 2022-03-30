@@ -42,7 +42,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
             </BrowserView>
             {!fetching && data?.source.items?.length === 0 &&
                 <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
-                    <svg className="icon icon-5x"><use href="sprites.svg#folder" /></svg>
+                    <svg className="icon icon-5x"><use href="sprites.svg#folder-closed" /></svg>
                 </div>}
             {withPagination && <BottomBar className="br-area-bottom">
                 <TablePagination total={total} current={typeof page === "string" ? parseInt(page) : 1}

@@ -346,7 +346,7 @@ export class PlaylistManagerCore
                                 </Browser>
                                 {!fetching && data?.source.items?.length === 0 &&
                                     <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
-                                        <svg className="icon icon-5x"><use href="sprites.svg#folder" /></svg>
+                                        <svg className="icon icon-5x"><use href="sprites.svg#folder-closed" /></svg>
                                     </div>}
                             </>}
                         </PlaybackStateContext.Consumer>

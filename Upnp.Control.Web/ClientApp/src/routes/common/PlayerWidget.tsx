@@ -163,7 +163,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                     {(creator || album) && <small className="text-truncate">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
                 </div>
                 <SeekBar className="progress" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChange={this.seek} />
-                <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="mode-btn" glyph={`sprites.svg#${shuffleMode ? "shuffle" : "retweet"}`} onClick={this.togglePlayMode} disabled={disabled} />
+                <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="mode-btn" glyph={`sprites.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={this.togglePlayMode} disabled={disabled} />
                 <Button title="Prev" className="prev-btn" glyph="sprites.svg#backward-step" onClick={this.prev} disabled={!actions.includes("Previous")} />
                 <Button className="play-btn p-1" {...buttonProps} />
                 <Button title={nextTitle} className="next-btn" glyph="sprites.svg#forward-step" onClick={this.next} disabled={!actions.includes("Next")} />
