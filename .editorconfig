@@ -67,6 +67,9 @@ dotnet_diagnostic.CA1308.severity = none
 # CA1054: URI parameters should not be strings
 dotnet_diagnostic.CA1054.severity = none
 
+# SYSLIB1037: System.Text.Json source generator encountered a type with init-only properties which are not supported for deserialization
+dotnet_diagnostic.SYSLIB1037.severity = none
+
 #### Naming styles ####
 
 # Naming rules
