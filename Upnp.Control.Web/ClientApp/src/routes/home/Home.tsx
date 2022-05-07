@@ -1,6 +1,6 @@
 ﻿import React, { MouseEvent, useCallback, useEffect, useState } from "react";
 import { deviceBookmarks, getBookmarkData, itemBookmarks, playlistBookmarks } from "../../components/BookmarkService";
-import { DataList } from "../../components/DataList";
+import { DataList, DeleteRowHandler } from "../../components/DataList";
 import { BookmarkGroup, profile } from "../common/Settings";
 import { KnownWidgets, Widgets } from "../common/widgets/Widgets";
 
@@ -30,7 +30,7 @@ export default function () {
         profile.home.set("expandSection", !classList.contains("collapsed")
             ? attributes.getNamedItem("aria-controls")?.value as BookmarkGroup : ""), []);
 
-    const deleteHandler = useCallback((_, itemKey, tag) => {
+    const deleteHandler = useCallback<DeleteRowHandler>((_: any, itemKey, tag) => {
         if (typeof itemKey !== "string") return;
         if (tag === "devices") {
             const index = itemKey.indexOf(":");

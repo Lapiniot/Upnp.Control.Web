@@ -1,11 +1,13 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
 type SignalRConnectionProps = { hubUrl: string }
 
 export const SignalRContext = React.createContext<HubConnection | null>(null);
 
-export class SignalRConnection extends React.Component<SignalRConnectionProps, { connected: boolean; error: Error | string | null; }> {
+export class SignalRConnection extends React.Component<
+    PropsWithChildren<SignalRConnectionProps>,
+    { connected: boolean; error: Error | string | null; }> {
 
     hub: signalR.HubConnection;
     state = { error: null, connected: false };

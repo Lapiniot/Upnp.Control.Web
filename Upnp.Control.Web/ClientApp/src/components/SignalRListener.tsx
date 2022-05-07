@@ -1,4 +1,4 @@
-import React, { ContextType, useContext, useEffect, useRef } from "react";
+import React, { ContextType, PropsWithChildren, useContext, useEffect, useRef } from "react";
 import { SignalRContext } from "./SignalRConnection";
 
 type MessageCallback = (...args: any) => void;
@@ -18,7 +18,7 @@ function apply(callbacks: IMessageCallbackSet, action: (methodName: string, meth
     }
 }
 
-export default class SignalRListener extends React.PureComponent<SignalRListenerProps> {
+export default class SignalRListener extends React.PureComponent<PropsWithChildren<SignalRListenerProps>> {
 
     static contextType = SignalRContext;
     context!: ContextType<typeof SignalRContext>;

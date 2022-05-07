@@ -11,7 +11,7 @@ export function PushSubscriptionToggle({ disabled: disabledProp, notificationTyp
     const [value, setValue] = useState(false);
     const [disabled, setDisabled] = useState(disabledProp);
 
-    const callback = useCallback((subscribe) => {
+    const callback = useCallback((subscribe: boolean) => {
         setDisabled(true);
         if (subscribe) {
             Notification.requestPermission().then(v => {

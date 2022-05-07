@@ -1,4 +1,4 @@
-import { SelectHTMLAttributes, useCallback, useEffect, useState } from "react";
+import { ChangeEventHandler, SelectHTMLAttributes, useCallback, useEffect, useState } from "react";
 
 type OptionsEditor = SelectHTMLAttributes<HTMLSelectElement> & {
     options: any[];
@@ -8,7 +8,7 @@ type OptionsEditor = SelectHTMLAttributes<HTMLSelectElement> & {
 export function OptionsEditor({ className, options, value: valueProp, callback, ...other }: OptionsEditor) {
     const [value, setValue] = useState(valueProp);
 
-    const changedHandler = useCallback(({ target: { value } }) => {
+    const changedHandler = useCallback<ChangeEventHandler<HTMLSelectElement>>(({ target: { value } }) => {
         if (callback(value) !== false) setValue(value);
     }, [callback]);
 

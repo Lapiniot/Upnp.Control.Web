@@ -1,6 +1,6 @@
 import React, { createContext, PropsWithChildren, ReactElement, ReactFragment, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { matchRoutes, resolvePath, RouteMatch, RouteObject } from "react-router-dom";
-import { NavigationContext, Path } from "../../components/Navigator";
+import { NavigateFunction, NavigationContext, Path } from "../../components/Navigator";
 
 interface VirtualRouterProps {
     initialPath: string
@@ -70,7 +70,7 @@ function useNavigateImpl() {
     const { matches } = useContext(RouterMatchContext);
     const ref = useRef({ location, setLocation, matches });
     ref.current = { location, setLocation, matches };
-    const navigate = useCallback((to) => {
+    const navigate = useCallback<NavigateFunction>((to) => {
         const { matches, location: { pathname, origin }, setLocation } = ref.current;
         const path = (matches && resolvePathMatches(to, matches)) ?? resolvePath(to, pathname);
         const url = new URL(path.pathname, origin);

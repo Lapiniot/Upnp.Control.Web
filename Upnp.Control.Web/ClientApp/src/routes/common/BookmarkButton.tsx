@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, useCallback, useEffect, useState } from "react";
+import { ButtonHTMLAttributes, MouseEventHandler, useCallback, useEffect, useState } from "react";
 import { IBookmarkStore } from "../../components/BookmarkService";
 import { DIDLItem } from "./Types";
 import { KnownWidgets } from "./widgets/Widgets";
@@ -23,7 +23,7 @@ export function useBookmarkButton(widgetName: KnownWidgets,
     storeInstance?: IBookmarkStore<[string, string], WidgetPropsType>, icons?: [string, string]) {
     return function ({ device, deviceName, item, store = storeInstance, ...other }: BookmarkButtonProps) {
         const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);
-        const toggleHandler = useCallback(
+        const toggleHandler = useCallback<MouseEventHandler<HTMLButtonElement>>(
             async (event) => {
                 event.stopPropagation();
                 if (!store) return;

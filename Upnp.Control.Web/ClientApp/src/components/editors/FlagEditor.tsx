@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, useCallback, useEffect, useState } from "react";
+import { ChangeEventHandler, InputHTMLAttributes, useCallback, useEffect, useState } from "react";
 
 export type FlagEditorProps = InputHTMLAttributes<HTMLInputElement> & {
     callback: (value: boolean) => void | boolean
@@ -7,8 +7,9 @@ export type FlagEditorProps = InputHTMLAttributes<HTMLInputElement> & {
 export function FlagEditor({ className, callback, checked: checkedProp, ...other }: FlagEditorProps) {
     const [checked, setChecked] = useState(checkedProp);
 
-    const changedHandler = useCallback(async ({ target: { checked } }) => {
-        if (callback(checked) !== false) setChecked(checked);
+    const changedHandler = useCallback<ChangeEventHandler<HTMLInputElement>>(({ target: { checked } }) => {
+        if (callback(checked) !== false)
+            setChecked(checked);
     }, [callback]);
 
     useEffect(() => setChecked(checkedProp), [checkedProp]);

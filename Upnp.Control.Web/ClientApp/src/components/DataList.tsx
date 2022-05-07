@@ -1,19 +1,22 @@
-import React, { ElementType, HTMLAttributes, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { ElementType, HTMLAttributes, MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PressHoldGestureRecognizer } from "./gestures/PressHoldGestureRecognizer";
+
+export type DeleteRowHandler = (index: number, key?: string, tag?: string | number | object) => void;
 
 type DataListProps = HTMLAttributes<HTMLDivElement> & {
     tag?: string | number | object;
     editable?: boolean;
     template?: ElementType;
-    onDelete?: (index: number, key?: string, tag?: string | number | object) => void;
+    onDelete?: DeleteRowHandler;
 };
 
 export function DataList({ children, className, editable, template, tag, onDelete, ...other }: DataListProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [editMode, setEditMode] = useState(false);
     const gestureHandler = useCallback(() => setEditMode(prev => !prev), []);
-    const deleteHandler = useCallback(({ currentTarget: { dataset: { index, key } } }) =>
-        onDelete?.(parseInt(index), key, tag), [onDelete, tag]);
+    const deleteHandler = useCallback<MouseEventHandler<HTMLButtonElement>>(
+        ({ currentTarget: { dataset: { index, key } } }) =>
+            onDelete?.(parseInt(index ?? ""), key, tag), [onDelete, tag]);
     const recognizer = useMemo(() => new PressHoldGestureRecognizer<HTMLDivElement>(gestureHandler), []);
     useEffect(() => {
         recognizer.unbind();

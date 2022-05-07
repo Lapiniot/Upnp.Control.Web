@@ -12,7 +12,7 @@ type UpdateCallback = (ellapsed: number) => void;
 export function useIntervalUpdate(callback: UpdateCallback, active = true, interval = 1000) {
     const props = useRef({ start: 0, interval, controller: null as (AbortController | null), callback });
 
-    const update = useCallback(time => {
+    const update = useCallback<FrameRequestCallback>(time => {
         const { start, interval, controller, callback } = props.current;
         if (controller?.signal.aborted) return;
         callback(time - start);

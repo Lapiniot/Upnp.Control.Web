@@ -6,7 +6,7 @@ type TimerProps = { running: boolean; current: number; interval?: number }
 
 export default function ({ current, running, interval, ...other }: TimerProps & HTMLAttributes<HTMLTimeElement>) {
     const ref = useRef<HTMLTimeElement>(null);
-    const callback = useCallback((ellapsed) => {
+    const callback = useCallback((ellapsed: number) => {
         if (ref?.current) {
             ref.current.textContent = formatTime(ellapsed / 1000 + current);
         }
