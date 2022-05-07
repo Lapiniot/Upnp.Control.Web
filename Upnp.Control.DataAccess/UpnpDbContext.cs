@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Upnp.Control.DataAccess.Configurations;
+using Upnp.Control.DataAccess.Configuration;
 
 namespace Upnp.Control.DataAccess;
 

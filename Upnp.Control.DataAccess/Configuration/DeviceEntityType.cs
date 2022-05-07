@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Upnp.Control.DataAccess.Configurations;
+namespace Upnp.Control.DataAccess.Configuration;
 
 internal sealed class DeviceEntityType : IEntityTypeConfiguration<UpnpDevice>
 {

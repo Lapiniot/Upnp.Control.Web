@@ -5,7 +5,7 @@ using Upnp.Control.DataAccess.CompiledModels;
 using Upnp.Control.DataAccess.Queries;
 using Upnp.Control.Models.PushNotifications;
 
-namespace Upnp.Control.DataAccess.Configurations;
+namespace Upnp.Control.DataAccess.Configuration;
 
 public static class ConfigureServicesExtensions
 {

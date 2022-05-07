@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Upnp.Control.DataAccess.Configurations;
+using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Configuration;
 using Upnp.Control.Infrastructure.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
