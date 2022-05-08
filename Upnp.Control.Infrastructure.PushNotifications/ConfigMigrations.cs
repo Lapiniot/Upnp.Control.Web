@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
+namespace Upnp.Control.Infrastructure.PushNotifications;
 
 internal static class ConfigMigrations
 {

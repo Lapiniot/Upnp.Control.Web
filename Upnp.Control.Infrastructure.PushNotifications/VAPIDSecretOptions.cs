@@ -1,4 +1,4 @@
-namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
+namespace Upnp.Control.Infrastructure.PushNotifications;
 
 #pragma warning disable CA1819 // Properties should not return arrays
 

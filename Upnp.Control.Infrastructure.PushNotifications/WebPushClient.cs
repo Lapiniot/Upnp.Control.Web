@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 namespace Upnp.Control.Infrastructure.PushNotifications;
 

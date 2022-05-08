@@ -1,5 +1,4 @@
 using Upnp.Control.Abstractions;
-using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.Infrastructure.PushNotifications;

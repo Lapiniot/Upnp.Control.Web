@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
+namespace Upnp.Control.Infrastructure.PushNotifications;
 
 public class JsonOptions
 {

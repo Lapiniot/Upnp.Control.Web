@@ -2,7 +2,6 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Channels;
 using Upnp.Control.Abstractions;
-using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Models;
 using Upnp.Control.Models.Events;
 using Upnp.Control.Models.PushNotifications;
