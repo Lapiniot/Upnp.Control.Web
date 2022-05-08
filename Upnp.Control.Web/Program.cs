@@ -1,6 +1,6 @@
 ﻿#region usings
-using System.Text;
 using Upnp.Control.DataAccess.Configuration;
+using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Configuration;
 using Upnp.Control.Infrastructure.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
@@ -128,6 +128,7 @@ app.MapContentProxy("dlna-proxy/{*url}");
 app.MapHealthChecks("api/health");
 app.MapCertificateDownloadMiddleware("api/cert");
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
+app.MapBrowseContentApiEndpoint("api/devices");
 app.MapFallbackToFile("index.html");
 
 #endregion

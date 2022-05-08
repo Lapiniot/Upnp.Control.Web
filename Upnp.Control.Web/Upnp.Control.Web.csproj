@@ -49,17 +49,20 @@
         <ProjectReference Include="../Upnp.Control.Infrastructure.Upnp/Upnp.Control.Infrastructure.Upnp.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.SignalR/Upnp.Control.Infrastructure.SignalR.csproj" />
         <ProjectReference Include="../Upnp.Control.Infrastructure.AspNetCore/Upnp.Control.Infrastructure.AspNetCore.csproj" />
+        <ProjectReference Include="../Upnp.Control.Infrastructure.AspNetCore.Api/Upnp.Control.Infrastructure.AspNetCore.Api.csproj" />
         <ProjectReference Include="../Upnp.Control.Services.Commands/Upnp.Control.Services.Commands.csproj" />
         <ProjectReference Include="../Upnp.Control.Services.Queries/Upnp.Control.Services.Queries.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+        <Using Include="System.Text" />
+        <Using Include="Microsoft.AspNetCore.Mvc" />
+        <Using Include="Microsoft.AspNetCore.Http" />
         <Using Include="Upnp.Control.Models" />
         <Using Include="Upnp.Control.Models.Events" />
         <Using Include="Upnp.Control.Services" />
         <Using Include="Upnp.Control.Infrastructure.AspNetCore" />
         <Using Include="Upnp.Control.Infrastructure.AspNetCore.Routing" />
-        <Using Include="Microsoft.AspNetCore.Mvc" />
     </ItemGroup>
 
     <ItemGroup>

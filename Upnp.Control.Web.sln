@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Services.Comma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Services.Queries", "Upnp.Control.Services.Queries\Upnp.Control.Services.Queries.csproj", "{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.AspNetCore.Api", "Upnp.Control.Infrastructure.AspNetCore.Api\Upnp.Control.Infrastructure.AspNetCore.Api.csproj", "{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0216E868-52F5-4838-89E9-1900673E2A0F}"
 	ProjectSection(SolutionItems) = preProject
 		IoT.Device\IoT.Protocol\.editorconfig = IoT.Device\IoT.Protocol\.editorconfig
@@ -312,6 +314,18 @@ Global
 		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x64.Build.0 = Release|Any CPU
 		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x86.ActiveCfg = Release|Any CPU
 		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x86.Build.0 = Release|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Debug|x64.Build.0 = Debug|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Debug|x86.Build.0 = Debug|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Release|x64.ActiveCfg = Release|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Release|x64.Build.0 = Release|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Release|x86.ActiveCfg = Release|Any CPU
+		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
