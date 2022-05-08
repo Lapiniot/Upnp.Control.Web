@@ -1,7 +1,5 @@
 ﻿#region usings
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Configuration;
 using Upnp.Control.Infrastructure.Configuration;
@@ -13,6 +11,7 @@ using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 using Upnp.Control.Models.Converters;
 using Upnp.Control.Services.Commands.Configuration;
 using Upnp.Control.Services.Queries.Configuration;
+using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 #endregion
 
 #pragma warning disable CA1812 // False warning due to the bug in the rule's analyzer
@@ -24,33 +23,20 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var builder = WebApplication.CreateBuilder(args);
 
-#region JSON configuration
+#region Application configuration
 
-var customConverters = new JsonConverter[]
-{
-    new IconJsonConverter(), new ServiceJsonConverter(), new DeviceJsonConverter(), new ItemJsonConverter(),
-    new ResourceJsonConverter(), new ContainerJsonConverter(), new MediaItemJsonConverter(), new CDContentConverter()
-};
-
-void ConfigureJsonSerializer(JsonSerializerOptions options)
-{
-    options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-
-    foreach (var converter in customConverters)
-    {
-        options.Converters.Add(converter);
-    }
-
-    options.AddContext<JsonContext>();
-}
+builder.Host.ConfigureAppConfiguration((ctx, cb) => cb
+    .AddJsonFile("config/appsettings.json", true, true)
+    .AddJsonFile($"config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", true, true)
+    .AddJsonFile("config/appsettings.Secrets.json", true, true)
+    .AddEnvironmentVariables("UPNP_DASHBOARD_"));
 
 #endregion
 
 #region Services configuration
 
 builder.Services.AddServicesInit()
-    .AddWebPushSender(ConfigureJsonSerializer)
+    .AddWebPushSender(static options => options.ConfigureDefaults())
     .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/rc").MapAVTransport("api/events/{0}/avt"))
     .AddUpnpDiscovery()
     .AddUpnpDeviceSqliteDatabase(Path.Combine(builder.Environment.ContentRootPath, "data/upnp.db3"))
@@ -67,14 +53,19 @@ builder.Services.AddServicesInit()
 
 #region ASPNET MVC configuration
 
-builder.Services.AddControllers(options => options.AddBinaryContentFormatter().AddRequestCancelledExceptionFilter())
-    .AddJsonOptions(options => ConfigureJsonSerializer(options.JsonSerializerOptions));
+builder.Services
+    .AddControllers(options => options
+        .AddBinaryContentFormatter()
+        .AddRequestCancelledExceptionFilter())
+    .AddJsonOptions(static options => options.JsonSerializerOptions.ConfigureDefaults());
+
+builder.Services.Configure<JsonOptions>(static options => options.SerializerOptions.ConfigureDefaults());
 
 #endregion
 
 #region SignalR configuration
 
-builder.Services.AddSignalR().AddJsonProtocol(options => ConfigureJsonSerializer(options.PayloadSerializerOptions));
+builder.Services.AddSignalR().AddJsonProtocol(static options => options.PayloadSerializerOptions.ConfigureDefaults());
 
 #endregion
 
@@ -102,16 +93,6 @@ builder.Services.AddSwaggerGen(c =>
 #region Health checks configuration
 
 builder.Services.AddHealthChecks();
-
-#endregion
-
-#region Application configuration
-
-builder.Host.ConfigureAppConfiguration((ctx, cb) => cb
-    .AddJsonFile("config/appsettings.json", true, true)
-    .AddJsonFile($"config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", true, true)
-    .AddJsonFile("config/appsettings.Secrets.json", true, true)
-    .AddEnvironmentVariables("UPNP_DASHBOARD_"));
 
 #endregion
 
