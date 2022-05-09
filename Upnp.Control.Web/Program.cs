@@ -31,6 +31,19 @@ builder.Host.ConfigureAppConfiguration((ctx, cb) => cb
     .AddJsonFile("config/appsettings.Secrets.json", true, true)
     .AddEnvironmentVariables("UPNP_DASHBOARD_"));
 
+#region Platform specific host lifetime configuration
+
+if (OperatingSystem.IsLinux())
+{
+    builder.Host.UseSystemd();
+}
+else if (OperatingSystem.IsWindows())
+{
+    builder.Host.UseWindowsService();
+}
+
+#endregion
+
 #endregion
 
 #region Services configuration
@@ -81,31 +94,21 @@ builder.Services
 
 #region Swagger configuration
 
-builder.Services.AddSwaggerGen(c =>
-{
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
-});
+builder.Services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc("v1", new() { Version = "v1", Title = "UPnP Control Dashboard" });
+        var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        options.IncludeXmlComments(xmlPath);
+    });
 
 #endregion
 
 #region Health checks configuration
 
 builder.Services.AddHealthChecks();
-
-#endregion
-
-#region Platform specific host lifetime configuration
-
-if (OperatingSystem.IsLinux())
-{
-    builder.Host.UseSystemd();
-}
-else if (OperatingSystem.IsWindows())
-{
-    builder.Host.UseWindowsService();
-}
 
 #endregion
 
@@ -117,18 +120,23 @@ app.UseStaticFiles();
 app.UseResponseCaching();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/api/swagger/v1/swagger.json", "UPnP Control API V1");
     options.RoutePrefix = "api/swagger";
+    options.SwaggerEndpoint("/api/swagger/v1/swagger.json", "UPnP Control Dashboard API v1");
 });
 
 app.MapDefaultControllerRoute();
+// Custom middleware endpoints
 app.MapUpnpEventsHub("upnpevents");
 app.MapImageLoaderProxy("proxy/{*url}");
 app.MapContentProxy("dlna-proxy/{*url}");
-app.MapHealthChecks("api/health");
 app.MapCertificateDownloadMiddleware("api/cert");
+// Health checks
+app.MapHealthChecks("api/health");
+// API routes
+app.MapBrowseContentApiEndpoint("api/devices/{deviceId}/items/{*path}");
+// Swagger
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
-app.MapBrowseContentApiEndpoint("api/devices");
+// Fallback route
 app.MapFallbackToFile("index.html");
 
 #endregion
