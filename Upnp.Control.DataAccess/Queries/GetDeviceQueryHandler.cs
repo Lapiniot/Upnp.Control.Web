@@ -36,7 +36,7 @@ internal sealed class GetDeviceQueryHandler : IAsyncEnumerableQueryHandler<GetDe
 
         if (!Filters.TryGetValue(category, out var filter))
         {
-            throw new ArgumentException($"Unknown device category filter '{category}'");
+            throw new InvalidOperationException($"Unknown device category filter '{category}'");
         }
 
         var queryable = context.UpnpDevices.AsNoTracking().Where(filter);
