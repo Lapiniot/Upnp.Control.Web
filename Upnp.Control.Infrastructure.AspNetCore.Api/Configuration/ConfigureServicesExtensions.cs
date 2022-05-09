@@ -12,26 +12,18 @@ public static class ConfigureServicesExtensions
     {
         ArgumentNullException.ThrowIfNull(pattern);
 
-        routeBuilder.MapGet(pattern, BrowseAsync)
+        routeBuilder.MapGet(pattern, ContentDirectoryServices.BrowseAsync)
             .Produces<CDContent>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
-            .WithTags(new string[] { "ContentDirectory" })
-            .WithName("Browse")
-            .WithDisplayName("Browse");
+        .WithTags(new string[] { "ContentDirectory" })
+        .WithName("BrowseAsync")
+        .WithDisplayName("Browse");
 
         return routeBuilder;
-
-        static Task<IResult> BrowseAsync(IAsyncQueryHandler<CDGetContentQuery, CDContent> handler,
-            string deviceId, string? path, bool withParents = true, bool withResourceProps = false, bool withVendorProps = false,
-            bool withMetadata = false, bool withDevice = true, uint take = 50, uint skip = 0,
-            CancellationToken cancellationToken = default) =>
-                ContentDirectoryServices.BrowseAsync(handler, deviceId, path,
-                    new(withParents, withResourceProps, withVendorProps, withMetadata, withDevice, take, skip),
-                    cancellationToken);
     }
 
-    // <summary>
+    /// <summary>
     /// Adds Device API <see cref="RouteEndpoint" /> to the <see cref="IEndpointRouteBuilder" />
     /// </summary>
     /// <param name="routeBuilder">The <see cref="IEndpointRouteBuilder" /> to add the route to.</param>
@@ -48,15 +40,14 @@ public static class ConfigureServicesExtensions
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
             .WithTags(tags)
-            .WithName("Get")
+            .WithName("GetAsync")
             .WithDisplayName("Get");
 
         routeBuilder.MapGet(pattern, DeviceServices.GetAllAsync)
             .Produces<IAsyncEnumerable<UpnpDevice>>(StatusCodes.Status200OK, "application/json")
-            .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
             .WithTags(tags)
-            .WithName("GetAll")
+            .WithName("GetAllAsync")
             .WithDisplayName("GetAll");
 
         return routeBuilder;

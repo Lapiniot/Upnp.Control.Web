@@ -1,5 +1,7 @@
 ﻿#region usings
+using System.Reflection;
 using Upnp.Control.DataAccess.Configuration;
+using Upnp.Control.Infrastructure.AspNetCore.Api;
 using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Configuration;
 using Upnp.Control.Infrastructure.Configuration;
@@ -99,9 +101,8 @@ builder.Services
     .AddSwaggerGen(options =>
     {
         options.SwaggerDoc("v1", new() { Version = "v1", Title = "UPnP Control Dashboard" });
-        var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-        options.IncludeXmlComments(xmlPath);
+        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(DeviceServices).Assembly.GetName().Name}.xml"));
     });
 
 #endregion
