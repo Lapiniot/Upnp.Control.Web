@@ -134,6 +134,7 @@ app.MapCertificateDownloadMiddleware("api/cert");
 app.MapHealthChecks("api/health");
 // API routes
 app.MapBrowseContentApiEndpoint("api/devices/{deviceId}/items/{*path}");
+app.MapDeviceApiEndpoint("api/devices");
 // Swagger
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
 // Fallback route
