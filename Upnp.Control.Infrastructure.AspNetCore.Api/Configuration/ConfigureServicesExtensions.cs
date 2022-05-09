@@ -7,12 +7,12 @@ public static class ConfigureServicesExtensions
     /// </summary>
     /// <param name="routeBuilder">The <see cref="IEndpointRouteBuilder" /> to add the route to.</param>
     /// <param name="pattern">The route pattern. May include '{deviceId}' and '{path}' parameters.</param>
-    /// <returns>The <see cref="RouteHandlerBuilder" /> that can be used to further customize the endpoint.</returns>
-    public static RouteHandlerBuilder MapBrowseContentApiEndpoint(this IEndpointRouteBuilder routeBuilder, string pattern)
+    /// <returns>The <see cref="IEndpointRouteBuilder" /> that can be used to further customize the builder.</returns>
+    public static IEndpointRouteBuilder MapBrowseContentApiEndpoint(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         ArgumentNullException.ThrowIfNull(pattern);
 
-        return routeBuilder.MapGet(pattern, BrowseAsync)
+        routeBuilder.MapGet(pattern, BrowseAsync)
             .Produces<CDContent>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
@@ -20,9 +20,12 @@ public static class ConfigureServicesExtensions
             .WithName("Browse")
             .WithDisplayName("Browse");
 
-        static Task<IResult> BrowseAsync(IAsyncQueryHandler<CDGetContentQuery, CDContent> handler, CancellationToken cancellationToken,
-            string deviceId, string? path, bool? withParents, bool? withResourceProps, bool? withVendorProps,
-            bool? withMetadata, bool? withDevice, uint take = 50, uint skip = 0) =>
+        return routeBuilder;
+
+        static Task<IResult> BrowseAsync(IAsyncQueryHandler<CDGetContentQuery, CDContent> handler,
+            string deviceId, string? path, bool withParents = true, bool withResourceProps = false, bool withVendorProps = false,
+            bool withMetadata = false, bool withDevice = true, uint take = 50, uint skip = 0,
+            CancellationToken cancellationToken = default) =>
                 ContentDirectoryServices.BrowseAsync(handler, deviceId, path,
                     new(withParents, withResourceProps, withVendorProps, withMetadata, withDevice, take, skip),
                     cancellationToken);

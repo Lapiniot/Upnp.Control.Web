@@ -27,15 +27,15 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
 
         path ??= "0";
 
-        var (service, description) = query.Options.WithDevice != false ?
+        var (service, description) = query.Options.WithDevice ?
             await factory.GetAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false) :
             (await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false), null);
 
         Item metadata = null;
-        if (withMetadata == true)
+        if (withMetadata)
         {
             var mr = await service.BrowseAsync(path, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);
-            metadata = DIDLXmlReader.Read(mr["Result"], withResource == true, withVendor == true).FirstOrDefault();
+            metadata = DIDLXmlReader.Read(mr["Result"], withResource, withVendor).FirstOrDefault();
         }
 
         IEnumerable<Item> items = null;
@@ -43,14 +43,14 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
         if (metadata is null or Container)
         {
             var result = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
-            items = DIDLXmlReader.Read(result["Result"], withResource == true, withVendor == true).ToArray();
+            items = DIDLXmlReader.Read(result["Result"], withResource, withVendor).ToArray();
             total = int.Parse(result["TotalMatches"], InvariantCulture);
         }
 
         IEnumerable<Item> parents = null;
-        if (withParents != false)
+        if (withParents)
         {
-            parents = await GetParentsAsync(service, path, "id,title,parentId,res", withResource == true, withVendor == true, cancellationToken).ConfigureAwait(false);
+            parents = await GetParentsAsync(service, path, "id,title,parentId,res", withResource, withVendor, cancellationToken).ConfigureAwait(false);
         }
 
         return new CDContent(total, description, metadata, items, parents);
