@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29613.14
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32505.426
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Web", "Upnp.Control.Web\Upnp.Control.Web.csproj", "{3C340B3D-CB80-49F5-9B8D-1A8D6E2D5E1C}"
 EndProject
@@ -21,35 +21,36 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Common", "IoT.Device
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Common.Net", "IoT.Device\IoT.Protocol\System.Common\System.Common.Net\System.Common.Net.csproj", "{60C8B0B6-24D1-42C4-A4DF-AD4DEA9BB4CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Models", "Upnp.Control.Models\Upnp.Control.Models.csproj", "{387E152E-CC02-4B24-A855-2FE2F34ED672}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Models", "Upnp.Control.Models\Upnp.Control.Models.csproj", "{387E152E-CC02-4B24-A855-2FE2F34ED672}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Abstractions", "Upnp.Control.Abstractions\Upnp.Control.Abstractions.csproj", "{794EAE2F-24A5-424D-807B-48CE1076A28A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Abstractions", "Upnp.Control.Abstractions\Upnp.Control.Abstractions.csproj", "{794EAE2F-24A5-424D-807B-48CE1076A28A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.DataAccess", "Upnp.Control.DataAccess\Upnp.Control.DataAccess.csproj", "{514942F5-97B5-4AE8-8FB4-6693662FEDDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.DataAccess", "Upnp.Control.DataAccess\Upnp.Control.DataAccess.csproj", "{514942F5-97B5-4AE8-8FB4-6693662FEDDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.UpnpDiscovery", "Upnp.Control.Infrastructure.UpnpDiscovery\Upnp.Control.Infrastructure.UpnpDiscovery.csproj", "{88DA8A06-8E53-4368-89F1-8109AAC7A48E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Infrastructure.UpnpDiscovery", "Upnp.Control.Infrastructure.UpnpDiscovery\Upnp.Control.Infrastructure.UpnpDiscovery.csproj", "{88DA8A06-8E53-4368-89F1-8109AAC7A48E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.PushNotifications", "Upnp.Control.Infrastructure.PushNotifications\Upnp.Control.Infrastructure.PushNotifications.csproj", "{A3566FA2-6109-40C6-8F0A-365E3B43921B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Infrastructure.PushNotifications", "Upnp.Control.Infrastructure.PushNotifications\Upnp.Control.Infrastructure.PushNotifications.csproj", "{A3566FA2-6109-40C6-8F0A-365E3B43921B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Models.PushNotifications", "Upnp.Control.Models.PushNotifications\Upnp.Control.Models.PushNotifications.csproj", "{75DA5E12-2AFF-4E39-8918-BD333F808F47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Models.PushNotifications", "Upnp.Control.Models.PushNotifications\Upnp.Control.Models.PushNotifications.csproj", "{75DA5E12-2AFF-4E39-8918-BD333F808F47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.UpnpEvents", "Upnp.Control.Infrastructure.UpnpEvents\Upnp.Control.Infrastructure.UpnpEvents.csproj", "{EFF8DBEB-CEA6-45CE-ACDF-2BC03B4DF04F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Infrastructure.UpnpEvents", "Upnp.Control.Infrastructure.UpnpEvents\Upnp.Control.Infrastructure.UpnpEvents.csproj", "{EFF8DBEB-CEA6-45CE-ACDF-2BC03B4DF04F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.Upnp", "Upnp.Control.Infrastructure.Upnp\Upnp.Control.Infrastructure.Upnp.csproj", "{39692779-C3DA-4364-A210-6EE13F96850D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Infrastructure.Upnp", "Upnp.Control.Infrastructure.Upnp\Upnp.Control.Infrastructure.Upnp.csproj", "{39692779-C3DA-4364-A210-6EE13F96850D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.SignalR", "Upnp.Control.Infrastructure.SignalR\Upnp.Control.Infrastructure.SignalR.csproj", "{D2560441-83DA-408B-B303-8F13D86D96EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Infrastructure.SignalR", "Upnp.Control.Infrastructure.SignalR\Upnp.Control.Infrastructure.SignalR.csproj", "{D2560441-83DA-408B-B303-8F13D86D96EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.AspNetCore", "Upnp.Control.Infrastructure.AspNetCore\Upnp.Control.Infrastructure.AspNetCore.csproj", "{84CA9B55-683C-48DD-8274-16B9117783B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Infrastructure.AspNetCore", "Upnp.Control.Infrastructure.AspNetCore\Upnp.Control.Infrastructure.AspNetCore.csproj", "{84CA9B55-683C-48DD-8274-16B9117783B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Services.Commands", "Upnp.Control.Services.Commands\Upnp.Control.Services.Commands.csproj", "{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Services.Commands", "Upnp.Control.Services.Commands\Upnp.Control.Services.Commands.csproj", "{3871317E-7AC8-4C2D-8E82-49EF25DE41A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Services.Queries", "Upnp.Control.Services.Queries\Upnp.Control.Services.Queries.csproj", "{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Services.Queries", "Upnp.Control.Services.Queries\Upnp.Control.Services.Queries.csproj", "{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upnp.Control.Infrastructure.AspNetCore.Api", "Upnp.Control.Infrastructure.AspNetCore.Api\Upnp.Control.Infrastructure.AspNetCore.Api.csproj", "{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upnp.Control.Infrastructure.AspNetCore.Api", "Upnp.Control.Infrastructure.AspNetCore.Api\Upnp.Control.Infrastructure.AspNetCore.Api.csproj", "{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0216E868-52F5-4838-89E9-1900673E2A0F}"
 	ProjectSection(SolutionItems) = preProject
 		IoT.Device\IoT.Protocol\.editorconfig = IoT.Device\IoT.Protocol\.editorconfig
+		common.props = common.props
 	EndProjectSection
 EndProject
 Global
@@ -182,6 +183,18 @@ Global
 		{387E152E-CC02-4B24-A855-2FE2F34ED672}.Release|x64.Build.0 = Release|Any CPU
 		{387E152E-CC02-4B24-A855-2FE2F34ED672}.Release|x86.ActiveCfg = Release|Any CPU
 		{387E152E-CC02-4B24-A855-2FE2F34ED672}.Release|x86.Build.0 = Release|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|x64.Build.0 = Debug|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|x86.Build.0 = Debug|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x64.ActiveCfg = Release|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x64.Build.0 = Release|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x86.ActiveCfg = Release|Any CPU
+		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x86.Build.0 = Release|Any CPU
 		{514942F5-97B5-4AE8-8FB4-6693662FEDDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{514942F5-97B5-4AE8-8FB4-6693662FEDDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{514942F5-97B5-4AE8-8FB4-6693662FEDDF}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -302,18 +315,6 @@ Global
 		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Release|x64.Build.0 = Release|Any CPU
 		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Release|x86.ActiveCfg = Release|Any CPU
 		{8D82EC64-9AD2-4EE9-813F-43B922BDCDE9}.Release|x86.Build.0 = Release|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|x64.Build.0 = Debug|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Debug|x86.Build.0 = Debug|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x64.ActiveCfg = Release|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x64.Build.0 = Release|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x86.ActiveCfg = Release|Any CPU
-		{794EAE2F-24A5-424D-807B-48CE1076A28A}.Release|x86.Build.0 = Release|Any CPU
 		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FBFA2AE-33D3-447E-AE0A-436D0B49C56B}.Debug|x64.ActiveCfg = Debug|Any CPU
