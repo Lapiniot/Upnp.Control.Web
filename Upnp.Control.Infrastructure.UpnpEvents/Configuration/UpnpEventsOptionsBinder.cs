@@ -2,7 +2,7 @@ using Upnp.Control.Infrastructure.Configuration;
 
 namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 
-internal class UpnpEventsOptionsBinder : OptionsBinder<UpnpEventsOptions>
+internal sealed class UpnpEventsOptionsBinder : OptionsBinder<UpnpEventsOptions>
 {
     public UpnpEventsOptionsBinder()
     {

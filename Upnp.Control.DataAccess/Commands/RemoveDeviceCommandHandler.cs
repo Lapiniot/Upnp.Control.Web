@@ -1,7 +1,7 @@
 namespace Upnp.Control.DataAccess.Commands;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
-internal class RemoveDeviceCommandHandler : IAsyncCommandHandler<RemoveDeviceCommand>
+internal sealed class RemoveDeviceCommandHandler : IAsyncCommandHandler<RemoveDeviceCommand>
 {
     private readonly UpnpDbContext context;
 

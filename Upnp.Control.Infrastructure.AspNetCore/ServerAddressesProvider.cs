@@ -8,7 +8,7 @@ using static System.Net.IPAddress;
 namespace Upnp.Control.Infrastructure.AspNetCore;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes: instantiated by DI container
-internal class ServerAddressesProvider : IServerAddressesProvider
+internal sealed class ServerAddressesProvider : IServerAddressesProvider
 {
     private readonly IServer server;
 

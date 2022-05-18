@@ -4,7 +4,7 @@ namespace Upnp.Control.DataAccess.Queries;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 
-internal class PSGetQueryHandler : IAsyncQueryHandler<PSGetQuery, PushNotificationSubscription>
+internal sealed class PSGetQueryHandler : IAsyncQueryHandler<PSGetQuery, PushNotificationSubscription>
 {
     private readonly PushSubscriptionDbContext context;
 

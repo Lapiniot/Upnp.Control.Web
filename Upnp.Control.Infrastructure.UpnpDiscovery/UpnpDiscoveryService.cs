@@ -11,7 +11,7 @@ using Icon = Upnp.Control.Models.Icon;
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
-internal partial class UpnpDiscoveryService : BackgroundServiceBase
+internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
 {
     private const string RootDevice = "upnp:rootdevice";
     private readonly IUpnpServiceMetadataProvider metadataProvider;

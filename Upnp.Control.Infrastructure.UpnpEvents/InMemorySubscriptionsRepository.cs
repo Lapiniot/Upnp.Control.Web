@@ -1,7 +1,7 @@
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
 #pragma warning disable CA1812 // instantiated by DI container
-internal class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepository
+internal sealed class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepository
 {
     private readonly Dictionary<string, List<IAsyncCancelable>> storage;
 

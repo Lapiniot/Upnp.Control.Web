@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 namespace Upnp.Control.Infrastructure.AspNetCore;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
-internal class BinaryContentOutputFormatter : IOutputFormatter
+internal sealed class BinaryContentOutputFormatter : IOutputFormatter
 {
     public bool CanWriteResult([NotNull] OutputFormatterCanWriteContext context) =>
         context.ContentType == "application/octet-stream" && context.ObjectType == typeof(byte[]);

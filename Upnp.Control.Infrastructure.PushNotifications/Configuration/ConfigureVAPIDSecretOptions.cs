@@ -3,7 +3,7 @@ using Upnp.Control.Abstractions;
 namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
-internal class ConfigureVAPIDSecretOptions : IConfigureOptions<VAPIDSecretOptions>, IBase64UrlDecoder
+internal sealed class ConfigureVAPIDSecretOptions : IConfigureOptions<VAPIDSecretOptions>, IBase64UrlDecoder
 {
     private readonly IConfiguration configuration;
     private readonly IBase64UrlDecoder decoder;

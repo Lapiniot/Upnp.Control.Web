@@ -16,7 +16,7 @@ using Upnp.Control.Services.Queries.Configuration;
 using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 #endregion
 
-#pragma warning disable CA1812 // False warning due to the bug in the rule's analyzer
+#pragma warning disable CA1812, CA1852 // False warning due to the bug in the rule's analyzer
 
 IoT.Device.Upnp.Library.Init();
 IoT.Device.Upnp.Umi.Library.Init();

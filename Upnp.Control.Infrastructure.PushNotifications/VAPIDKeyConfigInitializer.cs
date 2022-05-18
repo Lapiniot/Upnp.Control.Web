@@ -4,7 +4,7 @@ using Upnp.Control.Abstractions;
 namespace Upnp.Control.Infrastructure.PushNotifications;
 
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
-internal class VAPIDKeyConfigInitializer : IServiceInitializer
+internal sealed class VAPIDKeyConfigInitializer : IServiceInitializer
 {
     private readonly IHostEnvironment environment;
     private readonly IConfiguration configuration;
