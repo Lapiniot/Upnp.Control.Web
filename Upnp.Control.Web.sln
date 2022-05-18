@@ -50,7 +50,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0216E868-52F5-4838-89E9-1900673E2A0F}"
 	ProjectSection(SolutionItems) = preProject
 		IoT.Device\IoT.Protocol\.editorconfig = IoT.Device\IoT.Protocol\.editorconfig
-		common.props = common.props
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Global

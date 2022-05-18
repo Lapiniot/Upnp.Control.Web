@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../common.props" />
-
   <ItemGroup>
     <ProjectReference Include="../Upnp.Control.Infrastructure/Upnp.Control.Infrastructure.csproj" />
   </ItemGroup>
