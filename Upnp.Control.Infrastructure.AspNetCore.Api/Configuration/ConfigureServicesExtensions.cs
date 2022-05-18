@@ -7,20 +7,20 @@ public static class ConfigureServicesExtensions
     /// </summary>
     /// <param name="routeBuilder">The <see cref="IEndpointRouteBuilder" /> to add the route to.</param>
     /// <param name="pattern">The route pattern. May include '{deviceId}' and '{path}' parameters.</param>
-    /// <returns>The <see cref="IEndpointRouteBuilder" /> that can be used to further customize the builder.</returns>
-    public static IEndpointRouteBuilder MapBrowseContentApiEndpoint(this IEndpointRouteBuilder routeBuilder, string pattern)
+    /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
+    public static RouteGroupBuilder MapBrowseContentApiEndpoint(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         ArgumentNullException.ThrowIfNull(pattern);
 
-        routeBuilder.MapGet(pattern, ContentDirectoryServices.BrowseAsync)
+        var group = routeBuilder.MapGroup(pattern);
+
+        group.MapGet("", ContentDirectoryServices.BrowseAsync)
+            .WithTags(new string[] { "ContentDirectory" })
             .Produces<CDContent>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest)
-        .WithTags(new string[] { "ContentDirectory" })
-        .WithName("BrowseAsync")
-        .WithDisplayName("Browse");
+            .Produces(StatusCodes.Status400BadRequest);
 
-        return routeBuilder;
+        return group;
     }
 
     /// <summary>
@@ -28,28 +28,26 @@ public static class ConfigureServicesExtensions
     /// </summary>
     /// <param name="routeBuilder">The <see cref="IEndpointRouteBuilder" /> to add the route to.</param>
     /// <param name="pattern">The route pattern.</param>
-    /// <returns>The <see cref="IEndpointRouteBuilder" /> that can be used to further customize the builder.</returns>
-    public static IEndpointRouteBuilder MapDeviceApiEndpoint(this IEndpointRouteBuilder routeBuilder, string pattern)
+    /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
+    public static RouteGroupBuilder MapDeviceApiEndpoint(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         ArgumentNullException.ThrowIfNull(pattern);
 
         var tags = new string[] { "Device" };
 
-        routeBuilder.MapGet($"{pattern}/{{id}}", DeviceServices.GetAsync)
+        var group = routeBuilder.MapGroup(pattern);
+
+        group.MapGet("{id}", DeviceServices.GetAsync)
+            .WithTags(tags)
             .Produces<UpnpDevice>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest)
-            .WithTags(tags)
-            .WithName("GetAsync")
-            .WithDisplayName("Get");
+            .Produces(StatusCodes.Status400BadRequest);
 
-        routeBuilder.MapGet(pattern, DeviceServices.GetAllAsync)
+        group.MapGet("", DeviceServices.GetAllAsync)
+            .WithTags(tags)
             .Produces<IAsyncEnumerable<UpnpDevice>>(StatusCodes.Status200OK, "application/json")
-            .Produces(StatusCodes.Status400BadRequest)
-            .WithTags(tags)
-            .WithName("GetAllAsync")
-            .WithDisplayName("GetAll");
+            .Produces(StatusCodes.Status400BadRequest);
 
-        return routeBuilder;
+        return group;
     }
 }
