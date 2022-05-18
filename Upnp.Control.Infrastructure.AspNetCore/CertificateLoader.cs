@@ -14,12 +14,12 @@ internal static class CertificateLoader
             : throw new InvalidOperationException("File doesn't exist at requested path");
     }
 
-    public static X509Certificate2 LoadFromFile(IFileInfo fileInfo, string password)
+    public static X509Certificate2 LoadFromFile(IFileInfo fileInfo, string? password)
     {
         ArgumentNullException.ThrowIfNull(fileInfo);
 
         return fileInfo.Exists
-            ? new X509Certificate2(fileInfo.PhysicalPath, password)
+            ? new X509Certificate2(fileInfo.PhysicalPath!, password)
             : throw new InvalidOperationException("File doesn't exist at requested path");
     }
 
