@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "options": {
         "env": {
-            "FRAMEWORK": "net6.0",
+            "FRAMEWORK": "net7.0",
             "CONFIG": "Release"
         }
     },
@@ -137,7 +137,7 @@
                     "includeDefaults": false
                 },
                 "buildArgs": {
-                    "NET_VERSION": "6.0"
+                    "NET_VERSION": "7.0"
                 },
                 "pull": true
             },
@@ -156,7 +156,7 @@
                     "includeDefaults": false
                 },
                 "buildArgs": {
-                    "NET_VERSION": "6.0"
+                    "NET_VERSION": "7.0"
                 },
                 "pull": true
             },
@@ -175,7 +175,7 @@
                     "includeDefaults": false
                 },
                 "buildArgs": {
-                    "NET_VERSION": "6.0"
+                    "NET_VERSION": "7.0"
                 },
                 "pull": true
             },
@@ -189,12 +189,12 @@
             "dockerBuild": {
                 "tag": "upnp-dashboard:latest-scd-${input:rid}",
                 "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/${input:rid}/Dockerfile",
-                "context": "${workspaceFolder}/Upnp.Control.Web/bin/Release/net6.0/${input:rid}/publish",
+                "context": "${workspaceFolder}/Upnp.Control.Web/bin/Release/net7.0/${input:rid}/publish",
                 "labels": {
                     "includeDefaults": false
                 },
                 "buildArgs": {
-                    "NET_VERSION": "6.0"
+                    "NET_VERSION": "7.0"
                 },
                 "pull": true
             },
