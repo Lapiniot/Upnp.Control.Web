@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
@@ -9,7 +10,7 @@ public static class DeviceServices
     /// </summary>
     /// <param name="handler">Query handler.</param>
     /// <param name="category">Device category filter.</param>
-    /// <param name="withOffline">Wether to include offline devices.</param>
+    /// <param name="withOffline">Whether to include offline devices.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Device information enumerator.</returns>
     public static IAsyncEnumerable<UpnpDevice> GetAllAsync([NotNull] IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
@@ -22,8 +23,8 @@ public static class DeviceServices
     /// <param name="handler">Query handler.</param>
     /// <param name="id">Device ID.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns><see cref="Task{TResult}" /> containing device information or error response.</returns>
-    public static async Task<IResult> GetAsync([NotNull] IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
+    /// <returns><see cref="Task{IResult}" /> containing device information or error response.</returns>
+    public static async Task<Results<Ok<UpnpDevice>, NotFound, BadRequest>> GetAsync([NotNull] IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
         string id, CancellationToken cancellationToken)
     {
         try
@@ -31,15 +32,15 @@ public static class DeviceServices
             var value = await handler.ExecuteAsync(new GetDeviceQuery(id), cancellationToken).ConfigureAwait(false);
             return value switch
             {
-                not null => Results.Ok(value),
-                _ => Results.NotFound()
+                not null => TypedResults.Ok(value),
+                _ => TypedResults.NotFound()
             };
         }
 #pragma warning disable CA1031
         catch
 #pragma warning restore CA1031
         {
-            return Results.BadRequest();
+            return TypedResults.BadRequest();
         }
     }
 }
