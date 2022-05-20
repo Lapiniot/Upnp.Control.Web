@@ -30,7 +30,7 @@ public sealed class ResourceJsonConverter : JsonConverter<Resource>
                 CultureInfo.InvariantCulture));
         }
 
-        if (value.Bitrate is { } bitrate) writer.WriteNumber("bitrate", bitrate);
+        if (value.BitRate is { } bitrate) writer.WriteNumber("bitrate", bitrate);
         if (value.SampleFrequency is { } sampleFrequency) writer.WriteNumber("freq", sampleFrequency);
         if (value.BitsPerSample is { } bitsPerSample) writer.WriteNumber("bits", bitsPerSample);
         if (value.NrAudioChannels is { } nrAudioChannels) writer.WriteNumber("channels", nrAudioChannels);
