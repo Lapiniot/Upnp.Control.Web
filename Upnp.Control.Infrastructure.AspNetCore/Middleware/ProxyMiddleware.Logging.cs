@@ -7,10 +7,10 @@ public partial class ProxyMiddleware
     [LoggerMessage(3, LogLevel.Information, "{id}: Request aborted by client", EventName = "Aborted")]
     private partial void LogAborted(string id);
 
-    [LoggerMessage(4, LogLevel.Debug, "{id}: {available} bytes prebuffered and are ready to be sent to the client", EventName = "Buffered")]
+    [LoggerMessage(4, LogLevel.Debug, "{id}: {available} bytes pre-buffered and are ready to be sent to the client", EventName = "Buffered")]
     private partial void LogBuffered(string id, int available);
 
-    [LoggerMessage(2, LogLevel.Information, "{id}: Request succesfully completed", EventName = "Completed")]
+    [LoggerMessage(2, LogLevel.Information, "{id}: Request successfully completed", EventName = "Completed")]
     private partial void LogCompleted(string id);
 
     [LoggerMessage(6, LogLevel.Debug, "{id}: Transfer finished, no more content provided by source", EventName = "TransferDone")]

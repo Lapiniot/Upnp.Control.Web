@@ -2,7 +2,6 @@ using static IoT.Device.Upnp.Services.BrowseMode;
 
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class AVSetStateCommandHandler : IAsyncCommandHandler<AVSetStateCommand>
 {
     private readonly IUpnpServiceFactory factory;

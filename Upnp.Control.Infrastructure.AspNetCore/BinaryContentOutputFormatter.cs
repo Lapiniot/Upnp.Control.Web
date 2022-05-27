@@ -1,15 +1,13 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace Upnp.Control.Infrastructure.AspNetCore;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class BinaryContentOutputFormatter : IOutputFormatter
 {
-    public bool CanWriteResult([NotNull] OutputFormatterCanWriteContext context) =>
+    public bool CanWriteResult(OutputFormatterCanWriteContext context) =>
         context.ContentType == "application/octet-stream" && context.ObjectType == typeof(byte[]);
 
-    public Task WriteAsync([NotNull] OutputFormatterWriteContext context)
+    public Task WriteAsync(OutputFormatterWriteContext context)
     {
         var bytes = (byte[])context.Object!;
         context.HttpContext.Response.ContentType = "application/octet-stream";

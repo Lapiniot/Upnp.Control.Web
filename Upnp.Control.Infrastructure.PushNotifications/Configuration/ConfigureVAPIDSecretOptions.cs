@@ -2,7 +2,6 @@ using Upnp.Control.Abstractions;
 
 namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class ConfigureVAPIDSecretOptions : IConfigureOptions<VAPIDSecretOptions>, IBase64UrlDecoder
 {
     private readonly IConfiguration configuration;
@@ -14,21 +13,20 @@ internal sealed class ConfigureVAPIDSecretOptions : IConfigureOptions<VAPIDSecre
         this.decoder = decoder ?? this;
     }
 
+    byte[] IBase64UrlDecoder.Decode(string input) => Encoders.FromBase64String(input);
+
     public void Configure(VAPIDSecretOptions options)
     {
-        if (configuration.GetSection("VAPID") is { } section && section.Exists())
-        {
-            if (section.GetValue<string>("PublicKey") is { } publicKey)
-            {
-                options.PublicKey = decoder.Decode(publicKey);
-            }
+        if (configuration.GetSection("VAPID") is not { } section || !section.Exists()) return;
 
-            if (section.GetValue<string>("PrivateKey") is { } privateKey)
-            {
-                options.PrivateKey = decoder.Decode(privateKey);
-            }
+        if (section.GetValue<string>("PublicKey") is { } publicKey)
+        {
+            options.PublicKey = decoder.Decode(publicKey);
+        }
+
+        if (section.GetValue<string>("PrivateKey") is { } privateKey)
+        {
+            options.PrivateKey = decoder.Decode(privateKey);
         }
     }
-
-    byte[] IBase64UrlDecoder.Decode(string input) => Encoders.FromBase64String(input);
 }

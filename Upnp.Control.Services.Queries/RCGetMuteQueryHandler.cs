@@ -1,6 +1,5 @@
 namespace Upnp.Control.Services.Queries;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class RCGetMuteQueryHandler : IAsyncQueryHandler<RCGetMuteQuery, bool?>
 {
     private readonly IUpnpServiceFactory factory;

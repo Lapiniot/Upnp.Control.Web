@@ -1,6 +1,6 @@
 namespace Upnp.Control.Models;
 
-public record PropChangedUpnpEventCommand<TEvent>(string DeviceId, Stream Stream) where TEvent : Events.PropChangedUpnpEvent;
+public record PropChangedUpnpEventCommand(string DeviceId, Stream Stream);
 public record struct RemoveDeviceCommand(string DeviceId);
 public record struct AddDeviceCommand(UpnpDevice Device);
 public record struct UpdateDeviceExpirationCommand(string DeviceId, DateTime ExpiresAt);

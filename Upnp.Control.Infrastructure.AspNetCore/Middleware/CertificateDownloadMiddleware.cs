@@ -1,5 +1,4 @@
 using System.Buffers.Text;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
 
 using static System.Text.Encoding;
@@ -21,7 +20,7 @@ public sealed class CertificateDownloadMiddleware : IMiddleware
         this.configuration = configuration;
     }
 
-    public async Task InvokeAsync([NotNull] HttpContext context, RequestDelegate next)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         using var certificate = KestrelCertificateLoader.LoadFromConfiguration(configuration, environment.ContentRootFileProvider);
 
@@ -33,7 +32,7 @@ public sealed class CertificateDownloadMiddleware : IMiddleware
         await context.Response.CompleteAsync().ConfigureAwait(false);
     }
 
-    private static async Task SendAsFileAsync(HttpResponse response, X509Certificate2 certificate, string fileName)
+    private static async Task SendAsFileAsync(HttpResponse response, X509Certificate certificate, string fileName)
     {
         var bytes = certificate.Export(X509ContentType.Cert);
 

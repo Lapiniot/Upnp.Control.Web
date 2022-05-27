@@ -5,8 +5,7 @@ namespace Upnp.Control.Models.Converters;
 
 public static class JsonSerializerOptionsExtensions
 {
-    private static readonly JsonConverter[] customConverters = new JsonConverter[]
-    {
+    private static readonly JsonConverter[] CustomConverters = {
         new IconJsonConverter(), new ServiceJsonConverter(),
         new DeviceJsonConverter(), new ItemJsonConverter(),
         new ResourceJsonConverter(), new ContainerJsonConverter(),
@@ -23,7 +22,7 @@ public static class JsonSerializerOptionsExtensions
         options.IgnoreReadOnlyProperties = true;
         options.IgnoreReadOnlyFields = true;
 
-        foreach (var converter in customConverters)
+        foreach (var converter in CustomConverters)
         {
             options.Converters.Add(converter);
         }

@@ -1,6 +1,5 @@
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class AVSetPlayModeCommandHandler : IAsyncCommandHandler<AVSetPlayModeCommand>
 {
     private readonly IUpnpServiceFactory factory;

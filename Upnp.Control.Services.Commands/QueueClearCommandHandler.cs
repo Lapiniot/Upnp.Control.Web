@@ -2,7 +2,6 @@ using System.Globalization;
 
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class QueueClearCommandHandler : IAsyncCommandHandler<QClearCommand>
 {
     private readonly IUpnpServiceFactory factory;

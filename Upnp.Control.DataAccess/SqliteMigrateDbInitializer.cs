@@ -1,6 +1,5 @@
 namespace Upnp.Control.DataAccess;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class SqliteMigrateDbInitializer<TContext> : IServiceInitializer where TContext : DbContext
 {
     private readonly TContext context;
@@ -9,8 +8,8 @@ internal sealed class SqliteMigrateDbInitializer<TContext> : IServiceInitializer
 
     public Task InitializeAsync(CancellationToken cancellationToken)
     {
-        var path = context.Database.GetConnectionString()[12..^1];
-        Directory.CreateDirectory(Path.GetDirectoryName(path));
+        var path = context.Database.GetConnectionString()![12..^1];
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         return context.Database.MigrateAsync(cancellationToken);
     }
 }

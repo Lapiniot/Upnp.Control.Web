@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Net.Http.Headers;
+﻿using Microsoft.Net.Http.Headers;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Middleware;
 
@@ -7,7 +6,7 @@ public sealed class ImageLoaderProxyMiddleware : ProxyMiddleware
 {
     private readonly IOptions<Configuration.ImageProxyOptions> options;
 
-    public ImageLoaderProxyMiddleware([NotNull] ImageLoaderProxyClient client, IOptions<Configuration.ImageProxyOptions> options, ILogger<ImageLoaderProxyMiddleware> logger)
+    public ImageLoaderProxyMiddleware(ImageLoaderProxyClient client, IOptions<Configuration.ImageProxyOptions> options, ILogger<ImageLoaderProxyMiddleware> logger)
         : base(client.Client, logger)
     {
         ArgumentNullException.ThrowIfNull(options);
@@ -16,7 +15,7 @@ public sealed class ImageLoaderProxyMiddleware : ProxyMiddleware
         BufferSize = options.Value.BufferSize;
     }
 
-    protected override void CopyHeaders([NotNull] HttpResponseMessage responseMessage, [NotNull] HttpContext context)
+    protected override void CopyHeaders(HttpResponseMessage responseMessage, HttpContext context)
     {
         if (responseMessage.Content is not { } content)
         {

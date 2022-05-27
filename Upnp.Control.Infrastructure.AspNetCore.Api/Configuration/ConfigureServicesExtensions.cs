@@ -33,7 +33,7 @@ public static class ConfigureServicesExtensions
     {
         ArgumentNullException.ThrowIfNull(pattern);
 
-        var tags = new string[] { "Device" };
+        var tags = new[] { "Device" };
 
         var group = routeBuilder.MapGroup(pattern);
 

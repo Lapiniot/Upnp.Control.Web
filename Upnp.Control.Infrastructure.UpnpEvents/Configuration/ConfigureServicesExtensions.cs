@@ -4,20 +4,18 @@ namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    private static readonly UpnpEventsOptionsBinder binder = new();
+    private static readonly UpnpEventsOptionsBinder Binder = new();
 
     public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services,
-        Action<OptionsBuilder<UpnpEventsOptions>> configure = null)
-    {
-        return services
+        Action<OptionsBuilder<UpnpEventsOptions>> configure = null) =>
+        services
             .ConfigureUpnpEventsOptions(configure)
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>()
             .AddTransient<IUpnpEventSubscriptionRepository, InMemorySubscriptionsRepository>()
             .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
-            .AddTransient<IAsyncCommandHandler<PropChangedUpnpEventCommand<AVTPropChangedEvent>>, AVTPropChangedEventCommandHandler>()
-            .AddTransient<IAsyncCommandHandler<PropChangedUpnpEventCommand<RCPropChangedEvent>>, PropChangedUpnpEventCommandHandler<RCPropChangedEvent>>()
+            .AddTransient<IAsyncCommandHandler<PropChangedUpnpEventCommand>, AVTPropChangedEventCommandHandler>()
+            .AddTransient<IAsyncCommandHandler<PropChangedUpnpEventCommand>, PropChangedUpnpEventCommandHandler<RCPropChangedEvent>>()
             .AddEventSubscribeClient();
-    }
 
     public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services, Action<UpnpEventsOptions> configureOptions)
     {
@@ -28,7 +26,7 @@ public static class ConfigureServicesExtensions
 
     public static IServiceCollection ConfigureUpnpEventsOptions(this IServiceCollection services, Action<OptionsBuilder<UpnpEventsOptions>> configure)
     {
-        var builder = services.AddOptions<UpnpEventsOptions>().Configure(binder, "UpnpEventSubscriptions");
+        var builder = services.AddOptions<UpnpEventsOptions>().Configure(Binder, "UpnpEventSubscriptions");
         configure?.Invoke(builder);
         return services;
     }

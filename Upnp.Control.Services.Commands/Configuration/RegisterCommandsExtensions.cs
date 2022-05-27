@@ -2,29 +2,23 @@ namespace Upnp.Control.Services.Commands.Configuration;
 
 public static class RegisterCommandsExtensions
 {
-    public static IServiceCollection AddCommands(this IServiceCollection services)
-    {
-        return services
+    public static IServiceCollection AddCommands(this IServiceCollection services) =>
+        services
             .AddAVTransportCommands()
             .AddRenderingControlCommands()
             .AddPlaylistCommands()
             .AddQueueCommands();
-    }
 
-    public static IServiceCollection AddAVTransportCommands(this IServiceCollection services)
-    {
-        return services
+    public static IServiceCollection AddAVTransportCommands(this IServiceCollection services) =>
+        services
             .AddTransient<IAsyncCommandHandler<AVSetStateCommand>, AVSetStateCommandHandler>()
             .AddTransient<IAsyncCommandHandler<AVSetPositionCommand>, AVSetPositionCommandHandler>()
             .AddTransient<IAsyncCommandHandler<AVSetPlayModeCommand>, AVSetPlayModeCommandHandler>();
-    }
 
-    public static IServiceCollection AddRenderingControlCommands(this IServiceCollection services)
-    {
-        return services
+    public static IServiceCollection AddRenderingControlCommands(this IServiceCollection services) =>
+        services
             .AddTransient<IAsyncCommandHandler<RCSetVolumeCommand>, RCSetVolumeCommandHandler>()
             .AddTransient<IAsyncCommandHandler<RCSetMuteCommand>, RCSetMuteCommandHandler>();
-    }
 
     public static IServiceCollection AddPlaylistCommands(this IServiceCollection services)
     {
@@ -43,10 +37,8 @@ public static class RegisterCommandsExtensions
             .AddTransient<IAsyncCommandHandler<PLRemoveItemsCommand>, PLRemoveItemsCommandHandler>();
     }
 
-    public static IServiceCollection AddQueueCommands(this IServiceCollection services)
-    {
-        return services
+    public static IServiceCollection AddQueueCommands(this IServiceCollection services) =>
+        services
             .AddTransient<IAsyncCommandHandler<QAddItemsCommand>, QueueAddItemsCommandHandler>()
             .AddTransient<IAsyncCommandHandler<QClearCommand>, QueueClearCommandHandler>();
-    }
 }

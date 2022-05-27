@@ -3,7 +3,6 @@ using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class PLAddItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLAddItemsCommand>
 {
     private readonly IOptionsSnapshot<Configuration.PlaylistOptions> options;
@@ -35,7 +34,7 @@ internal sealed class PLAddItemsCommandHandler : PLCommandBase, IAsyncCommandHan
 
         var sb = new StringBuilder();
 
-        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        await using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             await WriteItemsMetadataTreeAsync(sourceDeviceId, items, writer, depth, cancellationToken).ConfigureAwait(false);
         }

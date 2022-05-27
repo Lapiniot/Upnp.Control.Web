@@ -12,7 +12,7 @@ public static class Factories
 
         var next = bag.TryGetValue("NextTrackMetaData", out value) ? DIDLXmlReader.Read(value, true, true).FirstOrDefault() : null;
 
-        return new AVState(bag.TryGetValue("TransportState", out value) ? value : null, null,
+        return new(bag.TryGetValue("TransportState", out value) ? value : null, null,
                     bag.TryGetValue("NumberOfTracks", out value) && int.TryParse(value, out var tracks) ? tracks : null, null,
                     bag.TryGetValue("CurrentPlayMode", out value) ? value : null)
         {
@@ -20,7 +20,7 @@ public static class Factories
             Current = current,
             Next = next,
             CurrentTrack = bag.TryGetValue("CurrentTrack", out value) ? value : null,
-            CurrentTrackUri = bag.TryGetValue("CurrentTrackURI", out value) && !string.IsNullOrEmpty(value) ? new Uri(value) : null,
+            CurrentTrackUri = bag.TryGetValue("CurrentTrackURI", out value) && !string.IsNullOrEmpty(value) ? new Uri(value) : null
         };
     }
 
@@ -28,7 +28,7 @@ public static class Factories
     {
         ArgumentNullException.ThrowIfNull(bag);
 
-        return new AVPosition(bag.TryGetValue("CurrentTrack", out var value) ? value : null,
+        return new(bag.TryGetValue("CurrentTrack", out var value) ? value : null,
             bag.TryGetValue("CurrentTrackDuration", out value) ? value : null,
             bag.TryGetValue("RelativeTimePosition", out value) ? value : null);
     }

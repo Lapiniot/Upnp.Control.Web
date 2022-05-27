@@ -2,7 +2,6 @@ using System.Text;
 
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class PLCopyCommandHandler : IAsyncCommandHandler<PLCopyCommand>
 {
     private readonly IUpnpServiceFactory factory;
@@ -22,7 +21,7 @@ internal sealed class PLCopyCommandHandler : IAsyncCommandHandler<PLCopyCommand>
         var (cdService, plService) = await factory.GetServicesAsync<ContentDirectoryService, PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
 
         var sb = new StringBuilder();
-        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        await using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             await foreach (var (content, _, _) in cdService.BrowseChildrenAsync(playlistId, pageSize: 100, cancellationToken: cancellationToken).ConfigureAwait(false))
             {

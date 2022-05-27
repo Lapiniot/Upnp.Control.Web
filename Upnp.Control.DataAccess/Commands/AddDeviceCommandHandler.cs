@@ -1,6 +1,5 @@
 namespace Upnp.Control.DataAccess.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class AddDeviceCommandHandler : IAsyncCommandHandler<AddDeviceCommand>
 {
     private readonly UpnpDbContext context;

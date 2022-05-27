@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
 using static System.Globalization.CultureInfo;
@@ -24,7 +22,7 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
     #region Implementation of IMiddleware
 
-    public async Task InvokeAsync([NotNull] HttpContext context, RequestDelegate next)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var id = context.Connection.Id;
 
@@ -86,14 +84,14 @@ public abstract partial class ProxyMiddleware : IMiddleware
     {
         var url = context.GetRouteValue("url") as string ?? throw new InvalidOperationException();
 
-        return new Uri(url.IndexOf('?', StringComparison.InvariantCulture) switch
+        return new(url.IndexOf('?', StringComparison.InvariantCulture) switch
         {
             <= 0 => url.Replace("%2F", "/", true, InvariantCulture),
-            int i and > 0 => url[..i].Replace("%2F", "/", true, InvariantCulture) + url[i..]
+            var i and > 0 => url[..i].Replace("%2F", "/", true, InvariantCulture) + url[i..]
         });
     }
 
-    protected virtual HttpRequestMessage CreateRequestMessage([NotNull] HttpContext context, Uri requestUri, HttpMethod method)
+    protected virtual HttpRequestMessage CreateRequestMessage(HttpContext context, Uri requestUri, HttpMethod method)
     {
         var requestMessage = new HttpRequestMessage(method, requestUri);
 
@@ -106,33 +104,33 @@ public abstract partial class ProxyMiddleware : IMiddleware
         return requestMessage;
     }
 
-    protected virtual void CopyHeaders([NotNull] HttpResponseMessage responseMessage, [NotNull] HttpContext context)
+    protected virtual void CopyHeaders(HttpResponseMessage responseMessage, HttpContext context)
     {
         var headers = context.Response.Headers;
 
         foreach (var (key, value) in responseMessage.Headers)
         {
-            headers[key] = new StringValues(value.ToArray());
+            headers[key] = new(value.ToArray());
         }
 
         foreach (var (key, value) in responseMessage.Content.Headers)
         {
-            headers[key] = new StringValues(value.ToArray());
+            headers[key] = new(value.ToArray());
         }
     }
 
-    protected virtual async Task CopyContentAsync([NotNull] HttpResponseMessage responseMessage, [NotNull] HttpContext context, CancellationToken cancellationToken)
+    protected virtual async Task CopyContentAsync(HttpResponseMessage responseMessage, HttpContext context, CancellationToken cancellationToken)
     {
         if (!context.Response.HasStarted)
         {
             await context.Response.StartAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        using var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        await using var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         await CopyContentAsync(stream, context, BufferSize, cancellationToken).ConfigureAwait(false);
     }
 
-    protected async Task CopyContentAsync([NotNull] Stream source, [NotNull] HttpContext context, int bufferSize, CancellationToken cancellationToken)
+    protected async Task CopyContentAsync(Stream source, HttpContext context, int bufferSize, CancellationToken cancellationToken)
     {
         var id = context.Connection.Id;
         var writer = context.Response.BodyWriter;

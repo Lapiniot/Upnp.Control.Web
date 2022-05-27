@@ -6,7 +6,6 @@ using static System.DateTime;
 
 namespace Upnp.Control.DataAccess.Queries;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class GetDeviceQueryHandler : IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice>, IAsyncQueryHandler<GetDeviceQuery, UpnpDevice>
 {
     private const string UmiPlaylistSchema = "urn:xiaomi-com:service:Playlist:1";

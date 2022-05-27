@@ -5,7 +5,7 @@ namespace Upnp.Control.Infrastructure.PushNotifications;
 
 public class JsonOptions
 {
-    public JsonSerializerOptions SerializerOptions { get; } = new JsonSerializerOptions()
+    public JsonSerializerOptions SerializerOptions { get; } = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,

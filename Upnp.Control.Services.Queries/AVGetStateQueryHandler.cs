@@ -1,6 +1,5 @@
 namespace Upnp.Control.Services.Queries;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class AVGetStateQueryHandler : IAsyncQueryHandler<AVGetStateQuery, AVState>
 {
     private readonly IUpnpServiceFactory factory;
@@ -25,20 +24,20 @@ internal sealed class AVGetStateQueryHandler : IAsyncQueryHandler<AVGetStateQuer
         {
             var media = await avt.GetMediaInfoAsync(0, cancellationToken).ConfigureAwait(false);
             var settings = await avt.GetTransportSettingsAsync(0, cancellationToken).ConfigureAwait(false);
-            return new AVState(transport.TryGetValue("CurrentTransportState", out var value) ? value : null,
+            return new(transport.TryGetValue("CurrentTransportState", out var value) ? value : null,
                 transport.TryGetValue("CurrentTransportStatus", out value) ? value : null,
                 media.TryGetValue("NrTracks", out value) && int.TryParse(value, out var numTracks) ? numTracks : 0,
                 media.TryGetValue("PlayMedium", out value) ? value : null,
                 settings.TryGetValue("PlayMode", out value) ? value : null)
             {
                 Actions = actions.TryGetValue("Actions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null,
-                Current = detailed != false && media.TryGetValue("CurrentURIMetaData", out value) ? DIDLXmlReader.Read(value, true, true).FirstOrDefault() : null,
-                Next = detailed != false && media.TryGetValue("NextURIMetaData", out value) ? DIDLXmlReader.Read(value, true, true).FirstOrDefault() : null
+                Current = media.TryGetValue("CurrentURIMetaData", out value) ? DIDLXmlReader.Read(value, true, true).FirstOrDefault() : null,
+                Next = media.TryGetValue("NextURIMetaData", out value) ? DIDLXmlReader.Read(value, true, true).FirstOrDefault() : null
             };
         }
         else
         {
-            return new AVState(transport.TryGetValue("CurrentTransportState", out var value) ? value : null,
+            return new(transport.TryGetValue("CurrentTransportState", out var value) ? value : null,
                 transport.TryGetValue("CurrentTransportStatus", out value) ? value : null, null, null, null)
             {
                 Actions = actions.TryGetValue("Actions", out value) ? value.Split(',', StringSplitOptions.RemoveEmptyEntries) : null

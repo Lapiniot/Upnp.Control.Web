@@ -29,16 +29,16 @@ public class UpnpServiceFactory : IUpnpServiceFactory
 
     public async Task<(TService, DeviceDescription)> GetAsync<TService>(string deviceId, CancellationToken cancellationToken) where TService : SoapActionInvoker
     {
-        var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
+        var device = await queryHandler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
 
         return (GetService<TService>(GetControlUrl(device, GetModelName<TService>())),
-            new DeviceDescription(device.Udn, device.FriendlyName, device.Description));
+            new(device.Udn, device.FriendlyName, device.Description));
     }
 
     public async Task<TService> GetServiceAsync<TService>(string deviceId, CancellationToken cancellationToken)
         where TService : SoapActionInvoker
     {
-        var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
+        var device = await queryHandler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
 
         return GetService<TService>(GetControlUrl(device, GetModelName<TService>()));
     }
@@ -46,7 +46,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     public async Task<(TService1, TService2)> GetServicesAsync<TService1, TService2>(string deviceId, CancellationToken cancellationToken)
         where TService1 : SoapActionInvoker where TService2 : SoapActionInvoker
     {
-        var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
+        var device = await queryHandler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
 
         return (GetService<TService1>(GetControlUrl(device, GetModelName<TService1>())),
             GetService<TService2>(GetControlUrl(device, GetModelName<TService2>())));
@@ -57,7 +57,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
         where TService2 : SoapActionInvoker
         where TService3 : SoapActionInvoker
     {
-        var device = await queryHandler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
+        var device = await queryHandler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
 
         return (GetService<TService1>(GetControlUrl(device, GetModelName<TService1>())),
             GetService<TService2>(GetControlUrl(device, GetModelName<TService2>())),

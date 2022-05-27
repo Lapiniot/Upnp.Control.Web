@@ -1,6 +1,5 @@
 namespace Upnp.Control.Services.Queries;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class SysPropsGetPlaylistStateQueryHandler : IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string>
 {
     private readonly IUpnpServiceFactory factory;

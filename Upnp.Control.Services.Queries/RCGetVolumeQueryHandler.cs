@@ -1,6 +1,5 @@
 namespace Upnp.Control.Services.Queries;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class RCGetVolumeQueryHandler : IAsyncQueryHandler<RCGetVolumeQuery, RCVolumeState>
 {
     private readonly IUpnpServiceFactory factory;
@@ -21,7 +20,7 @@ internal sealed class RCGetVolumeQueryHandler : IAsyncQueryHandler<RCGetVolumeQu
         var rv = await service.GetVolumeAsync(0, cancellationToken).ConfigureAwait(false);
         var rm = detailed != false ? await service.GetMuteAsync(0, cancellationToken).ConfigureAwait(false) : null;
 
-        return new RCVolumeState(
+        return new(
             rv.TryGetValue("CurrentVolume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
             rm != null && rm.TryGetValue("CurrentMute", out v) && bool.TryParse(v, out var muted) ? muted : null);
     }

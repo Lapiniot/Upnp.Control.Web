@@ -1,6 +1,5 @@
 ﻿namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes: instantiated by DI container
 internal sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscriptionFactory
 {
     private readonly IEventSubscribeClient subscribeClient;
@@ -26,7 +25,7 @@ internal sealed partial class UpnpEventSubscriptionFactory : IUpnpEventSubscript
 
         if (!callbackUri.IsAbsoluteUri)
         {
-            callbackUri = new Uri(bindingAddress ??= serverAddressesProvider.ResolveExternalBindingAddress("http"), callbackUri);
+            callbackUri = new(bindingAddress ??= serverAddressesProvider.ResolveExternalBindingAddress("http"), callbackUri);
         }
 
         return CancelableOperationScope.Start(token => StartSubscriptionLoopAsync(subscribeUri, callbackUri, timeout, token), stoppingToken);

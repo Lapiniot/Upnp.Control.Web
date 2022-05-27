@@ -7,12 +7,10 @@ namespace Upnp.Control.Infrastructure.AspNetCore;
 
 internal static class CertificateLoader
 {
-    public static X509Certificate2 LoadFromFile(string path, string password)
-    {
-        return File.Exists(path)
+    public static X509Certificate2 LoadFromFile(string path, string password) =>
+        File.Exists(path)
             ? new X509Certificate2(path, password)
             : throw new InvalidOperationException("File doesn't exist at requested path");
-    }
 
     public static X509Certificate2 LoadFromFile(IFileInfo fileInfo, string? password)
     {

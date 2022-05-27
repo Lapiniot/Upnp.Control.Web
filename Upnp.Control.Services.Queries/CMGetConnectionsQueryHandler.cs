@@ -2,7 +2,6 @@ using static System.StringSplitOptions;
 
 namespace Upnp.Control.Services.Queries;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class CMGetConnectionsQueryHandler : IAsyncQueryHandler<CMGetConnectionsQuery, IEnumerable<string>>
 {
     private readonly IUpnpServiceFactory factory;

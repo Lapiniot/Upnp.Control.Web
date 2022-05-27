@@ -24,8 +24,8 @@ internal partial class UpnpDiscoveryService
     [LoggerMessage(15, LogLevel.Information, "Host is ready and running, starting SSDP discovery...")]
     private partial void LogStarted();
 
-    [LoggerMessage(16, LogLevel.Error, "Error processing SSDP reply {startline} for USN={usn}")]
-    private partial void LogReplyError(Exception exception, string startline, string usn);
+    [LoggerMessage(16, LogLevel.Error, "Error processing SSDP reply {startLine} for USN={usn}")]
+    private partial void LogReplyError(Exception exception, string startLine, string usn);
 
     [LoggerMessage(17, LogLevel.Error, "Error discovering UPnP devices and services!")]
     private partial void LogError(Exception exception);

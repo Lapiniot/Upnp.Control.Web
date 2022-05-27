@@ -20,7 +20,7 @@ public class PushNotificationSubscribeController : ControllerBase
         try
         {
             HttpContext.Response.StatusCode = StatusCodes.Status200OK;
-            return await handler.ExecuteAsync(new PSGetQuery(type, endpoint), cancellationToken).ConfigureAwait(false) is not null;
+            return await handler.ExecuteAsync(new(type, endpoint), cancellationToken).ConfigureAwait(false) is not null;
         }
         catch
         {
@@ -41,7 +41,7 @@ public class PushNotificationSubscribeController : ControllerBase
         try
         {
             HttpContext.Response.StatusCode = StatusCodes.Status201Created;
-            await handler.ExecuteAsync(new PSAddCommand(subscription.Type, subscription.Endpoint,
+            await handler.ExecuteAsync(new(subscription.Type, subscription.Endpoint,
                 decoder.Decode(subscription.P256dhKey),
                 decoder.Decode(subscription.AuthKey)),
                 cancellationToken).ConfigureAwait(false);
@@ -63,7 +63,7 @@ public class PushNotificationSubscribeController : ControllerBase
         try
         {
             HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
-            await handler.ExecuteAsync(new PSRemoveCommand(subscription.Type, subscription.Endpoint), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(subscription.Type, subscription.Endpoint), cancellationToken).ConfigureAwait(false);
         }
         catch
         {

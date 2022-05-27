@@ -2,7 +2,6 @@ using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class PLAddFeedsCommandHandler : PLFeedsCommandBase,
     IAsyncCommandHandler<PLAddPlaylistFilesCommand>,
     IAsyncCommandHandler<PLAddFeedUrlCommand>
@@ -34,9 +33,8 @@ internal sealed class PLAddFeedsCommandHandler : PLFeedsCommandBase,
 
     #region Implementation of IAsyncCommandHandler<PLAddFeedUrlCommand>
 
-    Task IAsyncCommandHandler<PLAddFeedUrlCommand>.ExecuteAsync(PLAddFeedUrlCommand command, CancellationToken cancellationToken)
-    {
-        return command switch
+    Task IAsyncCommandHandler<PLAddFeedUrlCommand>.ExecuteAsync(PLAddFeedUrlCommand command, CancellationToken cancellationToken) =>
+        command switch
         {
             { DeviceId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
             { PlaylistId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
@@ -44,7 +42,6 @@ internal sealed class PLAddFeedsCommandHandler : PLFeedsCommandBase,
                 AddFromUrlAsync(deviceId, playlistId, url, title, useProxy, cancellationToken),
             _ => throw new ArgumentException("Valid feed url must be provided")
         };
-    }
 
     #endregion
 }

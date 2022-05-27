@@ -2,7 +2,6 @@ using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.DataAccess.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
 {
     private readonly PushSubscriptionDbContext context;
@@ -31,7 +30,7 @@ internal sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
         }
         else
         {
-            context.Subscriptions.Add(new PushNotificationSubscription(endpoint, type, DateTimeOffset.UtcNow, p256dhKey, authKey));
+            context.Subscriptions.Add(new(endpoint, type, DateTimeOffset.UtcNow, p256dhKey, authKey));
         }
 
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

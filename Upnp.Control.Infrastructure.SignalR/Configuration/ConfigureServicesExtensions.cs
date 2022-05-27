@@ -12,14 +12,12 @@ public static class ConfigureServicesExtensions
         services.AddSingleton<IObserver<UpnpEvent>, UpnpEventSignalRNotifyObserver>();
 
     public static IEndpointConventionBuilder MapUpnpEventsHub(this IEndpointRouteBuilder routeBuilder, string route,
-        Action<HttpConnectionDispatcherOptions>? configureOptions = null)
-    {
-        return routeBuilder.MapHub<UpnpEventsHub>(route, options =>
+        Action<HttpConnectionDispatcherOptions>? configureOptions = null) =>
+        routeBuilder.MapHub<UpnpEventsHub>(route, options =>
         {
             ConfigureConnectionDefaults(options);
             configureOptions?.Invoke(options);
         });
-    }
 
     private static void ConfigureConnectionDefaults(HttpConnectionDispatcherOptions options) =>
         options.Transports = HttpTransportType.WebSockets;

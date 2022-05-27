@@ -2,8 +2,6 @@ using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.DataAccess.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
-
 internal sealed class PSRemoveCommandHandler : IAsyncCommandHandler<PSRemoveCommand>
 {
     private readonly PushSubscriptionDbContext context;
@@ -19,7 +17,7 @@ internal sealed class PSRemoveCommandHandler : IAsyncCommandHandler<PSRemoveComm
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        var (type, endpoint) = command;
+        var (_, endpoint) = command;
 
         var subscription = await context.Subscriptions.FindAsync(new object[] { endpoint }, cancellationToken: cancellationToken).ConfigureAwait(false);
 

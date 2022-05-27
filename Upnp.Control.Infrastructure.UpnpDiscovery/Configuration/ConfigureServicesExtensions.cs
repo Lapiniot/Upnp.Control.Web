@@ -6,14 +6,12 @@ namespace Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    public static IServiceCollection AddUpnpDiscovery(this IServiceCollection services, Action<OptionsBuilder<SsdpOptions>> configure = null)
-    {
-        return services
+    public static IServiceCollection AddUpnpDiscovery(this IServiceCollection services, Action<OptionsBuilder<SsdpOptions>> configure = null) =>
+        services
             .ConfigureSsdpOptions(configure)
             .AddHostedService<UpnpDiscoveryService>()
             .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
             .AddTransient(sp => SsdpEnumeratorFactory(sp));
-    }
 
     public static IServiceCollection ConfigureSsdpOptions(this IServiceCollection services, Action<OptionsBuilder<SsdpOptions>> configure = null)
     {

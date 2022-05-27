@@ -1,11 +1,10 @@
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-#pragma warning disable CA1812 // instantiated by DI container
 internal sealed class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepository
 {
     private readonly Dictionary<string, List<IAsyncCancelable>> storage;
 
-    public InMemorySubscriptionsRepository() => storage = new Dictionary<string, List<IAsyncCancelable>>();
+    public InMemorySubscriptionsRepository() => storage = new();
 
     public void Add(string udn, params IAsyncCancelable[] sessions)
     {
@@ -17,7 +16,7 @@ internal sealed class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRe
             }
             else
             {
-                storage[udn] = new List<IAsyncCancelable>(sessions);
+                storage[udn] = new(sessions);
             }
         }
     }

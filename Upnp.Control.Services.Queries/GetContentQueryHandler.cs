@@ -4,7 +4,6 @@ using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Services.Queries;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetContentQuery, CDContent>
 {
     private readonly IUpnpServiceFactory factory;
@@ -53,7 +52,7 @@ internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetC
             parents = await GetParentsAsync(service, path, "id,title,parentId,res", withResource, withVendor, cancellationToken).ConfigureAwait(false);
         }
 
-        return new CDContent(total, description, metadata, items, parents);
+        return new(total, description, metadata, items, parents);
     }
 
     [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]

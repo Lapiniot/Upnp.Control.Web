@@ -1,5 +1,4 @@
-﻿using Upnp.Control.Models;
-using Upnp.Control.Models.Events;
+﻿using Upnp.Control.Models.Events;
 
 namespace Upnp.Control.Infrastructure.SignalR;
 
@@ -25,10 +24,10 @@ public class UpnpDiscoverySignalRNotifyObserver : IObserver<UpnpDiscoveryEvent>
         switch (value)
         {
             case UpnpDeviceAppearedEvent dae:
-                _ = context.Clients.All.SsdpDiscoveryEvent(value.DeviceId, new UpnpDiscoveryMessage("appeared", dae.Device));
+                _ = context.Clients.All.SsdpDiscoveryEvent(value.DeviceId, new("appeared", dae.Device));
                 break;
             case UpnpDeviceDisappearedEvent dde:
-                _ = context.Clients.All.SsdpDiscoveryEvent(value.DeviceId, new UpnpDiscoveryMessage("disappeared", dde.Device));
+                _ = context.Clients.All.SsdpDiscoveryEvent(value.DeviceId, new("disappeared", dde.Device));
                 break;
         }
     }

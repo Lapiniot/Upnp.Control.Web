@@ -2,7 +2,6 @@ using System.Globalization;
 
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class QueueAddItemsCommandHandler : IAsyncCommandHandler<QAddItemsCommand>
 {
     private readonly IUpnpServiceFactory factory;
@@ -27,7 +26,7 @@ internal sealed class QueueAddItemsCommandHandler : IAsyncCommandHandler<QAddIte
         var (targetCds, queueService) = await factory.GetServicesAsync<ContentDirectoryService, QueueService>(deviceId, cancellationToken).ConfigureAwait(false);
 
         var sb = new System.Text.StringBuilder();
-        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        await using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             await UpnpUtils.WriteItemsMetadataTreeAsync(sourceCds, source.Items, writer, options.Value.MaxContainerScanDepth, cancellationToken).ConfigureAwait(false);
         }

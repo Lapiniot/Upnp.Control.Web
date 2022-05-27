@@ -9,7 +9,6 @@ using Upnp.Control.Models.PushNotifications;
 namespace Upnp.Control.Infrastructure.PushNotifications;
 
 #pragma warning disable CA1031 // by design
-#pragma warning disable CA1812 // instantiated by DI container
 internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObserver<UpnpDiscoveryEvent>, IObserver<UpnpEvent>
 {
     private readonly IServiceProvider services;
@@ -95,7 +94,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                 var client = scope.ServiceProvider.GetRequiredService<IWebPushClient>();
                 var enumerateHandler = scope.ServiceProvider.GetRequiredService<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
 
-                await foreach (var (endpoint, type, _, p256dhKey, authKey) in enumerateHandler.ExecuteAsync(new PSEnumerateQuery(message.Type), stoppingToken).ConfigureAwait(false))
+                await foreach (var (endpoint, type, _, p256dhKey, authKey) in enumerateHandler.ExecuteAsync(new(message.Type), stoppingToken).ConfigureAwait(false))
                 {
                     try
                     {
@@ -108,7 +107,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                     catch (HttpRequestException hre) when (hre.StatusCode == HttpStatusCode.Gone || hre.StatusCode == HttpStatusCode.Forbidden)
                     {
                         var commandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
-                        await commandHandler.ExecuteAsync(new PSRemoveCommand(type, endpoint), stoppingToken).ConfigureAwait(false);
+                        await commandHandler.ExecuteAsync(new(type, endpoint), stoppingToken).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {

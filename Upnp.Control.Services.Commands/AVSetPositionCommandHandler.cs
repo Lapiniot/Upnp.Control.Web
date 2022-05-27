@@ -2,7 +2,6 @@ using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class AVSetPositionCommandHandler : IAsyncCommandHandler<AVSetPositionCommand>
 {
     private readonly IUpnpServiceFactory factory;

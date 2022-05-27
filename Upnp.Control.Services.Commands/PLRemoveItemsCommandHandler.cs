@@ -1,6 +1,5 @@
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class PLRemoveItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLRemoveItemsCommand>
 {
     public PLRemoveItemsCommandHandler(IUpnpServiceFactory factory) : base(factory) { }

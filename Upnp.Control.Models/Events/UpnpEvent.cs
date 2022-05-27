@@ -11,6 +11,6 @@ public record PropChangedUpnpEvent : UpnpEvent
     public IReadOnlyDictionary<string, string> VendorProperties { get; init; }
 }
 
-public record AVTPropChangedEvent : PropChangedUpnpEvent { }
+public record AVTPropChangedEvent : PropChangedUpnpEvent;
 
-public record RCPropChangedEvent : PropChangedUpnpEvent { }
+public record RCPropChangedEvent : PropChangedUpnpEvent;

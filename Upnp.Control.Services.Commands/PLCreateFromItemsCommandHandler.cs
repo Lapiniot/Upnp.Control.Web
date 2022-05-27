@@ -2,7 +2,6 @@ using System.Text;
 
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class PLCreateFromItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLCreateFromItemsCommand>
 {
     private readonly IOptionsSnapshot<Configuration.PlaylistOptions> options;
@@ -23,7 +22,7 @@ internal sealed class PLCreateFromItemsCommandHandler : PLCommandBase, IAsyncCom
         var maxDepth = depth ?? options.Value.MaxContainerScanDepth;
 
         var sb = new StringBuilder();
-        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        await using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             await WriteItemsMetadataTreeAsync(sourceDeviceId, ids, writer, maxDepth, cancellationToken).ConfigureAwait(false);
         }

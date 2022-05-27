@@ -11,13 +11,13 @@ public class UpnpEventsCallbackController : ControllerBase
 {
     [HttpNotify("rc")]
     public Task NotifyRenderingControlAsync(string deviceId,
-        [FromServices][NotNull] IAsyncCommandHandler<PropChangedUpnpEventCommand<RCPropChangedEvent>> handler,
+        [FromServices][NotNull] IAsyncCommandHandler<PropChangedUpnpEventCommand> handler,
         CancellationToken cancellationToken) =>
-        handler.ExecuteAsync(new PropChangedUpnpEventCommand<RCPropChangedEvent>(deviceId, HttpContext.Request.Body), cancellationToken);
+        handler.ExecuteAsync(new(deviceId, HttpContext.Request.Body), cancellationToken);
 
     [HttpNotify("avt")]
     public Task NotifyAVTransportAsync(string deviceId,
-        [FromServices][NotNull] IAsyncCommandHandler<PropChangedUpnpEventCommand<AVTPropChangedEvent>> handler,
+        [FromServices][NotNull] IAsyncCommandHandler<PropChangedUpnpEventCommand> handler,
         CancellationToken cancellationToken) =>
-        handler.ExecuteAsync(new PropChangedUpnpEventCommand<AVTPropChangedEvent>(deviceId, HttpContext.Request.Body), cancellationToken);
+        handler.ExecuteAsync(new(deviceId, HttpContext.Request.Body), cancellationToken);
 }

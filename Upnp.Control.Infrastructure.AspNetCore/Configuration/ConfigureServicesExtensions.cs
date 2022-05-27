@@ -4,12 +4,10 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    public static IServiceCollection AddBase64Encoders(this IServiceCollection services)
-    {
-        return services
+    public static IServiceCollection AddBase64Encoders(this IServiceCollection services) =>
+        services
             .AddTransient<IBase64UrlEncoder, Base64Encoders>()
             .AddTransient<IBase64UrlDecoder, Base64Encoders>();
-    }
 
     public static IServiceCollection AddServerAddressesProvider(this IServiceCollection services) =>
         services.AddTransient<IServerAddressesProvider, ServerAddressesProvider>();

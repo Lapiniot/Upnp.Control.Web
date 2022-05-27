@@ -16,8 +16,7 @@ public static class ConfigureServicesExtensions
                 AllowAutoRedirect = false,
                 UseProxy = false,
                 Proxy = null,
-                UseCookies = false,
-                CookieContainer = null
+                UseCookies = false
             });
 
         return services.AddScoped<IUpnpServiceFactory, UpnpServiceFactory>();

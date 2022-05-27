@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using IoT.Protocol.Soap;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -21,7 +20,7 @@ public static class ContentDirectoryServices
     /// <param name="skip">How many child items to skip.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns><see cref="Task{IResult}" /> containing directory content or error response.</returns>
-    public static async Task<Results<Ok<CDContent>, NotFound, BadRequest>> BrowseAsync([NotNull] IAsyncQueryHandler<CDGetContentQuery, CDContent> handler,
+    public static async Task<Results<Ok<CDContent>, NotFound, BadRequest>> BrowseAsync(IAsyncQueryHandler<CDGetContentQuery, CDContent> handler,
         string deviceId, string? path, bool withParents = true, bool withResourceProps = false, bool withVendorProps = false,
         bool withMetadata = false, bool withDevice = true, uint take = 50, uint skip = 0,
         CancellationToken cancellationToken = default)

@@ -13,9 +13,9 @@ public static class DeviceServices
     /// <param name="withOffline">Whether to include offline devices.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Device information enumerator.</returns>
-    public static IAsyncEnumerable<UpnpDevice> GetAllAsync([NotNull] IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
+    public static IAsyncEnumerable<UpnpDevice> GetAllAsync(IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
         string category = "upnp", bool withOffline = false, CancellationToken cancellationToken = default) =>
-        handler.ExecuteAsync(new GetDevicesQuery(category, withOffline), cancellationToken);
+        handler.ExecuteAsync(new(category, withOffline), cancellationToken);
 
     /// <summary>
     /// Provides information about UPnP device with <paramref name="id" />.
@@ -24,12 +24,12 @@ public static class DeviceServices
     /// <param name="id">Device ID.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns><see cref="Task{IResult}" /> containing device information or error response.</returns>
-    public static async Task<Results<Ok<UpnpDevice>, NotFound, BadRequest>> GetAsync([NotNull] IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
+    public static async Task<Results<Ok<UpnpDevice>, NotFound, BadRequest>> GetAsync(IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
         string id, CancellationToken cancellationToken)
     {
         try
         {
-            var value = await handler.ExecuteAsync(new GetDeviceQuery(id), cancellationToken).ConfigureAwait(false);
+            var value = await handler.ExecuteAsync(new(id), cancellationToken).ConfigureAwait(false);
             return value switch
             {
                 not null => TypedResults.Ok(value),

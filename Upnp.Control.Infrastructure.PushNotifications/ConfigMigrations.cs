@@ -9,7 +9,7 @@ internal static class ConfigMigrations
         if (File.Exists(path))
         {
             using var doc = await ReadJsonAsync(path).ConfigureAwait(false);
-            if (!doc.RootElement.TryGetProperty("VAPID", out var vapid))
+            if (!doc.RootElement.TryGetProperty("VAPID", out _))
             {
                 await WriteUpgradedConfigAsync(path, doc).ConfigureAwait(false);
                 (configuration as IConfigurationRoot)?.Reload();
@@ -24,14 +24,14 @@ internal static class ConfigMigrations
 
     private static async Task<JsonDocument> ReadJsonAsync(string path)
     {
-        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        await using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
         return await JsonDocument.ParseAsync(stream).ConfigureAwait(false);
     }
 
     private static async Task WriteUpgradedConfigAsync(string path, JsonDocument originalConfig)
     {
-        using var stream = new FileStream(path, FileMode.Create, FileAccess.Write);
-        using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions() { Indented = true });
+        await using var stream = new FileStream(path, FileMode.Create, FileAccess.Write);
+        await using var writer = new Utf8JsonWriter(stream, new() { Indented = true });
         var (publicKey, privateKey) = CryptoExtensions.GenerateP256ECKeys();
         writer.WriteStartObject();
         if (originalConfig is not null)

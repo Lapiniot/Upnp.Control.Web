@@ -2,25 +2,24 @@ using System.Xml;
 
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-#pragma warning disable CA1812 // instantiated by DI container
-internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncCommandHandler<PropChangedUpnpEventCommand<TEvent>>
+internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncCommandHandler<PropChangedUpnpEventCommand>
     where TEvent : PropChangedUpnpEvent, new()
 {
     private readonly ILogger<PropChangedUpnpEventCommandHandler<TEvent>> logger;
-    private readonly IEnumerable<IObserver<UpnpEvent>> observers;
+    private readonly IEnumerable<IObserver<UpnpEvent>> eventObservers;
     private readonly IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler;
     private readonly XmlReaderSettings settings = new() { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
 
-    public PropChangedUpnpEventCommandHandler(IEnumerable<IObserver<UpnpEvent>> observers,
+    public PropChangedUpnpEventCommandHandler(IEnumerable<IObserver<UpnpEvent>> eventObservers,
         IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
         ILogger<PropChangedUpnpEventCommandHandler<TEvent>> logger)
     {
-        this.observers = observers;
+        this.eventObservers = eventObservers;
         this.handler = handler;
         this.logger = logger;
     }
 
-    public async Task ExecuteAsync(PropChangedUpnpEventCommand<TEvent> command, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(PropChangedUpnpEventCommand command, CancellationToken cancellationToken)
     {
         IReadOnlyDictionary<string, string> properties;
         IReadOnlyDictionary<string, string> vendorProperties;
@@ -35,7 +34,7 @@ internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncComman
             return;
         }
 
-        var vt = NotifyObserversAsync(observers, command.DeviceId, properties, vendorProperties, cancellationToken);
+        var vt = NotifyObserversAsync(eventObservers, command.DeviceId, properties, vendorProperties, cancellationToken);
         if (!vt.IsCompletedSuccessfully)
         {
             await vt.ConfigureAwait(false);
@@ -46,11 +45,11 @@ internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncComman
         IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, string> vendorProperties,
         CancellationToken cancellationToken)
     {
-        var device = await handler.ExecuteAsync(new GetDeviceQuery(deviceId), cancellationToken).ConfigureAwait(false);
+        var device = await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
 
-        var @event = new TEvent()
+        var @event = new TEvent
         {
-            Device = new DeviceDescription(device.Udn, device.FriendlyName, device.Description),
+            Device = new(device.Udn, device.FriendlyName, device.Description),
             Properties = properties,
             VendorProperties = vendorProperties
         };

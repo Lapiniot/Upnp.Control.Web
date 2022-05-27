@@ -7,7 +7,6 @@ using static System.Net.IPAddress;
 
 namespace Upnp.Control.Infrastructure.AspNetCore;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes: instantiated by DI container
 internal sealed class ServerAddressesProvider : IServerAddressesProvider
 {
     private readonly IServer server;
@@ -25,33 +24,33 @@ internal sealed class ServerAddressesProvider : IServerAddressesProvider
                 Uri.TryCreate(a, UriKind.Absolute, out var uri) && IPEndPoint.TryParse(uri.Authority, out var ep) && !IsLoopback(ep.Address)
                     ? (Address: uri, Endpoint: ep)
                     : (uri, null))
-            .Where(a => a.Endpoint != null && a.Address != null && a.Address.Scheme == protocol)
+            .Where(a => a.Endpoint is not null && a.Address is not null && a.Address.Scheme == protocol)
             .ToArray();
 
         if (addresses.Length == 0) throw new InvalidOperationException(NoProtocolExternalEndpoint);
 
         var any = addressFamily == InterNetworkV6 ? IPv6Any : Any;
 
-        // Check whether we have explicitely configured address (not IPAddress.Any) which matches protocol scheme and family
+        // Check whether we have explicitly configured address (not IPAddress.Any) which matches protocol scheme and family
         if (addresses.FirstOrDefault(a => a.Endpoint!.AddressFamily == addressFamily && !a.Endpoint.Address.Equals(any)) is { Address: { } match })
         {
             return match;
         }
 
-        Func<(Uri Address, IPEndPoint Endpoint), bool> condition = addressFamily == InterNetworkV6 ?
-            p => p.Address.Equals(IPv6Any) :
-            p => true;
+        Func<(Uri? Address, IPEndPoint? Endpoint), bool> condition = addressFamily == InterNetworkV6 ?
+            p => p.Endpoint!.Address.Equals(IPv6Any) :
+            _ => true;
 
         // Or there should be at least IPAddress.IPv6Any specified if we want external endpoint for IPv6,
         // and IPv6Any|IPv4Any if we need IPv4 binding
-        if (addresses!.FirstOrDefault(condition) is not { Endpoint.Port: var port, Address.Scheme: var scheme })
+        if (addresses.FirstOrDefault(condition) is not { Endpoint.Port: var port, Address.Scheme: var scheme })
         {
             throw new InvalidOperationException("Cannot find suitable listening address for callback URI");
         }
 
         var address = GetExternalIPAddress(addressFamily) ?? throw new InvalidOperationException(NoActiveExternalAddress);
 
-        return new Uri($"{scheme}://{address}:{port}");
+        return new($"{scheme}://{address}:{port}");
     }
 
     public static IPAddress GetExternalIPAddress(AddressFamily family)

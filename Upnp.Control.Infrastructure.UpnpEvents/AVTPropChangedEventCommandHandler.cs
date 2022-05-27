@@ -1,12 +1,11 @@
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-#pragma warning disable CA1812 // instantiated by DI container
 internal sealed class AVTPropChangedEventCommandHandler : PropChangedUpnpEventCommandHandler<AVTPropChangedEvent>
 {
-    public AVTPropChangedEventCommandHandler(IEnumerable<IObserver<UpnpEvent>> observers,
+    public AVTPropChangedEventCommandHandler(IEnumerable<IObserver<UpnpEvent>> eventObservers,
         IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
         ILogger<PropChangedUpnpEventCommandHandler<AVTPropChangedEvent>> logger) :
-        base(observers, handler, logger)
+        base(eventObservers, handler, logger)
     {
     }
 

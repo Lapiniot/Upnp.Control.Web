@@ -35,13 +35,13 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        using var stream = file.GetStream();
+        await using var stream = file.GetStream();
         var reader = PipeReader.Create(stream);
 
         var encoding = Path.GetExtension(file.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
-        await foreach (var (path, info, _) in new M3uTrackReader(reader, encoding).WithCancellation(cancellationToken).ConfigureAwait(false))
+        await foreach (var (path, info, _) in new M3UTrackReader(reader, encoding).WithCancellation(cancellationToken).ConfigureAwait(false))
         {
-            await AppendFeedItemAsync(writer, new Uri(path), info, useProxy, cancellationToken).ConfigureAwait(false);
+            await AppendFeedItemAsync(writer, new(path), info, useProxy, cancellationToken).ConfigureAwait(false);
         }
     }
 
@@ -76,14 +76,12 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
         }
     }
 
-    private Uri GetProxyUri(Uri mediaUrl)
-    {
-        return new UriBuilder(BindingUri)
+    private Uri GetProxyUri(Uri mediaUrl) =>
+        new UriBuilder(BindingUri)
         {
             Path = $"/dlna-proxy/{Uri.EscapeDataString(mediaUrl.AbsoluteUri)}",
             Query = "?no-length&strip-icy-metadata&add-dlna-metadata"
         }.Uri;
-    }
 
     protected async Task<string> GetMetadataAsync(IEnumerable<FileSource> files, bool? useProxy, CancellationToken cancellationToken)
     {
@@ -91,7 +89,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
 
         var sb = new StringBuilder();
 
-        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        await using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             foreach (var file in files)
             {
@@ -114,7 +112,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
     {
         var sb = new StringBuilder();
 
-        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        await using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             await AppendFeedItemAsync(writer, mediaUrl, title, useProxy, cancellationToken).ConfigureAwait(false);
         }

@@ -14,6 +14,17 @@ public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
         this.hub = hub;
     }
 
+    private void NotifyAVTransportEvent(PropChangedUpnpEvent @event) =>
+        hub.Clients.All.AVTransportEvent(@event.Device.Udn,
+            new(@event.Device, Factories.CreateAVState(@event.Properties),
+                Factories.CreateAVPosition(@event.Properties), @event.VendorProperties));
+
+    private void NotifyRenderingControlEvent(PropChangedUpnpEvent @event) =>
+        hub.Clients.All.RenderingControlEvent(@event.Device.Udn,
+            new(@event.Device,
+                new(@event.Properties.TryGetValue("Volume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
+                    @event.Properties.TryGetValue("Mute", out v) ? v is "1" or "true" or "True" : null)));
+
     public void OnCompleted() { }
 
     public void OnError(Exception error) { }
@@ -29,25 +40,5 @@ public class UpnpEventSignalRNotifyObserver : IObserver<UpnpEvent>
                 NotifyRenderingControlEvent(rce);
                 break;
         }
-    }
-
-    private void NotifyAVTransportEvent(AVTPropChangedEvent @event)
-    {
-        hub.Clients.All.AVTransportEvent(@event.Device.Udn,
-            new AVStateMessage(
-                @event.Device,
-                Factories.CreateAVState(@event.Properties),
-                Factories.CreateAVPosition(@event.Properties),
-                @event.VendorProperties));
-    }
-
-    private void NotifyRenderingControlEvent(RCPropChangedEvent @event)
-    {
-        hub.Clients.All.RenderingControlEvent(@event.Device.Udn,
-            new RCStateMessage(
-                @event.Device,
-                new RCVolumeState(
-                @event.Properties.TryGetValue("Volume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
-                @event.Properties.TryGetValue("Mute", out v) ? v is "1" or "true" or "True" : null)));
     }
 }
