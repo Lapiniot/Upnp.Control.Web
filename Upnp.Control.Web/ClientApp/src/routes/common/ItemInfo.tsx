@@ -66,8 +66,8 @@ function renderGroup<T>(item: T, key: string, title: string, formatters: Attribu
     const children = formatters.map(({ 0: key, 1: title, 2: converter }) => {
         const value = item[key];
         return value ? [
-            <span key={`lbl-${key}`} className="grid-form-label">{title}</span>,
-            <span key={`txt-${key}`} className="grid-form-text text-wrap">{converter(value, item)}</span>
+            <span key={`lbl-${String(key)}`} className="grid-form-label">{title}</span>,
+            <span key={`txt-${String(key)}`} className="grid-form-text text-wrap">{converter(value, item)}</span>
         ] : undefined;
     }).filter(item => item);
     return children.length > 0 ? [<div key={`hdr-${key}`} className="col-span-2 hstack">

@@ -38,7 +38,7 @@ export class Settings<T extends { [P: string]: string | number | boolean | objec
 
     public get<K extends keyof T, V extends T[K]>(key: K): V {
         const def = this.defaults[key];
-        const str = localStorage.getItem(`${this.section}:${key}`);
+        const str = localStorage.getItem(`${this.section}:${String(key)}`);
 
         if (str !== null) {
             switch (typeof def) {
@@ -52,7 +52,7 @@ export class Settings<T extends { [P: string]: string | number | boolean | objec
     }
 
     public set<K extends keyof T, V extends T[K]>(key: K, value: V): void {
-        const name = this.section + ":" + key;
+        const name = this.section + ":" + String(key);
         switch (typeof value) {
             case "object": localStorage.setItem(name, JSON.stringify(value)); break;
             case "boolean": localStorage.setItem(name, value ? "1" : "0"); break;
@@ -61,7 +61,7 @@ export class Settings<T extends { [P: string]: string | number | boolean | objec
     }
 
     public remove<K extends keyof T>(key: K): void {
-        const name = this.section + ":" + key;
+        const name = this.section + ":" + String(key);
         localStorage.removeItem(name);
     }
 }
