@@ -3,20 +3,16 @@ using IoT.Protocol.Upnp;
 using Upnp.Control.Abstractions;
 using Upnp.Control.Models;
 using Upnp.Control.Models.Events;
-
 using static System.StringComparison;
-
-using Icon = Upnp.Control.Models.Icon;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
-[SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Instantiated by DI container")]
 internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
 {
     private const string RootDevice = "upnp:rootdevice";
+    private readonly IHostApplicationLifetime applicationLifetime;
     private readonly IUpnpServiceMetadataProvider metadataProvider;
     private readonly IServiceProvider services;
-    private readonly IHostApplicationLifetime applicationLifetime;
 
     public UpnpDiscoveryService(IServiceProvider services,
         IUpnpServiceMetadataProvider metadataProvider,
@@ -29,24 +25,18 @@ internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
         this.logger = logger;
     }
 
-    [SuppressMessage("Design", "CA1031: Do not catch general exception types", Justification = "By design")]
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         // This service drives all other application parts, 
         // so we must reliably start processing only when all other services (including Kestrel) are up&running 
-        // and application is completely started. Previouse workaround with service registration 
-        // in the Host.ConfigureServices after GenericWebHostSevice seems doesn't work anymore since .NET 6
+        // and application is completely started. Previous workaround with service registration 
+        // in the Host.ConfigureServices after GenericWebHostService seems doesn't work anymore since .NET 6
 
-        using (var semaphore = new SemaphoreSlim(initialCount: 0))
-        using (stoppingToken.Register(() => semaphore.Release()))
-        using (applicationLifetime.ApplicationStarted.Register(() => semaphore.Release()))
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        await using (stoppingToken.UnsafeRegister(static (state, token) => ((TaskCompletionSource)state).SetCanceled(token), tcs))
+        await using (applicationLifetime.ApplicationStarted.UnsafeRegister(static state => ((TaskCompletionSource)state).SetResult(), tcs))
         {
-            await semaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false);
-            if (stoppingToken.IsCancellationRequested)
-            {
-                // Exiting immidiately due to the abnormal external cancellation of the service itself, happening before host completely started
-                return;
-            }
+            await tcs.Task.ConfigureAwait(false);
         }
 
         LogStarted();
@@ -80,9 +70,9 @@ internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
 
                             if (reply.TryGetValue("NTS", out var nts) && nts == "ssdp:byebye")
                             {
-                                if (await getQueryHandler.ExecuteAsync(new GetDeviceQuery(udn), stoppingToken).ConfigureAwait(false) is { } existing)
+                                if (await getQueryHandler.ExecuteAsync(new(udn), stoppingToken).ConfigureAwait(false) is { } existing)
                                 {
-                                    await removeCommandHandler.ExecuteAsync(new RemoveDeviceCommand(udn), stoppingToken).ConfigureAwait(false);
+                                    await removeCommandHandler.ExecuteAsync(new(udn), stoppingToken).ConfigureAwait(false);
 
                                     Notify(observers, new UpnpDeviceDisappearedEvent(udn, existing));
 
@@ -97,7 +87,7 @@ internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
                             continue;
                         }
 
-                        var device = await getQueryHandler.ExecuteAsync(new GetDeviceQuery(udn), stoppingToken).ConfigureAwait(false);
+                        var device = await getQueryHandler.ExecuteAsync(new(udn), stoppingToken).ConfigureAwait(false);
 
                         if (device != null)
                         {
@@ -105,7 +95,7 @@ internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
 
                             await updateCommandHandler.ExecuteAsync(command, stoppingToken).ConfigureAwait(false);
 
-                            device = await getQueryHandler.ExecuteAsync(new GetDeviceQuery(udn), stoppingToken).ConfigureAwait(false);
+                            device = await getQueryHandler.ExecuteAsync(new(udn), stoppingToken).ConfigureAwait(false);
 
                             Notify(observers, new UpnpDeviceUpdatedEvent(udn, device));
 
@@ -117,7 +107,7 @@ internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
                         var location = new Uri(reply.Location);
                         var desc = await metadataProvider.GetDescriptionAsync(location, stoppingToken).ConfigureAwait(false);
 
-                        device = new UpnpDevice(udn, location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
+                        device = new(udn, location, desc.DeviceType, desc.FriendlyName, desc.Manufacturer,
                             desc.ModelDescription, desc.ModelName, desc.ModelNumber, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10),
                             GetAbsoluteUri(desc.ManufacturerUrl, location),
                             GetAbsoluteUri(desc.ModelUrl, location),
@@ -132,7 +122,7 @@ internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
                                 GetAbsoluteUri(s.EventSubscribeUrl, location))).ToList()
                         };
 
-                        await addCommandHandler.ExecuteAsync(new AddDeviceCommand(device), stoppingToken).ConfigureAwait(false);
+                        await addCommandHandler.ExecuteAsync(new(device), stoppingToken).ConfigureAwait(false);
 
                         LogDeviceDiscovered(desc.Udn);
 
@@ -144,7 +134,10 @@ internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
                     }
                 }
             }
-            catch (OperationCanceledException) { /* Expected */}
+            catch (OperationCanceledException)
+            {
+                /* Expected */
+            }
             finally
             {
                 NotifyCompletion(observers);
@@ -157,12 +150,10 @@ internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
         }
     }
 
-    private static Uri GetAbsoluteUri(Uri uri, Uri baseUri)
-    {
-        return uri is not null and { IsAbsoluteUri: false }
+    private static Uri GetAbsoluteUri(Uri uri, Uri baseUri) =>
+        uri is { IsAbsoluteUri: false }
             ? Uri.TryCreate(baseUri, uri, out var absoluteUri) ? absoluteUri : uri
             : uri;
-    }
 
     private static string ExtractUdn(string usn)
     {
