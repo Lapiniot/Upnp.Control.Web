@@ -1,16 +1,40 @@
 using System.Globalization;
+using Upnp.Control.Services.Commands.Configuration;
 using static System.String;
 
 namespace Upnp.Control.Services.Commands;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes - Instantiated by DI container
 internal sealed class PLCreateFromFilesCommandHandler : PLFeedsCommandBase, IAsyncCommandHandler<PLCreateFromFilesCommand>
 {
     public PLCreateFromFilesCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
-        IServerAddressesProvider serverAddressesProvider, IOptionsSnapshot<Configuration.PlaylistOptions> options,
+        IServerAddressesProvider serverAddressesProvider, IOptionsSnapshot<PlaylistOptions> options,
         ILogger<PLCreateFromFilesCommandHandler> logger) :
         base(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger)
+    { }
+
+    private async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool? useProxy, bool? merge, CancellationToken cancellationToken)
     {
+        if (merge == true)
+        {
+            if (title is { Length: > 0 })
+            {
+                await CreateFromFilesAsync(deviceId, files, title, useProxy, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                var sources = files.ToList();
+                await CreateFromFilesAsync(deviceId, sources, Join("; ", sources.Select(f => f.FileName)), useProxy, cancellationToken).ConfigureAwait(false);
+            }
+        }
+        else
+        {
+            foreach (var file in files)
+            {
+                await CreateFromFilesAsync(deviceId, new[] { file },
+                    !IsNullOrWhiteSpace(title) ? $"{title}: {file.FileName}" : file.FileName,
+                    useProxy, cancellationToken).ConfigureAwait(false);
+            }
+        }
     }
 
     public Task ExecuteAsync(PLCreateFromFilesCommand command, CancellationToken cancellationToken)
@@ -24,25 +48,5 @@ internal sealed class PLCreateFromFilesCommandHandler : PLFeedsCommandBase, IAsy
                 CreateFromFilesAsync(deviceId, files, title, useProxy, merge, cancellationToken),
             _ => throw new ArgumentException("Valid file source must be provided")
         };
-    }
-
-    private async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool? useProxy, bool? merge, CancellationToken cancellationToken)
-    {
-        if (merge == true)
-        {
-            await CreateFromFilesAsync(deviceId, files,
-                !IsNullOrWhiteSpace(title) ? title : Join("; ", files.Select(f => f.FileName)),
-                useProxy, cancellationToken).ConfigureAwait(false);
-
-        }
-        else
-        {
-            foreach (var file in files)
-            {
-                await CreateFromFilesAsync(deviceId, new[] { file },
-                    !IsNullOrWhiteSpace(title) ? $"{title}: {file.FileName}" : file.FileName,
-                    useProxy, cancellationToken).ConfigureAwait(false);
-            }
-        }
     }
 }
