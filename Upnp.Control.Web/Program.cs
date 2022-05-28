@@ -135,6 +135,7 @@ app.MapHealthChecks("api/health");
 var api = app.MapGroup("api/devices").WithGroupName("v1");
 api.MapDeviceApiEndpoint("");
 api.MapBrowseContentApiEndpoint("{deviceId}/items/{*path}");
+api.MapQueueApiEndpoint("{deviceId}/queues/{queueId}/items");
 // Swagger
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
 // Fallback route
