@@ -33,8 +33,7 @@ internal sealed class PLAddItemsCommandHandler : PLCommandBase, IAsyncCommandHan
         var depth = maxDepth ?? options.Value.MaxContainerScanDepth;
 
         var sb = new StringBuilder();
-
-        await using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             await WriteItemsMetadataTreeAsync(sourceDeviceId, items, writer, depth, cancellationToken).ConfigureAwait(false);
         }

@@ -88,8 +88,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
         ArgumentNullException.ThrowIfNull(files);
 
         var sb = new StringBuilder();
-
-        await using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             foreach (var file in files)
             {
@@ -111,8 +110,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
     protected async Task AddFromUrlAsync(string deviceId, string playlistId, Uri mediaUrl, string title, bool? useProxy, CancellationToken cancellationToken)
     {
         var sb = new StringBuilder();
-
-        await using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
+        using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
         {
             await AppendFeedItemAsync(writer, mediaUrl, title, useProxy, cancellationToken).ConfigureAwait(false);
         }
