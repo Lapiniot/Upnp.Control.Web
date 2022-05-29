@@ -1,14 +1,10 @@
-﻿using IoT.Protocol.Soap;
-using Upnp.Control.Abstractions;
-
-namespace Upnp.Control.Infrastructure.Upnp.Configuration;
+﻿namespace Upnp.Control.Infrastructure.Upnp.Configuration;
 
 public static class ConfigureServicesExtensions
 {
     public static IServiceCollection AddUpnpServiceFactory(this IServiceCollection services)
     {
-        services
-            .AddHttpClient<SoapHttpClient>()
+        services.AddHttpClient<SoapHttpClient>()
             .SetHandlerLifetime(TimeSpan.FromMinutes(5))
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {

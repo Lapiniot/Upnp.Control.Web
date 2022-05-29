@@ -4,4 +4,11 @@
     <ProjectReference Include="../Upnp.Control.Models/Upnp.Control.Models.csproj" />
   </ItemGroup>
 
+    <ItemGroup>
+        <Using Include="Upnp.Control.Models" />
+        <Using Include="IoT.Protocol.Soap" />
+        <Using Include="IoT.Protocol.Upnp" />
+        <Using Include="System.Diagnostics.CodeAnalysis" />
+    </ItemGroup>
+
 </Project>
