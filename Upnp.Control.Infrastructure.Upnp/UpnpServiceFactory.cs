@@ -24,7 +24,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     }
 
     public async Task<(TService, DeviceDescription)> GetAsync<TService>(string deviceId, CancellationToken cancellationToken)
-        where TService : SoapActionInvoker, IUpnpService
+        where TService : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService>
     {
         var device = await FindDeviceAsync(deviceId, cancellationToken).ConfigureAwait(false);
 
@@ -33,7 +33,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     }
 
     public async Task<TService> GetServiceAsync<TService>(string deviceId, CancellationToken cancellationToken)
-        where TService : SoapActionInvoker, IUpnpService
+        where TService : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService>
     {
         var device = await FindDeviceAsync(deviceId, cancellationToken).ConfigureAwait(false);
 
@@ -41,8 +41,8 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     }
 
     public async Task<(TService1, TService2)> GetServicesAsync<TService1, TService2>(string deviceId, CancellationToken cancellationToken)
-        where TService1 : SoapActionInvoker, IUpnpService
-        where TService2 : SoapActionInvoker, IUpnpService
+        where TService1 : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService1>
+        where TService2 : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService2>
     {
         var device = await FindDeviceAsync(deviceId, cancellationToken).ConfigureAwait(false);
 
@@ -57,8 +57,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
         return device;
     }
 
-    private static Uri GetControlUrl<TService>(Models.UpnpDevice device)
-        where TService : IUpnpService
+    private static Uri GetControlUrl<TService>(Models.UpnpDevice device) where TService : IUpnpService
     {
         var serviceType = TService.ServiceSchema;
         var service = device.Services.FirstOrDefault(s => s.ServiceType == serviceType);
@@ -77,14 +76,11 @@ public class UpnpServiceFactory : IUpnpServiceFactory
         return service.ControlUrl;
     }
 
-    private T GetService<T>(Uri controlUrl)
+    private TService GetService<TService>(Uri controlUrl)
+        where TService : SoapActionInvoker, IUpnpServiceFactory<TService>
     {
         var httpClient = clientFactory.CreateClient(nameof(SoapHttpClient));
-
         httpClient.BaseAddress = controlUrl;
-
-        var endpoint = new SoapControlEndpoint(new SoapHttpClient(httpClient));
-
-        return (T)Activator.CreateInstance(typeof(T), endpoint);
+        return TService.Create(new SoapControlEndpoint(new SoapHttpClient(httpClient)), null);
     }
 }

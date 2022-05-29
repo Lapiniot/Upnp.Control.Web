@@ -14,7 +14,8 @@ internal abstract class PLCommandBase
         this.serviceFactory = serviceFactory;
     }
 
-    protected Task<T> GetServiceAsync<T>(string deviceId, CancellationToken cancellationToken) where T : SoapActionInvoker, IUpnpService =>
+    protected Task<T> GetServiceAsync<T>(string deviceId, CancellationToken cancellationToken)
+        where T : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<T> =>
         serviceFactory.GetServiceAsync<T>(deviceId, cancellationToken);
 
     protected async Task<int[]> GetItemIndicesAsync(string deviceId, string parentId, IEnumerable<string> ids, CancellationToken cancellationToken)
