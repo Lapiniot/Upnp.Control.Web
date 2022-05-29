@@ -10,6 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="IoT.Protocol.Soap" />
+    <Using Include="Upnp.Control.Models" />
+    <Using Include="Upnp.Control.Abstractions" />
+    <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
