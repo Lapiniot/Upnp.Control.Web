@@ -1,5 +1,4 @@
 using IoT.Protocol.Soap;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
@@ -31,13 +30,15 @@ public static class ContentDirectoryServices
             var value = await handler.ExecuteAsync(new(deviceId, path, options), cancellationToken).ConfigureAwait(false);
             return TypedResults.Ok(value);
         }
+        catch (DeviceNotFoundException)
+        {
+            return TypedResults.NotFound();
+        }
         catch (SoapException se) when (se.Code == 701)
         {
             return TypedResults.NotFound();
         }
-#pragma warning disable CA1031
         catch
-#pragma warning restore CA1031
         {
             return TypedResults.BadRequest();
         }

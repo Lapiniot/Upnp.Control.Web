@@ -19,11 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Upnp.Control.Models" />
-    <Using Include="Upnp.Control.Abstractions" />
     <Using Include="Microsoft.AspNetCore.Http" />
+    <Using Include="Microsoft.AspNetCore.Http.HttpResults" />
     <Using Include="Microsoft.AspNetCore.Routing" />
     <Using Include="Microsoft.AspNetCore.Builder" />
+    <Using Include="Upnp.Control.Abstractions" />
+    <Using Include="Upnp.Control.Abstractions.Exceptions" />
+    <Using Include="Upnp.Control.Models" />
   </ItemGroup>
 
 </Project>
