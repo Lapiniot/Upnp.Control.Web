@@ -2,7 +2,6 @@ using Upnp.Control.Abstractions;
 
 namespace Upnp.Control.Infrastructure;
 
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes: instantiated by DI container
 internal sealed partial class ApplicationInitService : IHostedService
 {
     private readonly IServiceProvider services;

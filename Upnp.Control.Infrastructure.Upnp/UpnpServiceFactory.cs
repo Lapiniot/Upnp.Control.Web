@@ -67,7 +67,7 @@ public class UpnpServiceFactory : IUpnpServiceFactory
             if (device.Services.Any(s => s.ServiceType == "urn:xiaomi-com:service:Playlist:1") &&
                 UmiMappings.TryGetValue(serviceType, out var template))
             {
-                return new Uri(device.Location, string.Format(InvariantCulture, template, device.Udn));
+                return new(device.Location, string.Format(InvariantCulture, template, device.Udn));
             }
 
             ServiceNotSupportedException.Throw(serviceType);
@@ -81,6 +81,6 @@ public class UpnpServiceFactory : IUpnpServiceFactory
     {
         var httpClient = clientFactory.CreateClient(nameof(SoapHttpClient));
         httpClient.BaseAddress = controlUrl;
-        return TService.Create(new SoapControlEndpoint(new SoapHttpClient(httpClient)), null);
+        return TService.Create(new(new SoapHttpClient(httpClient)), null);
     }
 }
