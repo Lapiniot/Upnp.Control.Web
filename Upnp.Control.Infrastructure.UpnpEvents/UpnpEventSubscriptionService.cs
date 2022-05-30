@@ -107,7 +107,7 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
                 _ = RenewSubscriptionsAsync(due.DeviceId, due.Device.Services);
                 break;
             case UpnpDeviceDisappearedEvent dde:
-                _ = repository.Remove(dde.DeviceId, out var subscriptions);
+                repository.Remove(dde.DeviceId, out var subscriptions);
                 _ = TerminateAsync(subscriptions);
                 break;
         }

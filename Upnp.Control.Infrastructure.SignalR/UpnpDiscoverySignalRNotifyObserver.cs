@@ -21,14 +21,15 @@ public class UpnpDiscoverySignalRNotifyObserver : IObserver<UpnpDiscoveryEvent>
 
     public void OnNext(UpnpDiscoveryEvent value)
     {
-        Models.UpnpDiscoveryMessage message = value switch
+        switch (value)
         {
-            UpnpDeviceAppearedEvent { Device: var d } => new("appeared", d),
-            UpnpDeviceDisappearedEvent { Device: var d } => new("disappeared", d),
-            _ => throw new NotImplementedException()
-        };
-
-        context.Clients.All.SsdpDiscoveryEvent(value.DeviceId, message);
+            case UpnpDeviceAppearedEvent { Device: var d, DeviceId: var id }:
+                context.Clients.All.SsdpDiscoveryEvent(id, new("appeared", d));
+                break;
+            case UpnpDeviceDisappearedEvent { Device: var d, DeviceId: var id }:
+                context.Clients.All.SsdpDiscoveryEvent(id, new("disappeared", d));
+                break;
+        }
     }
 
     #endregion
