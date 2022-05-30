@@ -23,7 +23,7 @@ internal abstract partial class PropChangedUpnpEventCommandHandler<TEvent> : IAs
         IReadOnlyDictionary<string, string> properties;
         IReadOnlyDictionary<string, string> vendorProperties;
 
-        using (var reader = XmlReader.Create(command.Stream, settings))
+        using (var reader = XmlReader.Create(command.Content, settings))
         {
             (_, properties, vendorProperties) = await EventMessageXmlReader.ReadAsync(reader).ConfigureAwait(false);
         }

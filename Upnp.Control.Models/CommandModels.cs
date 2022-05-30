@@ -2,7 +2,7 @@ using Upnp.Control.Models.Events;
 
 namespace Upnp.Control.Models;
 
-public record NotifyPropChangedCommand<TEvent>(string DeviceId, Stream Stream) where TEvent : PropChangedEvent;
+public record NotifyPropChangedCommand<TEvent>(string DeviceId, Stream Content) where TEvent : PropChangedEvent;
 public record struct RemoveDeviceCommand(string DeviceId);
 public record struct AddDeviceCommand(UpnpDevice Device);
 public record struct UpdateDeviceExpirationCommand(string DeviceId, DateTime ExpiresAt);

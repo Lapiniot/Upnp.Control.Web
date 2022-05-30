@@ -144,6 +144,8 @@ api.MapBrowseContentApiEndpoint("{deviceId}/items/{*path}");
 api.MapQueueApiEndpoint("{deviceId}/queues/{queueId}/items");
 api.MapConnectionsApiEndpoint("{deviceId}");
 
+app.MapEventCallbacksEndpoint("api/events/{deviceId}");
+
 // Swagger
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
 
