@@ -2,24 +2,23 @@ using System.Xml;
 
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncCommandHandler<PropChangedUpnpEventCommand>
-    where TEvent : PropChangedUpnpEvent, new()
+internal abstract partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncCommandHandler<NotifyPropChangedCommand<TEvent>>
+    where TEvent : PropChangedEvent, new()
 {
-    private readonly ILogger<PropChangedUpnpEventCommandHandler<TEvent>> logger;
-    private readonly IEnumerable<IObserver<UpnpEvent>> eventObservers;
+    private readonly ILogger logger;
+    private readonly IEnumerable<IObserver<TEvent>> eventObservers;
     private readonly IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler;
     private readonly XmlReaderSettings settings = new() { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
 
-    public PropChangedUpnpEventCommandHandler(IEnumerable<IObserver<UpnpEvent>> eventObservers,
-        IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
-        ILogger<PropChangedUpnpEventCommandHandler<TEvent>> logger)
+    protected PropChangedUpnpEventCommandHandler(IEnumerable<IObserver<TEvent>> eventObservers,
+        IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler, ILogger logger)
     {
         this.eventObservers = eventObservers;
         this.handler = handler;
         this.logger = logger;
     }
 
-    public async Task ExecuteAsync(PropChangedUpnpEventCommand command, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(NotifyPropChangedCommand<TEvent> command, CancellationToken cancellationToken)
     {
         IReadOnlyDictionary<string, string> properties;
         IReadOnlyDictionary<string, string> vendorProperties;
@@ -41,7 +40,7 @@ internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncComman
         }
     }
 
-    protected virtual async ValueTask NotifyObserversAsync(IEnumerable<IObserver<UpnpEvent>> observers, string deviceId,
+    protected virtual async ValueTask NotifyObserversAsync(IEnumerable<IObserver<TEvent>> observers, string deviceId,
         IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, string> vendorProperties,
         CancellationToken cancellationToken)
     {
@@ -70,5 +69,5 @@ internal partial class PropChangedUpnpEventCommandHandler<TEvent> : IAsyncComman
     }
 
     [LoggerMessage(1, LogLevel.Error, "Error sending UPnP event notification to observer {observer}")]
-    private partial void LogError(Exception exception, IObserver<UpnpEvent> observer);
+    private partial void LogError(Exception exception, IObserver<TEvent> observer);
 }

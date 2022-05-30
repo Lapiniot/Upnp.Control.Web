@@ -5,12 +5,12 @@ public abstract record UpnpEvent
     public DeviceDescription Device { get; init; }
 }
 
-public record PropChangedUpnpEvent : UpnpEvent
+public record PropChangedEvent : UpnpEvent
 {
     public IReadOnlyDictionary<string, string> Properties { get; init; }
     public IReadOnlyDictionary<string, string> VendorProperties { get; init; }
 }
 
-public record AVTPropChangedEvent : PropChangedUpnpEvent;
+public record AVTPropChangedEvent : PropChangedEvent;
 
-public record RCPropChangedEvent : PropChangedUpnpEvent;
+public record RCPropChangedEvent : PropChangedEvent;

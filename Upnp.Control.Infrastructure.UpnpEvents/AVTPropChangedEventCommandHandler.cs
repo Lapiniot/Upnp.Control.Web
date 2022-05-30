@@ -2,14 +2,15 @@ namespace Upnp.Control.Infrastructure.UpnpEvents;
 
 internal sealed class AVTPropChangedEventCommandHandler : PropChangedUpnpEventCommandHandler<AVTPropChangedEvent>
 {
-    public AVTPropChangedEventCommandHandler(IEnumerable<IObserver<UpnpEvent>> eventObservers,
-        IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
-        ILogger<PropChangedUpnpEventCommandHandler<AVTPropChangedEvent>> logger) :
+    public AVTPropChangedEventCommandHandler(IEnumerable<IObserver<AVTPropChangedEvent>> eventObservers,
+        IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler, ILogger<AVTPropChangedEventCommandHandler> logger) :
         base(eventObservers, handler, logger)
     {
     }
 
-    protected override ValueTask NotifyObserversAsync(IEnumerable<IObserver<UpnpEvent>> observers, string deviceId, IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, string> vendorProperties, CancellationToken cancellationToken)
+    protected override ValueTask NotifyObserversAsync(IEnumerable<IObserver<AVTPropChangedEvent>> observers,
+        string deviceId, IReadOnlyDictionary<string, string> properties,
+        IReadOnlyDictionary<string, string> vendorProperties, CancellationToken cancellationToken)
     {
         if (properties.Count == 1 &&
             (properties.ContainsKey("RelativeTimePosition") ||

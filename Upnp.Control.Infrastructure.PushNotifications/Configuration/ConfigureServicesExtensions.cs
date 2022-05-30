@@ -20,7 +20,7 @@ public static class ConfigureServicesExtensions
             .AddHostedService(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddSingleton<WebPushSenderService>()
             .AddSingleton<IObserver<UpnpDiscoveryEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
-            .AddSingleton<IObserver<UpnpEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
+            .AddSingleton<IObserver<AVTPropChangedEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddTransient<IServiceInitializer, VAPIDKeyConfigInitializer>()
             .AddTransient<IAsyncQueryHandler<PSGetServerKeyQuery, byte[]>, PSGetServerKeyQueryHandler>()
             .AddWebPushClient();

@@ -9,7 +9,7 @@ using Upnp.Control.Models.PushNotifications;
 namespace Upnp.Control.Infrastructure.PushNotifications;
 
 #pragma warning disable CA1031 // by design
-internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObserver<UpnpDiscoveryEvent>, IObserver<UpnpEvent>
+internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObserver<UpnpDiscoveryEvent>, IObserver<AVTPropChangedEvent>
 {
     private readonly IServiceProvider services;
     private readonly ILogger<WebPushSenderService> logger;
@@ -66,18 +66,18 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
 
     #region Implementation of IObserver<UpnpAVTransportPropertyChangedEvent>
 
-    void IObserver<UpnpEvent>.OnNext(UpnpEvent value)
+    void IObserver<AVTPropChangedEvent>.OnNext(AVTPropChangedEvent value)
     {
-        if (value is not AVTPropChangedEvent @event || !@event.Properties.TryGetValue("TransportState", out var state) || state != "PLAYING")
+        if (value is null || value.Properties.TryGetValue("TransportState", out var state) || state != "PLAYING")
         {
             return;
         }
 
         Post(NotificationType.PlaybackStateChange,
             new AVStateMessage(value.Device,
-                Factories.CreateAVState(@event.Properties),
-                Factories.CreateAVPosition(@event.Properties),
-                @event.VendorProperties));
+                Factories.CreateAVState(value.Properties),
+                Factories.CreateAVPosition(value.Properties),
+                value.VendorProperties));
     }
 
     #endregion
