@@ -1,5 +1,7 @@
-﻿#region usings
+#region usings
+
 using System.Reflection;
+using IoT.Device.Upnp;
 using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Api;
 using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
@@ -14,9 +16,10 @@ using Upnp.Control.Models.Converters;
 using Upnp.Control.Services.Commands.Configuration;
 using Upnp.Control.Services.Queries.Configuration;
 using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
+
 #endregion
 
-IoT.Device.Upnp.Library.Init();
+Library.Init();
 IoT.Device.Upnp.Umi.Library.Init();
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -124,20 +127,26 @@ app.UseSwaggerUI(options =>
 });
 
 app.MapDefaultControllerRoute();
+
 // Custom middleware endpoints
 app.MapUpnpEventsHub("upnpevents");
 app.MapImageLoaderProxy("proxy/{*url}");
 app.MapContentProxy("dlna-proxy/{*url}");
 app.MapCertificateDownloadMiddleware("api/cert");
+
 // Health checks
 app.MapHealthChecks("api/health");
+
 // API routes
 var api = app.MapGroup("api/devices").WithGroupName("v1");
 api.MapDeviceApiEndpoint("");
 api.MapBrowseContentApiEndpoint("{deviceId}/items/{*path}");
 api.MapQueueApiEndpoint("{deviceId}/queues/{queueId}/items");
+api.MapConnectionsApiEndpoint("{deviceId}");
+
 // Swagger
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
+
 // Fallback route
 app.MapFallbackToFile("index.html");
 
