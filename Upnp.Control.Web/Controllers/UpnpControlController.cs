@@ -14,7 +14,7 @@ public class UpnpControlController : ControllerBase
     [Produces("application/json")]
     public Task<AVState> GetStateAsync([FromServices][NotNull] IAsyncQueryHandler<AVGetStateQuery, AVState> handler,
         string deviceId, CancellationToken cancellationToken, [FromQuery] bool detailed = false) =>
-        ControlServices.GetStateAsync(handler, deviceId, cancellationToken, detailed);
+        ControlServices.GetStateAsync(handler, deviceId, detailed, cancellationToken);
 
     [HttpPut("state")]
     [Consumes("application/json")]
@@ -30,7 +30,7 @@ public class UpnpControlController : ControllerBase
     [Produces("application/json")]
     public Task<AVPosition> GetPositionAsync([FromServices][NotNull] IAsyncQueryHandler<AVGetPositionQuery, AVPosition> handler,
         string deviceId, CancellationToken cancellationToken, bool detailed = false) =>
-        ControlServices.GetPositionAsync(handler, deviceId, cancellationToken, detailed);
+        ControlServices.GetPositionAsync(handler, deviceId, detailed, cancellationToken);
 
     [HttpPut("position")]
     [Consumes("application/json")]
@@ -62,7 +62,7 @@ public class UpnpControlController : ControllerBase
     [Produces("application/json")]
     public Task<RCVolumeState> GetVolumeAsync([FromServices][NotNull] IAsyncQueryHandler<RCGetVolumeQuery, RCVolumeState> handler,
         string deviceId, CancellationToken cancellationToken, bool detailed = false) =>
-        ControlServices.GetVolumeAsync(handler, deviceId, cancellationToken, detailed);
+        ControlServices.GetVolumeAsync(handler, deviceId, detailed, cancellationToken);
 
     [HttpPut("volume")]
     [Consumes("application/json")]
