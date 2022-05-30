@@ -1,4 +1,4 @@
-﻿import { PlaybackMode } from "../routes/common/Types";
+import { PlaybackMode } from "../routes/common/Types";
 import { toBase64 } from "./Extensions";
 import { HttpFetch, JsonFetch, JsonPostFetch, JsonPutFetch, JsonDeleteFetch, RequestQuery, HttpPost } from "./HttpFetch";
 
@@ -109,7 +109,7 @@ export default class WebApi {
     static control = (deviceId: string): ControlApiProvider => {
         deviceId = encodeURIComponent(deviceId);
         return {
-            state: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/state${detailed ? "?detailed" : ""}`),
+            state: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/state${detailed ? "?detailed=true" : ""}`),
             play: (id?: string, sourceDevice?: string) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null,
                 { body: JSON.stringify({ state: "playing", objectId: id, sourceDevice }) }),
             playUri: (id: string) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing", currentUri: id }) }),
@@ -117,11 +117,11 @@ export default class WebApi {
             stop: () => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "stopped" }) }),
             prev: () => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing-prev" }) }),
             next: () => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, { body: JSON.stringify({ state: "playing-next" }) }),
-            position: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/position${detailed ? "?detailed" : ""}`),
+            position: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/position${detailed ? "?detailed=true" : ""}`),
             seek: (position: number | string) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/position`, null,
                 { body: JSON.stringify(typeof position === "number" ? { position: position } : { relTime: position }) }),
             setPlayMode: (mode: string) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/play-mode`, null, { body: JSON.stringify(mode) }),
-            volume: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/volume${detailed ? "?detailed" : ""}`),
+            volume: (detailed = false) => new JsonFetch(`${devicesBaseUri}/${deviceId}/volume${detailed ? "?detailed=true" : ""}`),
             setVolume: (volume: number) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/volume`, null, { body: JSON.stringify(volume) }),
             getMute: () => new JsonFetch(`${devicesBaseUri}/${deviceId}/mute`),
             setMute: (mute: boolean) => new JsonPutFetch(`${devicesBaseUri}/${deviceId}/mute`, null, { body: JSON.stringify(mute) })

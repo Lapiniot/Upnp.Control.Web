@@ -22,7 +22,7 @@ internal sealed class AVGetPositionQueryHandler : IAsyncQueryHandler<AVGetPositi
             info.TryGetValue("TrackDuration", out value) ? value : null,
             info.TryGetValue("RelTime", out value) ? value : null)
         {
-            Current = detailed != false && info.TryGetValue("TrackMetaData", out value) ? DIDLXmlReader.Read(value, true, true).FirstOrDefault() : null
+            Current = detailed && info.TryGetValue("TrackMetaData", out value) ? DIDLXmlReader.Read(value, true, true).FirstOrDefault() : null
         };
     }
 }

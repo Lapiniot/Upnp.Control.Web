@@ -17,11 +17,10 @@ internal sealed class RCGetVolumeQueryHandler : IAsyncQueryHandler<RCGetVolumeQu
 
         var (deviceId, detailed) = query;
         var service = await factory.GetServiceAsync<RenderingControlService>(deviceId, cancellationToken).ConfigureAwait(false);
-        var rv = await service.GetVolumeAsync(0, cancellationToken).ConfigureAwait(false);
-        var rm = detailed != false ? await service.GetMuteAsync(0, cancellationToken).ConfigureAwait(false) : null;
+        var volumeResult = await service.GetVolumeAsync(0, cancellationToken).ConfigureAwait(false);
+        var muteResult = detailed ? await service.GetMuteAsync(0, cancellationToken).ConfigureAwait(false) : null;
 
-        return new(
-            rv.TryGetValue("CurrentVolume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
-            rm != null && rm.TryGetValue("CurrentMute", out v) && bool.TryParse(v, out var muted) ? muted : null);
+        return new(volumeResult.TryGetValue("CurrentVolume", out var v) && uint.TryParse(v, out var vol) ? vol : null,
+            muteResult != null && muteResult.TryGetValue("CurrentMute", out v) && bool.TryParse(v, out var muted) ? muted : null);
     }
 }
