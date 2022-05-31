@@ -122,7 +122,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
 
     void IObserver<AVTPropChangedEvent>.OnNext(AVTPropChangedEvent value)
     {
-        if (value is null || value.Properties.TryGetValue("TransportState", out var state) || state != "PLAYING")
+        if (value is null || !value.Properties.TryGetValue("TransportState", out var state) || state != "PLAYING")
         {
             return;
         }
