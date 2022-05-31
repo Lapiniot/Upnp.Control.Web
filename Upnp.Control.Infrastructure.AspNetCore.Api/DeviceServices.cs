@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
 public static class DeviceServices
