@@ -105,7 +105,7 @@ export class JsonPutFetch extends JsonWithBodyFetch {
 }
 
 export class JsonDeleteFetch extends JsonWithBodyFetch {
-    constructor(path: string, query: RequestQuery, init: RequestInit) {
+    constructor(path: string, query: RequestQuery, init: RequestInit = {}) {
         super(path, query, { ...init, method: "DELETE" });
     }
 }

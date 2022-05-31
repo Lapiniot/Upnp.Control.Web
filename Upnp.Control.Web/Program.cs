@@ -139,12 +139,13 @@ app.MapHealthChecks("api/health");
 
 // API routes
 var api = app.MapGroup("api/devices").WithGroupName("v1");
-api.MapDeviceApiEndpoint("");
-api.MapBrowseContentApiEndpoint("{deviceId}/items/{*path}");
-api.MapQueueApiEndpoint("{deviceId}/queues/{queueId}/items");
-api.MapConnectionsApiEndpoint("{deviceId}");
+api.MapDeviceApi("");
+api.MapBrowseContentApi("{deviceId}/items/{*path}");
+api.MapQueueApi("{deviceId}/queues/{queueId}/items");
+api.MapConnectionsApi("{deviceId}");
 
-app.MapEventCallbacksEndpoint("api/events/{deviceId}");
+app.MapUpnpEventCallbacks("api/events/{deviceId}");
+app.MapPushNotificationSubscriptionApi("api/push-subscriptions");
 
 // Swagger
 app.MapSwagger("api/swagger/{documentName}/swagger.json");

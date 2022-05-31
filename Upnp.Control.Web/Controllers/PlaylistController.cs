@@ -15,7 +15,7 @@ public class PlaylistController : ControllerBase
     [Produces("application/json")]
     public Task GetPlaylistStateAsync([FromServices][NotNull] IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string> handler,
         string deviceId, CancellationToken cancellationToken) =>
-        PlaylistServices.GetPlaylistStateAsync(handler, deviceId, cancellationToken, HttpContext.Response);
+        PlaylistServices.GetPlaylistStateAsync(handler, deviceId, HttpContext.Response, cancellationToken);
 
     #endregion
 

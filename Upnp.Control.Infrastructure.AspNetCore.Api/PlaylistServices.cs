@@ -45,7 +45,7 @@ public static class PlaylistServices
         handler.ExecuteAsync(new(deviceId, playlistId, items), cancellationToken);
 
     public static async Task GetPlaylistStateAsync(IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string> handler,
-        string deviceId, CancellationToken cancellationToken, HttpResponse httpResponse)
+        string deviceId, HttpResponse httpResponse, CancellationToken cancellationToken)
     {
         var content = await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
         httpResponse.Headers.Add("Content-Type", "application/json");

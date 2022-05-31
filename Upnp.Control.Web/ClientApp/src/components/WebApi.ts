@@ -137,7 +137,7 @@ const pushSubscriber = {
     subscribe: (endpoint: string, type: NotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) =>
         new JsonPostFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint, type, p256dhKey: toBase64(p256dh), authKey: toBase64(auth) }) }),
     unsubscribe: (endpoint: string, type: NotificationType) =>
-        new JsonDeleteFetch(`${baseUri}/push-subscriptions`, null, { body: JSON.stringify({ endpoint, type }) }),
+        new JsonDeleteFetch(`${baseUri}/push-subscriptions`, { endpoint, type }),
     subscribed: (endpoint: string, type: NotificationType) => new JsonFetch(`${baseUri}/push-subscriptions`, { endpoint, type }),
     serverKey: () => new HttpFetch(`${baseUri}/push-subscriptions/server-key`)
 }
@@ -174,4 +174,3 @@ function createFormData(files: Iterable<File>, useProxy?: boolean) {
     if (useProxy) data.set("useProxy", "true");
     return data;
 }
-
