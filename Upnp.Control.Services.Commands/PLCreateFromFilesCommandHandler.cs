@@ -1,5 +1,4 @@
 using System.Globalization;
-using Upnp.Control.Services.Commands.Configuration;
 using static System.String;
 
 namespace Upnp.Control.Services.Commands;
@@ -12,9 +11,9 @@ internal sealed class PLCreateFromFilesCommandHandler : PLFeedsCommandBase, IAsy
         base(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger)
     { }
 
-    private async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool? useProxy, bool? merge, CancellationToken cancellationToken)
+    private async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool useProxy, bool merge, CancellationToken cancellationToken)
     {
-        if (merge == true)
+        if (merge)
         {
             if (title is { Length: > 0 })
             {

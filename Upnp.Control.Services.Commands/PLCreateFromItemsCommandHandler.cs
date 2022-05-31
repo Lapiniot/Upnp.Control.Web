@@ -4,9 +4,9 @@ namespace Upnp.Control.Services.Commands;
 
 internal sealed class PLCreateFromItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLCreateFromItemsCommand>
 {
-    private readonly IOptionsSnapshot<Configuration.PlaylistOptions> options;
+    private readonly IOptionsSnapshot<PlaylistOptions> options;
 
-    public PLCreateFromItemsCommandHandler(IUpnpServiceFactory serviceFactory, IOptionsSnapshot<Configuration.PlaylistOptions> options) :
+    public PLCreateFromItemsCommandHandler(IUpnpServiceFactory serviceFactory, IOptionsSnapshot<PlaylistOptions> options) :
         base(serviceFactory)
     {
         ArgumentNullException.ThrowIfNull(options);

@@ -5,9 +5,9 @@ namespace Upnp.Control.Services.Commands;
 internal sealed class QueueAddItemsCommandHandler : IAsyncCommandHandler<QAddItemsCommand>
 {
     private readonly IUpnpServiceFactory factory;
-    private readonly IOptionsSnapshot<Configuration.PlaylistOptions> options;
+    private readonly IOptionsSnapshot<PlaylistOptions> options;
 
-    public QueueAddItemsCommandHandler(IUpnpServiceFactory factory, IOptionsSnapshot<Configuration.PlaylistOptions> options)
+    public QueueAddItemsCommandHandler(IUpnpServiceFactory factory, IOptionsSnapshot<PlaylistOptions> options)
     {
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(options);

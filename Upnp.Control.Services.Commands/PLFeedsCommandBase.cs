@@ -6,13 +6,13 @@ namespace Upnp.Control.Services.Commands;
 
 internal abstract partial class PLFeedsCommandBase : PLCommandBase
 {
-    private readonly ILogger<PLFeedsCommandBase> logger;
-    private readonly IOptionsSnapshot<Configuration.PlaylistOptions> options;
     private readonly HttpClient client;
+    private readonly ILogger<PLFeedsCommandBase> logger;
+    private readonly IOptionsSnapshot<PlaylistOptions> options;
 
     protected PLFeedsCommandBase(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
         IServerAddressesProvider serverAddressesProvider,
-        IOptionsSnapshot<Configuration.PlaylistOptions> options,
+        IOptionsSnapshot<PlaylistOptions> options,
         ILogger<PLFeedsCommandBase> logger) : base(serviceFactory)
     {
         ArgumentNullException.ThrowIfNull(serviceFactory);
@@ -31,7 +31,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
 
     public Uri BindingUri { get; }
 
-    protected async Task AppendFromFileAsync(XmlWriter writer, FileSource file, bool? useProxy, CancellationToken cancellationToken)
+    protected async Task AppendFromFileAsync(XmlWriter writer, FileSource file, bool useProxy, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(file);
 
@@ -45,7 +45,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
         }
     }
 
-    protected async Task AppendFeedItemAsync(XmlWriter writer, Uri mediaUri, string title, bool? useProxy, CancellationToken cancellationToken)
+    protected async Task AppendFeedItemAsync(XmlWriter writer, Uri mediaUri, string title, bool useProxy, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(mediaUri);
 
@@ -60,8 +60,8 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
             title = string.IsNullOrWhiteSpace(title) ? response.Headers.TryGetValues("icy-name", out values) ? values.First() : mediaUri.ToString() : title;
             var description = response.Headers.TryGetValues("icy-description", out values) ? values.First() : null;
             var genre = response.Headers.TryGetValues("icy-genre", out values) ? values.First() : null;
-            useProxy ??= response.Headers.TryGetValues("icy-metaint", out _);
-            var url = useProxy != true ? mediaUri : GetProxyUri(mediaUri);
+            useProxy = useProxy || response.Headers.TryGetValues("icy-metaint", out _);
+            var url = useProxy ? GetProxyUri(mediaUri) : mediaUri;
 
             DIDLUtils.WriteItem(writer, title, description, genre, url, length, contentType?.MediaType, br);
         }
@@ -70,7 +70,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
             LogFeedProbeRequestFailure(exception);
 
             title = !string.IsNullOrWhiteSpace(title) ? title : mediaUri.ToString();
-            var url = useProxy == false ? mediaUri : GetProxyUri(mediaUri);
+            var url = useProxy ? GetProxyUri(mediaUri) : mediaUri;
 
             DIDLUtils.WriteItem(writer, title, null, null, url, null, null, null);
         }
@@ -83,7 +83,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
             Query = "?no-length&strip-icy-metadata&add-dlna-metadata"
         }.Uri;
 
-    protected async Task<string> GetMetadataAsync(IEnumerable<FileSource> files, bool? useProxy, CancellationToken cancellationToken)
+    protected async Task<string> GetMetadataAsync(IEnumerable<FileSource> files, bool useProxy, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(files);
 
@@ -107,7 +107,7 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
         return sb.ToString();
     }
 
-    protected async Task AddFromUrlAsync(string deviceId, string playlistId, Uri mediaUrl, string title, bool? useProxy, CancellationToken cancellationToken)
+    protected async Task AddFromUrlAsync(string deviceId, string playlistId, Uri mediaUrl, string title, bool useProxy, CancellationToken cancellationToken)
     {
         var sb = new StringBuilder();
         using (var writer = DIDLUtils.CreateDidlXmlWriter(sb))
@@ -118,13 +118,13 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
         await AddItemAsync(deviceId, playlistId, sb.ToString(), cancellationToken).ConfigureAwait(false);
     }
 
-    protected async Task AddFromFilesAsync(string deviceId, string playlistId, IEnumerable<FileSource> files, bool? useProxy, CancellationToken cancellationToken)
+    protected async Task AddFromFilesAsync(string deviceId, string playlistId, IEnumerable<FileSource> files, bool useProxy, CancellationToken cancellationToken)
     {
         var metadata = await GetMetadataAsync(files, useProxy, cancellationToken).ConfigureAwait(false);
         await AddItemAsync(deviceId, playlistId, metadata, cancellationToken).ConfigureAwait(false);
     }
 
-    protected async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool? useProxy, CancellationToken cancellationToken)
+    protected async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool useProxy, CancellationToken cancellationToken)
     {
         var metadata = await GetMetadataAsync(files, useProxy, cancellationToken).ConfigureAwait(false);
         await CreatePlaylistAsync(deviceId, title, metadata, cancellationToken).ConfigureAwait(false);

@@ -5,9 +5,9 @@ namespace Upnp.Control.Services.Commands;
 
 internal sealed class PLAddItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLAddItemsCommand>
 {
-    private readonly IOptionsSnapshot<Configuration.PlaylistOptions> options;
+    private readonly IOptionsSnapshot<PlaylistOptions> options;
 
-    public PLAddItemsCommandHandler(IUpnpServiceFactory factory, IOptionsSnapshot<Configuration.PlaylistOptions> options) : base(factory)
+    public PLAddItemsCommandHandler(IUpnpServiceFactory factory, IOptionsSnapshot<PlaylistOptions> options) : base(factory)
     {
         ArgumentNullException.ThrowIfNull(options);
 

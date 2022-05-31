@@ -78,7 +78,7 @@ export default class WebApi {
 
             const formData = createFormData(data, useProxy);
             if (title) formData.set("title", title);
-            if (merge) formData.set("merge", merge.toString());
+            if (merge) formData.set("merge", "true");
 
             return new HttpPost(url, null, { body: formData });
         },
@@ -168,10 +168,10 @@ export class BrowseFetch extends HttpFetch {
     skip = (count: number) => { return new BrowseFetch(this.path, { ...this.query, skip: count }); };
 };
 
-function createFormData(files: Iterable<File>, useProxy: boolean | undefined) {
+function createFormData(files: Iterable<File>, useProxy?: boolean) {
     const data = new FormData();
     for (let file of files) data.append("files", file);
-    if (useProxy) data.set("useProxy", useProxy.toString());
+    if (useProxy) data.set("useProxy", "true");
     return data;
 }
 

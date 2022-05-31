@@ -8,7 +8,7 @@ internal sealed class PLAddFeedsCommandHandler : PLFeedsCommandBase,
 {
     public PLAddFeedsCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
         IServerAddressesProvider serverAddressesProvider, ILogger<PLAddFeedsCommandHandler> logger,
-        IOptionsSnapshot<Configuration.PlaylistOptions> options) :
+        IOptionsSnapshot<PlaylistOptions> options) :
         base(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger)
     {
     }

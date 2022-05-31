@@ -36,8 +36,8 @@ public class PlaylistController : ControllerBase
     [Consumes("multipart/form-data")]
     public Task CreateAsync([FromServices][NotNull] IAsyncCommandHandler<PLCreateFromFilesCommand> handler,
         string deviceId, [FromForm] IEnumerable<IFormFile> files,
-        [FromForm] string title, [FromForm] bool? useProxy, [FromForm] bool? merge,
-        CancellationToken cancellationToken) =>
+        [FromForm] string title, [FromForm] bool useProxy = false, [FromForm] bool merge = false,
+        CancellationToken cancellationToken = default) =>
         handler.ExecuteAsync(new(deviceId, files.Select(f => new FormFileSource(f)), title, merge, useProxy), cancellationToken);
 
     [HttpPut("{playlistId}")]
@@ -70,7 +70,7 @@ public class PlaylistController : ControllerBase
     [HttpPost("{playlistId}/files")]
     [Consumes("multipart/form-data")]
     public Task AddFromFilesAsync([FromServices][NotNull] IAsyncCommandHandler<PLAddPlaylistFilesCommand> handler,
-        string deviceId, string playlistId, [FromForm] IEnumerable<IFormFile> files, [FromForm] bool? useProxy,
+        string deviceId, string playlistId, [FromForm] IEnumerable<IFormFile> files, [FromForm] bool useProxy = false,
         CancellationToken cancellationToken = default) =>
         handler.ExecuteAsync(new(deviceId, playlistId, files.Select(f => new FormFileSource(f)), useProxy), cancellationToken);
 

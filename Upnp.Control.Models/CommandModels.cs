@@ -30,7 +30,7 @@ public record PLCreateCommand(string DeviceId, string Title);
 
 public record PLCreateFromItemsCommand(string DeviceId, CreatePlaylistParams Params);
 
-public record PLCreateFromFilesCommand(string DeviceId, IEnumerable<FileSource> Files, string Title, bool? Merge, bool? UseProxy);
+public record PLCreateFromFilesCommand(string DeviceId, IEnumerable<FileSource> Files, string Title, bool Merge, bool UseProxy);
 
 public record PLRenameCommand(string DeviceId, string PlaylistId, string Title);
 
@@ -42,7 +42,7 @@ public record PLAddItemsCommand(string DeviceId, string PlaylistId, MediaSource 
 
 public record PLAddFeedUrlCommand(string DeviceId, string PlaylistId, FeedUrlSource Source);
 
-public record PLAddPlaylistFilesCommand(string DeviceId, string PlaylistId, IEnumerable<FileSource> Files, bool? UseProxy);
+public record PLAddPlaylistFilesCommand(string DeviceId, string PlaylistId, IEnumerable<FileSource> Files, bool UseProxy);
 
 public record PLRemoveItemsCommand(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
 
