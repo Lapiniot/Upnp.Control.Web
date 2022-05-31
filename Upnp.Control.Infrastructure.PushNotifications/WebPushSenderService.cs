@@ -39,16 +39,17 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var scope = services.CreateScope();
-        var client = scope.ServiceProvider.GetRequiredService<IWebPushClient>();
-        var enumerateHandler = scope.ServiceProvider.GetRequiredService<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
-        var removeHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
-
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
                 var message = await channel.Reader.ReadAsync(stoppingToken).ConfigureAwait(false);
+
+                using var scope = services.CreateScope();
+                var serviceProvider = scope.ServiceProvider;
+
+                var client = serviceProvider.GetRequiredService<IWebPushClient>();
+                var enumerateHandler = serviceProvider.GetRequiredService<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
 
                 await foreach (var (endpoint, type, _, p256dhKey, authKey) in enumerateHandler.ExecuteAsync(new(message.Type), stoppingToken).ConfigureAwait(false))
                 {
@@ -62,6 +63,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                     }
                     catch (HttpRequestException hre) when (hre is { StatusCode: HttpStatusCode.Gone or HttpStatusCode.Forbidden })
                     {
+                        var removeHandler = serviceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
                         await removeHandler.ExecuteAsync(new(type, endpoint), stoppingToken).ConfigureAwait(false);
                     }
                     catch (Exception ex)
