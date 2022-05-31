@@ -1,11 +1,9 @@
-using Upnp.Control.Models.Events;
-
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
 public static class UpnpEventCallbackServices
 {
     public static async Task<Results<NoContent, BadRequest>> NotifyRenderingControlAsync(
-        IAsyncCommandHandler<NotifyPropChangedCommand<RCPropChangedEvent>> handler,
+        IAsyncCommandHandler<RCPropChangedCommand> handler,
         string deviceId, HttpRequest request, CancellationToken cancellationToken)
     {
         try
@@ -20,7 +18,7 @@ public static class UpnpEventCallbackServices
     }
 
     public static async Task<Results<NoContent, BadRequest>> NotifyAVTransportAsync(
-        IAsyncCommandHandler<NotifyPropChangedCommand<AVTPropChangedEvent>> handler,
+        IAsyncCommandHandler<AVTPropChangedCommand> handler,
         string deviceId, HttpRequest request, CancellationToken cancellationToken)
     {
         try

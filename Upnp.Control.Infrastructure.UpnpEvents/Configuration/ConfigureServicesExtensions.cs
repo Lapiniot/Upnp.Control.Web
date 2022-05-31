@@ -13,8 +13,8 @@ public static class ConfigureServicesExtensions
             .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>()
             .AddTransient<IUpnpEventSubscriptionRepository, InMemorySubscriptionsRepository>()
             .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
-            .AddTransient<IAsyncCommandHandler<NotifyPropChangedCommand<AVTPropChangedEvent>>, AVTPropChangedEventCommandHandler>()
-            .AddTransient<IAsyncCommandHandler<NotifyPropChangedCommand<RCPropChangedEvent>>, RCPropChangedEventCommandHandler>()
+            .AddTransient<IAsyncCommandHandler<AVTPropChangedCommand>, AVTPropChangedEventCommandHandler>()
+            .AddTransient<IAsyncCommandHandler<RCPropChangedCommand>, RCPropChangedEventCommandHandler>()
             .AddEventSubscribeClient();
 
     public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services, Action<UpnpEventsOptions> configureOptions)

@@ -1,12 +1,11 @@
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-internal sealed class AVTPropChangedEventCommandHandler : PropChangedUpnpEventCommandHandler<AVTPropChangedEvent>
+internal sealed class AVTPropChangedEventCommandHandler : PropChangedUpnpEventCommandHandler<AVTPropChangedCommand, AVTPropChangedEvent>
 {
     public AVTPropChangedEventCommandHandler(IEnumerable<IObserver<AVTPropChangedEvent>> eventObservers,
         IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler, ILogger<AVTPropChangedEventCommandHandler> logger) :
         base(eventObservers, handler, logger)
-    {
-    }
+    { }
 
     protected override ValueTask NotifyObserversAsync(IEnumerable<IObserver<AVTPropChangedEvent>> observers,
         string deviceId, IReadOnlyDictionary<string, string> properties,
@@ -14,7 +13,7 @@ internal sealed class AVTPropChangedEventCommandHandler : PropChangedUpnpEventCo
     {
         if (properties.Count == 1 &&
             (properties.ContainsKey("RelativeTimePosition") ||
-            properties.ContainsKey("AbsoluteTimePosition")))
+             properties.ContainsKey("AbsoluteTimePosition")))
         {
             // Workaround for some quirky renderers that report position changes every second during playback
             // via state variable changes. Some way of throttling is definitely needed here :(
