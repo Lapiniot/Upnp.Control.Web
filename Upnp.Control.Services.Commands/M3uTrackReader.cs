@@ -30,8 +30,7 @@ public class M3UTrackReader : IAsyncEnumerable<M3UTrack>
 
             try
             {
-                var vt = reader.ReadAsync(cancellationToken);
-                result = vt.IsCompletedSuccessfully ? vt.Result : await vt.ConfigureAwait(false);
+                result = await reader.ReadAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

@@ -65,10 +65,6 @@ internal abstract partial class PropChangedUpnpEventCommandHandler<TCommand, TEv
             return;
         }
 
-        var vt = NotifyObserversAsync(eventObservers, command.DeviceId, properties, vendorProperties, cancellationToken);
-        if (!vt.IsCompletedSuccessfully)
-        {
-            await vt.ConfigureAwait(false);
-        }
+        await NotifyObserversAsync(eventObservers, command.DeviceId, properties, vendorProperties, cancellationToken).ConfigureAwait(false);
     }
 }
