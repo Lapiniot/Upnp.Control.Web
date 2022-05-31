@@ -1,5 +1,3 @@
-using Upnp.Control.Models;
-
 namespace Upnp.Control.Infrastructure.SignalR;
 
 public class UpnpEventsHub : Hub<IUpnpEventClient>

@@ -1,5 +1,3 @@
-﻿using Upnp.Control.Models.Events;
-
 namespace Upnp.Control.Infrastructure.SignalR;
 
 public class UpnpDiscoverySignalRNotifyObserver : IObserver<UpnpDiscoveryEvent>

@@ -1,6 +1,3 @@
-using Upnp.Control.Models;
-using Upnp.Control.Models.Events;
-
 namespace Upnp.Control.Infrastructure.SignalR;
 
 public class UpnpEventSignalRNotifyObserver : IObserver<AVTPropChangedEvent>, IObserver<RCPropChangedEvent>

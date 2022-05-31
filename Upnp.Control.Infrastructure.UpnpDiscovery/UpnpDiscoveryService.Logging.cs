@@ -1,7 +1,6 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text;
 using IoT.Protocol.Upnp;
-using Upnp.Control.Models.Events;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 

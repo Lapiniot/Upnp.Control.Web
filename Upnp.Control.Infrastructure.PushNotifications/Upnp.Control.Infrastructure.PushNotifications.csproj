@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Upnp.Control.Models" />
     <Using Include="Microsoft.Extensions.Configuration" />
     <Using Include="Microsoft.Extensions.Options" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />

@@ -1,8 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using IoT.Protocol.Upnp;
 using Upnp.Control.Abstractions;
-using Upnp.Control.Models;
-using Upnp.Control.Models.Events;
 using static System.StringComparison;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;

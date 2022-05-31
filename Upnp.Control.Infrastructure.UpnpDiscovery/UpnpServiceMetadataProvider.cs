@@ -1,4 +1,5 @@
 using IoT.Protocol.Upnp.Metadata;
+using DeviceDescription = IoT.Protocol.Upnp.Metadata.DeviceDescription;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 

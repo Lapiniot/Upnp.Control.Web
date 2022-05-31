@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Connections;
-using Upnp.Control.Models.Events;
+using Microsoft.AspNetCore.Http.Connections;
 
 namespace Upnp.Control.Infrastructure.SignalR.Configuration;
 

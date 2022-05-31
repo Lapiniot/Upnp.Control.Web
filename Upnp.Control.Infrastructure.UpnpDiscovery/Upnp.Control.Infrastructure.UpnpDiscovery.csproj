@@ -5,6 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Upnp.Control.Models" />
     <Using Include="Microsoft.Extensions.Hosting" />
     <Using Include="Microsoft.Extensions.Logging" />
     <Using Include="Microsoft.Extensions.Options" />

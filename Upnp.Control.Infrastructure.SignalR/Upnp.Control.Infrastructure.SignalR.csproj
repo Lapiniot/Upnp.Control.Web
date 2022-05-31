@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Upnp.Control.Models" />
     <Using Include="Microsoft.AspNetCore.Builder" />
     <Using Include="Microsoft.AspNetCore.Routing" />
     <Using Include="Microsoft.AspNetCore.SignalR" />

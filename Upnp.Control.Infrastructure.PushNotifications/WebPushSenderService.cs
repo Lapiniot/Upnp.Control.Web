@@ -2,8 +2,6 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Channels;
 using Upnp.Control.Abstractions;
-using Upnp.Control.Models;
-using Upnp.Control.Models.Events;
 using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.Infrastructure.PushNotifications;
@@ -11,11 +9,11 @@ namespace Upnp.Control.Infrastructure.PushNotifications;
 #pragma warning disable CA1031 // by design
 internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObserver<UpnpDiscoveryEvent>, IObserver<AVTPropChangedEvent>
 {
-    private readonly IServiceProvider services;
-    private readonly ILogger<WebPushSenderService> logger;
-    private readonly IOptions<JsonOptions> jsonOptions;
-    private readonly IOptions<WebPushOptions> wpOptions;
     private readonly Channel<(NotificationType Type, byte[] Payload)> channel;
+    private readonly IOptions<JsonOptions> jsonOptions;
+    private readonly ILogger<WebPushSenderService> logger;
+    private readonly IServiceProvider services;
+    private readonly IOptions<WebPushOptions> wpOptions;
 
     public WebPushSenderService(IServiceProvider services,
         IOptions<JsonOptions> jsonOptions, IOptions<WebPushOptions> wpOptions,
@@ -38,49 +36,6 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
             SingleWriter = false
         });
     }
-
-    #region Implementation of IObserver<UpnpDiscoveryEvent>
-
-    public void OnCompleted()
-    {
-    }
-
-    public void OnError(Exception error)
-    {
-    }
-
-    void IObserver<UpnpDiscoveryEvent>.OnNext(UpnpDiscoveryEvent value)
-    {
-        switch (value)
-        {
-            case UpnpDeviceAppearedEvent dae:
-                Post(NotificationType.DeviceDiscovery, new UpnpDiscoveryMessage("appeared", dae.Device));
-                break;
-            case UpnpDeviceDisappearedEvent dde:
-                Post(NotificationType.DeviceDiscovery, new UpnpDiscoveryMessage("disappeared", dde.Device));
-                break;
-        }
-    }
-
-    #endregion
-
-    #region Implementation of IObserver<UpnpAVTransportPropertyChangedEvent>
-
-    void IObserver<AVTPropChangedEvent>.OnNext(AVTPropChangedEvent value)
-    {
-        if (value is null || value.Properties.TryGetValue("TransportState", out var state) || state != "PLAYING")
-        {
-            return;
-        }
-
-        Post(NotificationType.PlaybackStateChange,
-            new AVStateMessage(value.Device,
-                Factories.CreateAVState(value.Properties),
-                Factories.CreateAVPosition(value.Properties),
-                value.VendorProperties));
-    }
-
-    #endregion
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -162,4 +117,45 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
 
     [LoggerMessage(14, LogLevel.Warning, "Channel closed. Terminating push dispatch loop")]
     private partial void LogChannelClosed();
+
+    #region Implementation of IObserver<UpnpAVTransportPropertyChangedEvent>
+
+    void IObserver<AVTPropChangedEvent>.OnNext(AVTPropChangedEvent value)
+    {
+        if (value is null || value.Properties.TryGetValue("TransportState", out var state) || state != "PLAYING")
+        {
+            return;
+        }
+
+        Post(NotificationType.PlaybackStateChange,
+            new AVStateMessage(value.Device,
+                Factories.CreateAVState(value.Properties),
+                Factories.CreateAVPosition(value.Properties),
+                value.VendorProperties));
+    }
+
+    #endregion
+
+    #region Implementation of IObserver<UpnpDiscoveryEvent>
+
+    public void OnCompleted()
+    { }
+
+    public void OnError(Exception error)
+    { }
+
+    void IObserver<UpnpDiscoveryEvent>.OnNext(UpnpDiscoveryEvent value)
+    {
+        switch (value)
+        {
+            case UpnpDeviceAppearedEvent dae:
+                Post(NotificationType.DeviceDiscovery, new UpnpDiscoveryMessage("appeared", dae.Device));
+                break;
+            case UpnpDeviceDisappearedEvent dde:
+                Post(NotificationType.DeviceDiscovery, new UpnpDiscoveryMessage("disappeared", dde.Device));
+                break;
+        }
+    }
+
+    #endregion
 }

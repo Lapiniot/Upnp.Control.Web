@@ -1,6 +1,6 @@
-﻿namespace Upnp.Control.Models;
+namespace Upnp.Control.Models;
 
-public record UpnpDevice(string Udn, Uri Location, string DeviceType, string FriendlyName, string Manufacturer,
+public sealed record UpnpDevice(string Udn, Uri Location, string DeviceType, string FriendlyName, string Manufacturer,
     string Description, string ModelName, string ModelNumber, DateTime ExpiresAt,
     Uri ManufacturerUri, Uri ModelUri, Uri PresentationUri)
 {
@@ -10,6 +10,6 @@ public record UpnpDevice(string Udn, Uri Location, string DeviceType, string Fri
     public IEnumerable<Service> Services { get; init; }
 }
 
-public record Service(string UniqueServiceName, string ServiceType, Uri MetadataUrl, Uri ControlUrl, Uri EventsUrl);
+public sealed record Service(string UniqueServiceName, string ServiceType, Uri MetadataUrl, Uri ControlUrl, Uri EventsUrl);
 
-public record Icon(int Width, int Height, Uri Url, string Mime);
+public sealed record Icon(int Width, int Height, Uri Url, string Mime);
