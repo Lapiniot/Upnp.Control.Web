@@ -39,15 +39,16 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        using var scope = services.CreateScope();
+        var client = scope.ServiceProvider.GetRequiredService<IWebPushClient>();
+        var enumerateHandler = scope.ServiceProvider.GetRequiredService<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
+        var removeHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
                 var message = await channel.Reader.ReadAsync(stoppingToken).ConfigureAwait(false);
-
-                using var scope = services.CreateScope();
-                var client = scope.ServiceProvider.GetRequiredService<IWebPushClient>();
-                var enumerateHandler = scope.ServiceProvider.GetRequiredService<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
 
                 await foreach (var (endpoint, type, _, p256dhKey, authKey) in enumerateHandler.ExecuteAsync(new(message.Type), stoppingToken).ConfigureAwait(false))
                 {
@@ -59,10 +60,9 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                     {
                         // expected
                     }
-                    catch (HttpRequestException hre) when (hre.StatusCode == HttpStatusCode.Gone || hre.StatusCode == HttpStatusCode.Forbidden)
+                    catch (HttpRequestException hre) when (hre is { StatusCode: HttpStatusCode.Gone or HttpStatusCode.Forbidden })
                     {
-                        var commandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
-                        await commandHandler.ExecuteAsync(new(type, endpoint), stoppingToken).ConfigureAwait(false);
+                        await removeHandler.ExecuteAsync(new(type, endpoint), stoppingToken).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -91,8 +91,8 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
     {
         try
         {
-            var vt = channel.Writer.WriteAsync((type, JsonSerializer.SerializeToUtf8Bytes(message, jsonOptions.Value.SerializerOptions)));
-            if (!vt.IsCompletedSuccessfully) await vt.ConfigureAwait(false);
+            var payload = JsonSerializer.SerializeToUtf8Bytes(message, jsonOptions.Value.SerializerOptions);
+            await channel.Writer.WriteAsync((type, payload)).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
