@@ -1,25 +1,45 @@
 namespace Upnp.Control.Models;
 
+#region Device DB managemet queries
+
 public record struct GetDevicesQuery(string Category, bool WithOffline);
 
 public record struct GetDeviceQuery(string DeviceId);
 
-public record CDGetContentQuery(string DeviceId, string Path, GetContentOptions Options);
+#endregion
 
-public record AVGetStateQuery(string DeviceId, bool Detailed);
+#region ContentDirectory queries
 
-public record AVGetPositionQuery(string DeviceId, bool Detailed);
+public record struct CDGetContentQuery(string DeviceId, string Path, GetContentOptions Options);
 
-public record AVGetPlayModeQuery(string DeviceId);
+#endregion
 
-public record SysPropsGetPlaylistStateQuery(string DeviceId);
+#region Playback control state queries
 
-public record RCGetVolumeQuery(string DeviceId, bool Detailed);
+public record struct AVGetStateQuery(string DeviceId, bool Detailed);
 
-public record RCGetMuteQuery(string DeviceId);
+public record struct AVGetPositionQuery(string DeviceId, bool Detailed);
 
-public record CMGetProtocolInfoQuery(string DeviceId);
+public record struct AVGetPlayModeQuery(string DeviceId);
 
-public record CMGetConnectionsQuery(string DeviceId);
+public record struct RCGetVolumeQuery(string DeviceId, bool Detailed);
 
-public record CMGetConnectionInfoQuery(string DeviceId, string ConnectionId);
+public record struct RCGetMuteQuery(string DeviceId);
+
+#endregion
+
+#region ConnectionManager queries
+
+public record struct CMGetProtocolInfoQuery(string DeviceId);
+
+public record struct CMGetConnectionsQuery(string DeviceId);
+
+public record struct CMGetConnectionInfoQuery(string DeviceId, string ConnectionId);
+
+#endregion
+
+#region SysProperties queries
+
+public record struct SysPropsGetPlaylistStateQuery(string DeviceId);
+
+#endregion

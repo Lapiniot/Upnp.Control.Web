@@ -10,42 +10,58 @@ public sealed record AVTPropChangedCommand(string DeviceId, Stream Content) : No
 
 #endregion
 
+#region Device DB management commands
+
 public record struct RemoveDeviceCommand(string DeviceId);
 
 public record struct AddDeviceCommand(UpnpDevice Device);
 
 public record struct UpdateDeviceExpirationCommand(string DeviceId, DateTime ExpiresAt);
 
-public record AVSetStateCommand(string DeviceId, AVStateParams State);
+#endregion
 
-public record AVSetPositionCommand(string DeviceId, AVPositionParams Position);
+#region Playback control commands
 
-public record AVSetPlayModeCommand(string DeviceId, string PlayMode);
+public record struct AVSetStateCommand(string DeviceId, AVStateParams State);
 
-public record RCSetVolumeCommand(string DeviceId, uint Volume);
+public record struct AVSetPositionCommand(string DeviceId, AVPositionParams Position);
 
-public record RCSetMuteCommand(string DeviceId, bool Muted);
+public record struct AVSetPlayModeCommand(string DeviceId, string PlayMode);
 
-public record PLCreateCommand(string DeviceId, string Title);
+public record struct RCSetVolumeCommand(string DeviceId, uint Volume);
 
-public record PLCreateFromItemsCommand(string DeviceId, CreatePlaylistParams Params);
+public record struct RCSetMuteCommand(string DeviceId, bool Muted);
 
-public record PLCreateFromFilesCommand(string DeviceId, IEnumerable<FileSource> Files, string Title, bool Merge, bool UseProxy);
+#endregion
 
-public record PLRenameCommand(string DeviceId, string PlaylistId, string Title);
+#region Playlist management commands
 
-public record PLCopyCommand(string DeviceId, string PlaylistId, string Title);
+public record struct PLCreateCommand(string DeviceId, string Title);
 
-public record PLRemoveCommand(string DeviceId, IEnumerable<string> PlaylistIds);
+public record struct PLCreateFromItemsCommand(string DeviceId, CreatePlaylistParams Params);
 
-public record PLAddItemsCommand(string DeviceId, string PlaylistId, MediaSource Source);
+public record struct PLCreateFromFilesCommand(string DeviceId, IEnumerable<FileSource> Files, string Title, bool Merge, bool UseProxy);
 
-public record PLAddFeedUrlCommand(string DeviceId, string PlaylistId, FeedUrlSource Source);
+public record struct PLRenameCommand(string DeviceId, string PlaylistId, string Title);
 
-public record PLAddPlaylistFilesCommand(string DeviceId, string PlaylistId, IEnumerable<FileSource> Files, bool UseProxy);
+public record struct PLCopyCommand(string DeviceId, string PlaylistId, string Title);
 
-public record PLRemoveItemsCommand(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
+public record struct PLRemoveCommand(string DeviceId, IEnumerable<string> PlaylistIds);
 
-public record QAddItemsCommand(string DeviceId, string QueueId, MediaSource Source);
+public record struct PLAddItemsCommand(string DeviceId, string PlaylistId, MediaSource Source);
 
-public record QClearCommand(string DeviceId, string QueueId);
+public record struct PLAddFeedUrlCommand(string DeviceId, string PlaylistId, FeedUrlSource Source);
+
+public record struct PLAddPlaylistFilesCommand(string DeviceId, string PlaylistId, IEnumerable<FileSource> Files, bool UseProxy);
+
+public record struct PLRemoveItemsCommand(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
+
+#endregion
+
+#region Queue management commands
+
+public record struct QAddItemsCommand(string DeviceId, string QueueId, MediaSource Source);
+
+public record struct QClearCommand(string DeviceId, string QueueId);
+
+#endregion
