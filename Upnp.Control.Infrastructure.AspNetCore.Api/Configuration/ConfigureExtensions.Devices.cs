@@ -12,7 +12,7 @@ public static partial class ConfigureExtensions
     {
         ArgumentNullException.ThrowIfNull(pattern);
 
-        var tags = new[] { "Device" };
+        var tags = new[] { "Devices" };
 
         var group = routeBuilder.MapGroup(pattern);
 

@@ -10,7 +10,7 @@ public static partial class ConfigureExtensions
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     public static RouteGroupBuilder MapConnectionsApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        var tags = new[] { "Connections" };
+        var tags = new[] { "UPnP Connections" };
 
         var group = routeBuilder.MapGroup(pattern);
 

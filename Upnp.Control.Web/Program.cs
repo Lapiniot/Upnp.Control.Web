@@ -69,12 +69,6 @@ builder.Services.AddServicesInit()
 
 #region ASPNET MVC configuration
 
-builder.Services
-    .AddControllers(options => options
-        .AddBinaryContentFormatter()
-        .AddRequestCancelledExceptionFilter())
-    .AddJsonOptions(static options => options.JsonSerializerOptions.ConfigureDefaults());
-
 builder.Services.Configure<JsonOptions>(static options => options.SerializerOptions.ConfigureDefaults());
 
 #endregion
@@ -124,8 +118,6 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = "api/swagger";
     options.SwaggerEndpoint("/api/swagger/v1/swagger.json", "UPnP Control Dashboard API v1");
 });
-
-app.MapDefaultControllerRoute();
 
 // Custom middleware endpoints
 app.MapUpnpEventsHub("upnpevents");

@@ -12,30 +12,6 @@ public static class ConfigureServicesExtensions
     public static IServiceCollection AddServerAddressesProvider(this IServiceCollection services) =>
         services.AddTransient<IServerAddressesProvider, ServerAddressesProvider>();
 
-    public static MvcOptions AddBinaryContentFormatter(this MvcOptions options)
-    {
-        ArgumentNullException.ThrowIfNull(options);
-
-        if (!options.OutputFormatters.Any(formatter => formatter is BinaryContentOutputFormatter))
-        {
-            options.OutputFormatters.Add(new BinaryContentOutputFormatter());
-        }
-
-        return options;
-    }
-
-    public static MvcOptions AddRequestCancelledExceptionFilter(this MvcOptions options)
-    {
-        ArgumentNullException.ThrowIfNull(options);
-
-        if (!options.Filters.Any(filter => filter is RequestCancelledExceptionFilterAttribute))
-        {
-            options.Filters.Add<RequestCancelledExceptionFilterAttribute>();
-        }
-
-        return options;
-    }
-
     public static IServiceCollection AddImageLoaderProxyMiddleware(this IServiceCollection services)
     {
         services.AddHttpClient<ImageLoaderProxyClient>(c => c.DefaultRequestHeaders.ConnectionClose = false)
