@@ -1,56 +1,236 @@
-using System.Text;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
 public static class PlaylistServices
 {
-    public static Task CreateAsync(IAsyncCommandHandler<PLCreateCommand> handler,
-        string deviceId, string title, CancellationToken cancellationToken) =>
-        handler.ExecuteAsync(new(deviceId, title), cancellationToken);
+    public static async Task<Results<NoContent, NotFound, BadRequest>> CreateAsync(
+        IAsyncCommandHandler<PLCreateCommand> handler,
+        string deviceId, [FromBody] string title, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await handler.ExecuteAsync(new(deviceId, title), cancellationToken).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
-    public static Task CreateAsync(IAsyncCommandHandler<PLCreateFromItemsCommand> handler,
-        string deviceId, CreatePlaylistParams @params, CancellationToken cancellationToken) =>
-        handler.ExecuteAsync(new(deviceId, @params), cancellationToken);
+    public static async Task<Results<NoContent, NotFound, BadRequest>> CreateFromItemsAsync(
+        IAsyncCommandHandler<PLCreateFromItemsCommand> handler,
+        string deviceId, CreatePlaylistParams playlistParams, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await handler.ExecuteAsync(new(deviceId, playlistParams), cancellationToken).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
-    public static Task CreateAsync(IAsyncCommandHandler<PLCreateFromFilesCommand> handler,
-        string deviceId, IEnumerable<IFormFile> files, string title, bool useProxy, bool merge,
-        CancellationToken cancellationToken) => handler.ExecuteAsync(new(deviceId, files.Select(f => new FormFileSource(f)), title, merge, useProxy), cancellationToken);
+    public static async Task<Results<NoContent, NotFound, BadRequest>> CreateFromFilesAsync(
+        IAsyncCommandHandler<PLCreateFromFilesCommand> handler,
+        string deviceId, CreateFromFilesForm form, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var sourceFiles = form.Files.Select(f => new FormFileSource(f));
+            var command = new PLCreateFromFilesCommand(deviceId, sourceFiles, form.Title, form.Merge, form.UseProxy);
+            await handler.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
-    public static Task RenameAsync(IAsyncCommandHandler<PLRenameCommand> handler,
-        string deviceId, string playlistId, string title, CancellationToken cancellationToken) =>
-        handler.ExecuteAsync(new(deviceId, playlistId, title), cancellationToken);
+    public static async Task<Results<NoContent, NotFound, BadRequest>> RenameAsync(
+        IAsyncCommandHandler<PLRenameCommand> handler,
+        string deviceId, string playlistId, [FromBody] string title,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await handler.ExecuteAsync(new(deviceId, playlistId, title), cancellationToken).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
-    public static Task CopyAsync(IAsyncCommandHandler<PLCopyCommand> handler,
-        string deviceId, string playlistId, string title, CancellationToken cancellationToken) =>
-        handler.ExecuteAsync(new(deviceId, playlistId, title), cancellationToken);
+    public static async Task<Results<NoContent, NotFound, BadRequest>> CopyAsync(
+        IAsyncCommandHandler<PLCopyCommand> handler,
+        string deviceId, string playlistId, [FromBody] string title,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await handler.ExecuteAsync(new(deviceId, playlistId, title), cancellationToken).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
-    public static Task RemoveAsync(IAsyncCommandHandler<PLRemoveCommand> handler,
-        string deviceId, string[] ids, CancellationToken cancellationToken) =>
-        handler.ExecuteAsync(new(deviceId, ids), cancellationToken);
+    public static async Task<Results<NoContent, NotFound, BadRequest>> RemoveAsync(
+        IAsyncCommandHandler<PLRemoveCommand> handler,
+        string deviceId, [FromBody] string[] ids, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await handler.ExecuteAsync(new(deviceId, ids), cancellationToken).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
-    public static Task AddItemsAsync(IAsyncCommandHandler<PLAddItemsCommand> handler,
-        string deviceId, string playlistId, MediaSource source, CancellationToken cancellationToken) =>
-        handler.ExecuteAsync(new(deviceId, playlistId, source), cancellationToken);
+    public static async Task<Results<NoContent, NotFound, BadRequest>> AddItemsAsync(
+        IAsyncCommandHandler<PLAddItemsCommand> handler,
+        string deviceId, string playlistId, MediaSource source,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await handler.ExecuteAsync(new(deviceId, playlistId, source), cancellationToken).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
-    public static Task AddFromFeedsAsync(IAsyncCommandHandler<PLAddFeedUrlCommand> handler,
-        string deviceId, string playlistId, FeedUrlSource source, CancellationToken cancellationToken) =>
-        handler.ExecuteAsync(new(deviceId, playlistId, source), cancellationToken);
+    public static async Task<Results<NoContent, NotFound, BadRequest>> AddFromFeedsAsync(
+        IAsyncCommandHandler<PLAddFeedUrlCommand> handler,
+        string deviceId, string playlistId, FeedUrlSource source,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await handler.ExecuteAsync(new(deviceId, playlistId, source), cancellationToken).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
-    public static Task AddFromFilesAsync(IAsyncCommandHandler<PLAddPlaylistFilesCommand> handler,
-        string deviceId, string playlistId, IEnumerable<IFormFile> files, bool useProxy,
-        CancellationToken cancellationToken) => handler.ExecuteAsync(new(deviceId, playlistId, files.Select(f => new FormFileSource(f)), useProxy), cancellationToken);
+    public static async Task<Results<NoContent, NotFound, BadRequest>> AddFromFilesAsync(
+        IAsyncCommandHandler<PLAddPlaylistFilesCommand> handler,
+        string deviceId, string playlistId, CreateFromFilesForm form,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var sources = form.Files.Select(f => new FormFileSource(f));
+            await handler.ExecuteAsync(new(deviceId, playlistId, sources, form.UseProxy), cancellationToken).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
-    public static Task RemoveItemsAsync(IAsyncCommandHandler<PLRemoveItemsCommand> handler,
-        string deviceId, string playlistId, string[] items, CancellationToken cancellationToken) =>
-        handler.ExecuteAsync(new(deviceId, playlistId, items), cancellationToken);
+    public static async Task<Results<NoContent, NotFound, BadRequest>> RemoveItemsAsync(
+        IAsyncCommandHandler<PLRemoveItemsCommand> handler,
+        string deviceId, string playlistId, [FromBody] string[] items,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await handler.ExecuteAsync(new(deviceId, playlistId, items), cancellationToken).ConfigureAwait(false);
+            return NoContent();
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
-    public static async Task GetPlaylistStateAsync(IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string> handler,
+    public static async Task<Results<ContentHttpResult, NotFound, BadRequest>> GetPlaylistStateAsync(
+        IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string> handler,
         string deviceId, HttpResponse httpResponse, CancellationToken cancellationToken)
     {
-        var content = await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
-        httpResponse.Headers.Add("Content-Type", "application/json");
-        await httpResponse.Body.WriteAsync(Encoding.UTF8.GetBytes(content), cancellationToken).ConfigureAwait(false);
-        await httpResponse.Body.FlushAsync(cancellationToken).ConfigureAwait(false);
-        await httpResponse.CompleteAsync().ConfigureAwait(false);
+        try
+        {
+            var content = await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
+            return Text(content, "application/json");
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
+}
+
+public readonly record struct CreateFromFilesForm(IFormFileCollection Files, string Title, bool Merge, bool UseProxy)
+{
+    public static ValueTask<CreateFromFilesForm> BindAsync(HttpContext context)
+    {
+        var form = context.Request.Form;
+        return new(new CreateFromFilesForm(form.Files,
+            form.TryGetValue("Title", out var v) && v is [{ } str, ..] ? str : "",
+            form.TryGetValue("Merge", out v) && v is [{ } mstr, ..] && bool.TryParse(mstr, out var b) && b,
+            form.TryGetValue("UseProxy", out v) && v is [{ } pstr, ..] && bool.TryParse(pstr, out b) && b));
     }
 }

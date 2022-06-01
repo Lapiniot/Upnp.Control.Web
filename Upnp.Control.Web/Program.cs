@@ -1,6 +1,6 @@
 #region usings
 
-using System.Reflection;
+using System.Text;
 using IoT.Device.Upnp;
 using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Api;
@@ -102,7 +102,6 @@ builder.Services
     .AddSwaggerGen(options =>
     {
         options.SwaggerDoc("v1", new() { Version = "v1", Title = "UPnP Control Dashboard" });
-        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(DeviceServices).Assembly.GetName().Name}.xml"));
     });
 
@@ -141,8 +140,9 @@ app.MapHealthChecks("api/health");
 var api = app.MapGroup("api/devices").WithGroupName("v1");
 api.MapDevicesApi("");
 api.MapBrowseContentApi("{deviceId}/items/{*path}");
-api.MapControlApi("{deviceId}");
+api.MapPlaylistApi("{deviceId}/playlists");
 api.MapQueueApi("{deviceId}/queues/{queueId}/items");
+api.MapControlApi("{deviceId}");
 api.MapConnectionsApi("{deviceId}");
 
 app.MapUpnpEventCallbacks("api/events/{deviceId}");
