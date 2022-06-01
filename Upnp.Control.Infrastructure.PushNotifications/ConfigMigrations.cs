@@ -24,27 +24,38 @@ internal static class ConfigMigrations
 
     private static async Task<JsonDocument> ReadJsonAsync(string path)
     {
-        await using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-        return await JsonDocument.ParseAsync(stream).ConfigureAwait(false);
+#pragma warning disable CA2000 // Dispose objects before losing scope
+        var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+#pragma warning restore CA2000 // Dispose objects before losing scope
+        await using (stream.ConfigureAwait(false))
+            return await JsonDocument.ParseAsync(stream).ConfigureAwait(false);
     }
 
     private static async Task WriteUpgradedConfigAsync(string path, JsonDocument originalConfig)
     {
-        await using var stream = new FileStream(path, FileMode.Create, FileAccess.Write);
-        await using var writer = new Utf8JsonWriter(stream, new() { Indented = true });
-        var (publicKey, privateKey) = CryptoExtensions.GenerateP256ECKeys();
-        writer.WriteStartObject();
-        if (originalConfig is not null)
+        var stream = new FileStream(path, FileMode.Create, FileAccess.Write);
+        await using (stream.ConfigureAwait(false))
         {
-            foreach (var item in originalConfig.RootElement.EnumerateObject())
-                item.WriteTo(writer);
-        }
+#pragma warning disable CA2000 // Dispose objects before losing scope
+            var writer = new Utf8JsonWriter(stream, new() { Indented = true });
+#pragma warning restore CA2000 // Dispose objects before losing scope
+            await using (writer.ConfigureAwait(false))
+            {
+                var (publicKey, privateKey) = CryptoExtensions.GenerateP256ECKeys();
+                writer.WriteStartObject();
+                if (originalConfig is not null)
+                {
+                    foreach (var item in originalConfig.RootElement.EnumerateObject())
+                        item.WriteTo(writer);
+                }
 
-        writer.WriteStartObject("VAPID");
-        writer.WriteString("PublicKey", Encoders.ToBase64String(publicKey));
-        writer.WriteString("PrivateKey", Encoders.ToBase64String(privateKey));
-        writer.WriteEndObject();
-        writer.WriteEndObject();
-        await writer.FlushAsync().ConfigureAwait(false);
+                writer.WriteStartObject("VAPID");
+                writer.WriteString("PublicKey", Encoders.ToBase64String(publicKey));
+                writer.WriteString("PrivateKey", Encoders.ToBase64String(privateKey));
+                writer.WriteEndObject();
+                writer.WriteEndObject();
+                await writer.FlushAsync().ConfigureAwait(false);
+            }
+        }
     }
 }

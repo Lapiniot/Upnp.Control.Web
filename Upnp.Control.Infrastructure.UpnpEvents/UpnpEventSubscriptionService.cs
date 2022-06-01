@@ -1,4 +1,4 @@
-﻿using IoT.Device.Upnp.Umi.Services;
+using IoT.Device.Upnp.Umi.Services;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 using static System.Globalization.CultureInfo;
 
@@ -67,7 +67,9 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
             {
                 await subscription.DisposeAsync().ConfigureAwait(false);
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception exception)
+#pragma warning restore CA1031 // Do not catch general exception types
             {
                 LogTerminationError(exception);
             }

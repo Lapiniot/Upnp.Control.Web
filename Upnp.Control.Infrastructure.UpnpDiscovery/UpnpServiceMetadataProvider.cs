@@ -18,7 +18,8 @@ internal sealed class UpnpServiceMetadataProvider : IUpnpServiceMetadataProvider
     {
         using var response = await client.GetAsync(location, cancellationToken).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
-        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        return await DeviceDescriptionReader.ReadAsync(stream, cancellationToken).ConfigureAwait(false);
+        var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        await using (stream.ConfigureAwait(false))
+            return await DeviceDescriptionReader.ReadAsync(stream, cancellationToken).ConfigureAwait(false);
     }
 }

@@ -1,7 +1,13 @@
 namespace Upnp.Control.Abstractions.Exceptions;
 
-public sealed class ServiceNotSupportedException : ApplicationException
+public sealed class ServiceNotSupportedException : Exception
 {
+    public ServiceNotSupportedException() { }
+
+    public ServiceNotSupportedException(string message, Exception innerException) :
+        base(message, innerException)
+    { }
+
     public ServiceNotSupportedException(string serviceType) :
         base("Specified service type is not supported.") => ServiceType = serviceType;
 

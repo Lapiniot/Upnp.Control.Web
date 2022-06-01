@@ -1,6 +1,6 @@
 namespace Upnp.Control.Infrastructure.SignalR;
 
-public class UpnpEventSignalRNotifyObserver : IObserver<AVTPropChangedEvent>, IObserver<RCPropChangedEvent>
+public sealed class UpnpEventSignalRNotifyObserver : IObserver<AVTPropChangedEvent>, IObserver<RCPropChangedEvent>
 {
     private readonly IHubContext<UpnpEventsHub, IUpnpEventClient> hub;
 

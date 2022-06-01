@@ -126,7 +126,9 @@ internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
 
                         Notify(observers, new UpnpDeviceAppearedEvent(udn, device));
                     }
+#pragma warning disable CA1031 // Do not catch general exception types
                     catch (Exception exception)
+#pragma warning restore CA1031 // Do not catch general exception types
                     {
                         LogReplyError(exception, reply.StartLine, reply.UniqueServiceName);
                     }

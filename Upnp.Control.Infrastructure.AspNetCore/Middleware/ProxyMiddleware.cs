@@ -126,8 +126,9 @@ public abstract partial class ProxyMiddleware : IMiddleware
             await context.Response.StartAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        await using var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        await CopyContentAsync(stream, context, BufferSize, cancellationToken).ConfigureAwait(false);
+        var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        await using (stream.ConfigureAwait(false))
+            await CopyContentAsync(stream, context, BufferSize, cancellationToken).ConfigureAwait(false);
     }
 
     protected async Task CopyContentAsync(Stream source, HttpContext context, int bufferSize, CancellationToken cancellationToken)

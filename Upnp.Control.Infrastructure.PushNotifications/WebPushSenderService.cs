@@ -61,7 +61,9 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                     {
                         // expected
                     }
+#pragma warning disable CA1508 // Avoid dead conditional code
                     catch (HttpRequestException hre) when (hre is { StatusCode: HttpStatusCode.Gone or HttpStatusCode.Forbidden })
+#pragma warning restore CA1508 // Avoid dead conditional code
                     {
                         var removeHandler = serviceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
                         await removeHandler.ExecuteAsync(new(type, endpoint), stoppingToken).ConfigureAwait(false);

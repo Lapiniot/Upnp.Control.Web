@@ -1,7 +1,13 @@
 namespace Upnp.Control.Abstractions.Exceptions;
 
-public sealed class DeviceNotFoundException : ApplicationException
+public sealed class DeviceNotFoundException : Exception
 {
+    public DeviceNotFoundException() { }
+
+    public DeviceNotFoundException(string message, Exception innerException) :
+        base(message, innerException)
+    { }
+
     public DeviceNotFoundException(string deviceId) :
         base("Device not found in the database.") => DeviceId = deviceId;
 

@@ -35,13 +35,15 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        await using var stream = file.GetStream();
-        var reader = PipeReader.Create(stream);
-
-        var encoding = Path.GetExtension(file.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
-        await foreach (var (path, info, _) in new M3UTrackReader(reader, encoding).WithCancellation(cancellationToken).ConfigureAwait(false))
+        var stream = file.GetStream();
+        await using (stream.ConfigureAwait(false))
         {
-            await AppendFeedItemAsync(writer, new(path), info, useProxy, cancellationToken).ConfigureAwait(false);
+            var reader = PipeReader.Create(stream);
+            var encoding = Path.GetExtension(file.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
+            await foreach (var (path, info, _) in new M3UTrackReader(reader, encoding).WithCancellation(cancellationToken).ConfigureAwait(false))
+            {
+                await AppendFeedItemAsync(writer, new(path), info, useProxy, cancellationToken).ConfigureAwait(false);
+            }
         }
     }
 
