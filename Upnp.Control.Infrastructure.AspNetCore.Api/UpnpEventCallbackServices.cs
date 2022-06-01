@@ -9,11 +9,11 @@ public static class UpnpEventCallbackServices
         try
         {
             await handler.ExecuteAsync(new(deviceId, requestBody), cancellationToken).ConfigureAwait(false);
-            return TypedResults.NoContent();
+            return NoContent();
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 
@@ -24,11 +24,11 @@ public static class UpnpEventCallbackServices
         try
         {
             await handler.ExecuteAsync(new(deviceId, requestBody), cancellationToken).ConfigureAwait(false);
-            return TypedResults.NoContent();
+            return NoContent();
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 }

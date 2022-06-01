@@ -9,15 +9,15 @@ public static class QueueServices
         try
         {
             await handler.ExecuteAsync(new(deviceId, queueId, source), cancellationToken).ConfigureAwait(false);
-            return TypedResults.NoContent();
+            return NoContent();
         }
         catch (DeviceNotFoundException)
         {
-            return TypedResults.NotFound();
+            return NotFound();
         }
         catch (Exception)
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 
@@ -27,15 +27,15 @@ public static class QueueServices
         try
         {
             await handler.ExecuteAsync(new(deviceId, queueId), cancellationToken).ConfigureAwait(false);
-            return TypedResults.NoContent();
+            return NoContent();
         }
         catch (DeviceNotFoundException)
         {
-            return TypedResults.NotFound();
+            return NotFound();
         }
         catch (Exception)
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 }

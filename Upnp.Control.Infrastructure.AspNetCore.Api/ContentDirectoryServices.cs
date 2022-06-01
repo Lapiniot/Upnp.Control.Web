@@ -28,19 +28,19 @@ public static class ContentDirectoryServices
         {
             var options = new GetContentOptions(withParents, withResourceProps, withVendorProps, withMetadata, withDevice, take, skip);
             var value = await handler.ExecuteAsync(new(deviceId, path, options), cancellationToken).ConfigureAwait(false);
-            return TypedResults.Ok(value);
+            return Ok(value);
         }
         catch (DeviceNotFoundException)
         {
-            return TypedResults.NotFound();
+            return NotFound();
         }
         catch (SoapException se) when (se.Code == 701)
         {
-            return TypedResults.NotFound();
+            return NotFound();
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 }

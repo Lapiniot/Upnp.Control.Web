@@ -12,11 +12,11 @@ public static class PushNotificationSubscriptionServices
     {
         try
         {
-            return TypedResults.Ok(await handler.ExecuteAsync(new(type, new(endpoint)), cancellationToken).ConfigureAwait(false) is not null);
+            return Ok(await handler.ExecuteAsync(new(type, new(endpoint)), cancellationToken).ConfigureAwait(false) is not null);
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 
@@ -29,11 +29,11 @@ public static class PushNotificationSubscriptionServices
             await handler.ExecuteAsync(new(subscription.Type, subscription.Endpoint,
                     decoder.Decode(subscription.P256dhKey), decoder.Decode(subscription.AuthKey)),
                 cancellationToken).ConfigureAwait(false);
-            return TypedResults.NoContent();
+            return NoContent();
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 
@@ -44,11 +44,11 @@ public static class PushNotificationSubscriptionServices
         try
         {
             await handler.ExecuteAsync(new(type, new(endpoint)), cancellationToken).ConfigureAwait(false);
-            return TypedResults.NoContent();
+            return NoContent();
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 
@@ -58,11 +58,11 @@ public static class PushNotificationSubscriptionServices
         try
         {
             var contents = await handler.ExecuteAsync(PSGetServerKeyQuery.Instance, cancellationToken).ConfigureAwait(false);
-            return TypedResults.Bytes(contents, "application/octet-stream");
+            return Bytes(contents, "application/octet-stream");
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 }

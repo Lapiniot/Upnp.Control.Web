@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.AspNetCore.Http.TypedResults;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 

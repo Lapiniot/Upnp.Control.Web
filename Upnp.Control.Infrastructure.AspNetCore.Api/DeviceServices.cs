@@ -29,13 +29,13 @@ public static class DeviceServices
             var value = await handler.ExecuteAsync(new(id), cancellationToken).ConfigureAwait(false);
             return value switch
             {
-                not null => TypedResults.Ok(value),
-                _ => TypedResults.NotFound()
+                not null => Ok(value),
+                _ => NotFound()
             };
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 }

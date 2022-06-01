@@ -27,6 +27,7 @@
     <Using Include="Upnp.Control.Abstractions" />
     <Using Include="Upnp.Control.Abstractions.Exceptions" />
     <Using Include="Upnp.Control.Models" />
+    <Using Include="Microsoft.AspNetCore.Http.TypedResults" Static="true" />
   </ItemGroup>
 
 </Project>

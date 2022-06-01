@@ -8,15 +8,15 @@ public static class ConnectionsServices
     {
         try
         {
-            return TypedResults.Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false));
         }
         catch (DeviceNotFoundException)
         {
-            return TypedResults.NotFound();
+            return NotFound();
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 
@@ -26,15 +26,15 @@ public static class ConnectionsServices
     {
         try
         {
-            return TypedResults.Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false));
         }
         catch (DeviceNotFoundException)
         {
-            return TypedResults.NotFound();
+            return NotFound();
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 
@@ -44,15 +44,15 @@ public static class ConnectionsServices
     {
         try
         {
-            return TypedResults.Ok(await handler.ExecuteAsync(new(deviceId, connectionId), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId, connectionId), cancellationToken).ConfigureAwait(false));
         }
         catch (DeviceNotFoundException)
         {
-            return TypedResults.NotFound();
+            return NotFound();
         }
         catch
         {
-            return TypedResults.BadRequest();
+            return BadRequest();
         }
     }
 }
