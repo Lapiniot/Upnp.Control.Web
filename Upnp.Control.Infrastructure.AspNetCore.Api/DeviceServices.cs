@@ -33,9 +33,7 @@ public static class DeviceServices
                 _ => TypedResults.NotFound()
             };
         }
-#pragma warning disable CA1031
         catch
-#pragma warning restore CA1031
         {
             return TypedResults.BadRequest();
         }

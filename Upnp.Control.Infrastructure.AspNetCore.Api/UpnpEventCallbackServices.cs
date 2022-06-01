@@ -4,11 +4,11 @@ public static class UpnpEventCallbackServices
 {
     public static async Task<Results<NoContent, BadRequest>> NotifyRenderingControlAsync(
         IAsyncCommandHandler<RCPropChangedCommand> handler,
-        string deviceId, HttpRequest request, CancellationToken cancellationToken)
+        string deviceId, Stream requestBody, CancellationToken cancellationToken)
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, request.Body), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, requestBody), cancellationToken).ConfigureAwait(false);
             return TypedResults.NoContent();
         }
         catch
@@ -19,11 +19,11 @@ public static class UpnpEventCallbackServices
 
     public static async Task<Results<NoContent, BadRequest>> NotifyAVTransportAsync(
         IAsyncCommandHandler<AVTPropChangedCommand> handler,
-        string deviceId, HttpRequest request, CancellationToken cancellationToken)
+        string deviceId, Stream requestBody, CancellationToken cancellationToken)
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, request.Body), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, requestBody), cancellationToken).ConfigureAwait(false);
             return TypedResults.NoContent();
         }
         catch

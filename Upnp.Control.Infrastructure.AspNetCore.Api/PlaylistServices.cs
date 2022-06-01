@@ -50,7 +50,7 @@ public static class PlaylistServices
         var content = await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
         httpResponse.Headers.Add("Content-Type", "application/json");
         await httpResponse.Body.WriteAsync(Encoding.UTF8.GetBytes(content), cancellationToken).ConfigureAwait(false);
-        await httpResponse.Body.FlushAsync(cancellationToken);
-        await httpResponse.CompleteAsync();
+        await httpResponse.Body.FlushAsync(cancellationToken).ConfigureAwait(false);
+        await httpResponse.CompleteAsync().ConfigureAwait(false);
     }
 }

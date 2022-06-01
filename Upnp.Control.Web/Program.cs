@@ -139,8 +139,9 @@ app.MapHealthChecks("api/health");
 
 // API routes
 var api = app.MapGroup("api/devices").WithGroupName("v1");
-api.MapDeviceApi("");
+api.MapDevicesApi("");
 api.MapBrowseContentApi("{deviceId}/items/{*path}");
+api.MapControlApi("{deviceId}");
 api.MapQueueApi("{deviceId}/queues/{queueId}/items");
 api.MapConnectionsApi("{deviceId}");
 

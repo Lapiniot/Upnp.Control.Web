@@ -27,7 +27,7 @@ public static class PushNotificationSubscriptionServices
         try
         {
             await handler.ExecuteAsync(new(subscription.Type, subscription.Endpoint,
-                decoder.Decode(subscription.P256dhKey), decoder.Decode(subscription.AuthKey)),
+                    decoder.Decode(subscription.P256dhKey), decoder.Decode(subscription.AuthKey)),
                 cancellationToken).ConfigureAwait(false);
             return TypedResults.NoContent();
         }
