@@ -205,7 +205,7 @@ public static class PlaylistServices
 
     public static async Task<Results<ContentHttpResult, NotFound, BadRequest>> GetPlaylistStateAsync(
         IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string> handler,
-        string deviceId, HttpResponse httpResponse, CancellationToken cancellationToken)
+        string deviceId, CancellationToken cancellationToken)
     {
         try
         {
