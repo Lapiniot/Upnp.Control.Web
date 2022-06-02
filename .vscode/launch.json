@@ -39,7 +39,8 @@
             "sourceFileMap": {
                 "/ClientApp": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
             },
-            "console": "integratedTerminal"
+            "launchSettingsProfile": "Upnp.Control.Web",
+            "internalConsoleOptions": "openOnSessionStart"
         },
         {
             "name": ".NET Core Attach",
