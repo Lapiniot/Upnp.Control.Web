@@ -3,12 +3,13 @@
     "Upnp.Control.Web": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:8082",
+      "launchUrl": "https://localhost:8081",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy",
         "ASPNETCORE_HTTPS_PORT": "8081"
-      }
+      },
+      "applicationUrl": "https://localhost:8081"
     }
   }
 }
