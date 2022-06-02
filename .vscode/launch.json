@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (web)",
+            "name": ".NET Launch (web)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "Build",
+            "preLaunchTask": ".NET: build",
             "program": "${workspaceFolder}/Upnp.Control.Web/bin/Debug/net7.0/Upnp.Control.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Upnp.Control.Web",
@@ -28,10 +28,6 @@
                 "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy",
                 "ASPNETCORE_HTTPS_PORT": "8081"
             },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            },
-            "console": "integratedTerminal",
             "osx": {
                 "env": {
                     "ASPNETCORE_ENVIRONMENT": "Development",
@@ -39,7 +35,11 @@
                     "ASPNETCORE_HTTPS_PORT": "8081",
                     "DYLD_LIBRARY_PATH": "/opt/local/lib/openssl-3"
                 }
-            }
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            },
+            "console": "integratedTerminal"
         },
         {
             "name": ".NET Core Attach",

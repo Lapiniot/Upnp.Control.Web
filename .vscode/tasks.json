@@ -10,24 +10,25 @@
     },
     "tasks": [
         {
-            "label": "Build",
+            "label": ".NET: build",
             "detail": "Runs dotnet build task",
-            "command": "dotnet",
-            "type": "process",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
+            "command": "dotnet",
+            "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Publish",
+            "label": ".NET: publish",
+            "detail": "Runs dotnet publish command",
+            "group": "build",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -40,10 +41,11 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Publish (self-contained)",
-            "detail": "Runs dotnet publish command",
+            "label": ".NET: publish (self-contained)",
+            "detail": "Runs dotnet publish --self-contained command",
+            "group": "build",
             "command": "dotnet",
-            "type": "shell",
+            "type": "process",
             "args": [
                 "publish",
                 "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
@@ -54,18 +56,17 @@
                 "/consoleloggerparameters:NoSummary",
                 "/property:PublishTrimmed=true"
             ],
-            "group": "build",
-            "problemMatcher": []
+            "problemMatcher": "$msCompile"
         },
         {
-            "label": "Deploy (remote SSH)",
-            "detail": "Starts deployment to remote server via rsync over SSH",
+            "label": ".NET: deploy (remote SSH)",
+            "detail": "Deploys to remote server via rsync over SSH",
+            "group": "build",
             "dependsOn": [
-                "Publish (self-contained)"
+                ".NET: publish (self-contained)"
             ],
-            "type": "shell",
-            "problemMatcher": [],
             "command": "rsync",
+            "type": "shell",
             "args": [
                 "--rsync-path",
                 "sudo -u upnp-dashboard rsync",
@@ -83,32 +84,20 @@
             ]
         },
         {
-            "label": "Watch",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "Gulp Compile",
+            "label": "gulp: compile SCSS files",
             "detail": "Compiles *.scss files to *.css files",
+            "group": "build",
             "type": "gulp",
             "task": "sass",
-            "group": "build",
             "options": {
                 "cwd": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
             },
             "problemMatcher": "$gulp-tsc"
         },
         {
-            "label": "Gulp Watch SCSS",
+            "label": "gulp: watch SCSS files for changes",
             "detail": "Starts *.scss files modification background watch task",
+            "group": "build",
             "type": "gulp",
             "task": "watch",
             "isBackground": true,
@@ -126,8 +115,8 @@
             "problemMatcher": "$gulp-tsc"
         },
         {
-            "type": "docker-build",
             "label": "docker-build: debug",
+            "type": "docker-build",
             "dockerBuild": {
                 "tag": "upnp-dashboard:dev",
                 "target": "base",
@@ -146,8 +135,8 @@
             }
         },
         {
-            "type": "docker-build",
             "label": "docker-build: release",
+            "type": "docker-build",
             "dockerBuild": {
                 "tag": "upnp-dashboard:latest",
                 "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/Dockerfile",
@@ -165,8 +154,8 @@
             }
         },
         {
-            "type": "docker-build",
             "label": "docker-build: release, self-contained",
+            "type": "docker-build",
             "dockerBuild": {
                 "tag": "upnp-dashboard:latest-scd",
                 "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/Dockerfile.SCD",
@@ -184,8 +173,11 @@
             }
         },
         {
-            "type": "docker-build",
             "label": "docker-build-outside: release, self-contained",
+            "type": "docker-build",
+            "dependsOn": [
+                ".NET: publish (self-contained)"
+            ],
             "dockerBuild": {
                 "tag": "upnp-dashboard:latest-scd-${input:rid}",
                 "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/${input:rid}/Dockerfile",
@@ -200,14 +192,11 @@
             },
             "netCore": {
                 "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
-            },
-            "dependsOn": [
-                "Publish (self-contained)"
-            ]
+            }
         },
         {
-            "type": "docker-run",
             "label": "docker-run: debug",
+            "type": "docker-run",
             "dependsOn": [
                 "docker-build: debug"
             ],
@@ -218,8 +207,8 @@
             }
         },
         {
-            "type": "docker-run",
             "label": "docker-run: release",
+            "type": "docker-run",
             "dependsOn": [
                 "docker-build-outside: release, self-contained"
             ],
@@ -253,15 +242,51 @@
             }
         },
         {
+            "label": "npm: build - Upnp.Control.Web/ClientApp",
+            "detail": "react-scripts build",
+            "group": "build",
             "type": "npm",
             "script": "build",
-            "path": "Upnp.Control.Web/ClientApp/",
+            "path": "Upnp.Control.Web/ClientApp",
+            "problemMatcher": [
+                "$tsc"
+            ]
+        },
+        {
+            "label": "npm: install - Upnp.Control.Web/ClientApp",
+            "detail": "install dependencies from package",
+            "type": "npm",
+            "script": "install",
+            "path": "Upnp.Control.Web/ClientApp"
+        },
+        {
+            "label": "npm: start - Upnp.Control.Web/ClientApp",
+            "detail": "rimraf ./build && react-scripts start",
+            "type": "npm",
+            "script": "start",
+            "path": "Upnp.Control.Web/ClientApp",
+            "problemMatcher": [
+                "$tsc"
+            ]
+        },
+        {
+            "label": "npm: lint - Upnp.Control.Web/ClientApp",
+            "detail": "eslint ./src/",
+            "type": "npm",
+            "script": "lint",
+            "path": "Upnp.Control.Web/ClientApp",
+            "problemMatcher": [
+                "$eslint-stylish"
+            ]
+        },
+        {
+            "label": "tsc: build - Upnp.Control.Web/ClientApp/tsconfig.json",
+            "type": "typescript",
+            "tsconfig": "Upnp.Control.Web/ClientApp/tsconfig.json",
             "problemMatcher": [
                 "$tsc"
             ],
-            "group": "build",
-            "label": "npm: build - Upnp.Control.Web/ClientApp",
-            "detail": "react-scripts build"
+            "group": "build"
         }
     ],
     "inputs": [
