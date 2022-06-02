@@ -37,7 +37,7 @@
                 }
             },
             "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+                "/ClientApp": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
             },
             "console": "integratedTerminal"
         },
