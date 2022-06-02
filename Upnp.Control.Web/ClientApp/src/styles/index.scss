@@ -50,6 +50,8 @@ $zindex-dropdown: $zindex-sticky + 5;
 // Utilities
 @import "../../node_modules/bootstrap/scss/utilities/api";
 
+$primary-accent: #{shade-color($link-color, 25%)};
+
 @import "mixins";
 @import "text-utils";
 @import "animations";
@@ -214,6 +216,7 @@ $zindex-dropdown: $zindex-sticky + 5;
 }
 
 input[type="checkbox"] {
+    accent-color: $primary-accent;
     inline-size: 1em;
     block-size: 1em;
     outline-offset: 5px;

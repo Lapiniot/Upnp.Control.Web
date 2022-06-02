@@ -12,7 +12,7 @@
     --auto-table-hover-color: #{$table-hover-color};
     --auto-table-hover-bg: #{$table-hover-bg};
     --auto-table-selected-bg: #{$link-color};
-    --auto-table-focused-marker-color: #{shade-color($link-color, 35%)};
+    --auto-table-focused-accent: #{$primary-accent};
     --auto-table-selected-color: white;
     --auto-table-padding-x: #{$table-cell-padding-x};
     --auto-table-padding-x-start: #{2 * $table-cell-padding-x};
@@ -179,7 +179,7 @@
         @include at-body-row('[data-focused="true"],:focus') {
             @extend %row-accent;
             & > :first-child {
-                box-shadow: inset var(--auto-table-focused-marker-size) 0 0 var(--auto-table-focused-marker-color);
+                box-shadow: inset var(--auto-table-focused-marker-size) 0 0 var(--auto-table-focused-accent);
             }
         }
     }
