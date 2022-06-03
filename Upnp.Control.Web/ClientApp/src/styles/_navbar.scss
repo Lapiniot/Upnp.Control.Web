@@ -1,0 +1,77 @@
+nav {
+    --#{$prefix}nav-link-padding-x: #{$nav-link-padding-x};
+    --#{$prefix}nav-link-padding-y: #{$nav-link-padding-y};
+    @include rfs($nav-link-font-size, --#{$prefix}nav-link-font-size);
+    @include rfs($nav-link-font-weight, --#{$prefix}nav-link-font-weight);
+    --#{$prefix}nav-link-color: #{$nav-link-color};
+    --#{$prefix}nav-link-hover-color: #{$nav-link-hover-color};
+    --#{$prefix}nav-link-disabled-color: #{$nav-link-disabled-color};
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.navbar {
+    --#{$prefix}navbar-padding-x: #{if($navbar-padding-x == null, 0, $navbar-padding-x)};
+    --#{$prefix}navbar-padding-y: #{$navbar-padding-y};
+    --#{$prefix}navbar-bg: #{$primary-700};
+    --#{$prefix}navbar-color: #{$navbar-dark-color};
+    --#{$prefix}navbar-hover-color: #{$navbar-dark-hover-color};
+    --#{$prefix}navbar-disabled-color: #{$navbar-dark-disabled-color};
+    --#{$prefix}navbar-active-color: #{$navbar-dark-active-color};
+    --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-x};
+    --#{$prefix}navbar-brand-color: #{$navbar-dark-brand-color};
+    --#{$prefix}navbar-brand-hover-color: #{$navbar-dark-brand-hover-color};
+    --#{$prefix}navbar-brand-padding-y: #{$navbar-brand-padding-y};
+    --#{$prefix}navbar-brand-font-size: #{$navbar-brand-font-size};
+    display: flex;
+    padding: var(--#{$prefix}navbar-padding-y) var(--#{$prefix}navbar-padding-x);
+    background-color: var(--#{$prefix}navbar-bg);
+    @include gradient-bg();
+
+    & > nav {
+        --#{$prefix}nav-link-color: var(--#{$prefix}navbar-color);
+        --#{$prefix}nav-link-hover-color: var(--#{$prefix}navbar-hover-color);
+        --#{$prefix}nav-link-disabled-color: var(--#{$prefix}navbar-disabled-color);
+        --#{$prefix}nav-link-padding-x: var(--#{$prefix}navbar-nav-link-padding-x);
+
+        .nav-link {
+            &:active, &.active {
+                color: var(--#{$prefix}navbar-active-color);
+            }
+        }
+    }
+}
+
+.navbar-brand {
+    padding: var(--#{$prefix}navbar-brand-padding-y) var(--#{$prefix}navbar-nav-link-padding-x);
+    @include font-size(var(--#{$prefix}navbar-brand-font-size));
+    color: var(--#{$prefix}navbar-brand-color);
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus {
+        color: var(--#{$prefix}navbar-brand-hover-color);
+    }
+}
+
+.nav-link {
+    display: block;
+    padding: var(--#{$prefix}nav-link-padding-y) var(--#{$prefix}nav-link-padding-x);
+    @include font-size(var(--#{$prefix}nav-link-font-size));
+    font-weight: var(--#{$prefix}nav-link-font-weight);
+    color: var(--#{$prefix}nav-link-color);
+    text-decoration: none;
+    @include transition($nav-link-transition);
+
+    &:hover,
+    &:focus {
+        color: var(--#{$prefix}nav-link-hover-color);
+    }
+
+    &.disabled {
+        color: var(--#{$prefix}nav-link-disabled-color);
+        pointer-events: none;
+        cursor: default;
+    }
+}

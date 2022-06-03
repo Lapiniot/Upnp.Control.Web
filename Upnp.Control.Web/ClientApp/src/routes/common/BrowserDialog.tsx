@@ -39,7 +39,7 @@ function MediaSourceList() {
     return fetching
         ? <LoadIndicatorOverlay />
         : <ul className="list-group list-group-flush overflow-auto">
-            {dataContext?.source?.map(d => <a key={d.udn} href={`/upnp/${d.udn}/browse/0`} onClick={handler} className="nav-link list-group-item list-group-item-action hstack">
+            {dataContext?.source?.map(d => <a key={d.udn} href={`/upnp/${d.udn}/browse/0`} onClick={handler} className="list-group-item list-group-item-action hstack">
                 <DeviceIcon device={d} />
                 {d.name}{d.description && ` (${d.description})`}
             </a>)}
