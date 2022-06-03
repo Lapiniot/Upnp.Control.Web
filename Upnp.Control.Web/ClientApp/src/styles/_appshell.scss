@@ -8,20 +8,17 @@
         grid-area: navbar;
         --#{$prefix}navbar-padding-y: 0;
 
-        & > nav {
-            --#{$prefix}nav-link-font-size: x-small;
+        & > nav > .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1 1 0;
+            overflow: hidden;
+            @include font-size(var(--#{$prefix}nav-link-font-size-md));
 
-            & > .nav-link {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                flex: 1 1 0;
-                overflow: hidden;
-
-                & > svg {
-                    margin: unset;
-                    font-size: 1rem;
-                }
+            & > svg {
+                margin: unset;
+                font-size: 1rem;
             }
         }
     }
@@ -54,15 +51,12 @@
         & > .navbar {
             --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-x};
 
-            & > nav {
-                --#{$prefix}nav-link-font-size: unset;
+            & > nav > .nav-link {
+                flex-direction: row;
+                @include font-size(var(--#{$prefix}nav-link-font-size));
 
-                & > .nav-link {
-                    flex-direction: row;
-
-                    & > svg {
-                        margin-right: $spacer / 2;
-                    }
+                & > svg {
+                    margin-right: $spacer / 2;
                 }
             }
         }
