@@ -13,7 +13,6 @@ a {
     }
 }
 
-nav.navbar-nav > a.nav-link,
 .dropdown-item {
     & > svg,
     & > img {
@@ -26,6 +25,7 @@ nav.navbar-nav > a.nav-link,
 .btn,
 .btn-close {
     &.btn-round {
+        --#{$prefix}gradient: none;
         clip-path: circle();
         @extend %no-decoration;
 
@@ -117,9 +117,8 @@ nav.navbar-nav > a.nav-link,
     position: absolute;
     bottom: 0;
     margin: $spacer;
-    filter: drop-shadow(
-        var(--float-shadow-offset) var(--float-shadow-offset) var(--float-shadow-radius) var(--float-shadow-color)
-    );
+    filter: drop-shadow(var(--float-shadow-offset) var(--float-shadow-offset) var(--float-shadow-radius) var(--float-shadow-color));
+
     & > button {
         font-size: var(--float-size);
     }
