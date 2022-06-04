@@ -57,7 +57,7 @@ export default ({ total, baseUrl, current, pageSize, className, ...other }: Pagi
 }
 
 function RelativePageLink({ title, to, label, children, className, ...other }: LinkProps & { label?: string; }) {
-    return <NavigatorLink to={to} aria-label={label} className={`btn btn-round btn-icon btn-plain${className ? ` ${className}` : ""}`} {...other}>
+    return <NavigatorLink to={to} aria-label={label} className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`} {...other}>
         {children}
         {title && <span aria-hidden="true">{title}</span>}
         {label && <span className="visually-hidden">{label}</span>}

@@ -15,13 +15,13 @@ function buildClass(className: string | undefined, active: boolean | undefined, 
 
 function Link({ to, glyph, className, active, disabled, children, ...other }: LinkProps) {
     return <a href={!disabled ? to : undefined} className={buildClass(className, active, disabled)} {...other}>
-        {glyph && <svg className="icon"><use href={glyph} /></svg>}{children}
+        {glyph && <svg><use href={glyph} /></svg>}{children}
     </a>;
 }
 
 function RouteLink({ glyph, className, active, disabled, children, ...other }: LinkProps) {
     return <RNavLink className={buildClass(className, active, disabled)} {...other}>
-        {glyph && <svg className="icon"><use href={glyph} /></svg>}{children}
+        {glyph && <svg><use href={glyph} /></svg>}{children}
     </RNavLink>;
 }
 

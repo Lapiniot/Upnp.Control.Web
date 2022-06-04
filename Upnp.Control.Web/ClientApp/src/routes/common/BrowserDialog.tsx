@@ -52,7 +52,7 @@ function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: Confirm
     const callback = useCallback(() => onConfirmed?.({ device, keys: selection.map(i => i.id) }), [onConfirmed, selection, device]);
 
     return render(
-        <Modal.Button key="confirm" className="confirm" dismiss disabled={selection.length === 0} onClick={callback}>
+        <Modal.Button key="confirm" className="text-primary" dismiss disabled={selection.length === 0} onClick={callback}>
             {typeof confirmContent === "function" ? confirmContent(selection) : confirmContent}
         </Modal.Button>)
 }
@@ -84,7 +84,7 @@ export default function BrowserDialog(props: BrowserDialogProps) {
         </Modal.Body>
         <Modal.Footer id="browser-dialog-footer">
             <React.Fragment>
-                <Modal.Button key="cancel" className="dismiss" dismiss>Cancel</Modal.Button>
+                <Modal.Button key="cancel" className="text-secondary" dismiss>Cancel</Modal.Button>
             </React.Fragment>
         </Modal.Footer>
     </Modal>

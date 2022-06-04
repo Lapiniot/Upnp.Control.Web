@@ -4,8 +4,8 @@ export function RemoveItemsModal({ onRemove, children, className, ...other }: Mo
     return <Modal title="Do you want to remove items from the playlist?" className={`modal-dialog-scrollable${className ? ` ${className}` : ""}`} {...other}>
         {children}
         <Modal.Footer>
-            <Modal.Button tabIndex={2} className="dismiss" dismiss>Cancel</Modal.Button>
-            <Modal.Button tabIndex={3} className="destructive" icon="sprites.svg#trash" onClick={onRemove} dismiss>Remove</Modal.Button>
+            <Modal.Button tabIndex={2} className="text-secondary" dismiss>Cancel</Modal.Button>
+            <Modal.Button tabIndex={3} className="text-danger" icon="sprites.svg#trash" onClick={onRemove} dismiss>Remove</Modal.Button>
         </Modal.Footer>
     </Modal>;
 }

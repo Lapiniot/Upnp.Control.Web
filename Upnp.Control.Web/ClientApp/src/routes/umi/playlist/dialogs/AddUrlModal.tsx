@@ -35,8 +35,8 @@ export class AddUrlModal extends React.Component<AddUrlModalProps> {
                 <label className="form-check-label" htmlFor="use-dlna-proxy">Use DLNA proxy for live stream</label>
             </div>
             <Modal.Footer>
-                <Modal.Button tabIndex={6} className="dismiss" dismiss>Cancel</Modal.Button>
-                <Modal.Button tabIndex={5} className="confirm" icon="sprites.svg#plus" type="submit" name="action" value="add">Add</Modal.Button>
+                <Modal.Button tabIndex={6} className="text-secondary" dismiss>Cancel</Modal.Button>
+                <Modal.Button tabIndex={5} className="text-primary" icon="sprites.svg#plus" type="submit" name="action" value="add">Add</Modal.Button>
             </Modal.Footer>
         </Modal>;
     }

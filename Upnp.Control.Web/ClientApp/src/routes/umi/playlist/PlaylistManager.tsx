@@ -359,7 +359,7 @@ export class PlaylistManagerCore
                                                 <button type="button" className="btn btn-round btn-primary"
                                                     onClick={isRootLevel && selected === 0 ? this.createPlaylist : undefined}
                                                     data-bs-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>
-                                                    <svg className="icon"><use href="sprites.svg#plus" /></svg>
+                                                    <svg><use href="sprites.svg#plus" /></svg>
                                                 </button>
                                             </div>
                                             <DropdownMenu render={this.renderActionMenu} />

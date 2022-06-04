@@ -100,8 +100,8 @@ export default class Modal extends React.Component<ModalProps> {
                         {header ? header : <Modal.Header><h5 className="modal-title text-truncate">{title}</h5></Modal.Header>}
                         {body ? body : <Modal.Body>{children}</Modal.Body>}
                         {footer ? footer : <Modal.Footer>
-                            <Modal.Button className="dismiss" dismiss>Cancel</Modal.Button>
-                            <Modal.Button className="confirm" type="submit" name="action" value="ok">Ok</Modal.Button>
+                            <Modal.Button className="text-secondary" dismiss>Cancel</Modal.Button>
+                            <Modal.Button className="text-primary" type="submit" name="action" value="ok">Ok</Modal.Button>
                         </Modal.Footer>}
                     </div>
                 </div>
@@ -111,7 +111,7 @@ export default class Modal extends React.Component<ModalProps> {
 
     static Button = ({ dismiss, className, icon, children, ...other }: { dismiss?: boolean; icon?: string } & ButtonHTMLAttributes<HTMLButtonElement>) =>
         <button type="button" className={`btn btn-plain text-uppercase p-2 py-1${className ? ` ${className}` : ""}`} data-bs-dismiss={dismiss ? "modal" : null} {...other}>
-            {icon && <svg className="icon me-2"><use href={icon} /></svg>}{children}
+            {icon && <svg><use href={icon} /></svg>}{children}
         </button>;
 
     static Header = ({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) =>

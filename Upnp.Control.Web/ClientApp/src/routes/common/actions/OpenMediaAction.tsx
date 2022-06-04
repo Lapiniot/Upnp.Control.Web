@@ -38,7 +38,7 @@ export function OpenAction({ children, className, browserProps, device, category
 
 export function OpenMediaAction(props: DeviceActionProps) {
     return <OpenAction {...props}>
-        <svg className="icon"><use href="sprites.svg#photo-film" /></svg>
+        <svg><use href="sprites.svg#photo-film" /></svg>
     </OpenAction>
 }
 
@@ -48,6 +48,6 @@ function pickAudioMapper(item: DIDLItem) {
 
 export function OpenAudioAction(props: DeviceActionProps) {
     return <OpenAction {...props} rowStateMapper={pickAudioMapper}>
-        <svg className="icon"><use href="sprites.svg#folder-open" /></svg>
+        <svg><use href="sprites.svg#folder-open" /></svg>
     </OpenAction>
 }

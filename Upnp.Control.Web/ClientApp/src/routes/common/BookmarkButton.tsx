@@ -54,6 +54,6 @@ export function BookmarkButton({ className, children, bookmarked, icons = defaul
     const title = bookmarked ? "Remove bookmark from the Home section" : "Add bookmark to the Home section";
     return <button type="button" className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`}
         disabled={bookmarked === undefined} title={title} {...other}>
-        {children || <svg className="icon"><use href={icons[bookmarked === true ? 0 : 1]} /></svg>}
+        {children || <svg><use href={icons[bookmarked === true ? 0 : 1]} /></svg>}
     </button>;
 }

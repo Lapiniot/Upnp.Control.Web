@@ -1,125 +1,67 @@
-button,
-a {
-    & > img,
-    & > svg {
-        &:first-child {
-            display: inline-block;
-            height: 1em;
-            width: 1em;
-            overflow: visible;
-            vertical-align: -0.125em;
-            margin-inline-end: map-get($spacers, 1);
-        }
+:is(button, a) > svg:first-child {
+    height: 1em;
+    width: 1em;
+    overflow: visible;
+    vertical-align: -0.125em;
+    margin-right: map-get($spacers, 1);
+    fill: currentColor;
+}
+
+.dropdown-item > svg:first-child {
+    margin-right: map-get($spacers, 3);
+}
+
+.btn-round {
+    --#{$prefix}btn-border-width: 0;
+    --#{$prefix}btn-border-radius: 0;
+    --#{$prefix}btn-line-height: 0;
+    --#{$prefix}btn-padding-y: var(--#{$prefix}btn-padding-x);
+    clip-path: circle(49.5%);
+
+    & > svg:first-child {
+        margin: 0;
     }
 }
 
-.dropdown-item {
-    & > svg,
-    & > img {
-        &:first-child {
-            margin-inline-end: map-get($spacers, 3);
-        }
+.btn-plain {
+    --#{$prefix}btn-plain-hover-color: #{$dropdown-link-hover-color};
+    --#{$prefix}btn-plain-active-color: #{$dropdown-link-active-color};
+    --#{$prefix}btn-plain-hover-bg: #{$dropdown-link-hover-bg};
+    --#{$prefix}btn-plain-active-bg: #{$dropdown-link-active-bg};
+    @extend %no-decoration;
+    background-image: none;
+
+    &:is(:focus-visible, :hover) {
+        color: var(--#{$prefix}btn-plain-hover-color);
+        @include gradient-bg(var(--#{$prefix}btn-plain-hover-bg));
+    }
+
+    &:is(.active, :active) {
+        color: var(--#{$prefix}btn-plain-active-color);
+        @include gradient-bg(var(--#{$prefix}btn-plain-active-bg));
     }
 }
 
-.btn,
-.btn-close {
-    &.btn-round {
-        --#{$prefix}gradient: none;
-        clip-path: circle();
-        @extend %no-decoration;
-
-        & > img,
-        & > svg {
-            margin: 0;
-        }
-
-        & > svg {
-            fill: currentColor;
-        }
-    }
-
-    &.btn-icon:not(:hover):not(:active):not(:focus) {
-        color: #000;
-        background-color: unset !important;
-        background-image: unset !important;
-
-        &.disabled,
-        &:disabled {
-            color: $dropdown-link-disabled-color;
-            pointer-events: none;
-            background-color: transparent;
-            background-image: if($enable-gradients, none, null);
-        }
-    }
-
-    &.btn-plain {
-        @extend %no-decoration;
-
-        &:focus-visible,
-        &:hover {
-            color: $dropdown-link-hover-color;
-            @include gradient-bg($gray-400);
-        }
-
-        &.active,
-        &:active {
-            color: $dropdown-link-active-color;
-            @extend %no-decoration;
-            @include gradient-bg($dropdown-link-active-bg);
-        }
-
-        &.disabled,
-        &:disabled {
-            color: $dropdown-link-disabled-color;
-            pointer-events: none;
-            background-color: transparent;
-            background-image: if($enable-gradients, none, null);
-        }
-    }
-
-    &.image-only {
-        & > img,
-        & > svg {
-            margin: 0;
-        }
-    }
-
-    &:not(:disabled):not(.disabled) {
-        &.confirm {
-            color: $primary;
-        }
-
-        &.dismiss {
-            color: $secondary;
-        }
-
-        &.destructive {
-            color: $danger;
-        }
-    }
-
-    &.btn-overlay {
-        @extend %no-decoration;
-        display: flex;
-        padding: unset;
-        width: 100%;
-        height: 100%;
-    }
+.btn-overlay {
+    @extend %no-decoration;
+    display: flex;
+    padding: unset;
+    width: 100%;
+    height: 100%;
 }
 
 .float-container {
-    --float-shadow-offset: 2px;
-    --float-shadow-radius: 4px;
-    --float-shadow-color: #00000088;
-    --float-size: 1.5rem;
+    --#{$prefix}float-shadow-offset: 2px;
+    --#{$prefix}float-shadow-radius: 4px;
+    --#{$prefix}float-shadow-color: #00000088;
+    --#{$prefix}float-size: 1.75rem;
     z-index: $zindex-dropdown - 5;
     position: absolute;
     bottom: 0;
     margin: $spacer;
-    filter: drop-shadow(var(--float-shadow-offset) var(--float-shadow-offset) var(--float-shadow-radius) var(--float-shadow-color));
+    filter: drop-shadow(var(--#{$prefix}float-shadow-offset) var(--#{$prefix}float-shadow-offset) var(--#{$prefix}float-shadow-radius) var(--#{$prefix}float-shadow-color));
 
     & > button {
-        font-size: var(--float-size);
+        font-size: var(--#{$prefix}float-size);
     }
 }

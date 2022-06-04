@@ -27,8 +27,8 @@ export class UploadPlaylistModal extends React.Component<UploadPlaylistModalProp
                 <label htmlFor="useProxy" className="form-check-label" >Use DLNA proxy for live stream</label>
             </div>
             <Modal.Footer>
-                <Modal.Button tabIndex={5} className="dismiss" dismiss>Cancel</Modal.Button>
-                <Modal.Button tabIndex={4} className="confirm" icon="sprites.svg#plus" type="submit">Add</Modal.Button>
+                <Modal.Button tabIndex={5} className="text-secondary" dismiss>Cancel</Modal.Button>
+                <Modal.Button tabIndex={4} className="text-primary" icon="sprites.svg#plus" type="submit">Add</Modal.Button>
             </Modal.Footer>
         </Modal>;
     }

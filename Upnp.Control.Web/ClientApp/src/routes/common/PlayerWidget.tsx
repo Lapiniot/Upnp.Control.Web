@@ -15,7 +15,7 @@ const STATE_UPDATE_DELAY_MS = 2000;
 
 function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }) {
     const { className, glyph, children, active, ...other } = props;
-    return <button type="button" className={`btn btn-round btn-icon btn-plain${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
+    return <button type="button" className={`btn btn-round btn-plain${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
         {glyph && <svg><use href={glyph} /></svg>}{children}
     </button>
 }

@@ -15,7 +15,7 @@ type PlaylistManagetToolbarProps = {
     service: PlaylistManagerService
 };
 
-const className = "btn-round btn-icon btn-plain flex-grow-0";
+const className = "btn-round btn-plain flex-grow-0";
 
 const initial = {
     selection: [] as DIDLItem[],

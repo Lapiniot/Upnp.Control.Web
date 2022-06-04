@@ -28,7 +28,7 @@ export function BrowserActionMenu({ umis, renderers, onSelected }: BrowserAction
 
     return <>
         <Toolbar.Button key="main-menu" glyph="sprites.svg#ellipsis-vertical" data-bs-toggle="dropdown"
-            className="btn-round btn-icon btn-plain ms-auto" disabled={!enabled} />
+            className="btn-round btn-plain ms-auto" disabled={!enabled} />
         {enabled && <DropdownMenu placement="bottom-end" onSelected={onSelectedHandler}>
             {umiAcceptable && <>
                 <li><h6 className="dropdown-header">Send as Playlist to</h6></li>

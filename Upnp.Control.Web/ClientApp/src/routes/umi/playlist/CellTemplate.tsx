@@ -28,7 +28,7 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
                             <svg className="icon m-auto icon-lg animate-pulse"><use href="sprites.svg#volume-high" /></svg>
                         </div>
                         <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.pause}>
-                            <svg className="icon m-auto icon-lg"><use href="sprites.svg#circle-pause" /></svg>
+                            <svg className="m-auto icon-lg"><use href="sprites.svg#circle-pause" /></svg>
                         </button>
                     </React.Fragment>
                     : <React.Fragment key="active-paused">
@@ -36,11 +36,11 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
                             <svg className="icon m-auto icon-lg"><use href="sprites.svg#volume-off" /></svg>
                         </div>
                         <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.play}>
-                            <svg className="icon m-auto icon-lg"><use href="sprites.svg#circle-play" /></svg>
+                            <svg className="m-auto icon-lg"><use href="sprites.svg#circle-play" /></svg>
                         </button>
                     </React.Fragment>
                 : <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.playItem} data-index={index}>
-                    <svg className="icon m-auto icon-lg"><use href="sprites.svg#circle-play" /></svg>
+                    <svg className="m-auto icon-lg"><use href="sprites.svg#circle-play" /></svg>
                 </button>}
         </div>
         <span className="vstack overflow-hidden justify-content-center">
