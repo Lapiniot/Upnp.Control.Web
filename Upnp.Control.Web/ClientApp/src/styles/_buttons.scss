@@ -28,6 +28,7 @@
     --#{$prefix}btn-plain-active-color: #{$dropdown-link-active-color};
     --#{$prefix}btn-plain-hover-bg: #{$dropdown-link-hover-bg};
     --#{$prefix}btn-plain-active-bg: #{$dropdown-link-active-bg};
+    --#{$prefix}btn-color: inherit;
     @extend %no-decoration;
     background-image: none;
 
