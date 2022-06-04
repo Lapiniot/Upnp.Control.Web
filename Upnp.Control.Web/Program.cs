@@ -1,7 +1,7 @@
 #region usings
-
-using System.Text;
-using IoT.Device.Upnp;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
 using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Api;
 using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
@@ -124,7 +124,6 @@ app.MapUpnpEventsHub("upnpevents");
 app.MapImageLoaderProxy("proxy/{*url}");
 app.MapContentProxy("dlna-proxy/{*url}");
 app.MapCertificateDownloadMiddleware("api/cert");
-
 // Health checks
 app.MapHealthChecks("api/health");
 
@@ -139,7 +138,15 @@ api.MapConnectionsApi("{deviceId}");
 
 app.MapUpnpEventCallbacks("api/events/{deviceId}");
 app.MapPushNotificationSubscriptionApi("api/push-subscriptions");
-
+app.MapGet("api/info", async (CancellationToken ct) =>
+{
+    var hostName = Dns.GetHostName();
+    return Results.Json(new ServerInfo(
+        typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion,
+        hostName, (await Dns.GetHostAddressesAsync(hostName, AddressFamily.InterNetwork, ct).ConfigureAwait(false))
+            .Where(ip => ip.AddressFamily is AddressFamily.InterNetwork)
+            .Select(ip => ip.ToString())));
+});
 // Swagger
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
 
@@ -149,3 +156,5 @@ app.MapFallbackToFile("index.html");
 #endregion
 
 await app.RunAsync().ConfigureAwait(false);
+
+internal record ServerInfo(string Version, string HostName, IEnumerable<string> Addresses);
