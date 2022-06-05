@@ -26,5 +26,8 @@
         "**/.eslintcache": true
     },
     "typescript.tsdk": "Upnp.Control.Web\\ClientApp\\node_modules\\typescript\\lib",
-    "omnisharp.enableRoslynAnalyzers": true
+    "omnisharp.enableRoslynAnalyzers": true,
+    "build.framework": "net6.0",
+    "build.configuration": "Debug",
+    "publish.configuration": "Release"
 }
