@@ -1,36 +1,37 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-        <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-        <IsPackable>false</IsPackable>
-        <SpaRoot>ClientApp\</SpaRoot>
-        <SpaProxyServerUrl>https://localhost:8082</SpaProxyServerUrl>
-        <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
-        <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**;**/appsettings.Secrets.json;**/appsettings.Development.json;package.json;package-lock.json</DefaultItemExcludes>
-        <!-- Trimming settings -->
-        <TrimMode>Link</TrimMode>
-        <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
-        <!-- Feature trimming settings -->
-        <DebuggerSupport>false</DebuggerSupport>
-        <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
-        <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
-        <!-- <EventSourceSupport>false</EventSourceSupport> -->
-        <InvariantGlobalization>true</InvariantGlobalization>
-        <UseSystemResourceKeys>true</UseSystemResourceKeys>
-        <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
-        <!-- XML documentation settings -->
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <SpaProxyServerUrl>https://localhost:8082</SpaProxyServerUrl>
+    <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**;**/appsettings.Secrets.json;**/appsettings.Development.json;package.json;package-lock.json</DefaultItemExcludes>
+    <!-- Trimming settings -->
+    <TrimMode>Link</TrimMode>
+    <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+    <!-- Feature trimming settings -->
+    <DebuggerSupport>false</DebuggerSupport>
+    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <!-- <EventSourceSupport>false</EventSourceSupport> -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <!-- XML documentation settings -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ss:fffZ"))</SourceRevisionId>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0-preview.4.22229.4" />
-        <PackageReference Include="System.Threading.Channels" Version="7.0.0-preview.4.22229.4" />
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.0-preview.4.22251.1" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0-preview.4.22229.4" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0-preview.4.22229.4" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0-preview.4.22229.4" />
+    <PackageReference Include="System.Threading.Channels" Version="7.0.0-preview.4.22229.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.0-preview.4.22251.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0-preview.4.22229.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0-preview.4.22229.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../Upnp.Control.DataAccess/Upnp.Control.DataAccess.csproj" />

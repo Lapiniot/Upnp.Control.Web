@@ -68,4 +68,10 @@ public static class ConfigureServicesExtensions
                 .Build())
             .WithDisplayName("Certificate Download Middleware");
     }
+
+    public static RouteHandlerBuilder MapAppInfoEndpoint(this IEndpointRouteBuilder routeBuilder, string pattern) =>
+        routeBuilder.MapGet(pattern, ApplicationInfoServices.GetApplicationInfoAsync)
+            .Produces<ApplicationInfo>(StatusCodes.Status200OK, "application/json")
+            .WithTags(new[] { "Application Info" })
+            .WithName("GetAppInfo");
 }

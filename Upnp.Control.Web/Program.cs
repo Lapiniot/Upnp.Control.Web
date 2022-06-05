@@ -1,6 +1,4 @@
 #region usings
-using System.Net;
-using System.Net.Sockets;
 using System.Reflection;
 using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Api;
@@ -138,15 +136,7 @@ api.MapConnectionsApi("{deviceId}");
 
 app.MapUpnpEventCallbacks("api/events/{deviceId}");
 app.MapPushNotificationSubscriptionApi("api/push-subscriptions");
-app.MapGet("api/info", async (CancellationToken ct) =>
-{
-    var hostName = Dns.GetHostName();
-    return Results.Json(new ServerInfo(
-        typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion,
-        hostName, (await Dns.GetHostAddressesAsync(hostName, AddressFamily.InterNetwork, ct).ConfigureAwait(false))
-            .Where(ip => ip.AddressFamily is AddressFamily.InterNetwork)
-            .Select(ip => ip.ToString())));
-});
+app.MapAppInfoEndpoint("api/info");
 // Swagger
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
 
@@ -156,5 +146,3 @@ app.MapFallbackToFile("index.html");
 #endregion
 
 await app.RunAsync().ConfigureAwait(false);
-
-internal record ServerInfo(string Version, string HostName, IEnumerable<string> Addresses);
