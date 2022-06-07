@@ -11,7 +11,7 @@ export default function (props: HTMLAttributes<HTMLDivElement>) {
     const { device, id } = useParams<"device" | "id">();
     if (!device) throw new Error("Missing mandatory parameter 'device'");
     if (!id) throw new Error("Missing mandatory parameter 'id'");
-    const loader = useCallback(() => WebApi.browse(device).get(id).withOptions(options).jsonFetch(), [device, id]);
+    const loader = useCallback(() => WebApi.browse(device).get(id).withOptions(options).json(), [device, id]);
     const data = useDataFetch(loader);
     return !data.fetching ? <MediaViewer {...data} {...props} device={device} id={id} /> : <LoadIndicatorOverlay />;
 }

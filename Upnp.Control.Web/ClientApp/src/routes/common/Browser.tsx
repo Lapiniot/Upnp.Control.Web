@@ -74,7 +74,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     async componentDidMount() {
         try {
             const timeout = $s.get("timeout");
-            const devices: UpnpDevice[] = await WebApi.devices("renderers").jsonFetch(timeout);
+            const devices = await WebApi.devices("renderers").json(timeout);
             this.setState({ umis: devices.filter(UDT.isUmiDevice), renderers: devices.filter(d => !UDT.isUmiDevice(d)) })
         }
         catch (error) {

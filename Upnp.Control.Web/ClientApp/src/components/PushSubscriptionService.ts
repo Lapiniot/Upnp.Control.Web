@@ -32,6 +32,6 @@ export default {
         const reg = await navigator.serviceWorker.ready;
         if (!reg) return undefined;
         const subscription = await reg.pushManager.getSubscription();
-        return !!subscription && (await WebApi.notifications().subscribed(subscription.endpoint, type).jsonFetch() == true);
+        return !!subscription && (await WebApi.notifications().subscribed(subscription.endpoint, type).json() == true);
     }
 }

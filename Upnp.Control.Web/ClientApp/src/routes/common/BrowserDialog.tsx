@@ -31,7 +31,7 @@ export type BrowseResult = {
     keys: string[];
 }
 
-const fetchContentServers = $api.devices("servers").jsonFetch;
+const fetchContentServers = $api.devices("servers").json;
 
 function MediaSourceList() {
     const { fetching, dataContext } = useDataFetch<UpnpDevice[]>(fetchContentServers);

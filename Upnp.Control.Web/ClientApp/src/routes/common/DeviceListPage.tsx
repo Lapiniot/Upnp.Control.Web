@@ -4,7 +4,7 @@ import WebApi from "../../components/WebApi";
 import { DeviceListView, DeviceListViewProps } from "./DeviceListView";
 
 export default function DeviceListPage({ category, ...props }: DeviceListViewProps) {
-    const loader = useCallback(() => WebApi.devices(category).jsonFetch(), [category]);
+    const loader = useCallback(() => WebApi.devices(category).json(), [category]);
     const data = useDataFetch(loader);
     return <DeviceListView {...props} {...data} category={category} />
 }

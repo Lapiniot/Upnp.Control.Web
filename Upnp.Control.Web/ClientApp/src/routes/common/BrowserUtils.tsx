@@ -25,7 +25,7 @@ function fetchContent(device: string, id?: string | undefined,
     if (!device) throw new Error("Missing value for mandatory parameter 'device'");
     const s = parse(pageSize) ?? Settings.get("pageSize") ?? 50;
     const p = parse(page) ?? 1;
-    return WebApi.browse(device).get(id).take(s).skip((p - 1) * s).withOptions(options).jsonFetch();
+    return WebApi.browse(device).get(id).take(s).skip((p - 1) * s).withOptions(options).json();
 }
 
 export function useContentBrowser(options?: BrowseOptions, defaults?: { [K in ContentBrowserParamKey]?: string }) {

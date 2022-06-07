@@ -46,11 +46,6 @@ export class HttpFetch extends UrlBuilder {
         }
     }
 
-    jsonFetch = async (requestTimeout?: number | undefined): Promise<any> => {
-        const response = await this.fetch(requestTimeout);
-        return await response.json();
-    }
-
     withTimeout(timeout: number) {
         const { constructor } = this;
         const speciesConstructor = (<any>constructor)[Symbol.species];
@@ -60,52 +55,32 @@ export class HttpFetch extends UrlBuilder {
     }
 }
 
-export class HttpPost extends HttpFetch {
+export class HttpPostFetch extends HttpFetch {
     constructor(path: string, query: RequestQuery, init: RequestInit) {
         super(path, query, { ...init, method: "POST" });
     }
 }
 
-export class HttpPut extends HttpFetch {
+export class HttpPutFetch extends HttpFetch {
     constructor(path: string, query: RequestQuery, init: RequestInit) {
         super(path, query, { ...init, method: "PUT" });
     }
 }
 
-export class HttpDelete extends HttpFetch {
-    constructor(path: string, query: RequestQuery, init: RequestInit) {
+export class HttpDeleteFetch extends HttpFetch {
+    constructor(path: string, query: RequestQuery, init?: RequestInit) {
         super(path, query, { ...init, method: "DELETE" });
     }
 }
 
-export class JsonFetch extends HttpFetch {
+export class JsonHttpFetch<T> extends HttpFetch {
     constructor(path: string, query?: RequestQuery, init?: RequestInit) {
         const { headers, ...other } = init ?? {};
         super(path, query, { headers: { ...headers, "Accept": "application/json" }, ...other });
     }
-}
 
-export class JsonWithBodyFetch extends JsonFetch {
-    constructor(path: string, query: RequestQuery, init: RequestInit = {}) {
-        const { headers, ...other } = init;
-        super(path, query, { headers: { ...headers, "Content-Type": "application/json" }, ...other });
-    }
-}
-
-export class JsonPostFetch extends JsonWithBodyFetch {
-    constructor(path: string, query: RequestQuery, init: RequestInit = {}) {
-        super(path, query, { ...init, method: "POST" });
-    }
-}
-
-export class JsonPutFetch extends JsonWithBodyFetch {
-    constructor(path: string, query: RequestQuery, init: RequestInit) {
-        super(path, query, { ...init, method: "PUT" });
-    }
-}
-
-export class JsonDeleteFetch extends JsonWithBodyFetch {
-    constructor(path: string, query: RequestQuery, init: RequestInit = {}) {
-        super(path, query, { ...init, method: "DELETE" });
+    json = async (requestTimeout?: number | undefined): Promise<T> => {
+        const response = await this.fetch(requestTimeout);
+        return await response.json() as T;
     }
 }

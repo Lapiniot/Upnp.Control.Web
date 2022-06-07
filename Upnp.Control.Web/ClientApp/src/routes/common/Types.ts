@@ -113,7 +113,9 @@ export type AVState = {
     currentTrackUri?: string | null;
 }
 
-export type AVPositionState = {
+export type AVPosition = {
+    currentTrack: string | undefined | null;
+    current: DIDLItem | undefined | null;
     relTime: string;
     duration: string;
 }

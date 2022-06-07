@@ -9,7 +9,7 @@ import $api from "../../components/WebApi";
 import AlbumArt from "./AlbumArt";
 import SeekBar from "./SeekBar";
 import $s from "./Settings";
-import { AVPositionState, AVState, RCState } from "./Types";
+import { AVPosition, AVState, RCState } from "./Types";
 
 const STATE_UPDATE_DELAY_MS = 2000;
 
@@ -22,7 +22,7 @@ function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: strin
 
 type PlayerProps = { udn: string; } & DataFetchProps<AVState>
 
-type PlayerState = { dataContext?: DataContext<AVState> } & Partial<AVState> & Partial<RCState> & Partial<AVPositionState>
+type PlayerState = { dataContext?: DataContext<AVState> } & Partial<AVState> & Partial<RCState> & Partial<AVPosition>
 
 class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 
@@ -49,10 +49,10 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
             : null;
     }
 
-    onAVTransportEvent = (device: string, { state, position }: { state: AVState; position: AVPositionState }) => {
+    onAVTransportEvent = (device: string, { state, position }: { state: AVState; position: AVPosition }) => {
         if (device === this.props.udn) {
             this.cancelStateUpdate();
-            this.setState({ ...state, ...position });
+            this.setState({ ...position, ...state });
         }
     }
 
@@ -122,8 +122,8 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
     private updateStateAsync = async () => {
         try {
             const r = await Promise.all([
-                await this.ctrl.position().jsonFetch($s.get("timeout")),
-                await this.ctrl.volume(true).jsonFetch($s.get("timeout"))
+                await this.ctrl.position().json($s.get("timeout")),
+                await this.ctrl.volume(true).json($s.get("timeout"))
             ]);
 
             const state = { ...r[0], ...r[1] };
@@ -182,7 +182,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
 }
 
 export default function ({ udn }: { udn: string }) {
-    const loader = useCallback(() => $api.control(udn).state(true).withTimeout($s.get("timeout")).jsonFetch(), [udn]);
+    const loader = useCallback(() => $api.control(udn).state(true).withTimeout($s.get("timeout")).json(), [udn]);
     const data = useDataFetch<AVState>(loader);
     return <PlayerCore {...data} udn={udn} />
 }

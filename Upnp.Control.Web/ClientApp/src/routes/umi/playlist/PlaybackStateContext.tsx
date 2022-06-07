@@ -61,14 +61,14 @@ export function PlaybackStateProvider({ device, getTrackUrlHook, ...other }: Pla
             try {
                 const timeout = $s.get("timeout");
                 const ctrl = $api.control(device);
-                const state = await ctrl.state(true).jsonFetch(timeout);
+                const state = await ctrl.state(true).json(timeout);
                 if (state.medium === "X-MI-AUX") {
                     dispatch({ type: "UPDATE", state: { playbackState: state.state, playlist: "aux", track: undefined } });
                 } else {
                     const pls = $api.playlist(device);
                     const { 0: { "playlist_transport_uri": playlist }, 1: { currentTrack } } = await Promise.all([
-                        await pls.state().jsonFetch(timeout),
-                        await ctrl.position().jsonFetch(timeout)
+                        await pls.state().json(timeout),
+                        await ctrl.position().json(timeout)
                     ]);
                     dispatch({ type: "UPDATE", state: { playbackState: state.state, playlist, track: currentTrack } });
                 }

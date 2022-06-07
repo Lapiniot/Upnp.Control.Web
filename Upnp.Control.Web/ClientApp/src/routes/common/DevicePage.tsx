@@ -10,7 +10,7 @@ export default function ({ category, ...props }: TemplatedDataComponentProps<Upn
     const { device } = useParams<"device">();
     if (!category) throw new Error("Missing mandatory parameter 'category'");
     if (!device) throw new Error("Missing mandatory parameter 'device'");
-    const loader = useCallback(() => WebApi.devices(category, device).jsonFetch(), [category, device]);
+    const loader = useCallback(() => WebApi.devices(category, device).json(), [category, device]);
     const data = useDataFetch(loader);
     return <DeviceView {...props} {...data} category={category} device={device} />;
 }

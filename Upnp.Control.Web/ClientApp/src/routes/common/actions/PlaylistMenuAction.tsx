@@ -34,7 +34,7 @@ function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & De
 
 export function PlaylistMenuAction({ className, device, category, ...other }: DeviceActionProps) {
     const { udn } = device;
-    const loader = useCallback(() => WebApi.browse(udn).get("PL:").withResource().withVendor().jsonFetch(), [udn]);
+    const loader = useCallback(() => WebApi.browse(udn).get("PL:").withResource().withVendor().json(), [udn]);
     const data = useDataFetch(loader);
     return <div className={className} {...other}>
         {!data.fetching ? <Menu {...data} device={device} category={category} /> : <MicroLoader />}
