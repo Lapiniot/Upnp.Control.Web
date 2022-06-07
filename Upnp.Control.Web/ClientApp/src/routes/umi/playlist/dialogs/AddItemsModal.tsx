@@ -2,7 +2,10 @@ import BrowserDialog, { BrowserDialogProps } from "../../../common/BrowserDialog
 import { DIDLItem } from "../../../common/Types";
 
 function renderConfirmButton({ length }: DIDLItem[]): JSX.Element {
-    return <>Add{length ? <span className="badge rounded-pill ms-1 bg-secondary small">{length}</span> : undefined}</>
+    return <>
+        <svg><use href="sprites.svg#plus" /></svg>
+        Add{length ? <span className="badge rounded-pill ms-1 bg-secondary small">{length}</span> : undefined}
+    </>
 }
 
 export function AddItemsModal(props: BrowserDialogProps) {

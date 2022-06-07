@@ -169,7 +169,7 @@ export class PlaylistManagerCore
 
     //#region Action UI handlers
 
-    private createPlaylist = () => this.modal(<TextValueEditDialog title="Create new playlist" label="Name" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} />);
+    private createPlaylist = () => this.modal(<TextValueEditDialog title="Create new playlist" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} />);
 
     private deletePlaylists = (items: DIDLItem[]) => {
         const onRemove = () => this.delete(items.map(i => i.id));
@@ -183,7 +183,7 @@ export class PlaylistManagerCore
 
     private renamePlaylist = (item: DIDLItem) => {
         const onRename = (value: string) => this.rename(item.id, value);
-        this.modal(<TextValueEditDialog title="Rename playlist" label="Name" confirmText="Rename" defaultValue={item.title} onConfirmed={onRename} />);
+        this.modal(<TextValueEditDialog title="Rename playlist" confirmText="Rename" defaultValue={item.title} onConfirmed={onRename} />);
     }
 
     private copyPlaylist = (item: DIDLItem) => {

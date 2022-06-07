@@ -84,7 +84,7 @@ export default function BrowserDialog(props: BrowserDialogProps) {
         </Modal.Body>
         <Modal.Footer id="browser-dialog-footer">
             <React.Fragment>
-                <Modal.Button key="cancel" className="text-secondary" dismiss>Cancel</Modal.Button>
+                <Modal.Button key="cancel" dismiss>Cancel</Modal.Button>
             </React.Fragment>
         </Modal.Footer>
     </Modal>
