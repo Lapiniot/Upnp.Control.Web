@@ -1,23 +1,23 @@
 ﻿$auto-table-striped-order: even;
 
 .auto-table {
-    --auto-table-bg: #{$table-bg};
-    --auto-table-caption-bg: #{$light};
-    --auto-table-header-bg: #{$light};
-    --auto-table-accent-bg: transparent;
-    --auto-table-striped-color: #{$table-striped-color};
-    --auto-table-striped-bg: #{$table-striped-bg};
-    --auto-table-active-color: #{$table-active-color};
-    --auto-table-active-bg: #{$table-active-bg};
-    --auto-table-hover-color: #{$table-hover-color};
-    --auto-table-hover-bg: #{$table-hover-bg};
-    --auto-table-selected-bg: #{$link-color};
-    --auto-table-focused-accent: #{$primary-accent};
-    --auto-table-selected-color: white;
-    --auto-table-padding-x: #{$table-cell-padding-x};
-    --auto-table-padding-x-start: #{2 * $table-cell-padding-x};
-    --auto-table-padding-x-end: #{2 * $table-cell-padding-x};
-    --auto-table-padding-y: #{$table-cell-padding-y};
+    --#{$prefix}table-bg: #{$table-bg};
+    --#{$prefix}table-caption-bg: #{$light};
+    --#{$prefix}table-header-bg: #{$light};
+    --#{$prefix}table-accent-bg: transparent;
+    --#{$prefix}table-striped-color: #{$table-striped-color};
+    --#{$prefix}table-striped-bg: #{$table-striped-bg};
+    --#{$prefix}table-active-color: #{$table-active-color};
+    --#{$prefix}table-active-bg: #{$table-active-bg};
+    --#{$prefix}table-hover-color: #{$table-hover-color};
+    --#{$prefix}table-hover-bg: #{$table-hover-bg};
+    --#{$prefix}table-selected-bg: #{$link-color};
+    --#{$prefix}table-focused-accent: #{$primary-accent};
+    --#{$prefix}table-selected-color: white;
+    --#{$prefix}table-padding-x: #{$table-cell-padding-x};
+    --#{$prefix}table-padding-x-start: #{2 * $table-cell-padding-x};
+    --#{$prefix}table-padding-x-end: #{2 * $table-cell-padding-x};
+    --#{$prefix}table-padding-y: #{$table-cell-padding-y};
 
     display: table;
     width: 100%;
@@ -65,7 +65,7 @@
     & > .table-caption:first-of-type {
         display: table-caption;
         color: $table-caption-color;
-        background-color: var(--auto-table-caption-bg);
+        background-color: var(--#{$prefix}table-caption-bg);
         padding: $table-cell-padding-y $table-cell-padding-x;
         caption-side: top;
         border: none;
@@ -82,7 +82,7 @@
 
         & > * > * {
             color: $table-color;
-            background-color: var(--auto-table-header-bg);
+            background-color: var(--#{$prefix}table-header-bg);
             border-top: $table-border-width solid $table-border-color;
             border-bottom: $table-border-width solid $table-border-color;
             border-left: $table-border-width solid $table-border-color;
@@ -103,14 +103,14 @@
     & > :not(.table-caption) {
         & > * {
             display: table-row;
-            background-color: var(--auto-table-bg);
-            background-image: linear-gradient(var(--auto-table-accent-bg), var(--auto-table-accent-bg));
+            background-color: var(--#{$prefix}table-bg);
+            background-image: linear-gradient(var(--#{$prefix}table-accent-bg), var(--#{$prefix}table-accent-bg));
 
             & > * {
                 display: table-cell;
                 vertical-align: middle;
                 white-space: nowrap;
-                padding: var(--auto-table-padding-y) var(--auto-table-padding-x);
+                padding: var(--#{$prefix}table-padding-y) var(--#{$prefix}table-padding-x);
                 border-top: $table-border-width solid $table-border-color;
 
                 &.mw-1 {
@@ -118,11 +118,11 @@
                 }
 
                 &:first-child {
-                    padding-left: var(--auto-table-padding-x-start);
+                    padding-left: var(--#{$prefix}table-padding-x-start);
                 }
 
                 &:last-child {
-                    padding-right: var(--auto-table-padding-x-end);
+                    padding-right: var(--#{$prefix}table-padding-x-end);
                 }
             }
 
@@ -133,8 +133,8 @@
 
         & > [data-active="true"],
         & > .active {
-            --auto-table-accent-bg: var(--auto-table-active-bg) !important;
-            color: var(--auto-table-active-color);
+            --#{$prefix}table-accent-bg: var(--#{$prefix}table-active-bg) !important;
+            color: var(--#{$prefix}table-active-color);
         }
 
         & > [data-selected="true"],
@@ -144,8 +144,8 @@
     }
 
     %row-accent {
-        --auto-table-accent-bg: var(--auto-table-selected-bg) !important;
-        color: var(--auto-table-selected-color) !important;
+        --#{$prefix}table-accent-bg: var(--#{$prefix}table-selected-bg) !important;
+        color: var(--#{$prefix}table-selected-color) !important;
         outline: none;
     }
 
@@ -154,46 +154,46 @@
     }
 
     &.at-compact {
-        --auto-table-padding-x: #{$table-cell-padding-x-sm};
-        --auto-table-padding-x-start: #{2 * $table-cell-padding-x-sm};
-        --auto-table-padding-x-end: #{2 * $table-cell-padding-x-sm};
-        --auto-table-padding-y: #{$table-cell-padding-y-sm};
+        --#{$prefix}table-padding-x: #{$table-cell-padding-x-sm};
+        --#{$prefix}table-padding-x-start: #{2 * $table-cell-padding-x-sm};
+        --#{$prefix}table-padding-x-end: #{2 * $table-cell-padding-x-sm};
+        --#{$prefix}table-padding-y: #{$table-cell-padding-y-sm};
     }
 
     &.at-striped {
         @include at-body-row(":nth-of-type(#{$auto-table-striped-order})") {
-            --auto-table-accent-bg: var(--auto-table-striped-bg);
-            color: var(--auto-table-striped-color);
+            --#{$prefix}table-accent-bg: var(--#{$prefix}table-striped-bg);
+            color: var(--#{$prefix}table-striped-color);
         }
     }
 
     &.at-focus-marker {
-        --auto-table-focused-marker-size: #{map-get($spacers, 1)};
+        --#{$prefix}table-focused-marker-size: #{map-get($spacers, 1)};
 
         & > :not(.table-caption) > * > :first-child {
             padding-inline-start: unquote(
-                "calc(var(--auto-table-padding-x-start) + var(--auto-table-focused-marker-size))"
+                "calc(var(--#{$prefix}table-padding-x-start) + var(--#{$prefix}table-focused-marker-size))"
             );
         }
 
         @include at-body-row('[data-focused="true"],:focus') {
             @extend %row-accent;
             & > :first-child {
-                box-shadow: inset var(--auto-table-focused-marker-size) 0 0 var(--auto-table-focused-accent);
+                box-shadow: inset var(--#{$prefix}table-focused-marker-size) 0 0 var(--#{$prefix}table-focused-accent);
             }
         }
     }
 
     &.at-hover {
         @include at-body-row(":hover") {
-            --auto-table-accent-bg: var(--auto-table-hover-bg);
-            color: var(--auto-table-hover-color);
+            --#{$prefix}table-accent-bg: var(--#{$prefix}table-hover-bg);
+            color: var(--#{$prefix}table-hover-color);
         }
     }
 
     &.at-hover-link {
         @include at-body-row(":hover") {
-            --auto-table-accent-bg: var(--auto-table-hover-bg);
+            --#{$prefix}table-accent-bg: var(--#{$prefix}table-hover-bg);
             color: $link-hover-color;
             text-decoration: none;
             cursor: default;
@@ -203,14 +203,14 @@
     &.at-material {
         & > .table-caption:first-of-type {
             &.sticky {
-                --auto-table-caption-bg: var(--bs-white);
+                --#{$prefix}table-caption-bg: var(--bs-white);
             }
         }
 
         @include at-header() {
-            --auto-table-header-bg: var(--auto-table-bg);
+            --#{$prefix}table-header-bg: var(--#{$prefix}table-bg);
             &.sticky {
-                --auto-table-header-bg: var(--bs-white);
+                --#{$prefix}table-header-bg: var(--bs-white);
             }
             & > * > * {
                 border-left: none;

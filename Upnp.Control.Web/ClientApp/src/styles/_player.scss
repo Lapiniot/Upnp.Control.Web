@@ -5,11 +5,7 @@
     gap: 0 0;
     overflow: hidden;
     grid:
-        "art art art art art" 1fr
-        "title title title title title" auto
-        "prog prog prog prog prog" auto
-        "mode prev play next vol" auto
-        / 1fr auto auto auto 1fr;
+        "art art art art art" 1fr "title title title title title" auto "prog prog prog prog prog" auto "mode prev play next vol" auto / 1fr auto auto auto 1fr;
 
     .art {
         grid-area: art;
@@ -69,10 +65,7 @@
 
     @media (max-height: 420px) {
         grid:
-            "art art art art art art" 1fr
-            "prog prog prog prog prog prog" auto
-            "prev play next title mode vol" auto
-            / auto auto auto minmax(0, 1fr) auto auto;
+            "art art art art art art" 1fr "prog prog prog prog prog prog" auto "prev play next title mode vol" auto / auto auto auto minmax(0, 1fr) auto auto;
         gap: map-get($spacers, 1) 0;
 
         .art {
@@ -86,9 +79,7 @@
 
     @media (min-width: 576px) and (min-height: 576px) {
         grid:
-            "prog prog prog prog prog prog prog prog prog" auto
-            "prev play next . art title . mode vol" auto
-            / auto auto auto 1fr auto minmax(0, auto) 1fr auto auto;
+            "prog prog prog prog prog prog prog prog prog" auto "prev play next . art title . mode vol" auto / auto auto auto 1fr auto minmax(0, auto) 1fr auto auto;
         gap: 0 0;
 
         .art {
