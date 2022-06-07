@@ -4,12 +4,13 @@ import { HttpFetch, JsonHttpFetch, RequestQuery, HttpPostFetch, HttpPutFetch, Ht
 
 const baseUri = "/api";
 const devicesBaseUri = baseUri + "/devices";
-
-function json(data: any): RequestInit {
-    return {
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
-    }
+type BrowseOptionFlags = "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata" | "withDevice";
+export type BrowseOptions = { [K in BrowseOptionFlags]?: boolean };
+type ApplicationInfo = {
+    build: { version?: string, date?: string },
+    product?: string,
+    hostName: string,
+    addresses: string[]
 }
 
 export interface ControlApiProvider {
@@ -135,9 +136,11 @@ export default class WebApi {
     }
 
     static notifications = (): PushSubscriptionApiProvider => pushSubscriber;
-}
 
-type ApplicationInfo = {}
+    static getAppInfo(): Promise<ApplicationInfo> {
+        return new JsonHttpFetch<ApplicationInfo>(`${baseUri}/info`).json();
+    }
+}
 
 const pushSubscriber = {
     subscribe: (endpoint: string, type: NotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) =>
@@ -147,10 +150,6 @@ const pushSubscriber = {
     subscribed: (endpoint: string, type: NotificationType) => new JsonHttpFetch<boolean>(`${baseUri}/push-subscriptions`, { endpoint, type }),
     serverKey: () => new HttpFetch(`${baseUri}/push-subscriptions/server-key`)
 }
-
-type BrowseOptionFlags = "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata" | "withDevice";
-
-export type BrowseOptions = { [K in BrowseOptionFlags]?: boolean };
 
 export class BrowseFetch extends JsonHttpFetch<BrowseFetchResult> {
     constructor(path: string, query: RequestQuery = {}) {
@@ -179,4 +178,11 @@ function createFormData(files: Iterable<File>, useProxy?: boolean) {
     for (let file of files) data.append("files", file);
     if (useProxy) data.set("useProxy", "true");
     return data;
+}
+
+function json(data: any): RequestInit {
+    return {
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+    }
 }
