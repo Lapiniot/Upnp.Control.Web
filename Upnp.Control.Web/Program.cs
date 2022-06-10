@@ -17,9 +17,6 @@ using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 
 #endregion
 
-Library.Init();
-IoT.Device.Upnp.Umi.Library.Init();
-
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var builder = WebApplication.CreateBuilder(args);
