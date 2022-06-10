@@ -6,7 +6,7 @@ const baseUri = "/api";
 const devicesBaseUri = baseUri + "/devices";
 type BrowseOptionFlags = "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata" | "withDevice";
 export type BrowseOptions = { [K in BrowseOptionFlags]?: boolean };
-type ApplicationInfo = {
+export type ApplicationInfo = {
     build: { version?: string, date?: string },
     product?: string,
     hostName: string,

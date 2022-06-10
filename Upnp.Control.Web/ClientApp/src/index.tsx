@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalRConnection";
+import { AppInfo } from "./routes/common/AppInfo";
 import HomePage from "./routes/home/Home";
 import RendererDevicesPage from "./routes/renderers/Router";
 import SettingsPage from "./routes/settings/Settings";
@@ -26,6 +27,7 @@ root.render(
                     <RouteLink to="/umi" glyph="sprites.svg#radio" className="nav-link"><span><span className="d-none d-lg-inline">Xiaomi&nbsp;</span>Speakers</span></RouteLink>
                     <RouteLink to="/settings" glyph="sprites.svg#gear" className="nav-link">Settings</RouteLink>
                 </nav>
+                <AppInfo className="mt-auto mb-0 small d-none d-lg-block" />
             </div>
             <main>
                 <div id="notifications-root" className="nt-host gap-3 pe-none" />

@@ -6,7 +6,7 @@ $breadcrumb-divider: quote("\276f");
 $breadcrumb-item-padding-x: 0.25rem !default;
 $breadcrumb-border-radius: 0 !default;
 
-$backdrops: ("", primary, secondary, danger);
+$backdrops: "" primary secondary danger;
 $backdrop-opacity: 0.6;
 
 $primary: #6f42c1;
@@ -48,6 +48,7 @@ $zindex-dropdown: $zindex-sticky + 5;
 @import "../../node_modules/bootstrap/scss/helpers/visually-hidden";
 
 // Utilities
+$utilities : map-merge($utilities, ("cursor":(property:"cursor", values:default)));
 @import "../../node_modules/bootstrap/scss/utilities/api";
 
 $primary-100: tint-color($primary, 80%) !default;
