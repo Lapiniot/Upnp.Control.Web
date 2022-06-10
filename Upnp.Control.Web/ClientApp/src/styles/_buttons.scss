@@ -1,4 +1,4 @@
-:is(button, a) > svg:first-child {
+:is(button, a) > :is(svg, img):first-child {
     height: 1em;
     width: 1em;
     overflow: visible;
@@ -7,7 +7,7 @@
     fill: currentColor;
 }
 
-.dropdown-item > svg:first-child {
+.dropdown-item > :is(svg, img):first-child {
     margin-right: map-get($spacers, 3);
 }
 
@@ -18,7 +18,7 @@
     --#{$prefix}btn-padding-y: var(--#{$prefix}btn-padding-x);
     clip-path: circle(49.5%);
 
-    & > svg:first-child {
+    & > :is(svg, img):first-child {
         margin: 0;
     }
 }
