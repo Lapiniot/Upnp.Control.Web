@@ -8,32 +8,6 @@
     }
 }
 
-// Media of at least the minimum breakpoint height. No query for the smallest breakpoint.
-// Makes the @content apply to the given breakpoint and taller.
-@mixin media-breakpoint-height-up($name, $breakpoints: $grid-breakpoints) {
-    $min: breakpoint-min($name, $breakpoints);
-    @if $min {
-        @media (min-height: $min) {
-            @content;
-        }
-    } @else {
-        @content;
-    }
-}
-
-// Media of at most the maximum breakpoint height. No query for the largest breakpoint.
-// Makes the @content apply to the given breakpoint and smaller.
-@mixin media-breakpoint-height-down($name, $breakpoints: $grid-breakpoints) {
-    $max: breakpoint-max($name, $breakpoints);
-    @if $max {
-        @media (max-height: $max) {
-            @content;
-        }
-    } @else {
-        @content;
-    }
-}
-
 @mixin font-scale($scale) {
     font-size: $scale * 1em;
 }

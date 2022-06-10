@@ -35,10 +35,6 @@
     grid-gap: map-get($spacers, 3);
 }
 
-.grid-auto-auto {
-    grid-template-columns: auto auto;
-}
-
 .grid-auto-1fr {
     grid-template-columns: auto 1fr;
 }

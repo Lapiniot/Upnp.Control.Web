@@ -55,11 +55,10 @@
     --#{$prefix}float-shadow-offset: 2px;
     --#{$prefix}float-shadow-radius: 4px;
     --#{$prefix}float-shadow-color: #00000088;
-    --#{$prefix}float-size: 1.75rem;
+    --#{$prefix}float-size:  calc(1.375rem + 1.5vw);
     z-index: $zindex-dropdown - 5;
     position: absolute;
     bottom: 0;
-    margin: $spacer;
     filter: drop-shadow(var(--#{$prefix}float-shadow-offset) var(--#{$prefix}float-shadow-offset) var(--#{$prefix}float-shadow-radius) var(--#{$prefix}float-shadow-color));
 
     & > button {

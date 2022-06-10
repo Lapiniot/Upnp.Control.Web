@@ -1,6 +1,8 @@
 ﻿$enable-gradients: true;
 $enable-shadows: true;
 $enable-grid-classes: false;
+$enable-container-classes: false;
+$enable-rfs: true;
 
 $breadcrumb-divider: quote("\276f");
 $breadcrumb-item-padding-x: 0.25rem !default;
@@ -12,50 +14,102 @@ $backdrop-opacity: 0.6;
 $primary: #6f42c1;
 
 // Configuration
-@import "../../node_modules/bootstrap/scss/functions";
-@import "../../node_modules/bootstrap/scss/variables";
-@import "../../node_modules/bootstrap/scss/maps";
-@import "../../node_modules/bootstrap/scss/mixins";
-@import "../../node_modules/bootstrap/scss/utilities";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+$grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
 
 // Layout & components
-@import "../../node_modules/bootstrap/scss/root";
-@import "../../node_modules/bootstrap/scss/reboot";
-@import "../../node_modules/bootstrap/scss/type";
-@import "../../node_modules/bootstrap/scss/forms";
-@import "../../node_modules/bootstrap/scss/buttons";
-@import "../../node_modules/bootstrap/scss/transitions";
-@import "../../node_modules/bootstrap/scss/button-group";
-@import "../../node_modules/bootstrap/scss/card";
-@import "../../node_modules/bootstrap/scss/breadcrumb";
-@import "../../node_modules/bootstrap/scss/pagination";
-@import "../../node_modules/bootstrap/scss/badge";
-@import "../../node_modules/bootstrap/scss/alert";
-@import "../../node_modules/bootstrap/scss/toasts";
-@import "../../node_modules/bootstrap/scss/list-group";
-@import "../../node_modules/bootstrap/scss/close";
-@import "../../node_modules/bootstrap/scss/modal";
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/transitions";
+@import "bootstrap/scss/button-group";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/breadcrumb";
+@import "bootstrap/scss/pagination";
+@import "bootstrap/scss/badge";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/toasts";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/close";
+@import "bootstrap/scss/modal";
 
 $accordion-button-active-bg: $light;
-@import "../../node_modules/bootstrap/scss/accordion";
+@import "bootstrap/scss/accordion";
 
 $zindex-dropdown: $zindex-sticky + 5;
-@import "../../node_modules/bootstrap/scss/dropdown";
+@import "bootstrap/scss/dropdown";
 
 // Helpers
-@import "../../node_modules/bootstrap/scss/helpers/stacks";
-@import "../../node_modules/bootstrap/scss/helpers/text-truncation";
-@import "../../node_modules/bootstrap/scss/helpers/visually-hidden";
+@import "bootstrap/scss/helpers/stacks";
+@import "bootstrap/scss/helpers/text-truncation";
+@import "bootstrap/scss/helpers/visually-hidden";
 
 // Utilities
+$utilities: map-merge($utilities, ("float":null, "align":null, "opacity":null,
+            "top":null, "bottom":null, "start":null, "end":null, "translate-middle":null,
+            "border-opacity":null, "border-end":null, "border-start":null,
+            "order":null, "font-size":null, "font-style":null, "align-self":null,
+            "font-weight":null, "line-height":null, "text-opacity":null, "bg-opacity":null,
+            "rounded-top":null, "rounded-end":null, "rounded-bottom":null,
+            "rounded-start":null, "visibility":null));
+$utilities: map-merge($utilities,
+        ("display": map-merge(map-get($utilities, "display"),
+                (values: inline grid flex inline-flex none)),
+            "shadow": map-merge(map-get($utilities, "shadow"),
+                (values: (sm: $box-shadow-sm ))),
+            "position": map-merge(map-get($utilities, "position"),
+                (values: relative sticky)),
+            "width": map-merge(map-get($utilities, "width"),
+                (values: (100: 100%, auto: auto))),
+            "height": map-merge(map-get($utilities, "height"),
+                (values: (100: 100%, auto: auto))),
+            "flex-direction": map-merge(map-get($utilities, "flex-direction"),
+                (responsive: false, values: column)),
+            "align-items": map-merge(map-get($utilities, "align-items"),
+                (responsive: false, values: (start: flex-start, center: center, stretch: stretch))),
+            "align-content": map-merge(map-get($utilities, "align-content"),
+                (responsive: false, values: center)),
+            "margin-x": map-merge(map-get($utilities, "margin-x"),
+                (responsive: false)),
+            "margin-y": map-merge(map-get($utilities, "margin-y"),
+                (responsive: false)),
+            "margin-top": map-merge(map-get($utilities, "margin-top"),
+                (responsive: false)),
+            "margin-bottom": map-merge(map-get($utilities, "margin-bottom"),
+                (responsive: false)),
+            "margin-end": map-merge(map-get($utilities, "margin-end"),
+                (responsive: false)),
+            "margin-start": map-merge(map-get($utilities, "margin-start"),
+                (responsive: false)),
+            "padding": map-merge(map-get($utilities, "padding"),
+                (responsive: false)),
+            "padding-x": map-merge(map-get($utilities, "padding-x"),
+                (responsive: false)),
+            "padding-y": map-merge(map-get($utilities, "padding-y"),
+                (responsive: false)),
+            "padding-top": map-merge(map-get($utilities, "padding-top"),
+                (responsive: false, values: null)),
+            "padding-bottom": map-merge(map-get($utilities, "padding-bottom"),
+                (responsive: false)),
+            "padding-start": map-merge(map-get($utilities, "padding-start"),
+                (responsive: false)),
+            "padding-end": map-merge(map-get($utilities, "padding-end"),
+                (responsive: false))));
+
 $utilities : map-merge($utilities, ("cursor":(property:"cursor", values:default)));
-@import "../../node_modules/bootstrap/scss/utilities/api";
+@import "bootstrap/scss/utilities/api";
 
 $primary-100: tint-color($primary, 80%) !default;
 $primary-200: tint-color($primary, 60%) !default;
 $primary-300: tint-color($primary, 40%) !default;
 $primary-400: tint-color($primary, 20%) !default;
-$primary-500: $primary !default;
+$primary-500: $primary  !default;
 $primary-600: shade-color($primary, 20%) !default;
 $primary-700: shade-color($primary, 40%) !default;
 $primary-800: shade-color($primary, 60%) !default;

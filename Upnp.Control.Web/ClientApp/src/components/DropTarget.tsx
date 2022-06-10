@@ -77,7 +77,7 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
                     <svg className="icon icon-3x">
                         <use href={`sprites.svg#${acceptable ? "upload" : "poo"}`} />
                     </svg>
-                    <p className="text-bolder">{acceptable ? "Drop playlist files here" : "Only playlist files (.m3u, .m3u8) are supported"}</p>
+                    <p className="fw-semibold">{acceptable ? "Drop playlist files here" : "Only playlist files (.m3u, .m3u8) are supported"}</p>
                 </Indicator>
             </div>}
         </div>;

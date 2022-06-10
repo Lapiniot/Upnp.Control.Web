@@ -355,7 +355,7 @@ export class PlaylistManagerCore
                                 {({ selection: { length: selected } }) => <>
                                     {!largeScreen && !fetching &&
                                         <div className="position-relative d-flex justify-content-center justify-content-sm-end">
-                                            <div className="float-container position-absolute bottom-0">
+                                            <div className="float-container m-3">
                                                 <button type="button" className="btn btn-round btn-primary"
                                                     onClick={isRootLevel && selected === 0 ? this.createPlaylist : undefined}
                                                     data-bs-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>

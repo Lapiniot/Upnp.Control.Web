@@ -38,8 +38,8 @@ export default class SeekBar extends React.Component<PositionProps> {
         const infinite = !Number.isFinite(time) || !Number.isFinite(duration) || duration === 0;
 
         return <div className={`d-flex flex-wrap user-select-none${className ? ` ${className}` : ""}`} {...other}>
-            <Timer className="text-tiny" current={time / 1000} running={running} />
-            <time className="text-tiny ms-auto">{formatTime(!infinite ? duration / 1000 : Infinity)}</time>
+            <Timer className="fs-tiny" current={time / 1000} running={running} />
+            <time className="fs-tiny ms-auto">{formatTime(!infinite ? duration / 1000 : Infinity)}</time>
             {!infinite
                 ? <Slider className="w-100" value={progress} step={0.02} style={this.getSliderStyle(running, time, duration)} onChange={onChange} />
                 : <Progress className="w-100" infinite={running} value={progress} />}
