@@ -26,6 +26,14 @@
         "**/.eslintcache": true
     },
     "typescript.tsdk": "Upnp.Control.Web\\ClientApp\\node_modules\\typescript\\lib",
+    "auto-rename-tag.activationOnLanguage": [
+        "xml",
+        "html"
+    ],
+    "auto-close-tag.activationOnLanguage": [
+        "xml",
+        "html"
+    ],
     "omnisharp.enableRoslynAnalyzers": true,
     "build.framework": "net6.0",
     "build.configuration": "Debug",
