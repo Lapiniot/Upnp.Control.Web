@@ -27,7 +27,7 @@ root.render(
                     <RouteLink to="/umi" glyph="sprites.svg#radio" className="nav-link"><span><span className="d-none d-lg-inline">Xiaomi&nbsp;</span>Speakers</span></RouteLink>
                     <RouteLink to="/settings" glyph="sprites.svg#gear" className="nav-link">Settings</RouteLink>
                 </nav>
-                <AppInfo className="mt-auto mb-0 small d-none d-lg-block" />
+                <AppInfo className="mt-auto mb-0 small d-none d-lg-inline" />
             </div>
             <main>
                 <div id="notifications-root" className="nt-host gap-3 pe-none" />
