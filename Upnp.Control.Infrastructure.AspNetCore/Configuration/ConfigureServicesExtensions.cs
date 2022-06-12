@@ -33,9 +33,6 @@ public static class ConfigureServicesExtensions
         return services.AddTransient<ContentProxyMiddleware>();
     }
 
-    public static IServiceCollection AddCertificateDownloadMiddleware(this IServiceCollection services) =>
-        services.AddTransient<CertificateDownloadMiddleware>();
-
     public static IEndpointConventionBuilder MapImageLoaderProxy(this IEndpointRouteBuilder routeBuilder, string route)
     {
         ArgumentNullException.ThrowIfNull(routeBuilder);
@@ -58,18 +55,10 @@ public static class ConfigureServicesExtensions
             .WithDisplayName("Content Proxy Middleware");
     }
 
-    public static IEndpointConventionBuilder MapCertificateDownloadMiddleware(this IEndpointRouteBuilder routeBuilder, string pattern)
-    {
-        ArgumentNullException.ThrowIfNull(routeBuilder);
+    public static IEndpointConventionBuilder MapCertificateDownload(this IEndpointRouteBuilder routeBuilder, string pattern) =>
+        routeBuilder.MapGet(pattern, CertificateDownloadServices.GetCertificatesArchive);
 
-        return routeBuilder.Map(pattern, routeBuilder
-                .CreateApplicationBuilder()
-                .UseMiddleware<CertificateDownloadMiddleware>()
-                .Build())
-            .WithDisplayName("Certificate Download Middleware");
-    }
-
-    public static RouteHandlerBuilder MapAppInfoEndpoint(this IEndpointRouteBuilder routeBuilder, string pattern) =>
+    public static RouteHandlerBuilder MapAppInfo(this IEndpointRouteBuilder routeBuilder, string pattern) =>
         routeBuilder.MapGet(pattern, ApplicationInfoServices.GetApplicationInfoAsync)
             .Produces<ApplicationInfo>(StatusCodes.Status200OK, "application/json")
             .WithTags(new[] { "Application Info" })

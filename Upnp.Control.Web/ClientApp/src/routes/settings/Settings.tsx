@@ -81,7 +81,7 @@ export default () => {
                             <small className="form-text">Offers a web-based UI that provides information about the service, using the generated OpenAPI specification</small>
                         </div>
                         <div className="vstack">
-                            <a className="btn-link" href="api/cert">Download Certificate</a>
+                            <a className="btn-link" href="api/cert">Download Certificate(s)</a>
                             <small className="form-text">You can obtain a copy of SSL certificate used by this site - this is especially useful if you need to add it manually to the trusted store on your device</small>
                         </div>
                         <div className="vstack">

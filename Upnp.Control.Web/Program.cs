@@ -79,8 +79,7 @@ builder.Services.AddSignalR().AddJsonProtocol(static options => options.PayloadS
 builder.Services
     .AddResponseCaching()
     .AddImageLoaderProxyMiddleware()
-    .AddContentProxyMiddleware()
-    .AddCertificateDownloadMiddleware();
+    .AddContentProxyMiddleware();
 
 #endregion
 
@@ -118,7 +117,8 @@ app.UseSwaggerUI(options =>
 app.MapUpnpEventsHub("upnpevents");
 app.MapImageLoaderProxy("proxy/{*url}");
 app.MapContentProxy("dlna-proxy/{*url}");
-app.MapCertificateDownloadMiddleware("api/cert");
+// Custom services endpoints
+app.MapCertificateDownload("api/cert");
 // Health checks
 app.MapHealthChecks("api/health");
 
@@ -133,7 +133,7 @@ api.MapConnectionsApi("{deviceId}");
 
 app.MapUpnpEventCallbacks("api/events/{deviceId}");
 app.MapPushNotificationSubscriptionApi("api/push-subscriptions");
-app.MapAppInfoEndpoint("api/info");
+app.MapAppInfo("api/info");
 // Swagger
 app.MapSwagger("api/swagger/{documentName}/swagger.json");
 
