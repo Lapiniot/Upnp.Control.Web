@@ -1,0 +1,83 @@
+$utilities: map-remove($utilities,
+        "float", "align", "opacity", "top", "bottom", "start", "end", "translate-middle",
+        "border-opacity", "border-end", "border-start", "order", "font-size", "font-style", "align-self",
+        "font-weight", "text-opacity", "bg-opacity", "rounded-top", "rounded-end", "rounded-bottom",
+        "rounded-start", "visibility");
+
+$utilities: map-merge($utilities,
+        ("display": map-merge(map-get($utilities, "display"),
+                (values: inline grid flex inline-flex none)),
+            "shadow": map-merge(map-get($utilities, "shadow"),
+                (values: (sm: $box-shadow-sm ))),
+            "position": map-merge(map-get($utilities, "position"),
+                (values: relative sticky)),
+            "width": map-merge(map-get($utilities, "width"),
+                (values: (100: 100%, auto: auto))),
+            "height": map-merge(map-get($utilities, "height"),
+                (values: (100: 100%, auto: auto))),
+            "line-height": map-merge(map-get($utilities, "line-height"),
+                (values: (1: 1))),
+            "flex-direction": map-merge(map-get($utilities, "flex-direction"),
+                (responsive: false, values: column)),
+            "align-items": map-merge(map-get($utilities, "align-items"),
+                (responsive: false, values: (start: flex-start, center: center, stretch: stretch))),
+            "align-content": map-merge(map-get($utilities, "align-content"),
+                (responsive: false, values: center)),
+            "margin-x": map-merge(map-get($utilities, "margin-x"),
+                (responsive: false)),
+            "margin-y": map-merge(map-get($utilities, "margin-y"),
+                (responsive: false)),
+            "margin-top": map-merge(map-get($utilities, "margin-top"),
+                (responsive: false)),
+            "margin-bottom": map-merge(map-get($utilities, "margin-bottom"),
+                (responsive: false)),
+            "margin-end": map-merge(map-get($utilities, "margin-end"),
+                (responsive: false)),
+            "margin-start": map-merge(map-get($utilities, "margin-start"),
+                (responsive: false)),
+            "padding": map-merge(map-get($utilities, "padding"),
+                (responsive: false)),
+            "padding-x": map-merge(map-get($utilities, "padding-x"),
+                (responsive: false)),
+            "padding-y": map-merge(map-get($utilities, "padding-y"),
+                (responsive: false)),
+            "padding-top": map-merge(map-get($utilities, "padding-top"),
+                (responsive: false, values: null)),
+            "padding-bottom": map-merge(map-get($utilities, "padding-bottom"),
+                (responsive: false)),
+            "padding-start": map-merge(map-get($utilities, "padding-start"),
+                (responsive: false)),
+            "padding-end": map-merge(map-get($utilities, "padding-end"),
+                (responsive: false)),
+            "gap": map-merge(map-get($utilities, "gap"),
+                (responsive: false, values:map-remove($spacers, 1, 4, 5)))));
+
+$utilities : map-merge($utilities,
+    ("cursor":(property:"cursor", values:default),
+        "gap-x":(property:"column-gap", class:"gapx", values:map-remove($spacers, 0, 1, 3, 4, 5)),
+        "gap-y":(property:"row-gap", class:"gapy", values:map-remove($spacers, 0, 2, 3, 4, 5))));
+
+.min-h-0 {
+    min-height: 0;
+}
+
+%sticky {
+    position: sticky;
+    z-index: $zindex-sticky;
+}
+
+.sticky-top {
+    @extend %sticky;
+    top: 0;
+}
+
+.sticky-bottom {
+    @extend %sticky;
+    bottom: 0;
+}
+
+@include media-breakpoint-up(md) {
+    .w-md-50 {
+        width: 50% !important;
+    }
+}

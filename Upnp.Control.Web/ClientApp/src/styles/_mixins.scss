@@ -48,8 +48,7 @@ $missing-image-content: "\1F61F" !default;
 @mixin overlay {
     position: absolute;
     z-index: $zindex-modal;
-    width: 100%;
-    height: 100%;
+    inset: 0;
 }
 
 %no-decoration {

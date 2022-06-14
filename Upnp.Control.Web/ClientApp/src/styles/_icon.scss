@@ -1,0 +1,26 @@
+.icon {
+    display: inline-block;
+    font-size: inherit;
+    height: 1em;
+    vertical-align: -0.125em;
+    fill: currentColor;
+}
+
+@for $scale from 2 through 5 {
+    .icon-#{$scale}x {
+        @include font-scale($scale);
+    }
+}
+
+.icon-lg {
+    font-size: 1.33333em;
+    line-height: 0.75em;
+    vertical-align: -0.0667em;
+}
+
+.upnp-dev-icon {
+    height: 3rem;
+    aspect-ratio: 1/1;
+    margin-right: map-get($spacers, 2);
+    object-fit: contain;
+}

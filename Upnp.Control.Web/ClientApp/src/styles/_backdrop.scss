@@ -1,0 +1,15 @@
+$backdrops: (null primary secondary danger) !default;
+$backdrop-opacity: 0.6 !default;
+
+%backdrop {
+    @include overlay();
+}
+
+@each $name in $backdrops {
+    .backdrop#{infix($name)} {
+        @extend %backdrop;
+        $color: map-get($theme-colors, $name);
+        background-color: change-color($color: if($color, $color, #000000), $alpha: $backdrop-opacity);
+        color: shade-color(if($color, $color, #000000), 40%);
+    }
+}

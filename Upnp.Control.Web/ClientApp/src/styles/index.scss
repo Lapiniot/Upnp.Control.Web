@@ -4,13 +4,6 @@ $enable-grid-classes: false;
 $enable-container-classes: false;
 $enable-rfs: true;
 
-$breadcrumb-divider: quote("\276f");
-$breadcrumb-item-padding-x: 0.25rem !default;
-$breadcrumb-border-radius: 0 !default;
-
-$backdrops: "" primary secondary danger;
-$backdrop-opacity: 0.6;
-
 $primary: #6f42c1;
 
 // Configuration
@@ -30,7 +23,12 @@ $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
 @import "bootstrap/scss/transitions";
 @import "bootstrap/scss/button-group";
 @import "bootstrap/scss/card";
+
+$breadcrumb-divider: quote("\276f");
+$breadcrumb-item-padding-x: map-get($spacers, 1);
+$breadcrumb-border-radius: 0;
 @import "bootstrap/scss/breadcrumb";
+
 @import "bootstrap/scss/pagination";
 @import "bootstrap/scss/badge";
 @import "bootstrap/scss/alert";
@@ -51,58 +49,7 @@ $zindex-dropdown: $zindex-sticky + 5;
 @import "bootstrap/scss/helpers/visually-hidden";
 
 // Utilities
-$utilities: map-merge($utilities, ("float":null, "align":null, "opacity":null,
-            "top":null, "bottom":null, "start":null, "end":null, "translate-middle":null,
-            "border-opacity":null, "border-end":null, "border-start":null,
-            "order":null, "font-size":null, "font-style":null, "align-self":null,
-            "font-weight":null, "line-height":null, "text-opacity":null, "bg-opacity":null,
-            "rounded-top":null, "rounded-end":null, "rounded-bottom":null,
-            "rounded-start":null, "visibility":null));
-$utilities: map-merge($utilities,
-        ("display": map-merge(map-get($utilities, "display"),
-                (values: inline grid flex inline-flex none)),
-            "shadow": map-merge(map-get($utilities, "shadow"),
-                (values: (sm: $box-shadow-sm ))),
-            "position": map-merge(map-get($utilities, "position"),
-                (values: relative sticky)),
-            "width": map-merge(map-get($utilities, "width"),
-                (values: (100: 100%, auto: auto))),
-            "height": map-merge(map-get($utilities, "height"),
-                (values: (100: 100%, auto: auto))),
-            "flex-direction": map-merge(map-get($utilities, "flex-direction"),
-                (responsive: false, values: column)),
-            "align-items": map-merge(map-get($utilities, "align-items"),
-                (responsive: false, values: (start: flex-start, center: center, stretch: stretch))),
-            "align-content": map-merge(map-get($utilities, "align-content"),
-                (responsive: false, values: center)),
-            "margin-x": map-merge(map-get($utilities, "margin-x"),
-                (responsive: false)),
-            "margin-y": map-merge(map-get($utilities, "margin-y"),
-                (responsive: false)),
-            "margin-top": map-merge(map-get($utilities, "margin-top"),
-                (responsive: false)),
-            "margin-bottom": map-merge(map-get($utilities, "margin-bottom"),
-                (responsive: false)),
-            "margin-end": map-merge(map-get($utilities, "margin-end"),
-                (responsive: false)),
-            "margin-start": map-merge(map-get($utilities, "margin-start"),
-                (responsive: false)),
-            "padding": map-merge(map-get($utilities, "padding"),
-                (responsive: false)),
-            "padding-x": map-merge(map-get($utilities, "padding-x"),
-                (responsive: false)),
-            "padding-y": map-merge(map-get($utilities, "padding-y"),
-                (responsive: false)),
-            "padding-top": map-merge(map-get($utilities, "padding-top"),
-                (responsive: false, values: null)),
-            "padding-bottom": map-merge(map-get($utilities, "padding-bottom"),
-                (responsive: false)),
-            "padding-start": map-merge(map-get($utilities, "padding-start"),
-                (responsive: false)),
-            "padding-end": map-merge(map-get($utilities, "padding-end"),
-                (responsive: false))));
-
-$utilities : map-merge($utilities, ("cursor":(property:"cursor", values:default)));
+@import "utilities";
 @import "bootstrap/scss/utilities/api";
 
 $primary-100: tint-color($primary, 80%) !default;
@@ -129,66 +76,13 @@ $primary-900: shade-color($primary, 80%) !default;
 @import "albumart";
 @import "player";
 @import "browser";
-
-:root {
-    --#{$prefix}accent-color: #{$primary};
-}
-
-.min-h-0 {
-    min-height: 0;
-}
-
-.sticky-bottom {
-    position: sticky;
-    bottom: 0;
-    z-index: $zindex-sticky;
-}
-
-@include media-breakpoint-up(md) {
-    .w-md-50 {
-        width: 50% !important;
-    }
-}
-
-@each $k, $spacer in $spacers {
-    .gapx-#{$k} {
-        column-gap: $spacer;
-    }
-
-    .gapy-#{$k} {
-        row-gap: $spacer;
-    }
-}
+@import "backdrop";
+@import "icon";
 
 /********** Specific site element styles **********/
 
-.icon {
-    display: inline-block;
-    font-size: inherit;
-    height: 1em;
-    vertical-align: -0.125em;
-    fill: currentColor;
-}
-
-@for $scale from 2 through 5 {
-    .icon-#{$scale}x {
-        @include font-scale($scale);
-    }
-}
-
-.icon-lg {
-    font-size: 1.33333em;
-    line-height: 0.75em;
-    vertical-align: -0.0667em;
-}
-
-.upnp-dev-icon {
-    height: 48px !important;
-    width: 48px !important;
-    margin-right: 0.5rem;
-    &:not([src*=".svg"]) {
-        object-fit: contain;
-    }
+:root {
+    --#{$prefix}accent-color: #{$primary};
 }
 
 %grid-form-label {
@@ -223,26 +117,13 @@ $primary-900: shade-color($primary, 80%) !default;
     @extend %grid-form-text;
 }
 
-%backdrop {
-    @include overlay();
-}
-
-@each $name in $backdrops {
-    .backdrop#{infix($name)} {
-        @extend %backdrop;
-        $color: map-get($theme-colors, $name);
-        background-color: change-color($color: if($color, $color, #000000), $alpha: $backdrop-opacity);
-        color: shade-color(if($color, $color, #000000), 40%);
-    }
-}
-
 .stack {
     position: relative;
 
     & > .stack-layer {
         display: flex;
         position: absolute;
-        inset: 0 0 0 0;
+        inset: 0;
 
         &.stack-layer-hover {
             opacity: 0;
@@ -292,14 +173,12 @@ input[type="checkbox"] {
 
 .form-switch {
     input[type="checkbox"].form-check-input {
-        font-size: 1.3em;
+        font-size: 1.25em;
     }
 }
 
-label.cb-wrap {
-    line-height: 100%;
-    text-align: center;
-    vertical-align: middle;
+label {
+    max-height: 100%;
 }
 
 .nt-host {
