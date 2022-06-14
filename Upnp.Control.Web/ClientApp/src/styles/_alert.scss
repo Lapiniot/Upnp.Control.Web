@@ -1,0 +1,24 @@
+%alert {
+    --#{$prefix}alert-bg: transparent;
+    --#{$prefix}alert-color: inherit;
+    --#{$prefix}alert-padding-x: #{$alert-padding-x};
+    --#{$prefix}alert-padding-y: #{$alert-padding-y};
+    position: relative;
+    background-color: var(--#{$prefix}alert-bg);
+    color: var(--#{$prefix}alert-color);
+    text-align: center;
+    padding: var(--#{$prefix}alert-padding-y) var(--#{$prefix}alert-padding-x);
+}
+
+@mixin alert($value: null) {
+    @extend %alert;
+
+    @if($value != null) {
+        --#{$prefix}alert-bg: #{shift-color($value, $alert-bg-scale)};
+        --#{$prefix}alert-color: #{shift-color($value, $alert-color-scale)};
+    }
+}
+
+.alert-warning {
+    @include alert(map-get($theme-colors, warning));
+}

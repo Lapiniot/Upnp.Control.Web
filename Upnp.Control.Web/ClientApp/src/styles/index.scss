@@ -29,7 +29,6 @@ $breadcrumb-item-padding-x: map-get($spacers, 1);
 $breadcrumb-border-radius: 0;
 @import "bootstrap/scss/breadcrumb";
 @import "bootstrap/scss/badge";
-@import "bootstrap/scss/alert";
 @import "bootstrap/scss/toasts";
 @import "bootstrap/scss/list-group";
 @import "bootstrap/scss/close";
@@ -76,6 +75,7 @@ $primary-900: shade-color($primary, 80%) !default;
 @import "browser";
 @import "backdrop";
 @import "icon";
+@import "alert";
 
 /********** Specific site element styles **********/
 
