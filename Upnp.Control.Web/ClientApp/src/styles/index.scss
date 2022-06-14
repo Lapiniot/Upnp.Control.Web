@@ -115,8 +115,6 @@ $primary-700: shade-color($primary, 40%) !default;
 $primary-800: shade-color($primary, 60%) !default;
 $primary-900: shade-color($primary, 80%) !default;
 
-$primary-accent: $primary-700;
-
 @import "mixins";
 @import "text-utils";
 @import "animations";
@@ -131,6 +129,10 @@ $primary-accent: $primary-700;
 @import "albumart";
 @import "player";
 @import "browser";
+
+:root {
+    --#{$prefix}accent-color: #{$primary};
+}
 
 .min-h-0 {
     min-height: 0;
@@ -234,10 +236,6 @@ $primary-accent: $primary-700;
     }
 }
 
-.safari-scroll-fix {
-    transform: translate3d(0, 0, 0);
-}
-
 .stack {
     position: relative;
 
@@ -281,8 +279,11 @@ $primary-accent: $primary-700;
     }
 }
 
+input {
+    accent-color: var(--#{$prefix}accent-color);
+}
+
 input[type="checkbox"] {
-    accent-color: $primary-accent;
     inline-size: 1em;
     block-size: 1em;
     outline-offset: 5px;

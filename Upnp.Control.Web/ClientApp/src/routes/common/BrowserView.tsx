@@ -1,17 +1,17 @@
 ﻿import React, { ChangeEventHandler, ComponentType, FocusEvent, HTMLAttributes, MouseEvent, ReactNode, RefObject } from "react";
 import { DataFetchProps } from "../../components/DataFetch";
+import { HotKey } from "../../components/HotKey";
 import { MediaQueries } from "../../components/MediaQueries";
+import { NavigatorProps } from "../../components/Navigator";
 import AlbumArt from "./AlbumArt";
 import { DIDLTools as utils } from "./DIDLTools";
-import { NavigatorProps } from "../../components/Navigator";
 import RowStateContext from "./RowStateContext";
 import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
-import { HotKey } from "../../components/HotKey";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
 const CAPTION_SELECTOR = ":scope > div.table-caption";
-const HEADER_GROUP_SELECTOR = ":scope > div:not(.table-caption):first-of-type, :scope > div.table-caption:first-of-type + div";
+const HEADER_GROUP_SELECTOR = ":scope > div.table-header";
 
 type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode" | "useLevelUpRow" | "stickyCaption" | "stickyHeaders";
 
@@ -27,9 +27,6 @@ export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
 };
 
 type RenderFunc = () => ReactNode;
-
-
-type KeyModifiers = "altKey" | "shiftKey" | "ctrlKey" | "metaKey";
 
 export type BrowserProps<TContext> = {
     openHandler?: (item: DIDLItem, index: number) => boolean;
@@ -318,16 +315,17 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
         const tableMode = displayMode === "table" || displayMode === "responsive" && MediaQueries.largeScreen.matches;
         const optimizeForTouch = MediaQueries.touchDevice.matches;
+        const headerClass = tableMode ? (stickyHeaders ? "sticky-top" : "") : "d-none";
 
-        return <div ref={nodeRef} className={`vstack pb-3 safari-scroll-fix overflow-auto${className ? ` ${className}` : ""}`} style={style}
+        return <div ref={nodeRef} className={`vstack pb-3 position-relative overflow-auto${className ? ` ${className}` : ""}`} style={style}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
-            <div className={`auto-table at-material user-select-none position-sticky${optimizeForTouch ? " at-touch-friendly" : ""}`}
+            <div className={`table table-material user-select-none${optimizeForTouch ? " table-touch-friendly" : ""}`}
                 ref={this.tableRef} onFocus={this.focusHandler}>
-                {renderCaption && <div className={`table-caption${stickyCaption ? " sticky" : ""}`}>{renderCaption()}</div>}
-                <div className={tableMode ? (stickyHeaders ? "sticky" : "") : "d-none"}>
-                    <div>
+                {renderCaption && <div className={`table-caption bg-body${stickyCaption ? " sticky-top" : ""}`}>{renderCaption()}</div>}
+                <div className={`table-header${headerClass ? ` ${headerClass}` : ""}`}>
+                    <div className="bg-body">
                         {useCheckboxes &&
-                            <label className="cb-wrap">
+                            <label className="lh-1">
                                 <input type="checkbox" onChange={this.onCheckboxAllChanged}
                                     checked={this.context.allSelected && items.length > 0} disabled={!this.context.enabled || items.length === 0} />
                             </label>}
@@ -337,7 +335,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         <div>Kind</div>
                     </div>
                 </div>
-                <div onKeyDown={this.captureHotKey}>
+                <div className="table-body" onKeyDown={this.captureHotKey}>
                     {tableMode && useLevelUpRow && parents && parents.length > 0 &&
                         <div data-index={-1} title="Go to parent folder (you may use Backspace or LeftArrow keyboard key as well) ...">
                             {useCheckboxes && <div>&nbsp;</div>}
@@ -358,7 +356,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                         const selectable = !!(state & RowState.Selectable);
                         const active = !!(state & RowState.Active);
                         return <div key={e.id} tabIndex={0} data-index={index} data-selected={(selected && selectable) ? true : undefined} data-active={active}>
-                            {useCheckboxes && <label className="cb-wrap">
+                            {useCheckboxes && <label className="lh-1">
                                 <input type="checkbox" onChange={this.onCheckboxChanged} checked={selected && selectable} disabled={!selectable} />
                             </label>}
                             <div className="mw-1 w-100"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.context.get(index)} /></div>

@@ -1,235 +1,152 @@
-﻿$auto-table-striped-order: even;
+﻿$table-striped-order: even;
 
-.auto-table {
+.table {
+    --#{$prefix}table-color: #{$table-color};
     --#{$prefix}table-bg: #{$table-bg};
-    --#{$prefix}table-caption-bg: #{$light};
+    --#{$prefix}table-caption-color: #{$table-caption-color};
     --#{$prefix}table-header-bg: #{$light};
-    --#{$prefix}table-accent-bg: transparent;
     --#{$prefix}table-striped-color: #{$table-striped-color};
     --#{$prefix}table-striped-bg: #{$table-striped-bg};
     --#{$prefix}table-active-color: #{$table-active-color};
     --#{$prefix}table-active-bg: #{$table-active-bg};
     --#{$prefix}table-hover-color: #{$table-hover-color};
     --#{$prefix}table-hover-bg: #{$table-hover-bg};
-    --#{$prefix}table-selected-bg: #{$link-color};
-    --#{$prefix}table-focused-accent: #{$primary-accent};
+    --#{$prefix}table-selected-bg: #{$primary};
+    --#{$prefix}table-focused-accent: #{$primary-700};
     --#{$prefix}table-selected-color: white;
-    --#{$prefix}table-padding-x: #{$table-cell-padding-x};
-    --#{$prefix}table-padding-x-start: #{2 * $table-cell-padding-x};
-    --#{$prefix}table-padding-x-end: #{2 * $table-cell-padding-x};
-    --#{$prefix}table-padding-y: #{$table-cell-padding-y};
+    --#{$prefix}table-cell-padding-x: #{$table-cell-padding-x};
+    --#{$prefix}table-cell-padding-y: #{$table-cell-padding-y};
+    --#{$prefix}table-padding-x: #{2 * $table-cell-padding-x};
+    --#{$prefix}table-border-width: #{$table-border-width};
+    --#{$prefix}table-border-color: #{$table-border-color};
 
     display: table;
     width: 100%;
     max-width: 100%;
     margin-bottom: $spacer;
-    background-color: $table-bg;
-    color: $table-color;
-    vertical-align: $table-cell-vertical-align;
-    border-color: $table-border-color;
-    contain: strict;
+    background-color: var(--#{$prefix}table-bg);
+    color: var(--#{$prefix}table-color);
 
-    @mixin at-header {
-        & > :not(.table-caption):first-of-type,
-        & > .table-caption:first-of-type + * {
-            @content;
-        }
-    }
-
-    @mixin at-body {
-        & > .table-caption:first-of-type ~ :nth-of-type(3),
-        & > :not(.table-caption):first-of-type ~ :nth-of-type(2) {
-            @content;
-        }
-    }
-
-    @mixin at-body-row($selector: null) {
-        @include at-body() {
-            #{if($selector, selector-nest("& >", $selector), "& > *")} {
-                @content;
-            }
-        }
-    }
-
-    @mixin at-footer {
-        & > .table-footer:last-of-type {
-            @content;
-        }
-    }
-
-    & > * {
+    > * {
         display: table-row-group;
     }
 
-    /* Table caption */
-    & > .table-caption:first-of-type {
-        display: table-caption;
-        color: $table-caption-color;
-        background-color: var(--#{$prefix}table-caption-bg);
-        padding: $table-cell-padding-y $table-cell-padding-x;
-        caption-side: top;
-        border: none;
-        &.sticky {
-            position: sticky;
-            top: 0;
-            z-index: $zindex-sticky;
-        }
-    }
-
-    /* Table header */
-    @include at-header() {
-        display: table-header-group;
-
-        & > * > * {
-            color: $table-color;
-            background-color: var(--#{$prefix}table-header-bg);
-            border-top: $table-border-width solid $table-border-color;
-            border-bottom: $table-border-width solid $table-border-color;
-            border-left: $table-border-width solid $table-border-color;
-            font-weight: $headings-font-weight;
-            &:first-child {
-                border-left: none;
-            }
-        }
-
-        &.sticky {
-            position: sticky;
-            top: 0;
-            z-index: $zindex-sticky;
-        }
-    }
-
     /* Table row */
-    & > :not(.table-caption) {
-        & > * {
+    > :not(.table-caption) {
+        > * {
             display: table-row;
-            background-color: var(--#{$prefix}table-bg);
-            background-image: linear-gradient(var(--#{$prefix}table-accent-bg), var(--#{$prefix}table-accent-bg));
 
-            & > * {
+            > * {
                 display: table-cell;
                 vertical-align: middle;
                 white-space: nowrap;
-                padding: var(--#{$prefix}table-padding-y) var(--#{$prefix}table-padding-x);
-                border-top: $table-border-width solid $table-border-color;
+                padding: var(--#{$prefix}table-cell-padding-y) var(--#{$prefix}table-cell-padding-x);
+                border-top: var(--#{$prefix}table-border-width) solid var(--#{$prefix}table-border-color);
 
                 &.mw-1 {
                     max-width: 1px;
                 }
 
-                &:first-child {
-                    padding-left: var(--#{$prefix}table-padding-x-start);
-                }
-
-                &:last-child {
-                    padding-right: var(--#{$prefix}table-padding-x-end);
+                &:is(:first-child, :last-child) {
+                    padding-left: var(--#{$prefix}table-padding-x);
                 }
             }
 
             &:first-child > * {
-                border-top: none;
+                border-top: 0;
+            }
+
+            &:is([data-active="true"], .active) {
+                background-color: var(--#{$prefix}table-active-bg);
+                color: var(--#{$prefix}table-active-color);
+            }
+
+            &:is([data-selected="true"], .selected, [data-focused="true"], :focus) {
+                --#{$prefix}accent-color: var(--#{$prefix}table-focused-accent);
+                background-color: var(--#{$prefix}table-selected-bg);
+                color: var(--#{$prefix}table-selected-color);
             }
         }
+    }
 
-        & > [data-active="true"],
-        & > .active {
-            --#{$prefix}table-accent-bg: var(--#{$prefix}table-active-bg) !important;
-            color: var(--#{$prefix}table-active-color);
-        }
+    /* Table caption */
+    > .table-caption {
+        display: table-caption;
+        color: var(--#{$prefix}table-caption-color);
+        padding: var(--#{$prefix}table-cell-padding-y) var(--#{$prefix}table-cell-padding-x);
+    }
 
-        & > [data-selected="true"],
-        & > .selected {
-            @extend %row-accent;
+    /* Table header */
+    > .table-header {
+        display: table-header-group;
+        background-color: var(--#{$prefix}table-header-bg);
+        font-weight: $headings-font-weight;
+        > * > * {
+            border-bottom: var(--#{$prefix}table-border-width) solid var(--#{$prefix}table-border-color);
         }
     }
 
-    %row-accent {
-        --#{$prefix}table-accent-bg: var(--#{$prefix}table-selected-bg) !important;
-        color: var(--#{$prefix}table-selected-color) !important;
-        outline: none;
-    }
-
-    @include at-footer() {
+    > .table-footer {
         display: table-footer-group;
     }
+}
 
-    &.at-compact {
-        --#{$prefix}table-padding-x: #{$table-cell-padding-x-sm};
-        --#{$prefix}table-padding-x-start: #{2 * $table-cell-padding-x-sm};
-        --#{$prefix}table-padding-x-end: #{2 * $table-cell-padding-x-sm};
-        --#{$prefix}table-padding-y: #{$table-cell-padding-y-sm};
-    }
+.table-compact {
+    --#{$prefix}table-cell-padding-x: #{$table-cell-padding-x-sm};
+    --#{$prefix}table-cell-padding-y: #{$table-cell-padding-y-sm};
+    --#{$prefix}table-padding-x: #{2 * $table-cell-padding-x-sm};
+}
 
-    &.at-striped {
-        @include at-body-row(":nth-of-type(#{$auto-table-striped-order})") {
-            --#{$prefix}table-accent-bg: var(--#{$prefix}table-striped-bg);
+.table-striped {
+    > .table-body {
+        > :nth-of-type(#{$table-striped-order}) {
+            background-color: var(--#{$prefix}table-striped-bg);
             color: var(--#{$prefix}table-striped-color);
         }
     }
+}
 
-    &.at-focus-marker {
-        --#{$prefix}table-focused-marker-size: #{map-get($spacers, 1)};
+.table-focus-marker {
+    --#{$prefix}table-focused-marker-size: #{map-get($spacers, 1)};
 
-        & > :not(.table-caption) > * > :first-child {
-            padding-inline-start: unquote(
-                "calc(var(--#{$prefix}table-padding-x-start) + var(--#{$prefix}table-focused-marker-size))"
-            );
-        }
+    > :not(.table-caption) > * > :first-child {
+        padding-inline-start: unquote("calc(var(--#{$prefix}table-padding-x) + var(--#{$prefix}table-focused-marker-size))");
+    }
 
-        @include at-body-row('[data-focused="true"],:focus') {
-            @extend %row-accent;
-            & > :first-child {
-                box-shadow: inset var(--#{$prefix}table-focused-marker-size) 0 0 var(--#{$prefix}table-focused-accent);
+    > .table-body {
+        > :is([data-focused="true"], :focus) {
+            outline: 0;
+            > :first-child {
+                box-shadow: inset var(--#{$prefix}table-focused-marker-size) 0 0 var(--#{$prefix}accent-color);
             }
         }
     }
+}
 
-    &.at-hover {
-        @include at-body-row(":hover") {
-            --#{$prefix}table-accent-bg: var(--#{$prefix}table-hover-bg);
+.table-hover {
+    > .table-body {
+        > :where(:hover) {
+            background-image: linear-gradient(var(--#{$prefix}table-hover-bg), var(--#{$prefix}table-hover-bg));
             color: var(--#{$prefix}table-hover-color);
         }
     }
+}
 
-    &.at-hover-link {
-        @include at-body-row(":hover") {
-            --#{$prefix}table-accent-bg: var(--#{$prefix}table-hover-bg);
-            color: $link-hover-color;
-            text-decoration: none;
-            cursor: default;
-        }
+.table-material {
+    > .table-header {
+        --#{$prefix}table-header-bg: var(--#{$prefix}table-bg);
     }
 
-    &.at-material {
-        & > .table-caption:first-of-type {
-            &.sticky {
-                --#{$prefix}table-caption-bg: var(--bs-white);
-            }
-        }
-
-        @include at-header() {
-            --#{$prefix}table-header-bg: var(--#{$prefix}table-bg);
-            &.sticky {
-                --#{$prefix}table-header-bg: var(--bs-white);
-            }
-            & > * > * {
-                border-left: none;
-            }
-        }
-
-        & > * > * > * {
-            padding-inline: $table-cell-padding-x;
-        }
-
-        @extend .at-compact;
-        @extend .at-hover-link;
-        @extend .at-focus-marker;
+    > * > * > * {
+        padding-inline: var(--#{$prefix}table-cell-padding-x);
     }
 
-    &.at-touch-friendly {
-        touch-action: manipulation;
-        @include at-body-row() {
-            height: 3.6rem;
-        }
-    }
+    @extend .table-compact;
+    @extend .table-hover;
+    @extend .table-focus-marker;
+}
+
+.table-touch-friendly {
+    --#{$prefix}table-cell-padding-y: #{1.2 * $table-cell-padding-y};
+    touch-action: manipulation;
 }
