@@ -3,7 +3,7 @@ import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import Toolbar from "../../components/Toolbar";
 import { BottomBar } from "./BottomBar";
 import BrowserView, { BrowserViewProps } from "./BrowserView";
-import { TablePagination } from "./Pagination";
+import Pagination from "./Pagination";
 import { useRowStates } from "./RowStateContext";
 import $s from "./Settings";
 
@@ -45,7 +45,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
                     <svg className="icon icon-5x"><use href="sprites.svg#folder-closed" /></svg>
                 </div>}
             {withPagination && <BottomBar className="br-area-bottom">
-                <TablePagination total={total} current={typeof page === "string" ? parseInt(page) : 1}
+                <Pagination total={total} current={typeof page === "string" ? parseInt(page) : 1}
                     pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
             </BottomBar>}
         </div>

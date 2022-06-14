@@ -12,7 +12,7 @@ import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { DIDLTools } from "./DIDLTools";
 import { CellTemplate, CellTemplateProps } from "./BrowserView";
 import ItemInfoModal from "./ItemInfoModal";
-import { TablePagination } from "./Pagination";
+import Pagination from "./Pagination";
 import { RowStateProvider } from "./RowStateContext";
 import $s from "./Settings";
 import { DIDLItem, UpnpDevice } from "./Types";
@@ -208,7 +208,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             </RowStateProvider>
             <div className="sticky-bottom">
                 <BottomBar>
-                    <TablePagination total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
+                    <Pagination total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
                         pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
                 </BottomBar>
                 {MediaQueries.largeScreen.matches && parents.length > 1 && <Breadcrumb className="border-top" items={parents} />}

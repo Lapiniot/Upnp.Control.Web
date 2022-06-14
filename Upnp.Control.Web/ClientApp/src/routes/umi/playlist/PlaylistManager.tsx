@@ -17,7 +17,7 @@ import { useContentBrowser } from "../../common/BrowserUtils";
 import Browser, { BrowserProps } from "../../common/BrowserView";
 import { DIDLTools } from "../../common/DIDLTools";
 import ItemInfoModal from "../../common/ItemInfoModal";
-import { TablePagination } from "../../common/Pagination";
+import Pagination from "../../common/Pagination";
 import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext from "../../common/RowStateContext";
 import $s from "../../common/Settings";
@@ -366,7 +366,7 @@ export class PlaylistManagerCore
                                         </div>}
                                     <BottomBar>
                                         {selected > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${selected} of ${fetched} selected`}</span> : null}
-                                        <TablePagination total={total} current={page} pageSize={pageSize} />
+                                        <Pagination total={total} current={page} pageSize={pageSize} />
                                     </BottomBar>
                                 </>}
                             </RowStateContext.Consumer>
