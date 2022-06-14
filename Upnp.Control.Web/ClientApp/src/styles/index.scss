@@ -21,7 +21,6 @@ $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
 @import "bootstrap/scss/forms";
 @import "bootstrap/scss/buttons";
 @import "bootstrap/scss/transitions";
-@import "bootstrap/scss/button-group";
 @import "bootstrap/scss/card";
 
 $breadcrumb-divider: quote("\276f");
