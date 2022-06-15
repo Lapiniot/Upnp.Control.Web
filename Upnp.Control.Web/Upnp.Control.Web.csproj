@@ -25,11 +25,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0-preview.4.22229.4" />
-    <PackageReference Include="System.Threading.Channels" Version="7.0.0-preview.4.22229.4" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.0-preview.4.22251.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0-preview.4.22229.4" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0-preview.4.22229.4" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0-preview.5.22301.12" />
+    <PackageReference Include="System.Threading.Channels" Version="7.0.0-preview.5.22301.12" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.0-preview.5.22303.8" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0-preview.5.22301.12" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0-preview.5.22301.12" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
   </ItemGroup>
 
@@ -44,16 +44,6 @@
     <ProjectReference Include="../Upnp.Control.Infrastructure.AspNetCore.Api/Upnp.Control.Infrastructure.AspNetCore.Api.csproj" />
     <ProjectReference Include="../Upnp.Control.Services.Commands/Upnp.Control.Services.Commands.csproj" />
     <ProjectReference Include="../Upnp.Control.Services.Queries/Upnp.Control.Services.Queries.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="System.Text" />
-    <Using Include="Microsoft.AspNetCore.Mvc" />
-    <Using Include="Microsoft.AspNetCore.Http" />
-    <Using Include="Upnp.Control.Models" />
-    <Using Include="Upnp.Control.Services" />
-    <Using Include="Upnp.Control.Infrastructure.AspNetCore" />
-    <Using Include="Upnp.Control.Infrastructure.AspNetCore.Routing" />
   </ItemGroup>
 
   <ItemGroup>
