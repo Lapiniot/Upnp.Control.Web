@@ -43,7 +43,7 @@ export class SignalRConnection extends React.Component<
     render() {
         return <>
             {this.state.error && <div className="alert-warning" role="alert">
-                <strong>Connection problems!</strong> {this.state.error}
+                <svg className="icon me-2"><use href="sprites.svg#warning" /></svg>Connection problems! {this.state.error}
             </div>}
             <SignalRContext.Provider value={this.hub}>{this.props.children}</SignalRContext.Provider>
         </>

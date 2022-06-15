@@ -1,7 +1,11 @@
 .icon {
-    display: inline-block;
     font-size: inherit;
-    height: 1em;
+    width: 1em;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+
+svg.icon {
     vertical-align: -0.125em;
     fill: currentColor;
 }
@@ -19,8 +23,7 @@
 }
 
 .upnp-dev-icon {
-    height: 3rem;
-    aspect-ratio: 1/1;
-    margin-right: map-get($spacers, 2);
+    width: 3rem;
+    aspect-ratio: 1;
     object-fit: contain;
 }
