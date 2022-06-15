@@ -1,5 +1,7 @@
 namespace Upnp.Control.Models;
 
+#pragma warning disable IDE0055
+
 #region NotifyPropChanged commands
 
 public abstract record NotifyPropChangedCommand(string DeviceId, Stream Content);

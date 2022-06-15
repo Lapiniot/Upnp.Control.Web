@@ -10,8 +10,10 @@ public static class DeviceServices
     /// <param name="withOffline">Whether to include offline devices.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Device information enumerator.</returns>
-    public static IAsyncEnumerable<UpnpDevice> GetAllAsync(IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
-        string category = "upnp", bool withOffline = false, CancellationToken cancellationToken = default) =>
+    public static IAsyncEnumerable<UpnpDevice> GetAllAsync(
+        IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
+        string category = "upnp", bool withOffline = false,
+        CancellationToken cancellationToken = default) =>
         handler.ExecuteAsync(new(category, withOffline), cancellationToken);
 
     /// <summary>
@@ -21,7 +23,8 @@ public static class DeviceServices
     /// <param name="id">Device ID.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns><see cref="Task{IResult}" /> containing device information or error response.</returns>
-    public static async Task<Results<Ok<UpnpDevice>, NotFound, BadRequest>> GetAsync(IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
+    public static async Task<Results<Ok<UpnpDevice>, NotFound, BadRequest>> GetAsync(
+        IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
         string id, CancellationToken cancellationToken)
     {
         try

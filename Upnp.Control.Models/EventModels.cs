@@ -1,5 +1,7 @@
 namespace Upnp.Control.Models;
 
+#pragma warning disable IDE0055
+
 #region SSDP Discovery events
 
 public abstract record UpnpDiscoveryEvent(string DeviceId);

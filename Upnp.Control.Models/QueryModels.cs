@@ -1,5 +1,7 @@
 namespace Upnp.Control.Models;
 
+#pragma warning disable IDE0055
+
 #region Device DB managemet queries
 
 public record struct GetDevicesQuery(string Category, bool WithOffline);

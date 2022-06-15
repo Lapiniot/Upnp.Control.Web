@@ -53,7 +53,8 @@ public static class PushNotificationSubscriptionServices
     }
 
     public static async Task<Results<FileContentHttpResult, BadRequest>> GetServerKeyAsync(
-        IAsyncQueryHandler<PSGetServerKeyQuery, byte[]> handler, CancellationToken cancellationToken)
+        IAsyncQueryHandler<PSGetServerKeyQuery, byte[]> handler,
+        CancellationToken cancellationToken)
     {
         try
         {
