@@ -35,7 +35,14 @@
         "html"
     ],
     "omnisharp.enableRoslynAnalyzers": true,
-    "build.framework": "net6.0",
-    "build.configuration": "Debug",
-    "publish.configuration": "Release"
+    "css.customData": [
+        "Upnp.Control.Web/ClientApp/css-data.json"
+    ],
+    "build": {
+        "framework": "net7.0",
+        "configuration": "Debug"
+    },
+    "publish": {
+        "configuration": "Release"
+    }
 }

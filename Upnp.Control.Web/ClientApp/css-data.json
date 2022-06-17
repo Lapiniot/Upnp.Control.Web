@@ -1,0 +1,23 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vscode-css-languageservice/main/docs/customData.schema.json",
+    "version": 1.1,
+    "atDirectives": [
+        {
+            "name": "@layer",
+            "status": "standard",
+            "browsers": [
+                "C99",
+                "E99",
+                "FF97",
+                "S15.4"
+            ],
+            "references": [
+                {
+                    "name": "MDN Reference",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@layer"
+                }
+            ],
+            "description": "The @layer CSS at-rule is used to declare a cascade layer and can also be used to define the order of precedence in case of multiple cascade layers."
+        }
+    ]
+}
