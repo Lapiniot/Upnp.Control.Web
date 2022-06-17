@@ -1,5 +1,7 @@
+$icon-sizes: (2, 3, 4, 5, lg 1.33333) !default;
+
 .icon {
-    font-size: inherit;
+    display: inline-block;
     width: 1em;
     aspect-ratio: 1;
     object-fit: contain;
@@ -10,20 +12,8 @@ svg.icon {
     fill: currentColor;
 }
 
-@for $scale from 2 through 5 {
-    .icon-#{$scale}x {
-        @include font-scale($scale);
+@each $name, $scale in $icon-sizes {
+    .icon-#{$name}#{if($scale == null, x, null)} {
+        @include font-scale(if($scale, $scale, $name));
     }
-}
-
-.icon-lg {
-    font-size: 1.33333em;
-    line-height: 0.75em;
-    vertical-align: -0.0667em;
-}
-
-.upnp-dev-icon {
-    width: 3rem;
-    aspect-ratio: 1;
-    object-fit: contain;
 }
