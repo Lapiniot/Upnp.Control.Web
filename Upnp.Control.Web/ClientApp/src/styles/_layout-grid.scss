@@ -43,10 +43,6 @@
     grid-template-columns: 1fr auto;
 }
 
-.grid-1fr-auto-shrunk {
-    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
-}
-
 .col-span-2 {
     grid-column: 1 / span 2;
 }

@@ -12,8 +12,8 @@ type ItemBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 export default function ({ device, id, title, icon, itemClass, deviceName }: ItemBookmarkWidgetProps) {
-    return <RouteLink to={`/upnp/${device}/browse/${id}`} className="hstack text-decoration-none p-2">
-        <AlbumArt albumArts={icon ? [icon] : undefined} itemClass={itemClass} className="me-2" />
+    return <RouteLink to={`/upnp/${device}/browse/${id}`} className="hstack text-decoration-none p-2 overflow-hidden">
+        <AlbumArt albumArts={icon ? [icon] : undefined} itemClass={itemClass} className="me-2 flex-shrink-0" />
         <div className="overflow-hidden" title={`${title} on ${deviceName}`}>
             <h6 className="mb-0 text-truncate">{title}</h6>
             <p className="mb-0 text-truncate small">[{deviceName}]</p>

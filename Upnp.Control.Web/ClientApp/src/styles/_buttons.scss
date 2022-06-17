@@ -1,7 +1,7 @@
 :is(button, a) > :is(svg, img):first-child {
-    height: 1em;
     width: 1em;
-    overflow: visible;
+    aspect-ratio: 1;
+    object-fit: contain;
     vertical-align: -0.125em;
     margin-right: map-get($spacers, 1);
     fill: currentColor;

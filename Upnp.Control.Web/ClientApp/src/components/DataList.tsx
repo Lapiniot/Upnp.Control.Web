@@ -29,14 +29,15 @@ export function DataList({ children, className, editable, template, tag, onDelet
 
     const Container = template as ElementType ?? "div";
 
-    return <div {...other} className={`d-grid grid-auto-m15 align-items-start p-3${className ? ` ${className}` : ""}`} ref={ref}>
-        {React.Children.map(children, (child, index) => <Container className="d-grid grid-1fr-auto-shrunk gap-0 border rounded-2 shadow-sm overflow-hidden">
-            {child}
-            {editMode && <button type="button" className="btn btn-round btn-plain ms-auto mx-2" onClick={deleteHandler}
-                data-index={index} data-key={(child && typeof child === "object" && "key" in child) ? child.key : undefined}>
-                <svg><use href="sprites.svg#trash" /></svg>
-            </button>}
-        </Container>)}
+    return <div {...other} className={`d-grid grid-auto-m15 p-3${className ? ` ${className}` : ""}`} ref={ref}>
+        {React.Children.map(children, (child, index) =>
+            <Container className="d-flex align-items-center gap-0 border rounded-1 shadow-sm overflow-hidden">
+                {child}
+                {editMode && <button type="button" className="btn btn-round btn-plain ms-auto mx-2" onClick={deleteHandler}
+                    data-index={index} data-key={(child && typeof child === "object" && "key" in child) ? child.key : undefined}>
+                    <svg><use href="sprites.svg#trash" /></svg>
+                </button>}
+            </Container>)}
     </div>;
 }
 
