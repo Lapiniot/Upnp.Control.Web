@@ -25,7 +25,7 @@
         "**/react-app-env.d.ts": true,
         "**/.eslintcache": true
     },
-    "typescript.tsdk": "Upnp.Control.Web\\ClientApp\\node_modules\\typescript\\lib",
+    "typescript.tsdk": "Upnp.Control.Web/Upnp.Control.Web/ClientApp/node_modules/typescript/lib",
     "auto-rename-tag.activationOnLanguage": [
         "xml",
         "html"
