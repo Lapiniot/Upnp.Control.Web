@@ -139,12 +139,12 @@ self.addEventListener("push", event => {
 
         const options: NotificationOptions = type === "appeared" ? {
             body: `'${device.description}' has appeared on the network`,
-            icon: icon ? viaProxy(icon.url) : UDT.getFallbackIcon(device.type),
+            icon: icon ? viaProxy(icon.url) : `icons.svg#${UDT.getSpecialRole(device.type)}`,
             data: { url: `/${category}/${device.udn}` },
             tag: "discovery"
         } : {
             body: `'${device.description}' has disappeared from the network`,
-            icon: `/${UDT.getFallbackIcon(device.type)}`,
+            icon: `icons.svg#${UDT.getSpecialRole(device.type)}`,
             data: { url: `/${category}` },
             tag: "discovery"
         };
@@ -196,4 +196,3 @@ self.addEventListener("notificationclick", event => {
 })
 
 export { }
-

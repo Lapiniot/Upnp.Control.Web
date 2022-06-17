@@ -1,5 +1,7 @@
 import { Icon, Services, UpnpDevice, UpnpDeviceCategory } from "./Types";
 
+type UpnpSpecialRole = "upnp-renderer" | "upnp-server" | "upnp-generic";
+
 export class UpnpDeviceTools {
     static getCategory(device: UpnpDevice): UpnpDeviceCategory {
         return device.services.some(s => s.type.startsWith(Services.UmiPlaylist))
@@ -17,10 +19,12 @@ export class UpnpDeviceTools {
         return device.services.some(s => s.type.startsWith(Services.ContentDirectory) || s.type.startsWith(Services.UmiPlaylist));
     }
 
-    static getFallbackIcon(service: string): string {
+    static getSpecialRole(service: string): UpnpSpecialRole {
         return service?.startsWith(Services.MediaRenderer)
-            ? "icons.svg#upnp-renderer"
-            : "icons.svg#upnp-server";
+            ? "upnp-renderer"
+            : service?.startsWith(Services.ContentDirectory)
+                ? "upnp-server"
+                : "upnp-generic";
     }
 
     static getOptimalIcon(icons: Icon[], preferredSize: number = 48): Icon | null {
