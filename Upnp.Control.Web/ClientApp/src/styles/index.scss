@@ -32,8 +32,6 @@ $breadcrumb-border-radius: 0;
 @import "bootstrap/scss/list-group";
 @import "bootstrap/scss/close";
 @import "bootstrap/scss/modal";
-
-$accordion-button-active-bg: $light;
 @import "bootstrap/scss/accordion";
 
 $zindex-dropdown: $zindex-sticky + 5;
@@ -155,6 +153,10 @@ $primary-900: shade-color($primary, 80%) !default;
             }
         }
     }
+}
+
+::-webkit-file-upload-button {
+    display: none;
 }
 
 input {
