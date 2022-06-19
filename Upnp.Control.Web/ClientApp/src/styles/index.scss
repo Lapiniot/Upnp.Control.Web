@@ -10,10 +10,25 @@ $primary: #6f42c1;
 // Configuration
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
-$grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
+
+$grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
+$card-border-radius: $border-radius-sm;
+$spoiler-border-radius: $border-radius-sm;
+$btn-border-radius: $border-radius-sm;
+$badge-border-radius: $border-radius-sm;
+$toast-border-radius: $border-radius-sm;
+$modal-content-border-radius: $border-radius-sm;
+$accordion-border-radius: $border-radius-sm;
+$dropdown-border-radius: $border-radius-sm;
+
+$breadcrumb-border-radius: 0;
+$breadcrumb-divider: quote("\276f");
+$breadcrumb-item-padding-x: map-get($spacers, 1);
+
+$card-box-shadow: $box-shadow-sm;
 
 // Layout & components
 @import "bootstrap/scss/root";
@@ -23,10 +38,6 @@ $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
 @import "bootstrap/scss/buttons";
 @import "bootstrap/scss/transitions";
 @import "bootstrap/scss/card";
-
-$breadcrumb-divider: quote("\276f");
-$breadcrumb-item-padding-x: map-get($spacers, 1);
-$breadcrumb-border-radius: 0;
 @import "bootstrap/scss/breadcrumb";
 @import "bootstrap/scss/badge";
 @import "bootstrap/scss/toasts";
@@ -179,4 +190,10 @@ input[type="checkbox"] {
     max-height: 30vh;
     overflow-y: auto;
     justify-items: end;
+}
+
+.card {
+    --#{$prefix}card-border-radius: var(--#{$prefix}border-radius-override);
+    --#{$prefix}card-border-width: var(--#{$prefix}border-width-override);
+    --#{$prefix}card-box-shadow: var(--#{$prefix}box-shadow-override);
 }

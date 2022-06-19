@@ -1,13 +1,19 @@
 ﻿/*********** Spoiler component general styles **********/
+$spoiler-border-radius: $border-radius  !default;
+$spoiler-border-width: $border-width  !default;
+$spoiler-border-color: $border-color  !default;
 
 .spoiler {
-    @include border-radius($border-radius);
-    border: $border-width solid $border-color;
+    --#{$prefix}spoiler-border-radius: #{$spoiler-border-radius};
+    --#{$prefix}spoiler-border-width: #{$spoiler-border-width};
+    --#{$prefix}spoiler-border-color: #{$spoiler-border-color};
+    @include border-radius(var(--#{$prefix}spoiler-border-radius));
+    border: var(--#{$prefix}spoiler-border-width) solid var(--#{$prefix}spoiler-border-color);
     overflow: hidden;
 
     & > [data-bs-toggle="collapse"] {
         text-align: left;
-        box-shadow: none !important;
+        @extend %no-decoration;
 
         &:before {
             display: inline-block;
