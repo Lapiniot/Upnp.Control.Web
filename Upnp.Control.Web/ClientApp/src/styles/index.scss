@@ -1,5 +1,6 @@
 ﻿$enable-gradients: true;
 $enable-shadows: true;
+$enable-rounded: true;
 $enable-grid-classes: false;
 $enable-container-classes: false;
 $enable-rfs: true;
@@ -42,10 +43,6 @@ $zindex-dropdown: $zindex-sticky + 5;
 @import "bootstrap/scss/helpers/text-truncation";
 @import "bootstrap/scss/helpers/visually-hidden";
 
-// Utilities
-@import "utilities";
-@import "bootstrap/scss/utilities/api";
-
 $primary-100: tint-color($primary, 80%) !default;
 $primary-200: tint-color($primary, 60%) !default;
 $primary-300: tint-color($primary, 40%) !default;
@@ -74,13 +71,17 @@ $primary-900: shade-color($primary, 80%) !default;
 @import "icons";
 @import "alert";
 
+// Utilities
+@import "utilities";
+@import "bootstrap/scss/utilities/api";
+
 /********** Specific site element styles **********/
 
 :root {
     --#{$prefix}accent-color: #{$primary};
 }
 
-%grid-form-label {
+.grid-form-label {
     justify-self: end;
     color: $text-muted;
 
@@ -89,27 +90,19 @@ $primary-900: shade-color($primary, 80%) !default;
     }
 }
 
-%grid-form-text {
+.grid-form-text {
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .grid-form {
-    & > :nth-child(odd) {
-        @extend %grid-form-label;
+    > :nth-child(odd) {
+        @extend .grid-form-label;
     }
 
-    & > :nth-child(even) {
-        @extend %grid-form-text;
+    > :nth-child(even) {
+        @extend .grid-form-text;
     }
-}
-
-.grid-form-label {
-    @extend %grid-form-label;
-}
-
-.grid-form-text {
-    @extend %grid-form-text;
 }
 
 .stack {

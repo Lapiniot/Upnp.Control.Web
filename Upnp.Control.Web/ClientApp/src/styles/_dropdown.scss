@@ -1,5 +1,10 @@
 .dropdown-item {
     @extend .text-truncate;
+
+    > :where(svg, img):first-child {
+        margin-right: map-get($spacers, 3);
+    }
+
     &:focus,
     &:active {
         outline: none !important;

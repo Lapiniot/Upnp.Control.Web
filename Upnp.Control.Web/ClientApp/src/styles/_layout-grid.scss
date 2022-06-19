@@ -1,7 +1,22 @@
 ﻿/********** Grid Layout utilities **********/
 
+$utilities: map-merge($utilities, ("col-span": (class: "col", property: "grid-column", values: (2: span 2))));
+
 @mixin grid-auto-columns($min: 10rem, $max: 30rem, $mode: auto-fit) {
     grid: auto / repeat($mode, minmax(unquote("min(#{$min}, 100%)"), $max));
+}
+
+@mixin grid-scroll-snap($type: y proximity, $align: start, $stop: normal, $padding: null) {
+    scroll-snap-type: $type;
+
+    @if($padding) {
+        scroll-padding: $padding;
+    }
+
+    > * {
+        scroll-snap-align: $align;
+        scroll-snap-stop: $stop;
+    }
 }
 
 @mixin grid-responsive-auto($size: 34rem) {
@@ -11,23 +26,16 @@
     align-items: start;
     padding: map-get($spacers, 3);
     overflow-y: auto;
-    scroll-padding-block: map-get($spacers, 3);
-    scroll-snap-type: y proximity;
-    scroll-snap-stop: always;
     height: 100%;
+    @include grid-scroll-snap($padding: map-get($spacers, 3) auto);
 
-    & > .card {
+    > .card {
         @include box-shadow($box-shadow-sm);
         @include border-radius($card-border-radius);
-        min-height: unset;
-        touch-action: pan-y;
     }
 
-    &:after {
-        content: "";
-        grid-column: 1;
-        height: 1px;
-        margin-top: -1px;
+    > * {
+        touch-action: pan-y;
     }
 }
 
@@ -43,44 +51,33 @@
     grid-template-columns: 1fr auto;
 }
 
-.col-span-2 {
-    grid-column: 1 / span 2;
-}
-
 .grid-responsive-auto {
     @include grid-responsive-auto();
 }
 
 .grid-carousel {
-    grid: 1fr / auto-flow 100%;
+    grid: 100% / auto-flow 100%;
     height: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scroll-snap-stop: always;
+    @include grid-scroll-snap($type: x mandatory, $stop: always);
 
-    & > .card {
+    > .card {
         @include border-radius(0);
-        min-height: 0;
-        &:only-child {
-            touch-action: pan-y;
-        }
+    }
+
+    > :only-child {
+        touch-action: pan-y;
     }
 }
 
-.grid-responsive-auto-lg {
-    @media (min-width: 576px) and (min-height: 576px) {
+.grid-responsive-auto-sm {
+    @include media-breakpoint-up(sm) {
         @include grid-responsive-auto();
     }
 }
 
 .grid-auto-m15 {
     @include grid-auto-columns($min: 15rem, $max: 1fr, $mode: auto-fill);
-}
-
-.grid-scroll-snap {
-    & > * {
-        scroll-snap-align: start;
-    }
 }

@@ -70,7 +70,7 @@ function renderGroup<T>(item: T, key: string, title: string, formatters: Attribu
             <span key={`txt-${String(key)}`} className="grid-form-text text-wrap">{converter(value, item)}</span>
         ] : undefined;
     }).filter(item => item);
-    return children.length > 0 ? [<div key={`hdr-${key}`} className="col-span-2 hstack">
+    return children.length > 0 ? [<div key={`hdr-${key}`} className="col-2 hstack">
         <hr className="flex-grow-1" />
         <small className="mx-2">{title}</small>
         <hr className="flex-grow-1" />

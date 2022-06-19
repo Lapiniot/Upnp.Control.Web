@@ -12,10 +12,6 @@
     }
 }
 
-.dropdown-item > :is(svg, img):first-child {
-    margin-right: map-get($spacers, 3);
-}
-
 .btn-round {
     --#{$prefix}btn-border-width: 0;
     --#{$prefix}btn-border-radius: 0;

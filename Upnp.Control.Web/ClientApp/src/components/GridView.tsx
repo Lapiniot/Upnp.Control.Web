@@ -7,8 +7,8 @@ export function GridView({ viewMode, className, children, ...other }: HTMLAttrib
         ? "grid-responsive-auto"
         : viewMode === "carousel"
             ? "grid-carousel"
-            : "grid-carousel grid-responsive-auto-lg";
-    return <div {...other} className={`d-grid grid-scroll-snap ${viewClass}${className ? " " + className : ""}`}>
+            : "grid-carousel grid-responsive-auto-sm";
+    return <div {...other} className={`d-grid ${viewClass}${className ? " " + className : ""}`}>
         {children}
     </div>;
 }
