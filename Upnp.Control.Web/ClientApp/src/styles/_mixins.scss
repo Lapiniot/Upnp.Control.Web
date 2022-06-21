@@ -2,6 +2,46 @@
     @return if(($name == null) or ($name == ""), "", "-#{$name}");
 }
 
+@function build-media-query($conditions, $operator: and) {
+    $condition: "";
+    $i: 1;
+
+    @each $feature, $value in $conditions {
+        $condition: $condition + #{if($i != 1, $operator, "")}(#{$feature}#{if($value, ': #{$value}', '')});
+        $i: $i + 1;
+    }
+
+    @return $condition;
+}
+
+@function clone($value, $count: 1) {
+    $list: [];
+
+    @for $i from 1 through $count {
+        $list: append($list, $value);
+    }
+
+    @return $list;
+}
+
+@mixin responsive-class($class, $breakpoint, $conditions: min-width) {
+    @if($breakpoint) {
+        $value: map-get($grid-breakpoints, $breakpoint);
+
+        .#{$class}-#{$breakpoint} {
+            @media #{build-media-query(zip($conditions, clone($value, length($conditions))))} {
+                @content();
+            }
+        }
+    }
+
+    @else {
+        .#{$class} {
+            @content();
+        }
+    }
+}
+
 @mixin unify-parent($child) {
     @at-root #{selector-unify(&, $child)} {
         @content;

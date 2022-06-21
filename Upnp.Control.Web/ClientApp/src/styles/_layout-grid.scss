@@ -37,18 +37,6 @@ $grid-responsive-auto-breakpoints: null sm;
     }
 }
 
-.d-grid {
-    grid-gap: map-get($spacers, 3);
-}
-
-.grid-auto-1fr {
-    grid-template-columns: auto 1fr;
-}
-
-.grid-1fr-auto {
-    grid-template-columns: 1fr auto;
-}
-
 .grid-carousel {
     --#{$prefix}border-radius-override: 0;
     --#{$prefix}border-width-override: 0;
@@ -65,26 +53,79 @@ $grid-responsive-auto-breakpoints: null sm;
     }
 }
 
-@each $name, $value in $grid-responsive-auto-breakpoints {
-    $value: if($value, $value, $name);
-
-    @if($name) {
-        $breakpoint: map-get($grid-breakpoints, $value);
-
-        .grid-responsive-auto-#{$name} {
-            @media (min-width:$breakpoint) and (min-height: $breakpoint) {
-                @include grid-responsive-auto();
-            }
-        }
-    }
-
-    @else {
-        .grid-responsive-auto {
-            @include grid-responsive-auto();
-        }
+@each $breakpoint in [null sm] {
+    @include responsive-class(grid-responsive-auto, $breakpoint, [min-width min-height]) {
+        @include grid-responsive-auto;
     }
 }
 
 .grid-auto-m15 {
     @include grid-auto-columns($min: 15rem, $max: 1fr, $mode: auto-fill);
+}
+
+// Grid forms
+
+.grid-form-label {
+    color: $text-muted;
+    user-select: none;
+
+    &::after {
+        content: ":";
+    }
+}
+
+.grid-form-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: auto;
+}
+
+.grid-form {
+    --#{$prefix}-grid-form-template: initial;
+    --#{$prefix}-grid-form-gap: 0;
+    --#{$prefix}-grid-form-group-gap: 0;
+    --#{$prefix}-grid-form-label-justify: normal;
+    display: grid;
+    grid: var(--#{$prefix}-grid-form-template);
+    gap: var(--#{$prefix}-grid-form-gap);
+
+    > :nth-child(odd) {
+        @extend .grid-form-label;
+        justify-self: var(--#{$prefix}-grid-form-label-justify);
+
+        &:not(:first-child) {
+            margin-top: var(--#{$prefix}-grid-form-group-gap);
+        }
+    }
+
+    > :nth-child(even) {
+        @extend .grid-form-text;
+    }
+}
+
+@each $breakpoint in [] {
+    @include responsive-class("grid-form-sparse", $breakpoint) {
+        --#{$prefix}-grid-form-group-gap: #{map-get($spacers, 2)};
+    }
+}
+
+@each $breakpoint in [null sm] {
+    @include responsive-class("grid-form-dense", $breakpoint) {
+        --#{$prefix}-grid-form-template: auto / auto 1fr;
+        --#{$prefix}-grid-form-group-gap: 0;
+        --#{$prefix}-grid-form-gap:#{map-get($spacers, 1)} #{map-get($spacers, 2)};
+        --#{$prefix}-grid-form-label-justify: end;
+    }
+}
+
+@each $breakpoint in [null] {
+    @include responsive-class("grid-auto-1fr", $breakpoint) {
+        grid: auto / auto 1fr;
+    }
+}
+
+@each $breakpoint in [null] {
+    @include responsive-class("grid-1fr-auto", $breakpoint) {
+        grid: auto / 1fr auto;
+    }
 }

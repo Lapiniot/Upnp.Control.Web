@@ -66,7 +66,7 @@ function renderGroup<T>(item: T, key: string, title: string, formatters: Attribu
     const children = formatters.map(({ 0: key, 1: title, 2: converter }) => {
         const value = item[key];
         return value ? [
-            <span key={`lbl-${String(key)}`} className="grid-form-label">{title}</span>,
+            <span key={`lbl-${String(key)}`} className="grid-form-label text-end">{title}</span>,
             <span key={`txt-${String(key)}`} className="grid-form-text text-wrap">{converter(value, item)}</span>
         ] : undefined;
     }).filter(item => item);
@@ -80,7 +80,7 @@ function renderGroup<T>(item: T, key: string, title: string, formatters: Attribu
 export function ItemInfo({ item }: { item: DIDLItem; }) {
     return <>
         <AlbumArt itemClass={item.class} albumArts={item.albumArts} className="mx-auto mb-3 album-art-xxl" />
-        <div className="d-grid grid-auto-1fr gapy-1 gapx-2">
+        <div className="d-grid grid-auto-1fr gy-1 gx-2">
             {attributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item, key, title, formatters)).flat()}
             {item.res && resAttributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item.res as DIDLResource, key, title, formatters)).flat()}
         </div>

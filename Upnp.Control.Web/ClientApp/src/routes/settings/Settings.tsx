@@ -39,7 +39,7 @@ export default () => {
         <ul className="list-group list-group-flush m-sm-3 w-md-50 no-font-boost">
             <li className="list-group-item">
                 <small>General</small>
-                <div className="d-grid grid-1fr-auto gap-3 mt-2 align-items-center">
+                <div className="d-grid grid-1fr-auto g-3 mt-2 align-items-center">
                     <label htmlFor="page-size-select">Default page size</label>
                     <OptionsEditor id="page-size-select" options={$s.get("pageSizes")} value={$s.get("pageSize")} callback={setPageSize} />
                     <label htmlFor="timeout-editor">Default request timeout (ms.)</label>
@@ -54,7 +54,7 @@ export default () => {
             </li>
             <li className="list-group-item">
                 <small>In-app notifications</small>
-                <div className="d-grid grid-1fr-auto gap-3 mt-2 align-items-center">
+                <div className="d-grid grid-1fr-auto g-3 mt-2 align-items-center">
                     <label htmlFor="discovery-nt">Device discovery</label>
                     <FlagEditor id="discovery-nt" checked={$s.get("showDiscoveryNotifications")} callback={setShowDiscoveryNotifications} />
                     <label htmlFor="playback-nt">Playback state changes</label>
@@ -64,7 +64,7 @@ export default () => {
             {("serviceWorker" in navigator) && ("PushManager" in window) && <>
                 <li className="list-group-item">
                     <small>Push notifications</small>
-                    <div className="d-grid grid-1fr-auto gap-3 mt-2 align-items-center">
+                    <div className="d-grid grid-1fr-auto g-3 mt-2 align-items-center">
                         <label htmlFor="discovery-pushes-editor">Device discovery</label>
                         <PushSubscriptionToggle notificationType={NotificationType.DeviceDiscovery} id="discovery-pushes-editor" />
                         <label htmlFor="playback-pushes-editor">Playback state changes</label>

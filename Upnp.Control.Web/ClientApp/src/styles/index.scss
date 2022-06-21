@@ -92,30 +92,6 @@ $primary-900: shade-color($primary, 80%) !default;
     --#{$prefix}accent-color: #{$primary};
 }
 
-.grid-form-label {
-    justify-self: end;
-    color: $text-muted;
-
-    &::after {
-        content: ":";
-    }
-}
-
-.grid-form-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.grid-form {
-    > :nth-child(odd) {
-        @extend .grid-form-label;
-    }
-
-    > :nth-child(even) {
-        @extend .grid-form-text;
-    }
-}
-
 .stack {
     position: relative;
 
