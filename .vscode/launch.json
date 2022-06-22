@@ -56,6 +56,19 @@
             "netCore": {
                 "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
             }
+        },
+        {
+            "args": [
+                "svg"
+            ],
+            "name": "Gulp task",
+            "program": "node_modules/gulp/bin/gulp.js",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+            "cwd": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
         }
     ]
 }
