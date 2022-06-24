@@ -41,7 +41,7 @@
 
         & > .navbar {
             --#{$prefix}navbar-padding-y: #{$navbar-padding-y};
-            --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-x/2};
+            --#{$prefix}navbar-nav-link-padding-x: #{calc($nav-link-padding-x / 2)};
             flex-direction: column;
             align-items: stretch;
 
@@ -61,7 +61,7 @@
                 @include font-size(var(--#{$prefix}nav-link-font-size));
 
                 & > svg {
-                    margin-right: $spacer / 2;
+                    margin-right: calc($spacer / 2);
                 }
             }
         }
