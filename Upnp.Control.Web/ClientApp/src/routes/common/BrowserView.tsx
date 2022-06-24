@@ -46,7 +46,7 @@ export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes
 export default class BrowserView<TContext = unknown> extends React.Component<BrowserViewProps<TContext>> {
 
     static contextType = RowStateContext;
-    context!: React.ContextType<typeof RowStateContext>;
+    declare context: React.ContextType<typeof RowStateContext>;
     private tableRef = React.createRef<HTMLDivElement>();
     private resizeObserver;
 

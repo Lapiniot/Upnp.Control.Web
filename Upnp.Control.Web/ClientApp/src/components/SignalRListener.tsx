@@ -21,7 +21,7 @@ function apply(callbacks: IMessageCallbackSet, action: (methodName: string, meth
 export default class SignalRListener extends React.PureComponent<PropsWithChildren<SignalRListenerProps>> {
 
     static contextType = SignalRContext;
-    context!: ContextType<typeof SignalRContext>;
+    declare context: ContextType<typeof SignalRContext>;
 
     componentDidMount() {
         apply(this.props.callbacks, this.subscribe);
