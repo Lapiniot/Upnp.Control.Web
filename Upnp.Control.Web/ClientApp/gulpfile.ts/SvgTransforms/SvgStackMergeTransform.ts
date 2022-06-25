@@ -1,9 +1,8 @@
 import SvgMergeTransform, { SvgMergeOptions } from "./SvgMergeTransform";
 
 export type SvgStackMergeOptions = SvgMergeOptions & {
-    dimensions?: { w: number, h: number },
-
-};
+    dimensions?: { w: number, h: number }
+}
 
 export default class SvgStackMergeTransform extends SvgMergeTransform<SvgStackMergeOptions> {
     constructor(options: SvgStackMergeOptions) {

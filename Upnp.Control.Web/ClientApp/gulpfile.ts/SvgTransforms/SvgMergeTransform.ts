@@ -6,7 +6,7 @@ export interface SvgMergeOptions {
     path?: string;
     pathSeparator?: string;
     generateId?: (name: string, file?: any) => string;
-    filter?: (node: Node) => boolean;
+    optimizations?: ((svg: Element) => void)[]
     formatting?: { omitXmlDeclaration?: boolean; pretty?: boolean; collapseEmpty?: boolean }
 }
 
@@ -14,6 +14,7 @@ const defaults: SvgMergeOptions = {
     path: "result.svg",
     generateId: (name: string) => name,
     pathSeparator: "--",
+    optimizations: [],
     formatting: {
         omitXmlDeclaration: true,
         pretty: false,
@@ -53,7 +54,12 @@ export default abstract class SvgMergeTransform<TOptions extends SvgMergeOptions
     }
 
     override _flush(callback: TransformCallback): void {
-        const { path, formatting: { omitXmlDeclaration, collapseEmpty, pretty } = {} } = this.options;
+        const { path, optimizations = [], formatting: { omitXmlDeclaration, collapseEmpty, pretty } = {} } = this.options;
+
+        for (let i = 0; i < optimizations.length; i++) {
+            optimizations[i](this.doc.root()!);
+        }
+
         const output = new Vinyl({
             path,
             contents: Buffer.from((this.doc as any).toString({
@@ -66,50 +72,6 @@ export default abstract class SvgMergeTransform<TOptions extends SvgMergeOptions
         });
         this.push(output);
         callback();
-    }
-
-    protected id(file: Vinyl): string {
-        const { generateId = n => n, pathSeparator: separator = "--" } = this.options;
-        const path = file.relative;
-        const ext = file.extname;
-        return generateId(path.substring(0, path.length - ext.length), file)
-            .replaceAll("/", separator)
-            .replaceAll("\\", separator)
-            .replaceAll(" ", "_");
-    }
-
-    protected copyChildNodes(src: Element, dst: Element, filter?: (node: Node) => boolean) {
-        const nodes = src.childNodes();
-
-        for (let index = 0; index < nodes.length; index++) {
-            const node = nodes[index];
-            if (node.type() !== "element" || filter?.(node) === false) {
-                continue;
-            }
-
-            const stack: [Element, Element][] = [[node as Element, dst]];
-
-            while (stack.length > 0) {
-                const [current, target] = stack.shift()!;
-                const clone = target.node(current.name());
-
-                const attrs = current.attrs();
-                for (let i = 0; i < attrs.length; i++) {
-                    const attr = attrs[i];
-                    if (filter?.(attr) !== false) {
-                        clone.attr(attr.name(), attr.value());
-                    }
-                }
-
-                const children = current.childNodes();
-                for (let i = 0; i < children.length; i++) {
-                    const child = children[i];
-                    if (child.type() === "element" && filter?.(child) !== false) {
-                        stack.push([child as Element, clone]);
-                    }
-                }
-            }
-        }
     }
 
     protected append(file: Vinyl, doc: Document): void {
@@ -130,6 +92,48 @@ export default abstract class SvgMergeTransform<TOptions extends SvgMergeOptions
             }
         }
 
-        this.copyChildNodes(source, container, this.options.filter);
+        this.copyChildNodes(source, container);
+    }
+
+    protected id(file: Vinyl): string {
+        const { generateId = n => n, pathSeparator: separator = "--" } = this.options;
+        const path = file.relative;
+        const ext = file.extname;
+        return generateId(path.substring(0, path.length - ext.length), file)
+            .replaceAll("/", separator)
+            .replaceAll("\\", separator)
+            .replaceAll(" ", "_");
+    }
+
+    protected copyChildNodes(src: Element, dst: Element) {
+        const nodes = src.childNodes();
+
+        for (let index = 0; index < nodes.length; index++) {
+            const node = nodes[index];
+            if (node.type() !== "element") {
+                continue;
+            }
+
+            const stack: [Element, Element][] = [[node as Element, dst]];
+
+            while (stack.length > 0) {
+                const [current, target] = stack.shift()!;
+                const clone = target.node(current.name());
+
+                const attrs = current.attrs();
+                for (let i = 0; i < attrs.length; i++) {
+                    const attr = attrs[i];
+                    clone.attr(attr.name(), attr.value());
+                }
+
+                const children = current.childNodes();
+                for (let i = 0; i < children.length; i++) {
+                    const child = children[i];
+                    if (child.type() === "element") {
+                        stack.push([child as Element, clone]);
+                    }
+                }
+            }
+        }
     }
 }
