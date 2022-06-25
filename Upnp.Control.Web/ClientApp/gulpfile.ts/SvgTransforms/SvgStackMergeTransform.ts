@@ -33,6 +33,6 @@ export default class SvgStackMergeTransform extends SvgMergeTransform<SvgStackMe
             }
         }
 
-        this.copyContent(svg, symbol);
+        this.copyChildNodes(svg, symbol);
     }
 }

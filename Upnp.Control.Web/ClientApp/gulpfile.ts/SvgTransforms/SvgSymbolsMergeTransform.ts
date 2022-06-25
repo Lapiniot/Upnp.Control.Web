@@ -30,6 +30,6 @@ export default class SvgSymbolsMergeTransform extends SvgMergeTransform<SvgSymbo
             }
         }
 
-        this.copyContent(svg, symbol);
+        this.copyChildNodes(svg, symbol);
     }
 }

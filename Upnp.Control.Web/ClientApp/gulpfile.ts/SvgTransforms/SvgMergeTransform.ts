@@ -73,30 +73,36 @@ export default abstract class SvgMergeTransform<TOptions extends SvgMergeOptions
             .replaceAll(" ", "_");
     }
 
-    protected copyContent(src: Element, dst: Element, filter?: (node: Node) => boolean) {
+    protected copyChildNodes(src: Element, dst: Element, filter?: (node: Node) => boolean) {
         const nodes = src.childNodes();
+
         for (let index = 0; index < nodes.length; index++) {
             const node = nodes[index];
+            if (node.type() !== "element" || filter?.(node) === false) {
+                continue;
+            }
 
-            if (node instanceof Element) {
-                const element = node as Element;
+            const stack: [Element, Element][] = [[node as Element, dst]];
 
-                if (filter?.(element) === false)
-                    continue;
+            while (stack.length > 0) {
+                const [current, target] = stack.shift()!;
+                const clone = target.node(current.name());
 
-                const copy = dst.node(element.name());
-                const attrs = element.attrs();
-
-                for (let index = 0; index < attrs.length; index++) {
-                    const attr = attrs[index];
-
-                    if (filter?.(attr) === false)
-                        continue;
-
-                    copy.attr(attr.name(), attr.value());
+                const attrs = current.attrs();
+                for (let i = 0; i < attrs.length; i++) {
+                    const attr = attrs[i];
+                    if (filter?.(attr) !== false) {
+                        clone.attr(attr.name(), attr.value());
+                    }
                 }
 
-                this.copyContent(element, copy);
+                const children = current.childNodes();
+                for (let i = 0; i < children.length; i++) {
+                    const child = children[i];
+                    if (child.type() === "element" && filter?.(child) !== false) {
+                        stack.push([child as Element, clone]);
+                    }
+                }
             }
         }
     }
