@@ -1,11 +1,12 @@
 import Vinyl from "vinyl";
-import { Document, Element, Node } from "libxmljs2";
+import { Document, Element, Node, parseXml } from "libxmljs2";
 import { Transform, TransformCallback } from "stream";
 
 export interface SvgMergeOptions {
     path?: string;
     pathSeparator?: string;
     generateId?: (name: string, file?: any) => string;
+    filter?: (node: Node) => boolean;
     formatting?: { omitXmlDeclaration?: boolean; pretty?: boolean; collapseEmpty?: boolean }
 }
 
@@ -14,7 +15,7 @@ const defaults: SvgMergeOptions = {
     generateId: (name: string) => name,
     pathSeparator: "--",
     formatting: {
-        omitXmlDeclaration: false,
+        omitXmlDeclaration: true,
         pretty: false,
         collapseEmpty: true
     }
@@ -32,8 +33,12 @@ export default abstract class SvgMergeTransform<TOptions extends SvgMergeOptions
         this.doc.node("svg").defineNamespace("http://www.w3.org/2000/svg");
     }
 
+    abstract get containerNodeName(): string;
+
     override _transform(chunk: any, _encoding: BufferEncoding, callback: TransformCallback): void {
-        if (!(chunk instanceof Vinyl)) { callback(null, chunk); };
+        if (!(chunk instanceof Vinyl)) {
+            callback(null, chunk);
+        }
 
         const file = chunk as Vinyl;
 
@@ -107,5 +112,24 @@ export default abstract class SvgMergeTransform<TOptions extends SvgMergeOptions
         }
     }
 
-    protected abstract append(file: Vinyl, doc: Document): void;
+    protected append(file: Vinyl, doc: Document): void {
+        const id = this.id(file);
+        const source = parseXml((file.contents as Buffer).toString(), { noblanks: true }).root()!;
+        const container = doc.root()!.node(this.containerNodeName);
+
+        container.attr({ id });
+        const viewBox = source.attr("viewBox");
+        if (viewBox) {
+            container.attr("viewBox", viewBox.value());
+        }
+        else {
+            const width = source.attr("width");
+            const height = source.attr("height");
+            if (width && height) {
+                container.attr({ viewBox: `0 0 ${width} ${height}` });
+            }
+        }
+
+        this.copyChildNodes(source, container, this.options.filter);
+    }
 }

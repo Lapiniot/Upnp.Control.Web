@@ -1,4 +1,5 @@
 import gulp from "gulp";
+import { Element, Node } from "libxmljs2";
 import merge from "./gulp-merge-svg";
 
 const sourceFolder = "../../../material-design-icons/src";
@@ -19,13 +20,18 @@ function getGlobs(svgs: string[]) {
     return svgs.map(s => `${s}/materialicons${iconType}/24px.svg`);
 }
 
+function filter(node: Node) {
+    // Filter-out all redundand invisible elements with fill="none" attribute
+    return !(node.type() === "element" && (node as Element).attr("fill")?.value() === "none");
+}
+
 gulp.task("svg", function buildSvg(done) {
     gulp.src(getGlobs(spriteSvgs), { cwd: sourceFolder, cwdbase: true })
-        .pipe(merge({ mode: "symbols", generateId, formatting: { omitXmlDeclaration: true, pretty: true } }))
+        .pipe(merge({ mode: "symbols", generateId, filter, formatting: { pretty: true } }))
         .pipe(gulp.dest(destFolder));
 
     gulp.src(getGlobs(stackSvgs), { cwd: sourceFolder, cwdbase: true })
-        .pipe(merge({ mode: "stack", generateId, formatting: { omitXmlDeclaration: true, pretty: true }, dimensions: { w: 24, h: 24 } }))
+        .pipe(merge({ mode: "stack", generateId, filter, formatting: { pretty: true }, dimensions: { w: 24, h: 24 } }))
         .pipe(gulp.dest(destFolder));
 
     done();
