@@ -16,9 +16,15 @@
         "noFallthroughCasesInSwitch": true
     },
     "include": [
-        "src"
+        "src",
+        "gulpfile.ts/**/*.ts"
     ],
     "exclude": [
         "node_modules/**/*.*"
-    ]
+    ],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "NodeNext"
+        }
+    }
 }
