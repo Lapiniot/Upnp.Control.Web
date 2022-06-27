@@ -46,9 +46,9 @@ export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes
 export default class BrowserView<TContext = unknown> extends React.Component<BrowserViewProps<TContext>> {
 
     static contextType = RowStateContext;
-    declare context: React.ContextType<typeof RowStateContext>;
-    private tableRef = React.createRef<HTMLDivElement>();
-    private resizeObserver;
+    override context: React.ContextType<typeof RowStateContext>;
+    private tableRef;
+    private resizeObserver
 
     static defaultProps: BrowserProps<unknown> = {
         displayMode: "responsive",
@@ -65,6 +65,11 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
         this.resizeObserver = new ResizeObserver(this.updateStickyElementsLayout);
+        this.tableRef = React.createRef<HTMLDivElement>();
+        this.context = {
+            enabled: false, current: undefined, selection: [],
+            allSelected: false, dispatch: () => { }, get: () => RowState.None,
+        }
     }
 
     componentDidUpdate({ displayMode: prevDisplayMode, useCheckboxes: prevUseCheckboxes }: BrowserViewProps<TContext>) {
