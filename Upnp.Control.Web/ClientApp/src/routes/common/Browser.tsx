@@ -49,7 +49,7 @@ function Template(props: CellTemplateProps<CellContext>) {
             <BookmarkItemButton item={props.data} device={props.context?.device as string} deviceName={props.context?.deviceName as string} />}
         <button type="button" className="btn btn-round btn-plain" data-id={props.data.id}
             data-bs-toggle="dropdown" disabled={props.context?.disabled}>
-            <svg><use href="sprites.svg#ellipsis-vertical" /></svg>
+            <svg><use href="symbols.svg#more_vert" /></svg>
         </button>
     </CellTemplate>;
 }
@@ -151,7 +151,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
             {this.renderMenu(umiAcceptable, rendererAcceptable, umis, renderers)}
             {(umiAcceptable || rendererAcceptable) &&
                 <li><hr className="dropdown-divider mx-2" /></li>}
-            <MenuItem action={"info"} glyph="sprites.svg#info">Get Info</MenuItem>
+            <MenuItem action={"info"} glyph="symbols.svg#info">Get Info</MenuItem>
         </>;
     }
 

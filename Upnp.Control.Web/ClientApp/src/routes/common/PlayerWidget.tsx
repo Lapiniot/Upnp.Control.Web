@@ -138,19 +138,19 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
         const { title, album, creator } = current || {};
         const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
         const volumeStr = muted ? "Muted" : `${volume}%`;
-        const volumeIcon = muted ? "volume-xmark" : volume > 50 ? "volume-high" : volume > 20 ? "volume-low" : "volume-off";
+        const volumeIcon = muted ? "volume_off" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
         const disabled = !state;
 
         const currentTime = parseMilliseconds(relTime as string);
         const totalTime = parseMilliseconds(duration as string);
 
         const buttonProps = state === "STOPPED" || state === "PAUSED_PLAYBACK"
-            ? { title: "Play", glyph: "sprites.svg#circle-play", onClick: this.play }
+            ? { title: "Play", glyph: "symbols.svg#play_circle", onClick: this.play }
             : state === "PLAYING"
                 ? Number.isFinite(currentTime) && Number.isFinite(totalTime) && totalTime > 0
-                    ? { title: "Pause", glyph: "sprites.svg#circle-pause", onClick: this.pause }
-                    : { title: "Stop", glyph: "sprites.svg#circle-stop", onClick: this.stop }
-                : { title: "Stop", glyph: "sprites.svg#circle-stop", disabled: true };
+                    ? { title: "Pause", glyph: "symbols.svg#pause_circle", onClick: this.pause }
+                    : { title: "Stop", glyph: "symbols.svg#stop_circle", onClick: this.stop }
+                : { title: "Stop", glyph: "symbols.svg#stop_circle", disabled: true };
 
         const shuffleMode = playMode === "REPEAT_SHUFFLE";
 
@@ -163,15 +163,15 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
                     {(creator || album) && <small className="text-truncate">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
                 </div>
                 <SeekBar className="progress" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChange={this.seek} />
-                <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="mode-btn" glyph={`sprites.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={this.togglePlayMode} disabled={disabled} />
-                <Button title="Prev" className="prev-btn" glyph="sprites.svg#backward-step" onClick={this.prev} disabled={!actions.includes("Previous")} />
+                <Button title="Prev" className="prev-btn" glyph="symbols.svg#skip_previous" onClick={this.prev} disabled={!actions.includes("Previous")} />
                 <Button className="play-btn p-1" {...buttonProps} />
-                <Button title={nextTitle} className="next-btn" glyph="sprites.svg#forward-step" onClick={this.next} disabled={!actions.includes("Next")} />
-                <Button title={volumeStr} className="volume-btn" glyph={`sprites.svg#${volumeIcon}`} disabled={disabled} data-bs-toggle="dropdown" />
+                <Button title={nextTitle} className="next-btn" glyph="symbols.svg#skip_next" onClick={this.next} disabled={!actions.includes("Next")} />
+                <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="mode-btn" glyph={`symbols.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={this.togglePlayMode} disabled={disabled} />
+                <Button title={volumeStr} className="volume-btn" glyph={`symbols.svg#${volumeIcon}`} disabled={disabled} data-bs-toggle="dropdown" />
                 <DropdownMenu className="volume-ctrl" placement="left">
                     <li className="hstack">
                         <button type="button" style={{ zIndex: 1000 }} className="btn btn-plain btn-round" onClick={this.toggleMute}>
-                            <svg><use href={"sprites.svg#" + (muted ? "volume-high" : "volume-xmark")} /></svg>
+                            <svg><use href={"symbols.svg#" + (muted ? "volume_up" : "volume_off")} /></svg>
                         </button>
                         <Slider className="flex-fill mx-2" style={{ width: "10rem" }} value={volume / 100} onChange={this.changeVolume} />
                     </li>

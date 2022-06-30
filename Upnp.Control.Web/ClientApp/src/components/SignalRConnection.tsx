@@ -1,19 +1,17 @@
 import React, { PropsWithChildren } from "react";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
-type SignalRConnectionProps = { hubUrl: string }
-
 export const SignalRContext = React.createContext<HubConnection | null>(null);
 
-export class SignalRConnection extends React.Component<
-    PropsWithChildren<SignalRConnectionProps>,
-    { connected: boolean; error: Error | string | null; }> {
+type SignalRConnectionProps = { hubUrl: string }
+type SignalRConnectionState = { connected: boolean; error: Error | string | null }
 
+export class SignalRConnection extends React.Component<PropsWithChildren<SignalRConnectionProps>, SignalRConnectionState> {
     hub: signalR.HubConnection;
-    state = { error: null, connected: false };
 
     constructor(props: SignalRConnectionProps) {
         super(props);
+        this.state = { error: null, connected: false };
         this.hub = new HubConnectionBuilder()
             .withUrl(props.hubUrl)
             .withAutomaticReconnect([2, 4, 8, 15, 30, 60])
@@ -41,9 +39,10 @@ export class SignalRConnection extends React.Component<
     }
 
     render() {
+        const { error } = this.state;
         return <>
-            {this.state.error && <div className="alert-warning" role="alert">
-                <svg className="icon me-2"><use href="sprites.svg#warning" /></svg>Connection problems! {this.state.error}
+            {error && <div className="alert-warning" role="alert">
+                <svg className="icon me-2"><use href="symbols.svg#report_problem" /></svg>Connection problems! {typeof error === "string" ? error : error.message}
             </div>}
             <SignalRContext.Provider value={this.hub}>{this.props.children}</SignalRContext.Provider>
         </>

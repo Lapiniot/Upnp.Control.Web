@@ -11,10 +11,10 @@ export type DeviceActionProps = HTMLAttributes<HTMLElement> & {
 export function BrowseContentAction({ device, category, className, ...other }: DeviceActionProps) {
     const isMediaServer = UDT.isMediaServer(device);
     return isMediaServer
-        ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="sprites.svg#folder-closed" className={`py-0 p-1 text-decoration-none${className ? ` ${className}` : ""}`} {...other}>Browse</RouteLink>
+        ? <RouteLink to={`/${category}/${device.udn}/browse`} glyph="symbols.svg#folder_open" className={`py-0 p-1 text-decoration-none${className ? ` ${className}` : ""}`} {...other}>Browse</RouteLink>
         : null;
 }
 
 export function DownloadMetadataAction({ device, category, className, ...other }: DeviceActionProps) {
-    return <Link to={device.url} glyph="sprites.svg#download" className={`py-0 px-1${className ? ` ${className}` : ""}`} {...other}>Metadata</Link>;
+    return <Link to={device.url} glyph="symbols.svg#file_download" className={`py-0 px-1${className ? ` ${className}` : ""}`} {...other}>Metadata</Link>;
 }

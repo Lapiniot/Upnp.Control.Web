@@ -276,9 +276,9 @@ export class PlaylistManagerCore
 
     renderActionMenu = () => {
         return <>
-            <MenuItem action="add-items" key="add-items" glyph="sprites.svg#plus" onClick={this.service.addItems}>From media server</MenuItem>
-            <MenuItem action="add-url" key="add-url" glyph="sprites.svg#tower-broadcast" onClick={this.service.addFeedUrl}>Internet stream url</MenuItem>
-            <MenuItem action="add-files" key="add-files" glyph="sprites.svg#file-lines" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
+            <MenuItem action="add-items" key="add-items" glyph="symbols.svg#add" onClick={this.service.addItems}>From media server</MenuItem>
+            <MenuItem action="add-url" key="add-url" glyph="symbols.svg#podcasts" onClick={this.service.addFeedUrl}>Internet stream url</MenuItem>
+            <MenuItem action="add-files" key="add-files" glyph="symbols.svg#feed" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
         </>;
     }
 
@@ -346,7 +346,7 @@ export class PlaylistManagerCore
                                 </Browser>
                                 {!fetching && data?.source.items?.length === 0 &&
                                     <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
-                                        <svg className="icon icon-5x"><use href="sprites.svg#folder-closed" /></svg>
+                                        <svg className="icon icon-5x"><use href="symbols.svg#folder" /></svg>
                                     </div>}
                             </>}
                         </PlaybackStateContext.Consumer>
@@ -359,7 +359,7 @@ export class PlaylistManagerCore
                                                 <button type="button" className="btn btn-round btn-primary"
                                                     onClick={isRootLevel && selected === 0 ? this.createPlaylist : undefined}
                                                     data-bs-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>
-                                                    <svg><use href="sprites.svg#plus" /></svg>
+                                                    <svg><use href="symbols.svg#add" /></svg>
                                                 </button>
                                             </div>
                                             <DropdownMenu render={this.renderActionMenu} />

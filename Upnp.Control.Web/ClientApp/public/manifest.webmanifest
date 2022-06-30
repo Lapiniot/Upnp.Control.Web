@@ -19,6 +19,6 @@
         "minimal-ui"
     ],
     "display": "standalone",
-    "theme_color": "#212529",
+    "theme_color": "#6f42c1",
     "background_color": "#ffffff"
 }

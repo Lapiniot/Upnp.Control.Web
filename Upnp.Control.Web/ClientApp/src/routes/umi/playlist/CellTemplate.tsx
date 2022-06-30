@@ -15,7 +15,7 @@ type CellContext = {
     deviceName?: string;
 }
 
-const BookmarkItemButton = useBookmarkButton("PlaylistBookmarkWidget", playlistBookmarks, ["sprites.svg#heart-solid", "sprites.svg#heart"]);
+const BookmarkItemButton = useBookmarkButton("PlaylistBookmarkWidget", playlistBookmarks, ["symbols.svg#favorite", "symbols.svg#favorite_border"]);
 
 export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
     return <div className="hstack">
@@ -25,22 +25,22 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
                 ? ctx?.state === "PLAYING"
                     ? <React.Fragment key="active-playing">
                         <div className="stack-layer">
-                            <svg className="icon m-auto icon-lg animate-pulse"><use href="sprites.svg#volume-high" /></svg>
+                            <svg className="icon m-auto icon-lg animate-pulse"><use href="symbols.svg#volume_up" /></svg>
                         </div>
                         <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.pause}>
-                            <svg className="m-auto icon-lg"><use href="sprites.svg#circle-pause" /></svg>
+                            <svg className="m-auto icon-lg"><use href="symbols.svg#pause_circle" /></svg>
                         </button>
                     </React.Fragment>
                     : <React.Fragment key="active-paused">
                         <div className="stack-layer">
-                            <svg className="icon m-auto icon-lg"><use href="sprites.svg#volume-off" /></svg>
+                            <svg className="icon m-auto icon-lg"><use href="symbols.svg#volume_mute" /></svg>
                         </div>
                         <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.play}>
-                            <svg className="m-auto icon-lg"><use href="sprites.svg#circle-play" /></svg>
+                            <svg className="m-auto icon-lg"><use href="symbols.svg#play_circle" /></svg>
                         </button>
                     </React.Fragment>
                 : <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.playItem} data-index={index}>
-                    <svg className="m-auto icon-lg"><use href="sprites.svg#circle-play" /></svg>
+                    <svg className="m-auto icon-lg"><use href="symbols.svg#play_circle" /></svg>
                 </button>}
         </div>
         <span className="vstack overflow-hidden justify-content-center">
@@ -49,7 +49,7 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
         </span>
         {d.container && ctx?.deviceName && <BookmarkItemButton item={d} device={ctx?.device as string} deviceName={ctx?.deviceName as string} />}
         <button type="button" className="btn btn-round btn-plain" data-id={d.id} data-index={index} data-bs-toggle="dropdown" disabled={!!(rowState & RowState.Readonly)}>
-            <svg><use href="sprites.svg#ellipsis-vertical" /></svg>
+            <svg><use href="symbols.svg#more_vert" /></svg>
         </button>
     </div>;
 }

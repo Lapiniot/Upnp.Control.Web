@@ -26,7 +26,7 @@ export class UploadPlaylistModal extends React.Component<UploadPlaylistModalProp
             </div>
             <Modal.Footer>
                 <Modal.Button tabIndex={5} dismiss>Cancel</Modal.Button>
-                <Modal.Button tabIndex={4} className="text-primary" icon="sprites.svg#plus" type="submit">Add</Modal.Button>
+                <Modal.Button tabIndex={4} className="text-primary" icon="symbols.svg#playlist_add" type="submit">Add</Modal.Button>
             </Modal.Footer>
         </Modal>;
     }

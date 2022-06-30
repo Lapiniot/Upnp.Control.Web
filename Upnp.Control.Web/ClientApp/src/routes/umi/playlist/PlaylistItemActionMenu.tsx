@@ -17,19 +17,19 @@ export function PlaylistItemActionMenu({ index, root, handlers: h }: PropsWithCh
     const active = !!(getState(index) & RowState.Active);
     return <>
         {active && state === "PLAYING"
-            ? <MenuItem action="pause" glyph="sprites.svg#pause" onClick={ph.pause}>Pause</MenuItem>
-            : <MenuItem action="play" glyph="sprites.svg#play" data-index={index} onClick={ph.playItem}>Play</MenuItem>}
+            ? <MenuItem action="pause" glyph="symbols.svg#pause" onClick={ph.pause}>Pause</MenuItem>
+            : <MenuItem action="play" glyph="symbols.svg#play_arrow" data-index={index} onClick={ph.playItem}>Play</MenuItem>}
         {root
             ? <>
-                <MenuItem action="add-items" glyph="sprites.svg#plus" data-index={index} onClick={h.addItems}>Add from media server</MenuItem>
-                <MenuItem action="add-url" glyph="sprites.svg#tower-broadcast" data-index={index} onClick={h.addUrl}>Add Internet stream url</MenuItem>
-                <MenuItem action="add-files" glyph="sprites.svg#file-lines" data-index={index} onClick={h.addFiles}>Add from playlist file</MenuItem>
-                <MenuItem action="rename" glyph="sprites.svg#pen-to-square" data-index={index} onClick={h.rename}>Rename</MenuItem>
-                <MenuItem action="delete" glyph="sprites.svg#trash" data-index={index} onClick={h.delete}>Delete</MenuItem>
-                <MenuItem action="copy" glyph="sprites.svg#copy" data-index={index} onClick={h.copy}>Copy</MenuItem>
+                <MenuItem action="add-items" glyph="symbols.svg#add" data-index={index} onClick={h.addItems}>Add from media server</MenuItem>
+                <MenuItem action="add-url" glyph="symbols.svg#podcasts" data-index={index} onClick={h.addUrl}>Add Internet stream url</MenuItem>
+                <MenuItem action="add-files" glyph="symbols.svg#feed" data-index={index} onClick={h.addFiles}>Add from playlist file</MenuItem>
+                <MenuItem action="rename" glyph="symbols.svg#drive_file_rename_outline" data-index={index} onClick={h.rename}>Rename</MenuItem>
+                <MenuItem action="delete" glyph="symbols.svg#delete" data-index={index} onClick={h.delete}>Delete</MenuItem>
+                <MenuItem action="copy" glyph="symbols.svg#content_copy" data-index={index} onClick={h.copy}>Copy</MenuItem>
             </> : <>
-                <MenuItem action="delete-items" glyph="sprites.svg#trash" data-index={index} onClick={h.deleteItems}>Delete item</MenuItem>
+                <MenuItem action="delete-items" glyph="symbols.svg#delete" data-index={index} onClick={h.deleteItems}>Delete item</MenuItem>
             </>}
-        <MenuItem action="info" glyph="sprites.svg#info" data-index={index} onClick={h.showInfo}>Get Info</MenuItem>
+        <MenuItem action="info" glyph="symbols.svg#info" data-index={index} onClick={h.showInfo}>Get Info</MenuItem>
     </>;
 }

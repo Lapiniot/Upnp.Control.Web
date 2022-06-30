@@ -3,7 +3,7 @@ import { DIDLItem } from "../../../common/Types";
 
 function renderConfirmButton({ length }: DIDLItem[]): JSX.Element {
     return <>
-        <svg><use href="sprites.svg#plus" /></svg>
+        <svg><use href="symbols.svg#add" /></svg>
         Add{length ? <span className="badge rounded-pill ms-1 bg-secondary small">{length}</span> : undefined}
     </>
 }

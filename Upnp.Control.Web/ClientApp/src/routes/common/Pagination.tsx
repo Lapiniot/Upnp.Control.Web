@@ -44,16 +44,16 @@ export default function (props: PaginationProps & { pageSizes?: number[] }) {
         <span className="text-muted small pe-2 text-wrap lines-2">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
         <nav aria-label="Page navigation" className={`hstack${className ? ` ${className}` : ""}`} {...other}>
             <PageLink to={`?${createSearchParams({ ...init, p: "1" })}`} label="First" disabled={current === 1}>
-                <svg><use href="sprites.svg#chevron-bar-left" /></svg>
+                <svg><use href="symbols.svg#first_page" /></svg>
             </PageLink>
             <PageLink to={`?${createSearchParams({ ...init, p: (current - 1).toString() })}`} label="Previous" disabled={current === 1}>
-                <svg><use href="sprites.svg#chevron-left" /></svg>
+                <svg><use href="symbols.svg#chevron_left" /></svg>
             </PageLink>
             <PageLink to={`?${createSearchParams({ ...init, p: (current + 1).toString() })}`} label="Next" disabled={current >= pages}>
-                <svg><use href="sprites.svg#chevron-right" /></svg>
+                <svg><use href="symbols.svg#chevron_right" /></svg>
             </PageLink>
             <PageLink to={`?${createSearchParams({ ...init, p: pages.toString() })}`} label="Last" disabled={current >= pages}>
-                <svg><use href="sprites.svg#chevron-bar-right" /></svg>
+                <svg><use href="symbols.svg#last_page" /></svg>
             </PageLink>
         </nav>
     </>

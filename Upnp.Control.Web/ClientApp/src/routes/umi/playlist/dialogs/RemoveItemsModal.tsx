@@ -5,7 +5,7 @@ export function RemoveItemsModal({ onRemove, children, className, ...other }: Mo
         {children}
         <Modal.Footer>
             <Modal.Button tabIndex={2} dismiss>Cancel</Modal.Button>
-            <Modal.Button tabIndex={3} className="text-danger" icon="sprites.svg#trash" onClick={onRemove} dismiss>Remove</Modal.Button>
+            <Modal.Button tabIndex={3} className="text-danger" icon="symbols.svg#delete" onClick={onRemove} dismiss>Remove</Modal.Button>
         </Modal.Footer>
     </Modal>;
 }

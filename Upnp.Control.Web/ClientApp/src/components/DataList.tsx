@@ -35,7 +35,7 @@ export function DataList({ children, className, editable, template, tag, onDelet
                 {child}
                 {editMode && <button type="button" className="btn btn-round btn-plain ms-auto mx-2" onClick={deleteHandler}
                     data-index={index} data-key={(child && typeof child === "object" && "key" in child) ? child.key : undefined}>
-                    <svg><use href="sprites.svg#trash" /></svg>
+                    <svg><use href="symbols.svg#delete" /></svg>
                 </button>}
             </Container>)}
     </div>;
