@@ -78,7 +78,18 @@
             "detail": "Compiles *.scss files to *.css files",
             "group": "build",
             "type": "gulp",
-            "task": "sass",
+            "task": "scss",
+            "options": {
+                "cwd": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
+            },
+            "problemMatcher": "$gulp-tsc"
+        },
+        {
+            "label": "gulp: build SVG sprites",
+            "detail": "Merges *.svg files to symbols and stack files",
+            "group": "build",
+            "type": "gulp",
+            "task": "'svg-symbols' 'svg-stack'",
             "options": {
                 "cwd": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
             },
@@ -89,7 +100,7 @@
             "detail": "Starts *.scss files modification background watch task",
             "group": "build",
             "type": "gulp",
-            "task": "watch",
+            "task": "watch-scss",
             "isBackground": true,
             "options": {
                 "cwd": "${workspaceFolder}/Upnp.Control.Web/ClientApp"

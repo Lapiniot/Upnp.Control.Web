@@ -59,7 +59,7 @@
         },
         {
             "args": [
-                "svg"
+                "svg-symbols"
             ],
             "name": "Gulp task",
             "program": "node_modules/gulp/bin/gulp.js",
