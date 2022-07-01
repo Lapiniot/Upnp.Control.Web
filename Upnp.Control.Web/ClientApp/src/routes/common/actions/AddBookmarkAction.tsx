@@ -11,7 +11,7 @@ export function AddBookmarkAction({ device: { udn: device, name, description, ic
         if (!await bookmarks.contains(key)) {
             await bookmarks.add("DeviceBookmarkWidget", {
                 device, category, name, description,
-                icon: UDT.getOptimalIcon(icons)?.url ?? `icons.svg#${UDT.getSpecialRole(type)}`
+                icon: UDT.getOptimalIcon(icons)?.url ?? `stack.svg#${UDT.getSpecialRoleIcon(type)}`
             });
             setBookmarked(true);
         }

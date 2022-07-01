@@ -17,7 +17,7 @@ export default function ({ device, id, title, icon, deviceName }: PlaylistBookma
     const isTouch = MediaQueries.touchDevice.matches;
     return <div className="hstack overflow-hidden">
         <div className="playback-aa-ctrl stack ms-2 me-2 flex-shrink-0">
-            <AlbumArt albumArts={icon ? [icon] : undefined} itemClass="object.container.playlistContainer" />
+            <AlbumArt albumArts={icon ? [icon] : undefined} itemClass="object.container.playlistContainer" hint="player" />
             <button type="button" className={`btn btn-overlay stack-layer${!isTouch ? " stack-layer-hover" : ""}`}
                 title={`Play \u00AB${title}\u00BB on ${deviceName}`} onClick={clickHandler}>
                 <svg className="m-auto icon-lg"><use href="symbols.svg#play_circle" /></svg>

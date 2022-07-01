@@ -1,16 +1,17 @@
 $album-art-size-base: 2rem !default;
 
 $album-art-scales: (
-    "": 1,
-    //xs: 0.5,
-    sm: 0.75,
+    null: 1,
     md: 1.5,
-    //"lg": 1.75,
     xxl: 4
 );
 
 %album-art {
     @include image-box();
+
+    @include unify-parent("svg") {
+        fill: currentColor;
+    }
 }
 
 @each $name, $scale in $album-art-scales {

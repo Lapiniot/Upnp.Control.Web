@@ -20,7 +20,7 @@ const BookmarkItemButton = useBookmarkButton("PlaylistBookmarkWidget", playlistB
 export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
     return <div className="hstack">
         <div className="playback-aa-ctrl stack me-2">
-            <AlbumArt itemClass={d.class} albumArts={d.albumArts} />
+            <AlbumArt itemClass={d.class} albumArts={d.albumArts} hint="player" />
             {rowState & RowState.Active
                 ? ctx?.state === "PLAYING"
                     ? <React.Fragment key="active-playing">

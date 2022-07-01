@@ -1,6 +1,6 @@
 import { Icon, Services, UpnpDevice, UpnpDeviceCategory } from "./Types";
 
-type UpnpSpecialRole = "upnp-renderer" | "upnp-server" | "upnp-generic";
+type UpnpSpecialRoleIcon = "connected_tv" | "storage" | "devices" | "speaker";
 
 export class UpnpDeviceTools {
     static getCategory(device: UpnpDevice): UpnpDeviceCategory {
@@ -19,12 +19,12 @@ export class UpnpDeviceTools {
         return device.services.some(s => s.type.startsWith(Services.ContentDirectory) || s.type.startsWith(Services.UmiPlaylist));
     }
 
-    static getSpecialRole(service: string): UpnpSpecialRole {
+    static getSpecialRoleIcon(service: string): UpnpSpecialRoleIcon {
         return service?.startsWith(Services.MediaRenderer)
-            ? "upnp-renderer"
+            ? "connected_tv"
             : service?.startsWith(Services.ContentDirectory)
-                ? "upnp-server"
-                : "upnp-generic";
+                ? "storage"
+                : "devices";
     }
 
     static getOptimalIcon(icons: Icon[], preferredSize: number = 48): Icon | null {

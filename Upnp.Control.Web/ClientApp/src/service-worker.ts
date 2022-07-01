@@ -23,8 +23,10 @@ const CACHE_STORE_NAME = "upnp-dashboard-store";
 
 const CACHE_STORE_ITEMS = self.__WB_MANIFEST
     .map(e => typeof e === "string" ? e : e.url)
-    .concat(["icons.svg", "icon.svg", "symbols.svg", "favicon.ico", "manifest.webmanifest",
-        "192.png", "512.png", "apple-touch-icon.png"]);
+    .concat(["stack.svg", "icons/icon.svg", "symbols.svg", "icons/favicon.ico", "manifest.webmanifest",
+        "icons/48.png", "icons/72.png", "icons/96.png", "icons/128.png", "icons/144.png",
+        "icons/152.png", "icons/192.png", "icons/384.png", "icons/512.png",
+        "icons/apple-touch-icon.png"]);
 
 const CACHES = [CACHE_STORE_NAME];
 
@@ -139,12 +141,12 @@ self.addEventListener("push", event => {
 
         const options: NotificationOptions = type === "appeared" ? {
             body: `'${device.description}' has appeared on the network`,
-            icon: icon ? viaProxy(icon.url) : `icons.svg#${UDT.getSpecialRole(device.type)}`,
+            icon: icon ? viaProxy(icon.url) : `stack.svg#${UDT.getSpecialRoleIcon(device.type)}`,
             data: { url: `/${category}/${device.udn}` },
             tag: "discovery"
         } : {
             body: `'${device.description}' has disappeared from the network`,
-            icon: `icons.svg#${UDT.getSpecialRole(device.type)}`,
+            icon: `stack.svg#${UDT.getSpecialRoleIcon(device.type)}`,
             data: { url: `/${category}` },
             tag: "discovery"
         };
