@@ -12,3 +12,4 @@ package-lock.json
 Upnp.Control.Web/data/*
 *.css
 Upnp.Control.Web/ClientApp/public/service-worker.js
+Upnp.Control.Web/ClientApp/public/service-worker.js.map
