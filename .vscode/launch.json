@@ -36,26 +36,8 @@
                     "DYLD_LIBRARY_PATH": "/opt/local/lib/openssl-3"
                 }
             },
-            "sourceFileMap": {
-                "/ClientApp": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
-            },
             "launchSettingsProfile": "Upnp.Control.Web",
             "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
-        },
-        {
-            "name": "Docker .NET Core Launch",
-            "type": "docker",
-            "request": "launch",
-            "preLaunchTask": "docker-run: debug",
-            "netCore": {
-                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
-            }
         },
         {
             "args": [
