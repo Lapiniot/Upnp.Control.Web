@@ -1,6 +1,7 @@
 /// <reference lib="webworker" />
 /* eslint-disable no-restricted-globals */
 
+import { CacheFirstStrategy, CacheOnlyStrategy, StaleWhileRevalidateStrategy } from "./components/CachingStrategy";
 import { formatTrackInfoLine, viaProxy } from "./components/Extensions";
 import { AVState, DeviceDescription, NotificationType, UpnpDevice } from "./routes/common/Types";
 import { UpnpDeviceTools as UDT } from "./routes/common/UpnpDeviceTools";
@@ -19,110 +20,68 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
-const CACHE_STORE_NAME = "upnp-dashboard-store";
+export const CACHE_STORE_NAME = "upnp-dashboard-store-v1";
 
 const CACHE_STORE_ITEMS = self.__WB_MANIFEST
     .map(e => typeof e === "string" ? e : e.url)
-    .concat(["stack.svg", "icons/icon.svg", "symbols.svg", "icons/favicon.ico", "manifest.webmanifest",
-        "icons/48.png", "icons/72.png", "icons/96.png", "icons/128.png", "icons/144.png",
-        "icons/152.png", "icons/192.png", "icons/384.png", "icons/512.png",
-        "icons/apple-touch-icon.png"]);
+    .concat(["/stack.svg", "/symbols.svg", "/icons/icon.svg", "/icons/favicon.ico", "/icons/apple-touch-icon.png",
+        "/icons/48.png", "/icons/72.png", "/icons/96.png", "/icons/128.png", "/icons/144.png",
+        "/icons/152.png", "/icons/192.png", "/icons/384.png", "/icons/512.png",
+        "/manifest.webmanifest"]);
 
 const CACHES = [CACHE_STORE_NAME];
 
-// Navigation requests to the urls starting with any of this 
-// prefixes will be skipped from fetch by this worker
-const BLACKLIST_PREFIXES = ["/api"];
-
-async function precache() {
-    try {
-        const cache = await caches.open(CACHE_STORE_NAME);
-        await cache.addAll(CACHE_STORE_ITEMS);
-    } catch (error) {
-        console.error(`error precaching static content: ${error}`);
-    }
-}
-
-async function cleanup() {
-    const keys = (await caches.keys()).filter(k => !CACHES.includes(k));
-    for (const key of keys) {
-        try {
-            await caches.delete(key);
-        } catch (error) {
-            console.error(`error purging obsolete cache ${key}: ${error}`);
-        }
-    }
-}
-
-async function enablePreload() {
-    // Enable navigation preload if it's supported.
-    // See https://developers.google.com/web/updates/2017/02/navigation-preload
-    if ("navigationPreload" in self.registration) {
-        await self.registration.navigationPreload.enable();
-        console.info("navigation preload has beeen enabled");
-    }
-}
-
-async function fetchWithPreload(event: FetchEvent): Promise<Response> {
-    if ("preloadResponse" in event) {
-        var response = await event.preloadResponse;
-        if (response) {
-            return response;
-        }
-    }
-
-    return await fetch(event.request);
+const strategies = {
+    staleWhileRevalidate: new StaleWhileRevalidateStrategy(CACHE_STORE_NAME),
+    cacheOnly: new CacheOnlyStrategy(CACHE_STORE_NAME),
+    cacheFirst: new CacheFirstStrategy(CACHE_STORE_NAME)
 }
 
 self.addEventListener("install", event => {
-    console.info("installing service worker...");
-    event.waitUntil(precache());
+    console.info("Installing service worker...");
+    event.waitUntil(caches.open(CACHE_STORE_NAME)
+        .then(cache => cache.addAll(CACHE_STORE_ITEMS))
+        .then(() => console.info(`Items added to the cache ${CACHE_STORE_NAME}: ${CACHE_STORE_ITEMS}`))
+        .catch(error => (console.error(`Error precaching static content. ${error}.`), Promise.reject(error))));
     self.skipWaiting();
 })
 
 self.addEventListener("activate", event => {
-    console.info("activating service worker...");
-    event.waitUntil(Promise.all([
-        cleanup(),
-        enablePreload()
+    console.info("Activating service worker...");
+    event.waitUntil(Promise.allSettled([
+        caches.keys().then(keys => Promise.allSettled(keys.filter(key => !CACHES.includes(key)).map(key => caches.delete(key)
+            .then(() => console.info(`Obsolete cache '${key}' has been dropped.`))
+            .catch(error => console.error(`Error dropping obsolete cache '${key}'. '${error}'.`))))),
+        "navigationPreload" in self.registration
+            ? self.registration.navigationPreload.enable()
+                .then(() => console.info("Navigation preload has beeen enabled."))
+                .catch(error => console.error(`Error enabling navigation preload. ${error}.`))
+            : Promise.resolve()
     ]));
     self.clients.claim();
 })
 
 self.addEventListener("fetch", event => {
+    const request = event.request;
 
-    const r = event.request;
-
-    if (r.mode === "navigate" || r.destination !== "") {
-
-        const url = new URL(r.url);
-        url.search = "";
-        if (BLACKLIST_PREFIXES.some(prefix => url.pathname.startsWith(prefix))) {
-            return;
-        }
-
-        event.respondWith((async () => {
-            if (r.mode === "navigate") {
-                // forward all navigation requests to tha main AppShell page
-                url.pathname = "index.html";
-            }
-
-            const key = url.toString();
-
-            const networkResponse = fetchWithPreload(event);
-            const cacheResponse = networkResponse.then(r => r.clone());
-
-            event.waitUntil((async () => {
-                const cache = await caches.open(CACHE_STORE_NAME);
-                const response = await cacheResponse;
-                if (response.ok) {
-                    await cache.put(key, response);
-                }
-            })());
-
-            return await caches.match(key) ?? networkResponse;
-        })());
+    if (request.destination === "") {
+        return;
     }
+
+    if (request.mode === "navigate" && request.destination === "document") {
+        const url = new URL(request.url);
+        if (!url.pathname.startsWith("/api")) {
+            strategies.cacheFirst.apply(event, { key: "/index.html" });
+        }
+        return;
+    }
+
+    if (request.destination === "script") {
+        strategies.staleWhileRevalidate.apply(event);
+        return;
+    }
+
+    strategies.cacheFirst.apply(event);
 })
 
 self.addEventListener("push", event => {

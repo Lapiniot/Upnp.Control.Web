@@ -37,7 +37,9 @@
                 }
             },
             "launchSettingsProfile": "Upnp.Control.Web",
-            "internalConsoleOptions": "openOnSessionStart"
+            "internalConsoleOptions": "openOnSessionStart",
+            "console": "integratedTerminal",
+            "externalConsole": true
         },
         {
             "args": [

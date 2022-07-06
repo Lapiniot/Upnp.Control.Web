@@ -288,6 +288,23 @@
                 "$tsc"
             ],
             "group": "build"
+        },
+        {
+            "label": "npm: build service-worker.js",
+            "detail": "react-scripts build & cp ./build/service-worker.* ./public/",
+            "type": "shell",
+            "command": "cp",
+            "args": [
+                "./build/service-worker.*",
+                "./public/"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
+            },
+            "dependsOn": [
+                "npm: build - Upnp.Control.Web/ClientApp"
+            ],
+            "problemMatcher": []
         }
     ],
     "inputs": [
