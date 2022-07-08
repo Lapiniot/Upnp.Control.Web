@@ -133,6 +133,11 @@ $primary-900: shade-color($primary, 80%) !default;
             }
         }
     }
+
+    &:focus-within {
+        outline: solid 2px var(--#{$prefix}accent-color);
+        outline-offset: 3px;
+    }
 }
 
 ::-webkit-file-upload-button {
