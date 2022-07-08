@@ -19,30 +19,29 @@
     --#{$prefix}btn-padding-y: var(--#{$prefix}btn-padding-x);
     clip-path: circle(49.5%);
     border-radius: 0;
-    
+
     & > :is(svg, img):first-child {
         margin: 0;
     }
 }
 
 .btn-plain {
-    --#{$prefix}btn-plain-hover-color: #{$dropdown-link-hover-color};
-    --#{$prefix}btn-plain-active-color: #{$dropdown-link-active-color};
-    --#{$prefix}btn-plain-hover-bg: #{$dropdown-link-hover-bg};
-    --#{$prefix}btn-plain-active-bg: #{$dropdown-link-active-bg};
     --#{$prefix}btn-color: inherit;
+    --#{$prefix}btn-hover-color: #{shade-color($gray-900, 10%)};
+    --#{$prefix}btn-hover-bg: #{$gray-200};
+    --#{$prefix}btn-active-color: #{$component-active-color};
+    --#{$prefix}btn-active-bg: #{$component-active-bg};
     @extend %no-decoration;
     background-image: none;
 
-    &:is(:focus-visible, :hover) {
-        color: var(--#{$prefix}btn-plain-hover-color);
-        @include gradient-bg(var(--#{$prefix}btn-plain-hover-bg));
+    &:focus {
+        background-image: none;
     }
+}
 
-    &:is(.active, :active) {
-        color: var(--#{$prefix}btn-plain-active-color);
-        @include gradient-bg(var(--#{$prefix}btn-plain-active-bg));
-    }
+.table .btn-plain {
+    --#{$prefix}btn-hover-color: var(--#{$prefix}table-hover-levelup-color, inherit);
+    --#{$prefix}btn-hover-bg: var(--#{$prefix}table-hover-levelup-bg);
 }
 
 .btn-overlay {

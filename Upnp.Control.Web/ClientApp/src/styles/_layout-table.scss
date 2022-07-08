@@ -5,12 +5,8 @@
     --#{$prefix}table-bg: #{$table-bg};
     --#{$prefix}table-caption-color: #{$table-caption-color};
     --#{$prefix}table-header-bg: #{$light};
-    --#{$prefix}table-striped-color: #{$table-striped-color};
-    --#{$prefix}table-striped-bg: #{$table-striped-bg};
     --#{$prefix}table-active-color: #{$table-active-color};
     --#{$prefix}table-active-bg: #{$table-active-bg};
-    --#{$prefix}table-hover-color: #{$table-hover-color};
-    --#{$prefix}table-hover-bg: #{$table-hover-bg};
     --#{$prefix}table-selected-bg: #{$primary};
     --#{$prefix}table-focused-accent: #{$primary-700};
     --#{$prefix}table-selected-color: white;
@@ -47,8 +43,12 @@
                     max-width: 1px;
                 }
 
-                &:is(:first-child, :last-child) {
+                &:is(:first-child) {
                     padding-left: var(--#{$prefix}table-padding-x);
+                }
+
+                &:is(:last-child) {
+                    padding-right: var(--#{$prefix}table-padding-x);
                 }
             }
 
@@ -63,6 +63,7 @@
 
             &:is([data-selected="true"], .selected, [data-focused="true"], :focus) {
                 --#{$prefix}accent-color: var(--#{$prefix}table-focused-accent);
+                --#{$prefix}table-hover-levelup-bg: var(--#{$prefix}table-focused-accent);
                 background-color: var(--#{$prefix}table-selected-bg);
                 color: var(--#{$prefix}table-selected-color);
             }
@@ -81,6 +82,7 @@
         display: table-header-group;
         background-color: var(--#{$prefix}table-header-bg);
         font-weight: $headings-font-weight;
+
         > * > * {
             border-bottom: var(--#{$prefix}table-border-width) solid var(--#{$prefix}table-border-color);
         }
@@ -98,6 +100,9 @@
 }
 
 .table-striped {
+    --#{$prefix}table-striped-color: #{$table-striped-color};
+    --#{$prefix}table-striped-bg: #{$table-striped-bg};
+
     > .table-body {
         > :nth-of-type(#{$table-striped-order}) {
             background-color: var(--#{$prefix}table-striped-bg);
@@ -116,6 +121,7 @@
     > .table-body {
         > :is([data-focused="true"], :focus) {
             outline: 0;
+
             > :first-child {
                 box-shadow: inset var(--#{$prefix}table-focused-marker-size) 0 0 var(--#{$prefix}accent-color);
             }
@@ -124,6 +130,10 @@
 }
 
 .table-hover {
+    --#{$prefix}table-hover-color: #{$table-hover-color};
+    --#{$prefix}table-hover-bg: #{$table-hover-bg};
+    --#{$prefix}table-hover-levelup-bg: #{shade-color($table-hover-bg, 10%)};
+
     > .table-body {
         > :where(:hover) {
             background-image: linear-gradient(var(--#{$prefix}table-hover-bg), var(--#{$prefix}table-hover-bg));
