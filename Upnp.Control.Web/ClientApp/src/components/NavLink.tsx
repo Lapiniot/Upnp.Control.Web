@@ -1,5 +1,5 @@
 import { AnchorHTMLAttributes } from "react";
-import { NavLink as RNavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useNavigatorClickHandler, useNavigatorResolvedPath } from "./Navigator";
 
 export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
@@ -20,9 +20,9 @@ function Link({ to, glyph, className, active, disabled, children, ...other }: Li
 }
 
 function RouteLink({ glyph, className, active, disabled, children, ...other }: LinkProps) {
-    return <RNavLink className={buildClass(className, active, disabled)} {...other}>
+    return <NavLink className={buildClass(className, active, disabled)} {...other}>
         {glyph && <svg><use href={glyph} /></svg>}{children}
-    </RNavLink>;
+    </NavLink>;
 }
 
 function NavigatorLink({ to, ...other }: LinkProps) {
