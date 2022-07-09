@@ -54,7 +54,6 @@
     --#{$prefix}gradient: none;
     @extend %grid-stack;
     overflow: hidden;
-    position: relative;
 
     > :first-child {
         margin: initial;

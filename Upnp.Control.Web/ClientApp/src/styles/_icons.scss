@@ -1,10 +1,10 @@
-$icon-sizes: (2, 3, 4, 5, lg 1.33333) !default;
+$icon-scale: 1 !default;
 
-$boost: 1.25;
+$icon-sizes: (2x 2, 3x 3, 4x 4, 5x 5, 2 calc(2 / $icon-scale)) !default;
 
 .icon {
     display: inline-block;
-    width: #{$boost * 1em};
+    width: #{$icon-scale * 1em};
     aspect-ratio: 1;
     object-fit: contain;
 }
@@ -15,7 +15,7 @@ svg.icon {
 }
 
 @each $name, $scale in $icon-sizes {
-    .icon-#{$name}#{if($scale == null, x, null)} {
+    .icon#{infix($name)} {
         @include font-scale(if($scale, $scale, $name));
     }
 }
