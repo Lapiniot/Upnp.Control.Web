@@ -92,54 +92,6 @@ $primary-900: shade-color($primary, 80%) !default;
     --#{$prefix}accent-color: #{$primary};
 }
 
-.stack {
-    position: relative;
-
-    & > .stack-layer {
-        display: flex;
-        position: absolute;
-        inset: 0;
-
-        &.stack-layer-hover {
-            opacity: 0;
-        }
-    }
-
-    &:hover > .stack-layer,
-    &:focus > .stack-layer {
-        &.stack-layer-hover {
-            opacity: 1;
-        }
-    }
-}
-
-.playback-aa-ctrl {
-    border-radius: $border-radius-sm;
-    overflow: hidden;
-    flex-shrink: 0;
-
-    &.stack,
-    .stack {
-        & > .stack-layer {
-            @include bg-translucent;
-            color: white;
-            transition: opacity 250ms ease-in-out 125ms;
-        }
-
-        &:hover,
-        &:focus {
-            & > .stack-layer:not(.stack-layer-hover):not(:last-child) {
-                opacity: 0;
-            }
-        }
-    }
-
-    &:focus-within {
-        outline: solid 2px var(--#{$prefix}accent-color);
-        outline-offset: 3px;
-    }
-}
-
 ::-webkit-file-upload-button {
     display: none;
 }

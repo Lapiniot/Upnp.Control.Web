@@ -2,6 +2,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -11,9 +12,11 @@
     0% {
         color: rgba($color: #fff, $alpha: 1);
     }
+
     50% {
         color: rgba($color: #fff, $alpha: 0.7);
     }
+
     100% {
         color: rgba($color: #fff, $alpha: 1);
     }
@@ -25,4 +28,8 @@
 
 .animate-pulse {
     animation: fade 1.5s ease-in-out infinite;
+}
+
+.fade-in-out {
+    @include transition(opacity 250ms ease-in-out 125ms);
 }

@@ -1,4 +1,4 @@
-import React, { EventHandler, UIEvent } from "react";
+import { EventHandler, UIEvent } from "react";
 import { playlistBookmarks } from "../../../components/BookmarkService";
 import AlbumArt from "../../common/AlbumArt";
 import { useBookmarkButton } from "../../common/BookmarkButton";
@@ -18,31 +18,19 @@ type CellContext = {
 const BookmarkItemButton = useBookmarkButton("PlaylistBookmarkWidget", playlistBookmarks, ["symbols.svg#favorite", "symbols.svg#favorite_border"]);
 
 export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
+    const active = !!(rowState & RowState.Active);
+    const playing = ctx?.state === "PLAYING";
     return <div className="hstack">
-        <div className="playback-aa-ctrl stack me-2">
+        <button type="button" className="btn btn-stack me-2" data-index={index}
+            onClick={active ? (playing ? ctx.pause : ctx?.play) : ctx?.playItem}>
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} hint="player" />
-            {rowState & RowState.Active
-                ? ctx?.state === "PLAYING"
-                    ? <React.Fragment key="active-playing">
-                        <div className="stack-layer">
-                            <svg className="icon m-auto icon-lg animate-pulse"><use href="symbols.svg#volume_up" /></svg>
-                        </div>
-                        <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.pause}>
-                            <svg className="m-auto icon-lg"><use href="symbols.svg#pause_circle" /></svg>
-                        </button>
-                    </React.Fragment>
-                    : <React.Fragment key="active-paused">
-                        <div className="stack-layer">
-                            <svg className="icon m-auto icon-lg"><use href="symbols.svg#volume_mute" /></svg>
-                        </div>
-                        <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.play}>
-                            <svg className="m-auto icon-lg"><use href="symbols.svg#play_circle" /></svg>
-                        </button>
-                    </React.Fragment>
-                : <button type="button" className="btn btn-overlay stack-layer stack-layer-hover" onClick={ctx?.playItem} data-index={index}>
-                    <svg className="m-auto icon-lg"><use href="symbols.svg#play_circle" /></svg>
-                </button>}
-        </div>
+            {active && <svg className={`album-art hover-hide fade-in-out bg-black bg-opacity-50 ${playing ? "animate-pulse" : "text-white"}`}>
+                <use href={`symbols.svg#${playing ? "volume_up" : "volume_mute"}`} />
+            </svg>}
+            <svg className="album-art hover-show fade-in-out text-white bg-black bg-opacity-25">
+                <use href={`symbols.svg#${active && playing ? "pause_circle" : "play_circle"}`} />
+            </svg>
+        </button>
         <span className="vstack overflow-hidden justify-content-center">
             <span className="text-truncate">{d.title}</span>
             <TrackInfoLine item={d} />

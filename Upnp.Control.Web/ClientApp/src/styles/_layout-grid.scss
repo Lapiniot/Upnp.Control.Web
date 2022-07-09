@@ -63,6 +63,18 @@ $grid-responsive-auto-breakpoints: null sm;
     @include grid-auto-columns($min: 15rem, $max: 1fr, $mode: auto-fill);
 }
 
+%grid-stack {
+    display: grid;
+
+    > * {
+        grid-area: 1 / 1;
+    }
+}
+
+.grid-stack{
+    @extend %grid-stack;
+}
+
 // Grid forms
 
 .grid-form-label {

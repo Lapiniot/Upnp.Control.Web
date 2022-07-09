@@ -1,7 +1,7 @@
 $utilities: map-remove($utilities,
         "float", "align", "opacity", "top", "bottom", "start", "end", "translate-middle",
         "border-opacity", "border-end", "border-start", "order", "font-size", "font-style", "align-self",
-        "font-weight", "text-opacity", "bg-opacity", "rounded-top", "rounded-end", "rounded-bottom",
+        "font-weight", "text-opacity", "rounded-top", "rounded-end", "rounded-bottom",
         "rounded-start", "visibility");
 
 $utilities: map-merge($utilities,
@@ -9,6 +9,8 @@ $utilities: map-merge($utilities,
                 (values: inline grid flex inline-flex none)),
             "shadow": map-merge(map-get($utilities, "shadow"),
                 (values: (sm: $box-shadow-sm ))),
+            "bg-opacity": map-merge(map-get($utilities, "bg-opacity"),
+                (values: (25: .25, 50: .5))),
             "position": map-merge(map-get($utilities, "position"),
                 (values: relative sticky)),
             "width": map-merge(map-get($utilities, "width"),
