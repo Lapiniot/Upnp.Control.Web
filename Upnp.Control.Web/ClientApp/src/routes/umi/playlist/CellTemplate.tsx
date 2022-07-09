@@ -21,7 +21,7 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
     const active = !!(rowState & RowState.Active);
     const playing = ctx?.state === "PLAYING";
     return <div className="hstack">
-        <button type="button" className="btn btn-stack me-2" data-index={index}
+        <button type="button" className="btn btn-stack me-2 flex-shrink-0" data-index={index}
             onClick={active ? (playing ? ctx.pause : ctx?.play) : ctx?.playItem}>
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} hint="player" />
             {active && <svg className={`album-art hover-hide fade-in-out bg-black bg-opacity-50 ${playing ? "animate-pulse" : "text-white"}`}>
