@@ -63,6 +63,7 @@ $missing-image-bg:          url(../../public/stack.svg#mood_bad) !default;
 $icon-scale:                1 !default;
 
 %image-icon {
+    position: relative;
     width: 1em;
     aspect-ratio: 1;
     min-height: 0;
@@ -74,7 +75,6 @@ $icon-scale:                1 !default;
 
 %image-fallback {
     position: relative;
-    z-index: -1;
     // This is rendered in case of image download error
     &:after {
         content: $missing-image-content;
