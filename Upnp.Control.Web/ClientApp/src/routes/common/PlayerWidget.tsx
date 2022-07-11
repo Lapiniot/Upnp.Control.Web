@@ -157,7 +157,7 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
         return <>
             <SignalRListener callbacks={this.handlers} />
             <div className="player-skeleton" ref={this.ref}>
-                <AlbumArt className="art" itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} hint="player" />
+                <AlbumArt className="art rounded-1" itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} hint="player" />
                 <div className="title">
                     <h5 className="text-truncate mb-0">{title ?? "[No media]"}</h5>
                     {(creator || album) && <small className="text-truncate">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}

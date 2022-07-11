@@ -71,6 +71,7 @@ $icon-scale:                1 !default;
     font-size: calc($icon-scale * 1em);
     line-height: initial;
     fill: currentColor;
+    vertical-align: text-top;
 }
 
 %image-fallback {

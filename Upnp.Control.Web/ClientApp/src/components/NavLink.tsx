@@ -10,7 +10,7 @@ export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & 
 }
 
 function buildClass(className: string | undefined, active: boolean | undefined, disabled: boolean | undefined) {
-    return `${className ? className : ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`.trim();
+    return `${className ?? ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`.trim() || undefined;
 }
 
 function Link({ to, glyph, className, active, disabled, children, ...other }: LinkProps) {
