@@ -1,21 +1,25 @@
-$icon-scale: 1 !default;
+$icon-sizes: (2x 2, 3x 3, 5x 5, 8x 8) !default;
 
-$icon-sizes: (2x 2, 3x 3, 4x 4, 5x 5, 2 calc(2 / $icon-scale)) !default;
-
-.icon {
-    display: inline-block;
-    width: #{$icon-scale * 1em};
-    aspect-ratio: 1;
-    object-fit: contain;
+.icon,
+.album-art {
+    @extend %image-icon;
 }
 
-svg.icon {
-    vertical-align: #{($line-height-base - 1) * -0.5em};
-    fill: currentColor;
+.album-art {
+    border-radius: inherit;
+    @include font-scale(2);
 }
 
-@each $name, $scale in $icon-sizes {
+.table-touch-friendly .album-art {
+    @include font-scale(3);
+}
+
+.fallback {
+    @extend %image-fallback;
+}
+
+@each $name, $size in $icon-sizes {
     .icon#{infix($name)} {
-        @include font-scale(if($scale, $scale, $name));
+        @include font-scale(if($size, $size, $name));
     }
 }

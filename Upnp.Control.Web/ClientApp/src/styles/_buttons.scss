@@ -3,7 +3,7 @@
     > img,
     > svg {
         &:first-child {
-            @extend .icon;
+            @extend %image-icon;
         }
     }
 

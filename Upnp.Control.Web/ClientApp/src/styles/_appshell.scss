@@ -22,7 +22,7 @@
 
                 & > svg {
                     margin: unset;
-                    font-size: calc(1 / $icon-scale) * 1rem;
+                    font-size: 1rem;
                 }
             }
         }
@@ -62,7 +62,7 @@
 
                 & > svg {
                     margin-right: calc($spacer / 2);
-                    font-size: 1rem;
+                    font-size: calc($icon-scale * 1em);
                 }
             }
         }

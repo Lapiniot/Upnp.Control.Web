@@ -79,7 +79,7 @@ function renderGroup<T>(item: T, key: string, title: string, formatters: Attribu
 
 export function ItemInfo({ item }: { item: DIDLItem; }) {
     return <>
-        <AlbumArt itemClass={item.class} albumArts={item.albumArts} className="mx-auto mb-3 album-art-xxl" />
+        <AlbumArt itemClass={item.class} albumArts={item.albumArts} className="mx-auto mb-3 icon-8x rounded-1" />
         <div className="d-grid grid-auto-1fr gy-1 gx-2">
             {attributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item, key, title, formatters)).flat()}
             {item.res && resAttributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item.res as DIDLResource, key, title, formatters)).flat()}

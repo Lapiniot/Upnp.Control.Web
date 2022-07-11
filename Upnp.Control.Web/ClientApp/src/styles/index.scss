@@ -1,12 +1,14 @@
-﻿$enable-gradients: true;
-$enable-shadows: true;
-$enable-rounded: true;
-$enable-grid-classes: false;
-$enable-container-classes: false;
-$enable-rfs: true;
+﻿$enable-gradients:              true;
+$enable-shadows:                true;
+$enable-rounded:                true;
+$enable-grid-classes:           false;
+$enable-container-classes:      false;
+$enable-rfs:                    true;
 
-$primary: #6f42c1;
-$icon-scale: 1.25;
+$primary:                     #6f42c1;
+$icon-scale:                    1.25;
+$missing-image-content:         '';
+$border-radius-sm:              .1875rem;
 
 // Configuration
 @import "bootstrap/scss/functions";
@@ -15,21 +17,21 @@ $icon-scale: 1.25;
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
 
-$grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
-$card-border-radius: $border-radius-sm;
-$spoiler-border-radius: $border-radius-sm;
-$btn-border-radius: $border-radius-sm;
-$badge-border-radius: $border-radius-sm;
-$toast-border-radius: $border-radius-sm;
-$modal-content-border-radius: $border-radius-sm;
-$accordion-border-radius: $border-radius-sm;
-$dropdown-border-radius: $border-radius-sm;
+$grid-breakpoints:              map-remove($grid-breakpoints, xl, xxl);
+$card-border-radius:            $border-radius-sm;
+$spoiler-border-radius:         $border-radius-sm;
+$btn-border-radius:             $border-radius-sm;
+$badge-border-radius:           $border-radius-sm;
+$toast-border-radius:           $border-radius-sm;
+$modal-content-border-radius:   $border-radius-sm;
+$accordion-border-radius:       $border-radius-sm;
+$dropdown-border-radius:        $border-radius-sm;
 
-$breadcrumb-border-radius: 0;
-$breadcrumb-divider: quote("\276f");
-$breadcrumb-item-padding-x: map-get($spacers, 1);
+$breadcrumb-border-radius:      0;
+$breadcrumb-divider:            quote("\276f");
+$breadcrumb-item-padding-x:     map-get($spacers, 1);
 
-$card-box-shadow: $box-shadow-sm;
+$card-box-shadow:               $box-shadow-sm;
 
 // Layout & components
 @import "bootstrap/scss/root";
@@ -47,7 +49,7 @@ $card-box-shadow: $box-shadow-sm;
 @import "bootstrap/scss/modal";
 @import "bootstrap/scss/accordion";
 
-$zindex-dropdown: $zindex-sticky + 5;
+$zindex-dropdown:               $zindex-sticky + 5;
 @import "bootstrap/scss/dropdown";
 
 // Helpers
@@ -76,7 +78,6 @@ $primary-900: shade-color($primary, 80%) !default;
 @import "dropdown";
 @import "spoiler";
 @import "slider";
-@import "albumart";
 @import "player";
 @import "browser";
 @import "backdrop";

@@ -49,41 +49,7 @@
 }
 
 @mixin font-scale($scale) {
-    font-size: $scale * 1rem;
-}
-
-$missing-image-content: "\1F61F" !default;
-
-@mixin image-box {
-    position: relative;
-    text-align: center;
-    vertical-align: middle !important;
-    object-fit: contain;
-
-    // This renders in case of image download error
-    &:after {
-        content: $missing-image-content;
-        display: flex;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        color: $orange;
-        justify-content: center;
-        align-items: center;
-        outline: 1px dashed $orange;
-        outline-offset: -1px;
-        background-color: $orange-100;
-    }
-}
-
-@mixin image-box-sized($width, $height) {
-    width: $width;
-    min-width: $width;
-    height: $height;
-    min-height: $height;
-    line-height: $height;
+    font-size: $scale * 1rem !important;
 }
 
 @mixin overlay {
@@ -92,12 +58,44 @@ $missing-image-content: "\1F61F" !default;
     inset: 0;
 }
 
+$missing-image-content:     "\1F61F" !default;
+$missing-image-bg:          url(../../public/stack.svg#mood_bad) !default;
+$icon-scale:                1 !default;
+
+%image-icon {
+    width: 1em;
+    aspect-ratio: 1;
+    min-height: 0;
+    object-fit: contain;
+    font-size: calc($icon-scale * 1em);
+    line-height: initial;
+    fill: currentColor;
+}
+
+%image-fallback {
+    position: relative;
+    z-index: -1;
+    // This is rendered in case of image download error
+    &:after {
+        content: $missing-image-content;
+
+        @if($missing-image-content != "") {
+            display: grid;
+            place-content: center;
+            font-size: smaller;
+        }
+
+        position: absolute;
+        inset: 0;
+        background: no-repeat center / 80% $missing-image-bg $orange-100;
+        outline: 1px dashed $orange;
+        outline-offset: -1px;
+        border-radius: inherit;
+    }
+}
+
 %no-decoration {
     border: none;
     outline: none;
     box-shadow: none;
-}
-
-@mixin bg-translucent($color: #000000, $alpha: 0.25) {
-    background-color: rgba($color, $alpha);
 }
