@@ -5,11 +5,11 @@ import SvgSymbolsMergeTransform, { SvgSymbolsMergeOptions } from "./SvgTransform
 type SvgTransformOptions =
     (({ mode: "symbols" } & Omit<SvgSymbolsMergeOptions, "optimizations">) |
         ({ mode: "stack" } & Omit<SvgStackMergeOptions, "optimizations">)) &
-    { optimizations?: (SvgOptiomizations | ((svg: Element) => void))[] };
+    { transformations?: (SvgOptimizations | ((svg: Element) => void))[] };
 
 export default function (options: SvgTransformOptions = { mode: "symbols" }) {
-    const { mode, optimizations = [], ...other } = options;
-    const callbacks = optimizations.map(value => typeof (value) === "function" ? value : optimizers[value]);
+    const { mode, transformations = [], ...other } = options;
+    const callbacks = transformations.map(value => typeof (value) === "function" ? value : optimizers[value]);
     switch (mode) {
         case "symbols":
             return new SvgSymbolsMergeTransform({ ...other, optimizations: callbacks });
@@ -25,7 +25,7 @@ const optimizers = {
     removeInvisible: (svg: Element) => forEachContainer(svg, removeInvisible, 1)
 }
 
-type SvgOptiomizations = keyof typeof optimizers;
+type SvgOptimizations = keyof typeof optimizers;
 
 function forEachContainer(svg: Element, fix: (cntr: Element) => boolean, maxPasses: number) {
     const children = svg.childNodes();

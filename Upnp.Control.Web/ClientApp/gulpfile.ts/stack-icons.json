@@ -2,5 +2,6 @@
     "device/storage",
     "device/devices",
     "hardware/connected_tv",
-    "hardware/speaker"
+    "hardware/speaker",
+    "social/mood_bad"
 ]
