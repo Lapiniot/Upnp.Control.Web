@@ -1,14 +1,14 @@
-import React, { HTMLAttributes, ReactNode, useCallback } from "react";
+import { HTMLAttributes, ReactNode, useCallback } from "react";
 import { useDataFetch } from "../../components/DataFetch";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import Modal, { ModalProps } from "../../components/Modal";
+import Dialog, { DialogProps } from "../../components/Dialog";
+import { useNavigatorClickHandler } from "../../components/Navigator";
 import { usePortal } from "../../components/Portal";
 import $api from "../../components/WebApi";
 import DeviceIcon from "../common/DeviceIcon";
 import BrowserCore from "./BrowserCore";
 import { useContentBrowser } from "./BrowserUtils";
 import { BrowserProps } from "./BrowserView";
-import { useNavigatorClickHandler } from "../../components/Navigator";
 import { RowStateMapperFunction, RowStateProvider, useRowStates } from "./RowStateContext";
 import { DIDLItem, UpnpDevice } from "./Types";
 import { Route, Routes, VirtualRouter } from "./VirtualRouter";
@@ -17,9 +17,9 @@ export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivEleme
     browserProps?: BrowserProps<TContext>;
     rowStateMapper?: RowStateMapperFunction;
     confirmContent?: ((items: DIDLItem[]) => ReactNode) | string;
-    onConfirmed?: (selection: BrowseResult) => void;
+    onConfirmed(selection: BrowseResult): void;
     dismissOnOpen?: boolean;
-} & ModalProps
+} & DialogProps;
 
 type ConfirmProps = {
     confirmContent?: ((items: DIDLItem[]) => ReactNode) | string;
@@ -43,7 +43,7 @@ function MediaSourceList() {
                 <DeviceIcon device={d} />
                 {d.name}{d.description && ` (${d.description})`}
             </a>)}
-        </ul>;
+        </ul>
 }
 
 function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: ConfirmProps & { device: string }) {
@@ -52,9 +52,9 @@ function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: Confirm
     const callback = useCallback(() => onConfirmed?.({ device, keys: selection.map(i => i.id) }), [onConfirmed, selection, device]);
 
     return render(
-        <Modal.Button key="confirm" className="text-primary" dismiss disabled={selection.length === 0} onClick={callback}>
+        <Dialog.Button value="confirm" className="text-primary" disabled={selection.length === 0} onClick={callback}>
             {typeof confirmContent === "function" ? confirmContent(selection) : confirmContent}
-        </Modal.Button>)
+        </Dialog.Button>)
 }
 
 function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps<any> & { mapper?: RowStateMapperFunction } & ConfirmProps) {
@@ -66,9 +66,15 @@ function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps
 }
 
 export default function BrowserDialog(props: BrowserDialogProps) {
-    const { title, confirmContent, onConfirmed, browserProps = {}, rowStateMapper, ...other } = props;
-    return <Modal title={title} {...other} data-bs-keyboard={true}>
-        <Modal.Body className="vstack overflow-hidden p-0 position-relative border-bottom border-top" style={{ height: "60vh" }}>
+    const { className, title, confirmContent, onConfirmed, browserProps = {}, rowStateMapper, ...other } = props;
+
+    const renderFooter = useCallback(() => <Dialog.Footer id="browser-dialog-footer">
+        <Dialog.Button>Cancel</Dialog.Button>
+    </Dialog.Footer>, []);
+
+    return <Dialog className={`dialog-flush dialog-scrollable dialog-lg dialog-h-60 dialog-fullscreen-sm-down${className ? ` ${className}` : ""}`}
+        caption={title} {...other} renderFooter={renderFooter}>
+        <div className="vstack p-0 position-relative overflow-hidden border-bottom border-top">
             <VirtualRouter initialPath="/upnp">
                 <Routes>
                     <Route path="upnp">
@@ -81,11 +87,6 @@ export default function BrowserDialog(props: BrowserDialogProps) {
                     </Route>
                 </Routes>
             </VirtualRouter>
-        </Modal.Body>
-        <Modal.Footer id="browser-dialog-footer">
-            <React.Fragment>
-                <Modal.Button key="cancel" dismiss>Cancel</Modal.Button>
-            </React.Fragment>
-        </Modal.Footer>
-    </Modal>
+        </div>
+    </Dialog>
 }

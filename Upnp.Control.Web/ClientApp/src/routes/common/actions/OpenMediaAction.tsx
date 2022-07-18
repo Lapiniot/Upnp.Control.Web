@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react";
-import ModalHost from "../../../components/ModalHost";
+import DialogHost from "../../../components/DialogHost";
 import WebApi from "../../../components/WebApi";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
 import { DIDLTools } from "../DIDLTools";
@@ -14,7 +14,7 @@ type OpenActionProps = DeviceActionProps & {
 }
 
 export function OpenAction({ children, className, browserProps, device, category, rowStateMapper, ...other }: OpenActionProps) {
-    const modalHostRef = useRef<ModalHost>(null);
+    const dialogHostRef = useRef<DialogHost>(null);
     const playHandler = useCallback((data: BrowseResult) => {
         const deviceId = device.udn;
         const { keys: { 0: objectId }, device: source } = data;
@@ -22,8 +22,8 @@ export function OpenAction({ children, className, browserProps, device, category
         return WebApi.control(deviceId).play(objectId, source).fetch();
     }, [device]);
     const browseClickHandler = useCallback(() =>
-        modalHostRef.current?.show(
-            <BrowserDialog className="modal-lg modal-fullscreen-sm-down" title="Select media to play"
+        dialogHostRef.current?.show(
+            <BrowserDialog title="Select media to play"
                 onConfirmed={playHandler} browserProps={browserProps} rowStateMapper={rowStateMapper}>
             </BrowserDialog>)
         , [device]);
@@ -32,7 +32,7 @@ export function OpenAction({ children, className, browserProps, device, category
             aria-expanded="false" title="Browse for external media to play on this device" {...other} onClick={browseClickHandler}>
             {children}
         </button>
-        <ModalHost ref={modalHostRef} />
+        <DialogHost ref={dialogHostRef} />
     </>;
 }
 

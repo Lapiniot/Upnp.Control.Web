@@ -2,7 +2,7 @@ import React from "react";
 import { itemBookmarks } from "../../components/BookmarkService";
 import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
 import { MediaQueries } from "../../components/MediaQueries";
-import ModalHost from "../../components/ModalHost";
+import DialogHost from "../../components/DialogHost";
 import WebApi from "../../components/WebApi";
 import { useBookmarkButton } from "./BookmarkButton";
 import { BottomBar } from "./BottomBar";
@@ -11,7 +11,7 @@ import { BrowserActionMenu, renderActionMenuItem } from "./BrowserActionMenu";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { DIDLTools } from "./DIDLTools";
 import { CellTemplate, CellTemplateProps } from "./BrowserView";
-import ItemInfoModal from "./ItemInfoModal";
+import ItemInfoDialog from "./ItemInfoDialog";
 import Pagination from "./Pagination";
 import { RowStateProvider } from "./RowStateContext";
 import $s from "./Settings";
@@ -64,7 +64,7 @@ type BrowserState = {
 type BrowserProps = BrowserCoreProps<CellContext> & { device: string; };
 
 export class Browser extends React.Component<BrowserProps, BrowserState> {
-    modalHostRef = React.createRef<ModalHost>();
+    dialogHostRef = React.createRef<DialogHost>();
 
     constructor(props: BrowserProps) {
         super(props);
@@ -95,7 +95,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
 
     hotKeyHandler = (items: DIDLItem[], focused: DIDLItem | undefined, hotKey: HotKey) => {
         if (hotKey.equals(HotKeys.showInfo)) {
-            this.modalHostRef.current?.show(<ItemInfoModal item={focused ?? items[0]} />);
+            this.dialogHostRef.current?.show(<ItemInfoDialog item={focused ?? items[0]} />);
             return false;
         }
     }
@@ -114,7 +114,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 await this.playItems(udn, device, [item.id]);
             }
         } else if (action == "info") {
-            this.modalHostRef.current?.show(<ItemInfoModal item={item} />);
+            this.dialogHostRef.current?.show(<ItemInfoDialog item={item} />);
         }
     }
 
@@ -213,7 +213,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 </BottomBar>
                 {MediaQueries.largeScreen.matches && parents.length > 1 && <Breadcrumb className="border-top" items={parents} />}
             </div>
-            <ModalHost ref={this.modalHostRef} />
+            <DialogHost ref={this.dialogHostRef} />
         </>;
     }
 }

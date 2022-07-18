@@ -1,14 +1,14 @@
 import React, { HTMLAttributes, ReactElement, UIEventHandler } from "react";
 import { DataFetchProps } from "../../../components/DataFetch";
-import { TextValueEditDialog } from "../../../components/Dialogs";
+import PromptDialog from "../../../components/Dialog.Prompt";
 import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
 import { DropTarget } from "../../../components/DropTarget";
 import { PressHoldGestureRecognizer } from "../../../components/gestures/PressHoldGestureRecognizer";
 import { HotKey, HotKeys } from "../../../components/HotKey";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import { MediaQueries } from "../../../components/MediaQueries";
-import { ModalProps } from "../../../components/Modal";
-import ModalHost from "../../../components/ModalHost";
+import { DialogProps } from "../../../components/Dialog";
+import DialogHost from "../../../components/DialogHost";
 import { NavigatorProps } from "../../../components/Navigator";
 import $api from "../../../components/WebApi";
 import { BottomBar } from "../../common/BottomBar";
@@ -16,17 +16,17 @@ import Breadcrumb from "../../common/Breadcrumb";
 import { useContentBrowser } from "../../common/BrowserUtils";
 import Browser, { BrowserProps } from "../../common/BrowserView";
 import { DIDLTools } from "../../common/DIDLTools";
-import ItemInfoModal from "../../common/ItemInfoModal";
+import ItemInfoDialog from "../../common/ItemInfoDialog";
 import Pagination from "../../common/Pagination";
 import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext from "../../common/RowStateContext";
 import $s from "../../common/Settings";
 import { BrowseFetchResult, DIDLItem, PlaylistRouteParams, RowState } from "../../common/Types";
 import MainCell from "./CellTemplate";
-import { AddItemsModal } from "./dialogs/AddItemsModal";
-import { AddUrlModal } from "./dialogs/AddUrlModal";
-import { RemoveItemsModal } from "./dialogs/RemoveItemsModal";
-import { UploadPlaylistModal } from "./dialogs/UploadPlaylistModal";
+import AddItemsDialog from "./dialogs/AddItemsDialog";
+import AddUrlDialog from "./dialogs/AddUrlDialog";
+import RemoveItemsDialog from "./dialogs/RemoveItemsDialog";
+import UploadPlaylistDialog from "./dialogs/UploadPlaylistDialog";
 import { PlaybackStateContext, PlaybackStateProvider } from "./PlaybackStateContext";
 import { PlaylistItemActionMenu } from "./PlaylistItemActionMenu";
 import { PlaylistManagerService } from "./PlaylistManagerService";
@@ -62,7 +62,7 @@ export class PlaylistManagerCore
     extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
-    modalHostRef = React.createRef<ModalHost>();
+    dialogHostRef = React.createRef<DialogHost>();
     browserNodeRef = React.createRef<HTMLDivElement>();
     pressHoldGestureRecognizer: PressHoldGestureRecognizer<HTMLDivElement>;
     service: PlaylistManagerService;
@@ -123,8 +123,8 @@ export class PlaylistManagerCore
 
     private queryChangedHandler = () => this.forceUpdate();
 
-    private modal(modal: ReactElement<ModalProps>) {
-        this.modalHostRef.current?.show(modal);
+    private dialog(dialog: ReactElement<DialogProps>) {
+        this.dialogHostRef.current?.show(dialog);
     }
 
     private createHandler(impl: (item: DIDLItem) => void): UIEventHandler<HTMLElement> {
@@ -162,28 +162,28 @@ export class PlaylistManagerCore
     private showInfo = (id: string) => {
         var item = this.props.dataContext?.source.items?.find(i => i.id === id);
         if (!item) return;
-        this.modal(<ItemInfoModal item={item} />);
+        this.dialog(<ItemInfoDialog item={item} />);
     }
 
     //#endregion
 
     //#region Action UI handlers
 
-    private createPlaylist = () => this.modal(<TextValueEditDialog title="Create new playlist" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} />);
+    private createPlaylist = () => this.dialog(<PromptDialog caption="Create new playlist" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} />);
 
     private deletePlaylists = (items: DIDLItem[]) => {
         const onRemove = () => this.delete(items.map(i => i.id));
 
-        this.modal(<RemoveItemsModal title="Do you want to delete playlist(s)?" onRemove={onRemove}>
+        this.dialog(<RemoveItemsDialog title="Do you want to delete playlist(s)?" onRemove={onRemove}>
             <ul className="list-unstyled">
                 {[items?.map(e => <li key={e.id}>{e.title}</li>)]}
             </ul>
-        </RemoveItemsModal>);
+        </RemoveItemsDialog>);
     }
 
     private renamePlaylist = (item: DIDLItem) => {
         const onRename = (value: string) => this.rename(item.id, value);
-        this.modal(<TextValueEditDialog title="Rename playlist" confirmText="Rename" defaultValue={item.title} onConfirmed={onRename} />);
+        this.dialog(<PromptDialog caption="Rename playlist" confirmText="Rename" defaultValue={item.title} onConfirmed={onRename} />);
     }
 
     private copyPlaylist = (item: DIDLItem) => {
@@ -193,24 +193,24 @@ export class PlaylistManagerCore
     private deletePlaylistItems = (items: DIDLItem[]) => {
         const onRemove = () => this.deleteItems(items.map(i => i.id));
 
-        this.modal(<RemoveItemsModal onRemove={onRemove}>
+        this.dialog(<RemoveItemsDialog onRemove={onRemove}>
             <ul className="list-unstyled">{[items?.map(e => <li key={e.id}>{e.title}</li>)]}</ul>
-        </RemoveItemsModal>);
+        </RemoveItemsDialog>);
     }
 
-    private addPlaylistItems = (id: string) => this.modal(<AddItemsModal browserProps={dialogBrowserProps}
+    private addPlaylistItems = (id: string) => this.dialog(<AddItemsDialog browserProps={dialogBrowserProps}
         onConfirmed={({ device, keys }) => this.addItems(id, device, keys)}
         rowStateMapper={getBrowserDialogRowState} />);
 
 
     private addPlaylistUrl = (id: string) => {
         const addUrl = (url: string, title?: string, useProxy?: boolean) => this.addUrl(id, url, title, useProxy);
-        return this.modal(<AddUrlModal useProxy={$s.get("useDlnaProxy")} onAdd={addUrl} />);
+        return this.dialog(<AddUrlDialog useProxy={$s.get("useDlnaProxy")} onAdd={addUrl} />);
     }
 
     private addPlaylistFiles = (id: string) => {
         const addFiles = (data: FormData) => this.addFiles(id, data);
-        return this.modal(<UploadPlaylistModal useProxy={$s.get("useDlnaProxy")} onAdd={addFiles} />);
+        return this.dialog(<UploadPlaylistDialog useProxy={$s.get("useDlnaProxy")} onAdd={addFiles} />);
     }
 
     //#endregion
@@ -241,7 +241,7 @@ export class PlaylistManagerCore
     hotKeyHandler = (selection: DIDLItem[], focused: DIDLItem | undefined, hotKey: HotKey) => {
         const rootLevel = this.props.id === "PL:";
         if (hotKey.equals(HotKeys.showInfo)) {
-            this.modalHostRef.current?.show(<ItemInfoModal item={focused ?? selection[0]} />);
+            this.dialogHostRef.current?.show(<ItemInfoDialog item={focused ?? selection[0]} />);
             return false;
         }
         if (hotKey.equals(HotKeys.delete)) {
@@ -374,7 +374,7 @@ export class PlaylistManagerCore
                         </div>
                     </PlaylistRowStateProvider>
                 </PlaybackStateProvider>
-                <ModalHost ref={this.modalHostRef} />
+                <DialogHost ref={this.dialogHostRef} />
             </DropTarget >
         </>
     }

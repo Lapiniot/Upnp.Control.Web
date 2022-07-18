@@ -46,7 +46,6 @@ $card-box-shadow:               $box-shadow-sm;
 @import "bootstrap/scss/toasts";
 @import "bootstrap/scss/list-group";
 @import "bootstrap/scss/close";
-@import "bootstrap/scss/modal";
 @import "bootstrap/scss/accordion";
 
 $zindex-dropdown:               $zindex-sticky + 5;
@@ -83,6 +82,7 @@ $primary-900: shade-color($primary, 80%) !default;
 @import "backdrop";
 @import "icons";
 @import "alert";
+@import "dialog";
 
 // Utilities
 @import "utilities";

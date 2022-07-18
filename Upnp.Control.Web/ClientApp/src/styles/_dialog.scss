@@ -1,0 +1,150 @@
+.dialog {
+    --#{$prefix}dialog-width: #{$modal-md};
+    --#{$prefix}dialog-height: fit-content;
+    --#{$prefix}dialog-margin: #{$modal-dialog-margin};
+    --#{$prefix}dialog-padding: #{$modal-inner-padding};
+    --#{$prefix}dialog-color: #{$modal-content-color};
+    --#{$prefix}dialog-bg: #{$modal-content-bg};
+    --#{$prefix}dialog-border-color: #{$modal-content-border-color};
+    --#{$prefix}dialog-border-width: #{$modal-content-border-width};
+    --#{$prefix}dialog-border-radius: #{$modal-content-border-radius};
+    --#{$prefix}dialog-box-shadow: #{$modal-content-box-shadow-xs};
+    --#{$prefix}dialog-header-gap: #{$modal-footer-margin-between};
+    --#{$prefix}dialog-header-bg: #{$modal-footer-bg};
+    --#{$prefix}dialog-header-padding-x: #{$modal-header-padding-x};
+    --#{$prefix}dialog-header-padding-y: #{$modal-header-padding-y};
+    --#{$prefix}dialog-header-border-color: #{$modal-header-border-color};
+    --#{$prefix}dialog-header-border-width: 0;
+    --#{$prefix}dialog-title-line-height: #{$modal-title-line-height};
+    --#{$prefix}dialog-footer-gap: #{$modal-footer-margin-between};
+    --#{$prefix}dialog-footer-bg: #{$modal-footer-bg};
+    --#{$prefix}dialog-footer-border-color: #{$modal-footer-border-color};
+    --#{$prefix}dialog-footer-border-width: 0;
+
+    display: flex;
+    flex-flow: column nowrap;
+    inset: 0;
+    width: var(--#{$prefix}dialog-width);
+    height: var(--#{$prefix}dialog-height);
+    max-width: calc(100vw - 2 * var(--#{$prefix}dialog-margin));
+    max-height: calc(100vh - 2 * var(--#{$prefix}dialog-margin));
+    padding: 0;
+    color: var(--#{$prefix}dialog-color);
+    pointer-events: auto;
+    background-color: var(--#{$prefix}dialog-bg);
+    border: var(--#{$prefix}dialog-border-width) solid var(--#{$prefix}dialog-border-color);
+    @include border-radius(var(--#{$prefix}dialog-border-radius));
+    @include box-shadow(var(--#{$prefix}dialog-box-shadow));
+    z-index: $zindex-modal;
+    transition: opacity 500ms ease;
+
+    &:not([open]) {
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    &::backdrop {
+        --#{$prefix}backdrop-bg-rgb: 0 0 0;
+        --#{$prefix}backdrop-bg-opacity: 0.5;
+        --#{$prefix}backdrop-blur-radius: 0px;
+        background-color: rgba(var(--#{$prefix}backdrop-bg-rgb) / var(--#{$prefix}backdrop-bg-opacity));
+        backdrop-filter: blur(var(--#{$prefix}backdrop-blur-radius));
+    }
+
+    > form {
+        display: flex;
+        flex-flow: column nowrap;
+        flex: 1 1 auto;
+    }
+}
+
+.dialog-scrollable {
+    > form {
+        overflow: hidden;
+    }
+
+    .dialog-body {
+        overflow: hidden auto;
+    }
+}
+
+.dialog-flush {
+    .dialog-body {
+        --#{$prefix}dialog-padding: 0;
+    }
+}
+
+.dialog-body {
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1 1 auto;
+    padding: var(--#{$prefix}dialog-padding);
+}
+
+.dialog-header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: var(--#{$prefix}dialog-header-gap);
+    padding: var(--#{$prefix}dialog-header-padding-y) var(--#{$prefix}dialog-header-padding-x);
+    background-color: var(--#{$prefix}dialog-header-bg);
+    border-bottom: var(--#{$prefix}dialog-header-border-width) solid var(--#{$prefix}dialog-header-border-color);
+
+    .dialog-title {
+        line-height: var(--#{$prefix}dialog-title-line-height);
+        margin: 0;
+    }
+
+    .btn-close {
+        flex: 0 0 auto;
+        padding: calc(var(--#{$prefix}dialog-header-padding-y) * 0.5) calc(var(--#{$prefix}dialog-header-padding-x) * 0.5);
+        margin: calc(var(--#{$prefix}dialog-header-padding-y) * -0.5) calc(var(--#{$prefix}dialog-header-padding-x) * -0.5) calc(var(--#{$prefix}dialog-header-padding-y) * -0.5) auto;
+    }
+}
+
+.dialog-footer {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0;
+    padding: var(--#{$prefix}dialog-padding);
+    gap: var(--#{$prefix}dialog-footer-gap);
+    background-color: var(--#{$prefix}dialog-footer-bg);
+    border-top: var(--#{$prefix}dialog-footer-border-width) solid var(--#{$prefix}dialog-footer-border-color);
+}
+
+$fullscreen-sizes: null sm;
+
+@mixin dialog-fullscreen {
+    --#{$prefix}dialog-border-width: 0;
+    --#{$prefix}dialog-box-shadow: none;
+    --#{$prefix}dialog-border-radius: 0;
+    max-width: 100vw;
+    max-height: 100vh;
+    height: auto;
+}
+
+@each $size in $fullscreen-sizes {
+    @if($size) {
+        @include media-breakpoint-down($size) {
+            .dialog-fullscreen-#{$size}-down {
+                @include dialog-fullscreen;
+            }
+        }
+    }
+
+    @else {
+        .dialog-fullscreen {
+            @include dialog-fullscreen;
+        }
+    }
+}
+
+.dialog-lg {
+    --#{$prefix}dialog-width: #{$modal-lg};
+}
+
+.dialog-h-60 {
+    --#{$prefix}dialog-height: 60vh;
+}

@@ -8,7 +8,6 @@ function renderConfirmButton({ length }: DIDLItem[]): JSX.Element {
     </>
 }
 
-export function AddItemsModal(props: BrowserDialogProps) {
-    return <BrowserDialog title="Select items to add" className="modal-lg modal-fullscreen-sm-down"
-        confirmContent={renderConfirmButton} {...props} />
+export default function AddItemsDialog(props: BrowserDialogProps) {
+    return <BrowserDialog title="Select items to add" confirmContent={renderConfirmButton} {...props} />
 }
