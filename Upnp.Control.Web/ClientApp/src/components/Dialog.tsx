@@ -1,7 +1,8 @@
 import {
     ButtonHTMLAttributes, Component, createRef, DialogHTMLAttributes,
-    FormEvent, HTMLAttributes, MouseEvent, ReactNode, SyntheticEvent
+    FormEvent, HTMLAttributes, MouseEvent, ReactNode, SyntheticEvent, useRef
 } from "react";
+import { useAutoFocus } from "./AutoFocusHook";
 
 interface DialogEventProps {
     onOpen?(): void;
@@ -156,9 +157,11 @@ export default class Dialog extends Component<DialogProps>{
         return <footer className={`dialog-footer${className ? ` ${className}` : ""}`} {...other}></footer>
     }
 
-    static Button({ className, icon, children, ...other }: DialogButtonProps) {
+    static Button({ className, icon, children, autoFocus, ...other }: DialogButtonProps) {
         const cls = `btn btn-plain text-uppercase p-2 py-1${className ? ` ${className}` : ""}`;
-        return <button type="submit" className={cls} {...other}>
+        const ref = useRef<HTMLButtonElement>(null);
+        useAutoFocus(ref, autoFocus);
+        return <button ref={ref} type="submit" className={cls} {...other}>
             {icon && <svg><use href={icon} /></svg>}{children}
         </button>
     }

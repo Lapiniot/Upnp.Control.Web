@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useAutoFocusRef } from "../../../../components/AutoFocusHook";
 import Dialog, { DialogProps } from "../../../../components/Dialog";
 
 type UploadPlaylistDialogProps = DialogProps & {
@@ -15,7 +16,7 @@ export default function UploadPlaylistDialog({ onAdd, onDismissed, useProxy, ...
 
     const renderFooter = useCallback(() =>
         <Dialog.Footer>
-            <Dialog.Button>Cancel</Dialog.Button>
+            <Dialog.Button autoFocus>Cancel</Dialog.Button>
             <Dialog.Button value="add" className="text-primary" icon="symbols.svg#playlist_add">Add</Dialog.Button>
         </Dialog.Footer>, []);
 

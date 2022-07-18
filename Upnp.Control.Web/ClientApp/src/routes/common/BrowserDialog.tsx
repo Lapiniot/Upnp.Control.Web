@@ -69,7 +69,7 @@ export default function BrowserDialog(props: BrowserDialogProps) {
     const { className, title, confirmContent, onConfirmed, browserProps = {}, rowStateMapper, ...other } = props;
 
     const renderFooter = useCallback(() => <Dialog.Footer id="browser-dialog-footer">
-        <Dialog.Button>Cancel</Dialog.Button>
+        <Dialog.Button autoFocus>Cancel</Dialog.Button>
     </Dialog.Footer>, []);
 
     return <Dialog className={`dialog-flush dialog-scrollable dialog-lg dialog-h-60 dialog-fullscreen-sm-down${className ? ` ${className}` : ""}`}

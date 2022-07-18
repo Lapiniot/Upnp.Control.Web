@@ -10,7 +10,7 @@ export default function RemoveItemsDialog({ onDismissed, onRemove, children, cla
     }, [onDismissed, onRemove]);
 
     const renderFooter = useCallback(() => <Dialog.Footer>
-        <Dialog.Button>Cancel</Dialog.Button>
+        <Dialog.Button autoFocus>Cancel</Dialog.Button>
         <Dialog.Button value="remove" className="text-danger" icon="symbols.svg#delete">Remove</Dialog.Button>
     </Dialog.Footer>, []);
 

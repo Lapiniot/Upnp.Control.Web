@@ -17,7 +17,7 @@ export default function AddUrlDialog({ onAdd, onDismissed, feedUrl, feedTitle, u
     }, [onDismissed, onAdd]);
 
     const renderFooter = useCallback(() => <Dialog.Footer>
-        <Dialog.Button>Cancel</Dialog.Button>
+        <Dialog.Button autoFocus>Cancel</Dialog.Button>
         <Dialog.Button value="add" className="text-primary" icon="symbols.svg#add">Add</Dialog.Button>
     </Dialog.Footer>, []);
 

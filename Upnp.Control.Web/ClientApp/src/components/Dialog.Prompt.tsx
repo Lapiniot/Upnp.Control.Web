@@ -17,12 +17,10 @@ export default function (props: TextValueEditDialogProps) {
         onDismissed?.(action, data);
     }, [onConfirmed, onDismissed]);
 
-    const renderFooter = useCallback(() => {
-        return <Dialog.Footer>
-            <Dialog.Button>Cancel</Dialog.Button>
-            <Dialog.Button value="confirm" className="text-primary">{confirmText}</Dialog.Button>
-        </Dialog.Footer>
-    }, [confirmText]);
+    const renderFooter = useCallback(() => <Dialog.Footer>
+        <Dialog.Button autoFocus>Cancel</Dialog.Button>
+        <Dialog.Button value="confirm" className="text-primary">{confirmText}</Dialog.Button>
+    </Dialog.Footer>, [confirmText]);
 
     return <Dialog {...other} onDismissed={onDismissedHandler} renderFooter={renderFooter}>
         <input type="text" name="text-input" className="form-control" defaultValue={defaultValue}
