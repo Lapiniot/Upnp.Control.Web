@@ -65,8 +65,9 @@ $icon-scale:                1 !default;
 %image-icon {
     position: relative;
     width: 1em;
-    aspect-ratio: 1;
-    min-height: 0;
+    height: 1em;
+    min-width: 1em;
+    min-height: 1em;
     object-fit: contain;
     font-size: calc($icon-scale * 1em);
     line-height: initial;
