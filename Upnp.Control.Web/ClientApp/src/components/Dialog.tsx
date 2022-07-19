@@ -50,41 +50,37 @@ export default class Dialog extends Component<DialogProps>{
     private onMutation = (mutations: MutationRecord[]) => {
         for (let i = 0; i < mutations.length; i++) {
             const { attributeName, target } = mutations[i];
-            if (attributeName !== "open") continue;
+            if (attributeName !== "open")
+                continue;
             const dialog = target as HTMLDialogElement;
-            if (dialog.hasAttribute("open")) {
+            if (dialog.hasAttribute("open"))
                 this.onOpen();
-            }
             break;
         }
     }
 
     override componentDidMount() {
-        const dialog = this.dialogRef.current;
-        if (dialog) {
-            this.observer.observe(dialog, { attributes: true });
-            dialog.addEventListener("open", this.onOpen);
-            if (this.props.immediate) {
-                dialog.showModal();
-            }
-        }
+        const dialog = this.dialogRef.current!;
+        this.observer.observe(dialog, { attributes: true });
+        if (this.props.immediate)
+            dialog.showModal();
     }
 
     override componentDidUpdate() {
-        if (this.props.immediate) {
+        if (this.props.immediate)
             this.dialogRef.current?.showModal();
-        }
     }
 
     override componentWillUnmount() {
-        this.dialogRef.current?.removeEventListener("open", this.onOpen);
         this.observer.disconnect();
     }
 
-    onOpen = () => {
+    onOpen = async () => {
+        const dialog = this.dialogRef.current!;
         document.body.classList.add("modal-open");
+        await this.animationsFinished(dialog);
+        dialog?.removeAttribute("inert");
         this.props.onOpen?.();
-        this.dialogRef.current?.removeAttribute("inert");
     }
 
     onClose = async (event: SyntheticEvent<HTMLDialogElement>) => {
@@ -93,10 +89,10 @@ export default class Dialog extends Component<DialogProps>{
 
         dialog.setAttribute("inert", "");
         await Promise.allSettled(dialog.getAnimations().map(a => a.finished));
-        onClose?.(event);
+        document.body.classList.remove("modal-open");
 
+        onClose?.(event);
         if (!event.defaultPrevented) {
-            document.body.classList.remove("modal-open");
             if (!onDismissed) return;
             if (dialog.returnValue && this.formRef.current) {
                 onDismissed(dialog.returnValue, new FormData(this.formRef.current));
@@ -106,7 +102,7 @@ export default class Dialog extends Component<DialogProps>{
         }
     }
 
-    onClick = (event: MouseEvent<HTMLDialogElement>) => {
+    private onClick = (event: MouseEvent<HTMLDialogElement>) => {
         this.props.onClick?.(event);
         if (!event.defaultPrevented) {
             const dialog = event.target as HTMLDialogElement;
@@ -116,7 +112,7 @@ export default class Dialog extends Component<DialogProps>{
         }
     }
 
-    onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    private onSubmit = (event: FormEvent<HTMLFormElement>) => {
         const { currentTarget: form, nativeEvent: { submitter } } = event;
         if (!submitter) return;
         if (submitter === document.activeElement || submitter !== form.elements[0]) {
@@ -124,6 +120,10 @@ export default class Dialog extends Component<DialogProps>{
             form.classList.add("was-validated");
         }
         event.preventDefault();
+    }
+
+    private animationsFinished(element: HTMLElement) {
+        return Promise.allSettled(element.getAnimations().map(a => a.finished));
     }
 
     render() {
@@ -142,22 +142,22 @@ export default class Dialog extends Component<DialogProps>{
         </dialog>
     }
 
-    static Header({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) {
+    public static Header({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) {
         return <header className={`dialog-header${className ? ` ${className}` : ""}`} {...other}>
             {children}
             <button className="btn-close" aria-label="Close" />
         </header>
     }
 
-    static Body({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
+    public static Body({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
         return <article className={`dialog-body${className ? ` ${className}` : ""}`} {...other}></article>
     }
 
-    static Footer({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
+    public static Footer({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
         return <footer className={`dialog-footer${className ? ` ${className}` : ""}`} {...other}></footer>
     }
 
-    static Button({ className, icon, children, autoFocus, ...other }: DialogButtonProps) {
+    public static Button({ className, icon, children, autoFocus, ...other }: DialogButtonProps) {
         const cls = `btn btn-plain text-uppercase p-2 py-1${className ? ` ${className}` : ""}`;
         const ref = useRef<HTMLButtonElement>(null);
         useAutoFocus(ref, autoFocus);
