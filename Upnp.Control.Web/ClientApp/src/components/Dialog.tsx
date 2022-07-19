@@ -63,7 +63,7 @@ export default class Dialog extends Component<DialogProps>{
         const dialog = this.dialogRef.current!;
         this.observer.observe(dialog, { attributes: true });
         if (this.props.immediate)
-            dialog.showModal();
+            requestAnimationFrame(() => dialog.showModal());
     }
 
     override componentDidUpdate() {
