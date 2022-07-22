@@ -29,18 +29,20 @@
     max-width: calc(100vw - 2 * var(--#{$prefix}dialog-margin));
     max-height: calc(100vh - 2 * var(--#{$prefix}dialog-margin));
     padding: 0;
+    z-index: $zindex-modal;
     color: var(--#{$prefix}dialog-color);
     pointer-events: auto;
     background-color: var(--#{$prefix}dialog-bg);
     border: var(--#{$prefix}dialog-border-width) solid var(--#{$prefix}dialog-border-color);
     @include border-radius(var(--#{$prefix}dialog-border-radius));
     @include box-shadow(var(--#{$prefix}dialog-box-shadow));
-    z-index: $zindex-modal;
-    transition: opacity 500ms ease;
+    @include animation(var(--#{$animation-prefix}slide-pop));
+    transition: var(--#{$transition-prefix}fade);
 
     &:not([open]) {
         pointer-events: none;
         opacity: 0;
+        @include animation(var(--#{$animation-prefix}pop-out));
     }
 
     &::backdrop {

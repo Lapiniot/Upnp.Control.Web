@@ -1,3 +1,14 @@
+$transition-prefix: "tr-";
+$animation-prefix: "an-";
+
+@mixin animation($animations...) {
+    animation: $animations;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+    }
+}
+
 @keyframes spin {
     from {
         transform: rotate(0deg);
@@ -8,28 +19,66 @@
     }
 }
 
-@keyframes fade {
-    0% {
-        color: rgba($color: #fff, $alpha: 1);
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: var(--#{$animation-prefix}pulse-opacity-1);
     }
 
     50% {
-        color: rgba($color: #fff, $alpha: 0.7);
+        opacity: var(--#{$animation-prefix}pulse-opacity-2);
+    }
+}
+
+@keyframes pop-in {
+    from {
+        transform: scale3d(var(--#{$animation-prefix}pop-scale), var(--#{$animation-prefix}pop-scale), 1);
+    }
+}
+
+@keyframes pop-out {
+    to {
+        transform: scale3d(var(--#{$animation-prefix}pop-scale), var(--#{$animation-prefix}pop-scale), 1);
     }
 
-    100% {
-        color: rgba($color: #fff, $alpha: 1);
+}
+
+@keyframes slide-up {
+    from {
+        transform: translate3d(0, var(--#{$animation-prefix}slide-y), 0);
     }
+}
+
+@keyframes slide-pop {
+    from {
+        transform: translate3d(0, var(--#{$animation-prefix}slide-y), 0) scale3d(var(--#{$animation-prefix}pop-scale), var(--#{$animation-prefix}pop-scale), 1);
+    }
+}
+
+:root {
+    --#{$transition-prefix}fade: opacity 500ms ease;
+    --#{$animation-prefix}pulse-opacity-1: 1;
+    --#{$animation-prefix}pulse-opacity-2: 0.7;
+    --#{$animation-prefix}pop-scale: 0.5;
+    --#{$animation-prefix}slide-y: 50%;
+    --#{$animation-prefix}pulse: pulse 2s ease-in-out infinite;
+    --#{$animation-prefix}spin: spin 2s linear infinite;
+    --#{$animation-prefix}pop-in: pop-in 500ms ease-in;
+    --#{$animation-prefix}pop-out: pop-out 500ms ease-out;
+    --#{$animation-prefix}slide-up: slide-up 500ms ease;
+    --#{$animation-prefix}slide-pop: slide-pop 500ms ease;
 }
 
 .animate-spin {
-    animation: spin 2s linear 0s infinite;
+    @include animation(var(--#{$animation-prefix}spin));
 }
 
 .animate-pulse {
-    animation: fade 1.5s ease-in-out infinite;
+    @include animation(var(--#{$animation-prefix}pulse));
 }
 
 .fade-in-out {
-    @include transition(opacity 250ms ease-in-out 125ms);
+    @include transition(var(--#{$transition-prefix}fade));
+    transition-delay: 125ms;
 }
