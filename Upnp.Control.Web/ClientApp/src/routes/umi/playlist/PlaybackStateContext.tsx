@@ -57,25 +57,23 @@ export function PlaybackStateProvider({ device, getTrackUrlHook, ...other }: Pla
     });
 
     useEffect(() => {
-        (async function init() {
+        (async function () {
             try {
                 const timeout = $s.get("timeout");
                 const ctrl = $api.control(device);
                 const state = await ctrl.state(true).json(timeout);
-                if (state.medium === "X-MI-AUX") {
+                if (state.medium === "X-MI-AUX" || (state.medium === "NONE" && state.current?.id === "1")) {
                     dispatch({ type: "UPDATE", state: { playbackState: state.state, playlist: "aux", track: undefined } });
                 } else {
                     const pls = $api.playlist(device);
-                    const { 0: { "playlist_transport_uri": playlist }, 1: { currentTrack } } = await Promise.all([
-                        await pls.state().json(timeout),
-                        await ctrl.position().json(timeout)
-                    ]);
+                    const { 0: { "playlist_transport_uri": playlist }, 1: { currentTrack } } =
+                        await Promise.all([pls.state().json(timeout), ctrl.position().json(timeout)]);
                     dispatch({ type: "UPDATE", state: { playbackState: state.state, playlist, track: currentTrack } });
                 }
             } catch (e) {
                 console.error(e);
             }
-        })();
+        })()
     }, [device]);
 
     const handlers = useMemo(() => ({
