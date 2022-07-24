@@ -25,12 +25,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0-preview.5.22301.12" />
-    <PackageReference Include="System.Threading.Channels" Version="7.0.0-preview.5.22301.12" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.0-preview.5.22303.8" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0-preview.5.22301.12" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0-preview.5.22301.12" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0-preview.6.22324.4" />
+    <PackageReference Include="System.Threading.Channels" Version="7.0.0-preview.6.22324.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.0-preview.6.22330.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0-preview.6.22324.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0-preview.6.22324.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
