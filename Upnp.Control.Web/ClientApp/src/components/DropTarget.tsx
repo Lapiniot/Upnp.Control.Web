@@ -1,6 +1,5 @@
 import React from "react";
 import { DragEvent, HTMLAttributes } from "react";
-import { Indicator } from "./LoadIndicator";
 
 type DropTargetProps = Omit<HTMLAttributes<HTMLDivElement>, "onDrop"> & {
     acceptedTypes?: string[];
@@ -72,14 +71,15 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
         return <div {...other} onDragEnter={this.dragEnterHandler} onDragLeave={this.dragLeaveHandler}
             onDragOver={this.dragOverHandler} onDrop={this.dropHandler}>
             {children}
-            {dragging && <div className={`pe-none d-flex border border-2 border-${color} backdrop-${color}`}>
-                <Indicator className={`m-auto border-${color} p-3`} style={{ borderStyle: "dashed", borderWidth: "2px" }}>
+            {dragging && <div className={`d-flex pe-none border border-2 border-${color} backdrop-${color}`}>
+                <div className={`d-flex flex-column flex-fill m-auto justify-content-center align-items-center bg-${color} bg-gradient text-white rounded-1 shadow-sm p-3`}
+                    style={{ maxWidth: "min(40ch,80%)" }}>
                     <svg className="icon icon-3x">
                         <use href={`symbols.svg#${acceptable ? "upload_file" : "not_interested"}`} />
                     </svg>
-                    <p className="fw-semibold">{acceptable ? "Drop playlist files here" : "Only playlist files (.m3u, .m3u8) are supported"}</p>
-                </Indicator>
+                    <p className="fw-semibold m-0 text-center">{acceptable ? "Drop playlist files" : "Only playlist files (.m3u, .m3u8) are supported"}</p>
+                </div>
             </div>}
-        </div>;
+        </div>
     }
 }
