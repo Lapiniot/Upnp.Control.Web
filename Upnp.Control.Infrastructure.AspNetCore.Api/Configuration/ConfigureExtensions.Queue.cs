@@ -10,22 +10,19 @@ public static partial class ConfigureExtensions
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     public static RouteGroupBuilder MapQueueApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        var tags = new[] { "Queue" };
-
-        var group = routeBuilder.MapGroup(pattern);
+        var group = routeBuilder.MapGroup(pattern)
+            .WithTags("Queue");
 
         group.MapPost("", QueueServices.AddAsync)
             .Accepts<MediaSource>(false, "application/json")
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest)
-            .WithTags(tags);
+            .Produces(StatusCodes.Status400BadRequest);
 
         group.MapDelete("", QueueServices.RemoveAllAsync)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest)
-            .WithTags(tags);
+            .Produces(StatusCodes.Status400BadRequest);
 
         return group;
     }

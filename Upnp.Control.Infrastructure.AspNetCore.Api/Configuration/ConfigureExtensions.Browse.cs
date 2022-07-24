@@ -10,12 +10,10 @@ public static partial class ConfigureExtensions
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     public static RouteGroupBuilder MapBrowseContentApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        ArgumentNullException.ThrowIfNull(pattern);
-
-        var group = routeBuilder.MapGroup(pattern);
+        var group = routeBuilder.MapGroup(pattern)
+            .WithTags("Content Directory");
 
         group.MapGet("", ContentDirectoryServices.BrowseAsync)
-            .WithTags("Content Directory")
             .Produces<CDContent>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest);

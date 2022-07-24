@@ -10,20 +10,15 @@ public static partial class ConfigureExtensions
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     public static RouteGroupBuilder MapDevicesApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        ArgumentNullException.ThrowIfNull(pattern);
-
-        var tags = new[] { "Devices" };
-
-        var group = routeBuilder.MapGroup(pattern);
+        var group = routeBuilder.MapGroup(pattern)
+            .WithTags("Devices");
 
         group.MapGet("{id}", DeviceServices.GetAsync)
-            .WithTags(tags)
             .Produces<UpnpDevice>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest);
 
         group.MapGet("", DeviceServices.GetAllAsync)
-            .WithTags(tags)
             .Produces<IAsyncEnumerable<UpnpDevice>>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status400BadRequest);
 

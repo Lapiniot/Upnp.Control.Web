@@ -10,27 +10,23 @@ public static partial class ConfigureExtensions
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     public static RouteGroupBuilder MapConnectionsApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        var tags = new[] { "UPnP Connections" };
-
-        var group = routeBuilder.MapGroup(pattern);
+        var group = routeBuilder.MapGroup(pattern)
+            .WithTags("UPnP Connections");
 
         group.MapGet("protocol-info", ConnectionsServices.GetProtocolInfoAsync)
             .Produces<CMProtocolInfo>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest)
-            .WithTags(tags);
+            .Produces(StatusCodes.Status400BadRequest);
 
         group.MapGet("connections", ConnectionsServices.GetConnectionsAsync)
             .Produces<IEnumerable<string>>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest)
-            .WithTags(tags);
+            .Produces(StatusCodes.Status400BadRequest);
 
         group.MapGet("connections/{connectionId}", ConnectionsServices.GetConnectionInfoAsync)
             .Produces<CMConnectionInfo>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest)
-            .WithTags(tags);
+            .Produces(StatusCodes.Status400BadRequest);
 
         return group;
     }

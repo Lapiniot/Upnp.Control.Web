@@ -10,21 +10,19 @@ public static partial class ConfigureExtensions
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     public static RouteGroupBuilder MapUpnpEventCallbacks(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        var group = routeBuilder.MapGroup(pattern);
+        var group = routeBuilder.MapGroup(pattern).ExcludeFromDescription();
         var methods = new[] { "NOTIFY" };
         var additionalContentTypes = new[] { "text/xml" };
 
         group.MapMethods("avt", methods, UpnpEventCallbackServices.NotifyAVTransportAsync)
             .Accepts<HttpRequest>(false, "application/xml", additionalContentTypes)
             .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status400BadRequest)
-            .ExcludeFromDescription();
+            .Produces(StatusCodes.Status400BadRequest);
 
         group.MapMethods("rc", methods, UpnpEventCallbackServices.NotifyRenderingControlAsync)
             .Accepts<HttpRequest>(false, "application/xml", additionalContentTypes)
             .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status400BadRequest)
-            .ExcludeFromDescription();
+            .Produces(StatusCodes.Status400BadRequest);
 
         return group;
     }
