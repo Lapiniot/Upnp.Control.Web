@@ -77,7 +77,7 @@ export default class Dialog extends Component<DialogProps>{
 
     onOpen = async () => {
         const dialog = this.dialogRef.current!;
-        document.body.classList.add("modal-open");
+        document.body.dataset["modalOpen"] = "1";
         await this.animationsFinished(dialog);
         dialog?.removeAttribute("inert");
         this.props.onOpen?.();
@@ -89,7 +89,7 @@ export default class Dialog extends Component<DialogProps>{
 
         dialog.setAttribute("inert", "");
         await Promise.allSettled(dialog.getAnimations().map(a => a.finished));
-        document.body.classList.remove("modal-open");
+        delete document.body.dataset["modalOpen"];
 
         onClose?.(event);
         if (!event.defaultPrevented) {

@@ -81,7 +81,7 @@ export default function BrowserDialog(props: BrowserDialogProps) {
                         <Route index element={<MediaSourceList />} />
                         <Route path=":device/browse">
                             <Route path="-1" element={<MediaSourceList />} />
-                            <Route path=":id/*" element={<Browser {...browserProps} mapper={rowStateMapper} modalDialogMode
+                            <Route path=":id/*" element={<Browser {...browserProps} mapper={rowStateMapper}
                                 confirmContent={confirmContent} onConfirmed={onConfirmed} />} />
                         </Route>
                     </Route>

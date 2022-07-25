@@ -13,7 +13,7 @@ const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
 const CAPTION_SELECTOR = ":scope > div.table-caption";
 const HEADER_GROUP_SELECTOR = ":scope > div.table-header";
 
-type ModeFlags = "multiSelect" | "useCheckboxes" | "modalDialogMode" | "useLevelUpRow" | "stickyCaption" | "stickyHeaders";
+type ModeFlags = "multiSelect" | "useCheckboxes" | "useLevelUpRow" | "stickyCaption" | "stickyHeaders";
 
 type DisplayMode = "table" | "list" | "responsive";
 
@@ -47,8 +47,9 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     static contextType = RowStateContext;
     override context: React.ContextType<typeof RowStateContext>;
-    private tableRef;
+    private ref;
     private resizeObserver
+    private dialogMode = false;
 
     static defaultProps: BrowserProps<unknown> = {
         displayMode: "responsive",
@@ -65,7 +66,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
         this.resizeObserver = new ResizeObserver(this.updateStickyElementsLayout);
-        this.tableRef = React.createRef<HTMLDivElement>();
+        this.ref = React.createRef<HTMLDivElement>();
         this.context = {
             enabled: false, current: undefined, selection: [],
             allSelected: false, dispatch: () => { }, get: () => RowState.None,
@@ -87,7 +88,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         }
 
         if (this.context.current !== undefined) {
-            const row = this.tableRef.current?.querySelector<HTMLDivElement>(`div[data-index="${this.context.current}"]`);
+            const row = this.ref.current?.querySelector<HTMLDivElement>(`div[data-index="${this.context.current}"]`);
 
             if (!row)
                 return;
@@ -96,18 +97,19 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                 row.focus();
         }
         else {
-            const element = this.tableRef.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUSED_SELECTOR);
+            const element = this.ref.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUSED_SELECTOR);
             element?.blur();
         }
     }
 
     componentDidMount() {
+        this.dialogMode = this.ref.current?.closest("dialog") !== null;
         document.body.addEventListener("keydown", this.onKeyDown);
         if (this.props.displayMode === "responsive") {
             MediaQueries.largeScreen.addEventListener("change", this.screenQueryChangedHandler);
         }
         this.resizeObserver.disconnect();
-        this.resizeObserver.observe(this.tableRef.current as HTMLDivElement);
+        this.resizeObserver.observe(this.ref.current as HTMLDivElement);
     }
 
     componentWillUnmount() {
@@ -121,8 +123,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     }
 
     updateStickyElementsLayout = () => {
-        const table = this.tableRef.current;
-        if (!table) return;
+        const table = this.ref.current!;
 
         let offset = table.offsetTop;
 
@@ -202,12 +203,18 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     }
 
     private onKeyDown = (event: KeyboardEvent) => {
-        if (!this.context.enabled || (!this.props.modalDialogMode && document.body.classList.contains("modal-open"))) return;
+        if (!this.context.enabled) return;
+
+        if (document.body.dataset["modalOpen"] === "1" && !this.dialogMode) {
+            // There is currently modal <dialog> element trapping focus and current component is not rendered "in-dialog" mode.
+            // We should skip keyboard handler in order to imitate "inert" attribute behavior.
+            return;
+        }
 
         switch (event.code) {
             case "Enter":
             case "ArrowRight":
-                const focusedRow = this.tableRef.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUSED_SELECTOR);
+                const focusedRow = this.ref.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUSED_SELECTOR);
 
                 if (!focusedRow) {
                     if (event.code === "ArrowRight")
@@ -325,7 +332,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         return <div ref={nodeRef} className={`vstack pb-3 position-relative overflow-auto${className ? ` ${className}` : ""}`} style={style}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
             <div className={`table table-material user-select-none${optimizeForTouch ? " table-touch-friendly" : ""}`}
-                ref={this.tableRef} onFocus={this.focusHandler}>
+                ref={this.ref} onFocus={this.focusHandler}>
                 {renderCaption && <div className={`table-caption bg-body${stickyCaption ? " sticky-top" : ""}`}>{renderCaption()}</div>}
                 <div className={`table-header${headerClass ? ` ${headerClass}` : ""}`}>
                     <div className="bg-body">
