@@ -84,7 +84,7 @@ export default class Slider extends React.Component<SliderProps> {
             return;
         this.updatePending = true;
 
-        window.requestAnimationFrame(this.update);
+        requestAnimationFrame(this.update);
     }
 
     private update = () => {

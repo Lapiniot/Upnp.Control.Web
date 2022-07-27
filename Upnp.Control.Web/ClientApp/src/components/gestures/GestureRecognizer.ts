@@ -89,7 +89,7 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
 
         this.updatePending = true;
 
-        window.requestAnimationFrame(this.updateInternal);
+        requestAnimationFrame(this.updateInternal);
     }
 
     protected update() { }

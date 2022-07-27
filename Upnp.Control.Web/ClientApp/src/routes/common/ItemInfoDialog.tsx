@@ -13,7 +13,7 @@ export default function ItemInfoDialog({ item, ...other }: DialogProps & { item:
         }), [item]);
 
     const renderFooter = useCallback(() => <Dialog.Footer>
-        {DIDLTools.isMediaItem(item) && window.isSecureContext
+        {DIDLTools.isMediaItem(item) && isSecureContext
             && <Dialog.Button type="button" className="me-auto" onClick={clickHandler}>Copy media url</Dialog.Button>}
         <Dialog.Button value="ok" className="text-primary" autoFocus>OK</Dialog.Button>
     </Dialog.Footer>, [item]);

@@ -30,8 +30,8 @@ export class HotKey extends Object {
     }
 }
 
-const getPrefix = ((window.navigator as any).userAgentData?.platform === "macOS"
-    || /Macintosh|iPad|iPhone/.test(window.navigator.userAgent))
+const getPrefix = ((navigator as any).userAgentData?.platform === "macOS"
+    || /Macintosh|iPad|iPhone/.test(navigator.userAgent))
     ? function getPrefix(ctrl: boolean, alt: boolean, shift: boolean, meta: boolean) {
         let prefix = "";
         if (ctrl) prefix += "⌃"
