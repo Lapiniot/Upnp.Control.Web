@@ -19,13 +19,13 @@ type FetchState<T> = { fetching: boolean, dataContext: DataContext<T> | undefine
 
 type Unwrap<F extends (...args: any) => any> = F extends (...args: any) => infer RT ? RT extends Promise<infer T> ? T : RT : never
 
-export function useDataFetch<F extends (...args: any[]) => any>(loader: F, ...args: Parameters<F>): FetchState<Unwrap<F>> {
+export function useDataFetch<F extends (...args: any[]) => any>(fetcher: F, ...args: Parameters<F>): FetchState<Unwrap<F>> {
     const [state, setState] = useState<FetchState<Unwrap<F>>>({ fetching: true, dataContext: undefined, error: undefined });
     const fetchData = useMemo(() => (async (action?: (() => Promise<any>) | null) => {
         try {
             setState(state => ({ ...state, fetching: true, error: undefined }));
             await action?.();
-            const data = await loader(...args);
+            const data = await fetcher(...args);
             setState({ fetching: false, dataContext: { source: data, reload: fetchData }, error: undefined });
         }
         catch (error) {
@@ -33,7 +33,7 @@ export function useDataFetch<F extends (...args: any[]) => any>(loader: F, ...ar
             setState(state => ({ ...state, fetching: false, error: error }));
             throw error;
         }
-    }), [loader, ...args]);
+    }), [fetcher, ...args]);
 
     useEffect(() => { fetchData() }, [fetchData]);
 
