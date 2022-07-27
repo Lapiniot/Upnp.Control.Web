@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { DataFetchProps, useDataFetch } from "../../../components/DataFetch";
 import { DropdownMenu } from "../../../components/DropdownMenu";
 import { MicroLoader } from "../../../components/LoadIndicator";
@@ -32,10 +31,11 @@ function Menu({ dataContext: d, device }: DataFetchProps<BrowseFetchResult> & De
     </>
 }
 
+const fetchPlaylistsAsync = (udn: string) => WebApi.browse(udn).get("PL:").withResource().withVendor().json()
+
 export function PlaylistMenuAction({ className, device, category, ...other }: DeviceActionProps) {
     const { udn } = device;
-    const loader = useCallback(() => WebApi.browse(udn).get("PL:").withResource().withVendor().json(), [udn]);
-    const data = useDataFetch(loader);
+    const data = useDataFetch(fetchPlaylistsAsync, udn);
     return <div className={className} {...other}>
         {!data.fetching ? <Menu {...data} device={device} category={category} /> : <MicroLoader />}
     </div>

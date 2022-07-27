@@ -1,7 +1,6 @@
-import { useCallback } from "react";
 import { useDataFetch } from "../../components/DataFetch";
-import WebApi, { BrowseOptions } from "../../components/WebApi";
 import { useNavigator } from "../../components/Navigator";
+import WebApi, { BrowseOptions } from "../../components/WebApi";
 import Settings from "./Settings";
 import { BrowseFetchResult } from "./Types";
 
@@ -17,12 +16,8 @@ const browseFetchOptions = { withParents: true, withResourceProps: true };
 
 type ContentBrowserParamKey = "device" | "id" | "s" | "p";
 
-function fetchContent(device: string, id?: string | undefined,
-    pageSize?: string | undefined, page?: string | undefined,
-    options: BrowseOptions = browseFetchOptions):
-    Promise<BrowseFetchResult> {
-
-    if (!device) throw new Error("Missing value for mandatory parameter 'device'");
+function fetchContentAsync(device: string, id?: string, pageSize?: string, page?: string,
+    options: BrowseOptions = browseFetchOptions): Promise<BrowseFetchResult> {
     const s = parse(pageSize) ?? Settings.get("pageSize") ?? 50;
     const p = parse(page) ?? 1;
     return WebApi.browse(device).get(id).take(s).skip((p - 1) * s).withOptions(options).json();
@@ -31,7 +26,6 @@ function fetchContent(device: string, id?: string | undefined,
 export function useContentBrowser(options?: BrowseOptions, defaults?: { [K in ContentBrowserParamKey]?: string }) {
     const { navigate, params } = useNavigator<ContentBrowserParamKey>();
     const { device, id, s, p } = { ...defaults, ...params };
-    const loader = useCallback(() => fetchContent(device as string, id, s, p, options), [device, id, s, p]);
-    const data = useDataFetch(loader);
+    const data = useDataFetch(fetchContentAsync, device!, id, s, p, options);
     return { ...data, navigate, params };
 }

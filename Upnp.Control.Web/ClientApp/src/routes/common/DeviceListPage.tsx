@@ -1,10 +1,10 @@
-import { useCallback } from "react";
 import { useDataFetch } from "../../components/DataFetch";
 import WebApi from "../../components/WebApi";
 import { DeviceListView, DeviceListViewProps } from "./DeviceListView";
 
+const fetchDevicesAsync = (category: string) => WebApi.devices(category).json()
+
 export default function DeviceListPage({ category, ...props }: DeviceListViewProps) {
-    const loader = useCallback(() => WebApi.devices(category).json(), [category]);
-    const data = useDataFetch(loader);
+    const data = useDataFetch(fetchDevicesAsync, category);
     return <DeviceListView {...props} {...data} category={category} />
 }

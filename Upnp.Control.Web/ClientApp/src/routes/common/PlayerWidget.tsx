@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, createRef, useCallback } from "react";
+import { ButtonHTMLAttributes, Component, createRef } from "react";
 import { DataContext, DataFetchProps, useDataFetch } from "../../components/DataFetch";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { parseMilliseconds } from "../../components/Extensions";
@@ -24,7 +24,7 @@ type PlayerProps = { udn: string; } & DataFetchProps<AVState>
 
 type PlayerState = { dataContext?: DataContext<AVState> } & Partial<AVState> & Partial<RCState> & Partial<AVPosition>
 
-class PlayerCore extends React.Component<PlayerProps, PlayerState> {
+class PlayerCore extends Component<PlayerProps, PlayerState> {
 
     handlers;
     ctrl;
@@ -181,8 +181,9 @@ class PlayerCore extends React.Component<PlayerProps, PlayerState> {
     }
 }
 
+const fetchStateAsync = (udn: string) => $api.control(udn).state(true).withTimeout($s.get("timeout")).json()
+
 export default function ({ udn }: { udn: string }) {
-    const loader = useCallback(() => $api.control(udn).state(true).withTimeout($s.get("timeout")).json(), [udn]);
-    const data = useDataFetch<AVState>(loader);
+    const data = useDataFetch(fetchStateAsync, udn);
     return <PlayerCore {...data} udn={udn} />
 }

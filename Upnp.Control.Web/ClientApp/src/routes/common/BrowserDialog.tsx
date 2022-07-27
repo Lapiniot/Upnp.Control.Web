@@ -1,7 +1,7 @@
 import { HTMLAttributes, ReactNode, useCallback } from "react";
 import { useDataFetch } from "../../components/DataFetch";
-import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import Dialog, { DialogProps } from "../../components/Dialog";
+import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { useNavigatorClickHandler } from "../../components/Navigator";
 import { usePortal } from "../../components/Portal";
 import $api from "../../components/WebApi";
@@ -10,7 +10,7 @@ import BrowserCore from "./BrowserCore";
 import { useContentBrowser } from "./BrowserUtils";
 import { BrowserProps } from "./BrowserView";
 import { RowStateMapperFunction, RowStateProvider, useRowStates } from "./RowStateContext";
-import { DIDLItem, UpnpDevice } from "./Types";
+import { DIDLItem } from "./Types";
 import { Route, Routes, VirtualRouter } from "./VirtualRouter";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
@@ -31,10 +31,10 @@ export type BrowseResult = {
     keys: string[];
 }
 
-const fetchContentServers = $api.devices("servers").json;
+const fetchContentServersAsync = $api.devices("servers").json
 
 function MediaSourceList() {
-    const { fetching, dataContext } = useDataFetch<UpnpDevice[]>(fetchContentServers);
+    const { fetching, dataContext } = useDataFetch(fetchContentServersAsync);
     const handler = useNavigatorClickHandler();
     return fetching
         ? <LoadIndicatorOverlay />
