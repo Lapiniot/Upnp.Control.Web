@@ -1,4 +1,4 @@
-:where(button, a) {
+:where(button, a, .link-placeholder) {
 
     > img,
     > svg {
@@ -10,6 +10,10 @@
     > :is(svg, img):first-child {
         margin-right: map-get($spacers, 1);
     }
+}
+
+.link-placeholder.disabled {
+    opacity: #{$btn-disabled-opacity};
 }
 
 .btn-round {

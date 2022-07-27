@@ -1,34 +1,29 @@
 import { AnchorHTMLAttributes } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, NavLinkProps } from "react-router-dom";
 import { useNavigatorClickHandler, useNavigatorResolvedPath } from "./Navigator";
 
 export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
     to: string;
-    active?: boolean;
     disabled?: boolean;
     glyph?: string
 }
 
-function buildClass(className: string | undefined, active: boolean | undefined, disabled: boolean | undefined) {
-    return `${className ?? ""}${active ? " active" : ""}${disabled ? " disabled" : ""}`.trim() || undefined;
+export function Link({ to, glyph, className, disabled, children, ...other }: LinkProps) {
+    const content = <>{glyph && <svg><use href={glyph} /></svg>}{children}</>;
+    return !disabled
+        ? <a href={to} className={className} {...other}>{content}</a>
+        : <span className={`link-placeholder disabled${className ? ` ${className}` : ""}`}>{content}</span>
 }
 
-function Link({ to, glyph, className, active, disabled, children, ...other }: LinkProps) {
-    return <a href={!disabled ? to : undefined} className={buildClass(className, active, disabled)} {...other}>
-        {glyph && <svg><use href={glyph} /></svg>}{children}
-    </a>;
+export function RouteLink({ glyph, className, disabled, children, to, ...other }: NavLinkProps & LinkProps) {
+    const content = <>{glyph && <svg><use href={glyph} /></svg>}{children}</>;
+    return !disabled
+        ? <NavLink to={to} className={className} {...other}>{content}</NavLink>
+        : <span className={`link-placeholder disabled${className ? ` ${className}` : ""}`}>{content}</span>
 }
 
-function RouteLink({ glyph, className, active, disabled, children, ...other }: LinkProps) {
-    return <NavLink className={buildClass(className, active, disabled)} {...other}>
-        {glyph && <svg><use href={glyph} /></svg>}{children}
-    </NavLink>;
-}
-
-function NavigatorLink({ to, ...other }: LinkProps) {
+export function NavigatorLink({ to, ...other }: LinkProps) {
     const { pathname, search, hash } = useNavigatorResolvedPath(to);
     const handler = useNavigatorClickHandler();
-    return <Link {...other} to={pathname + hash + search} onClick={handler} />;
+    return <Link {...other} to={pathname + hash + search} onClick={handler} />
 }
-
-export { Link, RouteLink, NavigatorLink }
