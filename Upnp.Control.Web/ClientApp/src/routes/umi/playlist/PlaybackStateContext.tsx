@@ -3,7 +3,7 @@ import { nopropagation } from "../../../components/Extensions";
 import { useSignalR } from "../../../components/SignalRListener";
 import $api from "../../../components/WebApi";
 import $s from "../../common/Settings";
-import { AVState, PlaybackState, PropertyBag } from "../../common/Types";
+import { AVState, PlaybackState } from "../../common/Types";
 
 export type DispatchAction = { type: "UPDATE", state: Partial<PlaybackStateProviderState> }
 
@@ -77,7 +77,7 @@ export function PlaybackStateProvider({ device, getTrackUrlHook, ...other }: Pla
     }, [device]);
 
     const handlers = useMemo(() => ({
-        "AVTransportEvent": (target: string, { state, vendorProps = {} }: { state: AVState, vendorProps: PropertyBag }) => {
+        "AVTransportEvent": (target: string, { state, vendorProps = {} }: { state: AVState, vendorProps: Record<string, string> }) => {
             if (device !== target) return;
             const { state: playbackState, currentTrack: track } = state;
             const { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = vendorProps;

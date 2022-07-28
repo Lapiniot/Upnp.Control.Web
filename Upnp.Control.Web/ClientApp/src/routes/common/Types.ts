@@ -1,7 +1,3 @@
-export type PropertyBag = {
-    [key: string]: string
-}
-
 export type Icon = {
     w: number;
     h: number;
@@ -77,7 +73,7 @@ export type DIDLItem = {
     storageFree?: number;
     storageMedium?: number;
     res?: DIDLResource;
-    vendor?: PropertyBag;
+    vendor?: Record<string, string>;
 }
 
 export type BrowseFetchResult = {
