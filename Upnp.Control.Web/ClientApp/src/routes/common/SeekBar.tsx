@@ -34,7 +34,7 @@ export default class SeekBar extends React.Component<PositionProps> {
     render() {
         const { time, duration, running, onChange, className, ...other } = this.props;
 
-        const progress = duration > 0 ? time / duration : 1.0;
+        const progress = duration > 0 ? time / duration : 0.0;
         const infinite = !Number.isFinite(time) || !Number.isFinite(duration) || duration === 0;
 
         return <div className={`d-flex flex-wrap user-select-none${className ? ` ${className}` : ""}`} {...other}>

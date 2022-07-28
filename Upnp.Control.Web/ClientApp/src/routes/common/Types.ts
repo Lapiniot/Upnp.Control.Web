@@ -139,8 +139,7 @@ export enum Services {
 }
 
 export type DataSourceProps<T = {}, P = {}> = P & {
-    "data-source": T;
-    "data-row-id"?: string | number
+    dataSource?: T
 }
 
 export enum RowState {
@@ -154,14 +153,7 @@ export enum RowState {
     SelectMask = Selectable | Selected
 }
 
-/* Routing related params extracted from navigation url */
-export type CategoryRoutePath = "/:category";
-export type DeviceRoutePath = "/:category/:device";
-export type BrowseRoutePath = "/:category/:device/:action(browse)/:id?";
-export type PlaylistRoutePath = "/:category/:device/:action(playlists)/:id?";
-export type ViewRoutePath = "/:category/:device/:action(view)/:id";
-
-export type CategoryRouteParams = { category: string }
+export type CategoryRouteParams = { category: "upnp" | "umi" | "renderers" }
 export type DeviceRouteParams = CategoryRouteParams & { device: string }
 export type BrowseRouteParams = DeviceRouteParams & { id?: string; p?: string; s?: string; };
 export type PlaylistRouteParams = DeviceRouteParams & { id: string; p?: string; s?: string; };

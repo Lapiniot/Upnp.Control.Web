@@ -18,7 +18,6 @@
         }
 
         @include unify-parent(svg) {
-            color: $gray-300;
             max-width: 50%;
         }
     }

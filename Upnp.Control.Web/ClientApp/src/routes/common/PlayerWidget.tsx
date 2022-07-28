@@ -20,7 +20,7 @@ function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: strin
     </button>
 }
 
-type PlayerProps = { udn: string; } & DataFetchProps<AVState>
+type PlayerProps = { udn?: string; } & DataFetchProps<AVState>
 
 type PlayerState = { dataContext?: DataContext<AVState> } & Partial<AVState> & Partial<RCState> & Partial<AVPosition>
 
@@ -38,7 +38,7 @@ class PlayerCore extends Component<PlayerProps, PlayerState> {
             "AVTransportEvent": this.onAVTransportEvent,
             "RenderingControlEvent": this.onRenderingControlEvent
         };
-        this.ctrl = $api.control(this.props.udn);
+        this.ctrl = $api.control(this.props.udn ?? "");
         this.state = {};
         this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler);
     }
@@ -65,7 +65,7 @@ class PlayerCore extends Component<PlayerProps, PlayerState> {
 
     componentDidUpdate(prevProps: PlayerProps) {
         if (prevProps.udn !== this.props.udn) {
-            this.ctrl = $api.control(this.props.udn);
+            this.ctrl = $api.control(this.props.udn!);
         }
     }
 
@@ -139,7 +139,7 @@ class PlayerCore extends Component<PlayerProps, PlayerState> {
         const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
         const volumeStr = muted ? "Muted" : `${volume}%`;
         const volumeIcon = muted ? "volume_off" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
-        const disabled = !state;
+        const loading = !this.props.dataContext?.source;
 
         const currentTime = parseMilliseconds(relTime as string);
         const totalTime = parseMilliseconds(duration as string);
@@ -154,20 +154,22 @@ class PlayerCore extends Component<PlayerProps, PlayerState> {
 
         const shuffleMode = playMode === "REPEAT_SHUFFLE";
 
+        const loadCls = loading ? " placeholder" : "";
+
         return <>
             <SignalRListener callbacks={this.handlers} />
             <div className="player-skeleton" ref={this.ref}>
-                <AlbumArt className="art rounded-1" itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} hint="player" />
+                <AlbumArt className={`art rounded-1${loadCls}`} itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} hint="player" />
                 <div className="title">
-                    <h5 className="text-truncate mb-0">{title ?? "[No media]"}</h5>
+                    <h5 className={`text-truncate mb-0${loadCls}`}>{title ?? "[No media]"}</h5>
                     {(creator || album) && <small className="text-truncate">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
                 </div>
                 <SeekBar className="progress" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChange={this.seek} />
                 <Button title="Prev" className="prev-btn" glyph="symbols.svg#skip_previous" onClick={this.prev} disabled={!actions.includes("Previous")} />
                 <Button className="play-btn p-1" {...buttonProps} />
                 <Button title={nextTitle} className="next-btn" glyph="symbols.svg#skip_next" onClick={this.next} disabled={!actions.includes("Next")} />
-                <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="mode-btn" glyph={`symbols.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={this.togglePlayMode} disabled={disabled} />
-                <Button title={volumeStr} className="volume-btn" glyph={`symbols.svg#${volumeIcon}`} disabled={disabled} data-bs-toggle="dropdown" />
+                <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="mode-btn" glyph={`symbols.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={this.togglePlayMode} disabled={loading} />
+                <Button title={volumeStr} className="volume-btn" glyph={`symbols.svg#${volumeIcon}`} disabled={loading} data-bs-toggle="dropdown" />
                 <DropdownMenu className="volume-ctrl" placement="left">
                     <li className="hstack">
                         <button type="button" style={{ zIndex: 1000 }} className="btn btn-plain btn-round" onClick={this.toggleMute}>
@@ -181,9 +183,9 @@ class PlayerCore extends Component<PlayerProps, PlayerState> {
     }
 }
 
-const fetchStateAsync = (udn: string) => $api.control(udn).state(true).withTimeout($s.get("timeout")).json()
+const fetchStateAsync = (udn: string) => udn ? $api.control(udn).state(true).withTimeout($s.get("timeout")).json() : null
 
-export default function ({ udn }: { udn: string }) {
+export default function ({ udn = "" }: { udn: string | undefined }) {
     const data = useDataFetch(fetchStateAsync, udn);
     return <PlayerCore {...data} udn={udn} />
 }

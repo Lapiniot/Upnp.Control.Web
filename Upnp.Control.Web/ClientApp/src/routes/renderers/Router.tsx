@@ -8,11 +8,11 @@ import ViewerPage from "../common/ViewerPage";
 import UmiDeviceCard from "../umi/Device";
 import RendererDeviceCard from "./Device";
 
-function TemplateSelector(props: DataSourceProps<UpnpDevice>) {
-    if (UDT.isUmiDevice(props["data-source"]))
-        return <UmiDeviceCard {...props} />
+function TemplateSelector({ dataSource: d, ...props }: DataSourceProps<UpnpDevice>) {
+    if (d && UDT.isUmiDevice(d))
+        return <UmiDeviceCard {...props} dataSource={d} />
     else
-        return <RendererDeviceCard {...props} />
+        return <RendererDeviceCard {...props} dataSource={d} />
 }
 
 export default function () {

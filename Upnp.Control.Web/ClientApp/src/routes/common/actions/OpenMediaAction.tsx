@@ -15,12 +15,12 @@ type OpenActionProps = DeviceActionProps & {
 
 export function OpenAction({ children, className, browserProps, device, category, rowStateMapper, ...other }: OpenActionProps) {
     const dialogHostRef = useRef<DialogHost>(null);
+    const deviceId = device?.udn;
     const playHandler = useCallback((data: BrowseResult) => {
-        const deviceId = device.udn;
         const { keys: { 0: objectId }, device: source } = data;
         if (!deviceId || !source || !objectId) return;
         return WebApi.control(deviceId).play(objectId, source).fetch();
-    }, [device]);
+    }, [deviceId]);
     const browseClickHandler = useCallback(() =>
         dialogHostRef.current?.show(
             <BrowserDialog title="Select media to play"
@@ -28,7 +28,7 @@ export function OpenAction({ children, className, browserProps, device, category
             </BrowserDialog>)
         , [device]);
     return <>
-        <button type="button" className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`} data-bs-toggle="dropdown"
+        <button type="button" disabled={!device} className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`} data-bs-toggle="dropdown"
             aria-expanded="false" title="Browse for external media to play on this device" {...other} onClick={browseClickHandler}>
             {children}
         </button>

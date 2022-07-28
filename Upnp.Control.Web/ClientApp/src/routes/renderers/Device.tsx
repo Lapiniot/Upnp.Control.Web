@@ -5,8 +5,8 @@ import { DataSourceProps, UpnpDevice } from "../common/Types";
 
 const rendererActions: ActionDescriptor[] = [["open", OpenMediaAction]];
 
-export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
-    return <DeviceCard {...props} actions={rendererActions}>
-        <PlayerWidget udn={props["data-source"].udn} />
+export default function ({ dataSource: d, ...props }: DataSourceProps<UpnpDevice> & { category?: string }) {
+    return <DeviceCard {...props} dataSource={d} actions={rendererActions}>
+        <PlayerWidget udn={d?.udn} />
     </DeviceCard>
 }

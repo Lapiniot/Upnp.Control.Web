@@ -4,13 +4,17 @@ import { BookmarkButton } from "../BookmarkButton";
 import { UpnpDeviceTools as UDT } from "../UpnpDeviceTools";
 import { DeviceActionProps } from "./Actions";
 
-export function AddBookmarkAction({ device: { udn: device, name, description, icons, type }, category = "upnp", ...other }: DeviceActionProps) {
+export function AddBookmarkAction({ device, category = "upnp", ...other }: DeviceActionProps) {
+    const { udn, name, description, icons, type } = device ?? {};
+
     const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);
+
     const toggleHandler = useCallback(async () => {
-        const key: [string, string] = [category, device];
+        if (!udn || !icons || !type) return;
+        const key: [string, string] = [category, udn];
         if (!await bookmarks.contains(key)) {
             await bookmarks.add("DeviceBookmarkWidget", {
-                device, category, name, description,
+                device: udn, category, name, description,
                 icon: UDT.getOptimalIcon(icons)?.url ?? `stack.svg#${UDT.getSpecialRoleIcon(type)}`
             });
             setBookmarked(true);
@@ -19,8 +23,12 @@ export function AddBookmarkAction({ device: { udn: device, name, description, ic
             await bookmarks.remove(key);
             setBookmarked(false);
         }
-    }, []);
-    useEffect(() => { bookmarks.contains([category, device]).then(v => setBookmarked(v)) }, []);
+    }, [udn, name, description, icons, type]);
+
+    useEffect(() => {
+        if (!udn) return;
+        bookmarks.contains([category, udn]).then(v => setBookmarked(v))
+    }, [category, udn]);
 
     return <BookmarkButton bookmarked={bookmarked} {...other} onClick={toggleHandler} />
 }

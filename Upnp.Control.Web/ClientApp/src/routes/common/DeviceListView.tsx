@@ -3,6 +3,7 @@ import { DataFetchProps } from "../../components/DataFetch";
 import { GridView, GridViewMode } from "../../components/GridView";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { DeviceDiscoveryNotifier } from "./DeviceDiscoveryNotifier";
+import $gc from "./GlobalConfig";
 import $s from "./Settings";
 import { CategoryRouteParams, DataSourceProps, DeviceRouteParams, UpnpDevice } from "./Types";
 
@@ -19,13 +20,13 @@ export function DeviceView({ itemTemplate: Item, dataContext, category, fetching
     return <>
         {fetching && <LoadIndicatorOverlay />}
         <GridView viewMode={viewMode} className={empty ? gridEmptyClass : ""}>
-            {dataContext?.source && <Item data-source={dataContext.source} category={category} device={dataContext.source.udn} />}
+            {dataContext?.source && <Item dataSource={dataContext.source} category={category} device={dataContext.source.udn} />}
             {empty ? <span className="text-center text-muted">No device found</span> : null}
         </GridView>
     </>;
 }
 
-export type DeviceListViewProps = TemplatedDataComponentProps<UpnpDevice, DeviceRouteParams> &
+export type DeviceListViewProps = TemplatedDataComponentProps<UpnpDevice, Partial<DeviceRouteParams>> &
     CategoryRouteParams & { viewMode?: GridViewMode };
 
 export class DeviceListView extends Component<DeviceListViewProps & DataFetchProps<UpnpDevice[]>> {
@@ -38,12 +39,14 @@ export class DeviceListView extends Component<DeviceListViewProps & DataFetchPro
 
     render() {
         const { dataContext, itemTemplate: Item, fetching, category, viewMode } = this.props;
-        const list = dataContext?.source;
+        const list = fetching && !dataContext?.source
+            ? Array.from<UpnpDevice | undefined>({ length: $gc[category]?.placeholders?.count ?? $gc.placeholders.count })
+            : dataContext?.source;
         const empty = !fetching && list?.length == 0;
         return <>
-            {fetching && <LoadIndicatorOverlay />}
             <GridView viewMode={viewMode} className={empty ? gridEmptyClass : ""}>
-                {list?.length ? list.map(item => <Item key={item.udn} data-source={item} category={category} device={item.udn} />) : null}
+                {list?.length ? list.map((item, index) => <Item key={item ? item.udn : `tmp-${index}`}
+                    dataSource={item} category={category} device={item && item.udn} />) : null}
                 {empty ? <span className="text-center text-muted">No devices discovered</span> : null}
             </GridView>
             <DeviceDiscoveryNotifier callback={this.reload} />

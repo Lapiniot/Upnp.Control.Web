@@ -1,8 +1,15 @@
+import { ImgHTMLAttributes } from "react";
 import { viaProxy } from "../../components/Extensions";
 import { UpnpDevice } from "./Types";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 
-export default ({ device: { icons, type } }: { device: UpnpDevice }) => {
-    const icon = UDT.getOptimalIcon(icons);
-    return <img src={icon ? viaProxy(icon.url) : `stack.svg#${UDT.getSpecialRoleIcon(type)}`} className="icon icon-3x me-2" alt="" />;
+type DeviceIconProps = ImgHTMLAttributes<HTMLImageElement> & {
+    device: UpnpDevice | null | undefined;
+}
+
+export default ({ device, className, ...props }: DeviceIconProps) => {
+    const { icons, type } = device ?? {};
+    const icon = icons && UDT.getOptimalIcon(icons);
+    return <img src={icons && (icon ? viaProxy(icon.url) : `stack.svg#${UDT.getSpecialRoleIcon(type!)}`)}
+        className={`icon icon-3x me-2${className ? ` ${className}` : ""}`} alt="" {...props} />
 }

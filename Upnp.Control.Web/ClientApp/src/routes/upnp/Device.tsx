@@ -9,10 +9,9 @@ const upnpActions: ActionDescriptor[] = [
     ["browse", BrowseContentAction]
 ];
 
-export default function (props: DataSourceProps<UpnpDevice> & { category?: string }) {
-    const { "data-source": d } = props;
-    return <DeviceCard {...props} actions={upnpActions}>
-        <DeviceInfo data-source={d} />
-        <ServicesList data-source={d.services} data-row-id={d.udn} />
+export default function ({ dataSource: d, ...props }: DataSourceProps<UpnpDevice> & { category?: string }) {
+    return <DeviceCard {...props} dataSource={d} actions={upnpActions}>
+        <DeviceInfo dataSource={d} />
+        <ServicesList dataSource={d?.services} />
     </DeviceCard>
 }

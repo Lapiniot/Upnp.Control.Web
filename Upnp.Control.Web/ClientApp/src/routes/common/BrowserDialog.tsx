@@ -1,7 +1,6 @@
 import { HTMLAttributes, ReactNode, useCallback } from "react";
 import { useDataFetch } from "../../components/DataFetch";
 import Dialog, { DialogProps } from "../../components/Dialog";
-import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { useNavigatorClickHandler } from "../../components/Navigator";
 import { usePortal } from "../../components/Portal";
 import $api from "../../components/WebApi";
@@ -9,8 +8,9 @@ import DeviceIcon from "../common/DeviceIcon";
 import BrowserCore from "./BrowserCore";
 import { useContentBrowser } from "./BrowserUtils";
 import { BrowserProps } from "./BrowserView";
+import $gc from "./GlobalConfig";
 import { RowStateMapperFunction, RowStateProvider, useRowStates } from "./RowStateContext";
-import { DIDLItem } from "./Types";
+import { DIDLItem, UpnpDevice } from "./Types";
 import { Route, Routes, VirtualRouter } from "./VirtualRouter";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
@@ -31,19 +31,22 @@ export type BrowseResult = {
     keys: string[];
 }
 
-const fetchContentServersAsync = $api.devices("servers").json
+const fetchContentServersAsync = () => $api.devices("servers").json()
 
 function MediaSourceList() {
-    const { fetching, dataContext } = useDataFetch(fetchContentServersAsync);
+    const { fetching, dataContext: { source = undefined } = {} } = useDataFetch(fetchContentServersAsync);
     const handler = useNavigatorClickHandler();
-    return fetching
-        ? <LoadIndicatorOverlay />
-        : <ul className="list-group list-group-flush overflow-auto">
-            {dataContext?.source?.map(d => <a key={d.udn} href={`/upnp/${d.udn}/browse/0`} onClick={handler} className="list-group-item list-group-item-action hstack">
-                <DeviceIcon device={d} />
-                {d.name}{d.description && ` (${d.description})`}
-            </a>)}
-        </ul>
+    const loading = fetching && !source;
+    const sources = !loading ? source : Array.from<undefined>({ length: $gc["browser-dialog-sources"]?.placeholders?.count ?? $gc.placeholders.count });
+    return <ul className={`list-group list-group-flush overflow-auto${loading ? " placeholder-glow" : ""}`}>
+        {sources?.map((d, i) => d ? <a key={d.udn} href={`/upnp/${d.udn}/browse/0`} onClick={handler} className="list-group-item list-group-item-action hstack">
+            <DeviceIcon device={d} />
+            {d.name}{d.description && ` (${d.description})`}
+        </a> : <a key={`s-${i}`} className="list-group-item disabled hstack">
+            <DeviceIcon device={d} className="placeholder" />
+            <span className={`placeholder w-${Math.ceil(2 * (1 + Math.random())) * 25}`}>&nbsp;</span>
+        </a>)}
+    </ul>
 }
 
 function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: ConfirmProps & { device: string }) {
