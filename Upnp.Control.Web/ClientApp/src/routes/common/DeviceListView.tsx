@@ -3,7 +3,6 @@ import { DataFetchProps } from "../../components/DataFetch";
 import { GridView, GridViewMode } from "../../components/GridView";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { DeviceDiscoveryNotifier } from "./DeviceDiscoveryNotifier";
-import $gc from "./GlobalConfig";
 import $s from "./Settings";
 import { CategoryRouteParams, DataSourceProps, DeviceRouteParams, UpnpDevice } from "./Types";
 

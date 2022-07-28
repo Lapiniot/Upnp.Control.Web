@@ -13,7 +13,7 @@ export type DataFetchProps<T = {}> = {
 
 type FetchState<T> = { fetching: boolean, dataContext: DataContext<T> | undefined, error: unknown }
 
-type Unwrap<F extends (...args: any) => any> = F extends (...args: any) => infer RT ? RT extends Promise<infer T> ? T : RT : never
+type Unwrap<F extends (...args: any) => any> = PromiseResult<ReturnType<F>>
 
 type CtxType<F extends (...args: any) => any> = Exclude<Unwrap<F>, undefined | null>
 
