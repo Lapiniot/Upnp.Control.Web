@@ -10,6 +10,7 @@ import SettingsPage from "./routes/settings/Settings";
 import UmiDevicesPage from "./routes/umi/Router";
 import UpnpDevicesPage from "./routes/upnp/Router";
 import * as SW from "./serviceWorkerRegistration";
+import "./GlobalConfig";
 
 const baseUrl: string = document.getElementsByTagName("base")[0].getAttribute("href") as string;
 const container: HTMLElement = document.getElementById("main-root") as HTMLElement;

@@ -1,21 +1,22 @@
 import { ComponentType, HTMLAttributes } from "react";
-import DeviceIcon from "./DeviceIcon";
 import { Link } from "../../components/NavLink";
-import { DataSourceProps, UpnpDevice } from "./Types";
 import { DeviceActionProps } from "./actions/Actions";
 import { AddBookmarkAction } from "./actions/AddBookmarkAction";
+import DeviceIcon from "./DeviceIcon";
+import { DataSourceProps, UpnpDevice, UpnpDeviceCategory } from "./Types";
 
 type ActionWidgetComponent = ComponentType<DeviceActionProps & HTMLAttributes<HTMLElement>>;
 
 export type ActionDescriptor = [key: string, component: ActionWidgetComponent, props?: HTMLAttributes<HTMLElement>];
 
 type DeviceCardProps = HTMLAttributes<HTMLDivElement> & DataSourceProps<UpnpDevice> & {
-    category?: string;
+    category: UpnpDeviceCategory;
     actions?: ActionDescriptor[]
 }
 
 export function DeviceCard({ dataSource: d, category, children, actions, className, ...other }: DeviceCardProps) {
-    return <div className={`card placeholder-glow${className ? ` ${className}` : ""}`} {...other}>
+    const placeholderCls = d ? "" : ` placeholder-${$cfg[category]?.placeholders?.effect ?? $cfg.placeholders.effect}`;
+    return <div className={`card${placeholderCls}${className ? ` ${className}` : ""}`} {...other}>
         <div className="card-header hstack bg-transparent border-0">
             <DeviceIcon device={d} className={!d ? "placeholder" : undefined} />
             {d ? <div className="flex-fill overflow-hidden">

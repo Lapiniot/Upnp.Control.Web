@@ -36,8 +36,9 @@ function MediaSourceList() {
     const { fetching, dataContext: { source = undefined } = {} } = useDataFetch(fetchContentServersAsync);
     const handler = useNavigatorClickHandler();
     const loading = fetching && !source;
-    const sources = !loading ? source : Array.from<undefined>({ length: $gc["browser-dialog-sources"]?.placeholders?.count ?? $gc.placeholders.count });
-    return <ul className={`list-group list-group-flush overflow-auto${loading ? " placeholder-glow" : ""}`}>
+    const sources = !loading ? source : Array.from<undefined>({ length: $cfg["browser-dialog-sources"]?.placeholders?.count ?? $cfg.placeholders.count });
+    const placeholderCls = loading ? ` placeholder-${$cfg["browser-dialog-sources"]?.placeholders?.effect ?? $cfg.placeholders.effect}` : "";
+    return <ul className={`list-group list-group-flush overflow-auto${placeholderCls}`}>
         {sources?.map((d, i) => d ? <a key={d.udn} href={`/upnp/${d.udn}/browse/0`} onClick={handler} className="list-group-item list-group-item-action hstack">
             <DeviceIcon device={d} />
             {d.name}{d.description && ` (${d.description})`}

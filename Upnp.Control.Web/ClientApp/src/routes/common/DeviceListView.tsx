@@ -39,7 +39,7 @@ export class DeviceListView extends Component<DeviceListViewProps & DataFetchPro
     render() {
         const { dataContext, itemTemplate: Item, fetching, category, viewMode } = this.props;
         const list = fetching && !dataContext?.source
-            ? Array.from<UpnpDevice | undefined>({ length: $gc[category]?.placeholders?.count ?? $gc.placeholders.count })
+            ? Array.from<UpnpDevice | undefined>({ length: $cfg[category]?.placeholders?.count ?? $cfg.placeholders.count })
             : dataContext?.source;
         const empty = !fetching && list?.length == 0;
         return <>
