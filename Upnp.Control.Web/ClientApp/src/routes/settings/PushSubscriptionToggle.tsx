@@ -1,10 +1,10 @@
 import { InputHTMLAttributes, useCallback, useEffect, useState } from "react";
 import { FlagEditor } from "../../components/editors/FlagEditor";
 import PushSubService from "../../components/PushSubscriptionService";
-import { NotificationType } from "../../components/WebApi";
+import { PushNotificationType } from "../../components/WebApi";
 
 type PushSubscriptionToggleProps = InputHTMLAttributes<HTMLInputElement> & {
-    notificationType: NotificationType
+    notificationType: PushNotificationType
 };
 
 export function PushSubscriptionToggle({ disabled: disabledProp, notificationType: type, ...other }: PushSubscriptionToggleProps) {

@@ -1,8 +1,19 @@
 import { createContext, PropsWithChildren, useContext, useMemo, useReducer } from "react";
-import { DIDLItem, RowState } from "./Types";
+import { DIDLItem } from "./Types";
 
-const IndexOutOfRangeError = "'index' parameter value is out of range";
-const InvalidDispatchActionError = "invalid dispatch action";
+const IndexOutOfRangeError = "'index' parameter value is out of range"
+const InvalidDispatchActionError = "invalid dispatch action"
+
+export const enum RowState {
+    None = 0b0,
+    Disabled = 0b1,
+    Active = 0b10,
+    Selectable = 0b100,
+    Selected = 0b1000,
+    Readonly = 0x10000,
+    Navigable = 0x100000,
+    SelectMask = Selectable | Selected
+}
 
 export type RowStateAction =
     { type: "UPDATE"; props: Partial<Omit<RowStateProviderState, "states" | "current" | "updateId">> } |
@@ -16,7 +27,7 @@ export type RowStateAction =
     { type: "EXPAND_DOWN" } |
     { type: "PREV" } |
     { type: "NEXT" } |
-    { type: "SET_ACTIVE", index: number | undefined };
+    { type: "SET_ACTIVE", index: number | undefined }
 
 type RowStateContextData = {
     enabled: boolean;
@@ -25,9 +36,9 @@ type RowStateContextData = {
     allSelected: boolean,
     dispatch: React.Dispatch<RowStateAction>,
     get: (index: number) => RowState
-};
+}
 
-export type RowStateMapperFunction = (item: DIDLItem, index: number, state: RowState | undefined) => RowState;
+export type RowStateMapperFunction = (item: DIDLItem, index: number, state: RowState | undefined) => RowState
 
 const RowStateContext = createContext<RowStateContextData>({
     enabled: false,
@@ -36,15 +47,15 @@ const RowStateContext = createContext<RowStateContextData>({
     allSelected: false,
     dispatch: () => { },
     get: () => RowState.None,
-});
+})
 
-export default RowStateContext;
+export default RowStateContext
 
 export type RowStateProviderProps = PropsWithChildren<{}> & {
     items: DIDLItem[] | undefined,
     mapper?: RowStateMapperFunction,
     enabled?: boolean
-};
+}
 
 type RowStateProviderState = {
     items: DIDLItem[] | undefined,

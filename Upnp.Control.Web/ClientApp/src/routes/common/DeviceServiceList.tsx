@@ -1,5 +1,5 @@
 ﻿import Spoiler from "../../components/Spoiler";
-import { DataSourceProps, UpnpService } from "./Types";
+import { UpnpService } from "./Types";
 
 export default function ({ dataSource: services }: DataSourceProps<UpnpService[]>) {
     return <Spoiler title="Supported services" disabled={!services}>

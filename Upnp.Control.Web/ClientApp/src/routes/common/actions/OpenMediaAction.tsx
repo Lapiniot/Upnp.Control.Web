@@ -4,8 +4,8 @@ import WebApi from "../../../components/WebApi";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
 import { DIDLTools } from "../DIDLTools";
 import { BrowserProps } from "../BrowserView";
-import { RowStateMapperFunction } from "../RowStateContext";
-import { DIDLItem, RowState } from "../Types";
+import { RowState, RowStateMapperFunction } from "../RowStateContext";
+import { DIDLItem } from "../Types";
 import { DeviceActionProps } from "./Actions";
 
 type OpenActionProps = DeviceActionProps & {

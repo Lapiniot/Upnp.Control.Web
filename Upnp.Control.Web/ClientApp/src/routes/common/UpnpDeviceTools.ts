@@ -1,6 +1,12 @@
-import { Icon, Services, UpnpDevice, UpnpDeviceCategory } from "./Types";
+import { Icon, UpnpDevice, UpnpDeviceCategory } from "./Types";
 
-type UpnpSpecialRoleIcon = "connected_tv" | "storage" | "devices" | "speaker";
+type UpnpSpecialRoleIcon = "connected_tv" | "storage" | "devices" | "speaker"
+
+export const enum Services {
+    MediaRenderer = "urn:schemas-upnp-org:device:MediaRenderer",
+    ContentDirectory = "urn:schemas-upnp-org:service:ContentDirectory",
+    UmiPlaylist = "urn:xiaomi-com:service:Playlist"
+}
 
 export class UpnpDeviceTools {
     static getCategory(device: UpnpDevice): UpnpDeviceCategory {

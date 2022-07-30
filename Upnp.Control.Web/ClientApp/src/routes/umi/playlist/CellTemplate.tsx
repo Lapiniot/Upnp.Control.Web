@@ -3,8 +3,9 @@ import { playlistBookmarks } from "../../../components/BookmarkService";
 import AlbumArt from "../../common/AlbumArt";
 import { useBookmarkButton } from "../../common/BookmarkButton";
 import { CellTemplateProps } from "../../common/BrowserView";
+import { RowState } from "../../common/RowStateContext";
 import { TrackInfoLine } from "../../common/TrackInfoLine";
-import { PlaybackState, RowState } from "../../common/Types";
+import { PlaybackState } from "../../common/Types";
 
 type CellContext = {
     state?: PlaybackState;

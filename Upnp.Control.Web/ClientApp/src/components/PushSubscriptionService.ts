@@ -1,7 +1,7 @@
-import WebApi, { NotificationType } from "./WebApi";
+import WebApi, { PushNotificationType } from "./WebApi";
 
 export default {
-    subscribe: async (type: NotificationType) => {
+    subscribe: async (type: PushNotificationType) => {
         const reg = await navigator.serviceWorker.ready;
         if (reg) {
             const ps = await reg.pushManager.getSubscription()
@@ -16,7 +16,7 @@ export default {
             }
         }
     },
-    unsubscribe: async (type: NotificationType) => {
+    unsubscribe: async (type: PushNotificationType) => {
         const reg = await navigator.serviceWorker.ready;
         if (reg) {
             const ps = await reg.pushManager.getSubscription();
@@ -28,7 +28,7 @@ export default {
             }
         }
     },
-    isSubscribed: async (type: NotificationType): Promise<boolean | undefined> => {
+    isSubscribed: async (type: PushNotificationType): Promise<boolean | undefined> => {
         const reg = await navigator.serviceWorker.ready;
         if (!reg) return undefined;
         const subscription = await reg.pushManager.getSubscription();

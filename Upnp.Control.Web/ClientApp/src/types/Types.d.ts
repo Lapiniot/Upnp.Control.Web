@@ -18,3 +18,13 @@ namespace Configuration {
 }
 
 var $cfg: Configuration.Config
+
+interface DataSourceProps<T> {
+    dataSource?: T
+}
+
+interface TemplatedDataComponentProps<T> {
+    itemTemplate: ComponentType<T>
+}
+
+type NotificationType = "appeared" | "disappeared" | "av-state" | "rc-state"

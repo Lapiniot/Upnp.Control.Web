@@ -5,8 +5,8 @@ import { MediaQueries } from "../../components/MediaQueries";
 import { NavigatorProps } from "../../components/Navigator";
 import AlbumArt from "./AlbumArt";
 import { DIDLTools as utils } from "./DIDLTools";
-import RowStateContext from "./RowStateContext";
-import { BrowseFetchResult, DIDLItem, RowState } from "./Types";
+import RowStateContext, { RowState } from "./RowStateContext";
+import { BrowseFetchResult, DIDLItem } from "./Types";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";

@@ -1,6 +1,6 @@
 import { HTMLAttributes } from "react";
 import { Link } from "../../components/NavLink";
-import { DataSourceProps, UpnpDevice } from "./Types";
+import { UpnpDevice } from "./Types";
 
 const cntrClass = "grid-form grid-form-dense mb-2 text-wrap no-font-boost";
 

@@ -121,38 +121,10 @@ export type RCState = {
     muted?: boolean;
 }
 
-export type DiscoveryMessage = {
-    type: string;
-    device: UpnpDevice;
-}
-
-export type NotificationType = "appeared" | "disappeared" | "av-state" | "rc-state";
-
-export enum Services {
-    MediaRenderer = "urn:schemas-upnp-org:device:MediaRenderer",
-    ContentDirectory = "urn:schemas-upnp-org:service:ContentDirectory",
-    UmiPlaylist = "urn:xiaomi-com:service:Playlist"
-}
-
-export type DataSourceProps<T = {}, P = {}> = P & {
-    dataSource?: T
-}
-
-export enum RowState {
-    None = 0b0,
-    Disabled = 0b1,
-    Active = 0b10,
-    Selectable = 0b100,
-    Selected = 0b1000,
-    Readonly = 0x10000,
-    Navigable = 0x100000,
-    SelectMask = Selectable | Selected
-}
-
-export type CategoryRouteParams = { category: "upnp" | "umi" | "renderers" }
+export type CategoryRouteParams = { category: UpnpDeviceCategory }
 export type DeviceRouteParams = CategoryRouteParams & { device: string }
 export type BrowseRouteParams = DeviceRouteParams & { id?: string; p?: string; s?: string; };
 export type PlaylistRouteParams = DeviceRouteParams & { id: string; p?: string; s?: string; };
 export type ViewRouteParams = DeviceRouteParams & { id: string };
 
-export type ThemeColors = "primary" | "secondary" | "success" | "info" | "warning" | "danger" | "light" | "dark";
+export type ThemeColors = "primary" | "secondary" | "success" | "info" | "warning" | "danger" | "light" | "dark"

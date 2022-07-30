@@ -49,7 +49,7 @@ export interface QueueApiProvider {
     clear: (queueId: string) => HttpDeleteFetch;
 }
 
-export enum NotificationType {
+export const enum PushNotificationType {
     None = 0x0,
     DeviceDiscovery = 0x1,
     PlaybackStateChange = 0x2,
@@ -58,9 +58,9 @@ export enum NotificationType {
 
 export interface PushSubscriptionApiProvider {
     serverKey(): HttpFetch;
-    subscribe(endpoint: string, type: NotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null): HttpPostFetch;
-    unsubscribe(endpoint: string, type: NotificationType): HttpDeleteFetch;
-    subscribed(endpoint: string, type: NotificationType): JsonHttpFetch<boolean>;
+    subscribe(endpoint: string, type: PushNotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null): HttpPostFetch;
+    unsubscribe(endpoint: string, type: PushNotificationType): HttpDeleteFetch;
+    subscribed(endpoint: string, type: PushNotificationType): JsonHttpFetch<boolean>;
 }
 
 export default class WebApi {
@@ -143,11 +143,11 @@ export default class WebApi {
 }
 
 const pushSubscriber = {
-    subscribe: (endpoint: string, type: NotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) =>
+    subscribe: (endpoint: string, type: PushNotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) =>
         new HttpPostFetch(`${baseUri}/push-subscriptions`, null, json({ endpoint, type, p256dhKey: toBase64(p256dh), authKey: toBase64(auth) })),
-    unsubscribe: (endpoint: string, type: NotificationType) =>
+    unsubscribe: (endpoint: string, type: PushNotificationType) =>
         new HttpDeleteFetch(`${baseUri}/push-subscriptions`, null, json({ endpoint, type })),
-    subscribed: (endpoint: string, type: NotificationType) => new JsonHttpFetch<boolean>(`${baseUri}/push-subscriptions`, { endpoint, type }),
+    subscribed: (endpoint: string, type: PushNotificationType) => new JsonHttpFetch<boolean>(`${baseUri}/push-subscriptions`, { endpoint, type }),
     serverKey: () => new HttpFetch(`${baseUri}/push-subscriptions/server-key`)
 }
 

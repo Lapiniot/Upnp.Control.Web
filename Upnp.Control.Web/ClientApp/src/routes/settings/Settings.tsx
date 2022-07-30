@@ -1,7 +1,7 @@
 ﻿import { FlagEditor } from "../../components/editors/FlagEditor";
 import { NumberEditor } from "../../components/editors/NumberEditor";
 import { OptionsEditor } from "../../components/editors/OptionsEditor";
-import { NotificationType } from "../../components/WebApi";
+import { PushNotificationType } from "../../components/WebApi";
 import $s from "../common/Settings";
 import { PushSubscriptionToggle } from "./PushSubscriptionToggle";
 
@@ -66,9 +66,9 @@ export default () => {
                     <small>Push notifications</small>
                     <div className="d-grid grid-1fr-auto g-3 mt-2 align-items-center">
                         <label htmlFor="discovery-pushes-editor">Device discovery</label>
-                        <PushSubscriptionToggle notificationType={NotificationType.DeviceDiscovery} id="discovery-pushes-editor" />
+                        <PushSubscriptionToggle notificationType={PushNotificationType.DeviceDiscovery} id="discovery-pushes-editor" />
                         <label htmlFor="playback-pushes-editor">Playback state changes</label>
-                        <PushSubscriptionToggle notificationType={NotificationType.PlaybackStateChange} id="playback-pushes-editor" />
+                        <PushSubscriptionToggle notificationType={PushNotificationType.PlaybackStateChange} id="playback-pushes-editor" />
                     </div>
                 </li>
             </>}

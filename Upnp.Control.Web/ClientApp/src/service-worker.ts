@@ -1,9 +1,8 @@
 /// <reference lib="webworker" />
-/* eslint-disable no-restricted-globals */
 
 import { CacheFirstStrategy, CacheOnlyStrategy, StaleWhileRevalidateStrategy } from "./components/CachingStrategy";
 import { formatTrackInfoLine, viaProxy } from "./components/Extensions";
-import { AVState, DeviceDescription, NotificationType, UpnpDevice } from "./routes/common/Types";
+import { AVState, DeviceDescription, UpnpDevice } from "./routes/common/Types";
 import { UpnpDeviceTools as UDT } from "./routes/common/UpnpDeviceTools";
 
 interface PrecacheEntry {
@@ -18,7 +17,7 @@ declare global {
     }
 }
 
-declare const self: ServiceWorkerGlobalScope;
+declare const self: ServiceWorkerGlobalScope
 
 export const CACHE_STORE_NAME = "upnp-dashboard-store-v1";
 
@@ -27,9 +26,9 @@ const CACHE_STORE_ITEMS = self.__WB_MANIFEST
     .concat(["/stack.svg", "/symbols.svg", "/icons/icon.svg", "/icons/favicon.ico", "/icons/apple-touch-icon.png",
         "/icons/48.png", "/icons/72.png", "/icons/96.png", "/icons/128.png", "/icons/144.png",
         "/icons/152.png", "/icons/192.png", "/icons/384.png", "/icons/512.png",
-        "/manifest.webmanifest"]);
+        "/manifest.webmanifest"])
 
-const CACHES = [CACHE_STORE_NAME];
+const CACHES = [CACHE_STORE_NAME]
 
 const strategies = {
     staleWhileRevalidate: new StaleWhileRevalidateStrategy(CACHE_STORE_NAME),
