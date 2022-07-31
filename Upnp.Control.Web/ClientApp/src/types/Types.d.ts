@@ -28,3 +28,5 @@ interface TemplatedDataComponentProps<T> {
 }
 
 type NotificationType = "appeared" | "disappeared" | "av-state" | "rc-state"
+
+type DeviceCategory = "umi" | "renderers" | "upnp"

@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, ReactElement, UIEventHandler } from "react";
+import { Component, createRef, HTMLAttributes, ReactElement, UIEventHandler } from "react";
 import { DataFetchProps } from "../../../components/DataFetch";
 import PromptDialog from "../../../components/Dialog.Prompt";
 import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
@@ -21,7 +21,7 @@ import Pagination from "../../common/Pagination";
 import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext, { RowState } from "../../common/RowStateContext";
 import $s from "../../common/Settings";
-import { BrowseFetchResult, DIDLItem, PlaylistRouteParams } from "../../common/Types";
+import { BrowseFetchResult, DIDLItem } from "../../common/Types";
 import MainCell from "./CellTemplate";
 import AddItemsDialog from "./dialogs/AddItemsDialog";
 import AddUrlDialog from "./dialogs/AddUrlDialog";
@@ -34,7 +34,7 @@ import { PlaylistManagerToolbar } from "./PlaylistManagerToolbar";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
 import { PlaylistRowStateProvider } from "./PlaylistRowStateProvider";
 
-type PlaylistManagerProps = Omit<PlaylistRouteParams, "category"> &
+type PlaylistManagerProps = Omit<UI.PlaylistRouteParams, "category"> &
     DataFetchProps<BrowseFetchResult> &
     HTMLAttributes<HTMLDivElement> &
     NavigatorProps;
@@ -59,11 +59,11 @@ function getBrowserDialogRowState(item: DIDLItem) {
 const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"];
 
 export class PlaylistManagerCore
-    extends React.Component<PlaylistManagerProps, PlaylistManagerState> {
+    extends Component<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
-    dialogHostRef = React.createRef<DialogHost>();
-    browserNodeRef = React.createRef<HTMLDivElement>();
+    dialogHostRef = createRef<DialogHost>();
+    browserNodeRef = createRef<HTMLDivElement>();
     pressHoldGestureRecognizer: PressHoldGestureRecognizer<HTMLDivElement>;
     service: PlaylistManagerService;
     actionHandlers: PlaylistMenuActionHandlers;

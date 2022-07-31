@@ -1,16 +1,15 @@
 import React, { HTMLAttributes } from "react";
 import BootstrapToast from "bootstrap/js/dist/toast";
-import { ThemeColors } from "../routes/common/Types";
 
 export type ToastProps = HTMLAttributes<HTMLDivElement> & {
     header?: string;
     hint?: string;
-    color?: ThemeColors;
+    color?: UI.ThemeColors;
     autohide?: boolean;
     animation?: boolean;
     delay?: number;
     onDismissed?: (element: HTMLDivElement) => void;
-};
+}
 
 export class Toast extends React.Component<ToastProps> {
 
@@ -43,6 +42,6 @@ export class Toast extends React.Component<ToastProps> {
                 <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close" />
             </div>
             <div className="toast-body">{children}</div>
-        </div>;
+        </div>
     }
 }

@@ -21,8 +21,6 @@ export type UpnpDevice = {
     icons: Icon[];
 }
 
-export type UpnpDeviceCategory = "umi" | "renderers" | "upnp";
-
 export type UpnpService = {
     usn: string;
     url: string;
@@ -120,11 +118,3 @@ export type RCState = {
     volume: number;
     muted?: boolean;
 }
-
-export type CategoryRouteParams = { category: UpnpDeviceCategory }
-export type DeviceRouteParams = CategoryRouteParams & { device: string }
-export type BrowseRouteParams = DeviceRouteParams & { id?: string; p?: string; s?: string; };
-export type PlaylistRouteParams = DeviceRouteParams & { id: string; p?: string; s?: string; };
-export type ViewRouteParams = DeviceRouteParams & { id: string };
-
-export type ThemeColors = "primary" | "secondary" | "success" | "info" | "warning" | "danger" | "light" | "dark"

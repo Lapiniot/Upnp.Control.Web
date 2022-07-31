@@ -1,4 +1,4 @@
-import { Icon, UpnpDevice, UpnpDeviceCategory } from "./Types";
+import { Icon, UpnpDevice } from "./Types";
 
 type UpnpSpecialRoleIcon = "connected_tv" | "storage" | "devices" | "speaker"
 
@@ -9,7 +9,7 @@ export const enum Services {
 }
 
 export class UpnpDeviceTools {
-    static getCategory(device: UpnpDevice): UpnpDeviceCategory {
+    static getCategory(device: UpnpDevice): DeviceCategory {
         return device.services.some(s => s.type.startsWith(Services.UmiPlaylist))
             ? "umi"
             : device.services.some(s => s.type.startsWith(Services.MediaRenderer))

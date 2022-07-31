@@ -1,14 +1,14 @@
-﻿import { Component, ComponentType } from "react";
+﻿import { Component } from "react";
 import { DataFetchProps } from "../../components/DataFetch";
 import { GridView, GridViewMode } from "../../components/GridView";
 import { DeviceDiscoveryNotifier } from "./DeviceDiscoveryNotifier";
 import $s from "./Settings";
-import { CategoryRouteParams, UpnpDevice } from "./Types";
+import { UpnpDevice } from "./Types";
 
-export type DeviceViewProps = TemplatedDataComponentProps<DataSourceProps<UpnpDevice> & CategoryRouteParams> &
-    CategoryRouteParams & { viewMode?: GridViewMode };
+export type DeviceViewProps = TemplatedDataComponentProps<DataSourceProps<UpnpDevice> & UI.CategoryRouteParams> &
+    UI.CategoryRouteParams & { viewMode?: GridViewMode }
 
-const gridEmptyClass = "align-content-center align-items-center";
+const gridEmptyClass = "align-content-center align-items-center"
 
 export function DeviceView({ itemTemplate: Item, dataContext, category, fetching, viewMode }: DeviceViewProps & DataFetchProps<UpnpDevice>) {
     const data = fetching && !dataContext?.source ? undefined : dataContext?.source;

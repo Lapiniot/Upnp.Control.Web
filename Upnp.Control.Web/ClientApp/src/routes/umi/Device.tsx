@@ -1,5 +1,5 @@
 import PlayerWidget from "../common/PlayerWidget";
-import { UpnpDevice, UpnpDeviceCategory } from "../common/Types";
+import { UpnpDevice } from "../common/Types";
 import { BrowseContentAction } from "../common/actions/Actions";
 import { OpenAudioAction } from "../common/actions/OpenMediaAction";
 import { ActionDescriptor, DeviceCard } from "../common/DeviceCard";
@@ -11,10 +11,10 @@ const umiActions: ActionDescriptor[] = [
     ["playlists", ManagePlaylistsAction],
     ["quick-playlist", PlaylistMenuAction, { className: "m-0 ms-auto" }],
     ["open", OpenAudioAction, { className: "m-0" }]
-];
+]
 
-export default function ({ dataSource: d, ...props }: DataSourceProps<UpnpDevice> & { category: UpnpDeviceCategory }) {
+export default function ({ dataSource: d, ...props }: DataSourceProps<UpnpDevice> & { category: DeviceCategory }) {
     return <DeviceCard {...props} dataSource={d} actions={umiActions}>
         <PlayerWidget udn={d?.udn} />
-    </DeviceCard>;
+    </DeviceCard>
 }
