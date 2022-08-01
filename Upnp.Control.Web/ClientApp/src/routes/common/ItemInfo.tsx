@@ -1,7 +1,5 @@
 import AlbumArt from "./AlbumArt";
 import { DIDLTools as DT } from "./DIDLTools";
-import Item = Upnp.DIDL.Item;
-import Resource = Upnp.DIDL.Resource;
 
 function asis(value: any): string {
     return value;
@@ -17,7 +15,7 @@ function url(title?: string) {
 
 type AttributeDescriptor<T> = [name: keyof T, title: string, converter: (value: any, item?: T) => any];
 
-const attributes: [key: string, title: string, formatters: AttributeDescriptor<Item>[]][] = [
+const attributes: [key: string, title: string, formatters: AttributeDescriptor<Upnp.DIDL.Item>[]][] = [
     ["general", "General", [
         ["title", "Title", asis],
         ["class", "Kind", DT.getDisplayName],
@@ -46,7 +44,7 @@ const attributes: [key: string, title: string, formatters: AttributeDescriptor<I
     ]]
 ];
 
-const resAttributes: [key: string, title: string, formatters: AttributeDescriptor<Resource>[]][] = [
+const resAttributes: [key: string, title: string, formatters: AttributeDescriptor<Upnp.DIDL.Resource>[]][] = [
     ["res-general", "Media Info", [
         ["url", "Media Url", url()],
         ["proto", "Type", DT.getContentType],
@@ -78,12 +76,12 @@ function renderGroup<T>(item: T, key: string, title: string, formatters: Attribu
     </div>, ...children] : undefined;
 }
 
-export function ItemInfo({ item }: { item: Item; }) {
+export function ItemInfo({ item }: { item: Upnp.DIDL.Item; }) {
     return <>
         <AlbumArt itemClass={item.class} albumArts={item.albumArts} className="mx-auto mb-3 icon-8x rounded-1" />
         <div className="d-grid grid-auto-1fr gy-1 gx-2">
             {attributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item, key, title, formatters)).flat()}
-            {item.res && resAttributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item.res as Resource, key, title, formatters)).flat()}
+            {item.res && resAttributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item.res as Upnp.DIDL.Resource, key, title, formatters)).flat()}
         </div>
     </>;
 }

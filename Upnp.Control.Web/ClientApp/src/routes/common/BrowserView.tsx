@@ -6,7 +6,6 @@ import { NavigatorProps } from "../../components/Navigator";
 import AlbumArt from "./AlbumArt";
 import { DIDLTools as utils } from "./DIDLTools";
 import RowStateContext, { RowState } from "./RowStateContext";
-import Item = Upnp.DIDL.Item;
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
@@ -20,7 +19,7 @@ type DisplayMode = "table" | "list" | "responsive";
 type NavigationMode = "single-tap" | "double-click" | "auto";
 
 export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
-    data: Item;
+    data: Upnp.DIDL.Item;
     index: number;
     rowState: RowState;
     context?: TContext;
@@ -29,8 +28,8 @@ export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
 type RenderFunc = () => ReactNode;
 
 export type BrowserProps<TContext> = {
-    openHandler?: (item: Item, index: number) => boolean;
-    hotKeyHandler?: (selection: Item[], focused: Item | undefined, hotKey: HotKey) => boolean | void;
+    openHandler?: (item: Upnp.DIDL.Item, index: number) => boolean;
+    hotKeyHandler?: (selection: Upnp.DIDL.Item[], focused: Upnp.DIDL.Item | undefined, hotKey: HotKey) => boolean | void;
     mainCellTemplate?: ComponentType<CellTemplateProps<TContext>>;
     mainCellContext?: TContext;
     displayMode?: DisplayMode;
