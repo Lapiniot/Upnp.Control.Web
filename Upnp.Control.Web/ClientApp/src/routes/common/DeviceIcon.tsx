@@ -1,10 +1,9 @@
 import { ImgHTMLAttributes } from "react";
 import { viaProxy } from "../../components/Extensions";
-import { UpnpDevice } from "./Types";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 
 type DeviceIconProps = ImgHTMLAttributes<HTMLImageElement> & {
-    device: UpnpDevice | null | undefined;
+    device: Upnp.Device | null | undefined;
 }
 
 export default ({ device, className, ...props }: DeviceIconProps) => {

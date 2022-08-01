@@ -1,5 +1,4 @@
 import PlayerWidget from "../common/PlayerWidget";
-import { UpnpDevice } from "../common/Types";
 import { BrowseContentAction } from "../common/actions/Actions";
 import { OpenAudioAction } from "../common/actions/OpenMediaAction";
 import { ActionDescriptor, DeviceCard } from "../common/DeviceCard";
@@ -13,7 +12,7 @@ const umiActions: ActionDescriptor[] = [
     ["open", OpenAudioAction, { className: "m-0" }]
 ]
 
-export default function ({ dataSource: d, ...props }: DataSourceProps<UpnpDevice> & { category: DeviceCategory }) {
+export default function ({ dataSource: d, ...props }: DataSourceProps<Upnp.Device> & UI.CategoryRouteParams) {
     return <DeviceCard {...props} dataSource={d} actions={umiActions}>
         <PlayerWidget udn={d?.udn} />
     </DeviceCard>

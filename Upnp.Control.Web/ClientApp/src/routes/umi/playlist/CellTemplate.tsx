@@ -5,10 +5,9 @@ import { useBookmarkButton } from "../../common/BookmarkButton";
 import { CellTemplateProps } from "../../common/BrowserView";
 import { RowState } from "../../common/RowStateContext";
 import { TrackInfoLine } from "../../common/TrackInfoLine";
-import { PlaybackState } from "../../common/Types";
 
 type CellContext = {
-    state?: PlaybackState;
+    state?: Upnp.PlaybackState;
     play?: EventHandler<UIEvent<HTMLElement>>;
     pause?: EventHandler<UIEvent<HTMLElement>>;
     playItem?: EventHandler<UIEvent<HTMLElement>>;

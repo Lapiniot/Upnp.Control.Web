@@ -15,7 +15,6 @@ import ItemInfoDialog from "./ItemInfoDialog";
 import Pagination from "./Pagination";
 import { RowStateProvider } from "./RowStateContext";
 import $s from "./Settings";
-import { DIDLItem, UpnpDevice } from "./Types";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 import { HotKey, HotKeys } from "../../components/HotKey";
 
@@ -55,8 +54,8 @@ function Template(props: CellTemplateProps<CellContext>) {
 }
 
 type BrowserState = {
-    umis: UpnpDevice[],
-    renderers: UpnpDevice[],
+    umis: Upnp.Device[],
+    renderers: Upnp.Device[],
     fetching?: boolean,
     error?: any
 }
@@ -88,12 +87,12 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         deviceName: this.props.dataContext?.source.dev?.name
     });
 
-    openHandler = (item: DIDLItem) => {
+    openHandler = (item: Upnp.DIDL.Item) => {
         this.props.navigate(`../../view/${item.id}`);
         return true;
     }
 
-    hotKeyHandler = (items: DIDLItem[], focused: DIDLItem | undefined, hotKey: HotKey) => {
+    hotKeyHandler = (items: Upnp.DIDL.Item[], focused: Upnp.DIDL.Item | undefined, hotKey: HotKey) => {
         if (hotKey.equals(HotKeys.showInfo)) {
             this.dialogHostRef.current?.show(<ItemInfoDialog item={focused ?? items[0]} />);
             return false;
@@ -118,7 +117,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         }
     }
 
-    actionMenuSelectedHandler = async (action: string, udn: string, selection: DIDLItem[]) => {
+    actionMenuSelectedHandler = async (action: string, udn: string, selection: Upnp.DIDL.Item[]) => {
         const items = selection.filter(i => DIDLTools.isContainer(i) || DIDLTools.isMusicTrack(i))
 
         if (action.startsWith("send.")) {
@@ -181,7 +180,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
         }
     }
 
-    private renderMenu(umiAcceptable: boolean, rendererAcceptable: boolean, umis: UpnpDevice[], renderers: UpnpDevice[]) {
+    private renderMenu(umiAcceptable: boolean, rendererAcceptable: boolean, umis: Upnp.Device[], renderers: Upnp.Device[]) {
         return <>
             {umiAcceptable && <>
                 <li><h6 className="dropdown-header">Send as Playlist to</h6></li>

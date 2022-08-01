@@ -1,5 +1,3 @@
-import { Icon, UpnpDevice } from "./Types";
-
 type UpnpSpecialRoleIcon = "connected_tv" | "storage" | "devices" | "speaker"
 
 export const enum Services {
@@ -9,7 +7,7 @@ export const enum Services {
 }
 
 export class UpnpDeviceTools {
-    static getCategory(device: UpnpDevice): DeviceCategory {
+    static getCategory(device: Upnp.Device): DeviceCategory {
         return device.services.some(s => s.type.startsWith(Services.UmiPlaylist))
             ? "umi"
             : device.services.some(s => s.type.startsWith(Services.MediaRenderer))
@@ -17,11 +15,11 @@ export class UpnpDeviceTools {
                 : "upnp";
     }
 
-    static isUmiDevice(device: UpnpDevice): boolean {
+    static isUmiDevice(device: Upnp.Device): boolean {
         return device.services.some(s => s.type.startsWith(Services.UmiPlaylist));
     }
 
-    static isMediaServer(device: UpnpDevice): boolean {
+    static isMediaServer(device: Upnp.Device): boolean {
         return device.services.some(s => s.type.startsWith(Services.ContentDirectory) || s.type.startsWith(Services.UmiPlaylist));
     }
 
@@ -33,7 +31,7 @@ export class UpnpDeviceTools {
                 : "devices";
     }
 
-    static getOptimalIcon(icons: Icon[], preferredSize: number = 48): Icon | null {
+    static getOptimalIcon(icons: Upnp.Icon[], preferredSize: number = 48): Upnp.Icon | null {
         return icons?.sort((i1, i2) => i1.w - i2.w)?.find(i => i.w >= preferredSize) ||
             icons?.sort((i1, i2) => i2.w - i1.w)?.find(i => i.w <= preferredSize) || null;
     }

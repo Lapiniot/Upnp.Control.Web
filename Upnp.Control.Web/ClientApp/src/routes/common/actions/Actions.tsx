@@ -1,10 +1,9 @@
 import { HTMLAttributes } from "react";
 import { Link, RouteLink } from "../../../components/NavLink";
-import { UpnpDevice } from "../Types";
 import { UpnpDeviceTools as UDT } from "../UpnpDeviceTools";
 
 export type DeviceActionProps = HTMLAttributes<HTMLElement> & {
-    device?: UpnpDevice;
+    device?: Upnp.Device;
     category?: string;
 };
 

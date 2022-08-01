@@ -3,13 +3,12 @@ import { Link } from "../../components/NavLink";
 import { DeviceActionProps } from "./actions/Actions";
 import { AddBookmarkAction } from "./actions/AddBookmarkAction";
 import DeviceIcon from "./DeviceIcon";
-import { UpnpDevice } from "./Types";
 
 type ActionWidgetComponent = ComponentType<DeviceActionProps & HTMLAttributes<HTMLElement>>;
 
 export type ActionDescriptor = [key: string, component: ActionWidgetComponent, props?: HTMLAttributes<HTMLElement>];
 
-type DeviceCardProps = HTMLAttributes<HTMLDivElement> & DataSourceProps<UpnpDevice> &
+type DeviceCardProps = HTMLAttributes<HTMLDivElement> & DataSourceProps<Upnp.Device> &
     UI.CategoryRouteParams & { actions?: ActionDescriptor[] }
 
 export function DeviceCard({ dataSource: d, category, children, actions, className, ...other }: DeviceCardProps) {

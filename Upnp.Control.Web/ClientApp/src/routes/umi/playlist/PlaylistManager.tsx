@@ -21,7 +21,6 @@ import Pagination from "../../common/Pagination";
 import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext, { RowState } from "../../common/RowStateContext";
 import $s from "../../common/Settings";
-import { BrowseFetchResult, DIDLItem } from "../../common/Types";
 import MainCell from "./CellTemplate";
 import AddItemsDialog from "./dialogs/AddItemsDialog";
 import AddUrlDialog from "./dialogs/AddUrlDialog";
@@ -33,9 +32,10 @@ import { PlaylistManagerService } from "./PlaylistManagerService";
 import { PlaylistManagerToolbar } from "./PlaylistManagerToolbar";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
 import { PlaylistRowStateProvider } from "./PlaylistRowStateProvider";
+import Item = Upnp.DIDL.Item;
 
 type PlaylistManagerProps = Omit<UI.PlaylistRouteParams, "category"> &
-    DataFetchProps<BrowseFetchResult> &
+    DataFetchProps<Upnp.BrowseFetchResult> &
     HTMLAttributes<HTMLDivElement> &
     NavigatorProps;
 
@@ -48,7 +48,7 @@ const dialogBrowserProps: BrowserProps<unknown> = {
     useCheckboxes: true
 }
 
-function getBrowserDialogRowState(item: DIDLItem) {
+function getBrowserDialogRowState(item: Item) {
     return item.container
         ? RowState.Navigable | RowState.Selectable
         : DIDLTools.isMusicTrack(item)
@@ -127,7 +127,7 @@ export class PlaylistManagerCore
         this.dialogHostRef.current?.show(dialog);
     }
 
-    private createHandler(impl: (item: DIDLItem) => void): UIEventHandler<HTMLElement> {
+    private createHandler(impl: (item: Item) => void): UIEventHandler<HTMLElement> {
         return ({ currentTarget: { dataset: { index } } }) => {
             if (!index) throw new Error("No 'data-index' attribute value available from the current HTML element");
 
@@ -171,7 +171,7 @@ export class PlaylistManagerCore
 
     private createPlaylist = () => this.dialog(<PromptDialog caption="Create new playlist" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} />);
 
-    private deletePlaylists = (items: DIDLItem[]) => {
+    private deletePlaylists = (items: Item[]) => {
         const onRemove = () => this.delete(items.map(i => i.id));
 
         this.dialog(<RemoveItemsDialog title="Do you want to delete playlist(s)?" onRemove={onRemove}>
@@ -181,16 +181,16 @@ export class PlaylistManagerCore
         </RemoveItemsDialog>);
     }
 
-    private renamePlaylist = (item: DIDLItem) => {
+    private renamePlaylist = (item: Item) => {
         const onRename = (value: string) => this.rename(item.id, value);
         this.dialog(<PromptDialog caption="Rename playlist" confirmText="Rename" defaultValue={item.title} onConfirmed={onRename} />);
     }
 
-    private copyPlaylist = (item: DIDLItem) => {
+    private copyPlaylist = (item: Item) => {
         this.copy(item.id, `${item.title} - Copy`);
     }
 
-    private deletePlaylistItems = (items: DIDLItem[]) => {
+    private deletePlaylistItems = (items: Item[]) => {
         const onRemove = () => this.deleteItems(items.map(i => i.id));
 
         this.dialog(<RemoveItemsDialog onRemove={onRemove}>
@@ -230,7 +230,7 @@ export class PlaylistManagerCore
 
     //#region Playback related row event handlers
 
-    private playItem = (_: DIDLItem, index: number) => {
+    private playItem = (_: Item, index: number) => {
         const url = this.getPlayUrl(index);
         if (url) this.ctrl.playUri(url).fetch();
         return false;
@@ -238,7 +238,7 @@ export class PlaylistManagerCore
 
     //#endregion
 
-    hotKeyHandler = (selection: DIDLItem[], focused: DIDLItem | undefined, hotKey: HotKey) => {
+    hotKeyHandler = (selection: Item[], focused: Item | undefined, hotKey: HotKey) => {
         const rootLevel = this.props.id === "PL:";
         if (hotKey.equals(HotKeys.showInfo)) {
             this.dialogHostRef.current?.show(<ItemInfoDialog item={focused ?? selection[0]} />);

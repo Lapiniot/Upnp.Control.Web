@@ -3,7 +3,6 @@ import { HotKeys } from "../../../components/HotKey";
 import { MediaQueries } from "../../../components/MediaQueries";
 import Toolbar from "../../../components/Toolbar";
 import { RowStateAction, useRowStates } from "../../common/RowStateContext";
-import { DIDLItem } from "../../common/Types";
 import { PlaylistManagerService } from "./PlaylistManagerService";
 
 type PlaylistManagetToolbarProps = {
@@ -18,7 +17,7 @@ type PlaylistManagetToolbarProps = {
 const className = "btn-round btn-plain flex-grow-0";
 
 const initial = {
-    selection: [] as DIDLItem[],
+    selection: [] as Upnp.DIDL.Item[],
     dispatch: (_value: RowStateAction): void => { throw new Error("Unsupported in this state") }
 }
 

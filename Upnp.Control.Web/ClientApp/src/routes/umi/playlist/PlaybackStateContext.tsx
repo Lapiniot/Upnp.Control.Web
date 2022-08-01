@@ -3,7 +3,6 @@ import { nopropagation } from "../../../components/Extensions";
 import { useSignalR } from "../../../components/SignalRListener";
 import $api from "../../../components/WebApi";
 import $s from "../../common/Settings";
-import { AVState, PlaybackState } from "../../common/Types";
 
 export type DispatchAction = { type: "UPDATE", state: Partial<PlaybackStateProviderState> }
 
@@ -15,7 +14,7 @@ interface PlaybackControlHandlers {
 }
 
 export type PlaybackStateContextType = {
-    state: PlaybackState,
+    state: Upnp.PlaybackState,
     playlist: string | undefined,
     track: string | undefined,
     dispatch: React.Dispatch<DispatchAction>;
@@ -35,7 +34,7 @@ export const PlaybackStateContext = createContext<PlaybackStateContextType>({
 type PlaybackStateProviderProps = PropsWithChildren<{ device: string, getTrackUrlHook: (index: number) => string | undefined }>;
 
 type PlaybackStateProviderState = {
-    playbackState: PlaybackState,
+    playbackState: Upnp.PlaybackState,
     playlist: string | null | undefined,
     track: string | null | undefined
 };
@@ -77,7 +76,7 @@ export function PlaybackStateProvider({ device, getTrackUrlHook, ...other }: Pla
     }, [device]);
 
     const handlers = useMemo(() => ({
-        "AVTransportEvent": (target: string, { state, vendorProps = {} }: { state: AVState, vendorProps: Record<string, string> }) => {
+        "AVTransportEvent": (target: string, { state, vendorProps = {} }: { state: Upnp.AVState, vendorProps: Record<string, string> }) => {
             if (device !== target) return;
             const { state: playbackState, currentTrack: track } = state;
             const { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = vendorProps;

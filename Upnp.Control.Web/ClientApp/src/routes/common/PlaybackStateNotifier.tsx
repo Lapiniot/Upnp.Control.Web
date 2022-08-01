@@ -2,17 +2,16 @@ import { forwardRef, useMemo, useRef } from "react";
 import NotificationsHostCore, { INotificationHost } from "../../components/NotificationsHost";
 import { useSignalR } from "../../components/SignalRListener";
 import { TrackInfoLine } from "./TrackInfoLine";
-import { AVState, DeviceDescription } from "./Types";
 
 const NotificationsHost = forwardRef(NotificationsHostCore);
-type PlaybackStateChangedCallback = (state: AVState, vendor: Record<string, string>) => void | boolean;
+type PlaybackStateChangedCallback = (state: Upnp.AVState, vendor: Record<string, string>) => void | boolean;
 
 export function PlaybackStateNotifier({ callback, device }: { device: string; callback?: PlaybackStateChangedCallback; }) {
     const ntRef = useRef<INotificationHost>(null);
     const idRef = useRef<string>();
 
     const handlers = useMemo(() => ({
-        "AVTransportEvent": (target: string, { device: deviceDesc, state, vendorProps = {} }: { device: DeviceDescription, state: AVState; vendorProps: Record<string, string> }) => {
+        "AVTransportEvent": (target: string, { device: deviceDesc, state, vendorProps = {} }: { device: Upnp.DeviceDescription, state: Upnp.AVState; vendorProps: Record<string, string> }) => {
             if (device !== target) return;
             const { current, state: playbackState } = state;
             if (callback?.(state, vendorProps) !== false) {

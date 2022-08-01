@@ -1,12 +1,11 @@
 import { HTMLAttributes } from "react";
 import { DataFetchProps } from "../../components/DataFetch";
 import { DIDLTools } from "./DIDLTools";
-import { BrowseFetchResult } from "./Types";
 
 export type MediaViewerProps = HTMLAttributes<HTMLDivElement> & { device: string, id: string };
 
 export function MediaViewer({ dataContext: ctx, fetching, error, device, id, className, ...other }:
-    MediaViewerProps & DataFetchProps<BrowseFetchResult>) {
+    MediaViewerProps & DataFetchProps<Upnp.BrowseFetchResult>) {
     const { source: { self: item = undefined } = {} } = ctx ?? {};
 
     if (!item || !item.res) return <div>Invalid data</div>;

@@ -5,7 +5,6 @@ import BrowserDialog, { BrowseResult } from "../BrowserDialog";
 import { DIDLTools } from "../DIDLTools";
 import { BrowserProps } from "../BrowserView";
 import { RowState, RowStateMapperFunction } from "../RowStateContext";
-import { DIDLItem } from "../Types";
 import { DeviceActionProps } from "./Actions";
 
 type OpenActionProps = DeviceActionProps & {
@@ -42,7 +41,7 @@ export function OpenMediaAction(props: DeviceActionProps) {
     </OpenAction>
 }
 
-function pickAudioMapper(item: DIDLItem) {
+function pickAudioMapper(item: Upnp.DIDL.Item) {
     return DIDLTools.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
 }
 

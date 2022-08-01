@@ -1,4 +1,3 @@
-import { AVPosition, AVState, BrowseFetchResult, PlaybackMode, RCState, UpnpDevice } from "../routes/common/Types";
 import { toBase64 } from "./Extensions";
 import { HttpFetch, JsonHttpFetch, RequestQuery, HttpPostFetch, HttpPutFetch, HttpDeleteFetch } from "./HttpFetch";
 
@@ -14,17 +13,17 @@ export type ApplicationInfo = {
 }
 
 export interface ControlApiProvider {
-    state: (detailed?: boolean) => JsonHttpFetch<AVState>;
+    state: (detailed?: boolean) => JsonHttpFetch<Upnp.AVState>;
     play: (id?: string, sourceDevice?: string) => HttpPutFetch;
     playUri: (id: string) => HttpPutFetch;
     pause: () => HttpPutFetch;
     stop: () => HttpPutFetch;
     prev: () => HttpPutFetch;
     next: () => HttpPutFetch;
-    position: (detailed?: boolean) => JsonHttpFetch<AVPosition>;
+    position: (detailed?: boolean) => JsonHttpFetch<Upnp.AVPosition>;
     seek: (position: number | string) => HttpPutFetch;
-    setPlayMode: (mode: PlaybackMode) => HttpPutFetch;
-    volume: (detailed?: boolean) => JsonHttpFetch<RCState>;
+    setPlayMode: (mode: Upnp.PlaybackMode) => HttpPutFetch;
+    volume: (detailed?: boolean) => JsonHttpFetch<Upnp.RCState>;
     setVolume: (volume: number) => HttpPutFetch;
     getMute: () => JsonHttpFetch<boolean>;
     setMute: (mute: boolean) => HttpPutFetch;
@@ -65,10 +64,10 @@ export interface PushSubscriptionApiProvider {
 
 export default class WebApi {
 
-    public static devices(category: string): JsonHttpFetch<UpnpDevice[]>;
-    public static devices(category: string, id: string): JsonHttpFetch<UpnpDevice>;
+    public static devices(category: string): JsonHttpFetch<Upnp.Device[]>;
+    public static devices(category: string, id: string): JsonHttpFetch<Upnp.Device>;
     public static devices(category: string, id?: string) {
-        return new JsonHttpFetch<UpnpDevice | UpnpDevice[]>(`${devicesBaseUri}${id ? `/${id}` : ""}${category ? "?category=" + category : ""}`);
+        return new JsonHttpFetch<Upnp.Device | Upnp.Device[]>(`${devicesBaseUri}${id ? `/${id}` : ""}${category ? "?category=" + category : ""}`);
     };
 
     static browse = (deviceId: string) => ({
@@ -151,7 +150,7 @@ const pushSubscriber = {
     serverKey: () => new HttpFetch(`${baseUri}/push-subscriptions/server-key`)
 }
 
-export class BrowseFetch extends JsonHttpFetch<BrowseFetchResult> {
+export class BrowseFetch extends JsonHttpFetch<Upnp.BrowseFetchResult> {
     constructor(path: string, query: RequestQuery = {}) {
         super(path, query);
     }

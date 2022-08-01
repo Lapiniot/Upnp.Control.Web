@@ -1,12 +1,11 @@
 import { ButtonHTMLAttributes, MouseEventHandler, useCallback, useEffect, useState } from "react";
 import { IBookmarkStore } from "../../components/BookmarkService";
-import { DIDLItem } from "./Types";
 import { KnownWidgets } from "./widgets/Widgets";
 
 type BookmarkButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     device: string;
     deviceName: string;
-    item: DIDLItem;
+    item: Upnp.DIDL.Item;
     store?: IBookmarkStore<[string, string], WidgetPropsType>;
 };
 

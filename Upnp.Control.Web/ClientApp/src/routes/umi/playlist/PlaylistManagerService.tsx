@@ -1,4 +1,4 @@
-import { DIDLItem } from "../../common/Types";
+import DIDLItem = Upnp.DIDL.Item
 
 export interface PlaylistManagerService {
     create(): void;

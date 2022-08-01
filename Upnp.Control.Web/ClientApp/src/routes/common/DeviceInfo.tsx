@@ -1,10 +1,9 @@
 import { HTMLAttributes } from "react";
 import { Link } from "../../components/NavLink";
-import { UpnpDevice } from "./Types";
 
 const cntrClass = "grid-form grid-form-dense mb-2 text-wrap no-font-boost";
 
-type DeviceInfoProps = HTMLAttributes<HTMLDivElement> & DataSourceProps<UpnpDevice>;
+type DeviceInfoProps = HTMLAttributes<HTMLDivElement> & DataSourceProps<Upnp.Device>;
 
 export default function ({ dataSource: device, className, ...props }: DeviceInfoProps) {
     const { udn, type, maker, makerUrl, model, modelUrl, modelNumber } = device ?? {};

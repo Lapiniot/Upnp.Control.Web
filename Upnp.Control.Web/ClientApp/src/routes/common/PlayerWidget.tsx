@@ -9,7 +9,6 @@ import $api from "../../components/WebApi";
 import AlbumArt from "./AlbumArt";
 import SeekBar from "./SeekBar";
 import $s from "./Settings";
-import { AVPosition, AVState, RCState } from "./Types";
 
 const STATE_UPDATE_DELAY_MS = 2000;
 
@@ -20,9 +19,9 @@ function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: strin
     </button>
 }
 
-type PlayerProps = { udn?: string; } & DataFetchProps<AVState>
+type PlayerProps = { udn?: string; } & DataFetchProps<Upnp.AVState>
 
-type PlayerState = { dataContext?: DataContext<AVState> } & Partial<AVState> & Partial<RCState> & Partial<AVPosition>
+type PlayerState = { dataContext?: DataContext<Upnp.AVState> } & Partial<Upnp.AVState & Upnp.RCState & Upnp.AVPosition>
 
 class PlayerCore extends Component<PlayerProps, PlayerState> {
 
@@ -49,14 +48,14 @@ class PlayerCore extends Component<PlayerProps, PlayerState> {
             : null;
     }
 
-    onAVTransportEvent = (device: string, { state, position }: { state: AVState; position: AVPosition }) => {
+    onAVTransportEvent = (device: string, { state, position }: { state: Upnp.AVState; position: Upnp.AVPosition }) => {
         if (device === this.props.udn) {
             this.cancelStateUpdate();
             this.setState({ ...position, ...state });
         }
     }
 
-    onRenderingControlEvent = (device: string, { state }: { state: RCState }) => {
+    onRenderingControlEvent = (device: string, { state }: { state: Upnp.RCState }) => {
         if (device === this.props.udn && (state.volume !== this.state.volume || state.muted && state.muted !== this.state.muted)) {
             this.cancelStateUpdate();
             this.setState(state);

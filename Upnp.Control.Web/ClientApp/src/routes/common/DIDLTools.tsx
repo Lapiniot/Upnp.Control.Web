@@ -1,5 +1,3 @@
-import { DIDLItem, DIDLResource } from "./Types";
-
 export class DIDLTools {
     static getKind(upnpClassName: string): string {
         const index = upnpClassName.lastIndexOf(".");
@@ -47,7 +45,7 @@ export class DIDLTools {
         return `${DIDLTools.formatSize(size)} (${size} bytes)`;
     }
 
-    static formatMediaInfo(data?: DIDLResource, separator = "\r"): string | null {
+    static formatMediaInfo(data?: Upnp.DIDL.Resource, separator = "\r"): string | null {
         if (!data)
             return null;
         let lines = [];
@@ -83,15 +81,15 @@ export class DIDLTools {
         }
     }
 
-    static isContainer(item: DIDLItem) {
+    static isContainer(item: Upnp.DIDL.Item) {
         return item.container;
     }
 
-    static isMediaItem(item: DIDLItem) {
+    static isMediaItem(item: Upnp.DIDL.Item) {
         return !item.container;
     }
 
-    static isMusicTrack(item: DIDLItem) {
+    static isMusicTrack(item: Upnp.DIDL.Item) {
         return item.class.endsWith(".musicTrack");
     }
 }

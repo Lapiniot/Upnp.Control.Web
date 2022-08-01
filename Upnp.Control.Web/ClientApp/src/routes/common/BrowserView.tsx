@@ -6,7 +6,7 @@ import { NavigatorProps } from "../../components/Navigator";
 import AlbumArt from "./AlbumArt";
 import { DIDLTools as utils } from "./DIDLTools";
 import RowStateContext, { RowState } from "./RowStateContext";
-import { BrowseFetchResult, DIDLItem } from "./Types";
+import Item = Upnp.DIDL.Item;
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
@@ -20,7 +20,7 @@ type DisplayMode = "table" | "list" | "responsive";
 type NavigationMode = "single-tap" | "double-click" | "auto";
 
 export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
-    data: DIDLItem;
+    data: Item;
     index: number;
     rowState: RowState;
     context?: TContext;
@@ -29,8 +29,8 @@ export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
 type RenderFunc = () => ReactNode;
 
 export type BrowserProps<TContext> = {
-    openHandler?: (item: DIDLItem, index: number) => boolean;
-    hotKeyHandler?: (selection: DIDLItem[], focused: DIDLItem | undefined, hotKey: HotKey) => boolean | void;
+    openHandler?: (item: Item, index: number) => boolean;
+    hotKeyHandler?: (selection: Item[], focused: Item | undefined, hotKey: HotKey) => boolean | void;
     mainCellTemplate?: ComponentType<CellTemplateProps<TContext>>;
     mainCellContext?: TContext;
     displayMode?: DisplayMode;
@@ -41,7 +41,7 @@ export type BrowserProps<TContext> = {
     renderFooter?: RenderFunc;
 } & { [K in ModeFlags]?: boolean }
 
-export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<BrowseFetchResult>;
+export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<Upnp.BrowseFetchResult>;
 
 export default class BrowserView<TContext = unknown> extends React.Component<BrowserViewProps<TContext>> {
 

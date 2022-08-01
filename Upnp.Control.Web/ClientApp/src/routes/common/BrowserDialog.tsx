@@ -9,19 +9,18 @@ import BrowserCore from "./BrowserCore";
 import { useContentBrowser } from "./BrowserUtils";
 import { BrowserProps } from "./BrowserView";
 import { RowStateMapperFunction, RowStateProvider, useRowStates } from "./RowStateContext";
-import { DIDLItem } from "./Types";
 import { Route, Routes, VirtualRouter } from "./VirtualRouter";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;
     rowStateMapper?: RowStateMapperFunction;
-    confirmContent?: ((items: DIDLItem[]) => ReactNode) | string;
+    confirmContent?: ((items: Upnp.DIDL.Item[]) => ReactNode) | string;
     onConfirmed(selection: BrowseResult): void;
     dismissOnOpen?: boolean;
 } & DialogProps;
 
 type ConfirmProps = {
-    confirmContent?: ((items: DIDLItem[]) => ReactNode) | string;
+    confirmContent?: ((items: Upnp.DIDL.Item[]) => ReactNode) | string;
     onConfirmed?: (selection: BrowseResult) => void;
 }
 

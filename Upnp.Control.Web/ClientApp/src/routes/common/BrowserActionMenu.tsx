@@ -2,16 +2,15 @@ import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
 import Toolbar from "../../components/Toolbar";
 import { DIDLTools } from "./DIDLTools";
 import { useRowStates } from "./RowStateContext";
-import { DIDLItem, UpnpDevice } from "./Types";
 
 export function renderActionMenuItem(udn: string, action: string, name: string) {
     return <MenuItem key={`${action}.${udn}`} action={`${action}.${udn}`} data-udn={udn}>&laquo;{name}&raquo;</MenuItem>;
 }
 
 type BrowserActionMenuProps = {
-    umis: UpnpDevice[];
-    renderers: UpnpDevice[];
-    onSelected?: (action: string, udn: string, selection: DIDLItem[]) => void;
+    umis: Upnp.Device[];
+    renderers: Upnp.Device[];
+    onSelected?: (action: string, udn: string, selection: Upnp.DIDL.Item[]) => void;
 };
 
 export function BrowserActionMenu({ umis, renderers, onSelected }: BrowserActionMenuProps) {

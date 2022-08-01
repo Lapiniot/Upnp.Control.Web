@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, useContext, useMemo, useReducer } from "react";
-import { DIDLItem } from "./Types";
+import Item = Upnp.DIDL.Item;
 
 const IndexOutOfRangeError = "'index' parameter value is out of range"
 const InvalidDispatchActionError = "invalid dispatch action"
@@ -32,13 +32,13 @@ export type RowStateAction =
 type RowStateContextData = {
     enabled: boolean;
     current: number | undefined,
-    selection: DIDLItem[],
+    selection: Item[],
     allSelected: boolean,
     dispatch: React.Dispatch<RowStateAction>,
     get: (index: number) => RowState
 }
 
-export type RowStateMapperFunction = (item: DIDLItem, index: number, state: RowState | undefined) => RowState
+export type RowStateMapperFunction = (item: Item, index: number, state: RowState | undefined) => RowState
 
 const RowStateContext = createContext<RowStateContextData>({
     enabled: false,
@@ -52,13 +52,13 @@ const RowStateContext = createContext<RowStateContextData>({
 export default RowStateContext
 
 export type RowStateProviderProps = PropsWithChildren<{}> & {
-    items: DIDLItem[] | undefined,
+    items: Item[] | undefined,
     mapper?: RowStateMapperFunction,
     enabled?: boolean
 }
 
 type RowStateProviderState = {
-    items: DIDLItem[] | undefined,
+    items: Item[] | undefined,
     mapper: RowStateMapperFunction | undefined,
     states: RowState[] | undefined,
     current: number | undefined,
@@ -289,7 +289,7 @@ export function RowStateProvider({ items, mapper = getRowState, enabled = true, 
     }));
 
     const value = useMemo(() => ({
-        selection: (items && state.states?.reduce((acc: DIDLItem[], current, index) => ((current & RowState.SelectMask) === RowState.SelectMask && acc.push(items[index]), acc), [])) ?? [],
+        selection: (items && state.states?.reduce((acc: Item[], current, index) => ((current & RowState.SelectMask) === RowState.SelectMask && acc.push(items[index]), acc), [])) ?? [],
         current: state.current,
         enabled: enabled && !!(state.states),
         allSelected: !!(state.states?.every(s => s & RowState.Selected)),

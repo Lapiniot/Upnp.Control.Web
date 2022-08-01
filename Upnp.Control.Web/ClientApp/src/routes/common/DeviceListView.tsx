@@ -3,14 +3,13 @@ import { DataFetchProps } from "../../components/DataFetch";
 import { GridView, GridViewMode } from "../../components/GridView";
 import { DeviceDiscoveryNotifier } from "./DeviceDiscoveryNotifier";
 import $s from "./Settings";
-import { UpnpDevice } from "./Types";
 
-export type DeviceViewProps = TemplatedDataComponentProps<DataSourceProps<UpnpDevice> & UI.CategoryRouteParams> &
+export type DeviceViewProps = TemplatedDataComponentProps<DataSourceProps<Upnp.Device> & UI.CategoryRouteParams> &
     UI.CategoryRouteParams & { viewMode?: GridViewMode }
 
 const gridEmptyClass = "align-content-center align-items-center"
 
-export function DeviceView({ itemTemplate: Item, dataContext, category, fetching, viewMode }: DeviceViewProps & DataFetchProps<UpnpDevice>) {
+export function DeviceView({ itemTemplate: Item, dataContext, category, fetching, viewMode }: DeviceViewProps & DataFetchProps<Upnp.Device>) {
     const data = fetching && !dataContext?.source ? undefined : dataContext?.source;
     const empty = !fetching && data;
     return <GridView viewMode={viewMode} className={empty ? gridEmptyClass : ""}>
@@ -19,7 +18,7 @@ export function DeviceView({ itemTemplate: Item, dataContext, category, fetching
     </GridView>
 }
 
-export class DeviceListView extends Component<DeviceViewProps & DataFetchProps<UpnpDevice[]>> {
+export class DeviceListView extends Component<DeviceViewProps & DataFetchProps<Upnp.Device[]>> {
     static defaultProps: Partial<DeviceViewProps> = { viewMode: "grid" }
 
     reload = () => {
@@ -30,7 +29,7 @@ export class DeviceListView extends Component<DeviceViewProps & DataFetchProps<U
     render() {
         const { dataContext, itemTemplate: Item, fetching, category, viewMode } = this.props;
         const list = fetching && !dataContext?.source
-            ? Array.from<UpnpDevice | undefined>({ length: $cfg[category]?.placeholders?.count ?? $cfg.placeholders.count })
+            ? Array.from<Upnp.Device | undefined>({ length: $cfg[category]?.placeholders?.count ?? $cfg.placeholders.count })
             : dataContext?.source;
         const empty = !fetching && list?.length == 0;
         return <>

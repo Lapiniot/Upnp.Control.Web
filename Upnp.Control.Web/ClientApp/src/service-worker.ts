@@ -2,7 +2,6 @@
 
 import { CacheFirstStrategy, CacheOnlyStrategy, StaleWhileRevalidateStrategy } from "./components/CachingStrategy";
 import { formatTrackInfoLine, viaProxy } from "./components/Extensions";
-import { AVState, DeviceDescription, UpnpDevice } from "./routes/common/Types";
 import { UpnpDeviceTools as UDT } from "./routes/common/UpnpDeviceTools";
 
 interface PrecacheEntry {
@@ -92,7 +91,7 @@ self.addEventListener("push", event => {
 
     if ((type === "appeared" || type === "disappeared") && "device" in data) {
 
-        const device = data.device as UpnpDevice;
+        const device = data.device as Upnp.Device;
         const title = `UPnP discovery: ${device.name}`;
         const icon = UDT.getOptimalIcon(device.icons, 192);
         const category = UDT.getCategory(device);
@@ -111,8 +110,8 @@ self.addEventListener("push", event => {
 
         event.waitUntil(showNotification(title, options));
     } else if (type === "av-state" && "state" in data && "device" in data) {
-        const state: AVState = data.state;
-        const { udn, description } = data.device as DeviceDescription;
+        const state = <Upnp.AVState>data.state;
+        const { udn, description } = <Upnp.DeviceDescription>data.device;
         const title = `\u00AB${description}\u00BB now playing`;
         const { artists, creator, album, date, title: track } = state.current ?? {};
         const uri: string = data.vendorProps?.["mi:playlist_transport_uri"];

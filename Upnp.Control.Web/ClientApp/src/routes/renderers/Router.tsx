@@ -2,13 +2,12 @@
 import BrowserPage from "../common/BrowserPage";
 import DeviceListPage from "../common/DeviceListPage";
 import DevicePage from "../common/DevicePage";
-import { UpnpDevice } from "../common/Types";
 import { UpnpDeviceTools as UDT } from "../common/UpnpDeviceTools";
 import ViewerPage from "../common/ViewerPage";
 import UmiDeviceCard from "../umi/Device";
 import RendererDeviceCard from "./Device";
 
-function TemplateSelector({ dataSource: d, ...props }: DataSourceProps<UpnpDevice> & UI.CategoryRouteParams) {
+function TemplateSelector({ dataSource: d, ...props }: DataSourceProps<Upnp.Device> & UI.CategoryRouteParams) {
     if (d && UDT.isUmiDevice(d))
         return <UmiDeviceCard {...props} dataSource={d} />
     else

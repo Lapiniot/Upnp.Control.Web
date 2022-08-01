@@ -2,9 +2,8 @@ import { useCallback } from "react";
 import Dialog, { DialogProps } from "../../components/Dialog";
 import { DIDLTools } from "./DIDLTools";
 import { ItemInfo } from "./ItemInfo";
-import { DIDLItem } from "./Types";
 
-export default function ItemInfoDialog({ item, ...other }: DialogProps & { item: DIDLItem; }) {
+export default function ItemInfoDialog({ item, ...other }: DialogProps & { item: Upnp.DIDL.Item; }) {
     const clickHandler = useCallback(() => navigator.permissions
         .query({ name: "clipboard-read" as PermissionName })
         .then(result => {
