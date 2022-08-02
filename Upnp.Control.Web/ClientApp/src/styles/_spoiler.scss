@@ -2,29 +2,36 @@
 $spoiler-border-radius: $border-radius  !default;
 $spoiler-border-width: $border-width  !default;
 $spoiler-border-color: $border-color  !default;
+$spoiler-padding-x: $input-btn-padding-x  !default;
+$spoiler-padding-y: $input-btn-padding-y  !default;
 
 .spoiler {
     --#{$prefix}spoiler-border-radius: #{$spoiler-border-radius};
     --#{$prefix}spoiler-border-width: #{$spoiler-border-width};
     --#{$prefix}spoiler-border-color: #{$spoiler-border-color};
+    --#{$prefix}spoiler-padding-x: #{$spoiler-padding-x};
+    --#{$prefix}spoiler-padding-y: #{$spoiler-padding-y};
+
     @include border-radius(var(--#{$prefix}spoiler-border-radius));
     border: var(--#{$prefix}spoiler-border-width) solid var(--#{$prefix}spoiler-border-color);
     overflow: hidden;
 
-    & > [data-bs-toggle="collapse"] {
-        text-align: left;
-        @extend %no-decoration;
 
-        &:before {
-            display: inline-block;
-            line-height: normal;
-            margin-right: map-get($spacers, 1);
-            vertical-align: middle;
-            content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='1rem' viewBox='0 0 320 512'%3E%3Cpath d='M177 159.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 255.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 329.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1z'/%3E%3C/svg%3E");
+    > summary {
+        padding: var(--#{$prefix}spoiler-padding-y) var(--#{$prefix}spoiler-padding-x);
+        list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='6 2 16 14' width='16px' height='16px'%3E%3Cpath d='M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z'/%3E%3C/svg%3E");
+
+        &.disabled {
+            opacity: #{$btn-disabled-opacity};
+            pointer-events: none;
+            user-select: none;
         }
+    }
 
-        &.collapsed:before {
-            content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='1rem' viewBox='0 0 320 512'%3E%3Cpath d='M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z'/%3E%3C/svg%3E");
+    &[open] {
+        summary {
+            border-bottom: var(--#{$prefix}spoiler-border-width) solid var(--#{$prefix}spoiler-border-color);
+            list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='6 2 16 14' width='16px' height='16px'%3E%3Cpath d='M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z'/%3E%3C/svg%3E");
         }
     }
 }
