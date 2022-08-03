@@ -119,6 +119,8 @@ class PlayerCore extends Component<PlayerProps, PlayerState> {
     }
 
     private updateStateAsync = async () => {
+        if (!this.props.udn) return;
+
         try {
             const r = await Promise.all([
                 await this.ctrl.position().json($s.get("timeout")),
