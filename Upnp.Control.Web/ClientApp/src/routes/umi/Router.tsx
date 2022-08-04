@@ -10,7 +10,7 @@ export default function () {
     const category = "umi";
     const viewMode = "auto";
     return <Routes>
-        <Route index element={<DeviceListPage category={category} key={category} itemTemplate={DeviceTemplate} viewMode={viewMode} />} />
+        <Route index element={<DeviceListPage category={category} itemTemplate={DeviceTemplate} viewMode={viewMode} />} />
         <Route path=":device">
             <Route index element={<DevicePage category={category} itemTemplate={DeviceTemplate} viewMode={viewMode} />} />
             <Route path="browse">

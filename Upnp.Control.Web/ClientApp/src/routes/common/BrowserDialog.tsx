@@ -38,10 +38,10 @@ function MediaSourceList() {
     const sources = !loading ? source : Array.from<undefined>({ length: $cfg["browser-dialog-sources"]?.placeholders?.count ?? $cfg.placeholders.count });
     const placeholderCls = loading ? ` placeholder-${$cfg["browser-dialog-sources"]?.placeholders?.effect ?? $cfg.placeholders.effect}` : "";
     return <ul className={`list-group list-group-flush overflow-auto${placeholderCls}`}>
-        {sources?.map((d, i) => d ? <a key={d.udn} href={`/upnp/${d.udn}/browse/0`} onClick={handler} className="list-group-item list-group-item-action hstack">
+        {sources?.map((d, i) => d ? <a key={i} href={`/upnp/${d.udn}/browse/0`} onClick={handler} className="list-group-item list-group-item-action hstack">
             <DeviceIcon device={d} />
             {d.name}{d.description && ` (${d.description})`}
-        </a> : <a key={`s-${i}`} className="list-group-item disabled hstack">
+        </a> : <a key={i} className="list-group-item disabled hstack">
             <DeviceIcon device={d} className="placeholder" />
             <span className={`placeholder w-${Math.ceil(2 * (1 + Math.random())) * 25}`}>&nbsp;</span>
         </a>)}

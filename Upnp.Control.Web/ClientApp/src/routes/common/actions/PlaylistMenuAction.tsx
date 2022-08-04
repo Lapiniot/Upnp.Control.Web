@@ -28,9 +28,9 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
                 {device && <DropdownMenu data-device={device.udn} placement="top-end"
                     modifiers={[{ name: "offset", options: { offset: [0, 4] } }]}
                     style={{ overflowY: "auto", maxWidth: "100vw", maxHeight: "calc(100% - 3rem)" }}>
-                    {items?.map(i => <li key={i.id}>
-                        <a className="dropdown-item" href="#" data-play-url={i.res?.url + "#play"} onClick={playUrlHandler}>
-                            <AlbumArt itemClass={i.class} albumArts={i.albumArts} className="rounded-1" hint="player" />{i.title}</a>
+                    {items?.map(({ title, class: cls, albumArts, res }, index) => <li key={index}>
+                        <a className="dropdown-item" href="#" data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
+                            <AlbumArt itemClass={cls} albumArts={albumArts} className="rounded-1" hint="player" />{title}</a>
                     </li>)}
                 </DropdownMenu>}
             </>

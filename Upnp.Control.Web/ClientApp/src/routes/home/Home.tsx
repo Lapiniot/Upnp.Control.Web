@@ -54,7 +54,7 @@ export default function () {
 
     return <div className="overflow-auto">
         <div className="accordion accordion-flush" id="bookmarks-section">
-            {Object.entries(data).map(([id, value], i) => <div className="accordion-item" key={id}>
+            {Object.entries(data).map(([id, value], index) => <div className="accordion-item" key={index}>
                 <h2 className="accordion-header" id={`h-${id}`}>
                     <button type="button" className={`accordion-button${id !== expanded ? " collapsed" : ""}`} data-bs-toggle="collapse"
                         data-bs-target={`#${id}`} aria-expanded={id === expanded ? "true" : "false"}

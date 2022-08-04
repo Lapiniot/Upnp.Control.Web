@@ -34,8 +34,7 @@ export class DeviceListView extends Component<DeviceViewProps & DataFetchProps<U
         const empty = !fetching && list?.length == 0;
         return <>
             <GridView viewMode={viewMode} className={empty ? gridEmptyClass : ""}>
-                {list?.length ? list.map((item, index) => <Item key={item ? item.udn : `tmp-${index}`}
-                    dataSource={item} category={category} />) : null}
+                {list?.length ? list.map((item, i) => <Item key={i} dataSource={item} category={category} />) : null}
                 {empty ? <span className="text-center text-muted">No devices discovered</span> : null}
             </GridView>
             <DeviceDiscoveryNotifier callback={this.reload} />

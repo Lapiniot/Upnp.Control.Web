@@ -62,12 +62,12 @@ const resAttributes: [key: string, title: string, formatters: AttributeDescripto
 ];
 
 function renderGroup<T>(item: T, key: string, title: string, formatters: AttributeDescriptor<T>[]) {
-    const children = formatters.map(({ 0: key, 1: title, 2: converter }) => {
+    const children = formatters.map(({ 0: key, 1: title, 2: converter }, i) => {
         const value = item[key];
-        return value ? [
-            <span key={`lbl-${String(key)}`} className="grid-form-label text-end">{title}</span>,
-            <span key={`txt-${String(key)}`} className="grid-form-text text-wrap">{converter(value, item)}</span>
-        ] : undefined;
+        return value ? <>
+            <span key={`lbl-${i}}`} className="grid-form-label text-end">{title}</span>,
+            <span key={`txt-${i}`} className="grid-form-text text-wrap">{converter(value, item)}</span>
+        </> : undefined;
     }).filter(item => item);
     return children.length > 0 ? [<div key={`hdr-${key}`} className="col-2 hstack">
         <hr className="flex-grow-1" />

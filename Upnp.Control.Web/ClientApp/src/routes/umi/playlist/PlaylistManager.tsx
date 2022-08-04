@@ -175,7 +175,7 @@ export class PlaylistManagerCore
 
         this.dialog(<RemoveItemsDialog title="Do you want to delete playlist(s)?" onRemove={onRemove}>
             <ul className="list-unstyled">
-                {[items?.map(e => <li key={e.id}>{e.title}</li>)]}
+                {[items?.map(({ title }, index) => <li key={index}>{title}</li>)]}
             </ul>
         </RemoveItemsDialog>);
     }
@@ -193,7 +193,7 @@ export class PlaylistManagerCore
         const onRemove = () => this.deleteItems(items.map(i => i.id));
 
         this.dialog(<RemoveItemsDialog onRemove={onRemove}>
-            <ul className="list-unstyled">{[items?.map(e => <li key={e.id}>{e.title}</li>)]}</ul>
+            <ul className="list-unstyled">{[items?.map(({ title }, index) => <li key={index}>{title}</li>)]}</ul>
         </RemoveItemsDialog>);
     }
 
@@ -275,9 +275,9 @@ export class PlaylistManagerCore
 
     renderActionMenu = () => {
         return <>
-            <MenuItem action="add-items" key="add-items" glyph="symbols.svg#add" onClick={this.service.addItems}>From media server</MenuItem>
-            <MenuItem action="add-url" key="add-url" glyph="symbols.svg#podcasts" onClick={this.service.addFeedUrl}>Internet stream url</MenuItem>
-            <MenuItem action="add-files" key="add-files" glyph="symbols.svg#feed" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
+            <MenuItem action="add-items" glyph="symbols.svg#add" onClick={this.service.addItems}>From media server</MenuItem>
+            <MenuItem action="add-url" glyph="symbols.svg#podcasts" onClick={this.service.addFeedUrl}>Internet stream url</MenuItem>
+            <MenuItem action="add-files" glyph="symbols.svg#feed" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
         </>;
     }
 
