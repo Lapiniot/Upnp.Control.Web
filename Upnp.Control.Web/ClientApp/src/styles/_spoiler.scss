@@ -12,26 +12,33 @@ $spoiler-padding-y: $input-btn-padding-y  !default;
     --#{$prefix}spoiler-padding-x: #{$spoiler-padding-x};
     --#{$prefix}spoiler-padding-y: #{$spoiler-padding-y};
 
+    height: var(--collapsed-height, auto);
+    overflow: hidden;
     @include border-radius(var(--#{$prefix}spoiler-border-radius));
     border: var(--#{$prefix}spoiler-border-width) solid var(--#{$prefix}spoiler-border-color);
-    overflow: hidden;
-
+    @include transition(var(--#{$transition-prefix}collapse));
 
     > summary {
         padding: var(--#{$prefix}spoiler-padding-y) var(--#{$prefix}spoiler-padding-x);
         list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='6 2 16 14' width='16px' height='16px'%3E%3Cpath d='M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z'/%3E%3C/svg%3E");
+    }
 
-        &.disabled {
-            opacity: #{$btn-disabled-opacity};
-            pointer-events: none;
-            user-select: none;
-        }
+    > div {
+        border-top: var(--#{$prefix}spoiler-border-width) solid var(--#{$prefix}spoiler-border-color);
     }
 
     &[open] {
-        summary {
-            border-bottom: var(--#{$prefix}spoiler-border-width) solid var(--#{$prefix}spoiler-border-color);
+        height: var(--expanded-height, auto);
+        @include transition(var(--#{$transition-prefix}expand));
+
+        > summary {
             list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='6 2 16 14' width='16px' height='16px'%3E%3Cpath d='M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z'/%3E%3C/svg%3E");
+        }
+    }
+
+    &[inert] {
+        > summary {
+            opacity: #{$btn-disabled-opacity};
         }
     }
 }
