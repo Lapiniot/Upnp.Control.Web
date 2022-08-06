@@ -2,7 +2,7 @@ import {
     ButtonHTMLAttributes, Component, createRef, DialogHTMLAttributes,
     FormEvent, HTMLAttributes, MouseEvent, ReactNode, SyntheticEvent, useRef
 } from "react";
-import { useAutoFocus } from "./AutoFocusHook";
+import { useAutoFocus } from "./Hooks";
 
 interface DialogEventProps {
     onOpen?(): void;
@@ -13,16 +13,6 @@ interface DialogRenderProps {
     renderHeader?(): ReactNode;
     renderFooter?(): ReactNode;
     renderBody?(): ReactNode;
-}
-
-declare module "react" {
-    interface NativeFormEvent extends Event {
-        submitter: HTMLButtonElement | HTMLInputElement | null
-    }
-
-    interface FormEvent<T = Element> extends SyntheticEvent<T> {
-        nativeEvent: NativeFormEvent
-    }
 }
 
 export type DialogProps = Omit<DialogHTMLAttributes<HTMLDialogElement>, "onSubmit"> &

@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useAutoFocusRef } from "../../../../components/AutoFocusHook";
 import Dialog, { DialogProps } from "../../../../components/Dialog";
 
 type UploadPlaylistDialogProps = DialogProps & {

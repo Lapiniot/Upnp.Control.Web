@@ -1,10 +1,6 @@
 ﻿import { DetailsHTMLAttributes, useCallback, useRef } from "react";
 import { useResizeObserver } from "./Hooks";
 
-declare module "react" {
-    interface HTMLAttributes<T> { inert?: "" | undefined }
-}
-
 type SpoilerProps = DetailsHTMLAttributes<HTMLDetailsElement> & {
     title: string;
     disabled?: boolean;
