@@ -57,17 +57,36 @@ $animation-prefix: "an-";
 }
 
 :root {
-    --#{$transition-prefix}fade: opacity 500ms ease;
+    // --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+    // --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    // --ease-in-quad: cubic-bezier(0.11, 0, 0.5, 0);
+    // --ease-out-quad: cubic-bezier(0.5, 1, 0.89, 1);
+    // --ease-in-cubic: cubic-bezier(0.32, 0, 0.67, 0);
+    // --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+    // --ease-in-quart: cubic-bezier(0.5, 0, 0.75, 0);
+    // --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    // --ease-in-quint: cubic-bezier(0.64, 0, 0.78, 0);
+    // --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --#{$animation-prefix}ease-in-circ: cubic-bezier(0.55, 0, 1, 0.45);
+    --#{$animation-prefix}ease-out-circ: cubic-bezier(0, 0.55, 0.45, 1);
+
+    --#{$animation-prefix}duration-1: 250ms;
+    --#{$animation-prefix}duration-2: 500ms;
+    --#{$animation-prefix}duration-3: 2s;
+
     --#{$animation-prefix}pulse-opacity-1: 1;
     --#{$animation-prefix}pulse-opacity-2: 0.7;
     --#{$animation-prefix}pop-scale: 0.5;
     --#{$animation-prefix}slide-y: 50%;
-    --#{$animation-prefix}pulse: pulse 2s ease-in-out infinite;
-    --#{$animation-prefix}spin: spin 2s linear infinite;
-    --#{$animation-prefix}pop-in: pop-in 500ms ease-in;
-    --#{$animation-prefix}pop-out: pop-out 500ms ease-out;
-    --#{$animation-prefix}slide-up: slide-up 500ms ease;
-    --#{$animation-prefix}slide-pop: slide-pop 500ms ease;
+    --#{$animation-prefix}pulse: pulse var(--#{$animation-prefix}duration-3) ease-in-out infinite;
+    --#{$animation-prefix}spin: spin var(--#{$animation-prefix}duration-3) linear infinite;
+    --#{$animation-prefix}pop-in: pop-in var(--#{$animation-prefix}duration-2) ease-in;
+    --#{$animation-prefix}pop-out: pop-out var(--#{$animation-prefix}duration-2) ease-out;
+    --#{$animation-prefix}slide-up: slide-up var(--#{$animation-prefix}duration-2) ease;
+    --#{$animation-prefix}slide-pop: slide-pop var(--#{$animation-prefix}duration-2) ease;
+    --#{$transition-prefix}fade: opacity var(--#{$animation-prefix}duration-2) ease;
+    --#{$transition-prefix}expand: height var(--#{$animation-prefix}duration-2) var(--#{$animation-prefix}ease-out-circ);
+    --#{$transition-prefix}collapse: height var(--#{$animation-prefix}duration-1) var(--#{$animation-prefix}ease-in-circ);
 }
 
 .animate-spin {
