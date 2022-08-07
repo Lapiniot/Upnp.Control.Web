@@ -1,31 +1,27 @@
-export class DIDLTools {
-    static getKind(upnpClassName: string): string {
+export namespace DIDLTools {
+    export function getKind(upnpClassName: string) {
         const index = upnpClassName.lastIndexOf(".");
         return index > 0 ? upnpClassName.substring(index + 1) : upnpClassName;
     }
 
-    static getDisplayName(upnpClassName: string): string {
-        const kind = DIDLTools.getKind(upnpClassName);
-        if (kind.endsWith("Container"))
-            return kind.substring(0, kind.length - 9);
-
-        else
-            return kind;
+    export function getDisplayName(upnpClassName: string) {
+        const kind = getKind(upnpClassName);
+        return kind.endsWith("Container") ? kind.substring(0, kind.length - 9) : kind;
     }
 
-    static getYear(date?: string): number | null {
+    export function getYear(date?: string) {
         return date ? new Date(date).getFullYear() : null;
     }
 
-    static getContentType(protocol: string): string {
+    export function getContentType(protocol: string) {
         return protocol.split(":")[2];
     }
 
-    static formatTime(timeStr = "--"): string {
+    export function formatTime(timeStr = "--") {
         return timeStr.startsWith("00:") ? timeStr.substring(3) : timeStr;
     }
 
-    static formatSize(size: number | undefined): string {
+    export function formatSize(size: number | undefined) {
         if (typeof size !== "number")
             return "--";
         if (size < 1024)
@@ -39,38 +35,36 @@ export class DIDLTools {
         return "--";
     }
 
-    static formatSizeFull(size: number | undefined): string {
-        if (typeof size !== "number")
-            return "--";
-        return `${DIDLTools.formatSize(size)} (${size} bytes)`;
+    export function formatSizeFull(size: number | undefined) {
+        return typeof size !== "number" ? "--" : `${formatSize(size)} (${size} bytes)`;
     }
 
-    static formatMediaInfo(data?: Upnp.DIDL.Resource, separator = "\r"): string | null {
+    export function formatMediaInfo(data?: Upnp.DIDL.Resource, separator = "\r") {
         if (!data)
             return null;
         let lines = [];
         if (data.proto)
-            lines.push(DIDLTools.getContentType(data.proto));
+            lines.push(getContentType(data.proto));
         if (data.resolution)
             lines.push(`Resolution: ${data.resolution}`);
         if (data.bitrate)
-            lines.push(`Bitrate: ${DIDLTools.formatBitrate(data.bitrate)}`);
+            lines.push(`Bitrate: ${formatBitrate(data.bitrate)}`);
         if (data.freq)
-            lines.push(`Sample freq.: ${DIDLTools.formatSampleFrequency(data.freq)}`);
+            lines.push(`Sample freq.: ${formatSampleFrequency(data.freq)}`);
         if (data.channels)
-            lines.push(`Channels: ${DIDLTools.formatChannels(data.channels)}`);
+            lines.push(`Channels: ${formatChannels(data.channels)}`);
         return lines.join(separator);
     }
 
-    static formatBitrate(bitrate: number) {
+    export function formatBitrate(bitrate: number) {
         return `${Math.round(bitrate * 8 / 1000)} kbps`;
     }
 
-    static formatSampleFrequency(frequency: number) {
+    export function formatSampleFrequency(frequency: number) {
         return `${(frequency / 1000).toFixed(1)} kHz`;
     }
 
-    static formatChannels(channels: number) {
+    export function formatChannels(channels: number) {
         switch (channels) {
             case 1: return "Mono";
             case 2: return "Stereo";
@@ -81,15 +75,15 @@ export class DIDLTools {
         }
     }
 
-    static isContainer(item: Upnp.DIDL.Item) {
-        return item.container;
+    export function isContainer(item: Upnp.DIDL.Item) {
+        return !!item.container;
     }
 
-    static isMediaItem(item: Upnp.DIDL.Item) {
+    export function isMediaItem(item: Upnp.DIDL.Item) {
         return !item.container;
     }
 
-    static isMusicTrack(item: Upnp.DIDL.Item) {
+    export function isMusicTrack(item: Upnp.DIDL.Item) {
         return item.class.endsWith(".musicTrack");
     }
 }
