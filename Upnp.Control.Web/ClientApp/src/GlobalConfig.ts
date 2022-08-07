@@ -1,4 +1,5 @@
 globalThis.$cfg = {
+    useSkeletons: true,
     placeholders: { count: 4, effect: "glow" },
     umi: { placeholders: { count: 1 } },
     renderers: { placeholders: { count: 2 } },

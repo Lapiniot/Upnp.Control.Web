@@ -8,6 +8,7 @@ namespace Configuration {
     type Sections = "upnp" | "umi" | "renderers" | "browser-dialog-sources"
 
     type SectionConfig = {
+        useSkeletons: boolean,
         placeholders: {
             count: number,
             effect: "glow" | "wave"
