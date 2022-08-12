@@ -1,7 +1,6 @@
 :where(button, a, .link-placeholder) {
 
-    > img,
-    > svg {
+    > :where(img, svg) {
         &:first-child {
             @extend %image-icon;
         }

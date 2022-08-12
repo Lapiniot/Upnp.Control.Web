@@ -34,7 +34,7 @@ export default function AlbumArt({ itemClass, albumArts, className, hint, ...oth
     const map = hint === "player" ? playerMap : classicMap;
     return albumArts?.length
         ? <img src={viaProxy(albumArts[0])} className={`album-art fallback${className ? ` ${className}` : ""}`} alt="" {...other} />
-        : <svg className={`album-art fallback${className ? ` ${className}` : ""}`} {...other}>
+        : <svg className={`album-art fallback${className ? ` ${className}` : ""}`} {...other} width="512px" height="512px">
             <use href={`symbols.svg#${map[itemClass] ?? (itemClass.startsWith("container") ? "folder" : "insert_drive_file")}`} />
         </svg>
 }

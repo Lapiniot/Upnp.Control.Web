@@ -4,21 +4,22 @@
     place-items: center;
     gap: 0 0;
     overflow: hidden;
-    grid:
-        "art art art art art" 1fr "title title title title title" auto "prog prog prog prog prog" auto "mode prev play next vol" auto / 1fr auto auto auto 1fr;
+    grid: "art art art art art" 1fr "title title title title title" auto "prog prog prog prog prog" auto "mode prev play next vol" auto / 1fr auto auto auto 1fr;
 
     .art {
         grid-area: art;
-        width: 100%;
-        height: calc(100% - #{map-get($spacers, 3)});
-        object-fit: contain;
+        width: initial;
+        height: initial;
+        max-width: calc(100% - 2 * map-get($spacers, 3));
+        max-height: calc(100% - 2 * map-get($spacers, 3));
 
         @media (max-height: 320px) {
             display: none;
         }
 
         @include unify-parent(svg) {
-            max-width: 50%;
+            color: $primary-200;
+            @include gradient-bg($primary-700);
         }
     }
 
@@ -36,6 +37,7 @@
         align-items: center;
         margin-inline: map-get($spacers, 2);
         overflow: hidden;
+
         & > * {
             max-width: 100%;
         }
@@ -63,12 +65,12 @@
     }
 
     @media (max-height: 420px) {
-        grid:
-            "art art art art art art" 1fr "prog prog prog prog prog prog" auto "prev play next title mode vol" auto / auto auto auto minmax(0, 1fr) auto auto;
+        grid: "art art art art art art" 1fr "prog prog prog prog prog prog" auto "prev play next title mode vol" auto / auto auto auto minmax(0, 1fr) auto auto;
         gap: map-get($spacers, 1) 0;
 
         .art {
-            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
         }
 
         .play-btn {
@@ -77,18 +79,14 @@
     }
 
     @media (min-width: 576px) and (min-height: 576px) {
-        grid:
-            "prog prog prog prog prog prog prog prog prog" auto "prev play next . art title . mode vol" auto / auto auto auto 1fr auto minmax(0, auto) 1fr auto auto;
+        grid: "prog prog prog prog prog prog prog prog prog" auto "prev play next . art title . mode vol" auto / auto auto auto 1fr auto minmax(0, auto) 1fr auto auto;
         gap: 0 0;
 
         .art {
-            height: 4rem;
-            width: 4rem;
+            max-width: 1em;
+            max-height: 1em;
+            font-size: 4rem;
             margin-inline: map-get($spacers, 1);
-
-            @include unify-parent(svg) {
-                max-width: unset;
-            }
         }
 
         .title {

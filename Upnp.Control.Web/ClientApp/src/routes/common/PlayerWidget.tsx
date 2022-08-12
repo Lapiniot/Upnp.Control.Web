@@ -12,6 +12,13 @@ import $s from "./Settings";
 
 const STATE_UPDATE_DELAY_MS = 2000;
 
+function formatAlbumTitle(creator: string | undefined, album: string | undefined) {
+    if (creator && album)
+        return `${creator}\u00a0\u2022\u00a0${album}`;
+    else
+        return creator ?? album ?? "Unknown";
+}
+
 function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }) {
     const { className, glyph, children, active, ...other } = props;
     return <button type="button" className={`btn btn-round btn-plain${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
@@ -155,15 +162,13 @@ class PlayerCore extends Component<PlayerProps, PlayerState> {
 
         const shuffleMode = playMode === "REPEAT_SHUFFLE";
 
-        const loadCls = loading ? " placeholder" : "";
-
         return <>
             <SignalRListener callbacks={this.handlers} />
             <div className="player-skeleton" ref={this.ref}>
-                <AlbumArt className={`art rounded-1${loadCls}`} itemClass={current?.class ?? ".musicTrack"} albumArts={current?.albumArts} hint="player" />
+                <AlbumArt className={`art rounded-1${loading ? " placeholder" : ""}`} itemClass={current?.class ?? "object.item.audioItem.musicTrack"} albumArts={current?.albumArts} hint="player" />
                 <div className="title">
-                    <h5 className={`text-truncate mb-0${loadCls}`}>{title ?? "[No media]"}</h5>
-                    {(creator || album) && <small className="text-truncate">{`${creator ?? ""}${creator && album ? "\u00a0\u2022\u00a0" : ""}${album ?? ""}`}</small>}
+                    <h5 className={`text-truncate${loading ? " placeholder w-100" : ""}`}>{title ?? "[No media]"}</h5>
+                    <small className={`text-truncate${loading ? " placeholder w-75" : ""}`}>{formatAlbumTitle(creator, album)}</small>
                 </div>
                 <SeekBar className="progress" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChange={this.seek} />
                 <Button title="Prev" className="prev-btn" glyph="symbols.svg#skip_previous" onClick={this.prev} disabled={!actions.includes("Previous")} />

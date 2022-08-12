@@ -7,11 +7,11 @@ $icon-sizes: (2x 2, 3x 3, 5x 5, 8x 8) !default;
 
 .album-art {
     border-radius: inherit;
-    @include font-scale(2);
+    font-size: 2rem;
 }
 
 .table-touch-friendly .album-art {
-    @include font-scale(3);
+    font-size: 3rem;
 }
 
 .fallback {
