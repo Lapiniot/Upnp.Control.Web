@@ -1,4 +1,6 @@
 .dropdown-item {
+    display: flex;
+    align-items: center;
     @extend .text-truncate;
 
     > :where(svg, img):first-child {
