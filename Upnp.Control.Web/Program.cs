@@ -24,11 +24,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region Application configuration
 
-builder.Host.ConfigureAppConfiguration((ctx, cb) => cb
+builder.Configuration
     .AddJsonFile("config/appsettings.json", true, true)
-    .AddJsonFile($"config/appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", true, true)
+    .AddJsonFile($"config/appsettings.{builder.Environment.EnvironmentName}.json", true, true)
     .AddJsonFile("config/appsettings.Secrets.json", true, true)
-    .AddEnvironmentVariables("UPNP_DASHBOARD_"));
+    .AddEnvironmentVariables("UPNP_DASHBOARD_");
 
 #region Platform specific host lifetime configuration
 
