@@ -16,7 +16,7 @@ namespace Upnp.Control.DataAccess.CompiledModels
 
             PushNotificationSubscriptionEntityType.CreateAnnotations(pushNotificationSubscription);
 
-            AddAnnotation("ProductVersion", "6.0.0");
+            AddAnnotation("ProductVersion", "7.0.0-preview.7.22376.2");
         }
     }
 }

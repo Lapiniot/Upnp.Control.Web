@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Upnp.Control.DataAccess;
 
@@ -10,9 +11,11 @@ using Upnp.Control.DataAccess;
 namespace Upnp.Control.DataAccess.Migrations.PushSubscriptionDb
 {
     [DbContext(typeof(PushSubscriptionDbContext))]
-    partial class PushSubscriptionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220813102749_Upgrade_EF7")]
+    partial class Upgrade_EF7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.0-preview.7.22376.2");
