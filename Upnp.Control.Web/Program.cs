@@ -63,7 +63,7 @@ builder.Services.AddServicesInit()
 
 #endregion
 
-#region ASPNET MVC configuration
+#region ASPNET configuration
 
 builder.Services.Configure<JsonOptions>(static options => options.SerializerOptions.ConfigureDefaults());
 

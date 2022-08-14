@@ -11,6 +11,8 @@ namespace Upnp.Control.Models;
 [JsonSerializable(typeof(FeedUrlSource))]
 [JsonSerializable(typeof(AVStateParams))]
 [JsonSerializable(typeof(AVPositionParams))]
+[JsonSerializable(typeof(IAsyncEnumerable<UpnpDevice>))]
+[JsonSerializable(typeof(CDContent))]
 public partial class JsonContext : JsonSerializerContext
 {
 }
