@@ -5,7 +5,7 @@ $enable-grid-classes:           false;
 $enable-container-classes:      false;
 $enable-rfs:                    true;
 
-$primary:                     #6f42c1;
+$primary:                       #6f42c1;
 $icon-scale:                    1.25;
 $missing-image-content:         '';
 $border-radius-sm:              .1875rem;
@@ -16,6 +16,16 @@ $border-radius-sm:              .1875rem;
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
+
+$primary-100:                   tint-color($primary, 80%);
+$primary-200:                   tint-color($primary, 60%);
+$primary-300:                   tint-color($primary, 40%);
+$primary-400:                   tint-color($primary, 20%);
+$primary-500:                   $primary;
+$primary-600:                   shade-color($primary, 20%);
+$primary-700:                   shade-color($primary, 40%);
+$primary-800:                   shade-color($primary, 60%);
+$primary-900:                   shade-color($primary, 80%);
 
 $grid-breakpoints:              map-remove($grid-breakpoints, xl, xxl);
 $card-border-radius:            $border-radius-sm;
@@ -31,7 +41,11 @@ $breadcrumb-border-radius:      0;
 $breadcrumb-divider:            quote("\276f");
 $breadcrumb-item-padding-x:     map-get($spacers, 1);
 
-$card-box-shadow:               $box-shadow-sm;
+$card-box-shadow:               var(--switch-shadow, $box-shadow-sm);
+$card-border-width:             var(--switch-border, $card-border-width);
+$card-border-radius:            var(--switch-border-radius, $card-border-radius);
+
+$zindex-dropdown:               $zindex-sticky + 5;
 
 // Layout & components
 @import "bootstrap/scss/root";
@@ -48,24 +62,12 @@ $card-box-shadow:               $box-shadow-sm;
 @import "bootstrap/scss/close";
 @import "bootstrap/scss/accordion";
 @import "bootstrap/scss/placeholders";
-
-$zindex-dropdown:               $zindex-sticky + 5;
 @import "bootstrap/scss/dropdown";
 
 // Helpers
 @import "bootstrap/scss/helpers/stacks";
 @import "bootstrap/scss/helpers/text-truncation";
 @import "bootstrap/scss/helpers/visually-hidden";
-
-$primary-100: tint-color($primary, 80%) !default;
-$primary-200: tint-color($primary, 60%) !default;
-$primary-300: tint-color($primary, 40%) !default;
-$primary-400: tint-color($primary, 20%) !default;
-$primary-500: $primary  !default;
-$primary-600: shade-color($primary, 20%) !default;
-$primary-700: shade-color($primary, 40%) !default;
-$primary-800: shade-color($primary, 60%) !default;
-$primary-900: shade-color($primary, 80%) !default;
 
 @import "mixins";
 @import "text-utils";
@@ -126,10 +128,4 @@ input[type="checkbox"] {
     max-height: 30vh;
     overflow-y: auto;
     justify-items: end;
-}
-
-.card {
-    --#{$prefix}card-border-radius: var(--#{$prefix}border-radius-override);
-    --#{$prefix}card-border-width: var(--#{$prefix}border-width-override);
-    --#{$prefix}card-box-shadow: var(--#{$prefix}box-shadow-override);
 }
