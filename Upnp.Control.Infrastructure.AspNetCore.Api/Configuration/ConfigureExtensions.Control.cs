@@ -8,6 +8,7 @@ public static partial class ConfigureExtensions
     /// <param name="routeBuilder">The <see cref="IEndpointRouteBuilder" /> to add the route to.</param>
     /// <param name="pattern">The route pattern. May include 'deviceId' and 'queueId' route parameters.</param>
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "Preserved manually.")]
     public static RouteGroupBuilder MapControlApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         var group = routeBuilder.MapGroup(pattern)

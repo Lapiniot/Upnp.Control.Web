@@ -2,7 +2,7 @@ using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-public record PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
+public record struct PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
 
 public static class PushNotificationSubscriptionServices
 {
@@ -20,6 +20,7 @@ public static class PushNotificationSubscriptionServices
         }
     }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(PushSubscription))]
     public static async Task<Results<NoContent, BadRequest>> SubscribeAsync(
         IAsyncCommandHandler<PSAddCommand> handler, IBase64UrlDecoder decoder,
         PushSubscription subscription, CancellationToken cancellationToken)

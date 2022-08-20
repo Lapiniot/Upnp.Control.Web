@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="Microsoft.AspNetCore.Http" />
     <Using Include="Microsoft.AspNetCore.Http.HttpResults" />
     <Using Include="Microsoft.AspNetCore.Routing" />

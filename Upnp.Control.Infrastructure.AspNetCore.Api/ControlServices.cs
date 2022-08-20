@@ -22,6 +22,7 @@ public static class ControlServices
         }
     }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(AVStateParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> SetStateAsync(
         IAsyncCommandHandler<AVSetStateCommand> handler,
         string deviceId, AVStateParams stateParams, CancellationToken cancellationToken)
@@ -59,6 +60,7 @@ public static class ControlServices
         }
     }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(AVPositionParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> SeekAsync(
         IAsyncCommandHandler<AVSetPositionCommand> handler,
         string deviceId, AVPositionParams positionParams, CancellationToken cancellationToken)

@@ -13,6 +13,7 @@ public static class ContentDirectoryServices
     /// <param name="options">Browse optiions.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns><see cref="Task{IResult}" /> containing directory content or error response.</returns>
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(GetContentOptions))]
     public static async Task<Results<Ok<CDContent>, NotFound, BadRequest>> BrowseAsync(
         IAsyncQueryHandler<CDGetContentQuery, CDContent> handler,
         string deviceId, string? path, [AsParameters] GetContentOptions options,

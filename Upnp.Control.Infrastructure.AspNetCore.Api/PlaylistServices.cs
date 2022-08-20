@@ -23,6 +23,7 @@ public static class PlaylistServices
         }
     }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreatePlaylistParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> CreateFromItemsAsync(
         IAsyncCommandHandler<PLCreateFromItemsCommand> handler,
         string deviceId, CreatePlaylistParams playlistParams, CancellationToken cancellationToken)
@@ -42,6 +43,7 @@ public static class PlaylistServices
         }
     }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreateFromFilesForm))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> CreateFromFilesAsync(
         IAsyncCommandHandler<PLCreateFromFilesCommand> handler,
         string deviceId, CreateFromFilesForm form, CancellationToken cancellationToken)
@@ -122,6 +124,7 @@ public static class PlaylistServices
         }
     }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(MediaSource))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> AddItemsAsync(
         IAsyncCommandHandler<PLAddItemsCommand> handler,
         string deviceId, string playlistId, MediaSource source,
@@ -142,6 +145,7 @@ public static class PlaylistServices
         }
     }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(FeedUrlSource))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> AddFromFeedsAsync(
         IAsyncCommandHandler<PLAddFeedUrlCommand> handler,
         string deviceId, string playlistId, FeedUrlSource source,
@@ -162,6 +166,7 @@ public static class PlaylistServices
         }
     }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreateFromFilesForm))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> AddFromFilesAsync(
         IAsyncCommandHandler<PLAddPlaylistFilesCommand> handler,
         string deviceId, string playlistId, CreateFromFilesForm form,

@@ -2,7 +2,9 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
 public static class QueueServices
 {
-    public static async Task<Results<NoContent, NotFound, BadRequest>> AddAsync(IAsyncCommandHandler<QAddItemsCommand> handler,
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(MediaSource))]
+    public static async Task<Results<NoContent, NotFound, BadRequest>> AddAsync(
+        IAsyncCommandHandler<QAddItemsCommand> handler,
         string deviceId, string queueId, MediaSource source,
         CancellationToken cancellationToken)
     {
@@ -21,7 +23,8 @@ public static class QueueServices
         }
     }
 
-    public static async Task<Results<NoContent, NotFound, BadRequest>> RemoveAllAsync(IAsyncCommandHandler<QClearCommand> handler,
+    public static async Task<Results<NoContent, NotFound, BadRequest>> RemoveAllAsync(
+        IAsyncCommandHandler<QClearCommand> handler,
         string deviceId, string queueId, CancellationToken cancellationToken)
     {
         try

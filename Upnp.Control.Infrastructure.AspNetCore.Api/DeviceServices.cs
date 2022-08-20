@@ -15,12 +15,14 @@ public static class DeviceServices
     /// <param name="withOffline">Whether to include offline devices.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Device information enumerator.</returns>
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "Preserved manually.")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(UpnpDevice))]
     public static PushStreamHttpResult GetAllAsync(IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
         IOptions<JsonOptions> options, string category = "upnp", bool withOffline = false,
         CancellationToken cancellationToken = default) => Stream(
             stream => JsonSerializer.SerializeAsync(stream,
                 handler.ExecuteAsync(new(category, withOffline), cancellationToken),
-                options.Value.SerializerOptions),
+                typeof(IAsyncEnumerable<UpnpDevice>)),
             "application/json");
 
     /// <summary>
