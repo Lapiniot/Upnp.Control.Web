@@ -22,7 +22,7 @@ public static class DeviceServices
         CancellationToken cancellationToken = default) => Stream(
             stream => JsonSerializer.SerializeAsync(stream,
                 handler.ExecuteAsync(new(category, withOffline), cancellationToken),
-                typeof(IAsyncEnumerable<UpnpDevice>)),
+                options.Value.SerializerOptions),
             "application/json");
 
     /// <summary>
