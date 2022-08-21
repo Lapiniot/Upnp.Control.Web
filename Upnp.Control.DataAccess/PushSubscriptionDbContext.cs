@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Models.PushNotifications;
 
@@ -10,8 +9,5 @@ internal sealed class PushSubscriptionDbContext : DbContext
 
     public DbSet<PushNotificationSubscription> Subscriptions { get; set; }
 
-    [DynamicDependency("AddYears", typeof(DateOnly))]
-    [DynamicDependency("AddMonths", typeof(DateOnly))]
-    [DynamicDependency("AddDays", typeof(DateOnly))]
-    protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder) => modelBuilder.ApplyConfiguration(new PushSubscriptionEntityType());
+    protected override void OnModelCreating(ModelBuilder modelBuilder) => modelBuilder.ApplyConfiguration(new PushSubscriptionEntityType());
 }
