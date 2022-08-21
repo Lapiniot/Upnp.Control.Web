@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="../Upnp.Control.Models.PushNotifications/Upnp.Control.Models.PushNotifications.csproj" />
     <ProjectReference Include="../Upnp.Control.Infrastructure/Upnp.Control.Infrastructure.csproj" />
