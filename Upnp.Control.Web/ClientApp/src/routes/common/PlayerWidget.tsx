@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, Component, createRef } from "react";
+import { ButtonHTMLAttributes, createRef, PureComponent } from "react";
 import { DataContext, DataFetchProps, useDataFetch } from "../../components/DataFetch";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { parseMilliseconds } from "../../components/Extensions";
@@ -30,7 +30,7 @@ type PlayerProps = { udn?: string; } & DataFetchProps<Upnp.AVState>
 
 type PlayerState = { dataContext?: DataContext<Upnp.AVState> } & Partial<Upnp.AVState & Upnp.RCState & Upnp.AVPosition>
 
-class PlayerCore extends Component<PlayerProps, PlayerState> {
+class PlayerCore extends PureComponent<PlayerProps, PlayerState> {
 
     handlers;
     ctrl;
@@ -72,6 +72,7 @@ class PlayerCore extends Component<PlayerProps, PlayerState> {
     componentDidUpdate(prevProps: PlayerProps) {
         if (prevProps.udn !== this.props.udn) {
             this.ctrl = $api.control(this.props.udn!);
+            this.updateStateAsync();
         }
     }
 
