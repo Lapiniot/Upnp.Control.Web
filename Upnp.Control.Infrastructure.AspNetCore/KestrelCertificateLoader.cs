@@ -43,18 +43,20 @@ internal static class KestrelCertificateLoader
         return null;
     }
 
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
     private static X509Certificate2? LoadFromConfiguration(IConfigurationSection section, IFileProvider contentRootFileProvider)
     {
-        var path = section[PathKey];
+        var path = section.GetValue<string?>(PathKey);
         if (!string.IsNullOrEmpty(path))
         {
-            return CertificateLoader.LoadFromFile(contentRootFileProvider.GetFileInfo(path), section[PasswordKey]);
+            return CertificateLoader.LoadFromFile(contentRootFileProvider.GetFileInfo(path), section.GetValue<string>(PasswordKey));
         }
 
-        var subject = section[SubjectKey];
+        var subject = section.GetValue<string?>(SubjectKey);
         return !string.IsNullOrEmpty(subject)
-            ? CertificateLoader.LoadFromStore(section[StoreKey] ?? "My",
-                section[LocationKey] ?? "CurrentUser", subject,
+            ? CertificateLoader.LoadFromStore(
+                section.GetValue<string?>(StoreKey) ?? "My",
+                section.GetValue<string?>(LocationKey) ?? "CurrentUser", subject,
                 section.GetValue<bool?>(AllowInvalidKey) ?? false)
             : null;
     }

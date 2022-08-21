@@ -20,10 +20,11 @@
     <Using Include="IoT.Device.Upnp.Umi.Services" />
     <Using Include="Upnp.Control.Abstractions" />
     <Using Include="Upnp.Control.Models" />
+    <Using Include="Upnp.Control.Services.Commands.Configuration" />
+    <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="Microsoft.Extensions.Logging" />
     <Using Include="Microsoft.Extensions.Options" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
-    <Using Include="Upnp.Control.Services.Commands.Configuration" />
   </ItemGroup>
 
 </Project>

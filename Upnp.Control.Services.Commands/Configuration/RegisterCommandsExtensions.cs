@@ -20,6 +20,8 @@ public static class RegisterCommandsExtensions
             .AddTransient<IAsyncCommandHandler<RCSetVolumeCommand>, RCSetVolumeCommandHandler>()
             .AddTransient<IAsyncCommandHandler<RCSetMuteCommand>, RCSetMuteCommandHandler>();
 
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "Preserved manually.")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(PlaylistOptions))]
     public static IServiceCollection AddPlaylistCommands(this IServiceCollection services)
     {
         services.AddOptions<PlaylistOptions>().BindConfiguration("Playlists");

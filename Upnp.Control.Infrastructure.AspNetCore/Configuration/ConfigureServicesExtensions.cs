@@ -12,6 +12,8 @@ public static class ConfigureServicesExtensions
     public static IServiceCollection AddServerAddressesProvider(this IServiceCollection services) =>
         services.AddTransient<IServerAddressesProvider, ServerAddressesProvider>();
 
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ImageProxyOptions))]
     public static IServiceCollection AddImageLoaderProxyMiddleware(this IServiceCollection services)
     {
         services.AddHttpClient<ImageLoaderProxyClient>(c => c.DefaultRequestHeaders.ConnectionClose = false)
@@ -27,6 +29,8 @@ public static class ConfigureServicesExtensions
         return services.AddTransient<ImageLoaderProxyMiddleware>();
     }
 
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ContentProxyOptions))]
     public static IServiceCollection AddContentProxyMiddleware(this IServiceCollection services)
     {
         services.AddOptions<ContentProxyOptions>().BindConfiguration("ContentProxy");
@@ -55,9 +59,11 @@ public static class ConfigureServicesExtensions
             .WithDisplayName("Content Proxy Middleware");
     }
 
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
     public static IEndpointConventionBuilder MapCertificateDownload(this IEndpointRouteBuilder routeBuilder, string pattern) =>
         routeBuilder.MapGet(pattern, CertificateDownloadServices.GetCertificatesArchive);
 
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
     public static RouteHandlerBuilder MapAppInfo(this IEndpointRouteBuilder routeBuilder, string pattern) =>
         routeBuilder.MapGet(pattern, ApplicationInfoServices.GetApplicationInfoAsync)
             .Produces<ApplicationInfo>(StatusCodes.Status200OK, "application/json")
