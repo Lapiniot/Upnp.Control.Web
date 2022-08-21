@@ -1,8 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="../Upnp.Control.Models/Upnp.Control.Models.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <IsTrimmable>true</IsTrimmable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../Upnp.Control.Models/Upnp.Control.Models.csproj" />
+    </ItemGroup>
 
     <ItemGroup>
         <Using Include="Upnp.Control.Models" />

@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="../Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
   </ItemGroup>
@@ -11,6 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes" Static="true" />
     <Using Include="Microsoft.Extensions.Configuration" />
     <Using Include="Microsoft.Extensions.Options" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
