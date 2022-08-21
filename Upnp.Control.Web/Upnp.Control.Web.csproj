@@ -9,8 +9,10 @@
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**;**/appsettings.Secrets.json;**/appsettings.Development.json;package.json;package-lock.json</DefaultItemExcludes>
     <!-- Trimming settings -->
-    <TrimMode>Link</TrimMode>
+    <TrimMode>partial</TrimMode>
     <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <TrimmerSingleWarn>true</TrimmerSingleWarn>
     <!-- Feature trimming settings -->
     <DebuggerSupport>false</DebuggerSupport>
     <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
@@ -19,8 +21,6 @@
     <InvariantGlobalization>true</InvariantGlobalization>
     <UseSystemResourceKeys>true</UseSystemResourceKeys>
     <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
-    <!-- XML documentation settings -->
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ss:fffZ"))</SourceRevisionId>
   </PropertyGroup>
 
