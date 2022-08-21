@@ -25,6 +25,9 @@ public static class ConfigureServicesExtensions
             .AddWebPushClient();
     }
 
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [DynamicDependency(PublicConstructors, typeof(VAPIDSecretOptions))]
+    [DynamicDependency(PublicConstructors, typeof(WebPushOptions))]
     public static IServiceCollection AddWebPushClient(this IServiceCollection services)
     {
         services.AddOptions<VAPIDSecretOptions>();

@@ -4,4 +4,9 @@
     <ProjectReference Include="../IoT.Device/IoT.Protocol/IoT.Protocol.Upnp/IoT.Protocol.Upnp.csproj" />
   </ItemGroup>
 
+    <ItemGroup>
+        <Using Include="System.Diagnostics.CodeAnalysis" />
+        <Using Include="System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes" Static="true" />
+    </ItemGroup>
+
 </Project>

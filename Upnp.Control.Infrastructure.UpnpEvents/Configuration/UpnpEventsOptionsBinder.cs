@@ -4,6 +4,7 @@ namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 
 internal sealed class UpnpEventsOptionsBinder : OptionsBinder<UpnpEventsOptions>
 {
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
     public override void Bind(UpnpEventsOptions options, IConfiguration configuration)
     {
         var timeout = configuration.GetSection(nameof(UpnpEventsOptions.SessionTimeout));

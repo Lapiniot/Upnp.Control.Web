@@ -15,6 +15,7 @@ internal sealed class ConfigureVAPIDSecretOptions : IConfigureOptions<VAPIDSecre
 
     byte[] IBase64UrlDecoder.Decode(string input) => Encoders.FromBase64String(input);
 
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
     public void Configure(VAPIDSecretOptions options)
     {
         if (configuration.GetSection("VAPID") is not { } section || !section.Exists()) return;

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
 using System.Policies;
 using IoT.Protocol.Upnp;
@@ -13,6 +14,8 @@ public static class ConfigureServicesExtensions
             .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
             .AddTransient(sp => SsdpEnumeratorFactory(sp));
 
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(SsdpOptions))]
     public static IServiceCollection ConfigureSsdpOptions(this IServiceCollection services, Action<OptionsBuilder<SsdpOptions>> configure = null)
     {
         var builder = services.AddOptions<SsdpOptions>().BindConfiguration("SSDP");

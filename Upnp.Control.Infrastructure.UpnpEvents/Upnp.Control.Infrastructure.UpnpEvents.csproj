@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes" Static="true" />
     <Using Include="IoT.Protocol.Upnp" />
     <Using Include="Upnp.Control.Abstractions" />
     <Using Include="Upnp.Control.Models" />

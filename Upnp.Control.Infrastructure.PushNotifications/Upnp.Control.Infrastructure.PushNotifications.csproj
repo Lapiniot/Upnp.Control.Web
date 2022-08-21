@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes" Static="true" />
     <Using Include="Upnp.Control.Models" />
     <Using Include="Microsoft.Extensions.Configuration" />
     <Using Include="Microsoft.Extensions.Options" />

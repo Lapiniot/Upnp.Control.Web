@@ -91,7 +91,8 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
         }
     }
 
-    private async void Post<T>(NotificationType type, T message) where T : NotificationMessage
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    private async void Post<[DynamicallyAccessedMembers(All)] T>(NotificationType type, T message) where T : NotificationMessage
     {
         try
         {
