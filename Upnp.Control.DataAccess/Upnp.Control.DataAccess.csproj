@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="../Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
     <ProjectReference Include="../Upnp.Control.Models.PushNotifications/Upnp.Control.Models.PushNotifications.csproj" />
+    <ProjectReference Include="../Upnp.Control.Extensions/Upnp.Control.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

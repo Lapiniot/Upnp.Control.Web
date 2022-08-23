@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="../Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
     <ProjectReference Include="../IoT.Device/IoT.Device.Upnp.Umi/IoT.Device.Upnp.Umi.csproj" />
+    <ProjectReference Include="../Upnp.Control.Extensions/Upnp.Control.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +25,7 @@
     <Using Include="IoT.Device.Upnp.Umi.Services" />
     <Using Include="Upnp.Control.Abstractions" />
     <Using Include="Upnp.Control.Models" />
+    <Using Include="Upnp.Control.Extensions.DependencyInjection" />
     <Using Include="Upnp.Control.Services.Commands.Configuration" />
     <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="Microsoft.Extensions.Logging" />
