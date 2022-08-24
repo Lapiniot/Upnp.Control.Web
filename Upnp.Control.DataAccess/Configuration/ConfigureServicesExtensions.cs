@@ -31,5 +31,5 @@ public static class ConfigureServicesExtensions
         .AddDbContext<TContext>(builder => builder.UseSqlite($"Data Source={fileName};", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
             .UseModel(model)
             .ConfigureWarnings(w => w.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)))
-        .AddTransient<IServiceInitializer, SqliteMigrateDbInitializer<TContext>>();
+        .AddServiceInitializer<SqliteMigrateDbInitializer<TContext>>();
 }

@@ -4,18 +4,14 @@ namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    private static readonly UpnpEventsOptionsBinder Binder = new();
-
-    public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services,
-        Action<OptionsBuilder<UpnpEventsOptions>> configure = null) =>
-        services
-            .ConfigureUpnpEventsOptions(configure)
-            .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>()
-            .AddTransient<IUpnpEventSubscriptionRepository, InMemorySubscriptionsRepository>()
-            .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
-            .AddTransient<IAsyncCommandHandler<AVTPropChangedCommand>, AVTPropChangedEventCommandHandler>()
-            .AddTransient<IAsyncCommandHandler<RCPropChangedCommand>, RCPropChangedEventCommandHandler>()
-            .AddEventSubscribeClient();
+    public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services, Action<OptionsBuilder<UpnpEventsOptions>> configure = null) => services
+        .ConfigureUpnpEventsOptions(configure)
+        .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>()
+        .AddTransient<IUpnpEventSubscriptionRepository, InMemorySubscriptionsRepository>()
+        .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
+        .AddTransient<IAsyncCommandHandler<AVTPropChangedCommand>, AVTPropChangedEventCommandHandler>()
+        .AddTransient<IAsyncCommandHandler<RCPropChangedCommand>, RCPropChangedEventCommandHandler>()
+        .AddEventSubscribeClient();
 
     public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services, Action<UpnpEventsOptions> configureOptions)
     {
@@ -24,9 +20,30 @@ public static class ConfigureServicesExtensions
         return services.AddUpnpEventsSubscription(builder => builder.Configure(configureOptions));
     }
 
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
     public static IServiceCollection ConfigureUpnpEventsOptions(this IServiceCollection services, Action<OptionsBuilder<UpnpEventsOptions>> configure)
     {
-        var builder = services.AddOptions<UpnpEventsOptions>().Configure(Binder, "UpnpEventSubscriptions");
+        var builder = services.AddOptions<UpnpEventsOptions>().Configure((UpnpEventsOptions options, IConfiguration configuration) =>
+        {
+            configuration = configuration.GetSection("UpnpEventSubscriptions");
+            var timeout = configuration.GetSection(nameof(UpnpEventsOptions.SessionTimeout));
+            if (timeout.Exists())
+            {
+                options.SessionTimeout = timeout.Get<TimeSpan>();
+            }
+
+            var mappings = configuration.GetSection(nameof(UpnpEventsOptions.CallbackMappings));
+            if (!mappings.Exists()) return;
+            foreach (var mapping in mappings.GetChildren())
+            {
+                foreach (var node in mapping.TraverseTreeDeep())
+                {
+                    if (node.Value is null) continue;
+                    var start = mappings.Path.Length + 1;
+                    options.CallbackMappings[node.Path[start..]] = node.Value;
+                }
+            }
+        });
         configure?.Invoke(builder);
         return services;
     }

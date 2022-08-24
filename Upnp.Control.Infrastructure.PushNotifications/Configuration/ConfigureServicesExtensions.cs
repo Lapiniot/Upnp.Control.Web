@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Upnp.Control.Abstractions;
+using Upnp.Control.Extensions.DependencyInjection;
 using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
@@ -17,10 +18,10 @@ public static class ConfigureServicesExtensions
 
         return services
             .AddHostedService(sp => sp.GetRequiredService<WebPushSenderService>())
+            .AddServiceInitializer<VAPIDKeyConfigInitializer>()
             .AddSingleton<WebPushSenderService>()
             .AddSingleton<IObserver<UpnpDiscoveryEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddSingleton<IObserver<AVTPropChangedEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
-            .AddTransient<IServiceInitializer, VAPIDKeyConfigInitializer>()
             .AddTransient<IAsyncQueryHandler<PSGetServerKeyQuery, byte[]>, PSGetServerKeyQueryHandler>()
             .AddWebPushClient();
     }
