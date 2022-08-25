@@ -20,30 +20,9 @@ public static class ConfigureServicesExtensions
         return services.AddUpnpEventsSubscription(builder => builder.Configure(configureOptions));
     }
 
-    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
     public static IServiceCollection ConfigureUpnpEventsOptions(this IServiceCollection services, Action<OptionsBuilder<UpnpEventsOptions>> configure)
     {
-        var builder = services.AddOptions<UpnpEventsOptions>().Configure((UpnpEventsOptions options, IConfiguration configuration) =>
-        {
-            configuration = configuration.GetSection("UpnpEventSubscriptions");
-            var timeout = configuration.GetSection(nameof(UpnpEventsOptions.SessionTimeout));
-            if (timeout.Exists())
-            {
-                options.SessionTimeout = timeout.Get<TimeSpan>();
-            }
-
-            var mappings = configuration.GetSection(nameof(UpnpEventsOptions.CallbackMappings));
-            if (!mappings.Exists()) return;
-            foreach (var mapping in mappings.GetChildren())
-            {
-                foreach (var node in mapping.TraverseTreeDeep())
-                {
-                    if (node.Value is null) continue;
-                    var start = mappings.Path.Length + 1;
-                    options.CallbackMappings[node.Path[start..]] = node.Value;
-                }
-            }
-        });
+        var builder = services.AddOptions<UpnpEventsOptions>().Configure<IConfiguration>(ConfigureUpnpEventsOptions);
         configure?.Invoke(builder);
         return services;
     }
@@ -62,5 +41,28 @@ public static class ConfigureServicesExtensions
             });
 
         return services;
+    }
+
+    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    private static void ConfigureUpnpEventsOptions(UpnpEventsOptions options, IConfiguration configuration)
+    {
+        configuration = configuration.GetSection("UpnpEventSubscriptions");
+        var timeout = configuration.GetSection(nameof(UpnpEventsOptions.SessionTimeout));
+        if (timeout.Exists())
+        {
+            options.SessionTimeout = timeout.Get<TimeSpan>();
+        }
+
+        var mappings = configuration.GetSection(nameof(UpnpEventsOptions.CallbackMappings));
+        if (!mappings.Exists()) return;
+        foreach (var mapping in mappings.GetChildren())
+        {
+            foreach (var node in mapping.TraverseTreeDeep())
+            {
+                if (node.Value is null) continue;
+                var start = mappings.Path.Length + 1;
+                options.CallbackMappings[node.Path[start..]] = node.Value;
+            }
+        }
     }
 }
