@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import { MenuItem } from "../../../components/DropdownMenu";
 import { RowState, useRowStates } from "../../common/RowStateContext";
-import { usePlaybackState } from "./PlaybackStateContext";
+import { usePlaybackState } from "../../common/PlaybackStateContext";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
 
 type PlaylistItemActionMenuProps = {

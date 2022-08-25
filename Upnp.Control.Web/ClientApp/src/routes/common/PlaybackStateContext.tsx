@@ -1,8 +1,8 @@
 import { createContext, PropsWithChildren, UIEvent, UIEventHandler, useContext, useEffect, useMemo, useReducer } from "react";
-import { nopropagation } from "../../../components/Extensions";
-import { useSignalR } from "../../../components/SignalRListener";
-import $api from "../../../components/WebApi";
-import $s from "../../common/Settings";
+import { nopropagation } from "../../components/Extensions";
+import { useSignalR } from "../../components/SignalRListener";
+import $api from "../../components/WebApi";
+import $s from "./Settings";
 
 export type DispatchAction = { type: "UPDATE", state: Partial<PlaybackStateProviderState> }
 

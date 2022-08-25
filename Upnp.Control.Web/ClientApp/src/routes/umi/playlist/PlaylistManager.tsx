@@ -26,7 +26,7 @@ import AddItemsDialog from "./dialogs/AddItemsDialog";
 import AddUrlDialog from "./dialogs/AddUrlDialog";
 import RemoveItemsDialog from "./dialogs/RemoveItemsDialog";
 import UploadPlaylistDialog from "./dialogs/UploadPlaylistDialog";
-import { PlaybackStateContext, PlaybackStateProvider } from "./PlaybackStateContext";
+import { PlaybackStateContext, PlaybackStateProvider } from "../../common/PlaybackStateContext";
 import { PlaylistItemActionMenu } from "./PlaylistItemActionMenu";
 import { PlaylistManagerService } from "./PlaylistManagerService";
 import { PlaylistManagerToolbar } from "./PlaylistManagerToolbar";
