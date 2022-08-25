@@ -14,23 +14,13 @@ public static partial class ConfigureExtensions
         var group = routeBuilder.MapGroup(pattern)
             .WithTags("Push Notification Subscriptions");
 
-        group.MapGet("", PushNotificationSubscriptionServices.GetStateAsync)
-            .Produces<bool>(StatusCodes.Status200OK, "application/json")
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapGet("", PushNotificationSubscriptionServices.GetStateAsync);
 
-        group.MapPost("", PushNotificationSubscriptionServices.SubscribeAsync)
-            .Accepts<PushSubscription>(false, "application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapPost("", PushNotificationSubscriptionServices.SubscribeAsync);
 
-        group.MapDelete("", PushNotificationSubscriptionServices.UnsubscribeAsync)
-            .Accepts<PushSubscription>(false, "application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapDelete("", PushNotificationSubscriptionServices.UnsubscribeAsync);
 
-        group.MapGet("server-key", PushNotificationSubscriptionServices.GetServerKeyAsync)
-            .Produces(StatusCodes.Status200OK, null, "application/octet-stream")
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapGet("server-key", PushNotificationSubscriptionServices.GetServerKeyAsync);
 
         return group;
     }

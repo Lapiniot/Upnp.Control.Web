@@ -15,15 +15,9 @@ public static partial class ConfigureExtensions
         var methods = new[] { "NOTIFY" };
         var additionalContentTypes = new[] { "text/xml" };
 
-        group.MapMethods("avt", methods, UpnpEventCallbackServices.NotifyAVTransportAsync)
-            .Accepts<HttpRequest>(false, "application/xml", additionalContentTypes)
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapMethods("avt", methods, UpnpEventCallbackServices.NotifyAVTransportAsync);
 
-        group.MapMethods("rc", methods, UpnpEventCallbackServices.NotifyRenderingControlAsync)
-            .Accepts<HttpRequest>(false, "application/xml", additionalContentTypes)
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapMethods("rc", methods, UpnpEventCallbackServices.NotifyRenderingControlAsync);
 
         return group;
     }

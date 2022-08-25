@@ -14,20 +14,11 @@ public static partial class ConfigureExtensions
         var group = routeBuilder.MapGroup(pattern)
             .WithTags("UPnP Connections");
 
-        group.MapGet("protocol-info", ConnectionsServices.GetProtocolInfoAsync)
-            .Produces<CMProtocolInfo>(StatusCodes.Status200OK, "application/json")
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapGet("protocol-info", ConnectionsServices.GetProtocolInfoAsync);
 
-        group.MapGet("connections", ConnectionsServices.GetConnectionsAsync)
-            .Produces<IEnumerable<string>>(StatusCodes.Status200OK, "application/json")
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapGet("connections", ConnectionsServices.GetConnectionsAsync);
 
-        group.MapGet("connections/{connectionId}", ConnectionsServices.GetConnectionInfoAsync)
-            .Produces<CMConnectionInfo>(StatusCodes.Status200OK, "application/json")
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapGet("connections/{connectionId}", ConnectionsServices.GetConnectionInfoAsync);
 
         return group;
     }

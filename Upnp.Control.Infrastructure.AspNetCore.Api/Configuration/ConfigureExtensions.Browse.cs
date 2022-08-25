@@ -14,10 +14,7 @@ public static partial class ConfigureExtensions
         var group = routeBuilder.MapGroup(pattern)
             .WithTags("Content Directory");
 
-        group.MapGet("", ContentDirectoryServices.BrowseAsync)
-            .Produces<CDContent>(StatusCodes.Status200OK, "application/json")
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapGet("", ContentDirectoryServices.BrowseAsync);
 
         return group;
     }

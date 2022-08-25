@@ -14,70 +14,27 @@ public static partial class ConfigureExtensions
         var group = routeBuilder.MapGroup(pattern)
             .WithTags("Playlists Management");
 
-        group.MapGet("state", PlaylistServices.GetPlaylistStateAsync)
-            .Produces(StatusCodes.Status200OK, null, "application/json")
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapGet("state", PlaylistServices.GetPlaylistStateAsync);
 
-        group.MapPost("", PlaylistServices.CreateAsync)
-            .Accepts<string>("application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapPost("", PlaylistServices.CreateAsync);
 
-        group.MapPost("items", PlaylistServices.CreateFromItemsAsync)
-            .Accepts<CreatePlaylistParams>("application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapPost("items", PlaylistServices.CreateFromItemsAsync);
 
-        group.MapPost("files", PlaylistServices.CreateFromFilesAsync)
-            .Accepts<CreateFromFilesForm>("multipart/form-data")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapPost("files", PlaylistServices.CreateFromFilesAsync);
 
-        group.MapPut("{playlistId}", PlaylistServices.RenameAsync)
-            .Accepts<string>("application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapPut("{playlistId}", PlaylistServices.RenameAsync);
 
-        group.MapPost("{playlistId}/copy", PlaylistServices.CopyAsync)
-            .Accepts<string>("application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapPost("{playlistId}/copy", PlaylistServices.CopyAsync);
 
-        group.MapDelete("", PlaylistServices.RemoveAsync)
-            .Accepts<string[]>("application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapDelete("", PlaylistServices.RemoveAsync);
 
-        group.MapPost("{playlistId}/items", PlaylistServices.AddItemsAsync)
-            .Accepts<MediaSource>("application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapPost("{playlistId}/items", PlaylistServices.AddItemsAsync);
 
-        group.MapPost("{playlistId}/feeds", PlaylistServices.AddFromFeedsAsync)
-            .Accepts<FeedUrlSource>("application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapPost("{playlistId}/feeds", PlaylistServices.AddFromFeedsAsync);
 
-        group.MapPost("{playlistId}/files", PlaylistServices.AddFromFilesAsync)
-            .Accepts<CreateFromFilesForm>("multipart/form-data")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapPost("{playlistId}/files", PlaylistServices.AddFromFilesAsync);
 
-        group.MapDelete("{playlistId}/items", PlaylistServices.RemoveItemsAsync)
-            .Accepts<string[]>("application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapDelete("{playlistId}/items", PlaylistServices.RemoveItemsAsync);
 
         return group;
     }

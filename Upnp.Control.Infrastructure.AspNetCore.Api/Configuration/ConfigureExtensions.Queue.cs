@@ -14,16 +14,9 @@ public static partial class ConfigureExtensions
         var group = routeBuilder.MapGroup(pattern)
             .WithTags("Queue");
 
-        group.MapPost("", QueueServices.AddAsync)
-            .Accepts<MediaSource>(false, "application/json")
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapPost("", QueueServices.AddAsync);
 
-        group.MapDelete("", QueueServices.RemoveAllAsync)
-            .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapDelete("", QueueServices.RemoveAllAsync);
 
         return group;
     }

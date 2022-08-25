@@ -14,10 +14,7 @@ public static partial class ConfigureExtensions
         var group = routeBuilder.MapGroup(pattern)
             .WithTags("Devices");
 
-        group.MapGet("{id}", DeviceServices.GetAsync)
-            .Produces<UpnpDevice>(StatusCodes.Status200OK, "application/json")
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status400BadRequest);
+        group.MapGet("{id}", DeviceServices.GetAsync);
 
         group.MapGet("", DeviceServices.GetAllAsync)
             .Produces<IAsyncEnumerable<UpnpDevice>>(StatusCodes.Status200OK, "application/json")
