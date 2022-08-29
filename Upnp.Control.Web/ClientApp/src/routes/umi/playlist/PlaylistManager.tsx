@@ -1,23 +1,24 @@
-import { Component, createRef, HTMLAttributes, ReactElement, UIEventHandler } from "react";
+import { Component, ComponentProps, ComponentType, createRef, HTMLAttributes, ReactElement, UIEventHandler, useCallback, useMemo } from "react";
 import { DataFetchProps } from "../../../components/DataFetch";
+import { DialogProps } from "../../../components/Dialog";
 import PromptDialog from "../../../components/Dialog.Prompt";
+import DialogHost from "../../../components/DialogHost";
 import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
 import { DropTarget } from "../../../components/DropTarget";
 import { PressHoldGestureRecognizer } from "../../../components/gestures/PressHoldGestureRecognizer";
 import { HotKey, HotKeys } from "../../../components/HotKey";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import { MediaQueries } from "../../../components/MediaQueries";
-import { DialogProps } from "../../../components/Dialog";
-import DialogHost from "../../../components/DialogHost";
 import { NavigatorProps } from "../../../components/Navigator";
 import $api from "../../../components/WebApi";
 import { BottomBar } from "../../common/BottomBar";
 import Breadcrumb from "../../common/Breadcrumb";
 import { useContentBrowser } from "../../common/BrowserUtils";
-import Browser, { BrowserProps } from "../../common/BrowserView";
+import BrowserView, { CellTemplateProps } from "../../common/BrowserView";
 import { DIDLTools } from "../../common/DIDLTools";
 import ItemInfoDialog from "../../common/ItemInfoDialog";
 import Pagination from "../../common/Pagination";
+import { PlaybackStateProvider, usePlaybackState } from "../../common/PlaybackStateContext";
 import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext, { RowState } from "../../common/RowStateContext";
 import $s from "../../common/Settings";
@@ -26,7 +27,6 @@ import AddItemsDialog from "./dialogs/AddItemsDialog";
 import AddUrlDialog from "./dialogs/AddUrlDialog";
 import RemoveItemsDialog from "./dialogs/RemoveItemsDialog";
 import UploadPlaylistDialog from "./dialogs/UploadPlaylistDialog";
-import { PlaybackStateContext, PlaybackStateProvider } from "../../common/PlaybackStateContext";
 import { PlaylistItemActionMenu } from "./PlaylistItemActionMenu";
 import { PlaylistManagerService } from "./PlaylistManagerService";
 import { PlaylistManagerToolbar } from "./PlaylistManagerToolbar";
@@ -36,16 +36,11 @@ import { PlaylistRowStateProvider } from "./PlaylistRowStateProvider";
 type PlaylistManagerProps = Omit<UI.PlaylistRouteParams, "category"> &
     DataFetchProps<Upnp.BrowseFetchResult> &
     HTMLAttributes<HTMLDivElement> &
-    NavigatorProps;
+    NavigatorProps
 
-type PlaylistManagerState = {
-    editMode: boolean;
-};
+type PlaylistManagerState = { editMode: boolean }
 
-const dialogBrowserProps: BrowserProps<unknown> = {
-    multiSelect: true,
-    useCheckboxes: true
-}
+const dialogBrowserProps = { multiSelect: true, useCheckboxes: true }
 
 function getBrowserDialogRowState(item: Upnp.DIDL.Item) {
     return item.container
@@ -55,10 +50,9 @@ function getBrowserDialogRowState(item: Upnp.DIDL.Item) {
             : RowState.None
 }
 
-const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"];
+const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"]
 
-export class PlaylistManagerCore
-    extends Component<PlaylistManagerProps, PlaylistManagerState> {
+export class PlaylistManagerCore extends Component<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
     dialogHostRef = createRef<DialogHost>();
@@ -317,29 +311,17 @@ export class PlaylistManagerCore
                     <PlaylistRowStateProvider items={data?.source.items} getActiveTrackIndexHook={data?.source.items && this.getActiveTrackIndex}>
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} rootLevel={isRootLevel}
                             fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.dev?.name} />
-                        <PlaybackStateContext.Consumer>
-                            {({ dispatch, state: { state } }) => <>
-                                <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
-                                    className={"flex-fill mb-1 br-area-main" + (largeScreen ? "" : " pb-5")}
-                                    mainCellTemplate={MainCell} mainCellContext={{
-                                        play: () => dispatch({ type: "PLAY" }),
-                                        pause: () => dispatch({ type: "PAUSE" }),
-                                        playItem: ({ currentTarget: { dataset: { index } } }) => dispatch({ type: "PLAY_URL", url: this.getPlayUrl(parseInt(index!)) ?? "" }),
-                                        state: state,
-                                        device: device,
-                                        deviceName: this.props.dataContext?.source.dev?.name
-                                    }}
-                                    navigate={navigate} hotKeyHandler={this.hotKeyHandler}
-                                    openHandler={(_, i) => { const url = this.getPlayUrl(i); if (url) dispatch({ type: "PLAY_URL", url }) }}
-                                    editMode={this.state.editMode} useLevelUpRow={false} useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
-                                    <DropdownMenu render={this.renderItemActionMenu} />
-                                </Browser>
-                                {!fetching && data?.source.items?.length === 0 &&
-                                    <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
-                                        <svg className="icon icon-5x"><use href="symbols.svg#folder" /></svg>
-                                    </div>}
-                            </>}
-                        </PlaybackStateContext.Consumer>
+                        <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
+                            className={"flex-fill mb-1 br-area-main" + (largeScreen ? "" : " pb-5")}
+                            device={device} deviceName={this.props.dataContext?.source.dev?.name} getUrlHook={this.getPlayUrl}
+                            navigate={navigate} hotKeyHandler={this.hotKeyHandler}
+                            editMode={this.state.editMode} useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
+                            <DropdownMenu render={this.renderItemActionMenu} />
+                        </Browser>
+                        {!fetching && data?.source.items?.length === 0 &&
+                            <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
+                                <svg className="icon icon-5x"><use href="symbols.svg#folder" /></svg>
+                            </div>}
                         <div className="sticky-bottom br-area-bottom">
                             <RowStateContext.Consumer>
                                 {({ selection: { length: selected } }) => <>
@@ -368,6 +350,30 @@ export class PlaylistManagerCore
             </DropTarget >
         </>
     }
+}
+
+type MainCellCtx = typeof MainCell extends ComponentType<CellTemplateProps<infer C>> ? C : unknown;
+
+type PlaylistBrowserProps = ComponentProps<typeof BrowserView<MainCellCtx>> & {
+    device: string,
+    deviceName: string | undefined,
+    getUrlHook(index: number): string | undefined
+}
+
+function Browser({ device, deviceName, getUrlHook, ...props }: PlaylistBrowserProps) {
+    const { dispatch, state: { state } } = usePlaybackState();
+    const context = useMemo<MainCellCtx>(() => ({
+        play: () => dispatch({ type: "PLAY" }),
+        pause: () => dispatch({ type: "PAUSE" }),
+        playItem: ({ currentTarget: { dataset: { index } } }) => dispatch({ type: "PLAY_URL", url: getUrlHook(parseInt(index!)) ?? "" }),
+        state, device, deviceName
+    }), [getUrlHook, state, device, deviceName]);
+    const openCallback = useCallback((_: any, index: number) => {
+        const url = getUrlHook(index);
+        if (url) dispatch({ type: "PLAY_URL", url })
+    }, [getUrlHook]);
+
+    return <BrowserView {...props} useLevelUpRow={false} mainCellTemplate={MainCell} mainCellContext={context} openHandler={openCallback} />
 }
 
 const options = { withParents: true, withResourceProps: true, withVendorProps: true };
