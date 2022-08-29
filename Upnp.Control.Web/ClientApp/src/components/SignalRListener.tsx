@@ -1,20 +1,13 @@
 import React, { ContextType, PropsWithChildren, useContext, useEffect, useRef } from "react";
 import { SignalRContext } from "./SignalRConnection";
 
-type MessageCallback = (...args: any) => void;
+interface Callback { (...args: any): void }
 
-interface IMessageCallbackSet {
-    [K: string]: MessageCallback;
-}
+type SignalRListenerProps = { callbacks: Record<string, Callback> }
 
-type SignalRListenerProps = { callbacks: IMessageCallbackSet }
-
-function apply(callbacks: IMessageCallbackSet, action: (methodName: string, method: MessageCallback) => void) {
+function apply(callbacks: Record<string, Callback>, action: (methodName: string, method: Callback) => void) {
     for (const key in callbacks) {
-        const value = callbacks[key];
-        if (typeof value === "function") {
-            action(key, value);
-        }
+        action(key, callbacks[key]);
     }
 }
 
@@ -38,12 +31,12 @@ export default class SignalRListener extends React.PureComponent<PropsWithChildr
         }
     }
 
-    subscribe = (methodName: string, method: MessageCallback) => {
+    subscribe = (methodName: string, method: Callback) => {
         this.context?.on(methodName, method);
         console.info(`Subscibed to event '${methodName}'`);
     };
 
-    unsubscribe = (methodName: string, method: MessageCallback) => {
+    unsubscribe = (methodName: string, method: Callback) => {
         this.context?.off(methodName, method);
         console.info(`Unsubscibed from event '${methodName}'`);
     };
@@ -53,10 +46,10 @@ export default class SignalRListener extends React.PureComponent<PropsWithChildr
     }
 }
 
-export function useSignalR(callbacks: IMessageCallbackSet) {
+export function useSignalR(callbacks: Record<string, Callback>) {
     const hub = useContext(SignalRContext);
 
-    const prevRef = useRef<IMessageCallbackSet>();
+    const prevRef = useRef<Record<string, Callback>>();
 
     useEffect(() => {
         if (prevRef.current) {
