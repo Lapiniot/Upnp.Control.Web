@@ -139,24 +139,24 @@ export class PlaylistManagerCore
 
     private reload = (action?: () => Promise<any>) => this.props.dataContext ? this.props.dataContext.reload(action) : Promise.resolve(null);
 
-    private rename = (id: string, title: string) => this.reload($api.playlist(this.props.device).rename(id, title).fetch);
+    private rename = (id: string, title: string) => this.reload(() => this.pls.rename(id, title).fetch($s.get("timeout")));
 
-    private copy = (id: string, title: string) => this.reload($api.playlist(this.props.device).copy(id, title).fetch);
+    private copy = (id: string, title: string) => this.reload(() => this.pls.copy(id, title).fetch($s.get("containerScanTimeout")));
 
-    private create = (title: string) => this.reload($api.playlist(this.props.device).create(title).fetch);
+    private create = (title: string) => this.reload(() => this.pls.create(title).fetch($s.get("timeout")));
 
-    private delete = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).delete(ids).fetch());
+    private delete = (ids: string[]) => this.reload(() => this.pls.delete(ids).fetch($s.get("timeout")));
 
-    private addItems = (id: string, device: string, ids: string[]) => this.reload(() => $api
-        .playlist(this.props.device)
+    private addItems = (id: string, device: string, ids: string[]) => this.reload(() => this.pls
         .addItems(id, device, ids, $s.get("containerScanDepth"))
         .fetch($s.get("containerScanTimeout")));
 
-    private addUrl = (id: string, url: string, title?: string, useProxy?: boolean) => this.reload($api.playlist(this.props.device).addUrl(id, url, title, useProxy).fetch);
+    private addUrl = (id: string, url: string, title?: string, useProxy?: boolean) =>
+        this.reload(() => this.pls.addUrl(id, url, title, useProxy).fetch($s.get("timeout")));
 
-    private addFiles = (id: string, data: FormData) => this.reload($api.playlist(this.props.device).addFromFiles(id, data).fetch);
+    private addFiles = (id: string, data: FormData) => this.reload(() => this.pls.addFromFiles(id, data).fetch($s.get("timeout")));
 
-    private deleteItems = (ids: string[]) => this.reload(() => $api.playlist(this.props.device).removeItems(this.props.id, ids).fetch());
+    private deleteItems = (ids: string[]) => this.reload(() => this.pls.removeItems(this.props.id, ids).fetch($s.get("timeout")));
 
     private showInfo = (id: string) => {
         var item = this.props.dataContext?.source.items?.find(i => i.id === id);
@@ -219,9 +219,9 @@ export class PlaylistManagerCore
     private dropFilesHandler = (files: Iterable<File>) => {
         const useProxy = $s.get("useDlnaProxy");
         const request = this.props.id === "PL:"
-            ? $api.playlist(this.props.device).createFromFiles(files, null, false, useProxy)
-            : $api.playlist(this.props.device).addFromFiles(this.props.id, files, useProxy);
-        this.reload(request.fetch);
+            ? this.pls.createFromFiles(files, null, false, useProxy)
+            : this.pls.addFromFiles(this.props.id, files, useProxy);
+        this.reload(() => request.fetch($s.get("timeout")));
         return true;
     }
 
