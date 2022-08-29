@@ -1,23 +1,34 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, UIEvent } from "react";
 import { MenuItem } from "../../../components/DropdownMenu";
 import { RowState, useRowStates } from "../../common/RowStateContext";
 import { usePlaybackState } from "../../common/PlaybackStateContext";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
+import { useCallback } from "react";
 
 type PlaylistItemActionMenuProps = {
-    index: number;
-    root: boolean;
-    handlers: Partial<PlaylistMenuActionHandlers>;
+    index: number,
+    root: boolean,
+    getTrackUrlHook(index: number): string | undefined,
+    handlers: Partial<PlaylistMenuActionHandlers>
 }
 
-export function PlaylistItemActionMenu({ index, root, handlers: h }: PropsWithChildren<PlaylistItemActionMenuProps>) {
+export function PlaylistItemActionMenu({ index, root, getTrackUrlHook, handlers: h }: PropsWithChildren<PlaylistItemActionMenuProps>) {
     const { get: getState } = useRowStates();
-    const { state: state, handlers: ph } = usePlaybackState();
+    const { state: { state }, dispatch } = usePlaybackState();
+    const playItemCallback = useCallback(({ currentTarget: { dataset: { index } } }: UIEvent<HTMLElement>) => {
+        if (index) {
+            const url = getTrackUrlHook(parseInt(index));
+            if (url) {
+                dispatch({ type: "PLAY_URL", url })
+            }
+        }
+    }, [getTrackUrlHook, dispatch]);
+    const pauseCallback = useCallback(() => dispatch({ type: "PAUSE" }), [dispatch]);
     const active = !!(getState(index) & RowState.Active);
     return <>
         {active && state === "PLAYING"
-            ? <MenuItem action="pause" glyph="symbols.svg#pause" onClick={ph.pause}>Pause</MenuItem>
-            : <MenuItem action="play" glyph="symbols.svg#play_arrow" data-index={index} onClick={ph.playItem}>Play</MenuItem>}
+            ? <MenuItem action="pause" glyph="symbols.svg#pause" onClick={pauseCallback}>Pause</MenuItem>
+            : <MenuItem action="play" glyph="symbols.svg#play_arrow" data-index={index} onClick={playItemCallback}>Play</MenuItem>}
         {root
             ? <>
                 <MenuItem action="add-items" glyph="symbols.svg#add" data-index={index} onClick={h.addItems}>Add from media server</MenuItem>
@@ -30,5 +41,5 @@ export function PlaylistItemActionMenu({ index, root, handlers: h }: PropsWithCh
                 <MenuItem action="delete-items" glyph="symbols.svg#delete" data-index={index} onClick={h.deleteItems}>Delete item</MenuItem>
             </>}
         <MenuItem action="info" glyph="symbols.svg#info" data-index={index} onClick={h.showInfo}>Get Info</MenuItem>
-    </>;
+    </>
 }

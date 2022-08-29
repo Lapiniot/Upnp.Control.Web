@@ -25,19 +25,17 @@ export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
     context?: TContext;
 };
 
-type RenderFunc = () => ReactNode;
-
 export type BrowserProps<TContext> = {
-    openHandler?: (item: Upnp.DIDL.Item, index: number) => boolean;
-    hotKeyHandler?: (selection: Upnp.DIDL.Item[], focused: Upnp.DIDL.Item | undefined, hotKey: HotKey) => boolean | void;
-    mainCellTemplate?: ComponentType<CellTemplateProps<TContext>>;
-    mainCellContext?: TContext;
-    displayMode?: DisplayMode;
-    navigationMode?: NavigationMode;
-    editMode?: boolean;
-    nodeRef?: RefObject<HTMLDivElement>;
-    renderCaption?: RenderFunc;
-    renderFooter?: RenderFunc;
+    mainCellTemplate?: ComponentType<CellTemplateProps<TContext>>,
+    mainCellContext?: TContext,
+    displayMode?: DisplayMode,
+    navigationMode?: NavigationMode,
+    editMode?: boolean,
+    nodeRef?: RefObject<HTMLDivElement>,
+    hotKeyHandler?(selection: Upnp.DIDL.Item[], focused: Upnp.DIDL.Item | undefined, hotKey: HotKey): boolean | void,
+    openHandler?(item: Upnp.DIDL.Item, index: number): void,
+    renderCaption?(): ReactNode,
+    renderFooter?(): ReactNode
 } & { [K in ModeFlags]?: boolean }
 
 export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<Upnp.BrowseFetchResult>;

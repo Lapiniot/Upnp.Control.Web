@@ -8,7 +8,7 @@ type PositionProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> & {
     time: number;
     duration: number;
     running: boolean;
-    onChange: SliderChangeHandler
+    onChange?: SliderChangeHandler
 };
 
 export default class SeekBar extends React.Component<PositionProps> {

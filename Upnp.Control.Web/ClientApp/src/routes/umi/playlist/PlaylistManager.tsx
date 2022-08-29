@@ -66,7 +66,6 @@ export class PlaylistManagerCore
     pressHoldGestureRecognizer: PressHoldGestureRecognizer<HTMLDivElement>;
     service: PlaylistManagerService;
     actionHandlers: PlaylistMenuActionHandlers;
-    ctrl;
     pls;
 
     static defaultProps = { id: "PL:" };
@@ -74,7 +73,6 @@ export class PlaylistManagerCore
     constructor(props: PlaylistManagerProps) {
         super(props);
         this.state = { editMode: false };
-        this.ctrl = $api.control(this.props.device);
         this.pls = $api.playlist(this.props.device);
         MediaQueries.largeScreen.addEventListener("change", this.queryChangedHandler);
         this.service = {
@@ -104,7 +102,6 @@ export class PlaylistManagerCore
 
     async componentDidUpdate(prevProps: PlaylistManagerProps) {
         if (prevProps.dataContext !== this.props.dataContext) {
-            this.ctrl = $api.control(this.props.device);
             this.pls = $api.playlist(this.props.device);
         }
     }
@@ -227,16 +224,6 @@ export class PlaylistManagerCore
 
     //#endregion
 
-    //#region Playback related row event handlers
-
-    private playItem = (_: Upnp.DIDL.Item, index: number) => {
-        const url = this.getPlayUrl(index);
-        if (url) this.ctrl.playUri(url).fetch();
-        return false;
-    }
-
-    //#endregion
-
     hotKeyHandler = (selection: Upnp.DIDL.Item[], focused: Upnp.DIDL.Item | undefined, hotKey: HotKey) => {
         const rootLevel = this.props.id === "PL:";
         if (hotKey.equals(HotKeys.showInfo)) {
@@ -269,7 +256,7 @@ export class PlaylistManagerCore
 
     renderItemActionMenu = (anchor?: HTMLElement | null) => {
         return anchor?.dataset.index
-            ? <PlaylistItemActionMenu index={parseInt(anchor?.dataset.index)} root={this.props.id === "PL:"} handlers={this.actionHandlers} />
+            ? <PlaylistItemActionMenu index={parseInt(anchor?.dataset.index)} root={this.props.id === "PL:"} getTrackUrlHook={this.getPlayUrl} handlers={this.actionHandlers} />
             : null;
     }
 
@@ -326,20 +313,24 @@ export class PlaylistManagerCore
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="browser-shell flex-fill overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <PlaybackStateNotifier device={device} callback={this.playbackStateChanged} />
-                <PlaybackStateProvider device={device} getTrackUrlHook={this.getPlayUrl} >
+                <PlaybackStateProvider device={device}>
                     <PlaylistRowStateProvider items={data?.source.items} getActiveTrackIndexHook={data?.source.items && this.getActiveTrackIndex}>
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} rootLevel={isRootLevel}
                             fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.dev?.name} />
-                        <PlaybackStateContext.Consumer>{psv =>
-                            <>
+                        <PlaybackStateContext.Consumer>
+                            {({ dispatch, state: { state } }) => <>
                                 <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
                                     className={"flex-fill mb-1 br-area-main" + (largeScreen ? "" : " pb-5")}
                                     mainCellTemplate={MainCell} mainCellContext={{
-                                        ...psv.handlers,
-                                        state: psv.state,
+                                        play: () => dispatch({ type: "PLAY" }),
+                                        pause: () => dispatch({ type: "PAUSE" }),
+                                        playItem: ({ currentTarget: { dataset: { index } } }) => dispatch({ type: "PLAY_URL", url: this.getPlayUrl(parseInt(index!)) ?? "" }),
+                                        state: state,
                                         device: device,
                                         deviceName: this.props.dataContext?.source.dev?.name
-                                    }} navigate={navigate} openHandler={this.playItem} hotKeyHandler={this.hotKeyHandler}
+                                    }}
+                                    navigate={navigate} hotKeyHandler={this.hotKeyHandler}
+                                    openHandler={(_, i) => { const url = this.getPlayUrl(i); if (url) dispatch({ type: "PLAY_URL", url }) }}
                                     editMode={this.state.editMode} useLevelUpRow={false} useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
                                     <DropdownMenu render={this.renderItemActionMenu} />
                                 </Browser>

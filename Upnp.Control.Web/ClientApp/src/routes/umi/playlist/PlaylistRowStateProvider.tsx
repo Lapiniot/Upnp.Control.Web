@@ -20,9 +20,9 @@ type PlaylistRowStateProviderProps = {
 };
 
 export function PlaylistRowStateProvider({ getActiveTrackIndexHook, ...other }: PropsWithChildren<PlaylistRowStateProviderProps>) {
-    const { playlist, track } = usePlaybackState();
+    const { state: { playlist, currentTrack } } = usePlaybackState();
 
-    const current = getActiveTrackIndexHook?.(playlist, track);
+    const current = getActiveTrackIndexHook?.(playlist, currentTrack ?? undefined);
 
     const mapper = useMemo(() => function (item: Upnp.DIDL.Item, index: number, state = RowState.None) {
         return (isNavigable(item) ? RowState.Navigable : RowState.None)

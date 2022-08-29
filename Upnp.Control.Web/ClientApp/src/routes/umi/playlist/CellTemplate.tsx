@@ -8,9 +8,9 @@ import { TrackInfoLine } from "../../common/TrackInfoLine";
 
 type CellContext = {
     state?: Upnp.PlaybackState;
-    play?: EventHandler<UIEvent<HTMLElement>>;
-    pause?: EventHandler<UIEvent<HTMLElement>>;
-    playItem?: EventHandler<UIEvent<HTMLElement>>;
+    play: EventHandler<UIEvent<HTMLElement>>;
+    pause: EventHandler<UIEvent<HTMLElement>>;
+    playItem: EventHandler<UIEvent<HTMLElement>>;
     device: string;
     deviceName?: string;
 }
@@ -22,7 +22,7 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
     const playing = ctx?.state === "PLAYING";
     return <div className="hstack">
         <button type="button" className="btn btn-stack me-2 flex-shrink-0" data-index={index}
-            onClick={active ? (playing ? ctx.pause : ctx?.play) : ctx?.playItem}>
+            onClick={active ? (playing ? ctx?.pause : ctx?.play) : ctx?.playItem}>
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} hint="player" />
             {active && <div className="d-flex album-art hover-hide fade-in-out text-white bg-black bg-opacity-50">
                 <svg className={playing ? "animate-pulse" : ""}>
