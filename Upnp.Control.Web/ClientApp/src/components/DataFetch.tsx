@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 
-export interface DataContext<T extends {} = {}> {
-    source: T;
-    reload(callback?: () => Promise<any>): Promise<void>;
+export interface DataContext<T extends any> {
+    source: T,
+    reload(callback?: () => Promise<any>): Promise<void>
 }
 
-export type DataFetchProps<T = {}> = {
-    dataContext: DataContext<T> | null | undefined;
-    fetching: boolean;
-    error: unknown;
+export type DataFetchProps<T> = {
+    dataContext: DataContext<T> | null | undefined,
+    fetching: boolean,
+    error: unknown
 }
 
 type FetchState<T> = { fetching: boolean, dataContext: DataContext<T> | undefined, error: unknown }
