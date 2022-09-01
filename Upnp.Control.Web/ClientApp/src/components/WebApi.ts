@@ -14,6 +14,7 @@ export type ApplicationInfo = {
 }
 
 export interface ControlApiProvider {
+    readonly deviceId: string
     state(detailed?: boolean): JsonHttpFetch<Upnp.AVState>
     play(id?: string, sourceDevice?: string): HttpPutFetch
     playUri(id: string): HttpPutFetch
@@ -31,6 +32,7 @@ export interface ControlApiProvider {
 }
 
 export interface PlaylistApiProvider {
+    readonly deviceId: string
     state(): JsonHttpFetch<any>
     create(title: string): HttpPostFetch
     createFromItems(title: string, sourceDevice: string, sourceIds: string[], maxDepth?: number): HttpPostFetch
@@ -45,6 +47,7 @@ export interface PlaylistApiProvider {
 }
 
 export interface QueueApiProvider {
+    readonly deviceId: string
     enqueue(queueId: string, sourceDevice: string, sourceIds: string[]): HttpPostFetch
     clear(queueId: string): HttpDeleteFetch
 }
@@ -74,11 +77,15 @@ export default class WebApi {
     }
 
     public static browse(deviceId: string) {
-        return { get(id = "") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${id}`) } }
+        return {
+            get deviceId() { return deviceId },
+            get(id = "") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${id}`) }
+        }
     }
 
     public static playlist(deviceId: string): PlaylistApiProvider {
         return {
+            get deviceId() { return deviceId },
             state() { return new JsonHttpFetch(`${devicesBaseUri}/${deviceId}/playlists/state`) },
             create(title: string) { return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists`, null, json(title)) },
             createFromItems(title: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) {
@@ -118,16 +125,20 @@ export default class WebApi {
 
     public static queues(deviceId: string): QueueApiProvider {
         return {
+            get deviceId() { return deviceId },
             enqueue(queueId: string, sourceDevice: string, sourceIds: string[]) {
                 return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/queues/${queueId}/items`, null, json({ deviceId: sourceDevice, items: sourceIds }))
             },
-            clear(queueId: string) { return new HttpDeleteFetch(`${devicesBaseUri}/${deviceId}/queues/${queueId}/items`, null) }
+            clear(queueId: string) {
+                return new HttpDeleteFetch(`${devicesBaseUri}/${deviceId}/queues/${queueId}/items`, null)
+            }
         }
     }
 
     public static control(deviceId: string): ControlApiProvider {
         deviceId = encodeURIComponent(deviceId);
         return {
+            get deviceId() { return deviceId },
             state(detailed = false) { return new JsonHttpFetch(`${devicesBaseUri}/${deviceId}/state${detailed ? "?detailed=true" : ""}`) },
             play(id?: string, sourceDevice?: string) {
                 return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, json({ state: "playing", objectId: id, sourceDevice }))
