@@ -4,20 +4,29 @@ import { useSignalR } from "../../components/SignalRListener";
 import $api, { ControlApiProvider } from "../../components/WebApi";
 import $s from "./Settings";
 
-type AggregatedState = Partial<Upnp.AVState & Upnp.AVPosition & Upnp.RCState & { playlist: string }>
+type MediaState = Partial<Upnp.AVState & Upnp.AVPosition & Upnp.RCState & { playlist: string }>
 
-type InternalState = Partial<{ ctrl: ControlApiProvider }>
+type InternalState = {
+    client?: ControlApiProvider,
+    dispatch?: Dispatch<StateAction>,
+    media?: MediaState
+}
 
-export type DispatchAction =
-    { type: "UPDATE", state: AggregatedState & InternalState } |
+type MediaAction =
     { type: "PLAY" | "PAUSE" | "STOP" | "PREV" | "NEXT" | "TOGGLE_MUTE" | "TOGGLE_MODE" } |
+    { type: "PLAY_URL", url: string } |
     { type: "SET_VOLUME", volume: number } |
     { type: "SEEK", position: number } |
-    { type: "PLAY_URL", url: string }
+    { type: "REFRESH" }
+
+type StateAction =
+    { type: "BEGIN_INIT", device: string, dispatch: Dispatch<StateAction> } |
+    { type: "END_INIT", state: Required<InternalState> } |
+    { type: "UPDATE", state: MediaState }
 
 export type PlaybackStateContextType = {
-    state: AggregatedState,
-    dispatch: React.Dispatch<DispatchAction>
+    state: MediaState,
+    dispatch: React.Dispatch<MediaAction>
 }
 
 export const PlaybackStateContext = createContext<PlaybackStateContextType>({
@@ -25,40 +34,60 @@ export const PlaybackStateContext = createContext<PlaybackStateContextType>({
     dispatch() { }
 })
 
-type PlaybackStateProviderProps = PropsWithChildren<{ device: string }>;
+type PlaybackStateProviderProps = PropsWithChildren<{ device: string | undefined | null }>;
 
-function reducer(state: AggregatedState & InternalState, action: DispatchAction): AggregatedState {
+function reducer(state: InternalState, action: StateAction | MediaAction) {
     switch (action.type) {
+        case "BEGIN_INIT": {
+            const { device, dispatch } = action;
+            const client = $api.control(device);
+            fetchStateAsync(client)
+                .then(media => dispatch({ type: "END_INIT", state: { media, client, dispatch } }))
+                .catch(error => console.error(error));
+            break;
+        }
+        case "END_INIT":
+            return action.state;
         case "UPDATE":
-            return { ...state, ...action.state };
+            return { ...state, media: { ...state.media, ...action.state } };
+        case "REFRESH":
+            const { client, dispatch } = state;
+            if (client && dispatch) {
+                fetchStateAsync(client)
+                    .then(state => dispatch({ type: "UPDATE", state }))
+                    .catch(error => console.error(error));
+            } else {
+                throw new Error("Invalid state. Not ready.")
+            }
+            break;
         case "PLAY":
-            state.ctrl?.play().fetch();
+            state.client?.play().fetch();
             break;
         case "STOP":
-            state.ctrl?.stop().fetch();
+            state.client?.stop().fetch();
             break;
         case "PAUSE":
-            state.ctrl?.pause().fetch();
+            state.client?.pause().fetch();
             break;
         case "PLAY_URL":
-            state.ctrl?.playUri(action.url).fetch();
+            state.client?.playUri(action.url).fetch();
             break;
         case "PREV":
-            state.ctrl?.prev().fetch();
+            state.client?.prev().fetch();
             break;
-        case "NEXT": state.ctrl?.next().fetch();
+        case "NEXT": state.client?.next().fetch();
             break;
         case "SEEK":
-            state.ctrl?.seek(action.position).fetch();
+            state.client?.seek(action.position).fetch();
             break;
         case "SET_VOLUME":
-            state.ctrl?.setVolume(Math.round(action.volume * 100)).fetch($s.get("timeout"));
+            state.client?.setVolume(Math.round(action.volume * 100)).fetch($s.get("timeout"));
             break;
         case "TOGGLE_MUTE":
-            state.ctrl?.setMute(!state.muted).fetch();
+            state.client?.setMute(!state.media?.muted).fetch();
             break;
         case "TOGGLE_MODE":
-            state.ctrl?.setPlayMode(state.playMode === "REPEAT_ALL" ? "REPEAT_SHUFFLE" : "REPEAT_ALL").fetch($s.get("timeout"));
+            state.client?.setPlayMode(state.media?.playMode === "REPEAT_ALL" ? "REPEAT_SHUFFLE" : "REPEAT_ALL").fetch($s.get("timeout"));
             break;
         default:
             throw new Error("Unsupported action type");
@@ -67,36 +96,32 @@ function reducer(state: AggregatedState & InternalState, action: DispatchAction)
     return state;
 }
 
+function initializer() { return {} }
+
+async function fetchStateAsync(client: ControlApiProvider): Promise<MediaState> {
+    const timeout = $s.get("timeout");
+
+    const { 0: state, 1: position, 2: volume } = await Promise.all([
+        client.state(true).json(timeout),
+        client.position().json(timeout),
+        client.volume(true).json(timeout)
+    ]);
+
+    if (state.medium === "X-MI-AUX" || (state.medium === "NONE" && state.current?.id === "1")) {
+        return { ...state, ...position, ...volume, playlist: "aux" };
+    } else if (state.current?.vendor?.["mi:status"]) {
+        const pls = $api.playlist(client.deviceId);
+        const { "playlist_transport_uri": playlist } = await pls.state().json(timeout);
+        return { ...state, ...position, ...volume, playlist };
+    } else {
+        return { ...state, ...position, ...volume, playlist: undefined };
+    }
+}
+
 export function PlaybackStateProvider({ device, ...other }: PlaybackStateProviderProps) {
-    const [state, dispatch] = useReducer(reducer, {});
+    const [state, dispatch] = useReducer(reducer, undefined, initializer);
 
-    useEffect(() => {
-        (async function () {
-            try {
-                if (!device) return;
-
-                const timeout = $s.get("timeout");
-                const ctrl = $api.control(device);
-                const { 0: state, 1: position, 2: volume } = await Promise.all([
-                    ctrl.state(true).json(timeout),
-                    ctrl.position().json(timeout),
-                    ctrl.volume(true).json(timeout)
-                ]);
-
-                if (state.medium === "X-MI-AUX" || (state.medium === "NONE" && state.current?.id === "1")) {
-                    dispatch({ type: "UPDATE", state: { ctrl, ...state, ...position, ...volume, playlist: "aux" } });
-                } else if (state.current?.vendor?.["mi:status"]) {
-                    const pls = $api.playlist(device);
-                    const { "playlist_transport_uri": playlist } = await pls.state().json(timeout);
-                    dispatch({ type: "UPDATE", state: { ctrl, ...state, ...position, ...volume, playlist } });
-                } else {
-                    dispatch({ type: "UPDATE", state: { ctrl, ...state, ...position, ...volume, playlist: undefined } });
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        })()
-    }, [device]);
+    useEffect(() => { if (device) dispatch({ type: "BEGIN_INIT", device, dispatch }) }, [device]);
 
     const handlers = useMemo(() => ({
         "AVTransportEvent": (target: string, { state, vendorProps = {} }: { state: Upnp.AVState, vendorProps: Record<string, string> }) => {
@@ -112,12 +137,12 @@ export function PlaybackStateProvider({ device, ...other }: PlaybackStateProvide
 
     useSignalR(handlers);
 
-    const value = useMemo(() => ({ state, dispatch }), [state]);
+    const value = useMemo(() => ({ state: state.media ?? {}, dispatch }), [state.media]);
 
     return <PlaybackStateContext.Provider {...other} value={value} />;
 }
 
-export function usePlaybackEventHandlers(dispatch: Dispatch<DispatchAction>) {
+export function usePlaybackEventHandlers(dispatch: Dispatch<MediaAction>) {
     return useMemo(() => {
         return {
             play: nopropagation(() => dispatch({ type: "PLAY" })),
@@ -129,6 +154,7 @@ export function usePlaybackEventHandlers(dispatch: Dispatch<DispatchAction>) {
             setVolume: (volume: number) => dispatch({ type: "SET_VOLUME", volume }),
             toggleMute: nopropagation(() => dispatch({ type: "TOGGLE_MUTE" })),
             toggleMode: nopropagation(() => dispatch({ type: "TOGGLE_MODE" })),
+            refresh: () => dispatch({ type: "REFRESH" })
         }
     }, [dispatch]);
 }
