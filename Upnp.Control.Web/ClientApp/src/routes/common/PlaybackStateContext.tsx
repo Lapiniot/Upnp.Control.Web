@@ -1,13 +1,13 @@
 import { createContext, Dispatch, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from "react";
 import { nopropagation } from "../../components/Extensions";
 import { useSignalR } from "../../components/SignalRListener";
-import $api, { ControlApiProvider } from "../../components/WebApi";
+import $api, { ControlApiClient } from "../../components/WebApi";
 import $s from "./Settings";
 
 type MediaState = Partial<Upnp.AVState & Upnp.AVPosition & Upnp.RCState & { playlist: string }>
 
 type InternalState = {
-    client?: ControlApiProvider,
+    client?: ControlApiClient,
     dispatch?: Dispatch<StateAction>,
     media?: MediaState
 }
@@ -98,7 +98,7 @@ function reducer(state: InternalState, action: StateAction | MediaAction) {
 
 function initializer() { return {} }
 
-async function fetchStateAsync(client: ControlApiProvider): Promise<MediaState> {
+async function fetchStateAsync(client: ControlApiClient): Promise<MediaState> {
     const timeout = $s.get("timeout");
 
     const { 0: state, 1: position, 2: volume } = await Promise.all([

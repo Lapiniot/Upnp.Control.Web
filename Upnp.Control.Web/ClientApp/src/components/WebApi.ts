@@ -13,7 +13,7 @@ export type ApplicationInfo = {
     addresses: string[]
 }
 
-export interface ControlApiProvider {
+export interface ControlApiClient {
     readonly deviceId: string
     state(detailed?: boolean): JsonHttpFetch<Upnp.AVState>
     play(id?: string, sourceDevice?: string): HttpPutFetch
@@ -31,7 +31,7 @@ export interface ControlApiProvider {
     setMute(mute: boolean): HttpPutFetch
 }
 
-export interface PlaylistApiProvider {
+export interface PlaylistApiClient {
     readonly deviceId: string
     state(): JsonHttpFetch<any>
     create(title: string): HttpPostFetch
@@ -46,7 +46,12 @@ export interface PlaylistApiProvider {
     removeItems(id: string, ids: string[]): HttpDeleteFetch
 }
 
-export interface QueueApiProvider {
+export interface BrowseApiClient {
+    readonly deviceId: string;
+    get(id?: string): BrowseFetch;
+}
+
+export interface QueueApiClient {
     readonly deviceId: string
     enqueue(queueId: string, sourceDevice: string, sourceIds: string[]): HttpPostFetch
     clear(queueId: string): HttpDeleteFetch
@@ -59,7 +64,7 @@ export const enum PushNotificationType {
     ContentUpdated = 0x4
 }
 
-export interface PushSubscriptionApiProvider {
+export interface PushSubscriptionApiClient {
     serverKey(): HttpFetch
     subscribe(endpoint: string, type: PushNotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null): HttpPostFetch
     unsubscribe(endpoint: string, type: PushNotificationType): HttpDeleteFetch
@@ -76,14 +81,14 @@ export default class WebApi {
         return new JsonHttpFetch<Upnp.Device | Upnp.Device[]>(`${devicesBaseUri}${id ? `/${id}` : ""}${category ? "?category=" + category : ""}`)
     }
 
-    public static browse(deviceId: string) {
+    public static browse(deviceId: string): BrowseApiClient {
         return {
             get deviceId() { return deviceId },
             get(id = "") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${id}`) }
         }
     }
 
-    public static playlist(deviceId: string): PlaylistApiProvider {
+    public static playlist(deviceId: string): PlaylistApiClient {
         return {
             get deviceId() { return deviceId },
             state() { return new JsonHttpFetch(`${devicesBaseUri}/${deviceId}/playlists/state`) },
@@ -123,7 +128,7 @@ export default class WebApi {
         }
     }
 
-    public static queues(deviceId: string): QueueApiProvider {
+    public static queues(deviceId: string): QueueApiClient {
         return {
             get deviceId() { return deviceId },
             enqueue(queueId: string, sourceDevice: string, sourceIds: string[]) {
@@ -135,7 +140,7 @@ export default class WebApi {
         }
     }
 
-    public static control(deviceId: string): ControlApiProvider {
+    public static control(deviceId: string): ControlApiClient {
         deviceId = encodeURIComponent(deviceId);
         return {
             get deviceId() { return deviceId },
@@ -161,7 +166,7 @@ export default class WebApi {
         }
     }
 
-    public static notifications() { return pushSubscriber }
+    public static notifications(): PushSubscriptionApiClient { return pushSubscriber }
 
     public static getAppInfo() {
         return new JsonHttpFetch<ApplicationInfo>(`${baseUri}/info`).json()
@@ -199,7 +204,7 @@ export class BrowseFetch extends JsonHttpFetch<Upnp.BrowseFetchResult> {
     take(count: number) { return new BrowseFetch(this.path, { ...this.query, take: count }) }
 
     skip(count: number) { return new BrowseFetch(this.path, { ...this.query, skip: count }) }
-};
+}
 
 function createFormData(files: Iterable<File>, useProxy?: boolean) {
     const data = new FormData();
