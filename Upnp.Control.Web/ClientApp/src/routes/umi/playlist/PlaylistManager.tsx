@@ -50,6 +50,10 @@ function getBrowserDialogRowState(item: Upnp.DIDL.Item) {
             : RowState.None
 }
 
+function fetchPlaylistStateAsync(deviceId: string) {
+    return $api.playlist(deviceId).state().json();
+}
+
 const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"]
 
 export class PlaylistManagerCore extends Component<PlaylistManagerProps, PlaylistManagerState> {
@@ -262,7 +266,7 @@ export class PlaylistManagerCore extends Component<PlaylistManagerProps, Playlis
         </>;
     }
 
-    getActiveTrackIndex = (playlist: string | undefined, currentTrack: string | undefined): number => {
+    getActiveTrackIndex = (playlist: string | undefined | null, currentTrack: string | undefined | null): number => {
         const items = this.props.dataContext?.source?.items;
         const parents = this.props.dataContext?.source?.parents;
         const { p, s } = this.props;
@@ -307,7 +311,7 @@ export class PlaylistManagerCore extends Component<PlaylistManagerProps, Playlis
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="browser-shell flex-fill overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <PlaybackStateNotifier device={device} callback={this.playbackStateChanged} />
-                <PlaybackStateProvider device={device}>
+                <PlaybackStateProvider device={device} fetchVendorState={fetchPlaylistStateAsync}>
                     <PlaylistRowStateProvider items={data?.source.items} getActiveTrackIndexHook={data?.source.items && this.getActiveTrackIndex}>
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} rootLevel={isRootLevel}
                             fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.dev?.name} />

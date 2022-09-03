@@ -66,7 +66,7 @@ function PlayerCore() {
 }
 
 export default function ({ udn }: { udn: string | undefined }) {
-    return <PlaybackStateProvider device={udn}>
+    return <PlaybackStateProvider device={udn} trackPosition trackVolume>
         <PlayerCore />
     </PlaybackStateProvider>
 }

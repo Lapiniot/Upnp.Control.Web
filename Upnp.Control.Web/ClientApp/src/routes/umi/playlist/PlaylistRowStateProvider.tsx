@@ -2,7 +2,7 @@ import { PropsWithChildren, useMemo } from "react";
 import { RowState, RowStateProvider } from "../../common/RowStateContext";
 import { usePlaybackState } from "../../common/PlaybackStateContext";
 
-type TrackIndexCallback = (playlist: string | undefined, track: string | undefined) => number;
+type TrackIndexCallback = (playlist: string | undefined | null, track: string | undefined | null) => number;
 
 function isReadonly(item: Upnp.DIDL.Item) {
     if (item.readonly) return true;
@@ -20,15 +20,18 @@ type PlaylistRowStateProviderProps = {
 };
 
 export function PlaylistRowStateProvider({ getActiveTrackIndexHook, ...other }: PropsWithChildren<PlaylistRowStateProviderProps>) {
-    const { state: { playlist, currentTrack } } = usePlaybackState();
+    const { state: { currentTrack, medium, current, vendor } } = usePlaybackState();
+    const playlist = medium === "X-MI-AUX" || (medium === "NONE" && current?.id === "1")
+        ? "aux"
+        : vendor?.["playlist_transport_uri"] ?? vendor?.["mi:playlist_transport_uri"];
 
-    const current = getActiveTrackIndexHook?.(playlist, currentTrack ?? undefined);
+    const currentIndex = getActiveTrackIndexHook?.(playlist, currentTrack);
 
     const mapper = useMemo(() => function (item: Upnp.DIDL.Item, index: number, state = RowState.None) {
         return (isNavigable(item) ? RowState.Navigable : RowState.None)
             | (isReadonly(item) ? RowState.Readonly : (RowState.Selectable | state & RowState.Selected))
-            | (index === current ? RowState.Active : RowState.None);
-    }, [current]);
+            | (index === currentIndex ? RowState.Active : RowState.None);
+    }, [currentIndex]);
 
     return <RowStateProvider {...other} mapper={mapper} />
 }

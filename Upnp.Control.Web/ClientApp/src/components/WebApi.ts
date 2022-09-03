@@ -33,7 +33,7 @@ export interface ControlApiClient {
 
 export interface PlaylistApiClient {
     readonly deviceId: string
-    state(): JsonHttpFetch<any>
+    state(): JsonHttpFetch<Record<string, string>>
     create(title: string): HttpPostFetch
     createFromItems(title: string, sourceDevice: string, sourceIds: string[], maxDepth?: number): HttpPostFetch
     createFromFiles(data: Iterable<File> | FormData, title?: string | null, merge?: boolean, useProxy?: boolean): HttpPostFetch

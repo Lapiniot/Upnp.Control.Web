@@ -4,11 +4,18 @@ import { useSignalR } from "../../components/SignalRListener";
 import $api, { ControlApiClient } from "../../components/WebApi";
 import $s from "./Settings";
 
-type MediaState = Partial<Upnp.AVState & Upnp.AVPosition & Upnp.RCState & { playlist: string }>
+type MediaState = Partial<Upnp.AVState & Upnp.AVPosition & Upnp.RCState & { vendor: Record<string, string> }>
+
+type FetchStateFlagKeys = "trackPosition" | "trackVolume"
+
+type FetchStateFlags = { [K in FetchStateFlagKeys]?: boolean }
+
+type Fetch<A, R> = (arg: A) => Promise<R>
 
 type InternalState = {
     client?: ControlApiClient,
     dispatch?: Dispatch<StateAction>,
+    fetch?: Fetch<ControlApiClient, MediaState>,
     media?: MediaState
 }
 
@@ -20,7 +27,7 @@ type MediaAction =
     { type: "REFRESH" }
 
 type StateAction =
-    { type: "BEGIN_INIT", device: string, dispatch: Dispatch<StateAction> } |
+    { type: "BEGIN_INIT", device: string, dispatch: Dispatch<StateAction>, fetch: Fetch<ControlApiClient, MediaState> } |
     { type: "END_INIT", state: Required<InternalState> } |
     { type: "UPDATE", state: MediaState }
 
@@ -34,15 +41,18 @@ export const PlaybackStateContext = createContext<PlaybackStateContextType>({
     dispatch() { }
 })
 
-type PlaybackStateProviderProps = PropsWithChildren<{ device: string | undefined | null }>;
+type PlaybackStateProviderProps = PropsWithChildren<{
+    device: string | undefined | null,
+    fetchVendorState?(deviceId: string): Promise<Record<string, string>>
+} & FetchStateFlags>
 
 function reducer(state: InternalState, action: StateAction | MediaAction) {
     switch (action.type) {
         case "BEGIN_INIT": {
-            const { device, dispatch } = action;
+            const { device, dispatch, fetch } = action;
             const client = $api.control(device);
-            fetchStateAsync(client)
-                .then(media => dispatch({ type: "END_INIT", state: { media, client, dispatch } }))
+            fetch(client)
+                .then(media => dispatch({ type: "END_INIT", state: { media, client, dispatch, fetch } }))
                 .catch(error => console.error(error));
             break;
         }
@@ -51,9 +61,9 @@ function reducer(state: InternalState, action: StateAction | MediaAction) {
         case "UPDATE":
             return { ...state, media: { ...state.media, ...action.state } };
         case "REFRESH":
-            const { client, dispatch } = state;
-            if (client && dispatch) {
-                fetchStateAsync(client)
+            const { client, dispatch, fetch } = state;
+            if (client && dispatch && fetch) {
+                fetch(client)
                     .then(state => dispatch({ type: "UPDATE", state }))
                     .catch(error => console.error(error));
             } else {
@@ -98,42 +108,42 @@ function reducer(state: InternalState, action: StateAction | MediaAction) {
 
 function initializer() { return {} }
 
-async function fetchStateAsync(client: ControlApiClient): Promise<MediaState> {
-    const timeout = $s.get("timeout");
+function createFetch(fetchPosition: boolean, fetchVolume: boolean, fetchVendorState?: (id: string) => Promise<Record<string, string>>) {
+    return async function (client: ControlApiClient): Promise<MediaState> {
+        const timeout = $s.get("timeout");
 
-    const { 0: state, 1: position, 2: volume } = await Promise.all([
-        client.state(true).json(timeout),
-        client.position().json(timeout),
-        client.volume(true).json(timeout)
-    ]);
+        const { 0: state, 1: position, 2: volume, 3: vendor } = await Promise.all([
+            client.state(true).json(timeout),
+            fetchPosition ? client.position().json(timeout) : {},
+            fetchVolume ? client.volume(true).json(timeout) : {},
+            fetchVendorState?.(client.deviceId) ?? {}
+        ]);
 
-    if (state.medium === "X-MI-AUX" || (state.medium === "NONE" && state.current?.id === "1")) {
-        return { ...state, ...position, ...volume, playlist: "aux" };
-    } else if (state.current?.vendor?.["mi:status"]) {
-        const pls = $api.playlist(client.deviceId);
-        const { "playlist_transport_uri": playlist } = await pls.state().json(timeout);
-        return { ...state, ...position, ...volume, playlist };
-    } else {
-        return { ...state, ...position, ...volume, playlist: undefined };
+        return { ...state, ...position, ...volume, vendor };
     }
 }
 
-export function PlaybackStateProvider({ device, ...other }: PlaybackStateProviderProps) {
+export function PlaybackStateProvider({ device, trackPosition = false, trackVolume = false, fetchVendorState, ...other }: PlaybackStateProviderProps) {
     const [state, dispatch] = useReducer(reducer, undefined, initializer);
 
-    useEffect(() => { if (device) dispatch({ type: "BEGIN_INIT", device, dispatch }) }, [device]);
+    useEffect(() => { if (device) dispatch({ type: "BEGIN_INIT", device, dispatch, fetch: createFetch(trackPosition, trackVolume, fetchVendorState) }) },
+        [device, trackPosition, trackVolume, fetchVendorState]);
 
-    const handlers = useMemo(() => ({
-        "AVTransportEvent": (target: string, { state, vendorProps = {} }: { state: Upnp.AVState, vendorProps: Record<string, string> }) => {
-            if (device !== target) return;
-            const { "mi:playlist_transport_uri": playlist, "mi:Transport": transport } = vendorProps;
-            dispatch({ type: "UPDATE", state: { ...state, playlist: transport === "AUX" ? "aux" : playlist } });
-        },
-        "RenderingControlEvent": (target: string, { state }: { state: Upnp.RCState }) => {
-            if (device !== target) return;
-            dispatch({ type: "UPDATE", state: { ...state } });
+    const handlers = useMemo(() => {
+        const handlers = {
+            "AVTransportEvent": (target: string, { state, position, vendorProps = {} }: { state: Upnp.AVState; position: Upnp.AVPosition, vendorProps: Record<string, string>; }) => {
+                if (device !== target)
+                    return;
+                dispatch({ type: "UPDATE", state: { ...state, ...position, vendor: fetchVendorState ? vendorProps : undefined } });
+            }
+        } as Record<string, (...args: any) => void>;
+
+        if (trackVolume) {
+            handlers["RenderingControlEvent"] = (target: string, { state }: { state: Upnp.RCState; }) => { if (device === target) dispatch({ type: "UPDATE", state: { ...state } }) }
         }
-    }), [device]);
+
+        return handlers;
+    }, [device, trackPosition, trackVolume]);
 
     useSignalR(handlers);
 
