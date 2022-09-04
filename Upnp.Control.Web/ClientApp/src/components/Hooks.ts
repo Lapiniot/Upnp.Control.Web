@@ -1,4 +1,4 @@
-import { RefObject, useLayoutEffect, useRef } from "react";
+import { RefObject, useCallback, useLayoutEffect, useRef } from "react";
 
 export function useResizeObserver(ref: RefObject<Element>, callback: ResizeObserverCallback) {
     const observerRef = useRef<ResizeObserver>();
@@ -42,4 +42,15 @@ export function useAutoFocus<T extends HTMLElement>(ref: RefObject<T>, autoFocus
             ref.current?.setAttribute("autofocus", "");
         }
     }, [autoFocus, ref]);
+}
+
+export function useLocalStorage(key: string): [string | null, (value: string | null) => void] {
+    const value = localStorage.getItem(key);
+    const setter = useCallback((value: string | null) => {
+        if (value)
+            localStorage.setItem(key, value)
+        else
+            localStorage.removeItem(key);
+    }, [key]);
+    return [value, setter];
 }
