@@ -1,5 +1,4 @@
 import { createContext, Dispatch, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from "react";
-import { nopropagation } from "../../components/Extensions";
 import { useSignalR } from "../../components/SignalRListener";
 import $api, { ControlApiClient } from "../../components/WebApi";
 import $s from "./Settings";
@@ -106,8 +105,6 @@ function reducer(state: InternalState, action: StateAction | MediaAction) {
     return state;
 }
 
-function initializer() { return {} }
-
 function createFetch(fetchPosition: boolean, fetchVolume: boolean, fetchVendorState?: (id: string) => Promise<Record<string, string>>) {
     return async function (client: ControlApiClient): Promise<MediaState> {
         const timeout = $s.get("timeout");
@@ -123,8 +120,10 @@ function createFetch(fetchPosition: boolean, fetchVolume: boolean, fetchVendorSt
     }
 }
 
+const initialState = {};
+
 export function PlaybackStateProvider({ device, trackPosition = false, trackVolume = false, fetchVendorState, ...other }: PlaybackStateProviderProps) {
-    const [state, dispatch] = useReducer(reducer, undefined, initializer);
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => { if (device) dispatch({ type: "BEGIN_INIT", device, dispatch, fetch: createFetch(trackPosition, trackVolume, fetchVendorState) }) },
         [device, trackPosition, trackVolume, fetchVendorState]);
@@ -153,20 +152,18 @@ export function PlaybackStateProvider({ device, trackPosition = false, trackVolu
 }
 
 export function usePlaybackEventHandlers(dispatch: Dispatch<MediaAction>) {
-    return useMemo(() => {
-        return {
-            play: nopropagation(() => dispatch({ type: "PLAY" })),
-            stop: nopropagation(() => dispatch({ type: "STOP" })),
-            pause: nopropagation(() => dispatch({ type: "PAUSE" })),
-            prev: nopropagation(() => dispatch({ type: "PREV" })),
-            next: nopropagation(() => dispatch({ type: "NEXT" })),
-            seek: (position: number) => dispatch({ type: "SEEK", position }),
-            setVolume: (volume: number) => dispatch({ type: "SET_VOLUME", volume }),
-            toggleMute: nopropagation(() => dispatch({ type: "TOGGLE_MUTE" })),
-            toggleMode: nopropagation(() => dispatch({ type: "TOGGLE_MODE" })),
-            refresh: () => dispatch({ type: "REFRESH" })
-        }
-    }, [dispatch]);
+    return useMemo(() => ({
+        play: () => dispatch({ type: "PLAY" }),
+        stop: () => dispatch({ type: "STOP" }),
+        pause: () => dispatch({ type: "PAUSE" }),
+        prev: () => dispatch({ type: "PREV" }),
+        next: () => dispatch({ type: "NEXT" }),
+        seek: (position: number) => dispatch({ type: "SEEK", position }),
+        setVolume: (volume: number) => dispatch({ type: "SET_VOLUME", volume }),
+        toggleMute: () => dispatch({ type: "TOGGLE_MUTE" }),
+        toggleMode: () => dispatch({ type: "TOGGLE_MODE" }),
+        refresh: () => dispatch({ type: "REFRESH" })
+    }), [dispatch]);
 }
 
 export function usePlaybackState() {

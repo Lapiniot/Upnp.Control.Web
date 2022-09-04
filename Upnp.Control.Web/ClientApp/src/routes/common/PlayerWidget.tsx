@@ -37,7 +37,7 @@ function PlayerCore() {
                 : { title: "Stop", glyph: "symbols.svg#stop_circle", onClick: stop }
             : { title: "Stop", glyph: "symbols.svg#stop_circle", disabled: true };
 
-    const nextTitle = next ? `${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
+    const nextTitle = next ? `Next: ${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
     const volumeStr = muted ? "Muted" : `${volume}%`;
     const volumeIcon = muted ? "volume_off" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
     const shuffleMode = playMode === "REPEAT_SHUFFLE";
