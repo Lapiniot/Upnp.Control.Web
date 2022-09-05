@@ -31,7 +31,7 @@ root.render(
                 <AppInfo className="mt-auto mb-0 small d-none d-lg-inline" />
             </div>
             <main>
-                <div id="notifications-root" className="nt-host g-3 pe-none" />
+                <div id="notifications-root" className="nt-host g-3" />
                 <SignalRConnection hubUrl="/upnpevents">
                     <Routes>
                         <Route path="/" element={<HomePage />} />
