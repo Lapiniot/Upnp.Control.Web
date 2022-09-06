@@ -18,6 +18,72 @@
                 }
             ],
             "description": "The @layer CSS at-rule is used to declare a cascade layer and can also be used to define the order of precedence in case of multiple cascade layers."
+        },
+        {
+            "name": "@container",
+            "status": "experimental",
+            "browsers": [
+                "C105",
+                "E105",
+                "S16"
+            ],
+            "references": [
+                {
+                    "name": "CSS Containment Module Level 3",
+                    "url": "https://drafts.csswg.org/css-contain-3/#container-rule"
+                }
+            ],
+            "description": "The @container rule is a conditional group rule whose condition is a container query, which is a boolean combination of container size queries and/or container style queries. Style declarations within the <stylesheet> block of an @container rule are filtered by its condition to only match when the container query is true for their element’s query container."
+        }
+    ],
+    "properties": [
+        {
+            "name": "container-type",
+            "status": "experimental",
+            "browsers": [
+                "C105",
+                "E105",
+                "S16"
+            ],
+            "references": [
+                {
+                    "name": "CSS Containment Module Level 3",
+                    "url": "https://drafts.csswg.org/css-contain-3/#container-type"
+                }
+            ],
+            "description": "The container-type property establishes the element as a query container for the purpose of container queries that require explicit containment (such as container size queries), allowing style rules styling its descendants to query various aspects of its sizing and layout, and respond accordingly."
+        },
+        {
+            "name": "container-name",
+            "status": "experimental",
+            "browsers": [
+                "C105",
+                "E105",
+                "S16"
+            ],
+            "references": [
+                {
+                    "name": "CSS Containment Module Level 3",
+                    "url": "https://drafts.csswg.org/css-contain-3/#container-name"
+                }
+            ],
+            "description": "The container-name property specifies a list of query container names. These names can be used by @container rules to filter which query containers are targeted."
+        },
+        {
+            "name": "container",
+            "status": "experimental",
+            "browsers": [
+                "C105",
+                "E105",
+                "S16"
+            ],
+            "references": [
+                {
+                    "name": "CSS Containment Module Level 3",
+                    "url": "https://drafts.csswg.org/css-contain-3/#container-shorthand"
+                }
+            ],
+            "description": "The container shorthand property sets both container-type and container-name in the same declaration. If <'container-type'> is omitted, it is reset to its initial value."
         }
     ]
 }
