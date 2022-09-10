@@ -123,8 +123,7 @@ input[type="checkbox"] {
     @include grid-auto-columns($min: 15rem, $max: 1fr, $mode: auto-fill);
     position: absolute;
     z-index: $zindex-fixed;
-    padding: map-get($spacers, 3);
-    inset: 0 0 auto 0;
+    inset: map-get($spacers, 3) map-get($spacers, 3) auto map-get($spacers, 3);
     max-height: 30vh;
     overflow-y: auto;
 }
