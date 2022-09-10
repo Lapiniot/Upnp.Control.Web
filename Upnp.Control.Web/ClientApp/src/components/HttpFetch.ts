@@ -1,15 +1,21 @@
-﻿export type RequestQuery = { [key: string]: any } | undefined | null;
+﻿export type RequestQuery = { [key: string]: any } | undefined | null
 
-async function fetch(url: string, init?: RequestInit, timeout?: number) {
-    const controller = new AbortController();
-    // TODO: Consider using AbortController.timeout() when it finally comes to Safari
-    const timer = setTimeout(() => controller.abort(), timeout);
-    try {
-        return await globalThis.fetch(url, { ...init, signal: controller.signal });
-    } finally {
-        clearTimeout(timer);
-    }
+declare var AbortSignal: {
+    prototype: AbortSignal;
+    new(): AbortSignal;
+    timeout(milliseconds: number): AbortSignal;
 }
+
+const fetch = "timeout" in AbortSignal
+    ? function (url: string, init?: RequestInit, timeoutMilliseconds?: number) {
+        const signal = timeoutMilliseconds ? AbortSignal.timeout(timeoutMilliseconds) : null;
+        return globalThis.fetch(url, { ...init, signal });
+    }
+    : function (url: string, init?: RequestInit, timeoutMilliseconds?: number) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(new DOMException("The user aborted a request.", "AbortError")), timeoutMilliseconds);
+        return globalThis.fetch(url, { ...init, signal: controller.signal }).finally(() => clearTimeout(timeout));
+    }
 
 export class UrlBuilder {
     protected path;
@@ -22,7 +28,7 @@ export class UrlBuilder {
 
     url() {
         const search = this.query && new URLSearchParams(this.query).toString();
-        return search && search.length > 0 ? this.path + "?" + search : this.path;
+        return search && search.length > 0 ? `${this.path}?${search}` : this.path;
     }
 }
 
