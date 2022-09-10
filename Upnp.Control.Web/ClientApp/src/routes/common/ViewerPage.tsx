@@ -10,9 +10,12 @@ const options = { withParents: true, withMetadata: true, withResourceProps: true
 const fetchItemAsync = (device: string, id: string) => WebApi.browse(device).get(id).withOptions(options).json()
 
 export default function (props: HTMLAttributes<HTMLDivElement>) {
-    const { device, id } = useParams<"device" | "id">();
+    const { device, id: itemId, "*": reminder } = useParams<"device" | "id" | "*">();
     if (!device) throw new Error("Missing mandatory parameter 'device'");
-    if (!id) throw new Error("Missing mandatory parameter 'id'");
-    const data = useDataFetch(fetchItemAsync, device, id);
-    return !data.fetching ? <MediaViewer {...data} {...props} device={device} id={id} /> : <LoadIndicatorOverlay />;
+    if (!itemId) throw new Error("Missing mandatory parameter 'id'");
+
+    const id = (itemId && reminder) ? `${itemId}/${reminder}` : itemId;
+    const { fetching, dataContext: { source: { self: item = undefined } = {} } = {} } = useDataFetch(fetchItemAsync, device, id);
+
+    return !fetching && item ? <MediaViewer {...props} item={item} /> : <LoadIndicatorOverlay />
 }

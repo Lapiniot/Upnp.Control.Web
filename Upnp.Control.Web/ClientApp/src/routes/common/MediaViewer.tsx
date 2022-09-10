@@ -1,15 +1,8 @@
 import { HTMLAttributes } from "react";
-import { DataFetchProps } from "../../components/DataFetch";
 import { DIDLTools } from "./DIDLTools";
 
-export type MediaViewerProps = HTMLAttributes<HTMLDivElement> & { device: string, id: string };
-
-export function MediaViewer({ dataContext: ctx, fetching, error, device, id, className, ...other }:
-    MediaViewerProps & DataFetchProps<Upnp.BrowseFetchResult>) {
-    const { source: { self: item = undefined } = {} } = ctx ?? {};
-
-    if (!item || !item.res) return <div>Invalid data</div>;
-
+export function MediaViewer({ item, className, ...other }: HTMLAttributes<HTMLDivElement> & { item: Upnp.DIDL.Item }) {
+    if (!item.res) return <div>Invalid data</div>;
     const { title, res: { url } } = item;
 
     return <figure className={`vstack overflow-hidden p-3 align-items-center${className ? ` ${className}` : ""}`} {...other}>
@@ -21,5 +14,5 @@ export function MediaViewer({ dataContext: ctx, fetching, error, device, id, cla
             <video controls className="overflow-hidden mw-100">
                 <source src={url} />
             </video>}
-    </figure>;
+    </figure>
 }

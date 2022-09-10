@@ -24,7 +24,8 @@ function fetchContentAsync(device: string, id?: string, pageSize?: string, page?
 
 export function useContentBrowser(options?: BrowseOptions, defaults?: { [K in ContentBrowserParamKey]?: string }) {
     const { navigate, params } = useNavigator<ContentBrowserParamKey>();
-    const { device, id, s, p } = { ...defaults, ...params };
+    const { device, id: itemId, ["*"]: reminder = undefined, s, p } = { ...defaults, ...params };
+    const id = (itemId && reminder) ? `${itemId}/${reminder}` : itemId;
     const data = useDataFetch(fetchContentAsync, device!, id, s, p, options);
-    return { ...data, navigate, params };
+    return { ...data, navigate, params: { ...params, id } };
 }
