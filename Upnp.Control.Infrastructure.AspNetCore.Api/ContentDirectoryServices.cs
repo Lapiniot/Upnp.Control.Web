@@ -21,11 +21,9 @@ public static class ContentDirectoryServices
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(deviceId, path, options), cancellationToken).ConfigureAwait(false));
-        }
-        catch (DeviceNotFoundException)
-        {
-            return NotFound();
+            path = path is not null ? Uri.UnescapeDataString(path) : null;
+            var value = await handler.ExecuteAsync(new(deviceId, path, options), cancellationToken).ConfigureAwait(false);
+            return Ok(value);
         }
         catch (SoapException se) when (se.Code == 701)
         {

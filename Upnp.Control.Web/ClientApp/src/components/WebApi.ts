@@ -84,7 +84,7 @@ export default class WebApi {
     public static browse(deviceId: string): BrowseApiClient {
         return {
             get deviceId() { return deviceId },
-            get(id = "") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${id}`) }
+            get(id = "") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${encodeURIComponent(id)}`) }
         }
     }
 
