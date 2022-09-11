@@ -1,5 +1,5 @@
 import { createContext, MouseEvent, useCallback, useContext, useRef } from "react";
-import { useNavigate, useParams, useSearchParams, useResolvedPath } from "react-router-dom";
+import { useNavigate, useParams, useResolvedPath, useSearchParams } from "react-router-dom";
 
 export type Path = {
     pathname: string;
@@ -14,25 +14,20 @@ export interface NavigateFunction {
 type Params<TKey extends string = string> = { readonly [K in TKey]: string | undefined };
 
 interface NavigationContextHooks {
-    useNavigateImpl(): NavigateFunction;
-    useParamsImpl(): Readonly<Params<string>>;
-    useSearchParamsImpl(): readonly [URLSearchParams, (nextInit: URLSearchParams) => void];
-    useResolvedPathImpl(to: string | Partial<Path>): Path;
+    useNavigate(): NavigateFunction;
+    useParams(): Readonly<Params<string>>;
+    useSearchParams(): readonly [URLSearchParams, (nextInit: URLSearchParams) => void];
+    useResolvedPath(to: string | Partial<Path>): Path;
 }
 
-const NavigationContext = createContext<NavigationContextHooks>({
-    useNavigateImpl: useNavigate,
-    useParamsImpl: useParams,
-    useSearchParamsImpl: useSearchParams,
-    useResolvedPathImpl: useResolvedPath
-})
+const NavigationContext = createContext<NavigationContextHooks>({ useNavigate, useParams, useSearchParams, useResolvedPath })
 
 export { NavigationContext };
 
 export type NavigatorProps = { navigate: NavigateFunction }
 
 export function useNavigator<TKey extends string = string>() {
-    const { useNavigateImpl: useNavigate, useParamsImpl: useParams, useSearchParamsImpl: useSearchParams } = useContext(NavigationContext);
+    const { useNavigate, useParams, useSearchParams } = useContext(NavigationContext);
 
     const navigate = useNavigate();
     const params = useParams();
@@ -45,13 +40,13 @@ export function useNavigator<TKey extends string = string>() {
 }
 
 export function useNavigatorResolvedPath(to: string) {
-    const { useResolvedPathImpl } = useContext(NavigationContext);
-    return useResolvedPathImpl(to);
+    const { useResolvedPath } = useContext(NavigationContext);
+    return useResolvedPath(to);
 }
 
 export function useNavigatorClickHandler() {
-    const { useNavigateImpl } = useContext(NavigationContext);
-    const navigate = useNavigateImpl();
+    const { useNavigate } = useContext(NavigationContext);
+    const navigate = useNavigate();
     const ref = useRef(navigate);
     ref.current = navigate;
     return useCallback((event: MouseEvent<HTMLAnchorElement>) => {

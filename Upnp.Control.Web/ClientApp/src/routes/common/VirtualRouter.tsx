@@ -65,7 +65,7 @@ function resolvePathMatches(to: string | Partial<Path>, matches: RouteMatch[]) {
     return resolvePath(typeof to === "string" ? pathname : { ...to, pathname }, match.pathname);
 }
 
-function useNavigateImpl() {
+function useNavigate() {
     const { location, setLocation } = useContext(RouterLocationContext);
     const { matches } = useContext(RouterMatchContext);
     const ref = useRef({ location, setLocation, matches });
@@ -81,12 +81,12 @@ function useNavigateImpl() {
     return navigate;
 }
 
-function useParamsImpl() {
+function useParams() {
     const { matches } = useContext(RouterMatchContext);
     return matches?.[0].params ?? {};
 }
 
-function useSearchParamsImpl(): readonly [URLSearchParams, (nextInit: URLSearchParams) => void] {
+function useSearchParams(): readonly [URLSearchParams, (nextInit: URLSearchParams) => void] {
     const { location, setLocation } = useContext(RouterLocationContext);
     return [location.searchParams, (init: URLSearchParams) => setLocation(location => {
         const url = new URL(location);
@@ -95,13 +95,13 @@ function useSearchParamsImpl(): readonly [URLSearchParams, (nextInit: URLSearchP
     })]
 }
 
-function useResolvedPathImpl(to: string | Partial<Path>) {
+function useResolvedPath(to: string | Partial<Path>) {
     const { location } = useContext(RouterLocationContext);
     const { matches } = useContext(RouterMatchContext);
     return (matches && resolvePathMatches(to, matches)) ?? resolvePath(to, location.pathname);
 }
 
-const hooks = { useNavigateImpl, useParamsImpl, useSearchParamsImpl, useResolvedPathImpl }
+const hooks = { useNavigate, useParams, useSearchParams, useResolvedPath }
 
 export function VirtualRouter({ children, initialPath }: PropsWithChildren<VirtualRouterProps>) {
     const [location, setLocation] = useState(() => new URL(initialPath, window.location.origin));
