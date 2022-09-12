@@ -22,10 +22,12 @@ function fetchContentAsync(device: string, id?: string, pageSize?: string, page?
     return WebApi.browse(device).get(id).take(s).skip((p - 1) * s).withOptions(options).json();
 }
 
-export function useContentBrowser(options?: BrowseOptions, defaults?: { [K in ContentBrowserParamKey]?: string }) {
-    const { navigate, params } = useNavigator<ContentBrowserParamKey>();
-    const { device, id: itemId, ["*"]: reminder = undefined, s, p } = { ...defaults, ...params };
-    const id = (itemId && reminder) ? `${itemId}/${reminder}` : itemId;
-    const data = useDataFetch(fetchContentAsync, device!, id, s, p, options);
-    return { ...data, navigate, params: { ...params, id } };
+type ParamDefaults = { [K in Exclude<ContentBrowserParamKey, "device">]?: string }
+
+export function useContentBrowser(options?: BrowseOptions, defaults?: ParamDefaults) {
+    const { navigate, params: { "*": path, id, ...params } } = useNavigator<ContentBrowserParamKey | "*">();
+    const merged = { ...defaults, ...params, id: id ?? (path || undefined) ?? defaults?.id };
+    const { device, id: itemId, s, p } = merged;
+    const data = useDataFetch(fetchContentAsync, device!, itemId, s, p, options);
+    return { ...data, navigate, params: merged };
 }

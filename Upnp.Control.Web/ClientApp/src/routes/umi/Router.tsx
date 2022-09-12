@@ -13,18 +13,16 @@ export default function () {
         <Route index element={<DeviceListPage category={category} itemTemplate={DeviceTemplate} viewMode={viewMode} />} />
         <Route path=":device">
             <Route index element={<DevicePage category={category} itemTemplate={DeviceTemplate} viewMode={viewMode} />} />
-            <Route path="browse">
-                <Route index element={<BrowserPage />} />
-                <Route path=":id/*" element={<BrowserPage />} />
+            <Route path="browse/*">
+                <Route path="*" element={<BrowserPage />} />
                 <Route path="-1" element={<Navigate to="../../.." />} />
             </Route>
-            <Route path="view">
-                <Route path=":id/*" element={<ViewerPage />} />
+            <Route path="view/*">
+                <Route path="*" element={<ViewerPage />} />
                 <Route path="-1" element={<Navigate to="../../.." />} />
             </Route>
-            <Route path="playlists">
-                <Route index element={<PlaylistManager />} />
-                <Route path=":id/*" element={<PlaylistManager />} />
+            <Route path="playlists/*">
+                <Route path="*" element={<PlaylistManager />} />
                 <Route path="0" element={<Navigate to="../../.." />} />
                 <Route path="-1" element={<Navigate to="../../.." />} />
             </Route>
