@@ -53,16 +53,16 @@ function PlayerCore() {
 
     return <div className="player-skeleton" ref={refCallback}>
         <AlbumArt className={`art rounded-1${loading ? " placeholder" : ""}`} itemClass={current?.class ?? "object.item.audioItem.musicTrack"} albumArts={current?.albumArts} hint="player" />
-        <div className="title">
+        <div className="pl-title">
             <h5 className={`text-truncate${loading ? " placeholder w-100" : ""}`}>{title ?? "[No media]"}</h5>
             <small className={`text-truncate${loading ? " placeholder w-75" : ""}`}>{formatAlbumTitle(creator, album)}</small>
         </div>
-        <SeekBar className="progress" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChange={seek} />
-        <Button title="Prev" className="prev-btn" glyph="symbols.svg#skip_previous" onClick={playPrev} disabled={!actions.includes("Previous")} />
-        <Button className="play-btn p-1" {...buttonProps} />
-        <Button title={nextTitle} className="next-btn" glyph="symbols.svg#skip_next" onClick={playNext} disabled={!actions.includes("Next")} />
-        <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="mode-btn" glyph={`symbols.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={toggleMode} disabled={loading} />
-        <Button title={volumeStr} className="volume-btn" glyph={`symbols.svg#${volumeIcon}`} disabled={loading} data-bs-toggle="dropdown" />
+        <SeekBar className="pl-progress" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChange={seek} />
+        <Button title="Prev" className="pl-prev-btn" glyph="symbols.svg#skip_previous" onClick={playPrev} disabled={!actions.includes("Previous")} />
+        <Button className="pl-main-btn p-1" {...buttonProps} />
+        <Button title={nextTitle} className="pl-next-btn" glyph="symbols.svg#skip_next" onClick={playNext} disabled={!actions.includes("Next")} />
+        <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="pl-mode-btn" glyph={`symbols.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={toggleMode} disabled={loading} />
+        <Button title={volumeStr} className="pl-volume-btn" glyph={`symbols.svg#${volumeIcon}`} disabled={loading} data-bs-toggle="dropdown" />
         <DropdownMenu className="volume-ctrl" placement="left">
             <li className="hstack">
                 <button type="button" style={{ zIndex: 1000 }} className="btn btn-plain btn-round" onClick={toggleMute}>
