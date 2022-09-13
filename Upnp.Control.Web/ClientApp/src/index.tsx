@@ -12,8 +12,8 @@ import UpnpDevicesPage from "./routes/upnp/Router";
 import * as SW from "./serviceWorkerRegistration";
 import "./GlobalConfig";
 
-const baseUrl: string = document.getElementsByTagName("base")[0].getAttribute("href") as string;
-const container: HTMLElement = document.getElementById("main-root") as HTMLElement;
+const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href")!;
+const container = document.getElementById("main-root")!;
 const root = createRoot(container);
 
 root.render(
@@ -31,7 +31,7 @@ root.render(
                 <AppInfo className="mt-auto mb-0 small d-none d-lg-inline" />
             </div>
             <main>
-                <div id="notifications-root" className="nt-host g-3" />
+                <div id="notifications-root" className="nt-host" />
                 <SignalRConnection hubUrl="/upnpevents">
                     <Routes>
                         <Route path="/" element={<HomePage />} />
