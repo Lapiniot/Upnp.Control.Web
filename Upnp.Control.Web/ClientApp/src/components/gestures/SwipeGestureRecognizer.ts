@@ -1,8 +1,10 @@
 import { GestureHandler, GestureRecognizer } from "./GestureRecognizer";
 
+export type { GestureHandler };
+
 export type SwipeGestures = "swipe-left" | "swipe-right" | "swipe-up" | "swipe-down";
 
-export class SwipeGestureRecognizer<TElement extends HTMLElement> extends GestureRecognizer<TElement, SwipeGestures, undefined> {
+export class SwipeGestureRecognizer<TElement extends HTMLElement = HTMLElement> extends GestureRecognizer<TElement, SwipeGestures, undefined> {
 
     delta: number;
     dtime: number;
@@ -16,7 +18,7 @@ export class SwipeGestureRecognizer<TElement extends HTMLElement> extends Gestur
         this.dtime = time;
     }
 
-    protected onPointerUpEvent(event: PointerEvent) {
+    protected override onPointerUpEvent(event: PointerEvent) {
         super.onPointerUpEvent(event);
 
         this.endX = event.clientX;
@@ -26,7 +28,7 @@ export class SwipeGestureRecognizer<TElement extends HTMLElement> extends Gestur
         this.scheduleUpdate();
     }
 
-    protected update() {
+    protected override update() {
         const dx = this.endX - this.startX, dy = this.endY - this.startY;
         const dxAbs = Math.abs(dx), dyAbs = Math.abs(dy);
         const dt = this.endTime - this.startTime;

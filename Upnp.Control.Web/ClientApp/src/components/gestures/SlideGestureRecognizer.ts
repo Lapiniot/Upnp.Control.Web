@@ -1,19 +1,22 @@
 import { GestureHandler, GestureRecognizer } from "./GestureRecognizer";
 
-export type SlideParams = {
-    phase: "start" | "move" | "end";
-    x: number;
-    y: number;
-};
+export type { GestureHandler };
 
-export class SlideGestureRecognizer<TElement extends HTMLElement> extends GestureRecognizer<TElement, "slide", SlideParams> {
+export type SlideParams = {
+    phase: "start" | "move" | "end",
+    x: number,
+    y: number
+}
+
+export class SlideGestureRecognizer<TElement extends HTMLElement = HTMLElement> extends GestureRecognizer<TElement, "slide", SlideParams> {
     x: number = 0;
     y: number = 0;
+
     constructor(handler: GestureHandler<TElement, "slide", SlideParams>) {
         super(handler, true, false);
     }
 
-    protected onPointerDownEvent(event: PointerEvent) {
+    protected override onPointerDownEvent(event: PointerEvent) {
         const { currentTarget, clientX, clientY, pointerId } = event;
         const element = currentTarget as TElement;
 
@@ -29,7 +32,7 @@ export class SlideGestureRecognizer<TElement extends HTMLElement> extends Gestur
         });
     }
 
-    protected onPointerUpEvent(event: PointerEvent) {
+    protected override onPointerUpEvent(event: PointerEvent) {
         const { currentTarget, clientX, clientY, pointerId } = event;
         const element = currentTarget as TElement;
 
@@ -43,7 +46,7 @@ export class SlideGestureRecognizer<TElement extends HTMLElement> extends Gestur
         });
     }
 
-    protected onPointerMoveEvent(event: PointerEvent) {
+    protected override onPointerMoveEvent(event: PointerEvent) {
         event.preventDefault();
         super.onPointerMoveEvent(event);
         this.x = event.clientX;
@@ -51,7 +54,7 @@ export class SlideGestureRecognizer<TElement extends HTMLElement> extends Gestur
         this.scheduleUpdate();
     }
 
-    protected update() {
+    protected override update() {
         if (this.target) {
             var r = this.target.getBoundingClientRect();
             this.handler(this.target as TElement, "slide", { phase: "move", x: this.x - r.x, y: this.y - r.y });

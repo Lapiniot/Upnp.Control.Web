@@ -1,6 +1,8 @@
 import { GestureHandler, GestureRecognizer, PointerType } from "./GestureRecognizer";
 
-export class PressHoldGestureRecognizer<TElement extends HTMLElement> extends GestureRecognizer<TElement, "hold", undefined> {
+export type { GestureHandler };
+
+export class PressHoldGestureRecognizer<TElement extends HTMLElement = HTMLElement> extends GestureRecognizer<TElement, "hold", undefined> {
     delay: number;
     timeout: number | null = null;
     tolerance: number;
@@ -13,21 +15,21 @@ export class PressHoldGestureRecognizer<TElement extends HTMLElement> extends Ge
         this.predicate = GestureRecognizer.buildPointerTypePredicate(pointerType);
     }
 
-    protected onPointerDownEvent(event: PointerEvent) {
+    protected override onPointerDownEvent(event: PointerEvent) {
         if (!this.predicate(event)) return;
         super.onPointerDownEvent(event);
         this.reset();
         this.timeout = window.setTimeout(() => this.handler(this.target as TElement, "hold", undefined), this.delay);
     }
 
-    protected onPointerMoveEvent(event: PointerEvent) {
+    protected override onPointerMoveEvent(event: PointerEvent) {
         super.onPointerMoveEvent(event);
         if (Math.abs(event.clientX - this.startX) > this.tolerance ||
             Math.abs(event.clientY - this.startY) > this.tolerance)
             this.reset();
     }
 
-    protected onPointerUpEvent(event: PointerEvent) {
+    protected override onPointerUpEvent(event: PointerEvent) {
         super.onPointerUpEvent(event);
         this.reset();
     }

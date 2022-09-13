@@ -1,5 +1,6 @@
-export type GestureHandler<TElement extends HTMLElement, TGesture extends string, TParams = undefined> =
-    (target: TElement, gesture: TGesture, params: TParams) => void;
+export interface GestureHandler<TElement extends HTMLElement, TGesture extends string, TParams = undefined> {
+    (target: TElement, gesture: TGesture, params: TParams): void;
+}
 
 export enum PointerType {
     Touch = 0x1,
@@ -70,7 +71,7 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
         this.startTime = event.timeStamp;
     }
 
-    protected onPointerUpEvent(event: PointerEvent) {
+    protected onPointerUpEvent(_: PointerEvent) {
         const target = this.target;
 
         if (!target) {
@@ -81,7 +82,7 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
         target.removeEventListener("pointermove", this.pointerMoveEventHandler, this.options);
     }
 
-    protected onPointerMoveEvent(_event: PointerEvent) { }
+    protected onPointerMoveEvent(_: PointerEvent) { }
 
     protected scheduleUpdate = () => {
         if (this.updatePending)
@@ -111,5 +112,3 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
         return predicate;
     }
 }
-
-export default GestureRecognizer;
