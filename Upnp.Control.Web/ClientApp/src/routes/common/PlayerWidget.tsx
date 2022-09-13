@@ -1,9 +1,10 @@
-import { ButtonHTMLAttributes, useRef } from "react";
+import { ButtonHTMLAttributes, useCallback, useMemo } from "react";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { parseMilliseconds } from "../../components/Extensions";
+import { SwipeGestureRecognizer, SwipeGestures } from "../../components/gestures/SwipeGestureRecognizer";
 import Slider from "../../components/Slider";
 import AlbumArt from "./AlbumArt";
-import { PlaybackStateProvider, usePlaybackState, usePlaybackEventHandlers } from "./PlaybackStateContext";
+import { PlaybackStateProvider, usePlaybackEventHandlers, usePlaybackState } from "./PlaybackStateContext";
 import SeekBar from "./SeekBar";
 
 function formatAlbumTitle(creator: string | undefined, album: string | undefined) {
@@ -21,9 +22,17 @@ function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: strin
 }
 
 function PlayerCore() {
-    const ref = useRef(null);
     const { dispatch, state: { state, current, relTime, duration, actions = [], next, playMode, volume = 0, muted = false } } = usePlaybackState();
     const { play, pause, stop, prev: playPrev, next: playNext, seek, setVolume, toggleMode, toggleMute } = usePlaybackEventHandlers(dispatch);
+
+    const sgr = useMemo(() => new SwipeGestureRecognizer((_: unknown, gesture: SwipeGestures) => {
+        switch (gesture) {
+            case "swipe-left": dispatch({ type: "NEXT" }); break;
+            case "swipe-right": dispatch({ type: "PREV" }); break;
+        }
+    }), []);
+
+    const refCallback = useCallback((e: HTMLDivElement) => { if (e) { sgr.bind(e) } else { sgr.unbind() } }, []);
 
     const loading = state === "UNKNOWN" || state === undefined;
     const { title, album, creator } = current || {};
@@ -42,7 +51,7 @@ function PlayerCore() {
     const volumeIcon = muted ? "volume_off" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
     const shuffleMode = playMode === "REPEAT_SHUFFLE";
 
-    return <div className="player-skeleton" ref={ref}>
+    return <div className="player-skeleton" ref={refCallback}>
         <AlbumArt className={`art rounded-1${loading ? " placeholder" : ""}`} itemClass={current?.class ?? "object.item.audioItem.musicTrack"} albumArts={current?.albumArts} hint="player" />
         <div className="title">
             <h5 className={`text-truncate${loading ? " placeholder w-100" : ""}`}>{title ?? "[No media]"}</h5>
