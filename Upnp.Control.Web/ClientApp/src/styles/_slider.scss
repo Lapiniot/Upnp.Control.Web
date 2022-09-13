@@ -1,3 +1,25 @@
+@mixin slider-run-animation($suffix) {
+    @keyframes slider-run#{$suffix} {
+        to {
+            transform: none;
+        }
+    }
+}
+
+@include slider-run-animation("");
+@include slider-run-animation("0");
+@include slider-run-animation("1");
+
+@keyframes slider-run-infinite {
+    0% {
+        transform: scale3d(var(--slider-progress-infinite), 1, 1) translate3d(-100%, 0, 0);
+    }
+
+    100% {
+        transform: scale3d(var(--slider-progress-infinite), 1, 1) translate3d(calc((1 / var(--slider-progress-infinite)) * 100%), 0, 0);
+    }
+}
+
 .slider,
 .progress {
     --slider-color: #{$link-color};
@@ -28,76 +50,54 @@
         box-shadow: 0 0 0 1px var(--slider-color);
     }
 
-    .slider-track,
-    .progress-track {
-        height: var(--slider-size);
-        position: relative;
-        background-color: var(--slider-bg-color);
-
-        & > .slider-indicator,
-        & > .progress-indicator {
-            position: absolute;
-            background-color: var(--slider-color);
-            width: 100%;
-            height: 100%;
-            transform-origin: left top;
-            transform: scale3d(var(--slider-progress), 1, 1);
-            animation: var(--slider-animation);
-        }
-
-        & > .slider-thumb-overlay {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transform: translate3d(calc((var(--slider-progress) - 1) * 100%), 0, 0);
-            animation: var(--slider-animation-name) var(--slider-animation-duration) linear forwards;
-            pointer-events: none;
-
-            & > .slider-thumb {
-                position: absolute;
-                width: var(--slider-ticker-size);
-                height: var(--slider-ticker-size);
-                right: calc(var(--slider-ticker-size) / -2);
-                top: calc((var(--slider-size) - var(--slider-ticker-size)) / 2);
-                background-color: var(--slider-color);
-                clip-path: circle(48%);
-                transition: transform 250ms ease-in-out;
-                pointer-events: all;
-
-                &:hover {
-                    transform: scale3d(var(--slider-ticker-scale-factor), var(--slider-ticker-scale-factor), 1);
-                }
-            }
-        }
-    }
-
     &[data-manipulated="1"] .slider-thumb {
         transform: scale3d(var(--slider-ticker-scale-factor), var(--slider-ticker-scale-factor), 1);
     }
+}
 
-    .progress-track {
-        overflow: hidden;
-    }
+.progress-track {
+    overflow: hidden;
+}
 
-    @mixin slider-run-animation($suffix) {
-        @keyframes slider-run#{$suffix} {
-            to {
-                transform: none;
-            }
-        }
-    }
+.slider-track,
+.progress-track {
+    height: var(--slider-size);
+    position: relative;
+    background-color: var(--slider-bg-color);
+}
 
-    @include slider-run-animation("");
-    @include slider-run-animation("0");
-    @include slider-run-animation("1");
+.slider-indicator,
+.progress-indicator {
+    position: absolute;
+    background-color: var(--slider-color);
+    width: 100%;
+    height: 100%;
+    transform-origin: left top;
+    transform: scale3d(var(--slider-progress), 1, 1);
+    animation: var(--slider-animation);
+}
 
-    @keyframes slider-run-infinite {
-        0% {
-            transform: scale3d(var(--slider-progress-infinite), 1, 1) translate3d(-100%, 0, 0);
-        }
-        100% {
-            transform: scale3d(var(--slider-progress-infinite), 1, 1)
-                translate3d(calc((1 / var(--slider-progress-infinite)) * 100%), 0, 0);
-        }
+.slider-thumb-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: translate3d(calc((var(--slider-progress) - 1) * 100%), 0, 0);
+    animation: var(--slider-animation-name) var(--slider-animation-duration) linear forwards;
+    pointer-events: none;
+}
+
+.slider-thumb {
+    position: absolute;
+    width: var(--slider-ticker-size);
+    height: var(--slider-ticker-size);
+    right: calc(var(--slider-ticker-size) / -2);
+    top: calc((var(--slider-size) - var(--slider-ticker-size)) / 2);
+    background-color: var(--slider-color);
+    clip-path: circle(48%);
+    transition: transform 250ms ease-in-out;
+    pointer-events: auto;
+
+    &:hover {
+        transform: scale3d(var(--slider-ticker-scale-factor), var(--slider-ticker-scale-factor), 1);
     }
 }
