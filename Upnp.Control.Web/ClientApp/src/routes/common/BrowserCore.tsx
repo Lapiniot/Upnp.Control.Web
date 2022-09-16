@@ -23,7 +23,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
     useRowStates();
     const { dataContext: data, s: size, p: page, fetching, navigate, renderActionMenu, children } = props;
     const { withBreadcrumb = true, withPagination = true, className, ...forwardProps } = props;
-    const { source: { total = 0, parents = undefined, dev = undefined } = {} } = data || {};
+    const { source: { total = 0, parents = undefined, device: dev = undefined } = {} } = data || {};
     const navBackHandler = useCallback(() => navigate(`../${parents?.[1]?.id ?? "-1"}`), [navigate, parents]);
 
     return <>

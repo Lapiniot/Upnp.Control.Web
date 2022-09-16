@@ -30,8 +30,8 @@ declare namespace Upnp {
 
     type BrowseFetchResult = {
         total: number;
-        dev?: { name: string; desc: string };
-        self?: DIDL.Item;
+        device?: { name: string; desc: string };
+        metadata?: DIDL.Item;
         items?: DIDL.Item[];
         parents?: DIDL.Item[];
     }

@@ -7,8 +7,7 @@ public static class JsonSerializerOptionsExtensions
 {
     private static readonly JsonConverter[] CustomConverters = {
         new IconJsonConverter(), new ServiceJsonConverter(), new DeviceJsonConverter(),
-        new ResourceJsonConverter(), new ContainerJsonConverter(), new MediaItemJsonConverter(),
-        new CDContentConverter()
+        new ResourceJsonConverter(), new ContainerJsonConverter(), new MediaItemJsonConverter()
     };
 
     public static void ConfigureDefaults(this JsonSerializerOptions options)
@@ -26,6 +25,6 @@ public static class JsonSerializerOptionsExtensions
             options.Converters.Add(converter);
         }
 
-        options.AddContext<JsonContext>();
+        options.AddContext<PolymorphicJsonSerializerContext>();
     }
 }

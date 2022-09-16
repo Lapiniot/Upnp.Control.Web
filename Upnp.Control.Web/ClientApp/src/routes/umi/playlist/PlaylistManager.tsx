@@ -314,10 +314,10 @@ export class PlaylistManagerCore extends Component<PlaylistManagerProps, Playlis
                 <PlaybackStateProvider device={device} fetchVendorState={fetchPlaylistStateAsync}>
                     <PlaylistRowStateProvider items={data?.source.items} getActiveTrackIndexHook={data?.source.items && this.getActiveTrackIndex}>
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} rootLevel={isRootLevel}
-                            fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.dev?.name} />
+                            fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.device?.name} />
                         <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
                             className={"flex-fill mb-1 br-area-main" + (largeScreen ? "" : " pb-5")}
-                            device={device} deviceName={this.props.dataContext?.source.dev?.name} getUrlHook={this.getPlayUrl}
+                            device={device} deviceName={this.props.dataContext?.source.device?.name} getUrlHook={this.getPlayUrl}
                             navigate={navigate} hotKeyHandler={this.hotKeyHandler}
                             editMode={this.state.editMode} useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
                             <DropdownMenu render={this.renderItemActionMenu} />

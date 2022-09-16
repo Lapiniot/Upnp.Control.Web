@@ -84,7 +84,7 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
     getCellContext = (): CellContext => ({
         disabled: !(this.state.umis.length || this.state.renderers.length),
         device: this.props.device,
-        deviceName: this.props.dataContext?.source.dev?.name
+        deviceName: this.props.dataContext?.source.device?.name
     });
 
     openHandler = (item: Upnp.DIDL.Item) => {
