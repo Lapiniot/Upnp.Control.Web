@@ -50,9 +50,9 @@ public record struct PLCopyCommand(string DeviceId, string PlaylistId, string Ti
 
 public record struct PLRemoveCommand(string DeviceId, IEnumerable<string> PlaylistIds);
 
-public record struct PLAddItemsCommand(string DeviceId, string PlaylistId, MediaSource Source);
+public record struct PLAddItemsCommand(string DeviceId, string PlaylistId, MediaSourceParams Source);
 
-public record struct PLAddFeedUrlCommand(string DeviceId, string PlaylistId, FeedUrlSource Source);
+public record struct PLAddFeedUrlCommand(string DeviceId, string PlaylistId, FeedUrlSourceParams Source);
 
 public record struct PLAddPlaylistFilesCommand(string DeviceId, string PlaylistId, IEnumerable<FileSource> Files, bool UseProxy);
 
@@ -62,7 +62,7 @@ public record struct PLRemoveItemsCommand(string DeviceId, string PlaylistId, IE
 
 #region Queue management commands
 
-public record struct QAddItemsCommand(string DeviceId, string QueueId, MediaSource Source);
+public record struct QAddItemsCommand(string DeviceId, string QueueId, MediaSourceParams Source);
 
 public record struct QClearCommand(string DeviceId, string QueueId);
 

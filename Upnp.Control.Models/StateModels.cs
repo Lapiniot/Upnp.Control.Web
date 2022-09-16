@@ -33,8 +33,8 @@ public record struct CMProtocolInfo(IEnumerable<string> Source, IEnumerable<stri
 
 public record struct CMConnectionInfo(string RcsID, string AVTransportID, string PeerConnectionID, string Direction, string Status);
 
-public record struct CreatePlaylistParams(string Title, MediaSource Source);
+public record struct CreatePlaylistParams(string Title, MediaSourceParams Source);
 
-public record struct MediaSource(string DeviceId, IEnumerable<string> Items, int? MaxDepth);
+public record struct MediaSourceParams(string DeviceId, IEnumerable<string> Items, int? MaxDepth);
 
-public record struct FeedUrlSource(Uri Url, string Title, bool UseProxy);
+public record struct FeedUrlSourceParams(Uri Url, string Title, bool UseProxy);

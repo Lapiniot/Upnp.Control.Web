@@ -2,10 +2,10 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
 public static class QueueServices
 {
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(MediaSource))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(MediaSourceParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> AddAsync(
         IAsyncCommandHandler<QAddItemsCommand> handler,
-        string deviceId, string queueId, MediaSource source,
+        string deviceId, string queueId, MediaSourceParams source,
         CancellationToken cancellationToken)
     {
         try

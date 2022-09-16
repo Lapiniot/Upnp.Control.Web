@@ -124,10 +124,10 @@ public static class PlaylistServices
         }
     }
 
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(MediaSource))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(MediaSourceParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> AddItemsAsync(
         IAsyncCommandHandler<PLAddItemsCommand> handler,
-        string deviceId, string playlistId, MediaSource source,
+        string deviceId, string playlistId, MediaSourceParams source,
         CancellationToken cancellationToken)
     {
         try
@@ -145,10 +145,10 @@ public static class PlaylistServices
         }
     }
 
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(FeedUrlSource))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(FeedUrlSourceParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> AddFromFeedsAsync(
         IAsyncCommandHandler<PLAddFeedUrlCommand> handler,
-        string deviceId, string playlistId, FeedUrlSource source,
+        string deviceId, string playlistId, FeedUrlSourceParams source,
         CancellationToken cancellationToken)
     {
         try
