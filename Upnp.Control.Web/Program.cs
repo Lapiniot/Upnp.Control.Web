@@ -64,7 +64,7 @@ builder.Services.AddServicesInit()
 
 #region ASPNET configuration
 
-builder.Services.Configure<JsonOptions>(static options => options.SerializerOptions.ConfigureDefaults());
+builder.Services.ConfigureHttpJsonOptions(static options => options.SerializerOptions.ConfigureDefaults());
 
 #endregion
 
