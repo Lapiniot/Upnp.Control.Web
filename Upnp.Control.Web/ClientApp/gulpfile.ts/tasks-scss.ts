@@ -1,8 +1,9 @@
 import gulp from "gulp";
-import sass from "gulp-dart-sass";
+import dartSass from 'sass';
+import gulpSass from 'gulp-sass';
 
 /***** SASS compile *****/
-
+const sass = gulpSass(dartSass);
 const sources = ["src/styles/*.scss"];
 const includePaths = ["node_modules"];
 const destination = "src/css";

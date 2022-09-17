@@ -7,7 +7,7 @@
     $i: 1;
 
     @each $feature, $value in $conditions {
-        $condition: $condition + #{if($i != 1, $operator, "")}(#{$feature}#{if($value, ': #{$value}', '')});
+        $condition: $condition + #{if($i != 1, " #{$operator} ", "")}(#{$feature}#{if($value, ": #{$value}", "")});
         $i: $i + 1;
     }
 
