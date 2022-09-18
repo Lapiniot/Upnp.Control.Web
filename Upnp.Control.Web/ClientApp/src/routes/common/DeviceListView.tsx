@@ -13,10 +13,11 @@ const gridEmptyClass = "align-content-center align-items-center"
 
 export function DeviceView({ itemTemplate: Item, dataContext, category, fetching, viewMode }: DeviceViewProps & DataFetchProps<Upnp.Device>) {
     const data = fetching && !dataContext?.source ? undefined : dataContext?.source;
-    const empty = !fetching && data;
+    const empty = !fetching && !data;
     return <GridView viewMode={viewMode} className={empty ? gridEmptyClass : ""}>
-        {data && <Item dataSource={data} category={category} />}
-        {empty ? <span className="text-center text-muted">No device found</span> : null}
+        {!empty
+            ? <Item dataSource={data} category={category} />
+            : <span className="text-center text-muted">No device found</span>}
     </GridView>
 }
 
