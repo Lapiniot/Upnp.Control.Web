@@ -9,7 +9,6 @@ import { PressHoldGestureRecognizer } from "../../../components/gestures/PressHo
 import { HotKey, HotKeys } from "../../../components/HotKey";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import { MediaQueries } from "../../../components/MediaQueries";
-import { NavigatorProps } from "../../../components/Navigator";
 import $api from "../../../components/WebApi";
 import { BottomBar } from "../../common/BottomBar";
 import Breadcrumb from "../../common/Breadcrumb";
@@ -33,10 +32,10 @@ import { PlaylistManagerToolbar } from "./PlaylistManagerToolbar";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
 import { PlaylistRowStateProvider } from "./PlaylistRowStateProvider";
 
-type PlaylistManagerProps = Omit<UI.PlaylistRouteParams, "category"> &
-    DataFetchProps<Upnp.BrowseFetchResult> &
-    HTMLAttributes<HTMLDivElement> &
-    NavigatorProps
+type PlaylistManagerProps = HTMLAttributes<HTMLDivElement> &
+    Omit<UI.PlaylistRouteParams, "category">
+    & DataFetchProps<Upnp.BrowseFetchResult>
+    & { navigate(to: string): void }
 
 type PlaylistManagerState = { editMode: boolean }
 
@@ -83,7 +82,7 @@ export class PlaylistManagerCore extends Component<PlaylistManagerProps, Playlis
             addPlaylistFiles: () => this.addPlaylistFiles(this.props.id),
             deleteItems: this.deletePlaylistItems,
             toggleEditMode: () => this.setState(({ editMode }) => ({ editMode: !editMode })),
-            navigateBack: () => this.props.navigate?.(this.props.dataContext?.source.parents?.[1]?.id ?? "-1")
+            navigateBack: () => this.props.navigate(this.props.dataContext?.source.parents?.[1]?.id ?? "-1")
         };
         this.actionHandlers = {
             addItems: this.createHandler(i => this.addPlaylistItems(i.id)),

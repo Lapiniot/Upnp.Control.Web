@@ -11,10 +11,12 @@ const fetchItemAsync = (device: string, id: string) => WebApi.browse(device).get
 
 export default function (props: HTMLAttributes<HTMLDivElement>) {
     const { device, id, "*": path } = useParams<"device" | "id" | "*">();
-    if (!device) throw new Error("Cannot resolve device id from route.");
-    if (!id || !path) throw new Error("Cannot resolve item id from route.");
+    const itemId = id ?? path;
 
-    const { fetching, dataContext: { source: { self: item = undefined } = {} } = {} } = useDataFetch(fetchItemAsync, device, id ?? path);
+    if (!device) throw new Error("Cannot resolve device id from route.");
+    if (!itemId) throw new Error("Cannot resolve item id from route.");
+
+    const { fetching, dataContext: { source: { metadata: item = undefined } = {} } = {} } = useDataFetch(fetchItemAsync, device, itemId);
 
     return !fetching && item ? <MediaViewer {...props} item={item} /> : <LoadIndicatorOverlay />
 }

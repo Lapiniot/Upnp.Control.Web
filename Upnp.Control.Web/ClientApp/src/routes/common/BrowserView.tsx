@@ -2,7 +2,6 @@
 import { DataFetchProps } from "../../components/DataFetch";
 import { HotKey } from "../../components/HotKey";
 import { MediaQueries } from "../../components/MediaQueries";
-import { NavigatorProps } from "../../components/Navigator";
 import AlbumArt from "./AlbumArt";
 import { DIDLTools as utils } from "./DIDLTools";
 import RowStateContext, { RowState } from "./RowStateContext";
@@ -18,6 +17,12 @@ type DisplayMode = "table" | "list" | "responsive";
 
 type NavigationMode = "single-tap" | "double-click" | "auto";
 
+interface ExtensionCallbacks {
+    navigate(to: string): void;
+    hotKeyHandler?(selection: Upnp.DIDL.Item[], focused: Upnp.DIDL.Item | undefined, hotKey: HotKey): boolean | void;
+    openHandler?(item: Upnp.DIDL.Item, index: number): void;
+}
+
 export type CellTemplateProps<TContext> = HTMLAttributes<HTMLDivElement> & {
     data: Upnp.DIDL.Item;
     index: number;
@@ -32,13 +37,14 @@ export type BrowserProps<TContext> = {
     navigationMode?: NavigationMode,
     editMode?: boolean,
     nodeRef?: RefObject<HTMLDivElement>,
-    hotKeyHandler?(selection: Upnp.DIDL.Item[], focused: Upnp.DIDL.Item | undefined, hotKey: HotKey): boolean | void,
-    openHandler?(item: Upnp.DIDL.Item, index: number): void,
     renderCaption?(): ReactNode,
     renderFooter?(): ReactNode
 } & { [K in ModeFlags]?: boolean }
 
-export type BrowserViewProps<TContext> = BrowserProps<TContext> & HTMLAttributes<HTMLDivElement> & NavigatorProps & DataFetchProps<Upnp.BrowseFetchResult>;
+export type BrowserViewProps<TContext> = HTMLAttributes<HTMLDivElement>
+    & BrowserProps<TContext>
+    & DataFetchProps<Upnp.BrowseFetchResult>
+    & ExtensionCallbacks
 
 export default class BrowserView<TContext = unknown> extends React.Component<BrowserViewProps<TContext>> {
 
@@ -229,7 +235,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
                 const state = this.context.get(index);
                 if (item.container && state & RowState.Navigable)
-                    this.props.navigate?.(item.id);
+                    this.props.navigate(item.id);
                 else if (state ^ RowState.Readonly && event.code === "Enter" && this.props.openHandler) {
                     const item = this.props.dataContext?.source.items?.[index];
                     if (item) this.props.openHandler(item, index);
@@ -239,7 +245,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
             case "Backspace":
             case "ArrowLeft":
                 const parents = this.props.dataContext?.source.parents;
-                this.props.navigate?.(parents?.[1]?.id ?? "-1");
+                this.props.navigate(parents?.[1]?.id ?? "-1");
                 break;
             case "KeyA":
                 if (this.props.multiSelect && !event.cancelBubble && (event.metaKey || event.ctrlKey)) {
@@ -292,13 +298,13 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     private navigateTo = (index: number) => {
         if (index === -1) {
-            this.props.navigate?.(this.props.dataContext?.source.parents?.[1]?.id ?? "-1");
+            this.props.navigate(this.props.dataContext?.source.parents?.[1]?.id ?? "-1");
         }
         else {
             const item = this.props.dataContext?.source.items?.[index];
             if (!item) return;
             if (item.container && this.context.get(index) & RowState.Navigable)
-                this.props.navigate?.(item.id);
+                this.props.navigate(item.id);
             else if (this.props.openHandler) {
                 const item = this.props.dataContext?.source.items?.[index];
                 if (item) this.props.openHandler(item, index);

@@ -24,8 +24,6 @@ const NavigationContext = createContext<NavigationContextHooks>({ useNavigate, u
 
 export { NavigationContext };
 
-export type NavigatorProps = { navigate: NavigateFunction }
-
 export function useNavigator<TKey extends string = string>() {
     const { useNavigate, useParams, useSearchParams } = useContext(NavigationContext);
 
