@@ -1,41 +1,26 @@
-import React, { createContext, PropsWithChildren, ReactElement, ReactFragment, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Children, createContext, PropsWithChildren, ReactElement, ReactFragment, ReactNode, useCallback, useContext, useRef, useState } from "react";
 import { matchRoutes, resolvePath, RouteMatch, RouteObject } from "react-router-dom";
 import { NavigateFunction, NavigationContext, Path } from "../../components/Navigator";
 
 interface VirtualRouterProps {
     initialPath: string
-};
-
-interface RouteProps {
-    caseSensitive?: boolean;
-    element?: React.ReactElement;
-    index?: boolean;
-    path?: string;
-    children?: ReactElement | ReactFragment;
 }
 
-function buildRoutes(children: ReactNode | undefined): RouteObject[] {
-    const routes = new Array<RouteObject>();
-    const array = React.Children.toArray(children);
-    for (let index = 0; index < array.length; index++) {
-        const child = array[index] as ReactElement<RouteProps>;
-        if (child.type === Route) {
-            routes.push({ ...child.props, children: buildRoutes(child.props.children) });
-        } else {
-            throw new Error("<Routes> or <Route> elements may only have <Route> elements as their children");
-        }
-    }
-    return routes;
-}
+type RouteProps = {
+    caseSensitive?: boolean,
+    element?: React.ReactElement,
+    children?: ReactElement | ReactFragment
+} & ({ index?: false, path?: string } | { index: true })
 
 interface RouterLocationContextObject {
-    location: URL;
-    setLocation(to: URL | ((current: URL) => URL)): void;
+    location: URL,
+    setLocation(to: URL | ((current: URL) => URL)): void
 }
 
 interface RouterMatchContextObject {
-    matches: RouteMatch[] | null;
-    level: number;
+    matches: RouteMatch[] | null,
+    pathnames: string[] | null,
+    level: number
 }
 
 const RouterLocationContext = createContext<RouterLocationContextObject>({
@@ -43,36 +28,75 @@ const RouterLocationContext = createContext<RouterLocationContextObject>({
     setLocation: () => { }
 })
 
-const RouterMatchContext = createContext<RouterMatchContextObject>({
-    matches: null,
-    level: 0
-})
+const RouterMatchContext = createContext<RouterMatchContextObject>({ matches: null, pathnames: null, level: -1 })
 
-function resolvePathMatches(to: string | Partial<Path>, matches: RouteMatch[]) {
-    if (!matches?.length) return undefined;
+function buildRoutes(children: ReactNode): RouteObject[] {
+    return (Children.toArray(children) as ReactElement<RouteProps>[]).map(
+        ({ type, props }: ReactElement<RouteProps>) => {
+            if (type === Route)
+                return { ...props, children: buildRoutes(props.children) }
+            else
+                throw new Error("<Routes> or <Route> elements may only have <Route> elements as their children");
+        });
+}
 
-    let match: RouteMatch = matches[matches.length - 1];
-    let pathname = typeof to === "string" ? to : to.pathname ?? "";
-    if (!pathname.startsWith("/")) {
-        let index = 1;
-        while ((pathname.startsWith("..")) && index < matches.length) {
-            pathname = pathname.substring(2);
-            pathname = pathname.startsWith("/") ? pathname.substring(1) : pathname;
-            match = matches[matches.length - ++index];
+// some <Route /> elements do not contribute to path resolution, so filter them out.
+function getEffectiveMatches(routeMatches: RouteMatch[]): string[] {
+    return routeMatches
+        .filter((m, i) => i === 0 || (!m.route.index && m.pathnameBase !== routeMatches[i - 1].pathnameBase))
+        .map(m => m.pathnameBase);
+}
+
+function parsePath(pathname: string) {
+    let hash; let search;
+
+    const searchIndex = pathname.lastIndexOf("?");
+    if (searchIndex >= 0) {
+        search = pathname.substring(searchIndex);
+        pathname = pathname.substring(0, searchIndex);
+    }
+
+    const hashIndex = pathname.lastIndexOf("#");
+    if (hashIndex >= 0) {
+        hash = pathname.substring(hashIndex);
+        pathname = pathname.substring(0, hashIndex);
+    }
+
+    return { pathname, hash, search };
+}
+
+function resolvePathMatches(to: string | Partial<Path>, fromRoutePathnames: string[] | null, fromLocationPathname: string) {
+    if (typeof to === "string") {
+        to = parsePath(to);
+    }
+
+    if (!to.pathname || !fromRoutePathnames?.length) {
+        return resolvePath(to, fromLocationPathname);
+    }
+
+    let index = fromRoutePathnames.length - 1;
+    if (!to.pathname.startsWith("/")) {
+        while ((to.pathname.startsWith("..")) && index >= 0) {
+            to.pathname = to.pathname.substring(2);
+            if (to.pathname.startsWith("/")) {
+                to.pathname = to.pathname.substring(1);
+            }
+            index--;
         }
     }
 
-    return resolvePath(typeof to === "string" ? pathname : { ...to, pathname }, match.pathname);
+    return resolvePath(to, fromRoutePathnames[index]);
 }
 
 function useNavigate() {
     const { location, setLocation } = useContext(RouterLocationContext);
-    const { matches } = useContext(RouterMatchContext);
-    const ref = useRef({ location, setLocation, matches });
-    ref.current = { location, setLocation, matches };
+    const { matches, pathnames } = useContext(RouterMatchContext);
+    const ctx = { location, setLocation, matches, pathnames };
+    const ref = useRef(ctx);
+    ref.current = ctx;
     const navigate = useCallback<NavigateFunction>((to) => {
-        const { matches, location: { pathname, origin }, setLocation } = ref.current;
-        const path = (matches && resolvePathMatches(to, matches)) ?? resolvePath(to, pathname);
+        const { pathnames, location: { pathname, origin }, setLocation } = ref.current!;
+        const path = resolvePathMatches(to, pathnames, pathname);
         const url = new URL(path.pathname, origin);
         url.hash = path.hash;
         url.search = path.search;
@@ -83,7 +107,7 @@ function useNavigate() {
 
 function useParams() {
     const { matches } = useContext(RouterMatchContext);
-    return matches?.[0].params ?? {};
+    return matches?.length ? matches[matches.length - 1].params : {};
 }
 
 function useSearchParams(): readonly [URLSearchParams, (nextInit: URLSearchParams) => void] {
@@ -96,9 +120,9 @@ function useSearchParams(): readonly [URLSearchParams, (nextInit: URLSearchParam
 }
 
 function useResolvedPath(to: string | Partial<Path>) {
-    const { location } = useContext(RouterLocationContext);
-    const { matches } = useContext(RouterMatchContext);
-    return (matches && resolvePathMatches(to, matches)) ?? resolvePath(to, location.pathname);
+    const { location: { pathname } } = useContext(RouterLocationContext);
+    const { pathnames } = useContext(RouterMatchContext);
+    return resolvePathMatches(to, pathnames, pathname);
 }
 
 const hooks = { useNavigate, useParams, useSearchParams, useResolvedPath }
@@ -107,12 +131,10 @@ export function VirtualRouter({ children, initialPath }: PropsWithChildren<Virtu
     const [location, setLocation] = useState(() => new URL(initialPath, window.location.origin));
     const ref = useRef(initialPath);
 
-    useEffect(() => {
-        if (initialPath !== ref.current) {
-            ref.current = initialPath;
-            setLocation(new URL(initialPath, window.location.origin));
-        }
-    }, [initialPath]);
+    if (initialPath !== ref.current) {
+        ref.current = initialPath;
+        setLocation(new URL(initialPath, window.location.origin));
+    }
 
     return <NavigationContext.Provider value={hooks}>
         <RouterLocationContext.Provider value={{ location, setLocation }}>
@@ -123,15 +145,19 @@ export function VirtualRouter({ children, initialPath }: PropsWithChildren<Virtu
 
 export function Routes({ children }: { children: ReactElement | ReactFragment }) {
     const { location } = useContext(RouterLocationContext);
-    const { matches: pmatches } = useContext(RouterMatchContext);
-    const basename = pmatches?.length ? pmatches[pmatches.length - 1].pathnameBase : undefined;
+    const { matches: parentMatches, level } = useContext(RouterMatchContext);
+    const basename = parentMatches?.length ? parentMatches[parentMatches.length - 1].pathnameBase : undefined;
+
     const routes = buildRoutes(children);
     const matches = matchRoutes(routes, location.pathname, basename);
-    return (matches?.length)
-        ? <RouterMatchContext.Provider value={{ matches, level: 0 }}>
-            {matches[0].route.element ?? <Outlet />}
-        </RouterMatchContext.Provider>
-        : null;
+
+    if (!matches?.length) return null;
+
+    const merged = parentMatches?.length ? [...parentMatches, ...matches] : matches;
+
+    return <RouterMatchContext.Provider value={{ matches: merged, pathnames: getEffectiveMatches(merged), level: level + 1 }}>
+        {matches[0].route.element ?? <Outlet />}
+    </RouterMatchContext.Provider>
 }
 
 export function Route({ }: RouteProps): never {
@@ -142,7 +168,7 @@ export function Outlet() {
     const { matches, level } = useContext(RouterMatchContext);
     const next = level + 1;
     return (matches && next < matches.length)
-        ? <RouterMatchContext.Provider value={{ matches, level: next }}>
+        ? <RouterMatchContext.Provider value={{ matches, pathnames: getEffectiveMatches(matches), level: next }}>
             {matches[next].route.element ?? <Outlet />}
         </RouterMatchContext.Provider>
         : null
