@@ -22,7 +22,7 @@ root.render(
             <div className="navbar">
                 <a className="navbar-brand d-none d-lg-inline" href="/">UPnP Dashboard</a>
                 <nav>
-                    <RouteLink to="/" glyph="symbols.svg#home_work" className="nav-link">Home</RouteLink>
+                    <RouteLink to="/" end glyph="symbols.svg#home_work" className="nav-link">Home</RouteLink>
                     <RouteLink to="/upnp" glyph="symbols.svg#devices" className="nav-link"><span><span className="d-none d-lg-inline">UPnP&nbsp;</span>Devices</span></RouteLink>
                     <RouteLink to="/renderers" glyph="symbols.svg#connected_tv" className="nav-link"><span><span className="d-none d-lg-inline">Network&nbsp;</span>Players</span></RouteLink>
                     <RouteLink to="/umi" glyph="symbols.svg#speaker" className="nav-link"><span><span className="d-none d-lg-inline">Xiaomi&nbsp;</span>Speakers</span></RouteLink>
