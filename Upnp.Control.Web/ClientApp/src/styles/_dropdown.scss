@@ -1,16 +1,12 @@
 .dropdown-item {
     display: flex;
     align-items: center;
-    @extend .text-truncate;
+    gap: map-get($spacers, 2);
 
-    > :where(svg, img):first-child {
-        margin-right: map-get($spacers, 3);
-    }
-
-    &:focus,
-    &:active {
-        outline: none !important;
-        box-shadow: none;
+    > :where(span, p):first-of-type {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 }
 

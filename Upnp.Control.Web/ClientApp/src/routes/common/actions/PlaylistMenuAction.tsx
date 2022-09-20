@@ -30,7 +30,9 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
                     style={{ overflowY: "auto", maxWidth: "100vw", maxHeight: "calc(100% - 3rem)" }}>
                     {items?.map(({ title, class: cls, albumArts, res }, index) => <li key={index}>
                         <a className="dropdown-item" href="#" data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
-                            <AlbumArt itemClass={cls} albumArts={albumArts} className="rounded-1" hint="player" />{title}</a>
+                            <AlbumArt itemClass={cls} albumArts={albumArts} className="rounded-1" hint="player" />
+                            <span>{title}</span>
+                        </a>
                     </li>)}
                 </DropdownMenu>}
             </>
