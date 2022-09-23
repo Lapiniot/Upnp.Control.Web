@@ -2,6 +2,7 @@ import {
     ButtonHTMLAttributes, Component, createRef, DialogHTMLAttributes,
     FormEvent, HTMLAttributes, MouseEvent, ReactNode, SyntheticEvent, useRef
 } from "react";
+import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
 import { useAutoFocus } from "./Hooks";
 
 interface DialogEventProps {
@@ -25,16 +26,39 @@ type DialogButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     icon?: string,
 }
 
-export default class Dialog extends Component<DialogProps>{
-    dialogRef;
-    formRef;
-    observer: MutationObserver;
+interface NativeDialog {
+    open: boolean;
+    show(): void;
+    showModal(): void;
+    close(returnValue?: string): void;
+}
+
+export default class Dialog extends Component<DialogProps> implements NativeDialog {
+    private dialogRef;
+    private formRef;
+    private observer: MutationObserver;
+    private tracker: NavigationBackTracker;
 
     constructor(props: DialogProps) {
         super(props);
         this.dialogRef = createRef<HTMLDialogElement>();
         this.formRef = createRef<HTMLFormElement>();
         this.observer = new MutationObserver(this.onMutation);
+        this.tracker = createBackNavigationTracker(() => this.dialogRef.current?.close());
+    }
+
+    get open() { return this.dialogRef.current?.open! }
+
+    show = () => {
+        this.dialogRef.current?.show();
+    }
+
+    showModal = () => {
+        this.dialogRef.current?.showModal();
+    }
+
+    close = (returnValue?: string) => {
+        this.dialogRef.current?.close(returnValue);
     }
 
     private onMutation = (mutations: MutationRecord[]) => {
@@ -53,33 +77,35 @@ export default class Dialog extends Component<DialogProps>{
         const dialog = this.dialogRef.current!;
         this.observer.observe(dialog, { attributes: true });
         if (this.props.immediate)
-            requestAnimationFrame(() => dialog.showModal());
+            this.showModal();
     }
 
     override componentDidUpdate() {
         if (this.props.immediate)
-            this.dialogRef.current?.showModal();
+            this.showModal();
     }
 
     override componentWillUnmount() {
         this.observer.disconnect();
     }
 
-    onOpen = async () => {
+    private onOpen = async () => {
         const dialog = this.dialogRef.current!;
         document.body.dataset["modalOpen"] = "1";
         await this.animationsFinished(dialog);
         dialog?.removeAttribute("inert");
+        this.tracker.start();
         this.props.onOpen?.();
     }
 
-    onClose = async (event: SyntheticEvent<HTMLDialogElement>) => {
+    private onClose = async (event: SyntheticEvent<HTMLDialogElement>) => {
         const { props: { onClose, onDismissed } } = this;
         const { currentTarget: dialog } = event;
 
         dialog.setAttribute("inert", "");
         await Promise.allSettled(dialog.getAnimations().map(a => a.finished));
         delete document.body.dataset["modalOpen"];
+        this.tracker.stop();
 
         onClose?.(event);
         if (!event.defaultPrevented) {
@@ -97,7 +123,7 @@ export default class Dialog extends Component<DialogProps>{
         if (!event.defaultPrevented) {
             const dialog = event.target as HTMLDialogElement;
             if (dialog.tagName === "DIALOG") {
-                dialog.close();
+                this.close();
             }
         }
     }
