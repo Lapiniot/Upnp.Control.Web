@@ -1,6 +1,7 @@
 import { createPopper, Instance as PopperInstance, StrictModifiers } from "@popperjs/core/lib/popper";
 import { Placement } from "@popperjs/core/lib/enums";
 import React, { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
+import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
@@ -32,6 +33,11 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
     menuRef = React.createRef<HTMLUListElement>();
     instance: PopperInstance | null = null;
     state: DropdownMenuState = { children: null, show: undefined, anchor: undefined };
+    backNavTracker: NavigationBackTracker;
+    constructor(props: DropdownMenuProps) {
+        super(props);
+        this.backNavTracker = createBackNavigationTracker(() => this.hide());
+    }
 
     componentDidMount() {
         this.menuRef.current?.parentElement?.addEventListener("click", this.parentClickListener);
@@ -86,6 +92,8 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
                 this.instance.setOptions(options);
                 this.instance.update();
             }
+
+            this.backNavTracker.start();
         }
         else {
             document.removeEventListener("click", this.documentClickListener, true);
@@ -101,6 +109,8 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
                 this.instance.setOptions(options);
                 this.instance.update();
             }
+
+            this.backNavTracker.stop();
         }
     }
 
