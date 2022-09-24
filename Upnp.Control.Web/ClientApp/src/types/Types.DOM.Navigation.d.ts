@@ -34,7 +34,7 @@ declare global {
         readonly signal: AbortSignal;
         readonly formData?: FormData;
         readonly downloadRequest?: string;
-        readonly info: any;
+        readonly info?: any;
 
         intercept(options?: NavigationInterceptOptions): void;
         scroll(): void;
@@ -65,7 +65,7 @@ declare global {
     }
 
     interface NavigationUpdateCurrentEntryOptions extends Record<string, any> {
-        state: any
+        state?: any
     }
 
     type NavigationHistoryBehavior = "auto" | "push" | "replace";

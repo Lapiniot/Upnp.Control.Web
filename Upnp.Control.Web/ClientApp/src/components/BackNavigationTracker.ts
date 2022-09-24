@@ -60,13 +60,14 @@ class NavigationApiTrackerImpl implements NavigationBackTracker {
     }
 
     private navigateListener = (event: NavigateEvent) => {
-        const { navigationType, info, canIntercept, userInitiated } = event;
+        const { navigationType, info, canIntercept, userInitiated, destination: { index, sameDocument } } = event;
 
         if (canIntercept && navigationType === "push" && info === "pushState") {
             event.intercept({ handler: NavigationApiTrackerImpl.handler });
+            return;
         }
 
-        if (userInitiated && navigationType === "traverse") {
+        if (userInitiated && sameDocument && navigationType === "traverse" && index < navigation.currentEntry?.index!) {
             this.callback();
         }
     }
