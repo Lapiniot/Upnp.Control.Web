@@ -98,7 +98,7 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
                 this.instance.update();
             }
 
-            this.backNavTracker.start();
+            await this.backNavTracker.start();
         } else {
             document.removeEventListener("click", this.documentClickListener, true);
             document.removeEventListener("keydown", this.keydownListener, true);
@@ -118,8 +118,9 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
             }
 
             await this.backNavTracker.stop();
-            this.restoreFocus();
         }
+
+        this.restoreFocus();
     }
 
     private queryAll = (selector: string): NodeListOf<HTMLElement> | undefined => this.menuRef.current?.querySelectorAll<HTMLElement>(selector);
