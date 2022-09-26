@@ -8,7 +8,7 @@
     --#{$prefix}table-active-color: #{$table-active-color};
     --#{$prefix}table-active-bg: #{$table-active-bg};
     --#{$prefix}table-selected-bg: #{$primary};
-    --#{$prefix}table-focused-accent: #{$primary-700};
+    --#{$prefix}table-focused-accent: #{shade-color($primary, 40%)};
     --#{$prefix}table-selected-color: white;
     --#{$prefix}table-cell-padding-x: #{$table-cell-padding-x};
     --#{$prefix}table-cell-padding-y: #{$table-cell-padding-y};
@@ -63,7 +63,6 @@
 
             &:is([data-selected="true"], .selected, [data-focused="true"], :focus) {
                 --#{$prefix}accent-color: var(--#{$prefix}table-focused-accent);
-                --#{$prefix}table-hover-levelup-bg: var(--#{$prefix}table-focused-accent);
                 background-color: var(--#{$prefix}table-selected-bg);
                 color: var(--#{$prefix}table-selected-color);
             }
@@ -132,7 +131,8 @@
 .table-hover {
     --#{$prefix}table-hover-color: #{$table-hover-color};
     --#{$prefix}table-hover-bg: #{$table-hover-bg};
-    --#{$prefix}table-hover-levelup-bg: #{shade-color($table-hover-bg, 10%)};
+    --#{$prefix}table-hover-l1-bg: #{shade-color($table-hover-bg, 10%)};
+    --#{$prefix}table-hover-l1-border-color: #{shade-color($table-hover-bg, 30%)};
 
     > .table-body {
         > :where(:hover) {

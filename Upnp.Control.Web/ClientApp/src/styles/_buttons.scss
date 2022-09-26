@@ -15,36 +15,35 @@
     opacity: #{$btn-disabled-opacity};
 }
 
+.btn-plain {
+    --#{$prefix}btn-color: inherit;
+    --#{$prefix}btn-border-width: 1px;
+    --#{$prefix}btn-box-shadow: none;
+    --#{$prefix}gradient: none;
+    // active
+    --#{$prefix}btn-active-bg: #{shade-color($gray-200, 10%)};
+    --#{$prefix}btn-active-border-color: #{shade-color($gray-200, 30%)};
+    // hover
+    --#{$prefix}btn-hover-bg: #{$gray-200};
+    --#{$prefix}btn-hover-border-color: #{shade-color($gray-200, 20%)};
+    // disabled
+    --#{$prefix}btn-disabled-border-color: transparent;
+}
+
 .btn-round {
-    --#{$prefix}btn-border-width: 0;
-    --#{$prefix}btn-border-radius: 0;
+    --#{$prefix}btn-border-radius: 50%;
     --#{$prefix}btn-line-height: 0;
     --#{$prefix}btn-padding-y: var(--#{$prefix}btn-padding-x);
-    clip-path: circle(49.5%);
-    border-radius: 0;
 
     & > :is(svg, img):first-child {
         margin: 0;
     }
 }
 
-.btn-plain {
-    --#{$prefix}btn-color: inherit;
-    --#{$prefix}btn-hover-color: #{shade-color($gray-900, 10%)};
-    --#{$prefix}btn-hover-bg: #{$gray-200};
-    --#{$prefix}btn-active-color: #{$component-active-color};
-    --#{$prefix}btn-active-bg: #{$component-active-bg};
-    @extend %no-decoration;
-    background-image: none;
-
-    &:focus {
-        background-image: none;
-    }
-}
-
 .table .btn-plain {
-    --#{$prefix}btn-hover-color: var(--#{$prefix}table-hover-levelup-color, inherit);
-    --#{$prefix}btn-hover-bg: var(--#{$prefix}table-hover-levelup-bg);
+    --#{$prefix}btn-hover-color: var(--#{$prefix}table-hover-l1-color, inherit);
+    --#{$prefix}btn-hover-bg: var(--#{$prefix}table-hover-l1-bg);
+    --#{$prefix}btn-hover-border-color: var(--#{$prefix}table-hover-l1-border-color);
 }
 
 .btn-stack {
