@@ -1,26 +1,55 @@
 export interface NavigationBackTracker {
-    start(): void;
-    stop(): void;
+    start(): Promise<void>;
+    stop(): Promise<void>;
 }
 
-class HistoryApiTrackerImpl implements NavigationBackTracker {
-    private oldState: any;
-    private newState: string | undefined;
-    private callback: () => void;
-    private static key = 0;
+abstract class TrackerBase implements NavigationBackTracker {
+    protected readonly callback: () => void;
+    private active: boolean = false;
 
     constructor(callback: () => void) {
         this.callback = callback;
     }
 
-    public start() {
+    public async start() {
+        if (this.tryEnter()) {
+            await this.pushState();
+        }
+    }
+
+    public async stop() {
+        if (this.tryExit()) {
+            await this.popState();
+        }
+    }
+
+    protected tryEnter(): boolean {
+        if (!this.active) return this.active = true;
+        return false;
+    }
+
+    protected tryExit(): boolean {
+        if (this.active) return !(this.active = false);
+        return false;
+    }
+
+    protected abstract pushState(): void;
+    protected abstract popState(): void;
+}
+
+class HistoryApiTrackerImpl extends TrackerBase {
+    private oldState: any;
+    private newState: string | undefined;
+    private static key = 0;
+
+    protected override pushState() {
         window.addEventListener("popstate", this.popStateListener);
         this.oldState = history.state;
         this.newState = `nav-back-track#${HistoryApiTrackerImpl.key++}`;
         history.pushState(this.newState, "");
     }
 
-    public stop() {
+    protected override popState() {
         window.removeEventListener("popstate", this.popStateListener);
         if (history.state?.toString() === this.newState) {
             history.go(-1);
@@ -34,36 +63,32 @@ class HistoryApiTrackerImpl implements NavigationBackTracker {
     }
 }
 
-class NavigationApiTrackerImpl implements NavigationBackTracker {
-    private callback: () => void;
+class NavigationApiTrackerImpl extends TrackerBase {
     private prevKey?: string;
     private currentKey?: string;
 
-    constructor(callback: () => void) {
-        this.callback = callback;
-    }
-
-    async start(): Promise<void> {
+    protected override async pushState(): Promise<void> {
         navigation.addEventListener("navigate", this.navigateListener);
         this.prevKey = navigation.currentEntry?.key;
-        await navigation.navigate(location.href, { state: null, info: "pushState" }).finished;
+        await navigation.navigate(location.href, { info: "pushState" }).finished;
         this.currentKey = navigation.currentEntry?.key;
     }
 
-    async stop(): Promise<void> {
+    protected override async popState(): Promise<void> {
+        navigation.removeEventListener("navigate", this.navigateListener);
+
         if (navigation.currentEntry?.key === this.currentKey) {
             await navigation.traverseTo(this.prevKey!).finished;
         }
 
         this.prevKey = this.currentKey = undefined;
-        navigation.removeEventListener("navigate", this.navigateListener);
     }
 
     private navigateListener = (event: NavigateEvent) => {
         const { navigationType, info, canIntercept, userInitiated, destination: { index, sameDocument } } = event;
 
         if (canIntercept && navigationType === "push" && info === "pushState") {
-            event.intercept({ handler: NavigationApiTrackerImpl.handler });
+            event.intercept({ handler: NavigationApiTrackerImpl.handler, focusReset: "manual" });
             return;
         }
 

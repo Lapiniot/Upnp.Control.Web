@@ -1,6 +1,6 @@
-import { createPopper, Instance as PopperInstance, StrictModifiers } from "@popperjs/core/lib/popper";
 import { Placement } from "@popperjs/core/lib/enums";
-import React, { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
+import { createPopper, Instance as PopperInstance, StrictModifiers } from "@popperjs/core/lib/popper";
+import { ButtonHTMLAttributes, Component, createRef, HTMLAttributes, ReactNode } from "react";
 import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
@@ -28,9 +28,9 @@ export function MenuItem({ className, action, glyph, children, ...other }: Butto
     </li>
 }
 
-export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMenuState> {
+export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState> {
 
-    menuRef = React.createRef<HTMLUListElement>();
+    menuRef = createRef<HTMLUListElement>();
     instance: PopperInstance | null = null;
     state: DropdownMenuState = { children: null, show: undefined, anchor: undefined };
     backNavTracker: NavigationBackTracker;
@@ -52,6 +52,8 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
         this.menuRef.current?.parentElement?.removeEventListener("click", this.parentClickListener);
         document.removeEventListener("click", this.documentClickListener, true);
         document.removeEventListener("keydown", this.keydownListener, true);
+        this.menuRef.current?.removeEventListener("focusout", this.focusoutListener, true);
+
         this.instance?.destroy();
     }
 
@@ -69,7 +71,7 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
             this.update(null, this.menuRef.current as HTMLElement, false);
     }
 
-    private update = (reference: HTMLElement | null, popper: HTMLElement, visibility?: boolean) => {
+    private update = async (reference: HTMLElement | null, popper: HTMLElement, visibility?: boolean) => {
         if (reference && reference !== this.instance?.state?.elements?.reference) {
             this.instance?.destroy();
             this.instance = createPopper<StrictModifiers>(reference, popper, {
@@ -81,7 +83,10 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
         if (popper.classList.toggle("show", visibility)) {
             document.addEventListener("click", this.documentClickListener, true);
             document.addEventListener("keydown", this.keydownListener, true);
+            this.menuRef.current?.addEventListener("focusout", this.focusoutListener, true);
+
             reference?.setAttribute("aria-expanded", "true");
+
             if (this.instance) {
                 const options = {
                     ...this.instance.state.options,
@@ -94,11 +99,13 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
             }
 
             this.backNavTracker.start();
-        }
-        else {
+        } else {
             document.removeEventListener("click", this.documentClickListener, true);
             document.removeEventListener("keydown", this.keydownListener, true);
+            this.menuRef.current?.removeEventListener("focusout", this.focusoutListener, true);
+
             reference?.setAttribute("aria-expanded", "false");
+
             if (this.instance) {
                 const options = {
                     ...this.instance.state.options,
@@ -110,48 +117,53 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
                 this.instance.update();
             }
 
-            this.backNavTracker.stop();
+            await this.backNavTracker.stop();
+            this.restoreFocus();
         }
     }
-
-    private query = (selector: string): HTMLElement | null | undefined => this.menuRef.current?.querySelector<HTMLElement>(selector);
 
     private queryAll = (selector: string): NodeListOf<HTMLElement> | undefined => this.menuRef.current?.querySelectorAll<HTMLElement>(selector);
 
     //#region Focus helpers
 
-    private focusEntered = () => this.instance?.state.elements.reference !== document.activeElement;
-
     private focusNext = () => {
         const items = this.queryAll(ENABLED_ITEM_SELECTOR);
 
-        if (!items || items.length === 0) return false;
+        if (!items?.length) return false;
 
         for (let index = 0; index < items.length; index++) {
             const element = items[index];
-            if (element.matches(FOCUSED_SELECTOR) && index < items.length - 1) {
-                items[index + 1].focus();
-                return true;
+            if (element.matches(FOCUSED_SELECTOR)) {
+                if (index < items.length - 1) {
+                    items[index + 1].focus();
+                }
+                return;
             }
         }
 
-        return false;
+        items[0].focus();
     }
 
     private focusPrev = () => {
         const items = this.queryAll(ENABLED_ITEM_SELECTOR);
 
-        if (!items || items.length === 0) return false;
+        if (!items?.length) return false;
 
         for (let index = 0; index < items.length; index++) {
             const element = items[index];
-            if (element.matches(FOCUSED_SELECTOR) && index > 0) {
-                items[index - 1].focus();
-                return true;
+            if (element.matches(FOCUSED_SELECTOR)) {
+                if (index > 0) {
+                    items[index - 1].focus();
+                }
+                return;
             }
         }
 
-        return false;
+        items[items.length - 1].focus();
+    }
+
+    private restoreFocus = () => {
+        (this.instance?.state.elements.reference as HTMLElement)?.focus();
     }
 
     //#endregion
@@ -159,18 +171,12 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
     private parentClickListener = (event: MouseEvent) => {
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
         if (item) {
-            event.stopPropagation();
-            event.preventDefault();
             this.show(item);
         }
     }
 
     private documentClickListener = (event: MouseEvent) => {
-        const menu = (this.menuRef.current as HTMLElement);
-        const anchor = (this.instance?.state.elements.reference as HTMLElement);
-        const path = event.composedPath();
-
-        if (path.includes(menu)) {
+        if (event.composedPath().includes(this.menuRef.current!)) {
             const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
             if (item) {
                 this.hide();
@@ -183,57 +189,41 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
 
         event.preventDefault();
         event.stopPropagation();
-        if (!path.includes(anchor)) {
-            this.hide();
-        }
+        this.hide();
     }
 
     private keydownListener = (event: KeyboardEvent) => {
-        if (event.code === "Escape" || event.code === "Tab" || event.code === "ArrowUp" || event.code === "ArrowDown") {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-
         switch (event.code) {
             case "Escape":
                 this.hide();
-                (this.instance?.state.elements.reference as HTMLElement)?.focus();
                 break;
             case "Tab":
-                if (!this.focusEntered()) {
-                    // Focus not yet entered menu, so focus first item
-                    this.query(ENABLED_ITEM_SELECTOR)?.focus();
-                } else if (!this.focusNext()) {
-                    // Focus already reached last enabled item, so simply hide menu
-                    this.hide();
+                if (this.instance?.state.elements.reference !== document.activeElement) {
+                    return;
                 }
-                break;
-            case "Space":
-                if (!this.focusEntered()) {
-                    // Focus not yet entered menu, so focus first item
-                    this.query(ENABLED_ITEM_SELECTOR)?.focus();
-                }
+
+                if (event.shiftKey)
+                    this.focusPrev();
+                else
+                    this.focusNext();
+
                 break;
             case "ArrowUp":
-                if (!this.focusEntered()) {
-                    // Focus not yet entered menu, so focus first item
-                    this.query(ENABLED_ITEM_SELECTOR)?.focus();
-                }
-                else {
-                    // Try to select prev item other than forst one
-                    this.focusPrev();
-                }
+                this.focusPrev();
                 break;
             case "ArrowDown":
-                if (!this.focusEntered()) {
-                    // Focus not yet entered menu, so focus first item
-                    this.query(ENABLED_ITEM_SELECTOR)?.focus();
-                }
-                else {
-                    // Try to select next item other than last one
-                    this.focusNext();
-                }
+                this.focusNext();
                 break;
+            default: return;
+        }
+
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    private focusoutListener = (event: FocusEvent) => {
+        if (!this.menuRef.current?.contains(event.relatedTarget as Node)) {
+            this.hide();
         }
     }
 
@@ -241,6 +231,6 @@ export class DropdownMenu extends React.Component<DropdownMenuProps, DropdownMen
         const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
         return <ul ref={this.menuRef} className={`dropdown-menu${className ? ` ${className}` : ""}`} style={{ margin: 0 }} {...other}>
             {this.state.children ?? children}
-        </ul>;
+        </ul>
     }
 }
