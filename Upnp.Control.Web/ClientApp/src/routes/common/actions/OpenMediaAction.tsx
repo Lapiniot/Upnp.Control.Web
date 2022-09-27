@@ -27,7 +27,7 @@ export function OpenAction({ children, className, browserProps, device, category
             </BrowserDialog>)
         , [device]);
     return <>
-        <button type="button" disabled={!device} className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`} data-bs-toggle="dropdown"
+        <button type="button" disabled={!device} className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`} data-toggle="dropdown"
             aria-expanded="false" title="Browse for external media to play on this device" {...other} onClick={browseClickHandler}>
             {children}
         </button>

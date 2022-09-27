@@ -22,11 +22,10 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
     return <div className={className} {...other}>
         {!fetching
             ? <>
-                <button type="button" disabled={!items} className="btn btn-round btn-plain" data-bs-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
+                <button type="button" disabled={!items} className="btn btn-round btn-plain" data-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
                     <svg><use href="symbols.svg#playlist_play" /></svg>
                 </button>
                 {device && <DropdownMenu data-device={device.udn} placement="top-end"
-                    modifiers={[{ name: "offset", options: { offset: [0, 4] } }]}
                     style={{ overflowY: "auto", maxWidth: "100vw", maxHeight: "calc(100% - 3rem)" }}>
                     {items?.map(({ title, class: cls, albumArts, res }, index) => <li key={index}>
                         <a className="dropdown-item" href="#" data-play-url={res?.url + "#play"} onClick={playUrlHandler}>

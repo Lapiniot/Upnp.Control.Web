@@ -47,7 +47,7 @@ function Template(props: CellTemplateProps<CellContext>) {
         {props.data.container && props.context?.deviceName &&
             <BookmarkItemButton item={props.data} device={props.context?.device as string} deviceName={props.context?.deviceName as string} />}
         <button type="button" className="btn btn-round btn-plain" data-id={props.data.id}
-            data-bs-toggle="dropdown" disabled={props.context?.disabled}>
+            data-toggle="dropdown" disabled={props.context?.disabled}>
             <svg><use href="symbols.svg#more_vert" /></svg>
         </button>
     </CellTemplate>;

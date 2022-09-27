@@ -5,20 +5,23 @@ import { createBackNavigationTracker, NavigationBackTracker } from "./BackNaviga
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
-const TOGGLE_ITEM_SELECTOR = "[data-bs-toggle='dropdown']";
+const TOGGLE_ITEM_SELECTOR = "[data-toggle='dropdown']";
 
 export type DropdownMenuProps = Omit<HTMLAttributes<HTMLUListElement>, "onSelect"> & {
     placement?: Placement;
     modifiers?: StrictModifiers[];
     onSelected?: (item: HTMLElement, anchor?: HTMLElement) => void;
     render?: (anchor?: HTMLElement | null) => ReactNode;
-};
+}
 
 type DropdownMenuState = {
-    children?: ReactNode;
     anchor?: HTMLElement;
     show?: boolean;
-};
+}
+
+const defaults: StrictModifiers[] = [
+    { name: "offset", options: { offset: [4, 4] } }
+]
 
 export function MenuItem({ className, action, glyph, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action: string, glyph?: string }) {
     return <li>
@@ -29,11 +32,15 @@ export function MenuItem({ className, action, glyph, children, ...other }: Butto
 }
 
 export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState> {
-
     menuRef = createRef<HTMLUListElement>();
     instance: PopperInstance | null = null;
-    state: DropdownMenuState = { children: null, show: undefined, anchor: undefined };
+    state: DropdownMenuState = { show: false, anchor: undefined };
     backNavTracker: NavigationBackTracker;
+
+    static defaultProps: Partial<DropdownMenuProps> = {
+        placement: "auto"
+    }
+
     constructor(props: DropdownMenuProps) {
         super(props);
         this.backNavTracker = createBackNavigationTracker(() => this.hide());
@@ -44,8 +51,7 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
     }
 
     componentDidUpdate() {
-        if (this.state.children)
-            this.update(this.state.anchor ?? null, this.menuRef.current as HTMLElement, this.state.show);
+        this.update(this.state.anchor, this.state.show);
     }
 
     componentWillUnmount() {
@@ -58,65 +64,33 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
     }
 
     show = (anchor: HTMLElement) => {
-        if (this.props.render)
-            this.setState({ children: this.props.render(anchor), show: true, anchor })
-        else
-            this.update(anchor, this.menuRef.current as HTMLElement, true);
+        this.setState({ show: true, anchor })
     }
 
     hide = () => {
-        if (this.props.render)
-            this.setState({ show: false, anchor: undefined })
-        else
-            this.update(null, this.menuRef.current as HTMLElement, false);
+        this.setState({ show: false })
     }
 
-    private update = async (reference: HTMLElement | null, popper: HTMLElement, visibility?: boolean) => {
-        if (reference && reference !== this.instance?.state?.elements?.reference) {
-            this.instance?.destroy();
-            this.instance = createPopper<StrictModifiers>(reference, popper, {
-                placement: this.props.placement ?? "auto",
-                modifiers: this.props.modifiers ?? []
-            });
+    private update = async (reference: HTMLElement | undefined, visibility?: boolean) => {
+        const dropdown = this.menuRef.current!;
+
+        if (reference && reference !== this.instance?.state.elements.reference) {
+            this.popperInit(reference, dropdown);
         }
 
-        if (popper.classList.toggle("show", visibility)) {
+        if (dropdown.classList.toggle("show", visibility)) {
             document.addEventListener("click", this.documentClickListener, true);
             document.addEventListener("keydown", this.keydownListener, true);
             this.menuRef.current?.addEventListener("focusout", this.focusoutListener, true);
-
             reference?.setAttribute("aria-expanded", "true");
-
-            if (this.instance) {
-                const options = {
-                    ...this.instance.state.options,
-                    modifiers: [
-                        ...(this.props.modifiers ?? []),
-                        { name: 'eventListeners', enabled: true }]
-                };
-                this.instance.setOptions(options);
-                this.instance.update();
-            }
-
+            this.setPopperOptions(true);
             await this.backNavTracker.start();
         } else {
             document.removeEventListener("click", this.documentClickListener, true);
             document.removeEventListener("keydown", this.keydownListener, true);
             this.menuRef.current?.removeEventListener("focusout", this.focusoutListener, true);
-
             reference?.setAttribute("aria-expanded", "false");
-
-            if (this.instance) {
-                const options = {
-                    ...this.instance.state.options,
-                    modifiers: [
-                        ...(this.props.modifiers ?? []),
-                        { name: 'eventListeners', enabled: false }]
-                };
-                this.instance.setOptions(options);
-                this.instance.update();
-            }
-
+            this.setPopperOptions(false);
             await this.backNavTracker.stop();
         }
 
@@ -164,7 +138,7 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
     }
 
     private restoreFocus = () => {
-        (this.instance?.state.elements.reference as HTMLElement)?.focus();
+        this.state.anchor?.focus();
     }
 
     //#endregion
@@ -182,7 +156,7 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
             if (item) {
                 this.hide();
                 if (this.props.onSelected) {
-                    this.props.onSelected(item, this.instance?.state.elements.reference as HTMLElement);
+                    this.props.onSelected(item, this.state.anchor);
                 }
             }
             return;
@@ -199,7 +173,7 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
                 this.hide();
                 break;
             case "Tab":
-                if (this.instance?.state.elements.reference !== document.activeElement) {
+                if (this.state.anchor !== document.activeElement) {
                     return;
                 }
 
@@ -228,10 +202,33 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
         }
     }
 
+    private setPopperOptions = (enabled: boolean) => {
+        if (this.instance) {
+            const options = {
+                ...this.instance.state.options,
+                modifiers: [
+                    ...defaults,
+                    ...(this.props.modifiers ?? []),
+                    { name: 'eventListeners', enabled: enabled }
+                ]
+            };
+            this.instance.setOptions(options);
+            this.instance.update();
+        }
+    }
+
+    private popperInit = (reference: HTMLElement, popper: HTMLElement) => {
+        this.instance?.destroy();
+        this.instance = createPopper<StrictModifiers>(reference, popper, {
+            placement: this.props.placement,
+            modifiers: [...defaults, ...(this.props.modifiers ?? [])]
+        });
+    }
+
     render() {
         const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
         return <ul ref={this.menuRef} className={`dropdown-menu${className ? ` ${className}` : ""}`} style={{ margin: 0 }} {...other}>
-            {this.state.children ?? children}
+            {render ? render(this.state.anchor) : children}
         </ul>
     }
 }

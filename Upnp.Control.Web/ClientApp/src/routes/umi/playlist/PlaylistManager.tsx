@@ -333,7 +333,7 @@ export class PlaylistManagerCore extends Component<PlaylistManagerProps, Playlis
                                             <div className="float-container m-3">
                                                 <button type="button" className="btn btn-round btn-primary"
                                                     onClick={isRootLevel && selected === 0 ? this.createPlaylist : undefined}
-                                                    data-bs-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>
+                                                    data-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>
                                                     <svg><use href="symbols.svg#add" /></svg>
                                                 </button>
                                             </div>
