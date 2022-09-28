@@ -88,7 +88,7 @@ class NavigationApiTrackerImpl extends TrackerBase {
         const { navigationType, info, canIntercept, userInitiated, destination: { index, sameDocument } } = event;
 
         if (canIntercept && navigationType === "push" && info === "pushState") {
-            event.intercept({ handler: NavigationApiTrackerImpl.handler, focusReset: "manual" });
+            event.intercept({ handler: NavigationApiTrackerImpl.handler, focusReset: "manual", scroll: "manual" });
             return;
         }
 
