@@ -60,9 +60,7 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
 
     componentWillUnmount() {
         this.popupRef.current?.parentElement?.removeEventListener("click", this.parentClickListener);
-        document.removeEventListener("click", this.documentClickListener, true);
-        document.removeEventListener("keydown", this.keydownListener, true);
-        this.popupRef.current?.removeEventListener("focusout", this.focusoutListener);
+        this.unsubscribe();
 
         this.strategy.destroy();
     }
@@ -71,7 +69,7 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
 
     hide = () => this.setState({ show: false });
 
-    private update = async (anchor: HTMLElement | undefined, visibility: boolean) => {
+    private async update(anchor: HTMLElement | undefined, visibility: boolean) {
         const popup = this.popupRef.current!;
 
         if (!anchor) {
@@ -82,16 +80,10 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
         }
 
         if (popup.classList.toggle("show", visibility)) {
-            document.addEventListener("click", this.documentClickListener, true);
-            document.addEventListener("keydown", this.keydownListener, true);
-            popup.addEventListener("focusout", this.focusoutListener);
-            anchor?.setAttribute("aria-expanded", "true");
+            this.subscribe();
             await this.backNavTracker.start();
         } else {
-            document.removeEventListener("click", this.documentClickListener, true);
-            document.removeEventListener("keydown", this.keydownListener, true);
-            popup.removeEventListener("focusout", this.focusoutListener);
-            anchor?.setAttribute("aria-expanded", "false");
+            this.unsubscribe();
             await this.backNavTracker.stop();
         }
     }
@@ -141,36 +133,28 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
     private parentClickListener = (event: MouseEvent) => {
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
         if (item) {
-            event.stopImmediatePropagation();
+            event.stopPropagation();
             this.show(item);
         }
     }
 
-    private documentClickListener = (event: MouseEvent) => {
-        if (event.composedPath().includes(this.popupRef.current!)) {
-            const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
-            if (item && this.props.onSelected) {
-                this.props.onSelected(item, this.state.anchor);
-            }
-
+    private documentPointerdownListener = (event: PointerEvent) => {
+        if (event.composedPath().includes(this.popupRef.current!))
             return;
-        }
 
         event.preventDefault();
-        event.stopImmediatePropagation();
-
+        event.stopPropagation();
         this.hide();
     }
 
-    private keydownListener = (event: KeyboardEvent) => {
+    private documentKeydownListener = (event: KeyboardEvent) => {
         switch (event.code) {
             case "Escape":
                 this.hide();
                 break;
             case "Tab":
-                if (this.state.anchor !== document.activeElement) {
+                if (this.state.anchor !== document.activeElement)
                     return;
-                }
 
                 if (event.shiftKey)
                     this.focusPrev();
@@ -191,10 +175,34 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
         event.preventDefault();
     }
 
+    private clickListener = (event: MouseEvent) => {
+        const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
+        if (item) {
+            this.hide();
+            this.props.onSelected?.(item, this.state.anchor);
+        }
+    }
+
     private focusoutListener = (event: FocusEvent) => {
         if (!this.popupRef.current?.contains(event.relatedTarget as Node)) {
             this.hide();
         }
+    }
+
+    private subscribe() {
+        const popup = this.popupRef.current!;
+        document.addEventListener("pointerdown", this.documentPointerdownListener, true);
+        document.addEventListener("keydown", this.documentKeydownListener, true);
+        popup.addEventListener("focusout", this.focusoutListener);
+        popup.addEventListener("click", this.clickListener);
+    }
+
+    private unsubscribe() {
+        const popup = this.popupRef.current!;
+        document.removeEventListener("pointerdown", this.documentPointerdownListener, true);
+        document.removeEventListener("keydown", this.documentKeydownListener, true);
+        popup.removeEventListener("focusout", this.focusoutListener);
+        popup.removeEventListener("click", this.clickListener);
     }
 
     render() {
