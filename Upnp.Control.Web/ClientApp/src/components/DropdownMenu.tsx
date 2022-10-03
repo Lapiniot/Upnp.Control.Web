@@ -1,6 +1,6 @@
 import { Placement } from "@popperjs/core/lib/enums";
 import { createPopper, Instance as PopperInstance, OptionsGeneric, StrictModifiers } from "@popperjs/core/lib/popper";
-import { ButtonHTMLAttributes, Component, createRef, HTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes, createRef, HTMLAttributes, PureComponent, ReactNode } from "react";
 import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
@@ -32,7 +32,7 @@ export function MenuItem({ className, action, glyph, children, ...other }: Butto
     </li>
 }
 
-export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState> {
+export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     popupRef = createRef<HTMLUListElement>();
     state: DropdownMenuState = { show: false, anchor: undefined };
     backNavTracker: NavigationBackTracker;

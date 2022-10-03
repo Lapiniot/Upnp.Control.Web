@@ -1,22 +1,22 @@
-import React from "react";
+import { createRef, PureComponent } from "react";
 import { itemBookmarks } from "../../components/BookmarkService";
-import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
-import { MediaQueries } from "../../components/MediaQueries";
 import DialogHost from "../../components/DialogHost";
+import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
+import { HotKey, HotKeys } from "../../components/HotKey";
+import { MediaQueries } from "../../components/MediaQueries";
 import WebApi from "../../components/WebApi";
 import { useBookmarkButton } from "./BookmarkButton";
 import { BottomBar } from "./BottomBar";
 import Breadcrumb from "./Breadcrumb";
 import { BrowserActionMenu, renderActionMenuItem } from "./BrowserActionMenu";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
-import { DIDLTools } from "./DIDLTools";
 import { CellTemplate, CellTemplateProps } from "./BrowserView";
+import { DIDLTools } from "./DIDLTools";
 import ItemInfoDialog from "./ItemInfoDialog";
 import Pagination from "./Pagination";
 import { RowStateProvider } from "./RowStateContext";
 import $s from "./Settings";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
-import { HotKey, HotKeys } from "../../components/HotKey";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);
@@ -62,8 +62,8 @@ type BrowserState = {
 
 type BrowserProps = BrowserCoreProps<CellContext> & { device: string; };
 
-export class Browser extends React.Component<BrowserProps, BrowserState> {
-    dialogHostRef = React.createRef<DialogHost>();
+export class Browser extends PureComponent<BrowserProps, BrowserState> {
+    dialogHostRef = createRef<DialogHost>();
 
     constructor(props: BrowserProps) {
         super(props);
@@ -213,6 +213,6 @@ export class Browser extends React.Component<BrowserProps, BrowserState> {
                 {MediaQueries.largeScreen.matches && parents.length > 1 && <Breadcrumb className="border-top" items={parents} />}
             </div>
             <DialogHost ref={this.dialogHostRef} />
-        </>;
+        </>
     }
 }

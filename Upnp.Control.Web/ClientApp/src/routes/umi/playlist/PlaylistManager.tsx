@@ -1,4 +1,4 @@
-import { Component, ComponentProps, ComponentType, createRef, HTMLAttributes, ReactElement, UIEventHandler, useCallback, useMemo } from "react";
+import { ComponentProps, ComponentType, createRef, HTMLAttributes, PureComponent, ReactElement, UIEventHandler, useCallback, useMemo } from "react";
 import { DataFetchProps } from "../../../components/DataFetch";
 import { DialogProps } from "../../../components/Dialog";
 import PromptDialog from "../../../components/Dialog.Prompt";
@@ -55,7 +55,7 @@ function fetchPlaylistStateAsync(deviceId: string) {
 
 const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"]
 
-export class PlaylistManagerCore extends Component<PlaylistManagerProps, PlaylistManagerState> {
+export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
     dialogHostRef = createRef<DialogHost>();
