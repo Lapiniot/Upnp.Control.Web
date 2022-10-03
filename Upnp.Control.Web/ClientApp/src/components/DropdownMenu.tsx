@@ -65,9 +65,13 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
         this.strategy.destroy();
     }
 
-    show = (anchor: HTMLElement) => this.setState({ show: true, anchor });
+    show(anchor: HTMLElement) {
+        this.setState({ show: true, anchor });
+    }
 
-    hide = () => this.setState({ show: false });
+    hide() {
+        this.setState({ show: false });
+    }
 
     private async update(anchor: HTMLElement | undefined, visibility: boolean) {
         const popup = this.popupRef.current!;
@@ -79,20 +83,51 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
             this.strategy.update(popup, anchor, visibility, { placement, modifiers });
         }
 
-        if (popup.classList.toggle("show", visibility)) {
+        if (popup.classList.contains("show") === visibility) return;
+
+        if (visibility) {
+            popup.classList.add("showing", "show");
+            popup.offsetHeight;
+            popup.classList.remove("showing");
+            await this.animationsFinished(popup);
             this.subscribe();
             await this.backNavTracker.start();
         } else {
             this.unsubscribe();
             await this.backNavTracker.stop();
+            popup.classList.add("showing");
+            await this.animationsFinished(popup);
+            popup.classList.remove("show", "showing");
         }
     }
 
-    private queryAll = (selector: string): NodeListOf<HTMLElement> | undefined => this.popupRef.current?.querySelectorAll<HTMLElement>(selector);
+    private queryAll(selector: string) {
+        return this.popupRef.current!.querySelectorAll<HTMLElement>(selector);
+    }
+
+    private animationsFinished(element: HTMLElement) {
+        return Promise.allSettled(element.getAnimations().map(a => a.finished));
+    }
+
+    private subscribe() {
+        const popup = this.popupRef.current!;
+        document.addEventListener("pointerdown", this.documentPointerdownListener, true);
+        document.addEventListener("keydown", this.documentKeydownListener, true);
+        popup.addEventListener("focusout", this.focusoutListener);
+        popup.addEventListener("click", this.clickListener);
+    }
+
+    private unsubscribe() {
+        const popup = this.popupRef.current!;
+        document.removeEventListener("pointerdown", this.documentPointerdownListener, true);
+        document.removeEventListener("keydown", this.documentKeydownListener, true);
+        popup.removeEventListener("focusout", this.focusoutListener);
+        popup.removeEventListener("click", this.clickListener);
+    }
 
     //#region Focus helpers
 
-    private focusNext = () => {
+    private focusNext() {
         const items = this.queryAll(ENABLED_ITEM_SELECTOR);
 
         if (!items?.length) return false;
@@ -110,7 +145,7 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
         items[0].focus();
     }
 
-    private focusPrev = () => {
+    private focusPrev() {
         const items = this.queryAll(ENABLED_ITEM_SELECTOR);
 
         if (!items?.length) return false;
@@ -189,25 +224,10 @@ export class DropdownMenu extends Component<DropdownMenuProps, DropdownMenuState
         }
     }
 
-    private subscribe() {
-        const popup = this.popupRef.current!;
-        document.addEventListener("pointerdown", this.documentPointerdownListener, true);
-        document.addEventListener("keydown", this.documentKeydownListener, true);
-        popup.addEventListener("focusout", this.focusoutListener);
-        popup.addEventListener("click", this.clickListener);
-    }
-
-    private unsubscribe() {
-        const popup = this.popupRef.current!;
-        document.removeEventListener("pointerdown", this.documentPointerdownListener, true);
-        document.removeEventListener("keydown", this.documentKeydownListener, true);
-        popup.removeEventListener("focusout", this.focusoutListener);
-        popup.removeEventListener("click", this.clickListener);
-    }
-
     render() {
         const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
-        return <ul ref={this.popupRef} className={`dropdown-menu${className ? ` ${className}` : ""}`} {...other}>
+        return <ul ref={this.popupRef} inert={this.state.show ? undefined : ""}
+            className={`dropdown-menu fade${className ? ` ${className}` : ""}`} {...other}>
             {render ? render(this.state.anchor) : children}
         </ul>
     }

@@ -26,7 +26,7 @@ export function Toast({ header, hint, color, children, autohide, animation = tru
         const target = ref.current!;
         target.classList.add("showing");
         Promise.allSettled(target.getAnimations().map(a => a.finished)).then(() => {
-            target.classList.remove("show");
+            target.classList.remove("show", "showing");
             onDismissed?.(target);
         })
     }, [onDismissed]);
