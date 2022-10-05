@@ -20,8 +20,8 @@ const BookmarkItemButton = useBookmarkButton("PlaylistBookmarkWidget", playlistB
 export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
     const active = !!(rowState & RowState.Active);
     const playing = ctx?.state === "PLAYING";
-    return <div className="hstack">
-        <button type="button" className="btn btn-stack me-2 flex-shrink-0" data-index={index}
+    return <div className="hstack g-1">
+        <button type="button" className="btn btn-stack flex-shrink-0" data-index={index}
             onClick={active ? (playing ? ctx?.pause : ctx?.play) : ctx?.playItem}>
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} hint="player" />
             {active && <div className="d-flex album-art hover-hide fade-in-out text-white bg-black bg-opacity-50">

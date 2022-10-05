@@ -2,8 +2,7 @@
     display: grid;
     height: 100%;
     place-items: center;
-    gap: 0 0;
-    overflow: hidden;
+    gap: map-get($spacers, 1);
     grid: "art art art art art" 1fr "title title title title title" auto "prog prog prog prog prog" auto "mode prev play next vol" auto / 1fr auto auto auto 1fr;
 
     .art {
@@ -66,7 +65,6 @@
 
     @media (max-height: 420px) {
         grid: "art art art art art art" 1fr "prog prog prog prog prog prog" auto "prev play next title mode vol" auto / auto auto auto minmax(0, 1fr) auto auto;
-        gap: map-get($spacers, 1) 0;
 
         .art {
             max-width: 100%;
@@ -80,13 +78,11 @@
 
     @media (min-width: 576px) and (min-height: 576px) {
         grid: "prog prog prog prog prog prog prog prog prog" auto "prev play next . art title . mode vol" auto / auto auto auto 1fr auto minmax(0, auto) 1fr auto auto;
-        gap: map-get($spacers, 1) 0;
 
         .art {
             max-width: 1em;
             max-height: 1em;
             font-size: 4rem;
-            margin-inline: map-get($spacers, 1);
         }
 
         .pl-title {
