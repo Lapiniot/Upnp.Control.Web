@@ -8,7 +8,7 @@
     --#{$prefix}table-active-color: #{$table-active-color};
     --#{$prefix}table-active-bg: #{$table-active-bg};
     --#{$prefix}table-selected-bg: #{$primary};
-    --#{$prefix}table-focused-accent: #{shade-color($primary, 40%)};
+    --#{$prefix}table-focused-accent: #{$primary-700};
     --#{$prefix}table-selected-color: white;
     --#{$prefix}table-cell-padding-x: #{$table-cell-padding-x};
     --#{$prefix}table-cell-padding-y: #{$table-cell-padding-y};
@@ -131,8 +131,6 @@
 .table-hover {
     --#{$prefix}table-hover-color: #{$table-hover-color};
     --#{$prefix}table-hover-bg: #{$table-hover-bg};
-    --#{$prefix}table-hover-l1-bg: #{shade-color($table-hover-bg, 10%)};
-    --#{$prefix}table-hover-l1-border-color: #{shade-color($table-hover-bg, 30%)};
 
     > .table-body {
         > :where(:hover) {

@@ -17,17 +17,12 @@
 
 .btn-plain {
     --#{$prefix}btn-color: inherit;
-    --#{$prefix}btn-border-width: 1px;
+    --#{$prefix}btn-border-width: 0;
     --#{$prefix}btn-box-shadow: none;
     --#{$prefix}gradient: none;
-    // active
-    --#{$prefix}btn-active-bg: #{shade-color($gray-200, 10%)};
-    --#{$prefix}btn-active-border-color: #{shade-color($gray-200, 30%)};
-    // hover
-    --#{$prefix}btn-hover-bg: #{$gray-200};
-    --#{$prefix}btn-hover-border-color: #{shade-color($gray-200, 20%)};
-    // disabled
-    --#{$prefix}btn-disabled-border-color: transparent;
+    --#{$prefix}btn-active-bg: rgba(0, 0, 0, .3);
+    --#{$prefix}btn-hover-bg: rgba(0, 0, 0, .25);
+    --#{$prefix}btn-focus-shadow-rgb: 0, 0, 0;
 }
 
 .btn-round {
@@ -40,20 +35,14 @@
     }
 }
 
-.table .btn-plain {
-    --#{$prefix}btn-hover-color: var(--#{$prefix}table-hover-l1-color, inherit);
-    --#{$prefix}btn-hover-bg: var(--#{$prefix}table-hover-l1-bg);
-    --#{$prefix}btn-hover-border-color: var(--#{$prefix}table-hover-l1-border-color);
-}
-
 .btn-stack {
     --#{$prefix}btn-padding-x: 0;
     --#{$prefix}btn-padding-y: 0;
     --#{$prefix}btn-color: inherit;
     --#{$prefix}btn-border-width: 0;
     --#{$prefix}btn-box-shadow: none;
-    --#{$prefix}btn-focus-box-shadow: none;
     --#{$prefix}gradient: none;
+    --#{$prefix}btn-focus-shadow-rgb: 0, 0, 0;
     @extend %grid-stack;
     overflow: hidden;
 
@@ -73,11 +62,6 @@
         > .hover-hide {
             opacity: 0;
         }
-    }
-
-    &:focus-visible {
-        outline: solid 2px var(--#{$prefix}accent-color);
-        outline-offset: 1px;
     }
 }
 
