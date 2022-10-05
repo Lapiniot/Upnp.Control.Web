@@ -168,7 +168,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     private parentClickListener = (event: MouseEvent) => {
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
         if (item) {
-            event.stopPropagation();
+            //event.stopPropagation();
             this.show(item);
         }
     }
@@ -178,7 +178,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
             return;
 
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         this.hide();
     }
 
