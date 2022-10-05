@@ -56,7 +56,7 @@ export default function () {
         <div className="accordion accordion-flush" id="bookmarks-section">
             {Object.entries(data).map(([id, value], index) => <div className="accordion-item" key={index}>
                 <h2 className="accordion-header" id={`h-${id}`}>
-                    <button type="button" className={`accordion-button${id !== expanded ? " collapsed" : ""}`} data-toggle="collapse"
+                    <button type="button" className={`accordion-button${id !== expanded ? " collapsed" : ""}`} data-bs-toggle="collapse"
                         data-bs-target={`#${id}`} aria-expanded={id === expanded ? "true" : "false"}
                         aria-controls={id} onClick={clickHandler}>{headers[id as BookmarkGroup]}<span className="badge rounded-pill bg-secondary ms-1 small">{value.length}</span></button>
                 </h2>
