@@ -2,15 +2,17 @@ import { GestureHandler, GestureRecognizer, PointerType } from "./GestureRecogni
 
 export type { GestureHandler };
 
+type HoldDelay = "short" | "normal" | "long" | number
+
 export class PressHoldGestureRecognizer<TElement extends HTMLElement = HTMLElement> extends GestureRecognizer<TElement, "hold", undefined> {
     delay: number;
     timeout: number | null = null;
     tolerance: number;
     predicate: (e: PointerEvent) => boolean;
 
-    constructor(handler: GestureHandler<TElement, "hold", undefined>, delay = 500, tolerance = 5, pointerType = PointerType.Primary) {
+    constructor(handler: GestureHandler<TElement, "hold", undefined>, delay: HoldDelay = "normal", tolerance = 5, pointerType = PointerType.Primary) {
         super(handler, true, true);
-        this.delay = delay;
+        this.delay = delay === "normal" ? 750 : delay === "short" ? 500 : delay === "long" ? 1000 : delay;
         this.tolerance = tolerance;
         this.predicate = GestureRecognizer.buildPointerTypePredicate(pointerType);
     }
