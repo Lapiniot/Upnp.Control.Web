@@ -20,8 +20,31 @@ type DropdownMenuState = {
 }
 
 abstract class PlacementStrategy {
-    abstract update(popup: HTMLElement, anchor: HTMLElement, visibility: boolean, options?: Partial<OptionsGeneric<StrictModifiers>>): void;
-    abstract destroy(): void;
+    public abstract update(popup: HTMLElement, anchor: HTMLElement, options?: Partial<OptionsGeneric<StrictModifiers>>): Promise<void>;
+    public abstract destroy(): void;
+    protected abstract get popup(): HTMLElement;
+
+    public async toggle(visible: boolean): Promise<void> {
+        const popup = this.popup;
+        if (visible) {
+            popup.classList.add("show", "showing", "fade");
+            await this.visibilityChanged(true);
+            popup.offsetHeight;
+            popup.classList.remove("showing");
+            await this.animationsFinished(popup);
+        } else {
+            popup.classList.add("showing");
+            await this.animationsFinished(popup);
+            popup.classList.remove("show", "showing", "fade");
+            await this.visibilityChanged(false);
+        }
+    }
+
+    protected animationsFinished(element: HTMLElement) {
+        return Promise.allSettled(element.getAnimations().map(a => a.finished));
+    }
+
+    protected visibilityChanged(_visible: boolean): Promise<void> | void { }
 }
 
 export function MenuItem({ className, action, glyph, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action: string, glyph?: string }) {
@@ -41,7 +64,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 
     static defaultProps: Partial<DropdownMenuProps> = {
         placement: "auto",
-        modifiers: [{ name: "offset", options: { offset: [0, 4] } }]
+        modifiers: [{ name: "offset", options: { offset: [0, 5] } }]
     }
 
     constructor(props: DropdownMenuProps) {
@@ -62,7 +85,6 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     componentWillUnmount() {
         this.popupRef.current?.parentElement?.removeEventListener("click", this.parentClickListener);
         this.unsubscribe();
-
         this.strategy.destroy();
     }
 
@@ -81,33 +103,24 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
             this.strategy.destroy();
         } else {
             const { placement, modifiers } = this.props;
-            this.strategy.update(popup, anchor, visibility, { placement, modifiers });
+            await this.strategy.update(popup, anchor, { placement, modifiers });
         }
 
         if (popup.classList.contains("show") === visibility) return;
 
+        await this.strategy.toggle(visibility);
+
         if (visibility) {
-            popup.classList.add("showing", "show");
-            popup.offsetHeight;
-            popup.classList.remove("showing");
-            await this.animationsFinished(popup);
             this.subscribe();
             await this.backNavTracker.start();
         } else {
             this.unsubscribe();
             await this.backNavTracker.stop();
-            popup.classList.add("showing");
-            await this.animationsFinished(popup);
-            popup.classList.remove("show", "showing");
         }
     }
 
     private queryAll(selector: string) {
         return this.popupRef.current!.querySelectorAll<HTMLElement>(selector);
-    }
-
-    private animationsFinished(element: HTMLElement) {
-        return Promise.allSettled(element.getAnimations().map(a => a.finished));
     }
 
     private subscribe() {
@@ -234,7 +247,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     render() {
         const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
         const { show, anchor } = this.state;
-        const cls = `dropdown-menu fade${className ? ` ${className}` : ""}`;
+        const cls = `dropdown-menu${className ? ` ${className}` : ""}`;
         return <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls} {...other}>
             {render ? render(anchor) : children}
         </ul>
@@ -244,18 +257,26 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 class PoperPlacementStrategy extends PlacementStrategy {
     instance: PopperInstance | null = null;
 
-    override update(popup: HTMLElement, anchor: HTMLElement, visible: boolean, options?: Partial<OptionsGeneric<StrictModifiers>> | undefined): void {
-        if (this.instance?.state.elements.popper !== popup || this.instance.state.elements.reference != anchor) {
+    protected get popup(): HTMLElement {
+        const popper = this.instance?.state.elements.popper;
+        if (!popper) throw new Error("Popper instance is not initialized properly.");
+        return popper;
+    }
+
+    override async update(popup: HTMLElement, anchor: HTMLElement, options: Partial<OptionsGeneric<StrictModifiers>>): Promise<void> {
+        if (this.instance?.state.elements.popper !== popup || this.instance.state.elements.reference !== anchor) {
             this.instance?.destroy();
             this.instance = createPopper<StrictModifiers>(anchor, popup, options);
+        } else {
+            await this.instance.setOptions(options);
         }
+    }
 
-        this.instance.setOptions({
+    protected override async visibilityChanged(visible: boolean) {
+        await this.instance?.setOptions((options) => ({
             ...options,
-            modifiers: [...(options?.modifiers ?? []), { name: 'eventListeners', enabled: visible }]
-        });
-
-        this.instance.update();
+            modifiers: [...options.modifiers!.filter(m => m.name !== "eventListeners"), { name: "eventListeners", enabled: visible }]
+        }));
     }
 
     override destroy(): void {
