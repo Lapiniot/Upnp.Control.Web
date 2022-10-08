@@ -37,6 +37,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     state: DropdownMenuState = { show: false, anchor: undefined };
     backNavTracker: NavigationBackTracker;
     strategy: PlacementStrategy;
+    skipActivation: boolean = false;
 
     static defaultProps: Partial<DropdownMenuProps> = {
         placement: "auto",
@@ -166,9 +167,14 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     //#endregion
 
     private parentClickListener = (event: MouseEvent) => {
+        if (this.skipActivation) {
+            this.skipActivation = false;
+            return;
+        }
+
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
         if (item) {
-            //event.stopPropagation();
+            event.stopPropagation();
             this.show(item);
         }
     }
@@ -177,6 +183,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         if (event.composedPath().includes(this.popupRef.current!))
             return;
 
+        this.skipActivation = true;
         event.preventDefault();
         event.stopImmediatePropagation();
         this.hide();
@@ -206,7 +213,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
             default: return;
         }
 
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         event.preventDefault();
     }
 
@@ -226,9 +233,10 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 
     render() {
         const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
-        return <ul ref={this.popupRef} inert={this.state.show ? undefined : ""}
-            className={`dropdown-menu fade${className ? ` ${className}` : ""}`} {...other}>
-            {render ? render(this.state.anchor) : children}
+        const { show, anchor } = this.state;
+        const cls = `dropdown-menu fade${className ? ` ${className}` : ""}`;
+        return <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls} {...other}>
+            {render ? render(anchor) : children}
         </ul>
     }
 }
