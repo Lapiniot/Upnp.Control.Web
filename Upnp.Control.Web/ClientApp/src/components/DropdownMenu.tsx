@@ -1,7 +1,8 @@
 import { Placement } from "@popperjs/core/lib/enums";
-import { createPopper, Instance as PopperInstance, OptionsGeneric, StrictModifiers } from "@popperjs/core/lib/popper";
+import { StrictModifiers } from "@popperjs/core/lib/popper";
 import { ButtonHTMLAttributes, createRef, HTMLAttributes, PureComponent, ReactNode } from "react";
 import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
+import { PoperPlacementStrategy, PopupPlacementStrategy } from "./PopupPlacementStrategy";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
@@ -19,34 +20,6 @@ type DropdownMenuState = {
     show: boolean;
 }
 
-abstract class PlacementStrategy {
-    public abstract update(popup: HTMLElement, anchor: HTMLElement, options?: Partial<OptionsGeneric<StrictModifiers>>): Promise<void>;
-    public abstract destroy(): void;
-    protected abstract get popup(): HTMLElement;
-
-    public async toggle(visible: boolean): Promise<void> {
-        const popup = this.popup;
-        if (visible) {
-            popup.classList.add("show", "showing", "fade");
-            await this.visibilityChanged(true);
-            popup.offsetHeight;
-            popup.classList.remove("showing");
-            await this.animationsFinished(popup);
-        } else {
-            popup.classList.add("showing");
-            await this.animationsFinished(popup);
-            popup.classList.remove("show", "showing", "fade");
-            await this.visibilityChanged(false);
-        }
-    }
-
-    protected animationsFinished(element: HTMLElement) {
-        return Promise.allSettled(element.getAnimations().map(a => a.finished));
-    }
-
-    protected visibilityChanged(_visible: boolean): Promise<void> | void { }
-}
-
 export function MenuItem({ className, action, glyph, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action: string, glyph?: string }) {
     return <li>
         <button type="button" data-action={action} className={`dropdown-item${className ? ` ${className}` : ""}`} {...other}>
@@ -59,7 +32,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     popupRef = createRef<HTMLUListElement>();
     state: DropdownMenuState = { show: false, anchor: undefined };
     backNavTracker: NavigationBackTracker;
-    strategy: PlacementStrategy;
+    strategy: PopupPlacementStrategy;
     skipActivation: boolean = false;
 
     static defaultProps: Partial<DropdownMenuProps> = {
@@ -251,35 +224,5 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         return <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls} {...other}>
             {render ? render(anchor) : children}
         </ul>
-    }
-}
-
-class PoperPlacementStrategy extends PlacementStrategy {
-    instance: PopperInstance | null = null;
-
-    protected get popup(): HTMLElement {
-        const popper = this.instance?.state.elements.popper;
-        if (!popper) throw new Error("Popper instance is not initialized properly.");
-        return popper;
-    }
-
-    override async update(popup: HTMLElement, anchor: HTMLElement, options: Partial<OptionsGeneric<StrictModifiers>>): Promise<void> {
-        if (this.instance?.state.elements.popper !== popup || this.instance.state.elements.reference !== anchor) {
-            this.instance?.destroy();
-            this.instance = createPopper<StrictModifiers>(anchor, popup, options);
-        } else {
-            await this.instance.setOptions(options);
-        }
-    }
-
-    protected override async visibilityChanged(visible: boolean) {
-        await this.instance?.setOptions((options) => ({
-            ...options,
-            modifiers: [...options.modifiers!.filter(m => m.name !== "eventListeners"), { name: "eventListeners", enabled: visible }]
-        }));
-    }
-
-    override destroy(): void {
-        this.instance?.destroy();
     }
 }
