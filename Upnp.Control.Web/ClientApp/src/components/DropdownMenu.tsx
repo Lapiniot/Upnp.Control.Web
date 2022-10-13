@@ -2,7 +2,7 @@ import { Placement } from "@popperjs/core/lib/enums";
 import { StrictModifiers } from "@popperjs/core/lib/popper";
 import { ButtonHTMLAttributes, createRef, HTMLAttributes, PureComponent, ReactNode } from "react";
 import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
-import { PoperPlacementStrategy, PopupPlacementStrategy } from "./PopupPlacementStrategy";
+import { PopperStrategy, PopupPlacementStrategy } from "./PopupPlacementStrategy";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
@@ -43,7 +43,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     constructor(props: DropdownMenuProps) {
         super(props);
         this.backNavTracker = createBackNavigationTracker(() => this.hide());
-        this.strategy = new PoperPlacementStrategy();
+        this.strategy = new PopperStrategy();
     }
 
     componentDidMount() {
@@ -220,7 +220,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     render() {
         const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
         const { show, anchor } = this.state;
-        const cls = `dropdown-menu${className ? ` ${className}` : ""}`;
+        const cls = `dropdown-menu fade${className ? ` ${className}` : ""}`;
         return <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls} {...other}>
             {render ? render(anchor) : children}
         </ul>

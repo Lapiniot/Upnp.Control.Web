@@ -7,16 +7,16 @@ export abstract class PopupPlacementStrategy {
 
     public async toggle(visible: boolean): Promise<void> {
         const popup = this.popup;
+        popup.classList.add("showing");
         if (visible) {
-            popup.classList.add("show", "showing", "fade");
-            await this.visibilityChanged(true);
+            popup.classList.add("show");
             popup.offsetHeight;
+            await this.visibilityChanged(true);
             popup.classList.remove("showing");
             await this.animationsFinished(popup);
         } else {
-            popup.classList.add("showing");
             await this.animationsFinished(popup);
-            popup.classList.remove("show", "showing", "fade");
+            popup.classList.remove("show", "showing");
             await this.visibilityChanged(false);
         }
     }
@@ -28,7 +28,7 @@ export abstract class PopupPlacementStrategy {
     protected visibilityChanged(_visible: boolean): Promise<void> | void { }
 }
 
-export class PoperPlacementStrategy extends PopupPlacementStrategy {
+export class PopperStrategy extends PopupPlacementStrategy {
     instance: Instance | null = null;
 
     protected get popup(): HTMLElement {
