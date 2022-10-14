@@ -52,7 +52,10 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 
     componentDidUpdate() {
         const { anchor, show } = this.state;
-        this.update(anchor, show).then(() => anchor?.focus());
+        this.update(anchor, show).then(() => {
+            anchor?.focus();
+            this.skipActivation = false;
+        });
     }
 
     componentWillUnmount() {
@@ -153,10 +156,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     //#endregion
 
     private parentClickListener = (event: MouseEvent) => {
-        if (this.skipActivation) {
-            this.skipActivation = false;
-            return;
-        }
+        if (this.skipActivation) return;
 
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
         if (item) {
