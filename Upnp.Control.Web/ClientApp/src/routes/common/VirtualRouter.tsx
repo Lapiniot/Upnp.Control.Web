@@ -6,11 +6,23 @@ interface VirtualRouterProps {
     initialPath: string
 }
 
-type RouteProps = {
+interface RouteBaseProps {
     caseSensitive?: boolean,
-    element?: React.ReactElement,
-    children?: ReactElement | ReactFragment
-} & ({ index?: false, path?: string } | { index: true })
+    path?: string;
+    element?: React.ReactNode | null
+}
+
+interface IndexRouteProps extends RouteBaseProps {
+    index: true,
+    children?: undefined
+}
+
+interface NonIndexRouteProps extends RouteBaseProps {
+    index?: false,
+    children?: ReactNode
+}
+
+type RouteProps = IndexRouteProps | NonIndexRouteProps;
 
 interface RouterLocationContextObject {
     location: URL,
@@ -30,14 +42,17 @@ const RouterLocationContext = createContext<RouterLocationContextObject>({
 
 const RouterMatchContext = createContext<RouterMatchContextObject>({ matches: null, pathnames: null, level: -1 })
 
-function buildRoutes(children: ReactNode): RouteObject[] {
-    return (Children.toArray(children) as ReactElement<RouteProps>[]).map(
-        ({ type, props }: ReactElement<RouteProps>) => {
-            if (type === Route)
-                return { ...props, children: buildRoutes(props.children) }
-            else
-                throw new Error("<Routes> or <Route> elements may only have <Route> elements as their children");
-        });
+function filterRouteElements(node: ReactNode): node is ReactElement<RouteProps> {
+    if (node && typeof node === "object" && "type" in node && node.type === Route)
+        return true;
+    throw new Error("<Routes> or <Route> elements may only have <Route> elements as their children");
+}
+
+function buildRoutes(children: ReactNode | ReactNode[]): RouteObject[] {
+    return Children.toArray(children).filter(filterRouteElements).map(
+        ({ props: { index, children, ...other } }) => (index === true
+            ? { ...other, index: true, children: undefined }
+            : { ...other, index, children: buildRoutes(children) }));
 }
 
 // some <Route /> elements do not contribute to path resolution, so filter them out.
