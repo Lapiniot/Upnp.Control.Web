@@ -1,6 +1,6 @@
 import { Placement } from "@popperjs/core/lib/enums";
 import { StrictModifiers } from "@popperjs/core/lib/popper";
-import { ButtonHTMLAttributes, createRef, HTMLAttributes, PureComponent, ReactNode } from "react";
+import { ButtonHTMLAttributes, createRef, FocusEvent, HTMLAttributes, MouseEvent, PureComponent, ReactNode } from "react";
 import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
 import { PopperStrategy, PopupPlacementStrategy } from "./PopupPlacementStrategy";
 
@@ -8,16 +8,23 @@ const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
 const TOGGLE_ITEM_SELECTOR = "[data-toggle='dropdown']";
 
+type DropdownMode = "menu" | "action-sheet" | "auto";
+
 export type DropdownMenuProps = Omit<HTMLAttributes<HTMLUListElement>, "onSelect"> & {
-    placement?: Placement;
-    modifiers?: StrictModifiers[];
-    onSelected?: (item: HTMLElement, anchor?: HTMLElement) => void;
-    render?: (anchor?: HTMLElement | null) => ReactNode;
+    mode: DropdownMode,
+    placement: Placement,
+    modifiers: StrictModifiers[],
+    onSelected?: (item: HTMLElement, anchor?: HTMLElement) => void,
+    render?: (anchor?: HTMLElement | null) => ReactNode
 }
 
 type DropdownMenuState = {
-    anchor?: HTMLElement;
-    show: boolean;
+    anchor?: HTMLElement,
+    show: boolean
+}
+
+function animationsFinished(element: HTMLElement) {
+    return Promise.allSettled(element.getAnimations().map(a => a.finished));
 }
 
 export function MenuItem({ className, action, glyph, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action: string, glyph?: string }) {
@@ -36,6 +43,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     skipActivation: boolean = false;
 
     static defaultProps: Partial<DropdownMenuProps> = {
+        mode: "auto",
         placement: "auto",
         modifiers: [{ name: "offset", options: { offset: [0, 5] } }]
     }
@@ -43,19 +51,52 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     constructor(props: DropdownMenuProps) {
         super(props);
         this.backNavTracker = createBackNavigationTracker(() => this.hide());
-        this.strategy = new PopperStrategy();
+        this.strategy = this.createPlacementStrategy();
+    }
+
+    private createPlacementStrategy() {
+        return new PopperStrategy();
     }
 
     componentDidMount() {
         this.popupRef.current?.parentElement?.addEventListener("click", this.parentClickListener);
     }
 
-    componentDidUpdate() {
+    override async componentDidUpdate({ mode: prevMode }: Readonly<DropdownMenuProps>): Promise<void> {
+        const popup = this.popupRef.current!;
         const { anchor, show } = this.state;
-        this.update(anchor, show).then(() => {
-            anchor?.focus();
-            this.skipActivation = false;
-        });
+        const { placement, modifiers, mode } = this.props;
+
+        if (mode !== prevMode) {
+            this.strategy.destroy();
+            this.strategy = this.createPlacementStrategy();
+        }
+
+        if (!anchor) {
+            this.strategy.destroy();
+        } else {
+            await this.strategy.update(popup, anchor, { placement, modifiers });
+        }
+
+        popup.classList.add("showing");
+        if (show) {
+            popup.classList.add("show");
+            popup.offsetHeight;
+            await this.strategy.toggle(true);
+            popup.classList.remove("showing");
+            await animationsFinished(popup);
+            this.subscribe();
+            await this.backNavTracker.start();
+        } else {
+            await animationsFinished(popup);
+            popup.classList.remove("show", "showing");
+            await this.strategy.toggle(false);
+            this.unsubscribe();
+            await this.backNavTracker.stop();
+        }
+
+        this.skipActivation = false;
+        anchor?.focus();
     }
 
     componentWillUnmount() {
@@ -72,47 +113,18 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         this.setState({ show: false });
     }
 
-    private async update(anchor: HTMLElement | undefined, visibility: boolean) {
-        const popup = this.popupRef.current!;
-
-        if (!anchor) {
-            this.strategy.destroy();
-        } else {
-            const { placement, modifiers } = this.props;
-            await this.strategy.update(popup, anchor, { placement, modifiers });
-        }
-
-        if (popup.classList.contains("show") === visibility) return;
-
-        await this.strategy.toggle(visibility);
-
-        if (visibility) {
-            this.subscribe();
-            await this.backNavTracker.start();
-        } else {
-            this.unsubscribe();
-            await this.backNavTracker.stop();
-        }
-    }
-
     private queryAll(selector: string) {
         return this.popupRef.current!.querySelectorAll<HTMLElement>(selector);
     }
 
     private subscribe() {
-        const popup = this.popupRef.current!;
         document.addEventListener("pointerdown", this.documentPointerdownListener, true);
         document.addEventListener("keydown", this.documentKeydownListener, true);
-        popup.addEventListener("focusout", this.focusoutListener);
-        popup.addEventListener("click", this.clickListener);
     }
 
     private unsubscribe() {
-        const popup = this.popupRef.current!;
         document.removeEventListener("pointerdown", this.documentPointerdownListener, true);
         document.removeEventListener("keydown", this.documentKeydownListener, true);
-        popup.removeEventListener("focusout", this.focusoutListener);
-        popup.removeEventListener("click", this.clickListener);
     }
 
     //#region Focus helpers
@@ -155,7 +167,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 
     //#endregion
 
-    private parentClickListener = (event: MouseEvent) => {
+    private parentClickListener = (event: globalThis.MouseEvent) => {
         if (this.skipActivation) return;
 
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
@@ -203,7 +215,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         event.preventDefault();
     }
 
-    private clickListener = (event: MouseEvent) => {
+    private clickHandler = (event: MouseEvent<HTMLUListElement>) => {
         const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
         if (item) {
             this.hide();
@@ -211,8 +223,10 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         }
     }
 
-    private focusoutListener = (event: FocusEvent) => {
+    private focusOutHandler = (event: FocusEvent<HTMLElement>) => {
         if (!this.popupRef.current?.contains(event.relatedTarget as Node)) {
+            event.preventDefault();
+            event.nativeEvent.stopImmediatePropagation();
             this.hide();
         }
     }
@@ -221,7 +235,8 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
         const { show, anchor } = this.state;
         const cls = `dropdown-menu fade${className ? ` ${className}` : ""}`;
-        return <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls} {...other}>
+        return <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls}
+            onClick={show ? this.clickHandler : undefined} onBlur={show ? this.focusOutHandler : undefined} {...other}>
             {render ? render(anchor) : children}
         </ul>
     }
