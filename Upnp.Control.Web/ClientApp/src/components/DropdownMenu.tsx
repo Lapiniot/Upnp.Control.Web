@@ -40,7 +40,6 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     state: DropdownMenuState = { show: false, anchor: undefined };
     backNavTracker: NavigationBackTracker;
     strategy: PopupPlacementStrategy;
-    skipActivation: boolean = false;
 
     static defaultProps: Partial<DropdownMenuProps> = {
         mode: "auto",
@@ -78,6 +77,8 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
             await this.strategy.update(popup, anchor, { placement, modifiers });
         }
 
+        anchor?.focus();
+
         popup.classList.add("showing");
         if (show) {
             popup.classList.add("show");
@@ -94,13 +95,10 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
             this.unsubscribe();
             await this.backNavTracker.stop();
         }
-
-        this.skipActivation = false;
-        anchor?.focus();
     }
 
     componentWillUnmount() {
-        this.popupRef.current?.parentElement?.removeEventListener("click", this.parentClickListener);
+        this.popupRef.current!.parentElement!.removeEventListener("click", this.parentClickListener);
         this.unsubscribe();
         this.strategy.destroy();
     }
@@ -168,8 +166,6 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     //#endregion
 
     private parentClickListener = (event: globalThis.MouseEvent) => {
-        if (this.skipActivation) return;
-
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
         if (item) {
             event.stopPropagation();
@@ -181,9 +177,17 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         if (event.composedPath().includes(this.popupRef.current!))
             return;
 
-        this.skipActivation = true;
         event.preventDefault();
         event.stopImmediatePropagation();
+
+        const state = { id: event.pointerId, type: event.pointerType };
+        event.currentTarget!.addEventListener("click", (e: Event) => {
+            if (e instanceof PointerEvent && e.pointerId === state.id && e.pointerType === state.type) {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+            }
+        }, { capture: true, once: true });
+
         this.hide();
     }
 
