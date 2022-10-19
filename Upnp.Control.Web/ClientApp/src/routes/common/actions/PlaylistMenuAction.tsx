@@ -23,7 +23,7 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
                     <svg><use href="symbols.svg#playlist_play" /></svg>
                 </button>
                 {device && <DropdownMenu data-device={device.udn} placement="top-end"
-                    style={{ overflowY: "auto", maxWidth: "100vw", maxHeight: "calc(100% - 3rem)" }}>
+                    style={{ overflowY: "auto", maxWidth: "100vw", maxHeight: "80vh" }}>
                     {items?.map(({ title, class: cls, albumArts, res }, index) => <li key={index}>
                         <button className="dropdown-item" data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
                             <AlbumArt itemClass={cls} albumArts={albumArts} className="rounded-1" hint="player" />

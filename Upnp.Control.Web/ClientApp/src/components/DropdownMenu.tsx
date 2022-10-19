@@ -1,8 +1,9 @@
 import { Placement } from "@popperjs/core/lib/enums";
 import { StrictModifiers } from "@popperjs/core/lib/popper";
-import { ButtonHTMLAttributes, createRef, FocusEvent, HTMLAttributes, MouseEvent, PureComponent, ReactNode } from "react";
+import { ButtonHTMLAttributes, createRef, HTMLAttributes, PureComponent, ReactNode, FocusEvent, MouseEvent } from "react";
 import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
-import { PopperStrategy, PopupPlacementStrategy } from "./PopupPlacementStrategy";
+import { MediaQueries } from "./MediaQueries";
+import { FixedStrategy, PopperStrategy, PopupPlacementStrategy } from "./PopupPlacementStrategy";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
@@ -53,8 +54,16 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         this.strategy = this.createPlacementStrategy();
     }
 
+    private get menuMode() {
+        return this.props.mode === "menu" || (this.props.mode === "auto" && MediaQueries.screenWidth("576px").matches);
+    }
+
     private createPlacementStrategy() {
-        return new PopperStrategy();
+        if (this.menuMode) {
+            return new PopperStrategy();
+        } else {
+            return new FixedStrategy();
+        }
     }
 
     componentDidMount() {
@@ -238,7 +247,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     render() {
         const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
         const { show, anchor } = this.state;
-        const cls = `dropdown-menu fade${className ? ` ${className}` : ""}`;
+        const cls = `dropdown-menu fade${!this.menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;
         return <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls}
             onClick={show ? this.clickHandler : undefined} onBlur={show ? this.focusOutHandler : undefined} {...other}>
             {render ? render(anchor) : children}

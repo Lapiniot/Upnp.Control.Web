@@ -29,3 +29,14 @@ export class PopperStrategy extends PopupPlacementStrategy {
         this.instance?.destroy();
     }
 }
+
+export class FixedStrategy extends PopupPlacementStrategy {
+    public override update() {
+    }
+
+    public override destroy() {
+    }
+
+    public override toggle() {
+    }
+}
