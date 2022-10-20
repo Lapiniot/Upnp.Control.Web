@@ -9,7 +9,7 @@ function link(title?: string) {
     return (value: string) => <a href={value}>{title ?? value}</a>;
 }
 
-type AttributeDescriptor<T extends {}> = [name: keyof T, title: string, converter?: (value: any) => string | number | JSX.Element];
+type AttributeDescriptor<T extends {}> = [name: keyof T & string, title: string, converter?: (value: any) => string | number | JSX.Element];
 type AttributeGroup<T extends {}> = [name: string, title: string, attributes: AttributeDescriptor<T>[]];
 
 const attributes: AttributeGroup<Upnp.DIDL.Item>[] = [
@@ -58,8 +58,8 @@ function render<T extends {}>(item: T, groups: AttributeGroup<T>[]) {
         const attrs = attributes.flatMap(({ 0: name, 1: title, 2: converter }) => {
             const value = item[name] as any;
             return value ? [
-                <span key={`l-${String(name)}}`} className="grid-form-label text-end">{title}</span>,
-                <span key={`t-${String(name)}`} className="grid-form-text text-wrap">{converter?.(value) ?? value}</span>
+                <span key={`l-${name}}`} className="grid-form-label text-end">{title}</span>,
+                <span key={`t-${name}`} className="grid-form-text text-wrap">{converter?.(value) ?? value}</span>
             ] : [];
         });
 
