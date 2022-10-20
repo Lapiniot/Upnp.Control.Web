@@ -43,6 +43,13 @@
     &.slide.fade {
         @include transition(var(--#{$transition-prefix}slide), var(--#{$transition-prefix}fade));
     }
+
+    & + div.backdrop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        z-index: 0;
+    }
 }
 
 .action-sheet {
@@ -58,4 +65,8 @@
     border-radius: 2rem 2rem 0 0;
     background: var(--#{$prefix}dropdown-bg) center top / 3.5rem no-repeat border-box url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e0e0e0'%3E%3Cpath d='M4 3h16c.55 0 1 .45 1 1s-.45 1-1 1H4c-.55 0-1-.45-1-1s.45-1 1-1z'/%3E%3C/svg%3E");
     overscroll-behavior: contain;
+
+    &.show:not(.showing) + div.backdrop {
+        display: block;
+    }
 }

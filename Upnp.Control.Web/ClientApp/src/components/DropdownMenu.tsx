@@ -247,10 +247,14 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     render() {
         const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
         const { show, anchor } = this.state;
-        const cls = `dropdown-menu fade${!this.menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;
-        return <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls}
-            onClick={show ? this.clickHandler : undefined} onBlur={show ? this.focusOutHandler : undefined} {...other}>
-            {render ? render(anchor) : children}
-        </ul>
+        const menuMode = this.menuMode;
+        const cls = `dropdown-menu fade${!menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;
+        return <>
+            <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls}
+                onClick={show ? this.clickHandler : undefined} onBlur={show ? this.focusOutHandler : undefined} {...other}>
+                {render ? render(anchor) : children}
+            </ul>
+            {!menuMode && <div className="backdrop" />}
+        </>
     }
 }
