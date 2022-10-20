@@ -14,7 +14,7 @@ import { BottomBar } from "../../common/BottomBar";
 import Breadcrumb from "../../common/Breadcrumb";
 import { useContentBrowser } from "../../common/BrowserUtils";
 import BrowserView, { CellTemplateProps } from "../../common/BrowserView";
-import { isMusicTrack } from "../../common/DIDLTools";
+import { DIDLTools } from "../../common/DIDLTools";
 import ItemInfoDialog from "../../common/ItemInfoDialog";
 import Pagination from "../../common/Pagination";
 import { PlaybackStateProvider, usePlaybackState } from "../../common/PlaybackStateContext";
@@ -44,7 +44,7 @@ const dialogBrowserProps = { multiSelect: true, useCheckboxes: true }
 function getBrowserDialogRowState(item: Upnp.DIDL.Item) {
     return item.container
         ? RowState.Navigable | RowState.Selectable
-        : isMusicTrack(item)
+        : DIDLTools.isMusicTrack(item)
             ? RowState.Selectable
             : RowState.None
 }

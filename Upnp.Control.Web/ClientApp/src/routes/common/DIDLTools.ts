@@ -1,4 +1,4 @@
-namespace DIDLTools {
+export namespace DIDLTools {
     export function getKind(upnpClassName: string) {
         const index = upnpClassName.lastIndexOf(".");
         return index > 0 ? upnpClassName.substring(index + 1) : upnpClassName;
@@ -87,5 +87,3 @@ namespace DIDLTools {
         return item.class.endsWith(".musicTrack");
     }
 }
-
-export = DIDLTools

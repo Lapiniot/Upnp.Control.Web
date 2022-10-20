@@ -2,7 +2,7 @@ import { useCallback, useRef } from "react";
 import DialogHost from "../../../components/DialogHost";
 import WebApi from "../../../components/WebApi";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
-import { isMusicTrack } from "../DIDLTools";
+import { DIDLTools } from "../DIDLTools";
 import { BrowserProps } from "../BrowserView";
 import { RowState, RowStateMapperFunction } from "../RowStateContext";
 import { DeviceActionProps } from "./Actions";
@@ -42,7 +42,7 @@ export function OpenMediaAction(props: DeviceActionProps) {
 }
 
 function pickAudioMapper(item: Upnp.DIDL.Item) {
-    return isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
+    return DIDLTools.isMusicTrack(item) ? RowState.Selectable | RowState.Navigable : RowState.Navigable
 }
 
 export function OpenAudioAction(props: DeviceActionProps) {
