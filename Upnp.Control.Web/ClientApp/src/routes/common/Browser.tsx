@@ -11,7 +11,7 @@ import Breadcrumb from "./Breadcrumb";
 import { BrowserActionMenu, renderActionMenuItem } from "./BrowserActionMenu";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { CellTemplate, CellTemplateProps } from "./BrowserView";
-import { DIDLTools } from "./DIDLTools";
+import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
 import ItemInfoDialog from "./ItemInfoDialog";
 import Pagination from "./Pagination";
 import { RowStateProvider } from "./RowStateContext";
@@ -118,7 +118,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
     }
 
     actionMenuSelectedHandler = async (action: string, udn: string, selection: Upnp.DIDL.Item[]) => {
-        const items = selection.filter(i => DIDLTools.isContainer(i) || DIDLTools.isMusicTrack(i))
+        const items = selection.filter(i => isContainer(i) || isMusicTrack(i))
 
         if (action.startsWith("send.")) {
             const title = items?.map(i => i?.title).join(";");
@@ -143,8 +143,8 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
         const item = ctx?.source?.items?.find(i => i.id === id);
         if (!item) return;
 
-        const umiAcceptable = !!umis.length && (DIDLTools.isContainer(item) || DIDLTools.isMusicTrack(item));
-        const rendererAcceptable = !!renderers.length && DIDLTools.isMediaItem(item);
+        const umiAcceptable = !!umis.length && (isContainer(item) || isMusicTrack(item));
+        const rendererAcceptable = !!renderers.length && isMediaItem(item);
 
         return <>
             {this.renderMenu(umiAcceptable, rendererAcceptable, umis, renderers)}
