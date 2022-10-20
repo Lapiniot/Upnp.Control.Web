@@ -1,87 +1,82 @@
 import AlbumArt from "./AlbumArt";
 import { DIDLTools as DT } from "./DIDLTools";
 
-function asis(value: any): string {
-    return value;
-}
-
-function join(value: string[]): string {
+function join(value: string[]) {
     return value.join(", ");
 }
 
-function url(title?: string) {
+function link(title?: string) {
     return (value: string) => <a href={value}>{title ?? value}</a>;
 }
 
-type AttributeDescriptor<T> = [name: keyof T, title: string, converter: (value: any, item?: T) => any];
+type AttributeDescriptor<T extends {}> = [name: keyof T, title: string, converter?: (value: any) => string | number | JSX.Element];
+type AttributeGroup<T extends {}> = [name: string, title: string, attributes: AttributeDescriptor<T>[]];
 
-const attributes: [key: string, title: string, formatters: AttributeDescriptor<Upnp.DIDL.Item>[]][] = [
-    ["general", "General", [
-        ["title", "Title", asis],
+const attributes: AttributeGroup<Upnp.DIDL.Item>[] = [
+    ["gen", "General", [
+        ["title", "Title"],
         ["class", "Kind", DT.getDisplayName],
-        ["id", "Id", asis],
-        ["storageMedium", "Storage", asis],
+        ["id", "Id"],
+        ["storageMedium", "Storage"],
         ["storageUsed", "Storage Used", DT.formatSize],
         ["storageTotal", "Storage Total", DT.formatSize],
-        ["storageFree", "Storage Free", DT.formatSize]
-    ]],
-    ["metadata", "Metadata", [
-        ["creator", "Creator", asis],
+        ["storageFree", "Storage Free", DT.formatSize]]],
+    ["mt", "Metadata", [
+        ["creator", "Creator"],
         ["artists", "Artists", join],
         ["authors", "Authors", join],
         ["directors", "Directors", join],
         ["producers", "Producers", join],
         ["actors", "Actors", join],
         ["publishers", "Publishers", join],
-        ["album", "Album", asis],
+        ["album", "Album"],
         ["date", "Year", DT.getYear],
-        ["genre", "Genre", asis],
+        ["genre", "Genre"],
         ["genres", "Genres", join],
-        ["track", "Track", asis],
-        ["description", "Description", asis],
-        ["lyricsUrl", "Lyrics", url("View Lyrics")],
-        ["discographyUrl", "Discography", url("View Artist Discography")]
-    ]]
-];
+        ["track", "Track"],
+        ["description", "Description"],
+        ["lyricsUrl", "Lyrics", link("View Lyrics")],
+        ["discographyUrl", "Discography", link("View Artist Discography")]]]];
 
-const resAttributes: [key: string, title: string, formatters: AttributeDescriptor<Upnp.DIDL.Resource>[]][] = [
-    ["res-general", "Media Info", [
-        ["url", "Media Url", url()],
+const resAttributes: AttributeGroup<Upnp.DIDL.Resource>[] = [
+    ["res", "Media Info", [
+        ["url", "Media Url", link()],
         ["proto", "Type", DT.getContentType],
         ["size", "Size", DT.formatSizeFull],
         ["duration", "Duration", DT.formatTime],
         ["bitrate", "Bitrate", DT.formatBitrate],
         ["freq", "Sample Freq.", DT.formatSampleFrequency],
         ["channels", "Channels", DT.formatChannels],
-        ["bits", "Bits/sample", asis],
-        ["resolution", "Resolution", asis],
-        ["depth", "Color Depth", asis],
-        ["infoUri", "Info Url", url()],
-        ["protection", "Protection", asis]
-    ]]
-];
+        ["bits", "Bits/sample"],
+        ["resolution", "Resolution"],
+        ["depth", "Color Depth"],
+        ["infoUri", "Info Url", link()],
+        ["protection", "Protection"]]]];
 
-function renderGroup<T>(item: T, key: string, title: string, formatters: AttributeDescriptor<T>[]) {
-    const children = formatters.map(({ 0: key, 1: title, 2: converter }, i) => {
-        const value = item[key];
-        return value ? <>
-            <span key={`lbl-${i}}`} className="grid-form-label text-end">{title}</span>
-            <span key={`txt-${i}`} className="grid-form-text text-wrap">{converter(value, item)}</span>
-        </> : undefined;
-    }).filter(item => item);
-    return children.length > 0 ? [<div key={`hdr-${key}`} className="col-2 hstack">
-        <hr className="flex-grow-1" />
-        <small className="mx-2">{title}</small>
-        <hr className="flex-grow-1" />
-    </div>, ...children] : undefined;
+function render<T extends {}>(item: T, groups: AttributeGroup<T>[]) {
+    return groups.flatMap(({ 0: groupName, 1: groupTitle, 2: attributes }) => {
+        const attrs = attributes.flatMap(({ 0: name, 1: title, 2: converter }) => {
+            const value = item[name] as any;
+            return value ? [
+                <span key={`l-${String(name)}}`} className="grid-form-label text-end">{title}</span>,
+                <span key={`t-${String(name)}`} className="grid-form-text text-wrap">{converter?.(value) ?? value}</span>
+            ] : [];
+        });
+
+        return attrs.length ? [<div key={`h-${groupName}`} className="col-2 hstack">
+            <hr className="flex-grow-1" />
+            <small className="mx-2">{groupTitle}</small>
+            <hr className="flex-grow-1" />
+        </div>, ...attrs] : []
+    })
 }
 
-export function ItemInfo({ item }: { item: Upnp.DIDL.Item; }) {
+export function ItemInfo({ item }: { item: Upnp.DIDL.Item }) {
     return <>
         <AlbumArt itemClass={item.class} albumArts={item.albumArts} className="mx-auto mb-3 icon-8x rounded-1" />
         <div className="d-grid grid-auto-1fr gy-1 gx-2">
-            {attributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item, key, title, formatters)).flat()}
-            {item.res && resAttributes.map(({ 0: key, 1: title, 2: formatters }) => renderGroup(item.res as Upnp.DIDL.Resource, key, title, formatters)).flat()}
+            {render(item, attributes)}
+            {item.res && render(item.res, resAttributes)}
         </div>
-    </>;
+    </>
 }

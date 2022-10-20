@@ -9,8 +9,8 @@ export namespace DIDLTools {
         return kind.endsWith("Container") ? kind.substring(0, kind.length - 9) : kind;
     }
 
-    export function getYear(date?: string) {
-        return date ? new Date(date).getFullYear() : null;
+    export function getYear(date: string) {
+        return new Date(date).getFullYear();
     }
 
     export function getContentType(protocol: string) {
