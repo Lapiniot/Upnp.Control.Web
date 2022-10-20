@@ -3,7 +3,7 @@ import { DataFetchProps } from "../../components/DataFetch";
 import { HotKey } from "../../components/HotKey";
 import { MediaQueries } from "../../components/MediaQueries";
 import AlbumArt from "./AlbumArt";
-import { DIDLTools as utils } from "./DIDLTools";
+import { formatMediaInfo, formatSize, formatTime, getDisplayName } from "./DIDLTools";
 import RowStateContext, { RowState } from "./RowStateContext";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
@@ -376,9 +376,9 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                             </label>}
                             <div className="mw-1 w-100"><MainCellTemplate data={e} index={index} context={mainCellContext} rowState={this.context.get(index)} /></div>
                             {tableMode && <>
-                                <div className="small text-end">{utils.formatSize(e.res?.size)}</div>
-                                <div className="small">{utils.formatTime(e.res?.duration)}</div>
-                                <div className="text-capitalize">{utils.getDisplayName(e.class)}</div>
+                                <div className="small text-end">{formatSize(e.res?.size)}</div>
+                                <div className="small">{formatTime(e.res?.duration)}</div>
+                                <div className="text-capitalize">{getDisplayName(e.class)}</div>
                             </>}
                         </div>;
                     })]}
@@ -392,7 +392,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
 export function CellTemplate({ children, data, index, rowState, context, ...other }: CellTemplateProps<unknown>) {
     const { class: itemClass, albumArts, title, creator, album, res } = data;
-    return <div className="hstack g-1" title={utils.formatMediaInfo(res) ?? undefined} {...other}>
+    return <div className="hstack g-1" title={formatMediaInfo(res) ?? undefined} {...other}>
         <AlbumArt itemClass={itemClass} albumArts={albumArts} />
         <span className="text-truncate flex-grow-1">
             {title}

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import Dialog, { DialogProps } from "../../components/Dialog";
-import { DIDLTools } from "./DIDLTools";
+import { isMediaItem } from "./DIDLTools";
 import { ItemInfo } from "./ItemInfo";
 
 export default function ItemInfoDialog({ item, ...other }: DialogProps & { item: Upnp.DIDL.Item; }) {
@@ -12,7 +12,7 @@ export default function ItemInfoDialog({ item, ...other }: DialogProps & { item:
         }), [item]);
 
     const renderFooter = useCallback(() => <Dialog.Footer>
-        {DIDLTools.isMediaItem(item) && isSecureContext
+        {isMediaItem(item) && isSecureContext
             && <Dialog.Button type="button" className="me-auto" onClick={clickHandler}>Copy media url</Dialog.Button>}
         <Dialog.Button value="ok" className="text-primary" autoFocus>OK</Dialog.Button>
     </Dialog.Footer>, [item]);

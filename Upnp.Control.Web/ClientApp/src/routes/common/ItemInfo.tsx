@@ -1,5 +1,5 @@
 import AlbumArt from "./AlbumArt";
-import { DIDLTools as DT } from "./DIDLTools";
+import { formatBitrate, formatChannels, formatSampleFrequency, formatSize, formatSizeFull, formatTime, getContentType, getDisplayName, getYear } from "./DIDLTools";
 
 function join(value: string[]) {
     return value.join(", ");
@@ -15,12 +15,12 @@ type AttributeGroup<T extends {}> = [name: string, title: string, attributes: At
 const attributes: AttributeGroup<Upnp.DIDL.Item>[] = [
     ["gen", "General", [
         ["title", "Title"],
-        ["class", "Kind", DT.getDisplayName],
+        ["class", "Kind", getDisplayName],
         ["id", "Id"],
         ["storageMedium", "Storage"],
-        ["storageUsed", "Storage Used", DT.formatSize],
-        ["storageTotal", "Storage Total", DT.formatSize],
-        ["storageFree", "Storage Free", DT.formatSize]]],
+        ["storageUsed", "Storage Used", formatSize],
+        ["storageTotal", "Storage Total", formatSize],
+        ["storageFree", "Storage Free", formatSize]]],
     ["mt", "Metadata", [
         ["creator", "Creator"],
         ["artists", "Artists", join],
@@ -30,7 +30,7 @@ const attributes: AttributeGroup<Upnp.DIDL.Item>[] = [
         ["actors", "Actors", join],
         ["publishers", "Publishers", join],
         ["album", "Album"],
-        ["date", "Year", DT.getYear],
+        ["date", "Year", getYear],
         ["genre", "Genre"],
         ["genres", "Genres", join],
         ["track", "Track"],
@@ -41,12 +41,12 @@ const attributes: AttributeGroup<Upnp.DIDL.Item>[] = [
 const resAttributes: AttributeGroup<Upnp.DIDL.Resource>[] = [
     ["res", "Media Info", [
         ["url", "Media Url", link()],
-        ["proto", "Type", DT.getContentType],
-        ["size", "Size", DT.formatSizeFull],
-        ["duration", "Duration", DT.formatTime],
-        ["bitrate", "Bitrate", DT.formatBitrate],
-        ["freq", "Sample Freq.", DT.formatSampleFrequency],
-        ["channels", "Channels", DT.formatChannels],
+        ["proto", "Type", getContentType],
+        ["size", "Size", formatSizeFull],
+        ["duration", "Duration", formatTime],
+        ["bitrate", "Bitrate", formatBitrate],
+        ["freq", "Sample Freq.", formatSampleFrequency],
+        ["channels", "Channels", formatChannels],
         ["bits", "Bits/sample"],
         ["resolution", "Resolution"],
         ["depth", "Color Depth"],

@@ -1,6 +1,6 @@
 import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
 import Toolbar from "../../components/Toolbar";
-import { DIDLTools } from "./DIDLTools";
+import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
 import { useRowStates } from "./RowStateContext";
 
 export function renderActionMenuItem(udn: string, action: string, name: string) {
@@ -16,8 +16,8 @@ type BrowserActionMenuProps = {
 export function BrowserActionMenu({ umis, renderers, onSelected }: BrowserActionMenuProps) {
     const { selection, dispatch } = useRowStates();
 
-    const umiAcceptable = selection.some(i => DIDLTools.isContainer(i) || DIDLTools.isMusicTrack(i));
-    const rendererAcceptable = selection.some(DIDLTools.isMediaItem);
+    const umiAcceptable = selection.some(i => isContainer(i) || isMusicTrack(i));
+    const rendererAcceptable = selection.some(isMediaItem);
     const enabled = umiAcceptable || rendererAcceptable;
 
     const onSelectedHandler = ({ dataset: { action, udn } }: HTMLElement) => {
