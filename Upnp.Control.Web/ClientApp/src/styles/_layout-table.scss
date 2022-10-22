@@ -153,8 +153,3 @@
     @extend .table-hover;
     @extend .table-focus-marker;
 }
-
-.table-touch-friendly {
-    --#{$prefix}table-cell-padding-y: #{1.2 * $table-cell-padding-y};
-    touch-action: manipulation;
-}

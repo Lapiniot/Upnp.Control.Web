@@ -71,7 +71,6 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
         super(props);
         this.state = { editMode: false };
         this.pls = $api.playlist(this.props.device);
-        MediaQueries.largeScreen.addEventListener("change", this.queryChangedHandler);
         this.service = {
             create: this.createPlaylist,
             deletePlaylists: this.deletePlaylists,
@@ -104,6 +103,8 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
     }
 
     async componentDidMount() {
+        MediaQueries.largeScreen.addEventListener("change", this.mediaQueryListChanged);
+        MediaQueries.touchDevice.addEventListener("change", this.mediaQueryListChanged);
         if (this.browserNodeRef.current) {
             this.pressHoldGestureRecognizer.bind(this.browserNodeRef.current);
         }
@@ -111,10 +112,11 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
 
     componentWillUnmount() {
         this.pressHoldGestureRecognizer.unbind();
-        MediaQueries.largeScreen.removeEventListener("change", this.queryChangedHandler);
+        MediaQueries.touchDevice.removeEventListener("change", this.mediaQueryListChanged);
+        MediaQueries.largeScreen.removeEventListener("change", this.mediaQueryListChanged);
     }
 
-    private queryChangedHandler = () => this.forceUpdate();
+    private mediaQueryListChanged = () => this.forceUpdate();
 
     private dialog(dialog: ReactElement<DialogProps>) {
         this.dialogHostRef.current?.show(dialog);
@@ -312,13 +314,14 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                 <PlaybackStateNotifier device={device} callback={this.playbackStateChanged} />
                 <PlaybackStateProvider device={device} fetchVendorState={fetchPlaylistStateAsync}>
                     <PlaylistRowStateProvider items={data?.source.items} getActiveTrackIndexHook={data?.source.items && this.getActiveTrackIndex}>
-                        <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} rootLevel={isRootLevel}
-                            fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.device?.name} />
+                        <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} compact={!largeScreen} rootLevel={isRootLevel}
+                            fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.dev?.name} />
                         <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
                             className={"flex-fill mb-1 br-area-main" + (largeScreen ? "" : " pb-5")}
                             device={device} deviceName={this.props.dataContext?.source.device?.name} getUrlHook={this.getPlayUrl}
                             navigate={navigate} hotKeyHandler={this.hotKeyHandler}
-                            editMode={this.state.editMode} useCheckboxes={this.state.editMode || hasTouch && largeScreen}>
+                            editMode={this.state.editMode} useCheckboxes={this.state.editMode || hasTouch && largeScreen}
+                            displayMode={largeScreen ? "table" : "list"} navigationMode={hasTouch ? "tap" : "dbl-click"}>
                             <DropdownMenu render={this.renderItemActionMenu} />
                         </Browser>
                         {!fetching && data?.source.items?.length === 0 &&

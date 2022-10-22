@@ -142,3 +142,14 @@ input[type="checkbox"] {
         }
     }
 }
+
+@media (any-pointer: coarse) {
+    .browser-view > .table {
+        --#{$prefix}table-cell-padding-y: #{1.2 * $table-cell-padding-y};
+        touch-action: manipulation;
+
+        .album-art {
+            font-size: 3rem;
+        }
+    }
+}

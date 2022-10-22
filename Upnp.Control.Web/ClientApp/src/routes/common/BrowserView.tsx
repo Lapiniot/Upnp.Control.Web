@@ -1,7 +1,6 @@
 ﻿import React, { ChangeEventHandler, ComponentType, FocusEvent, HTMLAttributes, MouseEvent, ReactNode, RefObject } from "react";
 import { DataFetchProps } from "../../components/DataFetch";
 import { HotKey } from "../../components/HotKey";
-import { MediaQueries } from "../../components/MediaQueries";
 import AlbumArt from "./AlbumArt";
 import { formatMediaInfo, formatSize, formatTime, getDisplayName } from "./DIDLTools";
 import RowStateContext, { RowState } from "./RowStateContext";
@@ -13,9 +12,9 @@ const HEADER_GROUP_SELECTOR = ":scope > div.table-header";
 
 type ModeFlags = "multiSelect" | "useCheckboxes" | "useLevelUpRow" | "stickyCaption" | "stickyHeaders";
 
-type DisplayMode = "table" | "list" | "responsive";
+type DisplayMode = "table" | "list";
 
-type NavigationMode = "single-tap" | "double-click" | "auto";
+type NavigationMode = "tap" | "dbl-click";
 
 interface ExtensionCallbacks {
     navigate(to: string): void;
@@ -55,8 +54,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     private dialogMode = false;
 
     static defaultProps: BrowserProps<unknown> = {
-        displayMode: "responsive",
-        navigationMode: "auto",
+        displayMode: "table",
+        navigationMode: "dbl-click",
         editMode: false,
         multiSelect: true,
         useCheckboxes: false,
@@ -76,15 +75,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         }
     }
 
-    componentDidUpdate({ displayMode: prevDisplayMode, useCheckboxes: prevUseCheckboxes }: BrowserViewProps<TContext>) {
-        const { displayMode, useCheckboxes } = this.props;
-
-        if (prevDisplayMode !== displayMode) {
-            MediaQueries.largeScreen.removeEventListener("change", this.screenQueryChangedHandler);
-            if (this.props.displayMode === "responsive") {
-                MediaQueries.largeScreen.addEventListener("change", this.screenQueryChangedHandler);
-            }
-        }
+    componentDidUpdate({ useCheckboxes: prevUseCheckboxes }: BrowserViewProps<TContext>) {
+        const { useCheckboxes } = this.props;
 
         if (prevUseCheckboxes !== useCheckboxes) {
             this.updateStickyElementsLayout();
@@ -108,15 +100,11 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     componentDidMount() {
         this.dialogMode = this.ref.current?.closest("dialog") !== null;
         document.body.addEventListener("keydown", this.onKeyDown);
-        if (this.props.displayMode === "responsive") {
-            MediaQueries.largeScreen.addEventListener("change", this.screenQueryChangedHandler);
-        }
         this.resizeObserver.disconnect();
         this.resizeObserver.observe(this.ref.current as HTMLDivElement);
     }
 
     componentWillUnmount() {
-        MediaQueries.largeScreen.removeEventListener("change", this.screenQueryChangedHandler);
         document.body.removeEventListener("keydown", this.onKeyDown);
         this.resizeObserver.disconnect();
     }
@@ -195,11 +183,11 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
                     this.context.dispatch({ type: "SET_ONLY", index });
                 break;
             case "mouseup":
-                if (!this.dblClickNavMode && !this.editMode)
+                if (this.props.navigationMode !== "dbl-click" && !this.editMode)
                     this.navigateTo(index);
                 break;
             case "dblclick":
-                if (this.dblClickNavMode && !this.editMode)
+                if (this.props.navigationMode === "dbl-click" && !this.editMode)
                     this.navigateTo(index);
                 break;
         }
@@ -316,10 +304,6 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         return this.props.editMode;
     }
 
-    private get dblClickNavMode() {
-        return this.props.navigationMode === "double-click" || this.props.navigationMode === "auto" && MediaQueries.pointerDevice.matches;
-    }
-
     render() {
 
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
@@ -328,14 +312,12 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
 
-        const tableMode = displayMode === "table" || displayMode === "responsive" && MediaQueries.largeScreen.matches;
-        const optimizeForTouch = MediaQueries.touchDevice.matches;
+        const tableMode = displayMode === "table";
         const headerClass = tableMode ? (stickyHeaders ? "sticky-top" : "") : "d-none";
 
-        return <div ref={nodeRef} className={`vstack pb-3 position-relative overflow-auto${className ? ` ${className}` : ""}`} style={style}
+        return <div ref={nodeRef} className={`browser-view vstack pb-3 position-relative overflow-auto${className ? ` ${className}` : ""}`} style={style}
             onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
-            <div className={`table table-material user-select-none${optimizeForTouch ? " table-touch-friendly" : ""}`}
-                ref={this.ref} onFocus={this.focusHandler}>
+            <div className="table table-material user-select-none" ref={this.ref} onFocus={this.focusHandler}>
                 {renderCaption && <div className={`table-caption bg-body${stickyCaption ? " sticky-top" : ""}`}>{renderCaption()}</div>}
                 <div className={`table-header${headerClass ? ` ${headerClass}` : ""}`}>
                     <div className="bg-body">

@@ -1,4 +1,5 @@
-import { RefObject, useCallback, useLayoutEffect, useRef } from "react";
+import { RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { MediaQueries } from "./MediaQueries";
 
 export function useResizeObserver(ref: RefObject<Element>, callback: ResizeObserverCallback) {
     const observerRef = useRef<ResizeObserver>();
@@ -54,3 +55,20 @@ export function useLocalStorage(key: string): [string | null, (value: string | n
     }, [key]);
     return [value, setter];
 }
+
+export function useMediaQuery(query: MediaQueryList) {
+    const [matches, setMatches] = useState(query.matches);
+    const ref = useRef(query);
+    const listener = useCallback((event: MediaQueryListEvent) => setMatches(event.matches), []);
+    useEffect(() => {
+        ref.current.removeEventListener("change", listener);
+        ref.current = query;
+        query.addEventListener("change", listener);
+        if (matches !== query.matches)
+            setMatches(query.matches);
+        return () => query.removeEventListener("change", listener);
+    }, [query.media]);
+    return matches;
+}
+
+export { MediaQueries };

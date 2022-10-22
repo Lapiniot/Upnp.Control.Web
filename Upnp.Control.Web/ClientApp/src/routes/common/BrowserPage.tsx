@@ -1,7 +1,12 @@
+import { MediaQueries, useMediaQuery } from "../../components/Hooks";
 import { Browser } from "./Browser";
 import { useContentBrowser } from "./BrowserUtils";
 
 export default function ContentBrowser() {
     const { params: { device, ...navParams }, ...other } = useContentBrowser();
-    return <Browser {...other} {...navParams} device={device as string} />
+    const largeScreen = useMediaQuery(MediaQueries.largeScreen);
+    const touchScreen = useMediaQuery(MediaQueries.touchDevice);
+    return <Browser {...other} {...navParams} device={device as string}
+        displayMode={largeScreen ? "table" : "list"}
+        navigationMode={touchScreen ? "tap" : "dbl-click"} />
 }

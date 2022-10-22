@@ -37,10 +37,10 @@ export function MenuItem({ className, action, glyph, children, ...other }: Butto
 }
 
 export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
-    popupRef = createRef<HTMLUListElement>();
+    private readonly popupRef = createRef<HTMLUListElement>();
+    private backNavTracker: NavigationBackTracker;
+    private strategy: PopupPlacementStrategy;
     state: DropdownMenuState = { show: false, anchor: undefined };
-    backNavTracker: NavigationBackTracker;
-    strategy: PopupPlacementStrategy;
 
     static defaultProps: Partial<DropdownMenuProps> = {
         mode: "auto",
@@ -54,20 +54,9 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         this.strategy = this.createPlacementStrategy();
     }
 
-    private get menuMode() {
-        return this.props.mode === "menu" || (this.props.mode === "auto" && MediaQueries.screenWidth("576px").matches);
-    }
-
-    private createPlacementStrategy() {
-        if (this.menuMode) {
-            return new PopperStrategy();
-        } else {
-            return new FixedStrategy();
-        }
-    }
-
     componentDidMount() {
         this.popupRef.current?.parentElement?.addEventListener("click", this.parentClickListener);
+        MediaQueries.smallScreen.addEventListener("change", this.mediaQueryChange);
     }
 
     override async componentDidUpdate({ mode: prevMode }: Readonly<DropdownMenuProps>): Promise<void> {
@@ -107,6 +96,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     }
 
     componentWillUnmount() {
+        MediaQueries.smallScreen.removeEventListener("change", this.mediaQueryChange);
         this.popupRef.current!.parentElement!.removeEventListener("click", this.parentClickListener);
         this.unsubscribe();
         this.strategy.destroy();
@@ -118,6 +108,24 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 
     hide() {
         this.setState({ show: false });
+    }
+
+    private get menuMode() {
+        return this.props.mode === "menu" || (this.props.mode === "auto" && !MediaQueries.smallScreen.matches);
+    }
+
+    private createPlacementStrategy() {
+        if (this.menuMode) {
+            return new PopperStrategy();
+        } else {
+            return new FixedStrategy();
+        }
+    }
+
+    private mediaQueryChange = () => {
+        this.strategy.destroy();
+        this.strategy = this.createPlacementStrategy();
+        this.forceUpdate();
     }
 
     private queryAll(selector: string) {

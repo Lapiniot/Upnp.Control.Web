@@ -3,7 +3,6 @@ import { itemBookmarks } from "../../components/BookmarkService";
 import DialogHost from "../../components/DialogHost";
 import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
 import { HotKey, HotKeys } from "../../components/HotKey";
-import { MediaQueries } from "../../components/MediaQueries";
 import WebApi from "../../components/WebApi";
 import { useBookmarkButton } from "./BookmarkButton";
 import { BottomBar } from "./BottomBar";
@@ -195,7 +194,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
     }
 
     render() {
-        const { dataContext: data, p: page, s: size } = this.props;
+        const { dataContext: data, p: page, s: size, displayMode } = this.props;
         const parents = data?.source.parents ?? [];
         return <>
             <RowStateProvider items={data?.source.items}>
@@ -210,7 +209,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
                     <Pagination total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
                         pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
                 </BottomBar>
-                {MediaQueries.largeScreen.matches && parents.length > 1 && <Breadcrumb className="border-top" items={parents} />}
+                {displayMode === "table" && parents.length > 1 && <Breadcrumb className="border-top" items={parents} />}
             </div>
             <DialogHost ref={this.dialogHostRef} />
         </>

@@ -1,6 +1,7 @@
 import { HTMLAttributes, ReactNode, useCallback } from "react";
 import { useDataFetch } from "../../components/DataFetch";
 import Dialog, { DialogProps } from "../../components/Dialog";
+import { MediaQueries, useMediaQuery } from "../../components/Hooks";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { useNavigatorClickHandler } from "../../components/Navigator";
 import { usePortal } from "../../components/Portal";
@@ -66,8 +67,10 @@ function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: Confirm
 
 function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps<any> & { mapper?: RowStateMapperFunction } & ConfirmProps) {
     const { params, ...other } = useContentBrowser();
+    const largeScreen = useMediaQuery(MediaQueries.largeScreen);
+    const touchScreen = useMediaQuery(MediaQueries.touchDevice);
     return <RowStateProvider items={other.dataContext?.source.items} mapper={mapper}>
-        <BrowserCore {...props} {...params} {...other} />
+        <BrowserCore displayMode={largeScreen ? "table" : "list"} navigationMode={touchScreen ? "tap" : "dbl-click"} {...props} {...params} {...other} />
         <ConfirmButton device={params.device as string} confirmContent={confirmContent} onConfirmed={onConfirmed} />
     </RowStateProvider>
 }

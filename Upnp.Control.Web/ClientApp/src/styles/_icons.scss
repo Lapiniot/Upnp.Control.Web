@@ -10,10 +10,6 @@ $icon-sizes: (2x 2, 3x 3, 5x 5, 8x 8) !default;
     font-size: 2rem;
 }
 
-.table-touch-friendly .album-art {
-    font-size: 3rem;
-}
-
 .fallback {
     @extend %image-fallback;
 }
