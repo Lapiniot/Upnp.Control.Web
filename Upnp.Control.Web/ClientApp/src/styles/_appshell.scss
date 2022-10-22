@@ -2,7 +2,7 @@
     height: 100vh;
     display: grid;
     grid-template: 1fr auto / auto 1fr;
-    grid-template-areas: "main main""navbar navbar";
+    grid-template-areas: "main main" "navbar navbar";
 
     & > .navbar {
         grid-area: navbar;
@@ -37,7 +37,11 @@
     }
 
     @include media-breakpoint-up(sm) {
-        grid-template-areas: "navbar main""navbar main";
+        grid-template-areas: "navbar main" "navbar main";
+
+        & > main {
+            contain: content;
+        }
 
         & > .navbar {
             --#{$prefix}navbar-padding-y: #{$navbar-padding-y};

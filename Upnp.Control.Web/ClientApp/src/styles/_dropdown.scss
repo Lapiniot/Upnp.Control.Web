@@ -16,12 +16,6 @@
     }
 }
 
-@media (pointer: coarse) {
-    .dropdown-item {
-        padding-block: map-get($spacers, 3);
-    }
-}
-
 .dropdown-menu {
 
     &.fade {

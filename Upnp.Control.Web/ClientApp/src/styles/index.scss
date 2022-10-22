@@ -144,6 +144,10 @@ input[type="checkbox"] {
 }
 
 @media (any-pointer: coarse) {
+    .dropdown-item {
+        padding-block: map-get($spacers, 3);
+    }
+
     .browser-view > .table {
         --#{$prefix}table-cell-padding-y: #{1.2 * $table-cell-padding-y};
         touch-action: manipulation;

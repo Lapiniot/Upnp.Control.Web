@@ -22,8 +22,7 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
                 <button type="button" disabled={!items} className="btn btn-round btn-plain" data-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
                     <svg><use href="symbols.svg#playlist_play" /></svg>
                 </button>
-                {device && <DropdownMenu data-device={device.udn} placement="top-end"
-                    style={{ overflowY: "auto", maxWidth: "100vw", maxHeight: "80vh" }}>
+                {device && <DropdownMenu className="overflow-auto mh-75" data-device={device.udn} placement="top-end">
                     {items?.map(({ title, class: cls, albumArts, res }, index) => <li key={index}>
                         <button className="dropdown-item" data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
                             <AlbumArt itemClass={cls} albumArts={albumArts} className="rounded-1" hint="player" />
