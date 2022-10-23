@@ -18,6 +18,9 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
     protected startTime: number = 0;
     private updatePending: any;
     private options: AddEventListenerOptions;
+    private readonly pointerDownEventListener = this.onPointerDownEvent.bind(this);
+    private readonly pointerUpEventListener = this.onPointerUpEvent.bind(this);
+    private readonly pointerMoveEventListener = this.onPointerMoveEvent.bind(this);
 
     constructor(handler: GestureHandler<TElement, TGesture, TParams>, capture: boolean, passive: boolean) {
         this.handler = handler;
@@ -27,24 +30,18 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
     public bind(target: TElement) {
         this.unbind();
         this.target = target;
-        this.target.addEventListener("pointerdown", this.pointerDownEventHandler, this.options);
+        this.target.addEventListener("pointerdown", this.pointerDownEventListener, this.options);
         this.updatePending = false;
     }
 
     public unbind() {
         if (this.target) {
-            this.target.removeEventListener("pointerdown", this.pointerDownEventHandler, this.options);
-            this.target.removeEventListener("pointerup", this.pointerUpEventHandler, this.options);
-            this.target.removeEventListener("pointermove", this.pointerMoveEventHandler, this.options);
+            this.target.removeEventListener("pointerdown", this.pointerDownEventListener, this.options);
+            this.target.removeEventListener("pointerup", this.pointerUpEventListener, this.options);
+            this.target.removeEventListener("pointermove", this.pointerMoveEventListener, this.options);
         }
         this.target = null;
     }
-
-    private pointerDownEventHandler = (event: PointerEvent) => this.onPointerDownEvent(event);
-
-    private pointerUpEventHandler = (event: PointerEvent) => this.onPointerUpEvent(event);
-
-    private pointerMoveEventHandler = (event: PointerEvent) => this.onPointerMoveEvent(event);
 
     private updateInternal = () => {
         if (!this.updatePending)
@@ -63,8 +60,8 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
             return;
         }
 
-        target.addEventListener("pointerup", this.pointerUpEventHandler, this.options);
-        target.addEventListener("pointermove", this.pointerMoveEventHandler, this.options);
+        target.addEventListener("pointerup", this.pointerUpEventListener, this.options);
+        target.addEventListener("pointermove", this.pointerMoveEventListener, this.options);
 
         this.startX = event.clientX;
         this.startY = event.clientY;
@@ -78,8 +75,8 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
             return;
         }
 
-        target.removeEventListener("pointerup", this.pointerUpEventHandler, this.options);
-        target.removeEventListener("pointermove", this.pointerMoveEventHandler, this.options);
+        target.removeEventListener("pointerup", this.pointerUpEventListener, this.options);
+        target.removeEventListener("pointermove", this.pointerMoveEventListener, this.options);
     }
 
     protected onPointerMoveEvent(_: PointerEvent) { }
