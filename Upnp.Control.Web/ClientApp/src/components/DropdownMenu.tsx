@@ -2,6 +2,7 @@ import { Placement } from "@popperjs/core/lib/enums";
 import { StrictModifiers } from "@popperjs/core/lib/popper";
 import { ButtonHTMLAttributes, createRef, HTMLAttributes, PureComponent, ReactNode, FocusEvent, MouseEvent } from "react";
 import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
+import { SwipeGestureRecognizer, SwipeGestures } from "./gestures/SwipeGestureRecognizer";
 import { MediaQueries } from "./MediaQueries";
 import { FixedStrategy, PopperStrategy, PopupPlacementStrategy } from "./PopupPlacementStrategy";
 
@@ -38,6 +39,8 @@ export function MenuItem({ className, action, glyph, children, ...other }: Butto
 
 export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     private readonly popupRef = createRef<HTMLUListElement>();
+    private readonly swipeRecognizer: SwipeGestureRecognizer;
+    private readonly observer: ResizeObserver;
     private backNavTracker: NavigationBackTracker;
     private strategy: PopupPlacementStrategy;
     state: DropdownMenuState = { show: false, anchor: undefined };
@@ -52,11 +55,14 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         super(props);
         this.backNavTracker = createBackNavigationTracker(() => this.hide());
         this.strategy = this.createPlacementStrategy();
+        this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler);
+        this.observer = new ResizeObserver(this.resizeCallback);
     }
 
     componentDidMount() {
         this.popupRef.current?.parentElement?.addEventListener("click", this.parentClickListener);
         MediaQueries.smallScreen.addEventListener("change", this.mediaQueryChange);
+        this.observer.observe(this.popupRef.current!);
     }
 
     override async componentDidUpdate({ mode: prevMode }: Readonly<DropdownMenuProps>): Promise<void> {
@@ -100,6 +106,8 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         this.popupRef.current!.parentElement!.removeEventListener("click", this.parentClickListener);
         this.unsubscribe();
         this.strategy.destroy();
+        this.swipeRecognizer.unbind();
+        this.observer.disconnect();
     }
 
     show(anchor: HTMLElement) {
@@ -252,11 +260,29 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         }
     }
 
+    private resizeCallback = ([{ target: { scrollHeight, clientHeight } }]: ResizeObserverEntry[]) => {
+        if (scrollHeight > clientHeight || clientHeight === 0) {
+            // Popup element has content overflow (or simply hidden), so stop swipe-down gesture tracking and 
+            // prefere browser native behavior(content scrolling).
+            this.swipeRecognizer.unbind();
+            this.popupRef.current!.classList.toggle("touch-none", false);
+        } else {
+            this.popupRef.current!.classList.toggle("touch-none", true);
+            this.swipeRecognizer.bind(this.popupRef.current!);
+        }
+    }
+
+    private swipeGestureHandler = (_: unknown, gesture: SwipeGestures) => {
+        if (gesture === "swipe-down") {
+            this.hide();
+        }
+    }
+
     render() {
         const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
         const { show, anchor } = this.state;
         const menuMode = this.menuMode;
-        const cls = `dropdown-menu fade${!menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;
+        const cls = `dropdown-menu user-select-none fade${!menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;
         return <>
             <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls}
                 onClick={show ? this.clickHandler : undefined} onBlur={show ? this.focusOutHandler : undefined} {...other}>

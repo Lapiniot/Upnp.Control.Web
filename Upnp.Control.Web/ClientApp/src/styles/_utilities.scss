@@ -58,6 +58,7 @@ $utilities: map-merge($utilities,
 
 $utilities : map-merge($utilities,
     ("cursor":(property:"cursor", values:default),
+        "touch-action":(property:"touch-action", class:"touch", values:none),
         "gap-x":(property:"column-gap", class:"gx", values:map-remove($spacers, 0, 1, 3, 4, 5)),
         "gap-y":(property:"row-gap", class:"gy", values:map-remove($spacers, 0, 2, 3, 4, 5))));
 

@@ -28,6 +28,7 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
     }
 
     public bind(target: TElement) {
+        if (target === this.target) return;
         this.unbind();
         this.target = target;
         this.target.addEventListener("pointerdown", this.pointerDownEventListener, this.options);
