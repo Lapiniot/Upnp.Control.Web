@@ -312,7 +312,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="browser-shell flex-fill overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
                 <PlaybackStateNotifier device={device} callback={this.playbackStateChanged} />
-                <PlaybackStateProvider device={device} fetchVendorState={fetchPlaylistStateAsync}>
+                <PlaybackStateProvider device={device} trackPosition fetchVendorState={fetchPlaylistStateAsync}>
                     <PlaylistRowStateProvider items={data?.source.items} getActiveTrackIndexHook={data?.source.items && this.getActiveTrackIndex}>
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} compact={!largeScreen} rootLevel={isRootLevel}
                             fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.dev?.name} />
