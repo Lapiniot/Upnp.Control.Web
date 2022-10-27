@@ -99,13 +99,13 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
 
     componentDidMount() {
         this.dialogMode = this.ref.current?.closest("dialog") !== null;
-        document.body.addEventListener("keydown", this.onKeyDown);
+        document.addEventListener("keydown", this.keydownListener);
         this.resizeObserver.disconnect();
         this.resizeObserver.observe(this.ref.current as HTMLDivElement);
     }
 
     componentWillUnmount() {
-        document.body.removeEventListener("keydown", this.onKeyDown);
+        document.removeEventListener("keydown", this.keydownListener);
         this.resizeObserver.disconnect();
     }
 
@@ -137,7 +137,6 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     }
 
     onCheckboxChanged: ChangeEventHandler<HTMLInputElement> = e => {
-        e.stopPropagation();
         const checkbox = e.target;
         const index = checkbox.parentElement?.parentElement?.dataset?.index;
         if (!index) return;
@@ -150,26 +149,20 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     };
 
     private mouseEventHandler = (e: MouseEvent<HTMLDivElement>) => {
-
         const target = e.target as HTMLElement;
+
+        if (e.defaultPrevented || target instanceof HTMLInputElement || target instanceof HTMLLabelElement || target.closest("button")) {
+            return;
+        }
 
         if (target === e.currentTarget && e.type === "mousedown") {
             this.context.dispatch({ type: "SET_ALL", selected: false });
             return;
         }
 
-        if (target instanceof HTMLInputElement || target instanceof HTMLLabelElement || target.closest("button")) {
-            e.preventDefault();
-            e.stopPropagation();
-            return;
-        }
-
         const row = target.closest<HTMLElement>(DATA_ROW_SELECTOR);
         if (!row?.dataset.index) return;
         const index = parseInt(row?.dataset.index);
-
-        e.preventDefault();
-        e.stopPropagation();
 
         switch (e.type) {
             case "mousedown":
@@ -193,8 +186,8 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         }
     }
 
-    private onKeyDown = (event: KeyboardEvent) => {
-        if (!this.context.enabled) return;
+    private keydownListener = (event: KeyboardEvent) => {
+        if (event.defaultPrevented || !this.context.enabled) return;
 
         if (document.body.dataset["modalOpen"] === "1" && !this.dialogMode) {
             // There is currently modal <dialog> element trapping focus and current component is not rendered "in-dialog" mode.
@@ -266,7 +259,6 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const hotKey = new HotKey(code, altKey, ctrlKey, shiftKey, metaKey);
         if (handler(this.context.selection, this.props.dataContext?.source.items?.[this.context.current ?? 0], hotKey) == false) {
             event.preventDefault();
-            event.stopPropagation();
         }
     }
 
