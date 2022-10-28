@@ -191,9 +191,9 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     //#endregion
 
     private parentClickListener = (event: globalThis.MouseEvent) => {
+        if (event.defaultPrevented) return;
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
         if (item) {
-            event.stopPropagation();
             this.show(item);
         }
     }
@@ -203,12 +203,10 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
             return;
 
         event.preventDefault();
-        event.stopImmediatePropagation();
 
         const state = { id: event.pointerId, type: event.pointerType };
         event.currentTarget!.addEventListener("click", (e: Event) => {
             if (e instanceof PointerEvent && e.pointerId === state.id && e.pointerType === state.type) {
-                e.stopImmediatePropagation();
                 e.preventDefault();
             }
         }, { capture: true, once: true });
@@ -240,7 +238,6 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
             default: return;
         }
 
-        event.stopImmediatePropagation();
         event.preventDefault();
     }
 
@@ -254,8 +251,6 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 
     private focusOutHandler = (event: FocusEvent<HTMLElement>) => {
         if (!this.popupRef.current?.contains(event.relatedTarget as Node)) {
-            event.preventDefault();
-            event.nativeEvent.stopImmediatePropagation();
             this.hide();
         }
     }
