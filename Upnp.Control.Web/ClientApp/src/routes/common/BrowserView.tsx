@@ -1,4 +1,4 @@
-﻿import React, { ChangeEventHandler, ComponentType, FocusEvent, HTMLAttributes, MouseEvent, ReactNode, RefObject } from "react";
+﻿import { ChangeEventHandler, Component, ComponentType, createRef, FocusEvent, HTMLAttributes, PointerEvent, ReactNode, RefObject, UIEvent } from "react";
 import { DataFetchProps } from "../../components/DataFetch";
 import { HotKey } from "../../components/HotKey";
 import AlbumArt from "./AlbumArt";
@@ -45,7 +45,7 @@ export type BrowserViewProps<TContext> = HTMLAttributes<HTMLDivElement>
     & DataFetchProps<Upnp.BrowseFetchResult>
     & ExtensionCallbacks
 
-export default class BrowserView<TContext = unknown> extends React.Component<BrowserViewProps<TContext>> {
+export default class BrowserView<TContext = unknown> extends Component<BrowserViewProps<TContext>> {
 
     static contextType = RowStateContext;
     override context: React.ContextType<typeof RowStateContext>;
@@ -68,7 +68,7 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
         this.resizeObserver = new ResizeObserver(this.updateStickyElementsLayout);
-        this.ref = React.createRef<HTMLDivElement>();
+        this.ref = createRef<HTMLDivElement>();
         this.context = {
             enabled: false, current: undefined, selection: [],
             allSelected: false, dispatch: () => { }, get: () => RowState.None,
@@ -148,42 +148,33 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         this.context.dispatch({ type: "SET_ALL", selected: checkbox.checked });
     };
 
-    private mouseEventHandler = (e: MouseEvent<HTMLDivElement>) => {
-        const target = e.target as HTMLElement;
+    private pointerDownHandler = (event: PointerEvent) => {
+        const element = event.target as HTMLElement;
 
-        if (e.defaultPrevented || target instanceof HTMLInputElement || target instanceof HTMLLabelElement || target.closest("button")) {
-            return;
-        }
+        if (event.defaultPrevented || isInteractive(element)) return;
 
-        if (target === e.currentTarget && e.type === "mousedown") {
+        if (element === event.currentTarget) {
             this.context.dispatch({ type: "SET_ALL", selected: false });
             return;
         }
 
-        const row = target.closest<HTMLElement>(DATA_ROW_SELECTOR);
-        if (!row?.dataset.index) return;
-        const index = parseInt(row?.dataset.index);
+        const index = getDataIndex(element);
+        if (!index) return;
 
-        switch (e.type) {
-            case "mousedown":
-                if ((e.ctrlKey || e.metaKey) && this.props.multiSelect)
-                    this.context.dispatch({ type: "TOGGLE", index });
-                else if (e.shiftKey && this.props.multiSelect)
-                    this.context.dispatch({ type: "EXPAND_TO", index });
-                else if (this.editMode)
-                    this.context.dispatch({ type: "TOGGLE", index })
-                else
-                    this.context.dispatch({ type: "SET_ONLY", index });
-                break;
-            case "mouseup":
-                if (this.props.navigationMode !== "dbl-click" && !this.editMode)
-                    this.navigateTo(index);
-                break;
-            case "dblclick":
-                if (this.props.navigationMode === "dbl-click" && !this.editMode)
-                    this.navigateTo(index);
-                break;
-        }
+        if ((event.ctrlKey || event.metaKey) && this.props.multiSelect)
+            this.context.dispatch({ type: "TOGGLE", index });
+        else if (event.shiftKey && this.props.multiSelect)
+            this.context.dispatch({ type: "EXPAND_TO", index });
+        else if (this.props.editMode)
+            this.context.dispatch({ type: "TOGGLE", index })
+        else
+            this.context.dispatch({ type: "SET_ONLY", index });
+    }
+
+    private navigateHandler = (event: UIEvent) => {
+        if (event.defaultPrevented || isInteractive(event.target as HTMLElement)) return;
+        const index = getDataIndex(event.target as HTMLElement);
+        if (index) this.navigateTo(index);
     }
 
     private keydownListener = (event: KeyboardEvent) => {
@@ -292,14 +283,10 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         }
     }
 
-    private get editMode() {
-        return this.props.editMode;
-    }
-
     render() {
 
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes, useLevelUpRow, stickyCaption, stickyHeaders, displayMode, style, nodeRef,
+            useCheckboxes, useLevelUpRow, stickyCaption, stickyHeaders, displayMode, navigationMode, editMode, style, nodeRef,
             renderCaption, renderFooter, children } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
@@ -308,7 +295,9 @@ export default class BrowserView<TContext = unknown> extends React.Component<Bro
         const headerClass = tableMode ? (stickyHeaders ? "sticky-top" : "") : "d-none";
 
         return <div ref={nodeRef} className={`browser-view vstack pb-3 position-relative overflow-auto${className ? ` ${className}` : ""}`} style={style}
-            onMouseDown={this.mouseEventHandler} onMouseUp={this.mouseEventHandler} onDoubleClick={this.mouseEventHandler}>
+            onPointerDown={this.pointerDownHandler}
+            onPointerUp={navigationMode !== "dbl-click" && !editMode ? this.navigateHandler : undefined}
+            onDoubleClick={navigationMode === "dbl-click" && !editMode ? this.navigateHandler : undefined}>
             <div className="table table-material user-select-none" ref={this.ref} onFocus={this.focusHandler}>
                 {renderCaption && <div className={`table-caption bg-body${stickyCaption ? " sticky-top" : ""}`}>{renderCaption()}</div>}
                 <div className={`table-header${headerClass ? ` ${headerClass}` : ""}`}>
@@ -375,4 +364,14 @@ export function CellTemplate({ children, data, index, rowState, context, ...othe
         </span>
         {children}
     </div>;
+}
+
+function getDataIndex(target: HTMLElement) {
+    const row = target.closest<HTMLElement>(DATA_ROW_SELECTOR);
+    if (!row?.dataset.index) return undefined;
+    return parseInt(row.dataset.index);
+}
+
+function isInteractive(element: Element) {
+    return element instanceof HTMLInputElement || element instanceof HTMLLabelElement || element.closest("button");
 }
