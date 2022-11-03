@@ -9,10 +9,10 @@ public static partial class ConfigureExtensions
     /// <param name="pattern">The route pattern. May include 'deviceId' and 'queueId' route parameters.</param>
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "Preserved manually.")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(PlaylistServices))]
     public static RouteGroupBuilder MapPlaylistApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        var group = routeBuilder.MapGroup(pattern)
-            .WithTags("Playlists Management");
+        var group = routeBuilder.MapGroup(pattern).WithTags("Playlists Management");
 
         group.MapGet("state", PlaylistServices.GetPlaylistStateAsync);
 

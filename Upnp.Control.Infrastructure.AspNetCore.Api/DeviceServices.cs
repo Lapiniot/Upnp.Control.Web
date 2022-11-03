@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-public static class DeviceServices
+internal static class DeviceServices
 {
     /// <summary>
     /// Provides the list of all available UPnP devices that belong to the <paramref name="category" />.

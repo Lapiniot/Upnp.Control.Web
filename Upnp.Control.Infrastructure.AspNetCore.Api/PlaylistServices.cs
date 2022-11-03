@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-public static class PlaylistServices
+internal static class PlaylistServices
 {
     public static async Task<Results<NoContent, NotFound, BadRequest>> CreateAsync(
         IAsyncCommandHandler<PLCreateCommand> handler,

@@ -1,7 +1,6 @@
 #region usings
 using System.Text;
 using Upnp.Control.DataAccess.Configuration;
-using Upnp.Control.Infrastructure.AspNetCore.Api;
 using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Configuration;
 using Upnp.Control.Infrastructure.Configuration;
@@ -13,7 +12,6 @@ using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 using Upnp.Control.Models.Converters;
 using Upnp.Control.Services.Commands.Configuration;
 using Upnp.Control.Services.Queries.Configuration;
-using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 
 #endregion
 
@@ -90,7 +88,7 @@ builder.Services
     .AddSwaggerGen(options =>
     {
         options.SwaggerDoc("v1", new() { Version = "v1", Title = "UPnP Control Dashboard" });
-        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(DeviceServices).Assembly.GetName().Name}.xml"));
+        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(ConfigureExtensions).Assembly.GetName().Name}.xml"));
     });
 
 #endregion

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <Nullable>enable</Nullable>
+    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
   <ItemGroup>

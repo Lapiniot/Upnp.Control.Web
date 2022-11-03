@@ -9,10 +9,10 @@ public static partial class ConfigureExtensions
     /// <param name="pattern">The route pattern. May include '{deviceId}' and '{path}' parameters.</param>
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "Preserved manually.")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(ContentDirectoryServices))]
     public static RouteGroupBuilder MapBrowseContentApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        var group = routeBuilder.MapGroup(pattern)
-            .WithTags("Content Directory");
+        var group = routeBuilder.MapGroup(pattern).WithTags("Content Directory");
 
         group.MapGet("", ContentDirectoryServices.BrowseAsync);
 

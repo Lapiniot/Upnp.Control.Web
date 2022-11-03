@@ -2,7 +2,7 @@ using IoT.Protocol.Soap;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-public static class ContentDirectoryServices
+internal static class ContentDirectoryServices
 {
     /// <summary>
     /// Provides directory content at the specified <paramref name="path" /> on the device with <paramref name="deviceId" />.

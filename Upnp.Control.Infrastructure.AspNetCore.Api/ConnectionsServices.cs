@@ -1,6 +1,6 @@
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-public static class ConnectionsServices
+internal static class ConnectionsServices
 {
     public static async Task<Results<Ok<CMProtocolInfo>, NotFound, BadRequest>> GetProtocolInfoAsync(
         IAsyncQueryHandler<CMGetProtocolInfoQuery, CMProtocolInfo> handler,

@@ -33,9 +33,10 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": ".NET: publish (self-contained)",
+            "label": ".NET: publish (sc-trimmed)",
             "detail": "Runs dotnet publish --self-contained command",
             "group": "build",
+            "hide": true,
             "command": "dotnet",
             "args": [
                 "publish",
@@ -48,6 +49,15 @@
                 "/property:PublishTrimmed=true"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": ".NET: publish (self-contained)",
+            "dependsOn": [
+                ".NET: publish (sc-trimmed)"
+            ],
+            "type": "shell",
+            "command": "du -shA \"${workspaceFolder}/Upnp.Control.Web/bin/${config:publish.configuration}/${config:build.framework}/${input:rid}/publish/\"",
+            "problemMatcher": []
         },
         {
             "label": ".NET: deploy (remote SSH)",

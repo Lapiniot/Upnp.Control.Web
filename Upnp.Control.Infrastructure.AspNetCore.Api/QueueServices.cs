@@ -1,6 +1,6 @@
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-public static class QueueServices
+internal static class QueueServices
 {
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(MediaSourceParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> AddAsync(

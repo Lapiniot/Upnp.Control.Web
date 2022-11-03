@@ -2,9 +2,9 @@ using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-public record struct PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
+internal record struct PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
 
-public static class PushNotificationSubscriptionServices
+internal static class PushNotificationSubscriptionServices
 {
     public static async Task<Results<Ok<bool>, BadRequest>> GetStateAsync(
         IAsyncQueryHandler<PSGetQuery, PushNotificationSubscription> handler,

@@ -9,7 +9,7 @@
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**;**/appsettings.Secrets.json;**/appsettings.Development.json;package.json;package-lock.json</DefaultItemExcludes>
     <!-- Trimming settings -->
-    <TrimMode>partial</TrimMode>
+    <TrimMode>full</TrimMode>
     <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     <TrimmerSingleWarn>true</TrimmerSingleWarn>

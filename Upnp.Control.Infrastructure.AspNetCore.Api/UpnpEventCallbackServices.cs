@@ -1,6 +1,6 @@
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-public static class UpnpEventCallbackServices
+internal static class UpnpEventCallbackServices
 {
     public static async Task<Results<NoContent, BadRequest>> NotifyRenderingControlAsync(
         IAsyncCommandHandler<RCPropChangedCommand> handler,

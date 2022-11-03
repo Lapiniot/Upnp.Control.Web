@@ -9,10 +9,10 @@ public static partial class ConfigureExtensions
     /// <param name="pattern">The route pattern.</param>
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(DeviceServices))]
     public static RouteGroupBuilder MapDevicesApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        var group = routeBuilder.MapGroup(pattern)
-            .WithTags("Devices");
+        var group = routeBuilder.MapGroup(pattern).WithTags("Devices");
 
         group.MapGet("{id}", DeviceServices.GetAsync);
 

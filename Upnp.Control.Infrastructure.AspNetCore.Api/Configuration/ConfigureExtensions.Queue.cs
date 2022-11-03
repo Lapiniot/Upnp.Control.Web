@@ -9,10 +9,10 @@ public static partial class ConfigureExtensions
     /// <param name="pattern">The route pattern. May include 'deviceId' and 'queueId' route parameters.</param>
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(QueueServices))]
     public static RouteGroupBuilder MapQueueApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        var group = routeBuilder.MapGroup(pattern)
-            .WithTags("Queue");
+        var group = routeBuilder.MapGroup(pattern).WithTags("Queue");
 
         group.MapPost("", QueueServices.AddAsync);
 

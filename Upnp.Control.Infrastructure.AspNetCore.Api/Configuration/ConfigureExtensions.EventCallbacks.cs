@@ -9,6 +9,7 @@ public static partial class ConfigureExtensions
     /// <param name="pattern">The route pattern. May include 'deviceId' route parameter.</param>
     /// <returns>The <see cref="RouteGroupBuilder" /> that can be used to further customize the builder.</returns>
     [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(UpnpEventCallbackServices))]
     public static RouteGroupBuilder MapUpnpEventCallbacks(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         var group = routeBuilder.MapGroup(pattern).ExcludeFromDescription();

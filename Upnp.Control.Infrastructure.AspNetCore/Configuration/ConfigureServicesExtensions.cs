@@ -60,10 +60,13 @@ public static class ConfigureServicesExtensions
     }
 
     [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(CertificateDownloadServices))]
     public static IEndpointConventionBuilder MapCertificateDownload(this IEndpointRouteBuilder routeBuilder, string pattern) =>
         routeBuilder.MapGet(pattern, CertificateDownloadServices.GetCertificatesArchive);
 
     [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(ApplicationInfoServices))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ApplicationInfo))]
     public static RouteHandlerBuilder MapAppInfo(this IEndpointRouteBuilder routeBuilder, string pattern) =>
         routeBuilder.MapGet(pattern, ApplicationInfoServices.GetApplicationInfoAsync)
             .Produces<ApplicationInfo>(StatusCodes.Status200OK, "application/json")

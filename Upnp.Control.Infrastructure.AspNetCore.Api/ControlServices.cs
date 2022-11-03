@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-public static class ControlServices
+internal static class ControlServices
 {
     public static async Task<Results<Ok<AVState>, NotFound, BadRequest>> GetStateAsync(
         IAsyncQueryHandler<AVGetStateQuery, AVState> handler,
