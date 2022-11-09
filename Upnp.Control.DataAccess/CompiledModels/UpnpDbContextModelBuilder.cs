@@ -23,7 +23,7 @@ namespace Upnp.Control.DataAccess.CompiledModels
             ServiceEntityType.CreateAnnotations(service);
             UpnpDeviceEntityType.CreateAnnotations(upnpDevice);
 
-            AddAnnotation("ProductVersion", "7.0.0-preview.7.22376.2");
+            AddAnnotation("ProductVersion", "7.0.0");
         }
     }
 }
