@@ -9,7 +9,7 @@ public sealed class ItemJsonConverter : JsonConverter<Item>
     public override Item Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => throw new NotSupportedException();
 
     [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
-    public override void Write(Utf8JsonWriter writer, Item value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Item value, [NotNull] JsonSerializerOptions options)
     {
         if (value is Container container)
         {
