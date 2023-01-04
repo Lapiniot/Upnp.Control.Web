@@ -159,7 +159,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         }
 
         const index = getDataIndex(element);
-        if (!index) return;
+        if (index === undefined) return;
 
         if ((event.ctrlKey || event.metaKey) && this.props.multiSelect)
             this.context.dispatch({ type: "TOGGLE", index });
@@ -174,7 +174,8 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
     private navigateHandler = (event: UIEvent) => {
         if (event.defaultPrevented || isInteractive(event.target as HTMLElement)) return;
         const index = getDataIndex(event.target as HTMLElement);
-        if (index) this.navigateTo(index);
+        if (index === undefined) return;
+        this.navigateTo(index);
     }
 
     private keydownListener = (event: KeyboardEvent) => {
