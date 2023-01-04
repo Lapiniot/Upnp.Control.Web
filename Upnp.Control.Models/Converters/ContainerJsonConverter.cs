@@ -19,6 +19,7 @@ public sealed class ContainerJsonConverter : JsonConverter<Container>
         }
 
         writer.WriteStartObject();
+        writer.WriteBoolean("container", true);
         WriteCoreProps(writer, value);
         if (value.ChildCount is { } childCount) writer.WriteNumber("count", childCount);
         if (value.ChildContainerCount is { } childContainerCount) writer.WriteNumber("containerCount", childContainerCount);

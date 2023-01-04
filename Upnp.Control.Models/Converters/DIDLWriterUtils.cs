@@ -12,7 +12,6 @@ internal static class DIDLWriterUtils
         writer.WriteString("id", item.Id);
         writer.WriteString("class", item.Class);
         writer.WriteString("title", item.Title);
-        if (item is Container) writer.WriteBoolean("container", true);
 
         if (item.StorageUsed is { } storageUsed and > 0) writer.WriteNumber(nameof(storageUsed), storageUsed);
         if (item.StorageTotal is { } storageTotal) writer.WriteNumber(nameof(storageTotal), storageTotal);

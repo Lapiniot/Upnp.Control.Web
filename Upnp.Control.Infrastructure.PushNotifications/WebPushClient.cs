@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Upnp.Control.Infrastructure.PushNotifications;
 
 public sealed class WebPushClient : System.Net.Http.WebPushClient, IWebPushClient
