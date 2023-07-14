@@ -23,7 +23,7 @@ export function useIntervalUpdate(callback: UpdateCallback, active = true, inter
         props.current.controller?.abort();
 
         if (active) {
-            const start = document.timeline.currentTime ?? 0;
+            const start = (document.timeline.currentTime ?? 0) as number;
             props.current = { start, interval, controller: new AbortController(), callback };
             scheduleNext(start, start, interval, update);
         }
