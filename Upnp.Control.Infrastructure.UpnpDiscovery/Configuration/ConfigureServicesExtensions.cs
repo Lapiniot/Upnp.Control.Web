@@ -12,7 +12,7 @@ public static class ConfigureServicesExtensions
             .ConfigureSsdpOptions(configure)
             .AddHostedService<UpnpDiscoveryService>()
             .AddTransient<IUpnpServiceMetadataProvider, UpnpServiceMetadataProvider>()
-            .AddTransient(sp => SsdpEnumeratorFactory(sp));
+            .AddTransient<IAsyncEnumerable<SsdpReply>>(sp => SsdpEnumeratorFactory(sp));
 
     [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(SsdpOptions))]
