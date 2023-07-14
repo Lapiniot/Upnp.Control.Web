@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <IsTrimmable>true</IsTrimmable>
-    </PropertyGroup>
+  <PropertyGroup>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="../Upnp.Control.Models/Upnp.Control.Models.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Upnp.Control.Models/Upnp.Control.Models.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <Using Include="Upnp.Control.Models" />
-        <Using Include="IoT.Protocol.Soap" />
-        <Using Include="IoT.Protocol.Upnp" />
-        <Using Include="System.Diagnostics.CodeAnalysis" />
-    </ItemGroup>
+  <ItemGroup>
+    <Using Include="Upnp.Control.Models" />
+    <Using Include="IoT.Protocol.Soap" />
+    <Using Include="IoT.Protocol.Upnp" />
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+  </ItemGroup>
 
 </Project>

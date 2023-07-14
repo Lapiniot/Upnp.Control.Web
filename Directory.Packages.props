@@ -1,0 +1,24 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.9" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.9" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+</Project>

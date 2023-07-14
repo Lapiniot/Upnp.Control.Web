@@ -1,23 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <Nullable>enable</Nullable>
-        <IsTrimmable>true</IsTrimmable>
-    </PropertyGroup>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="../Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <Using Include="Microsoft.Extensions.DependencyInjection" />
-        <Using Include="Upnp.Control.Abstractions" />
-        <Using Include="System.Diagnostics.CodeAnalysis" />
-        <Using Include="System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes" Static="True" />
-    </ItemGroup>
+  <ItemGroup>
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="Upnp.Control.Abstractions" />
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes" Static="True" />
+  </ItemGroup>
 
 </Project>
