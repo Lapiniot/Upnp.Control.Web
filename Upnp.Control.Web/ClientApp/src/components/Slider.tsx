@@ -1,4 +1,4 @@
-import React, { createRef, HTMLProps, KeyboardEvent } from "react";
+import React, { HTMLProps, KeyboardEvent } from "react";
 import { SlideGestureRecognizer, SlideParams } from "./gestures/SlideGestureRecognizer";
 import { ProgressCSSProperties, ProgressProps } from "./Progress";
 

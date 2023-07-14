@@ -1,5 +1,5 @@
 import Vinyl from "vinyl";
-import { Document, Element, Node, parseXml } from "libxmljs2";
+import { Document, Element, parseXml } from "libxmljs2";
 import { Transform, TransformCallback } from "stream";
 
 export interface SvgMergeOptions {

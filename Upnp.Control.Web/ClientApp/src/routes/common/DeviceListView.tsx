@@ -1,4 +1,4 @@
-﻿import { Component, useCallback } from "react";
+﻿import { useCallback } from "react";
 import { DataFetchProps } from "../../components/DataFetch";
 import { GridView, GridViewMode } from "../../components/GridView";
 import { useLocalStorage } from "../../components/Hooks";
