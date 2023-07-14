@@ -45,5 +45,6 @@
     },
     "publish": {
         "configuration": "Release"
-    }
+    },
+    "dotnet.defaultSolution": "Upnp.Control.Web.sln"
 }
