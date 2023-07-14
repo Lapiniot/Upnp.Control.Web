@@ -23,7 +23,7 @@ public static class ConfigureServicesExtensions
         return services;
     }
 
-    private static IAsyncEnumerable<SsdpReply> SsdpEnumeratorFactory(IServiceProvider serviceProvider)
+    private static SsdpSearchEnumerator SsdpEnumeratorFactory(IServiceProvider serviceProvider)
     {
         var options = serviceProvider.GetRequiredService<IOptions<SsdpOptions>>().Value;
 

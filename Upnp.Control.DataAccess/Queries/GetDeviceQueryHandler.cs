@@ -10,7 +10,7 @@ internal sealed class GetDeviceQueryHandler : IAsyncEnumerableQueryHandler<GetDe
 {
     private const string UmiPlaylistSchema = "urn:xiaomi-com:service:Playlist:1";
 
-    private static readonly IDictionary<string, Expression<Func<UpnpDevice, bool>>> Filters = new Dictionary<string, Expression<Func<UpnpDevice, bool>>>
+    private static readonly Dictionary<string, Expression<Func<UpnpDevice, bool>>> Filters = new()
     {
         {"umi", d => d.Services.Any(s => s.ServiceType == UmiPlaylistSchema)},
         {"upnp", d => true},

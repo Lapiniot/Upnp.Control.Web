@@ -4,6 +4,8 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Configuration;
 
 public static class ConfigureServicesExtensions
 {
+    private static readonly string[] tags = new[] { "Application Info" };
+
     public static IServiceCollection AddBase64Encoders(this IServiceCollection services) =>
         services
             .AddTransient<IBase64UrlEncoder, Base64Encoders>()
@@ -70,6 +72,6 @@ public static class ConfigureServicesExtensions
     public static RouteHandlerBuilder MapAppInfo(this IEndpointRouteBuilder routeBuilder, string pattern) =>
         routeBuilder.MapGet(pattern, ApplicationInfoServices.GetApplicationInfoAsync)
             .Produces<ApplicationInfo>(StatusCodes.Status200OK, "application/json")
-            .WithTags(new[] { "Application Info" })
+            .WithTags(tags)
             .WithName("GetAppInfo");
 }

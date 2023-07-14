@@ -52,7 +52,7 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
     {
         var sessions = repository.GetById(deviceId).ToList();
 
-        if (!sessions.Any() || sessions.Any(s => s.IsCompleted))
+        if (sessions.Count is 0 || sessions.Any(s => s.IsCompleted))
         {
             await TerminateAsync(sessions).ConfigureAwait(false);
             SubscribeToEvents(deviceId, services);

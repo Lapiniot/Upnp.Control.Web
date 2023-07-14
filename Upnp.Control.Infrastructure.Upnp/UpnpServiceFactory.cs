@@ -5,14 +5,14 @@ namespace Upnp.Control.Infrastructure.Upnp;
 
 public class UpnpServiceFactory : IUpnpServiceFactory
 {
-    private static readonly IDictionary<string, string> UmiMappings = new Dictionary<string, string>
-        {
-            {"urn:schemas-upnp-org:service:ContentDirectory:1", "/{0}-MS/upnp.org-ContentDirectory-1/control"},
-            {"urn:schemas-upnp-org:service:AVTransport:1", "/{0}-MR/upnp.org-AVTransport-1/control"},
-            {"urn:xiaomi-com:service:SystemProperties:1", "/{0}/xiaomi.com-SystemProperties-1/control"},
-            {"urn:schemas-upnp-org:service:ConnectionManager:1", "/{0}-MR/upnp.org-ConnectionManager-1/control"},
-            {"urn:schemas-upnp-org:service:RenderingControl:1", "/{0}-MR/upnp.org-RenderingControl-1/control"}
-        };
+    private static readonly Dictionary<string, string> UmiMappings = new()
+    {
+        {"urn:schemas-upnp-org:service:ContentDirectory:1", "/{0}-MS/upnp.org-ContentDirectory-1/control"},
+        {"urn:schemas-upnp-org:service:AVTransport:1", "/{0}-MR/upnp.org-AVTransport-1/control"},
+        {"urn:xiaomi-com:service:SystemProperties:1", "/{0}/xiaomi.com-SystemProperties-1/control"},
+        {"urn:schemas-upnp-org:service:ConnectionManager:1", "/{0}-MR/upnp.org-ConnectionManager-1/control"},
+        {"urn:schemas-upnp-org:service:RenderingControl:1", "/{0}-MR/upnp.org-RenderingControl-1/control"}
+    };
 
     private readonly IHttpClientFactory clientFactory;
     private readonly IAsyncQueryHandler<GetDeviceQuery, Models.UpnpDevice> queryHandler;

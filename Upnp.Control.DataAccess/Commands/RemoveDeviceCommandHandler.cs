@@ -8,15 +8,9 @@ internal sealed class RemoveDeviceCommandHandler : IAsyncCommandHandler<RemoveDe
 
     public async Task ExecuteAsync(RemoveDeviceCommand command, CancellationToken cancellationToken)
     {
-        var entity = await context.UpnpDevices.FindAsync(new object[] { command.DeviceId }, cancellationToken).ConfigureAwait(false);
-
-        if (entity is null)
-        {
-            throw new InvalidOperationException("Specified entity is not found");
-        }
-
+        var entity = await context.UpnpDevices.FindAsync(new object[] { command.DeviceId }, cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException("Specified entity is not found");
         context.Remove(entity);
-
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 }
