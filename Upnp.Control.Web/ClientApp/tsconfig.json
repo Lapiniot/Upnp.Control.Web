@@ -1,18 +1,21 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
-        "allowJs": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
+        "target": "ES2021",
+        "useDefineForClassFields": true,
+        "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "module": "ESNext",
-        "moduleResolution": "NodeNext",
+        /* Bundler mode */
+        "moduleResolution": "Bundler",
+        "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
-        "skipLibCheck": true,
+        /* Linting */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true
     },
     "include": [
@@ -26,5 +29,10 @@
         "compilerOptions": {
             "module": "NodeNext"
         }
-    }
+    },
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ]
 }

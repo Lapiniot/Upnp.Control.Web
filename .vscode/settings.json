@@ -24,7 +24,9 @@
         "IoT.Device/IoT.Protocol/System.Common/System.Common.Tests": true,
         "**/react-app-env.d.ts": true,
         "**/.eslintcache": true,
-        "Upnp.Control.Web/ClientApp/src/svg/material-design-icons/*": true
+        "Upnp.Control.Web/ClientApp/src/svg/material-design-icons/*": true,
+        "Upnp.Control.Web/ClientApp/tsconfig.node.tsbuildinfo": true,
+        "Upnp.Control.Web/ClientApp/vite.config.js": true
     },
     "typescript.tsdk": "Upnp.Control.Web/Upnp.Control.Web/ClientApp/node_modules/typescript/lib",
     "auto-rename-tag.activationOnLanguage": [
