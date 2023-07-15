@@ -59,7 +59,7 @@
 }
 
 $missing-image-content:     "\1F61F" !default;
-$missing-image-bg:          url(../../public/stack.svg#mood_bad) !default;
+$missing-image-bg:          url('/stack.svg#mood_bad') !default;
 $icon-scale:                1 !default;
 
 %image-icon {
