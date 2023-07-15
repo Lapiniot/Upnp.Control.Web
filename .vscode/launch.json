@@ -21,6 +21,8 @@
             },
             "serverReadyAction": {
                 "action": "debugWithChrome",
+                "killOnServerStop": true,
+                "webRoot": "${workspaceFolder}/Upnp.Control.Web/ClientApp",
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
             },
             "env": {
