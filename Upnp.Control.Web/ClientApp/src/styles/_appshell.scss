@@ -10,13 +10,13 @@
 
         & > nav {
             display: flex;
-            flex: 1 1 auto;
+            flex: 1;
 
             & > .nav-link {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                flex: 1 1 0;
+                flex: 1;
                 overflow: hidden;
                 @include font-size(var(--#{$prefix}nav-link-font-size-md));
 
@@ -51,7 +51,7 @@
 
             & > nav {
                 flex-direction: column;
-                flex: 0 0 auto;
+                flex: 0;
             }
         }
     }
