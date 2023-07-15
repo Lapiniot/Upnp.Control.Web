@@ -10,7 +10,7 @@ public sealed class ZipArchiveResult<TState> : IResult
 
     public ZipArchiveResult(string fileName, Func<ZipArchive, TState, CancellationToken, Task> builder, TState state)
     {
-        Verify.ThrowIfNullOrEmpty(fileName);
+        ArgumentException.ThrowIfNullOrEmpty(fileName);
         ArgumentNullException.ThrowIfNull(builder);
 
         this.fileName = fileName;
@@ -27,7 +27,7 @@ public sealed class ZipArchiveResult<TState> : IResult
 
         var response = httpContext.Response;
         response.ContentType = "application/zip";
-        response.Headers.Add("Content-Disposition", $"attachment; filename=\"{fileName}\"");
+        response.Headers.Append("Content-Disposition", $"attachment; filename=\"{fileName}\"");
 
         using var archive = new ZipArchive(response.Body, ZipArchiveMode.Create, true);
 

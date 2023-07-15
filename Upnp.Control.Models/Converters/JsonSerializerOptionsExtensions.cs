@@ -30,6 +30,6 @@ public static class JsonSerializerOptionsExtensions
             options.Converters.Add(converter);
         }
 
-        options.AddContext<JsonContext>();
+        options.TypeInfoResolverChain.Add(JsonContext.Default);
     }
 }

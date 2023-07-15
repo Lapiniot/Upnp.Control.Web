@@ -18,5 +18,4 @@ namespace Upnp.Control.Models;
 [JsonSerializable(typeof(Resource))]
 [JsonSerializable(typeof(object))]
 [JsonSerializable(typeof(IAsyncEnumerable<UpnpDevice>))]
-public partial class JsonContext : JsonSerializerContext
-{ }
+public partial class JsonContext : JsonSerializerContext { }

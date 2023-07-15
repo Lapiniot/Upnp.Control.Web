@@ -1,13 +1,12 @@
 using System.Net;
 using System.Reflection;
-using System.Text.Json;
 using static System.Net.Sockets.AddressFamily;
 
 namespace Upnp.Control.Infrastructure.AspNetCore;
 
-internal sealed record ApplicationInfo(BuildInfo Build, string? Product, string HostName, IEnumerable<string> Addresses);
+public record ApplicationInfo(BuildInfo Build, string? Product, string HostName, IEnumerable<string> Addresses);
 
-internal record struct BuildInfo(string? Version, string? Date);
+public record struct BuildInfo(string? Version, string? Date);
 
 internal static class ApplicationInfoServices
 {
@@ -17,14 +16,13 @@ internal static class ApplicationInfoServices
         .GetCustomAttribute<AssemblyProductAttribute>()?
         .Product;
 
-    public static async Task<IResult> GetApplicationInfoAsync(CancellationToken cancellationToken)
+    public static async Task<ApplicationInfo> GetApplicationInfoAsync(CancellationToken cancellationToken)
     {
         var hostName = Dns.GetHostName();
-        return Results.Json(new ApplicationInfo(Build, Product, hostName,
+        return new(Build, Product, hostName,
             (await Dns.GetHostAddressesAsync(hostName, InterNetwork, cancellationToken).ConfigureAwait(false))
                 .Where(ip => ip is { AddressFamily: InterNetwork } && !IPAddress.IsLoopback(ip))
-                .Select(ip => ip.ToString())),
-            new(JsonSerializerDefaults.Web) { IncludeFields = true });
+                .Select(ip => ip.ToString()));
     }
 
     private static BuildInfo GetBuildInfo()

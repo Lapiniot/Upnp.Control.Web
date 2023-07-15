@@ -1,6 +1,7 @@
 #region usings
 using System.Text;
 using Upnp.Control.DataAccess.Configuration;
+using Upnp.Control.Infrastructure.AspNetCore;
 using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Configuration;
 using Upnp.Control.Infrastructure.Configuration;
@@ -62,13 +63,19 @@ builder.Services.AddServicesInit()
 
 #region ASPNET configuration
 
-builder.Services.ConfigureHttpJsonOptions(static options => options.SerializerOptions.ConfigureDefaults());
+builder.Services.ConfigureHttpJsonOptions(static options =>
+{
+    options.SerializerOptions.ConfigureDefaults();
+    options.SerializerOptions.TypeInfoResolverChain.Add(JsonContext.Default);
+});
 
 #endregion
 
 #region SignalR configuration
 
+#pragma warning disable IL2026
 builder.Services.AddSignalR().AddJsonProtocol(static options => options.PayloadSerializerOptions.ConfigureDefaults());
+#pragma warning restore IL2026
 
 #endregion
 

@@ -31,23 +31,23 @@ public sealed class ContentProxyMiddleware : ProxyMiddleware
         base.CopyHeaders(responseMessage, context);
 
         context.Response.Headers.Remove("Expires");
-        context.Response.Headers["Server"] = "UPnP Controller DLNA Proxy";
-        context.Response.Headers["Pragma"] = "no-cache";
-        context.Response.Headers["Cache-Control"] = "no-cache";
-        context.Response.Headers["Date"] = DateTimeOffset.UtcNow.ToString("r");
+        context.Response.Headers.Server = "UPnP Controller DLNA Proxy";
+        context.Response.Headers.Pragma = "no-cache";
+        context.Response.Headers.CacheControl = "no-cache";
+        context.Response.Headers.Date = DateTimeOffset.UtcNow.ToString("r");
 
         if (responseMessage.StatusCode >= HttpStatusCode.BadRequest) return;
 
         if (HasOptionEnabled(context, OptionNoLength))
         {
             context.Response.ContentLength = null;
-            context.Response.Headers["Transfer-Encoding"] = "identity";
+            context.Response.Headers.TransferEncoding = "identity";
         }
 
         if (HasOptionEnabled(context, OptionChunked))
         {
             context.Response.ContentLength = null;
-            context.Response.Headers["Transfer-Encoding"] = "chunked";
+            context.Response.Headers.TransferEncoding = "chunked";
         }
 
         if (HasOptionEnabled(context, OptionStripIcyMetadata))
@@ -64,10 +64,10 @@ public sealed class ContentProxyMiddleware : ProxyMiddleware
         if (!HasOptionEnabled(context, OptionAddDlnaMetadata)) return;
 
         var headers = context.Response.Headers;
-        headers.Add("Accept-Ranges", "none");
-        headers.Add("transferMode.dlna.org", "Streaming");
-        headers.Add("realTimeInfo.dlna.org", "DLNA.ORG_TLAG=*");
-        headers.Add("contentFeatures.dlna.org", "*");
+        headers.Append("Accept-Ranges", "none");
+        headers.Append("transferMode.dlna.org", "Streaming");
+        headers.Append("realTimeInfo.dlna.org", "DLNA.ORG_TLAG=*");
+        headers.Append("contentFeatures.dlna.org", "*");
         //headers.Add("contentFeatures.dlna.org", "DLNA.ORG_OP=00;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000");
     }
 

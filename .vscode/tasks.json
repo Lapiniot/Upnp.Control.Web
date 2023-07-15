@@ -56,7 +56,7 @@
                 ".NET: publish (sc-trimmed)"
             ],
             "type": "shell",
-            "command": "du -shA \"${workspaceFolder}/Upnp.Control.Web/bin/${config:publish.configuration}/${config:build.framework}/${input:rid}/publish/\"",
+            "command": "du -shA \"${workspaceFolder}/artifacts/publish/Upnp.Control.Web/${config:publish.configuration}_${input:rid}/\"",
             "problemMatcher": []
         },
         {
@@ -80,7 +80,7 @@
                 "--filter=\"protect **/*.service\"",
                 "--exclude=\"**/.DS_Store\"",
                 "--rsh=ssh",
-                "\"${workspaceFolder}/Upnp.Control.Web/bin/${config:publish.configuration}/${config:build.framework}/${input:rid}/publish/\"",
+                "\"${workspaceFolder}/artifacts/publish/Upnp.Control.Web/${config:publish.configuration}_${input:rid}/\"",
                 "${input:remote-url}"
             ]
         },
@@ -193,7 +193,7 @@
             "dockerBuild": {
                 "tag": "upnp-dashboard:latest-scd-${input:rid}",
                 "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/${input:rid}/Dockerfile",
-                "context": "${workspaceFolder}/Upnp.Control.Web/bin/Release/net7.0/${input:rid}/publish",
+                "context": "${workspaceFolder}/artifacts/publish/Upnp.Control.Web/${config:publish.configuration}_${input:rid}/",
                 "labels": {
                     "includeDefaults": false
                 },
@@ -329,16 +329,10 @@
             "description": "Runtime Identifier",
             "type": "pickString",
             "options": [
-                "win10-x64",
+                "win-x64",
                 "osx-x64",
-                "ubuntu-x64",
-                "ubuntu-arm",
-                "ubuntu-arm64",
-                "debian-x64",
-                "debian-arm",
-                "debian-arm64",
-                "alpine-x64",
-                "alpine-arm64"
+                "linux-x64",
+                "linux-arm64"
             ],
             "default": "osx-x64"
         }
