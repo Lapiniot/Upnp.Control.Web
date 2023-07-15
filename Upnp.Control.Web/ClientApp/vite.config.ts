@@ -4,7 +4,9 @@ import fs from "fs"
 
 // https://vitejs.dev/config/
 
-const options = { target: "https://localhost:8081", "secure": false }
+const options = {
+  target: "http://localhost:8080"
+}
 
 export default defineConfig({
   plugins: [react()],
@@ -19,7 +21,7 @@ export default defineConfig({
       "/api": options,
       "/proxy": options,
       "/dlna-proxy": options,
-      "/upnpevents": { ...options, ws: false }
+      "/upnpevents": { ...options, ws: true }
     }
   }
 })
