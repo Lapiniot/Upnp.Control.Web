@@ -10,5 +10,10 @@
                 "Protocols": "Http1AndHttp2AndHttp3"
             }
         }
+    },
+    "Logging": {
+        "LogLevel": {
+            "Microsoft.AspNetCore.Server.Kestrel": "Error"
+        }
     }
 }

@@ -78,6 +78,7 @@
                 "--filter=\"protect **/data\"",
                 "--filter=\"protect **/appsettings.Production*.json\"",
                 "--filter=\"protect **/*.service\"",
+                "--exclude=\"**/.DS_Store\"",
                 "--rsh=ssh",
                 "\"${workspaceFolder}/Upnp.Control.Web/bin/${config:publish.configuration}/${config:build.framework}/${input:rid}/publish/\"",
                 "${input:remote-url}"
