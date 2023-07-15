@@ -51,7 +51,7 @@ root.render(
         </div>
     </BrowserRouter>);
 
-if (process.env.NODE_ENV === 'development' && process.env.VITE_REG_DEV_SW !== 'true') {
+if (import.meta.env.DEV && import.meta.env.VITE_REG_DEV_SW !== "true") {
     SW.unregister();
 }
 
