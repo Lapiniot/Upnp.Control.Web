@@ -5,9 +5,11 @@ import fs from "fs"
 // https://vitejs.dev/config/
 
 export default defineConfig(({ mode }) => {
+    if (mode !== "development") return { plugins: [react()] };
+
     const env = loadEnv(mode, process.cwd(), '');
     const options = { target: env.PROXY_TO ?? "http://localhost:8080" }
-    return ({
+    return {
         plugins: [react()],
         server: {
             port: parseInt(env.PORT) ?? 8082,
@@ -23,5 +25,5 @@ export default defineConfig(({ mode }) => {
                 "/upnpevents": { ...options, ws: true }
             }
         }
-    })
+    }
 })
