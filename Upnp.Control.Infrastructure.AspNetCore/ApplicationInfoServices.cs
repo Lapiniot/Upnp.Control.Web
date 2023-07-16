@@ -1,5 +1,6 @@
 using System.Net;
 using System.Reflection;
+using Microsoft.AspNetCore.Http.HttpResults;
 using static System.Net.Sockets.AddressFamily;
 
 namespace Upnp.Control.Infrastructure.AspNetCore;
@@ -16,13 +17,12 @@ internal static class ApplicationInfoServices
         .GetCustomAttribute<AssemblyProductAttribute>()?
         .Product;
 
-    public static async Task<ApplicationInfo> GetApplicationInfoAsync(CancellationToken cancellationToken)
+    public static async Task<Ok<ApplicationInfo>> GetApplicationInfoAsync(CancellationToken cancellationToken)
     {
         var hostName = Dns.GetHostName();
-        return new(Build, Product, hostName,
-            (await Dns.GetHostAddressesAsync(hostName, InterNetwork, cancellationToken).ConfigureAwait(false))
-                .Where(ip => ip is { AddressFamily: InterNetwork } && !IPAddress.IsLoopback(ip))
-                .Select(ip => ip.ToString()));
+        var hostAddresses = await Dns.GetHostAddressesAsync(hostName, InterNetwork, cancellationToken).ConfigureAwait(false);
+        var addresses = hostAddresses.Where(static ip => ip is { AddressFamily: InterNetwork } && !IPAddress.IsLoopback(ip)).Select(ip => ip.ToString());
+        return TypedResults.Ok(new ApplicationInfo(Build, Product, hostName, addresses));
     }
 
     private static BuildInfo GetBuildInfo()
