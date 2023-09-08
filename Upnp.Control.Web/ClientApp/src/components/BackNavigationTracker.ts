@@ -70,7 +70,7 @@ class NavigationApiTrackerImpl extends TrackerBase {
     protected override async pushState(): Promise<void> {
         navigation.addEventListener("navigate", this.navigateListener);
         this.prevKey = navigation.currentEntry?.key;
-        await navigation.navigate(location.href, { info: "pushState" }).finished;
+        await navigation.navigate(location.href, { info: "pushState", history: "push" }).finished;
         this.currentKey = navigation.currentEntry?.key;
     }
 
