@@ -4,7 +4,6 @@ namespace Upnp.Control.Services.Commands;
 
 internal abstract class PLCommandBase
 {
-    protected const string MissingArgumentErrorFormat = "{0} must be provided";
     private readonly IUpnpServiceFactory serviceFactory;
 
     protected PLCommandBase(IUpnpServiceFactory serviceFactory)

@@ -1,5 +1,4 @@
 using System.Text;
-using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Services.Commands;
 
@@ -17,15 +16,15 @@ internal sealed class PLAddItemsCommandHandler : PLCommandBase, IAsyncCommandHan
     public Task ExecuteAsync(PLAddItemsCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(command.Source);
+        ArgumentNullException.ThrowIfNull(command.Source.Items);
+        ArgumentException.ThrowIfNullOrEmpty(command.DeviceId);
+        ArgumentException.ThrowIfNullOrEmpty(command.PlaylistId);
+        ArgumentException.ThrowIfNullOrEmpty(command.Source.DeviceId);
 
-        return command switch
-        {
-            { DeviceId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
-            { PlaylistId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
-            { Source: { DeviceId: { } source, Items: { } ids, MaxDepth: var depth }, DeviceId: var deviceId, PlaylistId: var playlistId } =>
-                AddItemsAsync(deviceId, playlistId, source, ids, depth, cancellationToken),
-            _ => throw new ArgumentException("Valid source deviceId and item ids must be provided")
-        };
+        var (deviceId, playlistId, (sourceDeviceId, items, maxDepth)) = command;
+
+        return AddItemsAsync(deviceId, playlistId, sourceDeviceId, items, maxDepth, cancellationToken);
     }
 
     private async Task AddItemsAsync(string deviceId, string playlistId, string sourceDeviceId, IEnumerable<string> items, int? maxDepth, CancellationToken cancellationToken)

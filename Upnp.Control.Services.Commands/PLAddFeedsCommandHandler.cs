@@ -1,5 +1,3 @@
-using static System.Globalization.CultureInfo;
-
 namespace Upnp.Control.Services.Commands;
 
 internal sealed class PLAddFeedsCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
@@ -13,30 +11,31 @@ internal sealed class PLAddFeedsCommandHandler(IUpnpServiceFactory serviceFactor
     Task IAsyncCommandHandler<PLAddPlaylistFilesCommand>.ExecuteAsync(PLAddPlaylistFilesCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(command.Files);
+        ArgumentException.ThrowIfNullOrEmpty(command.DeviceId);
+        ArgumentException.ThrowIfNullOrEmpty(command.PlaylistId);
 
-        return command switch
-        {
-            { DeviceId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
-            { PlaylistId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
-            { DeviceId: { } deviceId, PlaylistId: { } playlistId, Files: { } files, UseProxy: var useProxy } =>
-                AddFromFilesAsync(deviceId, playlistId, files, useProxy, cancellationToken),
-            _ => throw new ArgumentException("Valid file must be provided")
-        };
+        var (deviceId, playlistId, files, useProxy) = command;
+
+        return AddFromFilesAsync(deviceId, playlistId, files, useProxy, cancellationToken);
     }
 
     #endregion
 
     #region Implementation of IAsyncCommandHandler<PLAddFeedUrlCommand>
 
-    Task IAsyncCommandHandler<PLAddFeedUrlCommand>.ExecuteAsync(PLAddFeedUrlCommand command, CancellationToken cancellationToken) =>
-        command switch
-        {
-            { DeviceId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
-            { PlaylistId: null or "" } => throw new ArgumentException(string.Format(InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.PlaylistId))),
-            { DeviceId: { } deviceId, PlaylistId: { } playlistId, Source: { Url: { } url, Title: var title, UseProxy: var useProxy } } =>
-                AddFromUrlAsync(deviceId, playlistId, url, title, useProxy, cancellationToken),
-            _ => throw new ArgumentException("Valid feed url must be provided")
-        };
+    Task IAsyncCommandHandler<PLAddFeedUrlCommand>.ExecuteAsync(PLAddFeedUrlCommand command, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(command.Source);
+        ArgumentNullException.ThrowIfNull(command.Source.Url);
+        ArgumentException.ThrowIfNullOrEmpty(command.DeviceId);
+        ArgumentException.ThrowIfNullOrEmpty(command.PlaylistId);
+
+        var (deviceId, playlistId, (url, title, useProxy)) = command;
+
+        return AddFromUrlAsync(deviceId, playlistId, url, title, useProxy, cancellationToken);
+    }
 
     #endregion
 }

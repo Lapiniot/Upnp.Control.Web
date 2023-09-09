@@ -1,4 +1,3 @@
-using System.Globalization;
 using static System.String;
 
 namespace Upnp.Control.Services.Commands;
@@ -35,13 +34,9 @@ internal sealed class PLCreateFromFilesCommandHandler(IUpnpServiceFactory servic
     public Task ExecuteAsync(PLCreateFromFilesCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(command.Files);
+        ArgumentException.ThrowIfNullOrEmpty(command.DeviceId);
 
-        return command switch
-        {
-            { DeviceId: null or "" } => throw new ArgumentException(Format(CultureInfo.InvariantCulture, MissingArgumentErrorFormat, nameof(PLAddItemsCommand.DeviceId))),
-            { DeviceId: { } deviceId, Files: { } files, UseProxy: var useProxy, Title: var title, Merge: var merge } =>
-                CreateFromFilesAsync(deviceId, files, title, useProxy, merge, cancellationToken),
-            _ => throw new ArgumentException("Valid file source must be provided")
-        };
+        return CreateFromFilesAsync(command.DeviceId, command.Files, command.Title, command.UseProxy, command.Merge, cancellationToken);
     }
 }
