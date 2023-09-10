@@ -10,10 +10,29 @@ namespace Upnp.Control.DataAccess.CompiledModels
     [DbContext(typeof(PushSubscriptionDbContext))]
     public partial class PushSubscriptionDbContextModel : RuntimeModel
     {
+        private static readonly bool _useOldBehavior31751 =
+            System.AppContext.TryGetSwitch("Microsoft.EntityFrameworkCore.Issue31751", out var enabled31751) && enabled31751;
+
         static PushSubscriptionDbContextModel()
         {
             var model = new PushSubscriptionDbContextModel();
-            model.Initialize();
+
+            if (_useOldBehavior31751)
+            {
+                model.Initialize();
+            }
+            else
+            {
+                var thread = new System.Threading.Thread(RunInitialization, 10 * 1024 * 1024);
+                thread.Start();
+                thread.Join();
+
+                void RunInitialization()
+                {
+                    model.Initialize();
+                }
+            }
+
             model.Customize();
             _instance = model;
         }

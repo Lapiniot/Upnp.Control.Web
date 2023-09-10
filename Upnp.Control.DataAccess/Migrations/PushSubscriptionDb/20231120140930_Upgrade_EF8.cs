@@ -5,7 +5,7 @@
 namespace Upnp.Control.DataAccess.Migrations.PushSubscriptionDb
 {
     /// <inheritdoc />
-    public partial class UpgradeEF7 : Migration
+    public partial class Upgrade_EF8 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

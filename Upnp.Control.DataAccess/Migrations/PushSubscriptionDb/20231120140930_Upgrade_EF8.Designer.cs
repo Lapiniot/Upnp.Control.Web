@@ -7,13 +7,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Upnp.Control.DataAccess.Migrations.PushSubscriptionDb
 {
     [DbContext(typeof(PushSubscriptionDbContext))]
-    [Migration("20211110102217_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231120140930_Upgrade_EF8")]
+    partial class Upgrade_EF8
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
 
             modelBuilder.Entity("Upnp.Control.Models.PushNotifications.PushNotificationSubscription", b =>
                 {
