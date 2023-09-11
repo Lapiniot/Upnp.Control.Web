@@ -45,7 +45,7 @@ else if (OperatingSystem.IsWindows())
 #region Services configuration
 
 builder.Services.AddServicesInit()
-    .AddWebPushSender(static options => options.ConfigureDefaults())
+    .AddWebPushSender()
     .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/rc").MapAVTransport("api/events/{0}/avt"))
     .AddUpnpDiscovery()
     .AddUpnpDeviceSqliteDatabase(Path.Combine(builder.Environment.ContentRootPath, "data/upnp.db3"))
@@ -57,6 +57,8 @@ builder.Services.AddServicesInit()
     .AddUpnpServiceFactory()
     .AddQueries()
     .AddCommands();
+
+builder.Services.ConfigureWebPushJsonOptions(static options => options.SerializerOptions.ConfigureDefaults());
 
 #endregion
 

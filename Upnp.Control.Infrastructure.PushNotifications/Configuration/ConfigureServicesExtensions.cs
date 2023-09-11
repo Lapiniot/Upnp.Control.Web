@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Upnp.Control.Abstractions;
 using Upnp.Control.Extensions.DependencyInjection;
 using Upnp.Control.Models.PushNotifications;
@@ -7,15 +6,8 @@ namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    public static IServiceCollection AddWebPushSender(this IServiceCollection services, Action<JsonSerializerOptions> configureJsonOptions = null)
+    public static IServiceCollection AddWebPushSender(this IServiceCollection services)
     {
-        var builder = services.AddOptions<JsonOptions>();
-
-        if (configureJsonOptions is not null)
-        {
-            builder.Configure(o => configureJsonOptions(o.SerializerOptions));
-        }
-
         return services
             .AddHostedService(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddServiceInitializer<VAPIDKeyConfigInitializer>()
@@ -26,9 +18,13 @@ public static class ConfigureServicesExtensions
             .AddWebPushClient();
     }
 
-    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    public static IServiceCollection ConfigureWebPushJsonOptions(this IServiceCollection services, Action<JsonOptions> configureOptions) =>
+        services.Configure(configureOptions);
+
     [DynamicDependency(PublicConstructors, typeof(VAPIDSecretOptions))]
     [DynamicDependency(PublicConstructors, typeof(WebPushOptions))]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+
     public static IServiceCollection AddWebPushClient(this IServiceCollection services)
     {
         services.AddOptions<VAPIDSecretOptions>();
