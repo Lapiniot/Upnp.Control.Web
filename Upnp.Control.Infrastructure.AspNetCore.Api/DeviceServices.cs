@@ -10,8 +10,6 @@ internal static class DeviceServices
     /// <param name="withOffline">Whether to include offline devices.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Device information enumerator.</returns>
-    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "Preserved manually.")]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(UpnpDevice))]
     public static Ok<IAsyncEnumerable<UpnpDevice>> GetAllAsync(IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
         string category = "upnp", bool withOffline = false, CancellationToken cancellationToken = default) =>
         Ok(handler.ExecuteAsync(new(category, withOffline), cancellationToken));

@@ -28,7 +28,7 @@ internal static class DIDLWriterUtils
         writer.WriteEndArray();
     }
 
-    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     public static void WriteResource(Utf8JsonWriter writer, Item item, JsonSerializerOptions options)
     {
         if (item.Resource is not { } res) return;

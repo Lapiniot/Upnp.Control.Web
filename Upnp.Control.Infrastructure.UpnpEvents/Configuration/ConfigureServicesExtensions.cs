@@ -43,7 +43,7 @@ public static class ConfigureServicesExtensions
         return services;
     }
 
-    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     private static void ConfigureUpnpEventsOptions(UpnpEventsOptions options, IConfiguration configuration)
     {
         configuration = configuration.GetSection("UpnpEventSubscriptions");

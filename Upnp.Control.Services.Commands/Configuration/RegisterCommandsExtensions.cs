@@ -17,8 +17,8 @@ public static class RegisterCommandsExtensions
         .AddCommand<RCSetVolumeCommand, RCSetVolumeCommandHandler>()
         .AddCommand<RCSetMuteCommand, RCSetMuteCommandHandler>();
 
-    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "Preserved manually.")]
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(PlaylistOptions))]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     public static IServiceCollection AddPlaylistCommands(this IServiceCollection services)
     {
         services.AddOptions<PlaylistOptions>().BindConfiguration("Playlists");

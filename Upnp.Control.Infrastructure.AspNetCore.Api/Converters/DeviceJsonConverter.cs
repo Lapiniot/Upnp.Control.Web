@@ -8,7 +8,7 @@ public sealed class DeviceJsonConverter : JsonConverter<UpnpDevice>
     public override UpnpDevice Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         throw new NotImplementedException();
 
-    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     public override void Write([NotNull] Utf8JsonWriter writer, UpnpDevice value, [NotNull] JsonSerializerOptions options)
     {
         if (value is null)

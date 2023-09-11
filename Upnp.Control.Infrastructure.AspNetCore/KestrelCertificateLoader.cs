@@ -43,7 +43,7 @@ internal static class KestrelCertificateLoader
         return null;
     }
 
-    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     private static X509Certificate2? LoadFromConfiguration(IConfigurationSection section, IFileProvider contentRootFileProvider)
     {
         var path = section.GetValue<string?>(PathKey);

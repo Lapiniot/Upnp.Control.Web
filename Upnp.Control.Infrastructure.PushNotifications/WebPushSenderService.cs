@@ -91,7 +91,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
         }
     }
 
-    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     private async void Post<[DynamicallyAccessedMembers(All)] T>(NotificationType type, T message) where T : NotificationMessage
     {
         try

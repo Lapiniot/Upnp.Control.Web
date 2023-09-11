@@ -25,7 +25,7 @@ public static class ConfigureServicesExtensions
         .AddCommand<PSAddCommand, PSAddCommandHandler>()
         .AddCommand<PSRemoveCommand, PSRemoveCommandHandler>();
 
-    public static IServiceCollection AddSqliteDatabase<[DynamicallyAccessedMembers(All)] TContext>(
+    public static IServiceCollection AddSqliteDatabase<[DynamicallyAccessedMembers(PublicConstructors | NonPublicConstructors | PublicProperties)] TContext>(
         this IServiceCollection services, string fileName, IModel model)
         where TContext : DbContext => services
         .AddDbContext<TContext>(builder => builder.UseSqlite($"Data Source={fileName};", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
