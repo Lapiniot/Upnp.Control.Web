@@ -1,10 +1,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
+using static Upnp.Control.Infrastructure.AspNetCore.Api.Converters.DIDLWriterUtils;
 
-using static Upnp.Control.Models.Converters.DIDLWriterUtils;
-
-namespace Upnp.Control.Models.Converters;
+namespace Upnp.Control.Infrastructure.AspNetCore.Api.Converters;
 
 public sealed class MediaItemJsonConverter : JsonConverter<MediaItem>
 {

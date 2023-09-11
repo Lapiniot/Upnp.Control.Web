@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
 
-namespace Upnp.Control.Models.Converters;
+namespace Upnp.Control.Infrastructure.AspNetCore.Api.Converters;
 
 public sealed class ResourceJsonConverter : JsonConverter<Resource>
 {
@@ -39,9 +39,7 @@ public sealed class ResourceJsonConverter : JsonConverter<Resource>
         if (value.Protection is { } protection) writer.WriteString("protection", protection);
 
         if (value.Attributes is { Count: > 0 })
-        {
             foreach (var (k, v) in value.Attributes) writer.WriteString(k, v);
-        }
 
         writer.WriteEndObject();
     }

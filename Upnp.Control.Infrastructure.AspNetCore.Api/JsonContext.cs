@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
 
-namespace Upnp.Control.Models;
+namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(UpnpDiscoveryMessage))]

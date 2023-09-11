@@ -10,7 +10,6 @@ using Upnp.Control.Infrastructure.SignalR.Configuration;
 using Upnp.Control.Infrastructure.Upnp.Configuration;
 using Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
-using Upnp.Control.Models.Converters;
 using Upnp.Control.Services.Commands.Configuration;
 using Upnp.Control.Services.Queries.Configuration;
 

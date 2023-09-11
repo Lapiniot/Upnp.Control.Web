@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
 
-namespace Upnp.Control.Models.Converters;
+namespace Upnp.Control.Infrastructure.AspNetCore.Api.Converters;
 
 public sealed class ItemJsonConverter : JsonConverter<Item>
 {

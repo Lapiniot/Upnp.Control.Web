@@ -1,7 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Upnp.Control.Infrastructure.AspNetCore.Api.Converters;
 
-namespace Upnp.Control.Models.Converters;
+namespace Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
 
 public static class JsonSerializerOptionsExtensions
 {
