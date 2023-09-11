@@ -1,8 +1,6 @@
-using Upnp.Control.Models.PushNotifications;
-
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-internal record struct PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
+public record struct PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
 
 internal static class PushNotificationSubscriptionServices
 {

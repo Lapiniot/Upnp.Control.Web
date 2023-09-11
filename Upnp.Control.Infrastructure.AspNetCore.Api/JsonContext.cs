@@ -1,9 +1,23 @@
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
+using Upnp.Control.Infrastructure.AspNetCore.Api.Converters;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+#pragma warning disable IDE0300
+
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DictionaryKeyPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    IgnoreReadOnlyProperties = true,
+    IgnoreReadOnlyFields = true,
+    Converters = new Type[]{
+        typeof(IconJsonConverter), typeof(ServiceJsonConverter), typeof(DeviceJsonConverter),
+        typeof(ResourceJsonConverter), typeof(ItemJsonConverter), typeof(ContainerJsonConverter),
+        typeof(MediaItemJsonConverter)
+    })]
+[JsonSerializable(typeof(string[]))]
 [JsonSerializable(typeof(UpnpDiscoveryMessage))]
 [JsonSerializable(typeof(AVStateMessage))]
 [JsonSerializable(typeof(RCStateMessage))]
@@ -18,4 +32,5 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 [JsonSerializable(typeof(Resource))]
 [JsonSerializable(typeof(object))]
 [JsonSerializable(typeof(IAsyncEnumerable<UpnpDevice>))]
+[JsonSerializable(typeof(PushSubscription))]
 public partial class JsonContext : JsonSerializerContext { }
