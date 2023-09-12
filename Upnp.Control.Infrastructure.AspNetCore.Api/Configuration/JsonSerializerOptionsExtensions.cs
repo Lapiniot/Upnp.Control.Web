@@ -1,21 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Upnp.Control.Infrastructure.AspNetCore.Api.Converters;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
 
 public static class JsonSerializerOptionsExtensions
 {
-    private static readonly JsonConverter[] CustomConverters = [
-        new IconJsonConverter(),
-        new ServiceJsonConverter(),
-        new DeviceJsonConverter(),
-        new ResourceJsonConverter(),
-        new ItemJsonConverter(),
-        new ContainerJsonConverter(),
-        new MediaItemJsonConverter()
-    ];
-
     public static void ConfigureDefaults(this JsonSerializerOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
@@ -26,11 +15,11 @@ public static class JsonSerializerOptionsExtensions
         options.IgnoreReadOnlyProperties = true;
         options.IgnoreReadOnlyFields = true;
 
-        foreach (var converter in CustomConverters)
+        options.TypeInfoResolver = JsonContext.Default;
+
+        foreach (var converter in JsonContext.Default.Options.Converters)
         {
             options.Converters.Add(converter);
         }
-
-        options.TypeInfoResolverChain.Add(JsonContext.Default);
     }
 }
