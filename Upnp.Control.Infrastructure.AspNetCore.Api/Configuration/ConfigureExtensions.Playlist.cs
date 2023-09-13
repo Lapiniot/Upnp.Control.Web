@@ -20,7 +20,7 @@ public static partial class ConfigureExtensions
 
         group.MapPost("items", PlaylistServices.CreateFromItemsAsync);
 
-        group.MapPost("files", PlaylistServices.CreateFromFilesAsync);
+        group.MapPost("files", PlaylistServices.CreateFromFilesAsync).DisableAntiforgery();
 
         group.MapPut("{playlistId}", PlaylistServices.RenameAsync);
 
@@ -32,7 +32,7 @@ public static partial class ConfigureExtensions
 
         group.MapPost("{playlistId}/feeds", PlaylistServices.AddFromFeedsAsync);
 
-        group.MapPost("{playlistId}/files", PlaylistServices.AddFromFilesAsync);
+        group.MapPost("{playlistId}/files", PlaylistServices.AddFromFilesAsync).DisableAntiforgery();
 
         group.MapDelete("{playlistId}/items", PlaylistServices.RemoveItemsAsync);
 

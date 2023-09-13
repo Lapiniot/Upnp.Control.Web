@@ -43,15 +43,15 @@ internal static class PlaylistServices
         }
     }
 
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreateFromFilesForm))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreateFromFilesFormParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> CreateFromFilesAsync(
         IAsyncCommandHandler<PLCreateFromFilesCommand> handler,
-        string deviceId, CreateFromFilesForm form, CancellationToken cancellationToken)
+        string deviceId, [AsParameters] CreateFromFilesFormParams form, CancellationToken cancellationToken)
     {
         try
         {
             var sourceFiles = form.Files.Select(f => new FormFileSource(f));
-            var command = new PLCreateFromFilesCommand(deviceId, sourceFiles, form.Title, form.Merge, form.UseProxy);
+            var command = new PLCreateFromFilesCommand(deviceId, sourceFiles, form.Title ?? "", form.Merge ?? false, form.UseProxy ?? false);
             await handler.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
             return NoContent();
         }
@@ -166,16 +166,16 @@ internal static class PlaylistServices
         }
     }
 
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreateFromFilesForm))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreateFromFilesFormParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> AddFromFilesAsync(
         IAsyncCommandHandler<PLAddPlaylistFilesCommand> handler,
-        string deviceId, string playlistId, CreateFromFilesForm form,
+        string deviceId, string playlistId, [AsParameters] CreateFromFilesFormParams form,
         CancellationToken cancellationToken)
     {
         try
         {
             var sources = form.Files.Select(f => new FormFileSource(f));
-            await handler.ExecuteAsync(new(deviceId, playlistId, sources, form.UseProxy), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, playlistId, sources, form.UseProxy ?? false), cancellationToken).ConfigureAwait(false);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -228,14 +228,8 @@ internal static class PlaylistServices
     }
 }
 
-public readonly record struct CreateFromFilesForm(IFormFileCollection Files, string Title, bool Merge, bool UseProxy)
-{
-    public static ValueTask<CreateFromFilesForm> BindAsync(HttpContext context)
-    {
-        var form = context.Request.Form;
-        return new(new CreateFromFilesForm(form.Files,
-            form.TryGetValue("Title", out var v) && v is [{ } str, ..] ? str : "",
-            form.TryGetValue("Merge", out v) && v is [{ } mstr, ..] && bool.TryParse(mstr, out var b) && b,
-            form.TryGetValue("UseProxy", out v) && v is [{ } pstr, ..] && bool.TryParse(pstr, out b) && b));
-    }
-}
+public readonly record struct CreateFromFilesFormParams(
+    IFormFileCollection Files,
+    [FromForm] string? Title,
+    [FromForm] bool? Merge,
+    [FromForm] bool? UseProxy);
