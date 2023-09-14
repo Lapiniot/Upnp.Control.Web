@@ -1,4 +1,5 @@
 #region usings
+using System.Reflection;
 using System.Text;
 using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore;
@@ -17,7 +18,7 @@ using Upnp.Control.Services.Queries.Configuration;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateSlimBuilder(args);
 
 #region Application configuration
 
@@ -64,6 +65,8 @@ builder.Services.ConfigureWebPushJsonOptions(static options => options.Serialize
 
 #region ASPNET configuration
 
+builder.WebHost.UseKestrelHttpsConfiguration();
+
 builder.Services.ConfigureHttpJsonOptions(static options =>
 {
     options.SerializerOptions.ConfigureDefaults();
@@ -104,6 +107,25 @@ builder.Services
 #region Health checks configuration
 
 builder.Services.AddHealthChecks();
+
+#endregion
+
+#region Dynamic configuration via. Hosting Startup Assemblies
+
+// This functionality is not supported by SlimBuilder, so we reimplement it here just 
+// for the sake of dev. mode libraries integration (Microsoft.AspNetCore.SpaProxy e.g.)
+
+if (builder.Environment.IsDevelopment() && builder.Configuration[WebHostDefaults.HostingStartupAssembliesKey]?
+        .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) is { } startupAssemblies)
+{
+    foreach (var startupAssembly in startupAssemblies)
+    {
+        var assembly = Assembly.Load(startupAssembly);
+        var type = assembly.GetCustomAttribute<HostingStartupAttribute>().HostingStartupType;
+        var startup = (IHostingStartup)Activator.CreateInstance(type);
+        startup.Configure(builder.WebHost);
+    }
+}
 
 #endregion
 
