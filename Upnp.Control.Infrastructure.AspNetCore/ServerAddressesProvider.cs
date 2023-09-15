@@ -7,12 +7,8 @@ using static System.Net.IPAddress;
 
 namespace Upnp.Control.Infrastructure.AspNetCore;
 
-internal sealed class ServerAddressesProvider : IServerAddressesProvider
+internal sealed class ServerAddressesProvider(IServer server) : IServerAddressesProvider
 {
-    private readonly IServer server;
-
-    public ServerAddressesProvider(IServer server) => this.server = server;
-
     public IEnumerable<string> GetServerAddresses() => server.Features.Get<IServerAddressesFeature>()?.Addresses ?? Array.Empty<string>();
 
     private const string NoProtocolExternalEndpoint = "Server is not listening for specified protocol on external addresses";

@@ -4,7 +4,7 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    private static readonly string[] tags = new[] { "Application Info" };
+    private static readonly string[] tags = ["Application Info"];
 
     public static IServiceCollection AddBase64Encoders(this IServiceCollection services) =>
         services

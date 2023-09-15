@@ -1,11 +1,7 @@
 namespace Upnp.Control.DataAccess;
 
-internal sealed class SqliteMigrateDbInitializer<TContext> : IServiceInitializer where TContext : DbContext
+internal sealed class SqliteMigrateDbInitializer<TContext>(TContext context) : IServiceInitializer where TContext : DbContext
 {
-    private readonly TContext context;
-
-    public SqliteMigrateDbInitializer(TContext context) => this.context = context;
-
     public Task InitializeAsync(CancellationToken cancellationToken)
     {
         var path = context.Database.GetConnectionString()![12..^1];

@@ -6,7 +6,7 @@ namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
 internal partial class UpnpDiscoveryService
 {
-    private readonly ILogger<UpnpDiscoveryService> logger;
+    private readonly ILogger<UpnpDiscoveryService> logger = logger;
 
     [LoggerMessage(11, LogLevel.Trace, "{message}")]
     private partial void Trace(string message);

@@ -3,14 +3,10 @@ using static System.String;
 
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class PLCreateFromFilesCommandHandler : PLFeedsCommandBase, IAsyncCommandHandler<PLCreateFromFilesCommand>
+internal sealed class PLCreateFromFilesCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
+    IServerAddressesProvider serverAddressesProvider, IOptionsSnapshot<PlaylistOptions> options,
+    ILogger<PLCreateFromFilesCommandHandler> logger) : PLFeedsCommandBase(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger), IAsyncCommandHandler<PLCreateFromFilesCommand>
 {
-    public PLCreateFromFilesCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
-        IServerAddressesProvider serverAddressesProvider, IOptionsSnapshot<PlaylistOptions> options,
-        ILogger<PLCreateFromFilesCommandHandler> logger) :
-        base(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger)
-    { }
-
     private async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool useProxy, bool merge, CancellationToken cancellationToken)
     {
         if (merge)

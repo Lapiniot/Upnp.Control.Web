@@ -2,17 +2,12 @@ using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class PLAddFeedsCommandHandler : PLFeedsCommandBase,
+internal sealed class PLAddFeedsCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
+    IServerAddressesProvider serverAddressesProvider, ILogger<PLAddFeedsCommandHandler> logger,
+    IOptionsSnapshot<PlaylistOptions> options) : PLFeedsCommandBase(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger),
     IAsyncCommandHandler<PLAddPlaylistFilesCommand>,
     IAsyncCommandHandler<PLAddFeedUrlCommand>
 {
-    public PLAddFeedsCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
-        IServerAddressesProvider serverAddressesProvider, ILogger<PLAddFeedsCommandHandler> logger,
-        IOptionsSnapshot<PlaylistOptions> options) :
-        base(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger)
-    {
-    }
-
     #region Implementation of IAsyncCommandHandler<PLAddPlaylistFilesCommand>
 
     Task IAsyncCommandHandler<PLAddPlaylistFilesCommand>.ExecuteAsync(PLAddPlaylistFilesCommand command, CancellationToken cancellationToken)

@@ -5,10 +5,15 @@ namespace Upnp.Control.Models.Converters;
 
 public static class JsonSerializerOptionsExtensions
 {
-    private static readonly JsonConverter[] CustomConverters = {
-        new IconJsonConverter(), new ServiceJsonConverter(), new DeviceJsonConverter(),
-        new ResourceJsonConverter(), new ItemJsonConverter(), new ContainerJsonConverter(), new MediaItemJsonConverter()
-    };
+    private static readonly JsonConverter[] CustomConverters = [
+        new IconJsonConverter(),
+        new ServiceJsonConverter(),
+        new DeviceJsonConverter(),
+        new ResourceJsonConverter(),
+        new ItemJsonConverter(),
+        new ContainerJsonConverter(),
+        new MediaItemJsonConverter()
+    ];
 
     public static void ConfigureDefaults(this JsonSerializerOptions options)
     {

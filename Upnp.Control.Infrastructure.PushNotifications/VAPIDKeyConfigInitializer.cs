@@ -2,17 +2,8 @@ using Upnp.Control.Abstractions;
 
 namespace Upnp.Control.Infrastructure.PushNotifications;
 
-internal sealed class VAPIDKeyConfigInitializer : IServiceInitializer
+internal sealed class VAPIDKeyConfigInitializer(IHostEnvironment environment, IConfiguration configuration) : IServiceInitializer
 {
-    private readonly IConfiguration configuration;
-    private readonly IHostEnvironment environment;
-
-    public VAPIDKeyConfigInitializer(IHostEnvironment environment, IConfiguration configuration)
-    {
-        this.environment = environment;
-        this.configuration = configuration;
-    }
-
     public Task InitializeAsync(CancellationToken cancellationToken)
     {
         var configRoot = Path.Combine(environment.ContentRootPath, "config");

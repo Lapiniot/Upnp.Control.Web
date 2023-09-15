@@ -2,16 +2,9 @@ using Upnp.Control.Abstractions;
 
 namespace Upnp.Control.Infrastructure;
 
-internal sealed partial class ApplicationInitService : IHostedService
+internal sealed partial class ApplicationInitService(IServiceProvider services, ILogger<ApplicationInitService> logger) : IHostedService
 {
-    private readonly IServiceProvider services;
-    private readonly ILogger<ApplicationInitService> logger;
-
-    public ApplicationInitService(IServiceProvider services, ILogger<ApplicationInitService> logger)
-    {
-        this.services = services;
-        this.logger = logger;
-    }
+    private readonly ILogger<ApplicationInitService> logger = logger;
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {

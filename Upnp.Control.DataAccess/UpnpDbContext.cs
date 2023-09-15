@@ -2,14 +2,12 @@
 
 namespace Upnp.Control.DataAccess;
 
-internal sealed class UpnpDbContext : DbContext
+[method: DynamicDependency(PublicConstructors, typeof(UpnpDbContext))]
+[method: DynamicDependency(PublicConstructors, typeof(Service))]
+[method: DynamicDependency(PublicConstructors, typeof(Icon))]
+[method: UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "Preserved manually.")]
+internal sealed class UpnpDbContext(DbContextOptions<UpnpDbContext> options) : DbContext(options)
 {
-    [DynamicDependency(PublicConstructors, typeof(UpnpDbContext))]
-    [DynamicDependency(PublicConstructors, typeof(Service))]
-    [DynamicDependency(PublicConstructors, typeof(Icon))]
-    [UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "Preserved manually.")]
-    public UpnpDbContext(DbContextOptions<UpnpDbContext> options) : base(options) { }
-
     public DbSet<UpnpDevice> UpnpDevices { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>

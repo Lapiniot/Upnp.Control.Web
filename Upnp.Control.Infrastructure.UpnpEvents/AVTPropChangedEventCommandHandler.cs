@@ -1,11 +1,8 @@
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-internal sealed class AVTPropChangedEventCommandHandler : PropChangedUpnpEventCommandHandler<AVTPropChangedCommand, AVTPropChangedEvent>
+internal sealed class AVTPropChangedEventCommandHandler(IEnumerable<IObserver<AVTPropChangedEvent>> eventObservers,
+    IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler, ILogger<AVTPropChangedEventCommandHandler> logger) : PropChangedUpnpEventCommandHandler<AVTPropChangedCommand, AVTPropChangedEvent>(eventObservers, handler, logger)
 {
-    public AVTPropChangedEventCommandHandler(IEnumerable<IObserver<AVTPropChangedEvent>> eventObservers,
-        IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler, ILogger<AVTPropChangedEventCommandHandler> logger) :
-        base(eventObservers, handler, logger)
-    { }
 
     protected override ValueTask NotifyObserversAsync(IEnumerable<IObserver<AVTPropChangedEvent>> observers,
         string deviceId, IReadOnlyDictionary<string, string> properties,

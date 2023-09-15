@@ -3,7 +3,7 @@ using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Infrastructure.Upnp;
 
-public class UpnpServiceFactory : IUpnpServiceFactory
+public class UpnpServiceFactory(IHttpClientFactory clientFactory, IAsyncQueryHandler<GetDeviceQuery, Models.UpnpDevice> queryHandler) : IUpnpServiceFactory
 {
     private static readonly Dictionary<string, string> UmiMappings = new()
     {
@@ -13,15 +13,6 @@ public class UpnpServiceFactory : IUpnpServiceFactory
         {"urn:schemas-upnp-org:service:ConnectionManager:1", "/{0}-MR/upnp.org-ConnectionManager-1/control"},
         {"urn:schemas-upnp-org:service:RenderingControl:1", "/{0}-MR/upnp.org-RenderingControl-1/control"}
     };
-
-    private readonly IHttpClientFactory clientFactory;
-    private readonly IAsyncQueryHandler<GetDeviceQuery, Models.UpnpDevice> queryHandler;
-
-    public UpnpServiceFactory(IHttpClientFactory clientFactory, IAsyncQueryHandler<GetDeviceQuery, Models.UpnpDevice> queryHandler)
-    {
-        this.clientFactory = clientFactory;
-        this.queryHandler = queryHandler;
-    }
 
     public async Task<(TService, DeviceDescription)> GetAsync<TService>(string deviceId, CancellationToken cancellationToken)
         where TService : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService>

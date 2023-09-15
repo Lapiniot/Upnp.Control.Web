@@ -5,23 +5,9 @@ using static System.StringComparison;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
-internal sealed partial class UpnpDiscoveryService : BackgroundServiceBase
+internal sealed partial class UpnpDiscoveryService(IServiceProvider services, IUpnpServiceMetadataProvider metadataProvider, IHostApplicationLifetime applicationLifetime, ILogger<UpnpDiscoveryService> logger) : BackgroundServiceBase(logger)
 {
     private const string RootDevice = "upnp:rootdevice";
-    private readonly IHostApplicationLifetime applicationLifetime;
-    private readonly IUpnpServiceMetadataProvider metadataProvider;
-    private readonly IServiceProvider services;
-
-    public UpnpDiscoveryService(IServiceProvider services,
-        IUpnpServiceMetadataProvider metadataProvider,
-        IHostApplicationLifetime applicationLifetime,
-        ILogger<UpnpDiscoveryService> logger) : base(logger)
-    {
-        this.services = services;
-        this.metadataProvider = metadataProvider;
-        this.applicationLifetime = applicationLifetime;
-        this.logger = logger;
-    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

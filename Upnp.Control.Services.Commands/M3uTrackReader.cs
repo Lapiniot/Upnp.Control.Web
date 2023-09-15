@@ -10,7 +10,7 @@ public readonly record struct M3UTrack(string Path, string Info, int Duration);
 
 public class M3UTrackReader : IAsyncEnumerable<M3UTrack>
 {
-    private static readonly byte[] EXTINF = { 0x45, 0x58, 0x54, 0x49, 0x4E, 0x46, 0x3A };
+    private static readonly byte[] EXTINF = [0x45, 0x58, 0x54, 0x49, 0x4E, 0x46, 0x3A];
     private readonly PipeReader reader;
     private readonly Encoding encoding;
 
