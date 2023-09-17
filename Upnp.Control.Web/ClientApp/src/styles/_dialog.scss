@@ -9,6 +9,8 @@
     --#{$prefix}dialog-border-width: #{$modal-content-border-width};
     --#{$prefix}dialog-border-radius: #{$modal-content-border-radius};
     --#{$prefix}dialog-box-shadow: #{$modal-content-box-shadow-xs};
+    --#{$prefix}dialog-transition-start-transform: translate3d(0, var(--#{$animation-prefix}slide-y), 0) scale3d(var(--#{$animation-prefix}pop-scale), var(--#{$animation-prefix}pop-scale), 1);
+    --#{$prefix}dialog-transition-duration: var(--#{$animation-prefix}duration-2);
     --#{$prefix}dialog-header-gap: #{$modal-footer-margin-between};
     --#{$prefix}dialog-header-bg: #{$modal-footer-bg};
     --#{$prefix}dialog-header-padding-x: #{$modal-header-padding-x};
@@ -21,7 +23,7 @@
     --#{$prefix}dialog-footer-border-color: #{$modal-footer-border-color};
     --#{$prefix}dialog-footer-border-width: 0;
 
-    display: flex;
+    display: none;
     flex-flow: column nowrap;
     inset: 0;
     width: var(--#{$prefix}dialog-width);
@@ -31,26 +33,46 @@
     padding: 0;
     z-index: $zindex-modal;
     color: var(--#{$prefix}dialog-color);
-    pointer-events: auto;
+    pointer-events: none;
     background-color: var(--#{$prefix}dialog-bg);
     border: var(--#{$prefix}dialog-border-width) solid var(--#{$prefix}dialog-border-color);
     @include border-radius(var(--#{$prefix}dialog-border-radius));
     @include box-shadow(var(--#{$prefix}dialog-box-shadow));
-    @include animation(var(--#{$animation-prefix}slide-pop));
-    transition: var(--#{$transition-prefix}fade);
+    transform: var(--#{$prefix}dialog-transition-start-transform);
+    transition: opacity, transform ease-in-out, display allow-discrete, overlay allow-discrete;
+    transition-duration: var(--#{$prefix}dialog-transition-duration);
 
-    &:not([open]) {
-        pointer-events: none;
+    &,
+    &::backdrop {
         opacity: 0;
-        @include animation(var(--#{$animation-prefix}pop-out));
+    }
+
+    &[open] {
+        display: flex;
+        pointer-events: auto;
+        transform: none;
+
+        &,
+        &::backdrop {
+            opacity: 1;
+
+            @starting-style {
+                opacity: 0;
+            }
+        }
+
+        @starting-style {
+            transform: var(--#{$prefix}dialog-transition-start-transform);
+        }
     }
 
     &::backdrop {
-        --#{$prefix}backdrop-bg-rgb: 0 0 0;
-        --#{$prefix}backdrop-bg-opacity: 0.5;
+        --#{$prefix}backdrop-bg-color: rgba(0 0 0 / 0.5);
         --#{$prefix}backdrop-blur-radius: 0px;
-        background-color: rgba(var(--#{$prefix}backdrop-bg-rgb) / var(--#{$prefix}backdrop-bg-opacity));
+        --#{$prefix}backdrop-transition-duration: var(--#{$animation-prefix}duration-2);
+        background-color: var(--#{$prefix}backdrop-bg-color);
         backdrop-filter: blur(var(--#{$prefix}backdrop-blur-radius));
+        transition: opacity var(--#{$prefix}backdrop-transition-duration);
     }
 
     > form {

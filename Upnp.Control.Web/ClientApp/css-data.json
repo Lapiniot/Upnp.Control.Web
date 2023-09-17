@@ -17,6 +17,14 @@
                 }
             ],
             "description": "The @container rule is a conditional group rule whose condition is a container query, which is a boolean combination of container size queries and/or container style queries. Style declarations within the <stylesheet> block of an @container rule are filtered by its condition to only match when the container query is true for their element’s query container."
+        },
+        {
+            "name": "@starting-style",
+            "status": "experimental",
+            "browsers": [
+                "C117"
+            ],
+            "description": "Allow authors to start CSS transitions on first style update."
         }
     ],
     "properties": [
