@@ -4,7 +4,7 @@ internal sealed class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRe
 {
     private readonly Dictionary<string, List<IAsyncCancelable>> storage;
 
-    public InMemorySubscriptionsRepository() => storage = new();
+    public InMemorySubscriptionsRepository() => storage = [];
 
     public void Add(string udn, params IAsyncCancelable[] sessions)
     {
