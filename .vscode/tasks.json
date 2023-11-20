@@ -14,7 +14,8 @@
             "args": [
                 "build",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary",
+                "--tl"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -28,7 +29,8 @@
                 "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
                 "--configuration=${config:publish.configuration}",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary",
+                "--tl"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -46,7 +48,8 @@
                 "--self-contained",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
-                "/property:PublishTrimmed=true"
+                "/property:PublishTrimmed=true",
+                "--tl"
             ],
             "problemMatcher": "$msCompile"
         },
