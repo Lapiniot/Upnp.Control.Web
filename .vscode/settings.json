@@ -7,6 +7,8 @@
         "**/*.DotSettings.*": true,
         "**/*.DotSettings": true,
         "**/artifacts": true,
+        "**/bin": true,
+        "**/obj": true,
         "**/package-lock.json": true,
         "**/node_modules": true,
         "**/*.user": true,

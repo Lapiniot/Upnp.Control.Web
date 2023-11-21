@@ -10,6 +10,7 @@ package-lock.json
 *.crt
 *.key
 Upnp.Control.Web/data/*
+Upnp.Control.Web/config/*
 *.css
 Upnp.Control.Web/ClientApp/public/service-worker.js
 Upnp.Control.Web/ClientApp/public/service-worker.js.map
