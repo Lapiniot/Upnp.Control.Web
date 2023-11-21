@@ -178,7 +178,7 @@ const pushSubscriber = {
         return new HttpPostFetch(`${baseUri}/push-subscriptions`, null, json({ endpoint, type, p256dhKey: toBase64(p256dh), authKey: toBase64(auth) }))
     },
     unsubscribe(endpoint: string, type: PushNotificationType) {
-        return new HttpDeleteFetch(`${baseUri}/push-subscriptions`, null, json({ endpoint, type }))
+        return new HttpDeleteFetch(`${baseUri}/push-subscriptions`, { endpoint, type })
     },
     subscribed(endpoint: string, type: PushNotificationType) { return new JsonHttpFetch<boolean>(`${baseUri}/push-subscriptions`, { endpoint, type }) },
     serverKey() { return new HttpFetch(`${baseUri}/push-subscriptions/server-key`) }
