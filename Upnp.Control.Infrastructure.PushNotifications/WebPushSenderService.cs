@@ -39,56 +39,44 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            try
-            {
-                var message = await channel.Reader.ReadAsync(stoppingToken).ConfigureAwait(false);
+            var reader = channel.Reader;
+            var tTLSeconds = wpOptions.Value.TTLSeconds;
 
+            while (await reader.WaitToReadAsync(stoppingToken).ConfigureAwait(false))
+            {
                 using var scope = services.CreateScope();
                 var serviceProvider = scope.ServiceProvider;
-
                 var client = serviceProvider.GetRequiredService<IWebPushClient>();
-                var enumerateHandler = serviceProvider.GetRequiredService<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
 
-                await foreach (var (endpoint, type, _, p256dhKey, authKey) in enumerateHandler.ExecuteAsync(new(message.Type), stoppingToken).ConfigureAwait(false))
+                while (reader.TryRead(out var message))
                 {
-                    try
+                    if (stoppingToken.IsCancellationRequested) return;
+
+                    var enumerateHandler = serviceProvider.GetRequiredService<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
+
+                    await foreach (var (endpoint, type, _, p256dhKey, authKey) in enumerateHandler.ExecuteAsync(new(message.Type), stoppingToken).ConfigureAwait(false))
                     {
-                        await client.SendAsync(endpoint, p256dhKey, authKey, message.Payload, wpOptions.Value.TTLSeconds, stoppingToken).ConfigureAwait(false);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // expected
-                    }
-#pragma warning disable CA1508 // Avoid dead conditional code
-                    catch (HttpRequestException hre) when (hre is { StatusCode: HttpStatusCode.Gone or HttpStatusCode.Forbidden })
-#pragma warning restore CA1508 // Avoid dead conditional code
-                    {
-                        var removeHandler = serviceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
-                        await removeHandler.ExecuteAsync(new(type, endpoint), stoppingToken).ConfigureAwait(false);
-                    }
-                    catch (Exception ex)
-                    {
-                        LogPushError(ex, endpoint);
+                        try
+                        {
+                            await client.SendAsync(endpoint, p256dhKey, authKey, message.Payload, tTLSeconds, stoppingToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException) { return; }
+                        catch (HttpRequestException hre) when (hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
+                        {
+                            var removeHandler = serviceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
+                            await removeHandler.ExecuteAsync(new(type, endpoint), stoppingToken).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogPushError(ex, endpoint);
+                        }
                     }
                 }
             }
-            catch (OperationCanceledException oce) when (oce.CancellationToken == stoppingToken)
-            {
-                // expected
-                break;
-            }
-            catch (ChannelClosedException)
-            {
-                LogChannelClosed();
-                break;
-            }
-            catch (Exception ex)
-            {
-                LogError(ex);
-            }
         }
+        catch (OperationCanceledException) { /* expected */ }
     }
 
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
@@ -105,12 +93,6 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
         }
     }
 
-    public override void Dispose()
-    {
-        channel.Writer.TryComplete();
-        base.Dispose();
-    }
-
     [LoggerMessage(11, LogLevel.Error, "Error pushing message to endpoint: {endpoint}")]
     private partial void LogPushError(Exception ex, Uri endpoint);
 
@@ -119,9 +101,6 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
 
     [LoggerMessage(13, LogLevel.Error, "Error writing message to the queue")]
     private partial void LogMessageQueueingError(Exception ex);
-
-    [LoggerMessage(14, LogLevel.Warning, "Channel closed. Terminating push dispatch loop")]
-    private partial void LogChannelClosed();
 
     #region Implementation of IObserver<UpnpAVTransportPropertyChangedEvent>
 
@@ -139,15 +118,13 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                 value.VendorProperties));
     }
 
+    public void OnCompleted() { }
+
+    public void OnError(Exception error) { }
+
     #endregion
 
     #region Implementation of IObserver<UpnpDiscoveryEvent>
-
-    public void OnCompleted()
-    { }
-
-    public void OnError(Exception error)
-    { }
 
     void IObserver<UpnpDiscoveryEvent>.OnNext(UpnpDiscoveryEvent value)
     {

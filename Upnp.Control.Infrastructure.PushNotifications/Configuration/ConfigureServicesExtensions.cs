@@ -1,3 +1,4 @@
+using System.Net.Http.Jwt;
 using Upnp.Control.Abstractions;
 using Upnp.Control.Extensions.DependencyInjection;
 using Upnp.Control.Models.PushNotifications;
@@ -29,6 +30,11 @@ public static class ConfigureServicesExtensions
     {
         services.AddOptions<VAPIDSecretOptions>();
         services.AddOptions<WebPushOptions>().BindConfiguration("WebPush");
+        services.AddTransient<IJwtTokenHandler>(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<VAPIDSecretOptions>>().Value;
+            return new JwtTokenHandlerES256Alg(options.PublicKey, options.PrivateKey);
+        });
         services.AddHttpClient<IWebPushClient, WebPushClient>();
         return services.AddTransient<IConfigureOptions<VAPIDSecretOptions>, ConfigureVAPIDSecretOptions>();
     }

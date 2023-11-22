@@ -1,3 +1,4 @@
+using System.Net.Http.WebPush;
 using System.Text.Json;
 
 namespace Upnp.Control.Infrastructure.PushNotifications;
@@ -41,7 +42,7 @@ internal static class ConfigMigrations
 #pragma warning restore CA2000 // Dispose objects before losing scope
             await using (writer.ConfigureAwait(false))
             {
-                var (publicKey, privateKey) = CryptoExtensions.GenerateP256ECKeys();
+                var (publicKey, privateKey) = ServerKeyGenerator.Generate();
                 writer.WriteStartObject();
                 if (originalConfig is not null)
                 {
