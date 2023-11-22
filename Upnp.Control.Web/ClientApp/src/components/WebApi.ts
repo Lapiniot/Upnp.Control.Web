@@ -64,11 +64,16 @@ export const enum PushNotificationType {
     ContentUpdated = 0x4
 }
 
+export type PushNotificationSubscriptionState = {
+    type: PushNotificationType,
+    created: string
+}
+
 export interface PushSubscriptionApiClient {
     serverKey(): HttpFetch
     subscribe(endpoint: string, type: PushNotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null): HttpPostFetch
     unsubscribe(endpoint: string, type: PushNotificationType): HttpDeleteFetch
-    subscribed(endpoint: string, type: PushNotificationType): JsonHttpFetch<boolean>
+    state(endpoint: string): JsonHttpFetch<PushNotificationSubscriptionState>
 }
 
 export default class WebApi {
@@ -180,7 +185,7 @@ const pushSubscriber = {
     unsubscribe(endpoint: string, type: PushNotificationType) {
         return new HttpDeleteFetch(`${baseUri}/push-subscriptions`, { endpoint, type })
     },
-    subscribed(endpoint: string, type: PushNotificationType) { return new JsonHttpFetch<boolean>(`${baseUri}/push-subscriptions`, { endpoint, type }) },
+    state(endpoint: string) { return new JsonHttpFetch<PushNotificationSubscriptionState>(`${baseUri}/push-subscriptions`, { endpoint }) },
     serverKey() { return new HttpFetch(`${baseUri}/push-subscriptions/server-key`) }
 }
 

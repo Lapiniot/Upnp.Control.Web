@@ -1,9 +1,8 @@
 ﻿import { FlagEditor } from "../../components/editors/FlagEditor";
 import { NumberEditor } from "../../components/editors/NumberEditor";
 import { OptionsEditor } from "../../components/editors/OptionsEditor";
-import { PushNotificationType } from "../../components/WebApi";
 import $s from "../common/Settings";
-import { PushSubscriptionToggle } from "./PushSubscriptionToggle";
+import { PushNotificationsSection } from "./PushNotificationSection";
 
 function setPageSize(value: string) {
     const pageSize = parseInt(value);
@@ -65,10 +64,7 @@ export default () => {
                 <li className="list-group-item">
                     <small>Push notifications</small>
                     <div className="d-grid grid-1fr-auto g-3 mt-2 align-items-center">
-                        <label htmlFor="discovery-pushes-editor">Device discovery</label>
-                        <PushSubscriptionToggle notificationType={PushNotificationType.DeviceDiscovery} id="discovery-pushes-editor" />
-                        <label htmlFor="playback-pushes-editor">Playback state changes</label>
-                        <PushSubscriptionToggle notificationType={PushNotificationType.PlaybackStateChange} id="playback-pushes-editor" />
+                        <PushNotificationsSection />
                     </div>
                 </li>
             </>}

@@ -1,37 +1,44 @@
-import WebApi, { PushNotificationType } from "./WebApi";
+import WebApi, { PushNotificationSubscriptionState, PushNotificationType } from "./WebApi";
 
 export default {
     subscribe: async (type: PushNotificationType) => {
-        const reg = await navigator.serviceWorker.ready;
-        if (reg) {
-            const ps = await reg.pushManager.getSubscription()
-                ?? await reg.pushManager.subscribe({
+        const swReg = await navigator.serviceWorker.ready;
+        if (swReg) {
+            const subscription = await swReg.pushManager.getSubscription()
+                ?? await swReg.pushManager.subscribe({
                     userVisibleOnly: true,
                     applicationServerKey: await (await WebApi.notifications().serverKey().fetch()).arrayBuffer()
                 });
-            if (!ps) throw new Error("PushManager subscription failed");
-            const response = await WebApi.notifications().subscribe(ps.endpoint, type, ps.getKey("p256dh"), ps.getKey("auth")).fetch();
+            if (!subscription) throw new Error("PushManager subscription failed");
+            const response = await WebApi.notifications().subscribe(subscription.endpoint, type, subscription.getKey("p256dh"), subscription.getKey("auth")).fetch();
             if (!response.ok) {
                 throw new Error(`Subscription request failed: HTTP ${response.status} - ${response.statusText}`);
             }
         }
     },
     unsubscribe: async (type: PushNotificationType) => {
-        const reg = await navigator.serviceWorker.ready;
-        if (reg) {
-            const ps = await reg.pushManager.getSubscription();
-            if (ps) {
-                const response = await WebApi.notifications().unsubscribe(ps.endpoint, type).fetch();
+        const swReg = await navigator.serviceWorker.ready;
+        if (swReg) {
+            const subscription = await swReg.pushManager.getSubscription();
+            if (subscription) {
+                const response = await WebApi.notifications().unsubscribe(subscription.endpoint, type).fetch();
                 if (!response.ok) {
                     throw new Error(`Unsubscription request failed: HTTP ${response.status} - ${response.statusText}`);
                 }
             }
         }
     },
-    isSubscribed: async (type: PushNotificationType): Promise<boolean | undefined> => {
-        const reg = await navigator.serviceWorker.ready;
-        if (!reg) return undefined;
-        const subscription = await reg.pushManager.getSubscription();
-        return !!subscription && (await WebApi.notifications().subscribed(subscription.endpoint, type).json() == true);
+    state: async (): Promise<PushNotificationType> => {
+        const swReg = await navigator.serviceWorker.ready;
+        if (swReg) {
+            const subscription = await swReg.pushManager.getSubscription();
+            if (subscription) {
+                const response = await WebApi.notifications().state(subscription.endpoint).fetch();
+                if (response.ok) {
+                    return (await response.json() as PushNotificationSubscriptionState).type
+                }
+            }
+        }
+        return PushNotificationType.None;
     }
 }

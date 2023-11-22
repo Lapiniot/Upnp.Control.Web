@@ -16,8 +16,6 @@ internal sealed class PSGetQueryHandler : IAsyncQueryHandler<PSGetQuery, PushNot
     {
         ArgumentNullException.ThrowIfNull(query);
 
-        return await context.Subscriptions.AsNoTracking().FirstOrDefaultAsync(s =>
-            s.Endpoint == query.Endpoint && (s.Type & query.Type) == query.Type,
-            cancellationToken: cancellationToken).ConfigureAwait(false);
+        return await context.FindAsync<PushNotificationSubscription>([query.Endpoint], cancellationToken).ConfigureAwait(false);
     }
 }

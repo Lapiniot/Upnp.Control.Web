@@ -30,5 +30,6 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 [JsonSerializable(typeof(MediaItem))]
 [JsonSerializable(typeof(Container))]
 [JsonSerializable(typeof(IAsyncEnumerable<UpnpDevice>))]
-[JsonSerializable(typeof(PushSubscription))]
+[JsonSerializable(typeof(PushSubscriptionRequest))]
+[JsonSerializable(typeof(PushSubscriptionState))]
 public partial class JsonContext : JsonSerializerContext { }

@@ -1,16 +1,26 @@
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-public record struct PushSubscription(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
+public record struct PushSubscriptionRequest(NotificationType Type, Uri Endpoint, string P256dhKey, string AuthKey);
+
+public record struct PushSubscriptionState(NotificationType Type, DateTimeOffset Created);
 
 internal static class PushNotificationSubscriptionServices
 {
-    public static async Task<Results<Ok<bool>, BadRequest>> GetStateAsync(
+    public static async Task<Results<Ok<PushSubscriptionState>, NotFound, BadRequest>> GetStateAsync(
         IAsyncQueryHandler<PSGetQuery, PushNotificationSubscription> handler,
-        string endpoint, NotificationType type, CancellationToken cancellationToken)
+        Uri endpoint, CancellationToken cancellationToken)
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(type, new(endpoint)), cancellationToken).ConfigureAwait(false) is not null);
+            var subscription = await handler.ExecuteAsync(new(endpoint), cancellationToken).ConfigureAwait(false);
+            if (subscription is not null)
+            {
+                return Ok(new PushSubscriptionState(subscription.Type, subscription.Created));
+            }
+            else
+            {
+                return NotFound();
+            }
         }
         catch
         {
@@ -18,10 +28,10 @@ internal static class PushNotificationSubscriptionServices
         }
     }
 
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(PushSubscription))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(PushSubscriptionRequest))]
     public static async Task<Results<NoContent, BadRequest>> SubscribeAsync(
         IAsyncCommandHandler<PSAddCommand> handler, IBase64UrlDecoder decoder,
-        PushSubscription subscription, CancellationToken cancellationToken)
+        PushSubscriptionRequest subscription, CancellationToken cancellationToken)
     {
         try
         {
