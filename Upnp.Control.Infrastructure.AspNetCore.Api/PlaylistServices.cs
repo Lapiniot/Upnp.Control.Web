@@ -46,7 +46,7 @@ internal static class PlaylistServices
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreateFromFilesFormParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> CreateFromFilesAsync(
         IAsyncCommandHandler<PLCreateFromFilesCommand> handler,
-        string deviceId, [FromForm] CreateFromFilesFormParams form, CancellationToken cancellationToken)
+        string deviceId, [AsParameters] CreateFromFilesFormParams form, CancellationToken cancellationToken)
     {
         try
         {
@@ -169,7 +169,7 @@ internal static class PlaylistServices
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreateFromFilesFormParams))]
     public static async Task<Results<NoContent, NotFound, BadRequest>> AddFromFilesAsync(
         IAsyncCommandHandler<PLAddPlaylistFilesCommand> handler,
-        string deviceId, string playlistId, [FromForm] CreateFromFilesFormParams form,
+        string deviceId, string playlistId, [AsParameters] CreateFromFilesFormParams form,
         CancellationToken cancellationToken)
     {
         try
@@ -228,10 +228,8 @@ internal static class PlaylistServices
     }
 }
 
-public class CreateFromFilesFormParams(IFormFileCollection files)
-{
-    public IFormFileCollection Files { get; set; } = files;
-    public string? Title { get; set; }
-    public bool? Merge { get; set; }
-    public bool? UseProxy { get; set; }
-}
+public readonly record struct CreateFromFilesFormParams(
+    IFormFileCollection Files,
+    [FromForm] string? Title,
+    [FromForm] bool? Merge,
+    [FromForm] bool? UseProxy);
