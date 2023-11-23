@@ -1,8 +1,8 @@
 ﻿import { FlagEditor } from "../../components/editors/FlagEditor";
 import { NumberEditor } from "../../components/editors/NumberEditor";
 import { OptionsEditor } from "../../components/editors/OptionsEditor";
-import $s from "../common/Settings";
 import { PushNotificationsSection } from "./PushNotificationSection";
+import $s from "../common/Settings";
 
 function setPageSize(value: string) {
     const pageSize = parseInt(value);
@@ -60,14 +60,14 @@ export default () => {
                     <FlagEditor id="playback-nt" checked={$s.get("showPlaybackNotifications")} callback={setShowPlaybackNotifications} />
                 </div>
             </li>
-            {("serviceWorker" in navigator) && ("PushManager" in window) && <>
+            {("serviceWorker" in navigator) && ("PushManager" in window) &&
                 <li className="list-group-item">
                     <small>Push notifications</small>
                     <div className="d-grid grid-1fr-auto g-3 mt-2 align-items-center">
                         <PushNotificationsSection />
                     </div>
                 </li>
-            </>}
+            }
             <li className="list-group-item">
                 <small>Tools</small>
                 <div className="vstack mt-2">
