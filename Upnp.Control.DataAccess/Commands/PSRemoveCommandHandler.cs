@@ -24,7 +24,7 @@ internal sealed class PSRemoveCommandHandler : IAsyncCommandHandler<PSRemoveComm
         if (subscription is not null)
         {
             var property = context.Entry(subscription).Property(e => e.Type);
-            property.CurrentValue ^= command.Type;
+            property.CurrentValue &= ~command.Type;
             if (property.CurrentValue == NotificationType.None)
             {
                 context.Remove(subscription);
