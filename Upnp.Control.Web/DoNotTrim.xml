@@ -1,3 +1,18 @@
 <linker>
   <assembly fullname="Upnp.Control.DataAccess" />
+  <assembly fullname="Swashbuckle.AspNetCore.SwaggerGen">
+    <type fullname="Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsParameterFilter">
+      <method name=".ctor" />
+    </type>
+    <type fullname="Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsRequestBodyFilter">
+      <method name=".ctor" />
+    </type>
+    <type fullname="Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsOperationFilter">
+      <method name=".ctor" />
+    </type>
+    <type fullname="Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsSchemaFilter">
+      <method name=".ctor" />
+    </type>
+  </assembly>
+  <assembly fullname="Swashbuckle.AspNetCore.SwaggerUI" />
 </linker>

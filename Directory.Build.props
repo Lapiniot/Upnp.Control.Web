@@ -14,6 +14,7 @@
     <EnablePreviewFeatures>true</EnablePreviewFeatures>
     <Features>InterceptorsPreview</Features>
     <InterceptorsPreviewNamespaces>$(InterceptorsPreviewNamespaces);Microsoft.Extensions.Configuration.Binder.SourceGeneration</InterceptorsPreviewNamespaces>
+    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
