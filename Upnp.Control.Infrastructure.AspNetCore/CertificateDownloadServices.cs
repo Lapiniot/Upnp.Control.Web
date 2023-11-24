@@ -11,18 +11,12 @@ public static class CertificateDownloadServices
 {
     private const int ChunkSize = 48;
 
-    public static IResult GetCertificatesArchive(IConfiguration configuration, IWebHostEnvironment environment,
-        HttpRequest request, CancellationToken cancellationToken) =>
-        new ZipArchiveResult<(IConfiguration Configuration, IFileProvider FileProvider)>(
-            $"{request.Host.Host}-certificates.zip",
-            BuildChainArchiveAsync, (configuration, environment.ContentRootFileProvider));
+    public static IResult GetCertificatesArchive(IConfiguration configuration, IWebHostEnvironment environment, HttpRequest request) =>
+        new PushZipStreamHttpResult($"{request.Host.Host}-certificates.zip",
+            (archive, cancellationToken) => BuildChainArchiveAsync(archive, configuration, environment.ContentRootFileProvider, cancellationToken));
 
-    private static async Task BuildChainArchiveAsync(ZipArchive archive,
-        (IConfiguration Configuration, IFileProvider FileProvider) state,
-        CancellationToken cancellationToken)
+    private static async Task BuildChainArchiveAsync(ZipArchive archive, IConfiguration configuration, IFileProvider fileProvider, CancellationToken cancellationToken)
     {
-        var (configuration, fileProvider) = state;
-
         using var certificate = KestrelCertificateLoader.LoadFromConfiguration(configuration, fileProvider);
         using var chain = new X509Chain();
         chain.Build(certificate!);
@@ -32,14 +26,12 @@ public static class CertificateDownloadServices
             var cert = chainElement.Certificate;
             var entryName = cert.GetNameInfo(X509NameType.SimpleName, false);
             var bytes = cert.Export(X509ContentType.Cert);
-
             var entry = archive.CreateEntry(GetSafeFileName(entryName) + ".crt", CompressionLevel.Optimal);
             var stream = entry.Open();
 
             await using (stream.ConfigureAwait(false))
             {
                 var buffer = ArrayPool<byte>.Shared.Rent(Base64.GetMaxEncodedToUtf8Length(bytes.Length) + 55 + bytes.Length / ChunkSize);
-
                 try
                 {
                     var size = PemEncode(bytes, buffer);
@@ -73,7 +65,6 @@ public static class CertificateDownloadServices
     private static int PemEncode(Span<byte> bytes, Span<byte> utf8)
     {
         var total = ASCII.GetBytes("-----BEGIN CERTIFICATE-----\n", utf8);
-
         for (var index = 0; index < bytes.Length; index += ChunkSize)
         {
             var source = bytes.Length - index > ChunkSize
@@ -85,7 +76,6 @@ public static class CertificateDownloadServices
         }
 
         total += ASCII.GetBytes("-----END CERTIFICATE-----\n", utf8[total..]);
-
         return total;
     }
 }
