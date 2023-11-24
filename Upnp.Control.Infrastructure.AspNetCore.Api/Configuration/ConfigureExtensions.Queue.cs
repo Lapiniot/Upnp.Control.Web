@@ -13,11 +13,8 @@ public static partial class ConfigureExtensions
     public static RouteGroupBuilder MapQueueApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         var group = routeBuilder.MapGroup(pattern).WithTags("Queue");
-
         group.MapPost("", QueueServices.AddAsync);
-
         group.MapDelete("", QueueServices.RemoveAllAsync);
-
         return group;
     }
 }

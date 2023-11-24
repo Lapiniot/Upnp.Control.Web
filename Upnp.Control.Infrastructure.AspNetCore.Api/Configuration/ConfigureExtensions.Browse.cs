@@ -13,9 +13,7 @@ public static partial class ConfigureExtensions
     public static RouteGroupBuilder MapBrowseContentApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         var group = routeBuilder.MapGroup(pattern).WithTags("Content Directory");
-
         group.MapGet("", ContentDirectoryServices.BrowseAsync);
-
         return group;
     }
 }

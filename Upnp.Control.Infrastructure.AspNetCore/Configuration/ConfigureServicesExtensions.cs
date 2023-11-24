@@ -1,11 +1,11 @@
+using System.Net;
+using System.Net.Mime;
 using Upnp.Control.Infrastructure.AspNetCore.Middleware;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    private static readonly string[] tags = ["Application Info"];
-
     public static IServiceCollection AddBase64Encoders(this IServiceCollection services) =>
         services
             .AddTransient<IBase64UrlEncoder, Base64Encoders>()
@@ -22,7 +22,7 @@ public static class ConfigureServicesExtensions
             .SetHandlerLifetime(TimeSpan.FromMinutes(10))
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {
-                AutomaticDecompression = System.Net.DecompressionMethods.None,
+                AutomaticDecompression = DecompressionMethods.None,
                 MaxConnectionsPerServer = 1,
                 UseProxy = false,
                 UseCookies = false
@@ -64,14 +64,20 @@ public static class ConfigureServicesExtensions
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(CertificateDownloadServices))]
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     public static IEndpointConventionBuilder MapCertificateDownload(this IEndpointRouteBuilder routeBuilder, string pattern) =>
-        routeBuilder.MapGet(pattern, CertificateDownloadServices.GetCertificatesArchive);
+        routeBuilder.MapGet(pattern, CertificateDownloadServices.GetCertificatesArchive)
+            .Produces(StatusCodes.Status200OK, contentType: MediaTypeNames.Application.Zip)
+            .WithTags("SSL Certificate Download")
+            .WithDisplayName("SSLCertificateDownload")
+            .WithDescription("SSL Certificate Download")
+            .WithOpenApi();
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(ApplicationInfoServices))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ApplicationInfo))]
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     public static RouteHandlerBuilder MapAppInfo(this IEndpointRouteBuilder routeBuilder, string pattern) =>
         routeBuilder.MapGet(pattern, ApplicationInfoServices.GetApplicationInfoAsync)
-            .Produces<ApplicationInfo>(StatusCodes.Status200OK, "application/json")
-            .WithTags(tags)
-            .WithName("GetAppInfo");
+            .Produces<ApplicationInfo>(StatusCodes.Status200OK)
+            .WithTags("Application Information")
+            .WithDisplayName("GetAppInfo")
+            .WithDescription("Application Information");
 }

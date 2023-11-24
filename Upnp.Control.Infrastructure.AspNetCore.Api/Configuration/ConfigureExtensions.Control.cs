@@ -13,27 +13,16 @@ public static partial class ConfigureExtensions
     public static RouteGroupBuilder MapControlApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         var group = routeBuilder.MapGroup(pattern).WithTags("Playback Control");
-
         group.MapGet("state", ControlServices.GetStateAsync);
-
         group.MapPut("state", ControlServices.SetStateAsync);
-
         group.MapGet("position", ControlServices.GetPositionAsync);
-
         group.MapPut("position", ControlServices.SeekAsync);
-
         group.MapGet("play-mode", ControlServices.GetPlayModeAsync);
-
         group.MapPut("play-mode", ControlServices.SetPlayModeAsync);
-
         group.MapGet("volume", ControlServices.GetVolumeAsync);
-
         group.MapPut("volume", ControlServices.SetVolumeAsync);
-
         group.MapGet("mute", ControlServices.GetMuteAsync);
-
         group.MapPut("mute", ControlServices.SetMuteAsync);
-
         return group;
     }
 }

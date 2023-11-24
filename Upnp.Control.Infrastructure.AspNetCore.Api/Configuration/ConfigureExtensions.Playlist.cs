@@ -12,30 +12,22 @@ public static partial class ConfigureExtensions
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     public static RouteGroupBuilder MapPlaylistApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
-        var group = routeBuilder.MapGroup(pattern).WithTags("Playlists Management");
-
-        group.MapGet("state", PlaylistServices.GetPlaylistStateAsync);
-
+        var group = routeBuilder.MapGroup(pattern)
+            .WithTags("Playlists Management")
+            .DisableAntiforgery();
+        group.MapGet("state", PlaylistServices.GetPlaylistStateAsync)
+            .Produces(StatusCodes.Status200OK, contentType: MediaTypeNames.Application.Json)
+            .WithOpenApi();
         group.MapPost("", PlaylistServices.CreateAsync);
-
         group.MapPost("items", PlaylistServices.CreateFromItemsAsync);
-
-        group.MapPost("files", PlaylistServices.CreateFromFilesAsync).DisableAntiforgery();
-
+        group.MapPost("files", PlaylistServices.CreateFromFilesAsync);
         group.MapPut("{playlistId}", PlaylistServices.RenameAsync);
-
         group.MapPost("{playlistId}/copy", PlaylistServices.CopyAsync);
-
         group.MapDelete("", PlaylistServices.RemoveAsync);
-
         group.MapPost("{playlistId}/items", PlaylistServices.AddItemsAsync);
-
         group.MapPost("{playlistId}/feeds", PlaylistServices.AddFromFeedsAsync);
-
-        group.MapPost("{playlistId}/files", PlaylistServices.AddFromFilesAsync).DisableAntiforgery();
-
+        group.MapPost("{playlistId}/files", PlaylistServices.AddFromFilesAsync);
         group.MapDelete("{playlistId}/items", PlaylistServices.RemoveItemsAsync);
-
         return group;
     }
 }

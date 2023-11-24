@@ -13,15 +13,12 @@ public static partial class ConfigureExtensions
     public static RouteGroupBuilder MapPushNotificationSubscriptionApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         var group = routeBuilder.MapGroup(pattern).WithTags("Push Notification Subscriptions");
-
         group.MapGet("", PushNotificationSubscriptionServices.GetStateAsync);
-
         group.MapPost("", PushNotificationSubscriptionServices.SubscribeAsync);
-
         group.MapDelete("", PushNotificationSubscriptionServices.UnsubscribeAsync);
-
-        group.MapGet("server-key", PushNotificationSubscriptionServices.GetServerKeyAsync);
-
+        group.MapGet("server-key", PushNotificationSubscriptionServices.GetServerKeyAsync)
+            .Produces(StatusCodes.Status200OK, contentType: MediaTypeNames.Application.Octet)
+            .WithOpenApi();
         return group;
     }
 }

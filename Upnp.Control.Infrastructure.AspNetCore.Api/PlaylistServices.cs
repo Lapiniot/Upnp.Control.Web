@@ -215,7 +215,7 @@ internal static class PlaylistServices
         try
         {
             var content = await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
-            return Text(content, "application/json");
+            return Text(content, MediaTypeNames.Application.Json);
         }
         catch (DeviceNotFoundException)
         {

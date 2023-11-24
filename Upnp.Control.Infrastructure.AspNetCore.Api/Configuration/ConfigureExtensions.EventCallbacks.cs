@@ -14,12 +14,8 @@ public static partial class ConfigureExtensions
     {
         var group = routeBuilder.MapGroup(pattern).ExcludeFromDescription();
         var methods = new[] { "NOTIFY" };
-        var additionalContentTypes = new[] { "text/xml" };
-
         group.MapMethods("avt", methods, UpnpEventCallbackServices.NotifyAVTransportAsync);
-
         group.MapMethods("rc", methods, UpnpEventCallbackServices.NotifyRenderingControlAsync);
-
         return group;
     }
 }

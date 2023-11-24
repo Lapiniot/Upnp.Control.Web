@@ -62,13 +62,12 @@ internal static class PushNotificationSubscriptionServices
     }
 
     public static async Task<Results<FileContentHttpResult, BadRequest>> GetServerKeyAsync(
-        IAsyncQueryHandler<PSGetServerKeyQuery, byte[]> handler,
-        CancellationToken cancellationToken)
+        IAsyncQueryHandler<PSGetServerKeyQuery, byte[]> handler, CancellationToken cancellationToken)
     {
         try
         {
             var contents = await handler.ExecuteAsync(PSGetServerKeyQuery.Instance, cancellationToken).ConfigureAwait(false);
-            return Bytes(contents, "application/octet-stream");
+            return Bytes(contents, MediaTypeNames.Application.Octet);
         }
         catch
         {

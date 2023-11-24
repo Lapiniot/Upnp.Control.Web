@@ -13,13 +13,9 @@ public static partial class ConfigureExtensions
     public static RouteGroupBuilder MapConnectionsApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         var group = routeBuilder.MapGroup(pattern).WithTags("UPnP Connections");
-
         group.MapGet("protocol-info", ConnectionsServices.GetProtocolInfoAsync);
-
         group.MapGet("connections", ConnectionsServices.GetConnectionsAsync);
-
         group.MapGet("connections/{connectionId}", ConnectionsServices.GetConnectionInfoAsync);
-
         return group;
     }
 }

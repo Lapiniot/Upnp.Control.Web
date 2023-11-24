@@ -13,13 +13,9 @@ public static partial class ConfigureExtensions
     public static RouteGroupBuilder MapDevicesApi(this IEndpointRouteBuilder routeBuilder, string pattern)
     {
         var group = routeBuilder.MapGroup(pattern).WithTags("Devices");
-
         group.MapGet("{id}", DeviceServices.GetAsync);
-
         group.MapGet("", DeviceServices.GetAllAsync)
-            .Produces<IAsyncEnumerable<UpnpDevice>>(StatusCodes.Status200OK, "application/json")
-            .Produces(StatusCodes.Status400BadRequest);
-
+            .Produces<IAsyncEnumerable<UpnpDevice>>(StatusCodes.Status200OK, MediaTypeNames.Application.Json);
         return group;
     }
 }
