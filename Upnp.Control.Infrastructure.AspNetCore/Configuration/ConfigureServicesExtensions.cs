@@ -8,8 +8,8 @@ public static class ConfigureServicesExtensions
 {
     public static IServiceCollection AddBase64Encoders(this IServiceCollection services) =>
         services
-            .AddTransient<IBase64UrlEncoder, Base64Encoders>()
-            .AddTransient<IBase64UrlDecoder, Base64Encoders>();
+            .AddTransient<IBase64UrlEncoder, Base64UrlConvert>()
+            .AddTransient<IBase64UrlDecoder, Base64UrlConvert>();
 
     public static IServiceCollection AddServerAddressesProvider(this IServiceCollection services) =>
         services.AddTransient<IServerAddressesProvider, ServerAddressesProvider>();
