@@ -27,6 +27,7 @@ export default defineConfig(({ mode }) => {
     return {
         plugins: [react()],
         server: {
+            host: true,
             port: parseInt(env.PORT) ?? 8082,
             https: {
                 cert: fs.readFileSync(env.SSL_CRT_FILE),
