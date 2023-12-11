@@ -266,44 +266,6 @@
             }
         },
         {
-            "label": "npm: build - Upnp.Control.Web/ClientApp",
-            "detail": "react-scripts build",
-            "group": "build",
-            "type": "npm",
-            "script": "build",
-            "path": "Upnp.Control.Web/ClientApp",
-            "problemMatcher": [
-                "$tsc"
-            ]
-        },
-        {
-            "label": "npm: install - Upnp.Control.Web/ClientApp",
-            "detail": "install dependencies from package",
-            "type": "npm",
-            "script": "install",
-            "path": "Upnp.Control.Web/ClientApp"
-        },
-        {
-            "label": "npm: start - Upnp.Control.Web/ClientApp",
-            "detail": "rimraf ./build && react-scripts start",
-            "type": "npm",
-            "script": "start",
-            "path": "Upnp.Control.Web/ClientApp",
-            "problemMatcher": [
-                "$tsc"
-            ]
-        },
-        {
-            "label": "npm: lint - Upnp.Control.Web/ClientApp",
-            "detail": "eslint ./src/",
-            "type": "npm",
-            "script": "lint",
-            "path": "Upnp.Control.Web/ClientApp",
-            "problemMatcher": [
-                "$eslint-stylish"
-            ]
-        },
-        {
             "label": "tsc: build - Upnp.Control.Web/ClientApp/tsconfig.json",
             "type": "typescript",
             "tsconfig": "Upnp.Control.Web/ClientApp/tsconfig.json",
@@ -313,21 +275,23 @@
             "group": "build"
         },
         {
-            "label": "npm: build service-worker.js",
-            "detail": "react-scripts build & cp ./build/service-worker.* ./public/",
-            "type": "shell",
-            "command": "cp",
-            "args": [
-                "./build/service-worker.*",
-                "./public/"
+            "type": "npm",
+            "script": "build",
+            "path": "Upnp.Control.Web/ClientApp",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: build - Upnp.Control.Web/ClientApp",
+            "detail": "tsc && vite build"
+        },
+        {
+            "type": "npm",
+            "script": "lint",
+            "path": "Upnp.Control.Web/ClientApp",
+            "problemMatcher": [
+                "$eslint-compact"
             ],
-            "options": {
-                "cwd": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
-            },
-            "dependsOn": [
-                "npm: build - Upnp.Control.Web/ClientApp"
-            ],
-            "problemMatcher": []
+            "label": "npm: lint - Upnp.Control.Web/ClientApp",
+            "detail": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
         }
     ],
     "inputs": [
