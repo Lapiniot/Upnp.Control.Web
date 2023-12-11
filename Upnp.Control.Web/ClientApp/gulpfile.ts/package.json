@@ -1,0 +1,6 @@
+{
+  "name": "gulpfile",
+  "version": "1.8.0",
+  "private": true,
+  "type": "commonjs"
+}

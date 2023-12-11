@@ -1,38 +1,34 @@
 {
+  "compilerOptions": {
+    "target": "ES2021",
+    "useDefineForClassFields": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    /* Bundler mode */
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": [
+    "src"
+  ],
+  // these options are overrides used only by ts-node 
+  "ts-node": {
     "compilerOptions": {
-        "target": "ES2021",
-        "useDefineForClassFields": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "module": "ESNext",
-        /* Bundler mode */
-        "moduleResolution": "Bundler",
-        "allowImportingTsExtensions": true,
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "jsx": "react-jsx",
-        /* Linting */
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
-    },
-    "include": [
-        "src",
-        "gulpfile.ts/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules/**/*.*"
-    ],
-    "ts-node": {
-        "compilerOptions": {
-            "module": "NodeNext"
-        }
-    },
-    "references": [
-        {
-            "path": "./tsconfig.node.json"
-        }
-    ]
+      "module": "NodeNext"
+    }
+  },
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }
