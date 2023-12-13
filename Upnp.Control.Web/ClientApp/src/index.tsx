@@ -32,7 +32,7 @@ root.render(
             </div>
             <main>
                 <div id="notifications-root" className="nt-host" />
-                <SignalRConnection hubUrl="/upnpevents">
+                <SignalRConnection url="/upnpevents">
                     <Routes>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/index.html" element={<HomePage />} />

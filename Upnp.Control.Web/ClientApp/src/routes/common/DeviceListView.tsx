@@ -1,4 +1,4 @@
-﻿import { useCallback } from "react";
+﻿import { useCallback, useEffect, useRef } from "react";
 import { DataFetchProps } from "../../hooks/DataFetch";
 import { GridView, GridViewMode } from "../../components/GridView";
 import { useLocalStorage } from "../../hooks/LocalStorage";
@@ -25,10 +25,14 @@ type DeviceListViewProps = DeviceViewProps & DataFetchProps<Upnp.Device[]>;
 
 export function DeviceListView({ dataContext, fetching, category, viewMode = "grid", itemTemplate: Item }: DeviceListViewProps) {
 
+    const dataContextRef = useRef<typeof dataContext>();
+
     const reload = useCallback(() => {
-        dataContext?.reload();
+        dataContextRef.current?.reload();
         return $s.get("showDiscoveryNotifications");
-    }, [dataContext]);
+    }, []);
+
+    useEffect(() => { dataContextRef.current = dataContext; }, [dataContext]);
 
     const useSkeletons = $cfg[category]?.useSkeletons ?? $cfg.useSkeletons;
     const [count, setCount] = useLocalStorage(`cache:${category}:count`);
