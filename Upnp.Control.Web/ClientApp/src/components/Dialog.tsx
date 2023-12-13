@@ -2,8 +2,8 @@ import {
     ButtonHTMLAttributes, Component, createRef, DialogHTMLAttributes,
     FormEvent, HTMLAttributes, MouseEvent, ReactNode, SyntheticEvent, useRef
 } from "react";
-import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
-import { useAutoFocus } from "./Hooks";
+import { createBackNavigationTracker, NavigationBackTracker } from "../services/BackNavigationTracker";
+import { useAutoFocus } from "../hooks/AutoFocus";
 
 interface DialogEventProps {
     onOpen?(): void;

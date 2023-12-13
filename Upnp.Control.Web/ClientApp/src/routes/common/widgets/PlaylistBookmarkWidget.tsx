@@ -1,6 +1,6 @@
 import { HTMLAttributes, useCallback } from "react";
 import { RouteLink } from "../../../components/NavLink";
-import WebApi from "../../../components/WebApi";
+import WebApi from "../../../services/WebApi";
 import AlbumArt from "../AlbumArt";
 
 export type PlaylistBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {

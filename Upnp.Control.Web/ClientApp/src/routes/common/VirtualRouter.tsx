@@ -1,6 +1,6 @@
 import { Children, createContext, PropsWithChildren, ReactElement, ReactFragment, ReactNode, useCallback, useContext, useRef, useState } from "react";
 import { matchRoutes, resolvePath, RouteMatch, RouteObject } from "react-router-dom";
-import { NavigateFunction, NavigationContext, Path } from "../../components/Navigator";
+import { NavigateFunction, NavigationContext, Path } from "../../hooks/Navigator";
 
 interface VirtualRouterProps {
     initialPath: string

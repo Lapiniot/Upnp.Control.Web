@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { reversemap } from "../../components/Extensions";
+import { reversemap } from "../../services/Extensions";
 import { NavigatorLink } from "../../components/NavLink";
 
 type BreadcrumbParams = {

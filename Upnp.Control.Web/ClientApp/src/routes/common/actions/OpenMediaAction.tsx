@@ -1,6 +1,6 @@
 import { useCallback, useRef } from "react";
 import DialogHost from "../../../components/DialogHost";
-import WebApi from "../../../components/WebApi";
+import WebApi from "../../../services/WebApi";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
 import { isMusicTrack } from "../DIDLTools";
 import { BrowserProps } from "../BrowserView";

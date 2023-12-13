@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { viaProxy } from "../../components/Extensions";
+import { viaProxy } from "../../services/Extensions";
 
 type ItemClassIcon = "folder" | "audio_file" | "video_file" | "insert_drive_file" | "insert_photo" | "album" | "queue_music" | "audiotrack" | "movie";
 

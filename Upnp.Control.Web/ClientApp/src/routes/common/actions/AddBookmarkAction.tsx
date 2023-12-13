@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { deviceBookmarks as bookmarks } from "../../../components/BookmarkService";
+import { deviceBookmarks as bookmarks } from "../../../services/BookmarkService";
 import { BookmarkButton } from "../BookmarkButton";
 import { UpnpDeviceTools as UDT } from "../UpnpDeviceTools";
 import { DeviceActionProps } from "./Actions";

@@ -1,5 +1,5 @@
 import React, { ElementType, HTMLAttributes, MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { PressHoldGestureRecognizer } from "./gestures/PressHoldGestureRecognizer";
+import { PressHoldGestureRecognizer } from "../services/gestures/PressHoldGestureRecognizer";
 
 export type DeleteRowHandler = (index: number, key?: string, tag?: string | number | object) => void;
 

@@ -1,5 +1,5 @@
 import React, { HTMLAttributes } from "react";
-import { formatTime } from "../../components/Extensions";
+import { formatTime } from "../../services/Extensions";
 import Timer from "../../components/Timer";
 import Slider, { SliderChangeHandler } from "../../components/Slider";
 import Progress, { ProgressCSSProperties } from "../../components/Progress";

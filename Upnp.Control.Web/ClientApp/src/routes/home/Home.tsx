@@ -1,6 +1,6 @@
 ﻿import "bootstrap/js/dist/collapse";
 import React, { MouseEvent, useCallback, useEffect, useState } from "react";
-import { deviceBookmarks, getBookmarkData, itemBookmarks, playlistBookmarks } from "../../components/BookmarkService";
+import { deviceBookmarks, getBookmarkData, itemBookmarks, playlistBookmarks } from "../../services/BookmarkService";
 import { DataList, DeleteRowHandler } from "../../components/DataList";
 import { BookmarkGroup, profile } from "../common/Settings";
 import { KnownWidgets, Widgets } from "../common/widgets/Widgets";

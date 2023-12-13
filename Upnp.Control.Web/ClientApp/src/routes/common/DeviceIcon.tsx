@@ -1,5 +1,5 @@
 import { ImgHTMLAttributes } from "react";
-import { viaProxy } from "../../components/Extensions";
+import { viaProxy } from "../../services/Extensions";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 
 type DeviceIconProps = ImgHTMLAttributes<HTMLImageElement> & {

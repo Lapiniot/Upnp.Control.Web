@@ -1,9 +1,8 @@
-import { PropsWithChildren, UIEvent } from "react";
+import { PropsWithChildren, UIEvent, useCallback, useContext } from "react";
 import { MenuItem } from "../../../components/DropdownMenu";
+import { PlaybackStateContext } from "../../common/PlaybackStateContext";
 import { RowState, useRowStates } from "../../common/RowStateContext";
-import { usePlaybackState } from "../../common/PlaybackStateContext";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
-import { useCallback } from "react";
 
 type PlaylistItemActionMenuProps = {
     index: number,
@@ -14,7 +13,7 @@ type PlaylistItemActionMenuProps = {
 
 export function PlaylistItemActionMenu({ index, root, getTrackUrlHook, handlers: h }: PropsWithChildren<PlaylistItemActionMenuProps>) {
     const { get: getState } = useRowStates();
-    const { state: { state }, dispatch } = usePlaybackState();
+    const { state: { state }, dispatch } = useContext(PlaybackStateContext);
     const playItemCallback = useCallback(({ currentTarget: { dataset: { index } } }: UIEvent<HTMLElement>) => {
         if (index) {
             const url = getTrackUrlHook(parseInt(index));

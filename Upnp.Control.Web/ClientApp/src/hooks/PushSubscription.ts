@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { PushNotificationType } from "./WebApi";
-import PushSubService from "./PushSubscriptionService";
+import { PushNotificationType } from "../services/WebApi";
+import PushSubService from "../services/PushSubscriptionService";
 
 async function fetchPushSubState(): Promise<[type: number, valid: boolean]> {
     const [state, validation] = await Promise.allSettled([PushSubService.state(), PushSubService.validate()]);

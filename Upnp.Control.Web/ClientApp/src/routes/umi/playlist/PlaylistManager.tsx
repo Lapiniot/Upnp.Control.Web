@@ -1,15 +1,15 @@
-import { ComponentProps, ComponentType, createRef, HTMLAttributes, PureComponent, ReactElement, UIEventHandler, useCallback, useMemo } from "react";
-import { DataFetchProps } from "../../../components/DataFetch";
+import { ComponentProps, ComponentType, createRef, HTMLAttributes, PureComponent, ReactElement, UIEventHandler, useCallback, useContext, useMemo } from "react";
 import { DialogProps } from "../../../components/Dialog";
 import PromptDialog from "../../../components/Dialog.Prompt";
 import DialogHost from "../../../components/DialogHost";
 import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
 import { DropTarget } from "../../../components/DropTarget";
-import { PressHoldGestureRecognizer } from "../../../components/gestures/PressHoldGestureRecognizer";
-import { HotKey, HotKeys } from "../../../components/HotKey";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
-import { MediaQueries } from "../../../components/MediaQueries";
-import $api from "../../../components/WebApi";
+import { DataFetchProps } from "../../../hooks/DataFetch";
+import { PressHoldGestureRecognizer } from "../../../services/gestures/PressHoldGestureRecognizer";
+import { HotKey, HotKeys } from "../../../services/HotKey";
+import { MediaQueries } from "../../../services/MediaQueries";
+import $api from "../../../services/WebApi";
 import { BottomBar } from "../../common/BottomBar";
 import Breadcrumb from "../../common/Breadcrumb";
 import { useContentBrowser } from "../../common/BrowserUtils";
@@ -17,7 +17,7 @@ import BrowserView, { CellTemplateProps } from "../../common/BrowserView";
 import { isMusicTrack } from "../../common/DIDLTools";
 import ItemInfoDialog from "../../common/ItemInfoDialog";
 import Pagination from "../../common/Pagination";
-import { PlaybackStateProvider, usePlaybackState } from "../../common/PlaybackStateContext";
+import { PlaybackStateContext, PlaybackStateProvider } from "../../common/PlaybackStateContext";
 import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext, { RowState } from "../../common/RowStateContext";
 import $s from "../../common/Settings";
@@ -367,7 +367,7 @@ type PlaylistBrowserProps = ComponentProps<typeof BrowserView<MainCellCtx>> & {
 }
 
 function Browser({ device, deviceName, getUrlHook, ...props }: PlaylistBrowserProps) {
-    const { dispatch, state: { state } } = usePlaybackState();
+    const { dispatch, state: { state } } = useContext(PlaybackStateContext);
     const context = useMemo<MainCellCtx>(() => ({
         play: () => dispatch({ type: "PLAY" }),
         pause: () => dispatch({ type: "PAUSE" }),

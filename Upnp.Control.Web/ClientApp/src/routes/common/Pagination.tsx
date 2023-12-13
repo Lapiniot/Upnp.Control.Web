@@ -1,5 +1,5 @@
 import { ChangeEvent, HTMLProps, useCallback, useRef } from "react";
-import { createSearchParams, useNavigator } from "../../components/Navigator";
+import { createSearchParams, useNavigator } from "../../hooks/Navigator";
 import { LinkProps, NavigatorLink } from "../../components/NavLink";
 import $s from "./Settings";
 

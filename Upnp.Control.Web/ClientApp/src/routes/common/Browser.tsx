@@ -1,10 +1,10 @@
 import { createRef, PureComponent } from "react";
-import { itemBookmarks } from "../../components/BookmarkService";
+import { itemBookmarks } from "../../services/BookmarkService";
 import DialogHost from "../../components/DialogHost";
 import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
-import { HotKey, HotKeys } from "../../components/HotKey";
-import WebApi from "../../components/WebApi";
-import { useBookmarkButton } from "./BookmarkButton";
+import { HotKey, HotKeys } from "../../services/HotKey";
+import WebApi from "../../services/WebApi";
+import { createBookmarkButton } from "./BookmarkButton";
 import { BottomBar } from "./BottomBar";
 import Breadcrumb from "./Breadcrumb";
 import { BrowserActionMenu, renderActionMenuItem } from "./BrowserActionMenu";
@@ -39,7 +39,7 @@ type CellContext = {
     deviceName?: string;
 }
 
-const BookmarkItemButton = useBookmarkButton("ItemBookmarkWidget", itemBookmarks);
+const BookmarkItemButton = createBookmarkButton("ItemBookmarkWidget", itemBookmarks);
 
 function Template(props: CellTemplateProps<CellContext>) {
     return <CellTemplate {...props}>

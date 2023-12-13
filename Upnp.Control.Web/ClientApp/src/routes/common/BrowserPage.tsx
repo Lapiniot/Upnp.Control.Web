@@ -1,4 +1,4 @@
-import { MediaQueries, useMediaQuery } from "../../components/Hooks";
+import { MediaQueries, useMediaQuery } from "../../hooks/MediaQuery";
 import { Browser } from "./Browser";
 import { useContentBrowser } from "./BrowserUtils";
 

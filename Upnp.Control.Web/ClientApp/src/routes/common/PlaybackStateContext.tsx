@@ -1,6 +1,6 @@
-import { createContext, Dispatch, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from "react";
-import { useSignalR } from "../../components/SignalRListener";
-import $api, { ControlApiClient } from "../../components/WebApi";
+import { createContext, Dispatch, PropsWithChildren, useEffect, useMemo, useReducer } from "react";
+import { useSignalR } from "../../hooks/SignalR";
+import $api, { ControlApiClient } from "../../services/WebApi";
 import $s from "./Settings";
 
 type MediaState = Partial<Upnp.AVState & Upnp.AVPosition & Upnp.RCState & { vendor: Record<string, string> }>
@@ -164,8 +164,4 @@ export function usePlaybackEventHandlers(dispatch: Dispatch<MediaAction>) {
         toggleMode: () => dispatch({ type: "TOGGLE_MODE" }),
         refresh: () => dispatch({ type: "REFRESH" })
     }), [dispatch]);
-}
-
-export function usePlaybackState() {
-    return useContext(PlaybackStateContext);
 }

@@ -1,5 +1,5 @@
 import { HTMLAttributes, useEffect, useState } from "react";
-import WebApi, { ApplicationInfo } from "../../components/WebApi";
+import WebApi, { ApplicationInfo } from "../../services/WebApi";
 
 export function AppInfo({ className, ...other }: HTMLAttributes<HTMLElement>) {
     const [appInfo, setAppInfo] = useState<ApplicationInfo>();

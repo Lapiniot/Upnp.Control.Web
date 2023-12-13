@@ -1,10 +1,10 @@
-import { ButtonHTMLAttributes, useCallback, useMemo } from "react";
+import { ButtonHTMLAttributes, useCallback, useContext, useMemo } from "react";
 import { DropdownMenu } from "../../components/DropdownMenu";
-import { parseMilliseconds } from "../../components/Extensions";
-import { SwipeGestureRecognizer, SwipeGestures } from "../../components/gestures/SwipeGestureRecognizer";
 import Slider from "../../components/Slider";
+import { parseMilliseconds } from "../../services/Extensions";
+import { SwipeGestureRecognizer, SwipeGestures } from "../../services/gestures/SwipeGestureRecognizer";
 import AlbumArt from "./AlbumArt";
-import { PlaybackStateProvider, usePlaybackEventHandlers, usePlaybackState } from "./PlaybackStateContext";
+import { PlaybackStateContext, PlaybackStateProvider, usePlaybackEventHandlers } from "./PlaybackStateContext";
 import SeekBar from "./SeekBar";
 
 function formatAlbumTitle(creator: string | undefined, album: string | undefined) {
@@ -22,7 +22,7 @@ function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: strin
 }
 
 function PlayerCore() {
-    const { dispatch, state: { state, current, relTime, duration, actions = [], next, playMode, volume = 0, muted = false } } = usePlaybackState();
+    const { dispatch, state: { state, current, relTime, duration, actions = [], next, playMode, volume = 0, muted = false } } = useContext(PlaybackStateContext);
     const { play, pause, stop, prev: playPrev, next: playNext, seek, setVolume, toggleMode, toggleMute } = usePlaybackEventHandlers(dispatch);
 
     const sgr = useMemo(() => new SwipeGestureRecognizer((_: unknown, gesture: SwipeGestures) => {

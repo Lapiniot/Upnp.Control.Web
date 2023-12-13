@@ -1,5 +1,5 @@
 ﻿import { DetailsHTMLAttributes, useCallback, useRef } from "react";
-import { useResizeObserver } from "./Hooks";
+import { useResizeObserver } from "../hooks/ResizeObserver";
 
 type SpoilerProps = DetailsHTMLAttributes<HTMLDetailsElement> & {
     title: string;

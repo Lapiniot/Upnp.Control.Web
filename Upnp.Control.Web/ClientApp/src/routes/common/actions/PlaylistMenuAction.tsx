@@ -1,7 +1,7 @@
-import { useDataFetch } from "../../../components/DataFetch";
+import { useDataFetch } from "../../../hooks/DataFetch";
 import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
 import { MicroLoader } from "../../../components/LoadIndicator";
-import WebApi from "../../../components/WebApi";
+import WebApi from "../../../services/WebApi";
 import AlbumArt from "../AlbumArt";
 import { DeviceActionProps } from "./Actions";
 

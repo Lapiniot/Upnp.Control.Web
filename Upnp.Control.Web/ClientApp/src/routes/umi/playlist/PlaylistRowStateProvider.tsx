@@ -1,6 +1,6 @@
-import { PropsWithChildren, useMemo } from "react";
+import { PropsWithChildren, useContext, useMemo } from "react";
+import { PlaybackStateContext } from "../../common/PlaybackStateContext";
 import { RowState, RowStateProvider } from "../../common/RowStateContext";
-import { usePlaybackState } from "../../common/PlaybackStateContext";
 
 type TrackIndexCallback = (playlist: string | undefined | null, track: string | undefined | null) => number;
 
@@ -20,7 +20,7 @@ type PlaylistRowStateProviderProps = {
 };
 
 export function PlaylistRowStateProvider({ getActiveTrackIndexHook, ...other }: PropsWithChildren<PlaylistRowStateProviderProps>) {
-    const { state: { currentTrack, medium, current, vendor } } = usePlaybackState();
+    const { state: { currentTrack, medium, current, vendor } } = useContext(PlaybackStateContext);
     const playlist = medium === "X-MI-AUX" || (medium === "NONE" && current?.id === "1")
         ? "aux"
         : vendor?.["playlist_transport_uri"] ?? vendor?.["mi:playlist_transport_uri"];

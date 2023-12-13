@@ -1,6 +1,6 @@
-import { useDataFetch } from "../../components/DataFetch";
-import { useNavigator } from "../../components/Navigator";
-import WebApi, { BrowseOptions } from "../../components/WebApi";
+import { useDataFetch } from "../../hooks/DataFetch";
+import { useNavigator } from "../../hooks/Navigator";
+import WebApi, { BrowseOptions } from "../../services/WebApi";
 import Settings from "./Settings";
 
 function parse(value: string | number | undefined): number | undefined {

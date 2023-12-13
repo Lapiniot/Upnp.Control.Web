@@ -1,6 +1,6 @@
 import { FlagEditor } from "../../components/editors/FlagEditor";
-import { PushNotificationType as PNType } from "../../components/WebApi";
-import { usePushSubscription } from "../../components/PushSubscription";
+import { PushNotificationType as PNType } from "../../services/WebApi";
+import { usePushSubscription } from "../../hooks/PushSubscription";
 
 export function PushNotificationsSection() {
     const { types, valid, loading, toggle, reset } = usePushSubscription();

@@ -1,5 +1,5 @@
 import React, { HTMLProps, KeyboardEvent } from "react";
-import { SlideGestureRecognizer, SlideParams } from "./gestures/SlideGestureRecognizer";
+import { SlideGestureRecognizer, SlideParams } from "../services/gestures/SlideGestureRecognizer";
 import { ProgressCSSProperties, ProgressProps } from "./Progress";
 
 function clamp(value: number, min: number, max: number) {

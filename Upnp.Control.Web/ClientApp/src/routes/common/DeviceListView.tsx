@@ -1,7 +1,7 @@
 ﻿import { useCallback } from "react";
-import { DataFetchProps } from "../../components/DataFetch";
+import { DataFetchProps } from "../../hooks/DataFetch";
 import { GridView, GridViewMode } from "../../components/GridView";
-import { useLocalStorage } from "../../components/Hooks";
+import { useLocalStorage } from "../../hooks/LocalStorage";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { DeviceDiscoveryNotifier } from "./DeviceDiscoveryNotifier";
 import $s from "./Settings";

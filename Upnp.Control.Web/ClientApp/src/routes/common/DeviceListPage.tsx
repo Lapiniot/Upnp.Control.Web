@@ -1,5 +1,5 @@
-import { useDataFetch } from "../../components/DataFetch";
-import WebApi from "../../components/WebApi";
+import { useDataFetch } from "../../hooks/DataFetch";
+import WebApi from "../../services/WebApi";
 import { DeviceListView, DeviceViewProps } from "./DeviceListView";
 
 const fetchDevicesAsync = (category: string) => WebApi.devices(category).json()

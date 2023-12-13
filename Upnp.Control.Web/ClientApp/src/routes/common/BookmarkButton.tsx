@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, MouseEventHandler, useCallback, useEffect, useState } from "react";
-import { IBookmarkStore } from "../../components/BookmarkService";
+import { IBookmarkStore } from "../../services/BookmarkService";
 import { KnownWidgets } from "./widgets/Widgets";
 
 type BookmarkButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -18,7 +18,7 @@ type WidgetPropsType = {
     itemClass?: string;
 };
 
-export function useBookmarkButton(widgetName: KnownWidgets,
+export function createBookmarkButton(widgetName: KnownWidgets,
     storeInstance?: IBookmarkStore<[string, string], WidgetPropsType>, icons?: [string, string]) {
     return function ({ device, deviceName, item, store = storeInstance, ...other }: BookmarkButtonProps) {
         const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);

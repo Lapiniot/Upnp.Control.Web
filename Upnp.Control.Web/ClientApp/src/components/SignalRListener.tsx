@@ -1,4 +1,4 @@
-import React, { ContextType, PropsWithChildren, useContext, useEffect, useRef } from "react";
+import React, { ContextType, PropsWithChildren } from "react";
 import { SignalRContext } from "./SignalRConnection";
 
 interface Callback { (...args: any): void }
@@ -44,26 +44,4 @@ export default class SignalRListener extends React.PureComponent<PropsWithChildr
     render() {
         return this.props.children ?? null;
     }
-}
-
-export function useSignalR(callbacks: Record<string, Callback>) {
-    const hub = useContext(SignalRContext);
-
-    const prevRef = useRef<Record<string, Callback>>();
-
-    useEffect(() => {
-        if (prevRef.current) {
-            apply(prevRef.current, (methodName, method) => hub?.off(methodName, method));
-        }
-
-        apply(callbacks, (methodName, method) => hub?.on(methodName, method));
-
-        prevRef.current = callbacks;
-
-        return () => {
-            if (prevRef.current) {
-                apply(prevRef.current, (methodName, method) => hub?.off(methodName, method));
-            }
-        }
-    }, [callbacks]);
 }

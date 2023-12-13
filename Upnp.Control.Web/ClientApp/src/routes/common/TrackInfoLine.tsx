@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { formatTrackInfoLine } from "../../components/Extensions";
+import { formatTrackInfoLine } from "../../services/Extensions";
 
 type TrackInfoLineProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
     item: Upnp.DIDL.Item;

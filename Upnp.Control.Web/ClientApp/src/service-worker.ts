@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 
-import { CacheFirstStrategy, CacheOnlyStrategy, StaleWhileRevalidateStrategy } from "./components/CachingStrategy";
-import { formatTrackInfoLine, viaProxy } from "./components/Extensions";
+import { CacheFirstStrategy, CacheOnlyStrategy, StaleWhileRevalidateStrategy } from "./services/CachingStrategy";
+import { formatTrackInfoLine, viaProxy } from "./services/Extensions";
 import { UpnpDeviceTools as UDT } from "./routes/common/UpnpDeviceTools";
 
 declare global {

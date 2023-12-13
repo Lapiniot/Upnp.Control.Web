@@ -1,11 +1,11 @@
 import { HTMLAttributes, ReactNode, useCallback } from "react";
-import { useDataFetch } from "../../components/DataFetch";
+import { useDataFetch } from "../../hooks/DataFetch";
 import Dialog, { DialogProps } from "../../components/Dialog";
-import { MediaQueries, useMediaQuery } from "../../components/Hooks";
+import { MediaQueries, useMediaQuery } from "../../hooks/MediaQuery";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { useNavigatorClickHandler } from "../../components/Navigator";
-import { usePortal } from "../../components/Portal";
-import $api from "../../components/WebApi";
+import { useNavigatorClickHandler } from "../../hooks/Navigator";
+import { usePortal } from "../../hooks/Portal";
+import $api from "../../services/WebApi";
 import DeviceIcon from "../common/DeviceIcon";
 import BrowserCore from "./BrowserCore";
 import { useContentBrowser } from "./BrowserUtils";

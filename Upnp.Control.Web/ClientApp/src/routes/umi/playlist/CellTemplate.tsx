@@ -1,7 +1,7 @@
 import { EventHandler, UIEvent } from "react";
-import { playlistBookmarks } from "../../../components/BookmarkService";
+import { playlistBookmarks } from "../../../services/BookmarkService";
 import AlbumArt from "../../common/AlbumArt";
-import { useBookmarkButton } from "../../common/BookmarkButton";
+import { createBookmarkButton } from "../../common/BookmarkButton";
 import { CellTemplateProps } from "../../common/BrowserView";
 import { RowState } from "../../common/RowStateContext";
 import { TrackInfoLine } from "../../common/TrackInfoLine";
@@ -15,7 +15,7 @@ type CellContext = {
     deviceName?: string;
 }
 
-const BookmarkItemButton = useBookmarkButton("PlaylistBookmarkWidget", playlistBookmarks, ["symbols.svg#favorite", "symbols.svg#favorite_border"]);
+const BookmarkItemButton = createBookmarkButton("PlaylistBookmarkWidget", playlistBookmarks, ["symbols.svg#favorite", "symbols.svg#favorite_border"]);
 
 export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
     const active = !!(rowState & RowState.Active);

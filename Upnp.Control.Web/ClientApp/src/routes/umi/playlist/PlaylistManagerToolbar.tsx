@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useMemo, useRef } from "react";
-import { HotKeys } from "../../../components/HotKey";
+import { HotKeys } from "../../../services/HotKey";
 import Toolbar from "../../../components/Toolbar";
 import { RowStateAction, useRowStates } from "../../common/RowStateContext";
 import { PlaylistManagerService } from "./PlaylistManagerService";

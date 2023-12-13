@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useDataFetch } from "../../components/DataFetch";
+import { useDataFetch } from "../../hooks/DataFetch";
 import { GridViewMode } from "../../components/GridView";
-import WebApi from "../../components/WebApi";
+import WebApi from "../../services/WebApi";
 import { DeviceView } from "./DeviceListView";
 
 type ItemProps = DataSourceProps<Upnp.Device> & UI.CategoryRouteParams
