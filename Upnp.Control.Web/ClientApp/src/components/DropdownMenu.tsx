@@ -1,5 +1,4 @@
 import { Placement } from "@popperjs/core/lib/enums";
-import { StrictModifiers } from "@popperjs/core/lib/popper";
 import { ButtonHTMLAttributes, createRef, HTMLAttributes, PureComponent, ReactNode, FocusEvent, MouseEvent } from "react";
 import { createBackNavigationTracker, NavigationBackTracker } from "./BackNavigationTracker";
 import { SwipeGestureRecognizer, SwipeGestures } from "./gestures/SwipeGestureRecognizer";
@@ -15,7 +14,6 @@ type DropdownMode = "menu" | "action-sheet" | "auto";
 export type DropdownMenuProps = Omit<HTMLAttributes<HTMLUListElement>, "onSelect"> & {
     mode: DropdownMode,
     placement: Placement,
-    modifiers: StrictModifiers[],
     onSelected?: (item: HTMLElement, anchor?: HTMLElement) => void,
     render?: (anchor?: HTMLElement | null) => ReactNode
 }
@@ -29,7 +27,7 @@ function animationsFinished(element: HTMLElement) {
     return Promise.allSettled(element.getAnimations().map(a => a.finished));
 }
 
-export function MenuItem({ className, action, glyph, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action: string, glyph?: string }) {
+export function MenuItem({ className, action, glyph, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action?: string, glyph?: string }) {
     return <li>
         <button type="button" data-action={action} className={`dropdown-item${className ? ` ${className}` : ""}`} {...other}>
             {glyph && <svg><use href={glyph} /></svg>}{children}
@@ -44,11 +42,9 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     private backNavTracker: NavigationBackTracker;
     private strategy: PopupPlacementStrategy;
     state: DropdownMenuState = { show: false, anchor: undefined };
-
     static defaultProps: Partial<DropdownMenuProps> = {
         mode: "auto",
-        placement: "auto",
-        modifiers: [{ name: "offset", options: { offset: [0, 5] } }]
+        placement: "auto"
     }
 
     constructor(props: DropdownMenuProps) {
@@ -68,7 +64,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     override async componentDidUpdate({ mode: prevMode }: Readonly<DropdownMenuProps>): Promise<void> {
         const popup = this.popupRef.current!;
         const { anchor, show } = this.state;
-        const { placement, modifiers, mode } = this.props;
+        const { mode } = this.props;
 
         if (mode !== prevMode) {
             this.strategy.destroy();
@@ -78,7 +74,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         if (!anchor) {
             this.strategy.destroy();
         } else {
-            await this.strategy.update(popup, anchor, { placement, modifiers });
+            await this.strategy.update(popup, anchor);
         }
 
         anchor?.focus();
@@ -274,7 +270,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     }
 
     render() {
-        const { className, children, placement, render, onSelected, modifiers, ...other } = this.props;
+        const { className, children, placement, render, onSelected, ...other } = this.props;
         const { show, anchor } = this.state;
         const menuMode = this.menuMode;
         const cls = `dropdown-menu user-select-none fade${!menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;

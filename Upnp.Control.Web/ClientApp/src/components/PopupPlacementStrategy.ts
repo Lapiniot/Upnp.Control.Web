@@ -1,20 +1,30 @@
 import { createPopper, Instance, OptionsGeneric, StrictModifiers } from "@popperjs/core/lib/popper";
 
 export abstract class PopupPlacementStrategy {
-    public abstract update(popup: HTMLElement, anchor: HTMLElement, options?: Partial<OptionsGeneric<StrictModifiers>>): Promise<void> | void;
+    public abstract update(popup: HTMLElement, anchor: HTMLElement): Promise<void> | void;
     public abstract toggle(visibility: boolean): Promise<void> | void;
     public abstract destroy(): void;
 }
 
 export class PopperStrategy extends PopupPlacementStrategy {
-    instance: Instance | null = null;
+    private static defaults: Partial<OptionsGeneric<StrictModifiers>> = {
+        placement: "auto",
+        modifiers: [{ name: "offset", options: { offset: [0, 5] } }]
+    }
 
-    public override async update(popup: HTMLElement, anchor: HTMLElement, options: Partial<OptionsGeneric<StrictModifiers>>): Promise<void> {
+    private instance: Instance | null = null;
+
+    constructor(public options: Partial<OptionsGeneric<StrictModifiers>> = {}) {
+        super();
+        options = { ...PopperStrategy.defaults, ...options };
+    }
+
+    public override async update(popup: HTMLElement, anchor: HTMLElement): Promise<void> {
         if (this.instance?.state.elements.popper !== popup || this.instance.state.elements.reference !== anchor) {
             this.instance?.destroy();
-            this.instance = createPopper<StrictModifiers>(anchor, popup, options);
+            this.instance = createPopper(anchor, popup, this.options);
         } else {
-            await this.instance.setOptions(options);
+            await this.instance.setOptions(this.options);
         }
     }
 
