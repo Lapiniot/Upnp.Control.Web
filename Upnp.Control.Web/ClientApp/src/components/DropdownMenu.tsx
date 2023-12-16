@@ -1,9 +1,8 @@
-import { Placement } from "@popperjs/core/lib/enums";
 import { ButtonHTMLAttributes, createRef, HTMLAttributes, PureComponent, ReactNode, FocusEvent, MouseEvent } from "react";
 import { createBackNavigationTracker, NavigationBackTracker } from "../services/BackNavigationTracker";
 import { SwipeGestureRecognizer, SwipeGestures } from "../services/gestures/SwipeGestureRecognizer";
 import { MediaQueries } from "../services/MediaQueries";
-import { FixedStrategy, PopperStrategy, PopupPlacementStrategy } from "../services/PopupPlacementStrategy";
+import { FixedStrategy, Placement, PopoverAnchorStrategy, PopupPlacementStrategy } from "../services/PopupPlacementStrategy";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
@@ -120,7 +119,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 
     private createPlacementStrategy() {
         if (this.menuMode) {
-            return new PopperStrategy();
+            return new PopoverAnchorStrategy(this.props.placement);
         } else {
             return new FixedStrategy();
         }

@@ -201,7 +201,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
                 <BrowserCore mainCellTemplate={Template} mainCellContext={this.getCellContext()} withPagination={false} useCheckboxes multiSelect
                     {...this.props} fetching={this.state.fetching || this.props.fetching} openHandler={this.openHandler} hotKeyHandler={this.hotKeyHandler}
                     renderActionMenu={this.renderActionMenu}>
-                    <DropdownMenu render={this.renderItemActionMenuItems} onSelected={this.itemMenuSelectedHandler} placement="left" />
+                    <DropdownMenu render={this.renderItemActionMenuItems} onSelected={this.itemMenuSelectedHandler} />
                 </BrowserCore>
             </RowStateProvider>
             <div className="sticky-bottom">

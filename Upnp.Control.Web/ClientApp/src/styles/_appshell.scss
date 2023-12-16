@@ -39,10 +39,6 @@
     @include media-breakpoint-up(sm) {
         grid-template-areas: "navbar main" "navbar main";
 
-        & > main {
-            contain: content;
-        }
-
         & > .navbar {
             --#{$prefix}navbar-padding-y: #{$navbar-padding-y};
             --#{$prefix}navbar-nav-link-padding-x: #{calc($nav-link-padding-x / 2)};

@@ -18,6 +18,8 @@
 
 .dropdown-menu {
 
+    overflow: hidden auto;
+
     &.fade {
         @include transition(var(--#{$transition-prefix}fade));
 

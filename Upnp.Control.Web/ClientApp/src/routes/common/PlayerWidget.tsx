@@ -63,7 +63,7 @@ function PlayerCore() {
         <Button title={nextTitle} className="pl-next-btn" glyph="symbols.svg#skip_next" onClick={playNext} disabled={!actions.includes("Next")} />
         <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="pl-mode-btn" glyph={`symbols.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={toggleMode} disabled={loading} />
         <Button title={volumeStr} className="pl-volume-btn" glyph={`symbols.svg#${volumeIcon}`} disabled={loading} data-toggle="dropdown" />
-        <DropdownMenu className="volume-ctrl" placement="left" mode="menu">
+        <DropdownMenu className="volume-ctrl" mode="menu">
             <li className="hstack">
                 <button type="button" style={{ zIndex: 1000 }} className="btn btn-plain btn-round" onClick={toggleMute}>
                     <svg><use href={"symbols.svg#" + (muted ? "volume_up" : "volume_off")} /></svg>
