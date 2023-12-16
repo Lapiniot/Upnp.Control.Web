@@ -10,7 +10,7 @@
     --#{$prefix}dialog-border-radius: #{$modal-content-border-radius};
     --#{$prefix}dialog-box-shadow: #{$modal-content-box-shadow-xs};
     --#{$prefix}dialog-transition-start-transform: translate3d(0, var(--#{$animation-prefix}slide-y), 0) scale3d(var(--#{$animation-prefix}pop-scale), var(--#{$animation-prefix}pop-scale), 1);
-    --#{$prefix}dialog-transition-duration: var(--#{$animation-prefix}duration-2);
+    --#{$prefix}dialog-transition-duration: var(--#{$animation-prefix}duration-1);
     --#{$prefix}dialog-header-gap: #{$modal-footer-margin-between};
     --#{$prefix}dialog-header-bg: #{$modal-footer-bg};
     --#{$prefix}dialog-header-padding-x: #{$modal-header-padding-x};
