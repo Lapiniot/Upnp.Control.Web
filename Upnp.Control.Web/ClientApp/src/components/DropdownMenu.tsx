@@ -1,8 +1,7 @@
-import { ButtonHTMLAttributes, createRef, HTMLAttributes, PureComponent, ReactNode, FocusEvent, MouseEvent } from "react";
-import { createBackNavigationTracker, NavigationBackTracker } from "../services/BackNavigationTracker";
-import { SwipeGestureRecognizer, SwipeGestures } from "../services/gestures/SwipeGestureRecognizer";
+import { ButtonHTMLAttributes, FocusEvent, HTMLAttributes, PureComponent, MouseEvent as ReactMouseEvent, ReactNode, createRef } from "react";
 import { MediaQueries } from "../services/MediaQueries";
-import { FixedStrategy, Placement, PopoverAnchorStrategy, PopupPlacementStrategy } from "../services/PopupPlacementStrategy";
+import { PopoverAnchorStrategy, FixedStrategy, Placement, PopupPlacementStrategy } from "../services/PopupPlacementStrategy";
+import { SwipeGestureRecognizer, SwipeGestures } from "../services/gestures/SwipeGestureRecognizer";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
@@ -22,10 +21,6 @@ type DropdownMenuState = {
     show: boolean
 }
 
-function animationsFinished(element: HTMLElement) {
-    return Promise.allSettled(element.getAnimations().map(a => a.finished));
-}
-
 export function MenuItem({ className, action, glyph, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action?: string, glyph?: string }) {
     return <li>
         <button type="button" data-action={action} className={`dropdown-item${className ? ` ${className}` : ""}`} {...other}>
@@ -35,11 +30,11 @@ export function MenuItem({ className, action, glyph, children, ...other }: Butto
 }
 
 export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
-    private readonly popupRef = createRef<HTMLUListElement>();
+    private readonly popoverRef = createRef<HTMLUListElement>();
     private readonly swipeRecognizer: SwipeGestureRecognizer;
     private readonly observer: ResizeObserver;
-    private backNavTracker: NavigationBackTracker;
     private strategy: PopupPlacementStrategy;
+    closeWatcher?: CloseWatcher;
     state: DropdownMenuState = { show: false, anchor: undefined };
     static defaultProps: Partial<DropdownMenuProps> = {
         mode: "auto",
@@ -48,68 +43,59 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 
     constructor(props: DropdownMenuProps) {
         super(props);
-        this.backNavTracker = createBackNavigationTracker(() => this.hide());
-        this.strategy = this.createPlacementStrategy();
+        this.strategy = this.createPlacementStrategy(props.placement);
         this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler);
         this.observer = new ResizeObserver(this.resizeCallback);
     }
 
     componentDidMount() {
-        this.popupRef.current?.parentElement?.addEventListener("click", this.parentClickListener);
-        MediaQueries.smallScreen.addEventListener("change", this.mediaQueryChange);
-        this.observer.observe(this.popupRef.current!);
+        this.popoverRef.current?.parentElement?.addEventListener("click", this.containerClickListener);
+        MediaQueries.smallScreen.addEventListener("change", this.mediaQueryChangeListener);
+        this.observer.observe(this.popoverRef.current!);
+        this.subscribe();
     }
 
     override async componentDidUpdate({ mode: prevMode }: Readonly<DropdownMenuProps>): Promise<void> {
-        const popup = this.popupRef.current!;
+        const popover = this.popoverRef.current!;
         const { anchor, show } = this.state;
-        const { mode } = this.props;
+        const { placement, mode } = this.props;
 
         if (mode !== prevMode) {
             this.strategy.destroy();
-            this.strategy = this.createPlacementStrategy();
+            this.strategy = this.createPlacementStrategy(placement);
         }
 
         if (!anchor) {
             this.strategy.destroy();
         } else {
-            await this.strategy.update(popup, anchor);
+            await this.strategy.update(popover, anchor);
         }
 
-        anchor?.focus();
-
-        popup.classList.add("showing");
         if (show) {
-            popup.classList.add("show");
-            popup.offsetHeight;
             await this.strategy.toggle(true);
-            popup.classList.remove("showing");
-            await animationsFinished(popup);
+            popover.showPopover();
             this.subscribe();
-            await this.backNavTracker.start();
         } else {
-            await animationsFinished(popup);
-            popup.classList.remove("show", "showing");
-            await this.strategy.toggle(false);
             this.unsubscribe();
-            await this.backNavTracker.stop();
+            popover.hidePopover();
+            await this.strategy.toggle(false);
         }
     }
 
     componentWillUnmount() {
-        MediaQueries.smallScreen.removeEventListener("change", this.mediaQueryChange);
-        this.popupRef.current!.parentElement!.removeEventListener("click", this.parentClickListener);
+        MediaQueries.smallScreen.removeEventListener("change", this.mediaQueryChangeListener);
+        this.popoverRef.current!.parentElement!.removeEventListener("click", this.containerClickListener);
         this.unsubscribe();
         this.strategy.destroy();
         this.swipeRecognizer.unbind();
         this.observer.disconnect();
     }
 
-    show(anchor: HTMLElement) {
+    public show(anchor: HTMLElement) {
         this.setState({ show: true, anchor });
     }
 
-    hide() {
+    public hide() {
         this.setState({ show: false });
     }
 
@@ -117,32 +103,26 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         return this.props.mode === "menu" || (this.props.mode === "auto" && !MediaQueries.smallScreen.matches);
     }
 
-    private createPlacementStrategy() {
+    private createPlacementStrategy(placement: any) {
         if (this.menuMode) {
-            return new PopoverAnchorStrategy(this.props.placement);
+            return new PopoverAnchorStrategy(placement);
         } else {
             return new FixedStrategy();
         }
     }
 
-    private mediaQueryChange = () => {
-        this.strategy.destroy();
-        this.strategy = this.createPlacementStrategy();
-        this.forceUpdate();
-    }
-
     private queryAll(selector: string) {
-        return this.popupRef.current!.querySelectorAll<HTMLElement>(selector);
+        return this.popoverRef.current!.querySelectorAll<HTMLElement>(selector);
     }
 
     private subscribe() {
-        document.addEventListener("pointerdown", this.documentPointerdownListener, true);
         document.addEventListener("keydown", this.documentKeydownListener, true);
+        this.popoverRef.current!.addEventListener("toggle", this.popoverToggleListener);
     }
 
     private unsubscribe() {
-        document.removeEventListener("pointerdown", this.documentPointerdownListener, true);
         document.removeEventListener("keydown", this.documentKeydownListener, true);
+        this.popoverRef.current!.removeEventListener("toggle", this.popoverToggleListener);
     }
 
     //#region Focus helpers
@@ -185,7 +165,13 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 
     //#endregion
 
-    private parentClickListener = (event: globalThis.MouseEvent) => {
+    private mediaQueryChangeListener = () => {
+        this.strategy.destroy();
+        this.strategy = this.createPlacementStrategy(this.props.placement);
+        this.forceUpdate();
+    }
+
+    private containerClickListener = (event: MouseEvent) => {
         if (event.defaultPrevented) return;
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
         if (item) {
@@ -193,37 +179,23 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         }
     }
 
-    private documentPointerdownListener = (event: PointerEvent) => {
-        if (event.composedPath().includes(this.popupRef.current!))
-            return;
+    private popoverToggleListener = (e: Event) => {
+        const { oldState, newState } = e as ToggleEvent;
+        if (oldState === "open" && newState === "closed") {
+            this.hide();
+        }
+    }
 
-        event.preventDefault();
-
-        const state = { id: event.pointerId, type: event.pointerType };
-        event.currentTarget!.addEventListener("click", (e: Event) => {
-            if (e instanceof PointerEvent && e.pointerId === state.id && e.pointerType === state.type) {
-                e.preventDefault();
-            }
-        }, { capture: true, once: true });
-
-        this.hide();
+    private popoverClickHandler = (event: ReactMouseEvent<HTMLUListElement>) => {
+        const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
+        if (item) {
+            this.hide();
+            this.props.onSelected?.(item, this.state.anchor);
+        }
     }
 
     private documentKeydownListener = (event: KeyboardEvent) => {
         switch (event.code) {
-            case "Escape":
-                this.hide();
-                break;
-            case "Tab":
-                if (this.state.anchor !== document.activeElement)
-                    return;
-
-                if (event.shiftKey)
-                    this.focusPrev();
-                else
-                    this.focusNext();
-
-                break;
             case "ArrowUp":
                 this.focusPrev();
                 break;
@@ -236,29 +208,22 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         event.preventDefault();
     }
 
-    private clickHandler = (event: MouseEvent<HTMLUListElement>) => {
-        const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
-        if (item) {
-            this.hide();
-            this.props.onSelected?.(item, this.state.anchor);
-        }
-    }
-
     private focusOutHandler = (event: FocusEvent<HTMLElement>) => {
-        if (!this.popupRef.current?.contains(event.relatedTarget as Node)) {
+        if (!this.popoverRef.current?.contains(event.relatedTarget as Node)) {
             this.hide();
         }
     }
 
-    private resizeCallback = ([{ target: { scrollHeight, clientHeight } }]: ResizeObserverEntry[]) => {
+    private resizeCallback = (entries: ResizeObserverEntry[]) => {
+        const [{ target: { scrollHeight, clientHeight } }] = entries;
         if (scrollHeight > clientHeight || clientHeight === 0) {
             // Popup element has content overflow (or simply hidden), so stop swipe-down gesture tracking and 
             // prefere browser native behavior(content scrolling).
             this.swipeRecognizer.unbind();
-            this.popupRef.current!.classList.toggle("touch-none", false);
+            this.popoverRef.current!.classList.toggle("touch-none", false);
         } else {
-            this.popupRef.current!.classList.toggle("touch-none", true);
-            this.swipeRecognizer.bind(this.popupRef.current!);
+            this.popoverRef.current!.classList.toggle("touch-none", true);
+            this.swipeRecognizer.bind(this.popoverRef.current!);
         }
     }
 
@@ -272,13 +237,12 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         const { className, children, placement, render, onSelected, ...other } = this.props;
         const { show, anchor } = this.state;
         const menuMode = this.menuMode;
-        const cls = `dropdown-menu user-select-none fade${!menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;
+        const cls = `dropdown-menu user-select-none${!menuMode ? " action-sheet" : ""}${className ? ` ${className}` : ""}`;
         return <>
-            <ul ref={this.popupRef} inert={show ? undefined : ""} className={cls}
-                onClick={show ? this.clickHandler : undefined} onBlur={show ? this.focusOutHandler : undefined} {...other}>
+            <ul popover="" ref={this.popoverRef} inert={show ? undefined : ""} className={cls} {...other}
+                onClick={this.popoverClickHandler} onBlur={this.focusOutHandler}>
                 {render ? render(anchor) : children}
             </ul>
-            {!menuMode && <div className="backdrop" />}
         </>
     }
 }

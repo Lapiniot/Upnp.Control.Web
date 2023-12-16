@@ -46,6 +46,14 @@
         display: none;
         z-index: 0;
     }
+
+    &[popover] {
+        &:popover-open {
+            display: block;
+            margin: 0;
+            position: fixed;
+        }
+    }
 }
 
 .action-sheet {
