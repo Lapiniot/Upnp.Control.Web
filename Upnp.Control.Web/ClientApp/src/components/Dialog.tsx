@@ -2,7 +2,6 @@ import {
     ButtonHTMLAttributes, Component, createRef, DialogHTMLAttributes,
     FormEvent, HTMLAttributes, MouseEvent, ReactNode, SyntheticEvent, useRef
 } from "react";
-import { createBackNavigationTracker, NavigationBackTracker } from "../services/BackNavigationTracker";
 import { useAutoFocus } from "../hooks/AutoFocus";
 
 interface DialogEventProps {
@@ -37,14 +36,12 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
     private dialogRef;
     private formRef;
     private observer: MutationObserver;
-    private tracker: NavigationBackTracker;
 
     constructor(props: DialogProps) {
         super(props);
         this.dialogRef = createRef<HTMLDialogElement>();
         this.formRef = createRef<HTMLFormElement>();
         this.observer = new MutationObserver(this.onMutation);
-        this.tracker = createBackNavigationTracker(() => this.dialogRef.current?.close());
     }
 
     get open() { return this.dialogRef.current?.open! }
@@ -94,7 +91,6 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
         document.body.dataset["modalOpen"] = "1";
         await this.animationsFinished(dialog);
         dialog?.removeAttribute("inert");
-        this.tracker.start();
         this.props.onOpen?.();
     }
 
@@ -105,7 +101,6 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
         dialog.setAttribute("inert", "");
         await Promise.allSettled(dialog.getAnimations().map(a => a.finished));
         delete document.body.dataset["modalOpen"];
-        this.tracker.stop();
 
         onClose?.(event);
         if (!event.defaultPrevented) {
