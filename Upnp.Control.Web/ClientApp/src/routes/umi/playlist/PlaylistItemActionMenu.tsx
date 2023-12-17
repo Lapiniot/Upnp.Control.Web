@@ -39,6 +39,7 @@ export function PlaylistItemActionMenu({ index, root, getTrackUrlHook, handlers:
             </> : <>
                 <MenuItem action="delete-items" glyph="symbols.svg#delete" data-index={index} onClick={h.deleteItems}>Delete item</MenuItem>
             </>}
+        <li><hr className="dropdown-divider mx-2" /></li>
         <MenuItem action="info" glyph="symbols.svg#info" data-index={index} onClick={h.showInfo}>Get Info</MenuItem>
     </>
 }

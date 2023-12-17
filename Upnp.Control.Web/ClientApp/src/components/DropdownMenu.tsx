@@ -29,12 +29,13 @@ export function MenuItem({ className, action, glyph, children, ...other }: Butto
     </li>
 }
 
+const activationEvents: (keyof GlobalEventHandlersEventMap)[] = ["click", "pointerdown", "pointerup"]
+
 export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     private readonly popoverRef = createRef<HTMLUListElement>();
     private readonly swipeRecognizer: SwipeGestureRecognizer;
     private readonly observer: ResizeObserver;
     private strategy: PopupPlacementStrategy;
-    closeWatcher?: CloseWatcher;
     state: DropdownMenuState = { show: false, anchor: undefined };
     static defaultProps: Partial<DropdownMenuProps> = {
         mode: "auto",
@@ -52,7 +53,6 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         this.popoverRef.current?.parentElement?.addEventListener("click", this.containerClickListener);
         MediaQueries.smallScreen.addEventListener("change", this.mediaQueryChangeListener);
         this.observer.observe(this.popoverRef.current!);
-        this.subscribe();
     }
 
     override async componentDidUpdate({ mode: prevMode }: Readonly<DropdownMenuProps>): Promise<void> {
@@ -116,12 +116,14 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     }
 
     private subscribe() {
-        document.addEventListener("keydown", this.documentKeydownListener, true);
+        document.addEventListener("keydown", this.documentKeydownListener);
+        activationEvents.forEach(name => document.addEventListener(name, this.preventActivationListener, true));
         this.popoverRef.current!.addEventListener("toggle", this.popoverToggleListener);
     }
 
     private unsubscribe() {
-        document.removeEventListener("keydown", this.documentKeydownListener, true);
+        document.removeEventListener("keydown", this.documentKeydownListener);
+        activationEvents.forEach(name => document.removeEventListener(name, this.preventActivationListener, true));
         this.popoverRef.current!.removeEventListener("toggle", this.popoverToggleListener);
     }
 
@@ -174,7 +176,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     private containerClickListener = (event: MouseEvent) => {
         if (event.defaultPrevented) return;
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
-        if (item) {
+        if (item && !this.state.show) {
             this.show(item);
         }
     }
@@ -206,6 +208,14 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         }
 
         event.preventDefault();
+    }
+
+    private preventActivationListener = (event: Event) => {
+        // Prevent default browser behavior and stop propagation if event originited outside of our popover
+        if (!this.popoverRef.current!.contains((event.target as Node))) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
     }
 
     private focusOutHandler = (event: FocusEvent<HTMLElement>) => {

@@ -17,35 +17,7 @@
 }
 
 .dropdown-menu {
-
     overflow: hidden auto;
-
-    &.fade {
-        @include transition(var(--#{$transition-prefix}fade));
-
-        &.showing {
-            opacity: 0;
-        }
-    }
-
-    &.slide {
-        @include transition(var(--#{$transition-prefix}slide));
-
-        &.showing {
-            translate: 0 100%;
-        }
-    }
-
-    &.slide.fade {
-        @include transition(var(--#{$transition-prefix}slide), var(--#{$transition-prefix}fade));
-    }
-
-    & + div.backdrop {
-        position: fixed;
-        inset: 0;
-        display: none;
-        z-index: 0;
-    }
 
     &[popover] {
         &:popover-open {
@@ -62,8 +34,9 @@
     0 0 0 1px var(--#{$prefix}dropdown-border-color);
     position: fixed;
     inset: auto 0 0 0;
+    width: auto;
+    height: auto;
     max-height: calc(100vh - 4rem);
-    overflow-y: auto;
     padding-top: 0;
     border-top: 2rem solid transparent;
     border-radius: 2rem 2rem 0 0;
