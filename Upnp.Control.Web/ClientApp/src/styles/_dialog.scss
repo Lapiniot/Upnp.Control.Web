@@ -9,7 +9,7 @@
     --#{$prefix}dialog-border-width: #{$modal-content-border-width};
     --#{$prefix}dialog-border-radius: #{$modal-content-border-radius};
     --#{$prefix}dialog-box-shadow: #{$modal-content-box-shadow-xs};
-    --#{$prefix}dialog-transition-start-transform: translate3d(0, var(--#{$animation-prefix}slide-y), 0) scale3d(var(--#{$animation-prefix}pop-scale), var(--#{$animation-prefix}pop-scale), 1);
+    --#{$prefix}dialog-transition-transform: translate3d(0, var(--#{$animation-prefix}slide-y), 0) scale3d(var(--#{$animation-prefix}pop-scale), var(--#{$animation-prefix}pop-scale), 1);
     --#{$prefix}dialog-transition-duration: var(--#{$animation-prefix}duration-1);
     --#{$prefix}dialog-header-gap: #{$modal-footer-margin-between};
     --#{$prefix}dialog-header-bg: #{$modal-footer-bg};
@@ -31,6 +31,7 @@
     max-width: calc(100vw - 2 * var(--#{$prefix}dialog-margin));
     max-height: calc(100vh - 2 * var(--#{$prefix}dialog-margin));
     padding: 0;
+    opacity: 0;
     z-index: $zindex-modal;
     color: var(--#{$prefix}dialog-color);
     pointer-events: none;
@@ -38,14 +39,9 @@
     border: var(--#{$prefix}dialog-border-width) solid var(--#{$prefix}dialog-border-color);
     @include border-radius(var(--#{$prefix}dialog-border-radius));
     @include box-shadow(var(--#{$prefix}dialog-box-shadow));
-    transform: var(--#{$prefix}dialog-transition-start-transform);
-    transition: opacity, transform ease-in-out, display allow-discrete, overlay allow-discrete;
+    transform: var(--#{$prefix}dialog-transition-transform);
+    @include transition(opacity linear, transform ease-in-out, display allow-discrete, overlay allow-discrete);
     transition-duration: var(--#{$prefix}dialog-transition-duration);
-
-    &,
-    &::backdrop {
-        opacity: 0;
-    }
 
     &[open] {
         display: flex;
@@ -62,17 +58,16 @@
         }
 
         @starting-style {
-            transform: var(--#{$prefix}dialog-transition-start-transform);
+            transform: var(--#{$prefix}dialog-transition-transform);
         }
     }
 
     &::backdrop {
-        --#{$prefix}backdrop-bg-color: rgba(0 0 0 / 0.5);
-        --#{$prefix}backdrop-blur-radius: 0px;
-        --#{$prefix}backdrop-transition-duration: var(--#{$animation-prefix}duration-2);
+        opacity: 0;
         background-color: var(--#{$prefix}backdrop-bg-color);
         backdrop-filter: blur(var(--#{$prefix}backdrop-blur-radius));
-        transition: opacity var(--#{$prefix}backdrop-transition-duration);
+        @include transition(opacity linear, display allow-discrete, overlay allow-discrete);
+        transition-duration: var(--#{$prefix}backdrop-transition-duration);
     }
 
     > form {

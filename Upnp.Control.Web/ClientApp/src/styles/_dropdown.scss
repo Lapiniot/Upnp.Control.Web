@@ -17,13 +17,31 @@
 }
 
 .dropdown-menu {
+    --#{$prefix}dropdown-transition: none;
+    --#{$prefix}dropdown-transition-duration: var(--#{$animation-prefix}duration-1);
     overflow: hidden auto;
+    @include transition(var(--#{$prefix}dropdown-transition));
+    transition-duration: var(--#{$prefix}dropdown-transition-duration);
+
+    &.fade {
+        --#{$prefix}dropdown-transition: opacity linear, display allow-discrete, overlay allow-discrete;
+
+        &[popover]:popover-open,
+        .show {
+            opacity: 1;
+
+            @starting-style {
+                opacity: 0;
+            }
+        }
+    }
 
     &[popover] {
+        position: fixed;
+        margin: 0;
+
         &:popover-open {
             display: block;
-            margin: 0;
-            position: fixed;
         }
     }
 }
@@ -43,7 +61,45 @@
     background: var(--#{$prefix}dropdown-bg) center top / 3.5rem no-repeat border-box url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e0e0e0'%3E%3Cpath d='M4 3h16c.55 0 1 .45 1 1s-.45 1-1 1H4c-.55 0-1-.45-1-1s.45-1 1-1z'/%3E%3C/svg%3E");
     overscroll-behavior: contain;
 
-    &.show:not(.showing) + div.backdrop {
-        display: block;
+    &.slide {
+        --#{$prefix}dropdown-slide-translate: 0 100% 0;
+        --#{$prefix}dropdown-transition: translate var(--#{$animation-prefix}ease-out-circ),
+        display allow-discrete,
+        overlay allow-discrete;
+        translate: var(--#{$prefix}dropdown-slide-translate);
+
+        &[popover]:popover-open {
+            translate: none;
+
+            @starting-style {
+                translate: var(--#{$prefix}dropdown-slide-translate);
+            }
+        }
+    }
+
+    &.slide.fade {
+        --#{$prefix}dropdown-transition: translate var(--#{$animation-prefix}ease-out-circ),
+        opacity linear,
+        display allow-discrete,
+        overlay allow-discrete;
+    }
+
+    &[popover] {
+        &::backdrop {
+            opacity: 0;
+            background-color: var(--#{$prefix}backdrop-bg-color);
+            @include transition(opacity linear, display allow-discrete, overlay allow-discrete);
+            transition-duration: var(--#{$prefix}backdrop-transition-duration);
+        }
+
+        &:popover-open {
+            &::backdrop {
+                opacity: 1;
+
+                @starting-style {
+                    opacity: 0;
+                }
+            }
+        }
     }
 }

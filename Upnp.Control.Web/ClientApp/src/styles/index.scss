@@ -100,6 +100,12 @@ $enable-shadows:                true;
     --#{$prefix}accent-color: #{$primary};
 }
 
+::backdrop {
+    --#{$prefix}backdrop-bg-color: rgba(0 0 0 / 0.5);
+    --#{$prefix}backdrop-blur-radius: 0px;
+    --#{$prefix}backdrop-transition-duration: var(--#{$animation-prefix}duration-3);
+}
+
 ::-webkit-file-upload-button {
     display: none;
 }

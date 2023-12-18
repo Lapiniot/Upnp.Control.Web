@@ -78,6 +78,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         } else {
             this.unsubscribe();
             popover.hidePopover();
+            await Promise.allSettled(this.popoverRef.current!.getAnimations().map(animation => animation.finished));
             await this.strategy.toggle(false);
         }
     }
@@ -247,7 +248,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         const { className, children, placement, render, onSelected, ...other } = this.props;
         const { show, anchor } = this.state;
         const menuMode = this.menuMode;
-        const cls = `dropdown-menu user-select-none${!menuMode ? " action-sheet" : ""}${className ? ` ${className}` : ""}`;
+        const cls = `dropdown-menu user-select-none fade${!menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;
         return <>
             <ul popover="" ref={this.popoverRef} inert={show ? undefined : ""} className={cls} {...other}
                 onClick={this.popoverClickHandler} onBlur={this.focusOutHandler}>

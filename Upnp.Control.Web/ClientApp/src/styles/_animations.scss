@@ -57,16 +57,16 @@ $animation-prefix: "an-";
 }
 
 :root {
-    // --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
-    // --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-    // --ease-in-quad: cubic-bezier(0.11, 0, 0.5, 0);
-    // --ease-out-quad: cubic-bezier(0.5, 1, 0.89, 1);
-    // --ease-in-cubic: cubic-bezier(0.32, 0, 0.67, 0);
-    // --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
-    // --ease-in-quart: cubic-bezier(0.5, 0, 0.75, 0);
-    // --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-    // --ease-in-quint: cubic-bezier(0.64, 0, 0.78, 0);
-    // --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    // --#{$animation-prefix}ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+    // --#{$animation-prefix}ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    // --#{$animation-prefix}ease-in-quad: cubic-bezier(0.11, 0, 0.5, 0);
+    // --#{$animation-prefix}ease-out-quad: cubic-bezier(0.5, 1, 0.89, 1);
+    // --#{$animation-prefix}ease-in-cubic: cubic-bezier(0.32, 0, 0.67, 0);
+    // --#{$animation-prefix}ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+    // --#{$animation-prefix}ease-in-quart: cubic-bezier(0.5, 0, 0.75, 0);
+    // --#{$animation-prefix}ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    // --#{$animation-prefix}ease-in-quint: cubic-bezier(0.64, 0, 0.78, 0);
+    // --#{$animation-prefix}ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
     --#{$animation-prefix}ease-in-circ: cubic-bezier(0.55, 0, 1, 0.45);
     --#{$animation-prefix}ease-out-circ: cubic-bezier(0, 0.55, 0.45, 1);
 
