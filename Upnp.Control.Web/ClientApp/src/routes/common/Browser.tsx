@@ -1,7 +1,7 @@
 import { createRef, PureComponent } from "react";
 import { itemBookmarks } from "../../services/BookmarkService";
 import DialogHost from "../../components/DialogHost";
-import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
+import { DropdownMenu, MenuItem, MenuItemSeparator } from "../../components/DropdownMenu";
 import { HotKey, HotKeys } from "../../services/HotKey";
 import WebApi from "../../services/WebApi";
 import { createBookmarkButton } from "./BookmarkButton";
@@ -148,7 +148,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
         return <>
             {this.renderMenu(umiAcceptable, rendererAcceptable, umis, renderers)}
             {(umiAcceptable || rendererAcceptable) &&
-                <li><hr className="dropdown-divider mx-2" /></li>}
+                <MenuItemSeparator />}
             <MenuItem action={"info"} glyph="symbols.svg#info">Get Info</MenuItem>
         </>;
     }

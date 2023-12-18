@@ -163,7 +163,3 @@ $fullscreen-sizes: null sm;
 .dialog-lg {
     --#{$prefix}dialog-width: #{$modal-lg};
 }
-
-.dialog-h-60 {
-    --#{$prefix}dialog-height: 60vh;
-}

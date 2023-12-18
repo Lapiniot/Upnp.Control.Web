@@ -29,6 +29,12 @@ export function MenuItem({ className, action, glyph, children, ...other }: Butto
     </li>
 }
 
+export function MenuItemSeparator({ className, ...other }: HTMLAttributes<HTMLHRElement>) {
+    return <li role="menuitem">
+        <hr className={`dropdown-divider mx-3${className ? ` ${className}` : ""}`} {...other} />
+    </li>
+}
+
 const activationEvents: (keyof GlobalEventHandlersEventMap)[] = ["click", "pointerdown", "pointerup"]
 
 export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuState> {

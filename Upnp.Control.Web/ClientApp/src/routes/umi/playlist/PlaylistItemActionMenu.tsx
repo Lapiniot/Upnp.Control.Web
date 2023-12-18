@@ -1,5 +1,5 @@
 import { PropsWithChildren, UIEvent, useCallback, useContext } from "react";
-import { MenuItem } from "../../../components/DropdownMenu";
+import { MenuItem, MenuItemSeparator } from "../../../components/DropdownMenu";
 import { PlaybackStateContext } from "../../common/PlaybackStateContext";
 import { RowState, useRowStates } from "../../common/RowStateContext";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
@@ -39,7 +39,7 @@ export function PlaylistItemActionMenu({ index, root, getTrackUrlHook, handlers:
             </> : <>
                 <MenuItem action="delete-items" glyph="symbols.svg#delete" data-index={index} onClick={h.deleteItems}>Delete item</MenuItem>
             </>}
-        <li><hr className="dropdown-divider mx-2" /></li>
+        <MenuItemSeparator />
         <MenuItem action="info" glyph="symbols.svg#info" data-index={index} onClick={h.showInfo}>Get Info</MenuItem>
     </>
 }
