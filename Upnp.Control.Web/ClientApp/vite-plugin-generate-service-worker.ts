@@ -1,5 +1,6 @@
 import { RollupOptions, rollup } from "rollup"
 import { Plugin } from "vite"
+import crypto from "node:crypto";
 
 type Partial2<T> = {
     [P in keyof T]?:
@@ -42,8 +43,16 @@ export default function generateSW(options: Partial2<GenerateServiceWorkerOption
             const { output: [{ code }] } = await build.generate({});
             this.emitFile({
                 type: "asset", name: "service-worker", fileName: swFileName,
-                source: code.replaceAll(manifestPlaceholder, JSON.stringify(names))
+                source: code
+                    .replaceAll(manifestPlaceholder, JSON.stringify(names))
+                    .replaceAll("self.__BUILD_HASH", `\"${getRandomHash()}\"`)
             })
         }
     }
+}
+
+function getRandomHash(size: number = 5) {
+    const bytes = new Uint8Array(size);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes).map(b => b.toString(16)).join("");
 }

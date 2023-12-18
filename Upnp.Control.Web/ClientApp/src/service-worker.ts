@@ -7,12 +7,13 @@ import { UpnpDeviceTools as UDT } from "./routes/common/UpnpDeviceTools";
 declare global {
     export interface WorkerGlobalScope {
         __WB_MANIFEST: Array<string>;
+        __BUILD_HASH: string;
     }
 }
 
 declare const self: ServiceWorkerGlobalScope
 
-const CACHE_STORE_NAME = "upnp-dashboard-store-v1";
+const CACHE_STORE_NAME = "upnp-dashboard-store-" + self.__BUILD_HASH;
 const CACHE_STORE_ITEMS = self.__WB_MANIFEST;
 const CACHES = [CACHE_STORE_NAME]
 

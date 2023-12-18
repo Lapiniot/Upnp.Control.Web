@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
     if (mode !== "development") return {
         plugins: [react(), generateSW({
             precache: {
-                manifestExtraFiles: ["stack.svg", "symbols.svg", "icons/icon.svg", "icons/favicon.ico", "icons/apple-touch-icon.png",
+                manifestExtraFiles: ["index.html", "stack.svg", "symbols.svg", "icons/icon.svg", "icons/favicon.ico", "icons/apple-touch-icon.png",
                     "icons/48.png", "icons/72.png", "icons/96.png", "icons/128.png", "icons/144.png", "icons/152.png", "icons/192.png",
                     "icons/384.png", "icons/512.png", "manifest.webmanifest"]
             },
