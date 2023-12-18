@@ -22,7 +22,7 @@ export default function Progress({ className, value, infinite, style = {}, ...ot
         progressStyle["--slider-progress"] = value;
     }
 
-    return <div {...other} role="button" style={{ ...style, ...progressStyle }}
+    return <div {...other} role="progressbar" style={{ ...style, ...progressStyle }}
         className={`progress${className ? ` ${className}` : ""}`}>
         <div className="progress-track">
             <div className="progress-indicator" />

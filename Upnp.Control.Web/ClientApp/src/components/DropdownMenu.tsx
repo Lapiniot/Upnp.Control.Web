@@ -22,7 +22,7 @@ type DropdownMenuState = {
 }
 
 export function MenuItem({ className, action, glyph, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action?: string, glyph?: string }) {
-    return <li>
+    return <li role="menuitem">
         <button type="button" data-action={action} className={`dropdown-item${className ? ` ${className}` : ""}`} {...other}>
             {glyph && <svg><use href={glyph} /></svg>}{children}
         </button>
@@ -250,7 +250,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
         const menuMode = this.menuMode;
         const cls = `dropdown-menu user-select-none fade${!menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;
         return <>
-            <ul popover="" ref={this.popoverRef} inert={show ? undefined : ""} className={cls} {...other}
+            <ul popover="" role="menu" ref={this.popoverRef} inert={show ? undefined : ""} className={cls} {...other}
                 onClick={this.popoverClickHandler} onBlur={this.focusOutHandler}>
                 {render ? render(anchor) : children}
             </ul>

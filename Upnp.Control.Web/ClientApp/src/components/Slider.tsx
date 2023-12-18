@@ -121,7 +121,7 @@ export default class Slider extends React.Component<SliderProps> {
     render() {
         const { className, value, reportMode: updateMode, style = {}, onChange, onChangeRequested, readOnly, ...other } = this.props;
 
-        return <div tabIndex={0} {...other} role="button" ref={this.refCallback} className={`slider${className ? ` ${className}` : ""}`}
+        return <div tabIndex={0} {...other} role="slider" ref={this.refCallback} className={`slider${className ? ` ${className}` : ""}`}
             style={{ ...style, "--slider-progress": value } as ProgressCSSProperties} onKeyUp={this.keyUpHandler}>
             <div className="slider-track"  >
                 <div className="slider-indicator" />

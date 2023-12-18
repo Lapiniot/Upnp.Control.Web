@@ -140,7 +140,7 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
     render() {
         const { renderHeader, renderBody, renderFooter, onDismissed, onOpen,
             className, immediate, caption, children, ...other } = this.props;
-        return <dialog ref={this.dialogRef} className={`dialog${className ? ` ${className}` : ""}`}
+        return <dialog role="dialog" ref={this.dialogRef} className={`dialog${className ? ` ${className}` : ""}`}
             {...other} onClose={this.onClose} onClick={this.onClick}>
             <form ref={this.formRef} method="dialog" noValidate onSubmit={this.onSubmit}>
                 {renderHeader ? renderHeader() : <Dialog.Header><h5 className="dialog-title">{this.props.caption}</h5></Dialog.Header>}

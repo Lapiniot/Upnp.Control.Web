@@ -13,5 +13,5 @@ export default function ({ current, running, interval, ...other }: TimerProps & 
     }, [current]);
     useIntervalUpdate(callback, running, interval);
 
-    return <time {...other} ref={ref}>{formatTime(current)}</time>;
+    return <time role="timer" {...other} ref={ref}>{formatTime(current)}</time>;
 }

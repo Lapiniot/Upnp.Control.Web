@@ -27,11 +27,11 @@ export function DataList({ children, className, editable, template, tag, onDelet
         return () => recognizer.unbind();
     }, [editable]);
 
-    const Container = template as ElementType ?? "div";
+    const Container: ElementType = template ?? "div";
 
-    return <div {...other} className={`d-grid grid-auto-m15 g-3 p-3${className ? ` ${className}` : ""}`} ref={ref}>
+    return <div role="list" {...other} className={`d-grid grid-auto-m15 g-3 p-3${className ? ` ${className}` : ""}`} ref={ref}>
         {React.Children.map(children, (child, index) =>
-            <Container className="d-flex align-items-center g-0 border rounded-1 shadow-sm overflow-hidden">
+            <Container role="listitem" className="d-flex align-items-center g-0 border rounded-1 shadow-sm overflow-hidden">
                 {child}
                 {editMode && <button type="button" className="btn btn-round btn-plain ms-auto mx-2" onClick={deleteHandler}
                     data-index={index} data-key={(child && typeof child === "object" && "key" in child) ? child.key : undefined}>

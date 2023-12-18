@@ -16,6 +16,6 @@ export function FlagEditor({ className, callback, state, checked: checkedProp, .
     useEffect(() => setChecked(checkedProp), [checkedProp]);
 
     return <div className={`form-check form-switch px-0${className ? ` ${className}` : ""}`}>
-        <input {...other} className="form-check-input m-0" type="checkbox" checked={checked} onChange={changedHandler} />
+        <input role="switch" {...other} className="form-check-input m-0" type="checkbox" checked={checked} onChange={changedHandler} />
     </div>;
 }
