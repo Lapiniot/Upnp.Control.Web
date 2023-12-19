@@ -13,7 +13,9 @@
     },
     "Logging": {
         "LogLevel": {
-            "Microsoft.AspNetCore.Server.Kestrel": "Error"
+            "Microsoft.AspNetCore.Server.Kestrel": "Error",
+            "Microsoft.Hosting.Lifetime": "Error",
+            "System.Net.Http.HttpClient": "Error"
         }
     }
 }
