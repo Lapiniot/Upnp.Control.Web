@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import { CacheFirstStrategy, CacheOnlyStrategy, StaleWhileRevalidateStrategy } from "./services/CachingStrategy";
+import { CacheFirstStrategy, CacheOnlyStrategy } from "./services/CachingStrategy";
 import { formatTrackInfoLine, viaProxy } from "./services/Extensions";
 import { UpnpDeviceTools as UDT } from "./routes/common/UpnpDeviceTools";
 
@@ -18,7 +18,6 @@ const CACHE_STORE_ITEMS = self.__WB_MANIFEST;
 const CACHES = [CACHE_STORE_NAME]
 
 const strategies = {
-    staleWhileRevalidate: new StaleWhileRevalidateStrategy(CACHE_STORE_NAME),
     cacheOnly: new CacheOnlyStrategy(CACHE_STORE_NAME),
     cacheFirst: new CacheFirstStrategy(CACHE_STORE_NAME)
 }
@@ -55,15 +54,11 @@ self.addEventListener("fetch", event => {
     }
 
     if (request.mode === "navigate" && request.destination === "document") {
-        const url = new URL(request.url);
-        if (!url.pathname.startsWith("/api")) {
+        const { pathname } = new URL(request.url);
+        if (!(pathname.startsWith("/api") || pathname.startsWith("/proxy"))) {
             strategies.cacheFirst.apply(event, { key: "/index.html" });
         }
-        return;
-    }
 
-    if (request.destination === "script") {
-        strategies.staleWhileRevalidate.apply(event);
         return;
     }
 

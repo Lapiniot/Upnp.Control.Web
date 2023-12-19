@@ -14,29 +14,12 @@ abstract class UseCacheStrategy implements ICachingStrategy {
 
     abstract apply(event: FetchEvent, options: unknown): void;
 
-    protected fetchAndCache(request: RequestInfo | URL, cache: Cache) {
-        return fetch(request).then(response => {
-            if (response.ok) {
-                cache.put(request, response.clone());
-            }
-            return response;
-        })
-    }
-}
-
-export class StaleWhileRevalidateStrategy extends UseCacheStrategy {
-    constructor(cacheName: string) {
-        super(cacheName);
-    }
-
-    apply(event: FetchEvent) {
-        const request = event.request;
-        event.respondWith(caches.open(this.cacheName).then(
-            cache => cache.match(request).then(cacheResponse => {
-                const networkResponse = this.fetchAndCache(request, cache);
-                return cacheResponse ?? networkResponse;
-            })
-        ))
+    protected async fetchAndCache(request: RequestInfo | URL, cache: Cache) {
+        const response = await fetch(request);
+        if (response.ok) {
+            cache.put(request, response.clone());
+        }
+        return response;
     }
 }
 
