@@ -36,15 +36,8 @@
         "xml",
         "html"
     ],
-    "omnisharp.enableRoslynAnalyzers": true,
     "css.customData": [
         "Upnp.Control.Web/ClientApp/css-data.json"
     ],
-    "build": {
-        "configuration": "debug"
-    },
-    "publish": {
-        "configuration": "release"
-    },
     "dotnet.defaultSolution": "Upnp.Control.Web.sln"
 }

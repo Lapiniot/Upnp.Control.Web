@@ -16,8 +16,10 @@
             "allowFastEvaluate": true,
             "logging": {
                 "moduleLoad": false,
-                "engineLogging": false,
-                "threadExit": false
+                "threadExit": false,
+                "diagnosticsLog": {
+                    "protocolMessages": false
+                }
             },
             "serverReadyAction": {
                 "action": "debugWithChrome",

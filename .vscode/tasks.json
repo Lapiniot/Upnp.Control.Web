@@ -38,7 +38,6 @@
             "args": [
                 "publish",
                 "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
-                "--configuration=${config:publish.configuration}",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
                 "--tl"
@@ -53,7 +52,6 @@
             "args": [
                 "publish",
                 "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
-                "--configuration=${config:publish.configuration}",
                 "--runtime=${input:rid}",
                 "--self-contained",
                 "/property:GenerateFullPaths=true",
@@ -68,7 +66,7 @@
                 ".NET: publish (sc-trimmed)"
             ],
             "type": "shell",
-            "command": "du -shA \"${workspaceFolder}/artifacts/publish/Upnp.Control.Web/${config:publish.configuration}_${input:rid}/\"",
+            "command": "du -shA \"${workspaceFolder}/artifacts/publish/Upnp.Control.Web/release_${input:rid}/\"",
             "problemMatcher": []
         },
         {
@@ -92,7 +90,7 @@
                 "--filter=\"protect **/*.service\"",
                 "--exclude=\"**/.DS_Store\"",
                 "--rsh=ssh",
-                "\"${workspaceFolder}/artifacts/publish/Upnp.Control.Web/${config:publish.configuration}_${input:rid}/\"",
+                "\"${workspaceFolder}/artifacts/publish/Upnp.Control.Web/release_${input:rid}/\"",
                 "${input:remote-url}"
             ]
         },
@@ -205,7 +203,7 @@
             "dockerBuild": {
                 "tag": "upnp-dashboard:latest-scd-${input:rid}",
                 "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/${input:rid}/Dockerfile",
-                "context": "${workspaceFolder}/artifacts/publish/Upnp.Control.Web/${config:publish.configuration}_${input:rid}/",
+                "context": "${workspaceFolder}/artifacts/publish/Upnp.Control.Web/release_${input:rid}/",
                 "labels": {
                     "includeDefaults": false
                 },
