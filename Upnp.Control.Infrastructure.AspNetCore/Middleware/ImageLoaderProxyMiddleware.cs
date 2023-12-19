@@ -19,17 +19,20 @@ public sealed class ImageLoaderProxyMiddleware : ProxyMiddleware
     {
         if (responseMessage.Content is not { } content)
         {
-            throw new InvalidDataException("Empty response content was not expected");
+            ThrowEmptyResponse();
+            return;
         }
 
         if (content is not { Headers.ContentType.MediaType: { } mediaType })
         {
-            throw new InvalidDataException("Response content-type is unknown");
+            ThrowMissingContentType();
+            return;
         }
 
         if (!mediaType.StartsWith("image/", StringComparison.InvariantCulture))
         {
-            throw new InvalidDataException("Invalid data. Content of type image/* was expected.");
+            ThrowNonImageData();
+            return;
         }
 
         base.CopyHeaders(responseMessage, context);
@@ -44,4 +47,13 @@ public sealed class ImageLoaderProxyMiddleware : ProxyMiddleware
             context.Response.Headers[HeaderNames.Vary] = varyBy;
         }
     }
+
+    [DoesNotReturn]
+    private static void ThrowNonImageData() => throw new InvalidDataException("Invalid data. Content of type image/* was expected.");
+
+    [DoesNotReturn]
+    private static void ThrowMissingContentType() => throw new InvalidDataException("Response content-type is unknown.");
+
+    [DoesNotReturn]
+    private static void ThrowEmptyResponse() => throw new InvalidDataException("Empty response content was not expected.");
 }
