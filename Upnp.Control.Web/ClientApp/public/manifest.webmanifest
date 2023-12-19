@@ -4,6 +4,7 @@
   "start_url": "/",
   "display_override": [
     "window-control-overlay",
+    "standalone",
     "minimal-ui"
   ],
   "display": "standalone",
