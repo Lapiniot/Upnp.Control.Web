@@ -18,7 +18,7 @@ public static class ConfigureServicesExtensions
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     public static IServiceCollection AddImageLoaderProxyMiddleware(this IServiceCollection services)
     {
-        services.AddHttpClient<ImageLoaderProxyClient>(c => c.DefaultRequestHeaders.ConnectionClose = false)
+        services.AddHttpClient<ImageLoaderProxyClient>()
             .SetHandlerLifetime(TimeSpan.FromMinutes(10))
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {

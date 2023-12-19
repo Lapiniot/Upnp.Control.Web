@@ -95,10 +95,10 @@ public abstract partial class ProxyMiddleware : IMiddleware
     {
         var requestMessage = new HttpRequestMessage(method, requestUri);
 
-        foreach (var (k, v) in context.Request.Headers)
+        foreach (var (name, values) in context.Request.Headers)
         {
-            if (k == HeaderNames.Host) continue;
-            requestMessage.Headers.TryAddWithoutValidation(k, (IEnumerable<string>)v);
+            if (name == HeaderNames.Host || name == HeaderNames.Cookie) continue;
+            requestMessage.Headers.TryAddWithoutValidation(name, (IEnumerable<string>)values);
         }
 
         return requestMessage;
