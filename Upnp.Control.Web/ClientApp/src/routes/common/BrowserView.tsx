@@ -158,6 +158,10 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
             return;
         }
 
+        if (event.pointerType === "touch") {
+            return;
+        }
+
         const index = getDataIndex(element);
         if (index === undefined) return;
 
