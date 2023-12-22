@@ -1,4 +1,4 @@
-﻿import "./css/index.css";
+﻿import "./styles/index.scss";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RouteLink } from "./components/NavLink";

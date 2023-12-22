@@ -117,26 +117,6 @@
             "problemMatcher": "$gulp-tsc"
         },
         {
-            "label": "gulp: watch SCSS files for changes",
-            "detail": "Starts *.scss files modification background watch task",
-            "group": "build",
-            "type": "gulp",
-            "task": "watch-scss",
-            "isBackground": true,
-            "options": {
-                "cwd": "${workspaceFolder}/Upnp.Control.Web/ClientApp"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": "$gulp-tsc"
-        },
-        {
             "label": "docker-build: debug",
             "type": "docker-build",
             "dockerBuild": {
