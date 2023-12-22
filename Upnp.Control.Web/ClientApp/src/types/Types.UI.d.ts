@@ -1,4 +1,6 @@
 declare namespace UI {
+    type Theme = "light" | "dark" | "auto";
+
     type ThemeColors = "primary" | "secondary" | "success" | "info" | "warning" | "danger" | "light" | "dark"
 
     interface CategoryRouteParams { category: DeviceCategory }

@@ -54,7 +54,8 @@ $utilities: map-merge($utilities,
             "padding-end": map-merge(map-get($utilities, "padding-end"),
                 (responsive: false)),
             "gap": map-merge(map-get($utilities, "gap"),
-                (responsive: false, class: "g", values:map-remove($spacers, 4, 5)))));
+                (responsive: false, class: "g", values:map-remove($spacers, 4, 5))),
+            "flex": map-merge(map-get($utilities, "flex"), (responsive:false, values: (fill: 1 1 auto, 1: 1)))));
 
 $utilities : map-merge($utilities,
     ("cursor":(property:"cursor", values:default),

@@ -1,15 +1,4 @@
-type TypedSettings = {
-    pageSize: number;
-    readonly pageSizes: number[];
-    timeout: number;
-    containerScanTimeout: number;
-    containerScanDepth: number;
-    useDlnaProxy: boolean;
-    showDiscoveryNotifications: boolean;
-    showPlaybackNotifications: boolean;
-}
-
-const defaults: TypedSettings = {
+const defaults = {
     pageSize: 60,
     pageSizes: [15, 30, 60, 120, 150],
     timeout: 5000,
@@ -17,10 +6,11 @@ const defaults: TypedSettings = {
     containerScanDepth: 3,
     useDlnaProxy: true,
     showDiscoveryNotifications: true,
-    showPlaybackNotifications: false
-};
+    showPlaybackNotifications: false,
+    theme: <UI.Theme>"auto"
+}
 
-export type BookmarkGroup = "devices" | "playlists" | "items";
+export type BookmarkGroup = "devices" | "playlists" | "items"
 
 const homeDefaults: { expandSection: BookmarkGroup | "" } = {
     expandSection: "devices"
@@ -69,5 +59,5 @@ export class Settings<T extends { [P: string]: string | number | boolean | objec
 const settings = new Settings("global", defaults);
 const profile = { home: new Settings("home", homeDefaults) };
 
-export default settings;
-export { profile };
+export default settings
+export { profile }
