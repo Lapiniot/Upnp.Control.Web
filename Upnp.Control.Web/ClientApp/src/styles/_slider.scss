@@ -22,9 +22,9 @@
 
 .slider,
 .progress {
-    --slider-color: #{$link-color};
-    --slider-hover-color: #{$link-hover-color};
-    --slider-bg-color: #{$light};
+    --slider-color: var(--#{$prefix}link-color);
+    --slider-hover-color: var(--#{$prefix}link-hover-color);
+    --slider-bg-color: var(--#{$prefix}secondary-bg);
     --slider-size: 0.2rem;
     --slider-ticker-size: calc(4.5 * var(--slider-size));
     --slider-ticker-scale-factor: 1.2;

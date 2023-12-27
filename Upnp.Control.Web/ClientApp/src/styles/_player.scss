@@ -17,8 +17,8 @@
         }
 
         @include unify-parent(svg) {
-            color: $primary-200;
-            @include gradient-bg($primary-700);
+            color: var(--#{$prefix}accent-color-emphasis);
+            @include gradient-bg(var(--#{$prefix}accent-color-subtle));
         }
     }
 

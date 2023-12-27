@@ -7,8 +7,8 @@
     --#{$prefix}table-header-bg: #{$light};
     --#{$prefix}table-active-color: #{$table-active-color};
     --#{$prefix}table-active-bg: #{$table-active-bg};
-    --#{$prefix}table-selected-bg: #{$primary};
-    --#{$prefix}table-focused-accent: #{$primary-700};
+    --#{$prefix}table-selected-bg: var(--#{$prefix}accent-color);
+    --#{$prefix}table-focused-accent: var(--#{$prefix}accent-color-emphasis);
     --#{$prefix}table-selected-color: white;
     --#{$prefix}table-cell-padding-x: #{$table-cell-padding-x};
     --#{$prefix}table-cell-padding-y: #{$table-cell-padding-y};

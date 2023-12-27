@@ -205,11 +205,11 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
                 </BrowserCore>
             </RowStateProvider>
             <div className="sticky-bottom">
-                <BottomBar>
+                <BottomBar className="flex-wrap-reverse">
+                    {displayMode === "table" && parents.length > 1 && <Breadcrumb className="me-auto" items={parents} />}
                     <Pagination total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
                         pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
                 </BottomBar>
-                {displayMode === "table" && parents.length > 1 && <Breadcrumb className="border-top" items={parents} />}
             </div>
             <DialogHost ref={this.dialogHostRef} />
         </>

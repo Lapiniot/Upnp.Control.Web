@@ -304,9 +304,9 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
             onPointerUp={navigationMode !== "dbl-click" && !editMode ? this.navigateHandler : undefined}
             onDoubleClick={navigationMode === "dbl-click" && !editMode ? this.navigateHandler : undefined}>
             <div className="table table-material user-select-none" ref={this.ref} onFocus={this.focusHandler}>
-                {renderCaption && <div className={`table-caption bg-body${stickyCaption ? " sticky-top" : ""}`}>{renderCaption()}</div>}
+                {renderCaption && <div className={`table-caption${stickyCaption ? " sticky-top" : ""}`}>{renderCaption()}</div>}
                 <div className={`table-header${headerClass ? ` ${headerClass}` : ""}`}>
-                    <div className="bg-body">
+                    <div>
                         {useCheckboxes &&
                             <label className="lh-1">
                                 <input type="checkbox" onChange={this.onCheckboxAllChanged}

@@ -46,7 +46,7 @@ export function PlaylistManagerToolbar({ editMode, compact, rootLevel: rootLevel
     const onlySelected = selectedCount === 1;
     const expanded = compact !== true;
 
-    return <Toolbar className="px-2 py-1 bg-white border-bottom flex-nowrap">
+    return <Toolbar className="px-2 py-1 border-bottom flex-nowrap">
         {editMode ? <>
             <Toolbar.Button glyph="symbols.svg#close" onClick={handlers.toggleEditMode} className={className} />
             <small className="flex-fill my-0 mx-2 text-center text-truncate">

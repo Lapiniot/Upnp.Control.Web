@@ -12,7 +12,7 @@ nav {
 .navbar {
     --#{$prefix}navbar-padding-x: #{if($navbar-padding-x == null, 0, $navbar-padding-x)};
     --#{$prefix}navbar-padding-y: #{$navbar-padding-y};
-    --#{$prefix}navbar-bg: #{$primary-700};
+    --#{$prefix}navbar-bg: var(--#{$prefix}brand-color);
     --#{$prefix}navbar-color: #{$navbar-dark-color};
     --#{$prefix}navbar-hover-color: #{$navbar-dark-hover-color};
     --#{$prefix}navbar-disabled-color: #{$navbar-dark-disabled-color};

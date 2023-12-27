@@ -86,8 +86,6 @@ $animation-prefix: "an-";
     --#{$animation-prefix}slide-pop: slide-pop var(--#{$animation-prefix}duration-2) ease;
     --#{$transition-prefix}fade: opacity var(--#{$animation-prefix}duration-1) ease;
     --#{$transition-prefix}slide: translate var(--#{$animation-prefix}duration-1) ease;
-    --#{$transition-prefix}expand: height var(--#{$animation-prefix}duration-2) var(--#{$animation-prefix}ease-out-circ);
-    --#{$transition-prefix}collapse: height var(--#{$animation-prefix}duration-1) var(--#{$animation-prefix}ease-in-circ);
 }
 
 .animate-spin {

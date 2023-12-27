@@ -1,14 +1,14 @@
-﻿$enable-gradients:              true;
-$enable-shadows:                true;
-$enable-rounded:                true;
-$enable-grid-classes:           false;
-$enable-container-classes:      false;
-$enable-rfs:                    true;
+﻿$enable-gradients: true;
+$enable-shadows: true;
+$enable-rounded: true;
+$enable-grid-classes: false;
+$enable-container-classes: false;
+$enable-rfs: true;
 
-$primary:                       #6f42c1;
-$icon-scale:                    1.25;
-$missing-image-content:         '';
-$border-radius-sm:              .1875rem;
+$primary: #6f42c1;
+$icon-scale: 1.25;
+$missing-image-content: '';
+$border-radius-sm: .1875rem;
 
 // Configuration
 @import "bootstrap/scss/functions";
@@ -18,45 +18,56 @@ $border-radius-sm:              .1875rem;
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
 
-$primary-100:                   tint-color($primary, 80%);
-$primary-200:                   tint-color($primary, 60%);
-$primary-300:                   tint-color($primary, 40%);
-$primary-400:                   tint-color($primary, 20%);
-$primary-500:                   $primary;
-$primary-600:                   shade-color($primary, 20%);
-$primary-700:                   shade-color($primary, 40%);
-$primary-800:                   shade-color($primary, 60%);
-$primary-900:                   shade-color($primary, 80%);
+$grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
+$card-border-radius: $border-radius-sm;
+$spoiler-border-radius: $border-radius-sm;
+$btn-border-radius: $border-radius-sm;
+$badge-border-radius: $border-radius-sm;
+$toast-border-radius: $border-radius-sm;
+$modal-content-border-radius: $border-radius-sm;
+$accordion-border-radius: $border-radius-sm;
+$dropdown-border-radius: $border-radius-sm;
 
-$grid-breakpoints:              map-remove($grid-breakpoints, xl, xxl);
-$card-border-radius:            $border-radius-sm;
-$spoiler-border-radius:         $border-radius-sm;
-$btn-border-radius:             $border-radius-sm;
-$badge-border-radius:           $border-radius-sm;
-$toast-border-radius:           $border-radius-sm;
-$modal-content-border-radius:   $border-radius-sm;
-$accordion-border-radius:       $border-radius-sm;
-$dropdown-border-radius:        $border-radius-sm;
+$breadcrumb-border-radius: 0;
+$breadcrumb-divider: quote("\276f");
+$breadcrumb-item-padding-x: map-get($spacers, 1);
 
-$breadcrumb-border-radius:      0;
-$breadcrumb-divider:            quote("\276f");
-$breadcrumb-item-padding-x:     map-get($spacers, 1);
+$card-box-shadow: var(--switch-shadow, $box-shadow-sm);
+$card-border-width: var(--switch-border, $card-border-width);
+$card-border-radius: var(--switch-border-radius, $card-border-radius);
 
-$card-box-shadow:               var(--switch-shadow, $box-shadow-sm);
-$card-border-width:             var(--switch-border, $card-border-width);
-$card-border-radius:            var(--switch-border-radius, $card-border-radius);
+$zindex-dropdown: $zindex-sticky + 5;
 
-$zindex-dropdown:               $zindex-sticky + 5;
+$expand-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$body-color}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
+$expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$body-color-dark}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
 
 // Layout & components
 @import "bootstrap/scss/root";
+
+:root,
+[data-bs-theme="light"] {
+    --#{$prefix}brand-color: #{shade-color($primary, 40%)};
+    --#{$prefix}accent-color: #{$primary};
+    --#{$prefix}accent-color-subtle: #{tint-color($primary, 40%)};
+    --#{$prefix}accent-color-emphasis: #{shade-color($primary, 60%)};
+    --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon)};
+}
+
+@include color-mode(dark) {
+    --#{$prefix}brand-color: #{shade-color($primary, 80%)};
+    --#{$prefix}accent-color: #{$primary};
+    --#{$prefix}accent-color-subtle: #{shade-color($primary, 60%)};
+    --#{$prefix}accent-color-emphasis: #{tint-color($primary, 40%)};
+    --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon-dark)};
+}
+
 @import "bootstrap/scss/reboot";
 @import "bootstrap/scss/type";
 @import "bootstrap/scss/forms";
-$enable-shadows:                false;
+$enable-shadows: false;
 @import "bootstrap/scss/buttons";
+$enable-shadows: true;
 @import "bootstrap/scss/button-group";
-$enable-shadows:                true;
 @import "bootstrap/scss/transitions";
 @import "bootstrap/scss/card";
 @import "bootstrap/scss/breadcrumb";
@@ -96,10 +107,6 @@ $enable-shadows:                true;
 @import "bootstrap/scss/utilities/api";
 
 /********** Specific site element styles **********/
-
-:root {
-    --#{$prefix}accent-color: #{$primary};
-}
 
 ::backdrop {
     --#{$prefix}backdrop-bg-color: rgba(0 0 0 / 0.5);

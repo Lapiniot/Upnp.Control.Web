@@ -41,7 +41,7 @@ export default function (props: PaginationProps & { pageSizes?: number[] }) {
         <select className="form-select form-select-sm me-2 my-0 w-auto" aria-label="Items per page" value={pageSize} onChange={changeHandler} >
             {pageSizes.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
-        <span className="text-muted small pe-2 text-wrap lines-2">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
+        <span className="text-muted small pe-2 text-nowrap">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
         <nav aria-label="Page navigation" className={`hstack${className ? ` ${className}` : ""}`} {...other}>
             <PageLink to={`?${createSearchParams({ ...init, p: "1" })}`} label="First" disabled={current === 1}>
                 <svg><use href="symbols.svg#first_page" /></svg>
