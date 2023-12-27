@@ -33,16 +33,10 @@ self.addEventListener("install", event => {
 
 self.addEventListener("activate", event => {
     console.info("Activating service worker...");
-    event.waitUntil(Promise.allSettled([
+    event.waitUntil(
         caches.keys().then(keys => Promise.allSettled(keys.filter(key => !CACHES.includes(key)).map(key => caches.delete(key)
             .then(() => console.info(`Obsolete cache '${key}' has been dropped.`))
-            .catch(error => console.error(`Error dropping obsolete cache '${key}'. '${error}'.`))))),
-        "navigationPreload" in self.registration
-            ? self.registration.navigationPreload.enable()
-                .then(() => console.info("Navigation preload has beeen enabled."))
-                .catch(error => console.error(`Error enabling navigation preload. ${error}.`))
-            : Promise.resolve()
-    ]));
+            .catch(error => console.error(`Error dropping obsolete cache '${key}'. '${error}'.`))))));
     self.clients.claim();
 })
 
