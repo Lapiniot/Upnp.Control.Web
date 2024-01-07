@@ -27,14 +27,10 @@ internal sealed partial class UpnpDiscoveryService(IServiceProvider services, IU
 
         try
         {
-            using var scope = services.CreateScope();
-
-            var getQueryHandler = scope.ServiceProvider.GetRequiredService<IAsyncQueryHandler<GetDeviceQuery, UpnpDevice>>();
-            var addCommandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<AddDeviceCommand>>();
-            var removeCommandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<RemoveDeviceCommand>>();
-            var updateCommandHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<UpdateDeviceExpirationCommand>>();
-            var enumerator = scope.ServiceProvider.GetRequiredService<IAsyncEnumerable<SsdpReply>>();
-            var observers = scope.ServiceProvider.GetServices<IObserver<UpnpDiscoveryEvent>>().ToArray();
+            using var serviceScope = services.CreateScope();
+            var serviceProvider = serviceScope.ServiceProvider;
+            var enumerator = serviceProvider.GetRequiredService<IAsyncEnumerable<SsdpReply>>();
+            var observers = serviceProvider.GetServices<IObserver<UpnpDiscoveryEvent>>().ToArray();
 
             try
             {
@@ -43,10 +39,10 @@ internal sealed partial class UpnpDiscoveryService(IServiceProvider services, IU
                     try
                     {
                         TraceReply(reply);
-
-                        if (reply.StartLine.StartsWith("M-SEARCH", InvariantCulture)) continue;
-
                         var udn = ExtractUdn(reply.UniqueServiceName);
+
+                        using var scope = serviceProvider.CreateScope();
+                        var getQueryHandler = scope.ServiceProvider.GetRequiredService<IAsyncQueryHandler<GetDeviceQuery, UpnpDevice>>();
 
                         if (reply.StartLine.StartsWith("NOTIFY", InvariantCulture) && reply.TryGetValue("NT", out var nt))
                         {
@@ -56,7 +52,8 @@ internal sealed partial class UpnpDiscoveryService(IServiceProvider services, IU
                             {
                                 if (await getQueryHandler.ExecuteAsync(new(udn), stoppingToken).ConfigureAwait(false) is { } existing)
                                 {
-                                    await removeCommandHandler.ExecuteAsync(new(udn), stoppingToken).ConfigureAwait(false);
+                                    var rmHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<RemoveDeviceCommand>>();
+                                    await rmHandler.ExecuteAsync(new(udn), stoppingToken).ConfigureAwait(false);
 
                                     Notify(observers, new UpnpDeviceDisappearedEvent(udn, existing));
 
@@ -75,14 +72,11 @@ internal sealed partial class UpnpDiscoveryService(IServiceProvider services, IU
 
                         if (device != null)
                         {
-                            var command = new UpdateDeviceExpirationCommand(udn, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10));
-
-                            await updateCommandHandler.ExecuteAsync(command, stoppingToken).ConfigureAwait(false);
+                            var updateHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<UpdateDeviceExpirationCommand>>();
+                            await updateHandler.ExecuteAsync(new(udn, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10)), stoppingToken).ConfigureAwait(false);
 
                             device = await getQueryHandler.ExecuteAsync(new(udn), stoppingToken).ConfigureAwait(false);
-
                             Notify(observers, new UpnpDeviceUpdatedEvent(udn, device));
-
                             LogExpirationUpdated(udn);
 
                             continue;
@@ -106,7 +100,8 @@ internal sealed partial class UpnpDiscoveryService(IServiceProvider services, IU
                                 GetAbsoluteUri(s.EventSubscribeUrl, location))).ToList()
                         };
 
-                        await addCommandHandler.ExecuteAsync(new(device), stoppingToken).ConfigureAwait(false);
+                        var addHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<AddDeviceCommand>>();
+                        await addHandler.ExecuteAsync(new(device), stoppingToken).ConfigureAwait(false);
 
                         LogDeviceDiscovered(desc.Udn);
 

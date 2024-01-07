@@ -37,6 +37,11 @@ internal partial class UpnpDiscoveryService
 
     private void TraceReply(SsdpReply reply)
     {
+        if (!logger.IsEnabled(LogLevel.Trace))
+        {
+            return;
+        }
+
         var sb = new StringBuilder();
 
         sb.AppendLine();
@@ -49,6 +54,6 @@ internal partial class UpnpDiscoveryService
             sb.AppendLine(value);
         }
 
-        Trace(sb.ToString());
+        __TraceCallback(logger, sb.ToString(), null);
     }
 }
