@@ -5,23 +5,16 @@ using static System.StringComparison;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery;
 
-internal sealed partial class UpnpDiscoveryService(IServiceProvider services, IUpnpServiceMetadataProvider metadataProvider, IHostApplicationLifetime applicationLifetime, ILogger<UpnpDiscoveryService> logger) : BackgroundServiceBase(logger)
+internal sealed partial class UpnpDiscoveryService(
+    IServiceProvider services, IUpnpServiceMetadataProvider metadataProvider, ILogger<UpnpDiscoveryService> logger) :
+    BackgroundServiceBase(logger), IHostedLifecycleService
 {
     private const string RootDevice = "upnp:rootdevice";
+    private readonly TaskCompletionSource startedTcs = new();
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        // This service drives all other application parts, 
-        // so we must reliably start processing only when all other services (including Kestrel) are up&running 
-        // and application is completely started. Previous workaround with service registration 
-        // in the Host.ConfigureServices after GenericWebHostService seems doesn't work anymore since .NET 6
-
-        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        await using (stoppingToken.UnsafeRegister(static (state, token) => ((TaskCompletionSource)state).SetCanceled(token), tcs))
-        await using (applicationLifetime.ApplicationStarted.UnsafeRegister(static state => ((TaskCompletionSource)state).SetResult(), tcs))
-        {
-            await tcs.Task.ConfigureAwait(false);
-        }
+        await startedTcs.Task.WaitAsync(stoppingToken).ConfigureAwait(false);
 
         LogStarted();
 
@@ -175,4 +168,15 @@ internal sealed partial class UpnpDiscoveryService(IServiceProvider services, IU
             }
         }
     }
+
+    public Task StartingAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+    public Task StartedAsync(CancellationToken cancellationToken)
+    {
+        startedTcs.SetResult();
+        return Task.CompletedTask;
+    }
+
+    public Task StoppingAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    public Task StoppedAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
