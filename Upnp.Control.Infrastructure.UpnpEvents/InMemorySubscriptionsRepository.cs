@@ -1,10 +1,10 @@
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-internal sealed class InMemorySubscriptionsRepository : IUpnpEventSubscriptionRepository
+internal sealed class InMemoryEventSubscriptionStore : IEventSubscriptionStore
 {
     private readonly Dictionary<string, List<IAsyncCancelable>> storage;
 
-    public InMemorySubscriptionsRepository() => storage = [];
+    public InMemoryEventSubscriptionStore() => storage = [];
 
     public void Add(string udn, params IAsyncCancelable[] sessions)
     {

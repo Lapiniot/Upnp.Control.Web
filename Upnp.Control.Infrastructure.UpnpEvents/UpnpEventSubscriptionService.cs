@@ -9,17 +9,17 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
     private readonly IUpnpEventSubscriptionFactory factory;
     private readonly ILogger<UpnpEventSubscriptionService> logger;
     private readonly IOptionsMonitor<UpnpEventsOptions> optionsMonitor;
-    private readonly IUpnpEventSubscriptionRepository repository;
+    private readonly IEventSubscriptionStore store;
 
-    public UpnpEventSubscriptionService(IUpnpEventSubscriptionRepository repository, IUpnpEventSubscriptionFactory factory,
+    public UpnpEventSubscriptionService(IEventSubscriptionStore store, IUpnpEventSubscriptionFactory factory,
         IOptionsMonitor<UpnpEventsOptions> optionsMonitor, ILogger<UpnpEventSubscriptionService> logger)
     {
-        ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(store);
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(optionsMonitor);
         ArgumentNullException.ThrowIfNull(logger);
 
-        this.repository = repository;
+        this.store = store;
         this.factory = factory;
         this.optionsMonitor = optionsMonitor;
         this.logger = logger;
@@ -37,7 +37,7 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
             {
                 if (mappings.TryGetValue(serviceType, out var template))
                 {
-                    repository.Add(deviceId, factory.Subscribe(eventsUrl, new(string.Format(InvariantCulture, template, deviceId), UriKind.Relative), sessionTimeout));
+                    store.Add(deviceId, factory.Subscribe(eventsUrl, new(string.Format(InvariantCulture, template, deviceId), UriKind.Relative), sessionTimeout));
                 }
             }
         }
@@ -50,7 +50,7 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
 
     private async Task RenewSubscriptionsAsync(string deviceId, IEnumerable<Service> services)
     {
-        var sessions = repository.GetById(deviceId).ToList();
+        var sessions = store.GetById(deviceId).ToList();
 
         if (sessions.Count is 0 || sessions.Any(s => s.IsCompleted))
         {
@@ -86,8 +86,8 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
 
     public async ValueTask DisposeAsync()
     {
-        await TerminateAsync(repository.GetAll()).ConfigureAwait(false);
-        repository.Clear();
+        await TerminateAsync(store.GetAll()).ConfigureAwait(false);
+        store.Clear();
     }
 
     #endregion
@@ -106,11 +106,11 @@ internal sealed partial class UpnpEventSubscriptionService : IObserver<UpnpDisco
                 SubscribeToEvents(dae.DeviceId, dae.Device.Services);
                 break;
             case UpnpDeviceUpdatedEvent due when IsRenderer(due.Device):
-                _ = RenewSubscriptionsAsync(due.DeviceId, due.Device.Services);
+                RenewSubscriptionsAsync(due.DeviceId, due.Device.Services).Observe();
                 break;
             case UpnpDeviceDisappearedEvent dde:
-                repository.Remove(dde.DeviceId, out var subscriptions);
-                _ = TerminateAsync(subscriptions);
+                store.Remove(dde.DeviceId, out var subscriptions);
+                TerminateAsync(subscriptions).Observe();
                 break;
         }
     }

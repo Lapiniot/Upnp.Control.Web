@@ -7,7 +7,7 @@ public static class ConfigureServicesExtensions
     public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services, Action<OptionsBuilder<UpnpEventsOptions>> configure = null) => services
         .ConfigureUpnpEventsOptions(configure)
         .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>()
-        .AddTransient<IUpnpEventSubscriptionRepository, InMemorySubscriptionsRepository>()
+        .AddTransient<IEventSubscriptionStore, InMemoryEventSubscriptionStore>()
         .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
         .AddTransient<IAsyncCommandHandler<AVTPropChangedCommand>, AVTPropChangedEventCommandHandler>()
         .AddTransient<IAsyncCommandHandler<RCPropChangedCommand>, RCPropChangedEventCommandHandler>()
