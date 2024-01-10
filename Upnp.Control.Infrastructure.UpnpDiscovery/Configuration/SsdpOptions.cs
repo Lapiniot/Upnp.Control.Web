@@ -1,6 +1,5 @@
 using System.Net.NetworkInformation;
-
-using static System.Net.NetworkInterfaceExtensions;
+using static OOs.Net.NetworkInterfaceExtensions;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
 

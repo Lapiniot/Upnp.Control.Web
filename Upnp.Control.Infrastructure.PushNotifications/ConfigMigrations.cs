@@ -1,5 +1,5 @@
-using System.Net.Http.WebPush;
 using System.Text.Json;
+using OOs.Net.Http.WebPush;
 using Upnp.Control.Abstractions;
 
 namespace Upnp.Control.Infrastructure.PushNotifications;

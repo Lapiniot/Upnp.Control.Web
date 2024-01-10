@@ -1,4 +1,4 @@
-using System.Net.Http.Jwt;
+using OOs.Net.Http.Jwt;
 using Upnp.Control.Abstractions;
 using Upnp.Control.Extensions.DependencyInjection;
 using Upnp.Control.Models.PushNotifications;

@@ -1,8 +1,8 @@
 using System.Buffers;
 using System.Buffers.Text;
 using System.IO.Pipelines;
-using System.Memory;
 using System.Text;
+using OOs.Memory;
 
 namespace Upnp.Control.Services.Commands;
 

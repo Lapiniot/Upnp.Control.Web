@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Sockets;
-using System.Policies;
 using IoT.Protocol.Upnp;
+using OOs.Net.Sockets;
+using OOs.Policies;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
 

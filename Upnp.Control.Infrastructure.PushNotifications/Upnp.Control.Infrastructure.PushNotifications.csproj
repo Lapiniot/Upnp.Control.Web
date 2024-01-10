@@ -8,7 +8,7 @@
     <ProjectReference Include="../Upnp.Control.Models.PushNotifications/Upnp.Control.Models.PushNotifications.csproj" />
     <ProjectReference Include="../Upnp.Control.Infrastructure/Upnp.Control.Infrastructure.csproj" />
     <ProjectReference Include="../Upnp.Control.Extensions/Upnp.Control.Extensions.csproj" />
-    <ProjectReference Include="../IoT.Device/IoT.Protocol/System.Common/System.Common.Net.Http/System.Common.Net.Http.csproj" />
+    <ProjectReference Include="../IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Net.Http/OOs.Common.Net.Http.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -11,10 +11,10 @@ RUN apt-get update -yq && \
 ARG RID
 
 WORKDIR /src
-COPY "IoT.Device/IoT.Protocol/System.Common/common.props" "IoT.Device/IoT.Protocol/System.Common/"
-COPY "IoT.Device/IoT.Protocol/System.Common/System.Common/System.Common.csproj" "IoT.Device/IoT.Protocol/System.Common/System.Common/"
-COPY "IoT.Device/IoT.Protocol/System.Common/System.Common.Net/System.Common.Net.csproj" "IoT.Device/IoT.Protocol/System.Common/System.Common.Net/"
-COPY "IoT.Device/IoT.Protocol/System.Common/System.Common.Net.Http/System.Common.Net.Http.csproj" "IoT.Device/IoT.Protocol/System.Common/System.Common.Net.Http/"
+COPY "IoT.Device/IoT.Protocol/OOs.Common/common.props" "IoT.Device/IoT.Protocol/OOs.Common/"
+COPY "IoT.Device/IoT.Protocol/OOs.Common/OOs.Common/OOs.Common.csproj" "IoT.Device/IoT.Protocol/OOs.Common/OOs.Common/"
+COPY "IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Net/OOs.Common.Net.csproj" "IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Net/"
+COPY "IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Net.Http/OOs.Common.Net.Http.csproj" "IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Net.Http/"
 COPY "IoT.Device/IoT.Protocol/common.props" "IoT.Device/IoT.Protocol/"
 COPY "IoT.Device/IoT.Protocol/IoT.Protocol/IoT.Protocol.csproj" "IoT.Device/IoT.Protocol/IoT.Protocol/"
 COPY "IoT.Device/IoT.Protocol/IoT.Protocol.Soap/IoT.Protocol.Soap.csproj" "IoT.Device/IoT.Protocol/IoT.Protocol.Soap/"

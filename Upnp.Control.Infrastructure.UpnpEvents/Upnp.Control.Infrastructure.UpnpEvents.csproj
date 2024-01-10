@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../IoT.Device/IoT.Protocol/System.Common/System.Common/System.Common.csproj" />
+    <ProjectReference Include="../IoT.Device/IoT.Protocol/OOs.Common/OOs.Common/OOs.Common.csproj" />
     <ProjectReference Include="../IoT.Device/IoT.Device.Upnp.Umi/IoT.Device.Upnp.Umi.csproj" />
     <ProjectReference Include="../Upnp.Control.Infrastructure/Upnp.Control.Infrastructure.csproj" />
   </ItemGroup>
@@ -24,6 +24,7 @@
     <Using Include="Microsoft.Extensions.Options" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
     <Using Include="Microsoft.Extensions.Configuration" />
+    <Using Include="OOs.Threading" />
   </ItemGroup>
 
 </Project>

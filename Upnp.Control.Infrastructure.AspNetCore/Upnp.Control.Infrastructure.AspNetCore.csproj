@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
-    <ProjectReference Include="../IoT.Device/IoT.Protocol/System.Common/System.Common.Net.Http/System.Common.Net.Http.csproj" />
+    <ProjectReference Include="../IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Net.Http/OOs.Common.Net.Http.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +29,8 @@
     <Using Include="Microsoft.Extensions.Options" />
     <Using Include="Microsoft.Extensions.Configuration" />
     <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="OOs.Net" />
+    <Using Include="OOs.Net.Http" />
   </ItemGroup>
 
 </Project>
