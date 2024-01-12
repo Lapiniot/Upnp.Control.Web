@@ -5,7 +5,7 @@ import $s from "./Settings";
 
 type MediaState = Partial<Upnp.AVState & Upnp.AVPosition & Upnp.RCState & { vendor: Record<string, string> }>
 
-type FetchStateFlagKeys = "trackPosition" | "trackVolume"
+type FetchStateFlagKeys = "trackState" | "trackPosition" | "trackVolume"
 
 type FetchStateFlags = { [K in FetchStateFlagKeys]?: boolean }
 
@@ -39,6 +39,16 @@ export const PlaybackStateContext = createContext<PlaybackStateContextType>({
     state: {},
     dispatch() { }
 })
+
+type RCEventArgs = {
+    state: Upnp.RCState
+}
+
+type AVTEventArgs = {
+    state: Upnp.AVState,
+    position: Upnp.AVPosition,
+    vendorProps: Record<string, string>
+}
 
 type PlaybackStateProviderProps = PropsWithChildren<{
     device: string | undefined | null,
@@ -105,15 +115,15 @@ function reducer(state: InternalState, action: StateAction | MediaAction) {
     return state;
 }
 
-function createFetch(fetchPosition: boolean, fetchVolume: boolean, fetchVendorState?: (id: string) => Promise<Record<string, string>>) {
+function createFetch(fetchState: boolean, fetchPosition: boolean, fetchVolume: boolean, fetchVendorState?: (id: string) => Promise<Record<string, string>>) {
     return async function (client: ControlApiClient): Promise<MediaState> {
         const timeout = $s.get("timeout");
 
         const { 0: state, 1: position, 2: volume, 3: vendor } = await Promise.all([
-            client.state(true).json(timeout),
-            fetchPosition ? client.position().json(timeout) : {},
-            fetchVolume ? client.volume(true).json(timeout) : {},
-            fetchVendorState?.(client.deviceId) ?? {}
+            fetchState ? client.state(true).json(timeout) : Promise.resolve({}),
+            fetchPosition ? client.position().json(timeout) : Promise.resolve({}),
+            fetchVolume ? client.volume(true).json(timeout) : Promise.resolve({}),
+            fetchVendorState?.(client.deviceId) ?? Promise.resolve({})
         ]);
 
         return { ...state, ...position, ...volume, vendor };
@@ -122,27 +132,41 @@ function createFetch(fetchPosition: boolean, fetchVolume: boolean, fetchVendorSt
 
 const initialState = {};
 
-export function PlaybackStateProvider({ device, trackPosition = false, trackVolume = false, fetchVendorState, ...other }: PlaybackStateProviderProps) {
+export function PlaybackStateProvider({ device, trackState = true, trackPosition = false, trackVolume = false, fetchVendorState, ...other }: PlaybackStateProviderProps) {
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    useEffect(() => { if (device) dispatch({ type: "BEGIN_INIT", device, dispatch, fetch: createFetch(trackPosition, trackVolume, fetchVendorState) }) },
-        [device, trackPosition, trackVolume, fetchVendorState]);
+    useEffect(() => {
+        if (device) dispatch({ type: "BEGIN_INIT", device, dispatch, fetch: createFetch(trackState, trackPosition, trackVolume, fetchVendorState) })
+    }, [device, trackState, trackPosition, trackVolume, fetchVendorState]);
 
     const handlers = useMemo(() => {
-        const handlers = {
-            "AVTransportEvent": (target: string, { state, position, vendorProps = {} }: { state: Upnp.AVState; position: Upnp.AVPosition, vendorProps: Record<string, string>; }) => {
-                if (device !== target)
-                    return;
-                dispatch({ type: "UPDATE", state: { ...state, ...position, vendor: fetchVendorState ? vendorProps : undefined } });
+        const handlers = {} as Record<string, (...args: any) => void>;
+
+        if (trackState || trackPosition || fetchVendorState) {
+            handlers["AVTransportEvent"] = (target: string, { state, position, vendorProps = {} }: AVTEventArgs) => {
+                if (device === target) {
+                    dispatch({
+                        type: "UPDATE",
+                        state: {
+                            ...(trackState ? state : {}),
+                            ...(trackPosition ? position : {}),
+                            vendor: fetchVendorState ? vendorProps : undefined
+                        }
+                    })
+                }
             }
-        } as Record<string, (...args: any) => void>;
+        }
 
         if (trackVolume) {
-            handlers["RenderingControlEvent"] = (target: string, { state }: { state: Upnp.RCState; }) => { if (device === target) dispatch({ type: "UPDATE", state: { ...state } }) }
+            handlers["RenderingControlEvent"] = (target: string, { state }: RCEventArgs) => {
+                if (device === target) {
+                    dispatch({ type: "UPDATE", state: { ...state } })
+                }
+            }
         }
 
         return handlers;
-    }, [device, trackPosition, trackVolume]);
+    }, [device, trackState, trackPosition, trackVolume]);
 
     useSignalR(handlers);
 
