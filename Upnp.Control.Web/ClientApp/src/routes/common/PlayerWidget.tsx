@@ -21,9 +21,9 @@ function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: strin
     </button>
 }
 
-function PlayerCore() {
-    const { dispatch, state: { state, current, relTime, duration, actions = [], next, playMode, volume = 0, muted = false } } = useContext(PlaybackStateContext);
-    const { play, pause, stop, prev: playPrev, next: playNext, seek, setVolume, toggleMode, toggleMute } = usePlaybackEventHandlers(dispatch);
+function PlayerCore({ udn }: { udn: string | undefined }) {
+    const { dispatch, state: { state, current, relTime, duration, actions = [], next, playMode } } = useContext(PlaybackStateContext);
+    const { play, pause, stop, prev: playPrev, next: playNext, seek, toggleMode } = usePlaybackEventHandlers(dispatch);
 
     const sgr = useMemo(() => new SwipeGestureRecognizer((_: unknown, gesture: SwipeGestures) => {
         switch (gesture) {
@@ -47,8 +47,6 @@ function PlayerCore() {
             : { title: "Stop", glyph: "symbols.svg#stop_circle", disabled: true };
 
     const nextTitle = next ? `Next: ${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
-    const volumeStr = muted ? "Muted" : `${volume}%`;
-    const volumeIcon = muted ? "volume_off" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
     const shuffleMode = playMode === "REPEAT_SHUFFLE";
 
     return <div className="player-skeleton" ref={refCallback}>
@@ -62,20 +60,32 @@ function PlayerCore() {
         <Button className="pl-main-btn p-1" {...buttonProps} />
         <Button title={nextTitle} className="pl-next-btn" glyph="symbols.svg#skip_next" onClick={playNext} disabled={!actions.includes("Next")} />
         <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="pl-mode-btn" glyph={`symbols.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={toggleMode} disabled={loading} />
-        <Button title={volumeStr} className="pl-volume-btn" glyph={`symbols.svg#${volumeIcon}`} disabled={loading} data-toggle="dropdown" />
+        <PlaybackStateProvider device={udn} trackVolume trackState={false}>
+            <VolumeControl disabled={loading} />
+        </PlaybackStateProvider>
+    </div>
+}
+
+function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonElement>) {
+    const { dispatch, state: { muted = false, volume = 0 } } = useContext(PlaybackStateContext);
+    const { toggleMute, setVolume } = usePlaybackEventHandlers(dispatch);
+    const volumeStr = muted ? "Muted" : `${volume}%`;
+    const volumeIcon = muted ? "volume_off" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
+    return <>
+        <Button {...other} title={volumeStr} className={`pl-volume-btn${className ? ` ${className}` : ""}`} glyph={`symbols.svg#${volumeIcon}`} data-toggle="dropdown" />
         <DropdownMenu className="volume-ctrl" mode="menu" placement="left-center">
             <li className="hstack">
-                <button type="button" style={{ zIndex: 1000 }} className="btn btn-plain btn-round" onClick={toggleMute}>
+                <button type="button" className="btn btn-plain btn-round ms-1" onClick={toggleMute}>
                     <svg><use href={"symbols.svg#" + (muted ? "volume_up" : "volume_off")} /></svg>
                 </button>
                 <Slider className="flex-fill mx-2" style={{ width: "10rem" }} value={volume / 100} onChange={setVolume} />
             </li>
         </DropdownMenu>
-    </div>
+    </>
 }
 
 export default function ({ udn }: { udn: string | undefined }) {
-    return <PlaybackStateProvider device={udn} trackPosition trackVolume>
-        <PlayerCore />
+    return <PlaybackStateProvider device={udn} trackPosition>
+        <PlayerCore udn={udn} />
     </PlaybackStateProvider>
 }
