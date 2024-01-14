@@ -19,6 +19,26 @@ internal abstract partial class PropChangedUpnpEventCommandHandler<TCommand, TEv
         this.logger = logger;
     }
 
+    public async Task ExecuteAsync(TCommand command, CancellationToken cancellationToken)
+    {
+        IReadOnlyDictionary<string, string> properties;
+        IReadOnlyDictionary<string, string> vendorProperties;
+
+        LogCallbackEvent(command.DeviceId);
+
+        using (var reader = XmlReader.Create(command.Content, settings))
+        {
+            (_, properties, vendorProperties) = await EventMessageXmlReader.ReadAsync(reader).ConfigureAwait(false);
+        }
+
+        if (properties == null || properties.Count == 0)
+        {
+            return;
+        }
+
+        await NotifyObserversAsync(eventObservers, command.DeviceId, properties, vendorProperties, cancellationToken).ConfigureAwait(false);
+    }
+
     protected virtual async ValueTask NotifyObserversAsync(IEnumerable<IObserver<TEvent>> observers, string deviceId,
         IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, string> vendorProperties,
         CancellationToken cancellationToken)
@@ -50,21 +70,6 @@ internal abstract partial class PropChangedUpnpEventCommandHandler<TCommand, TEv
     [LoggerMessage(1, LogLevel.Error, "Error sending UPnP event notification to observer {observer}")]
     private partial void LogError(Exception exception, IObserver<TEvent> observer);
 
-    public async Task ExecuteAsync(TCommand command, CancellationToken cancellationToken)
-    {
-        IReadOnlyDictionary<string, string> properties;
-        IReadOnlyDictionary<string, string> vendorProperties;
-
-        using (var reader = XmlReader.Create(command.Content, settings))
-        {
-            (_, properties, vendorProperties) = await EventMessageXmlReader.ReadAsync(reader).ConfigureAwait(false);
-        }
-
-        if (properties == null || properties.Count == 0)
-        {
-            return;
-        }
-
-        await NotifyObserversAsync(eventObservers, command.DeviceId, properties, vendorProperties, cancellationToken).ConfigureAwait(false);
-    }
+    [LoggerMessage(2, LogLevel.Debug, "UPnP event from '{deviceId}'")]
+    private partial void LogCallbackEvent(string deviceId);
 }

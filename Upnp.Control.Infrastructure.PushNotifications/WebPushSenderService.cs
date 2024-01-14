@@ -42,7 +42,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
         try
         {
             var reader = channel.Reader;
-            var tTLSeconds = wpOptions.Value.TTLSeconds;
+            var ttlSeconds = wpOptions.Value.TTLSeconds;
 
             while (await reader.WaitToReadAsync(stoppingToken).ConfigureAwait(false))
             {
@@ -60,9 +60,8 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                     {
                         try
                         {
-                            await client.SendAsync(endpoint, p256dhKey, authKey, message.Payload, tTLSeconds, stoppingToken).ConfigureAwait(false);
+                            await client.SendAsync(endpoint, p256dhKey, authKey, message.Payload, ttlSeconds, stoppingToken).ConfigureAwait(false);
                         }
-                        catch (OperationCanceledException) { return; }
                         catch (HttpRequestException hre) when (hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
                         {
                             var removeHandler = serviceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
