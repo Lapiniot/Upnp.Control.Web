@@ -27,6 +27,7 @@ public static class ConfigureServicesExtensions
                 UseProxy = false,
                 UseCookies = false
             });
+        services.AddTransient<IValidateOptions<ImageProxyOptions>, ImageProxyOptionsValidator>();
         services.AddOptions<ImageProxyOptions>().BindConfiguration("ImageProxy");
         return services.AddTransient<ImageLoaderProxyMiddleware>();
     }
@@ -35,6 +36,7 @@ public static class ConfigureServicesExtensions
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     public static IServiceCollection AddContentProxyMiddleware(this IServiceCollection services)
     {
+        services.AddTransient<IValidateOptions<ContentProxyOptions>, ContentProxyOptionsValidator>();
         services.AddOptions<ContentProxyOptions>().BindConfiguration("ContentProxy");
         return services.AddTransient<ContentProxyMiddleware>();
     }

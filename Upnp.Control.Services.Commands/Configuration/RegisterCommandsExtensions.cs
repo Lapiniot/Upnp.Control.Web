@@ -21,6 +21,7 @@ public static class RegisterCommandsExtensions
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
     public static IServiceCollection AddPlaylistCommands(this IServiceCollection services)
     {
+        services.AddTransient<IValidateOptions<PlaylistOptions>, PlaylistOptionsValidator>();
         services.AddOptions<PlaylistOptions>().BindConfiguration("Playlists");
 
         return services

@@ -4,26 +4,22 @@ namespace Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 
 public static class ConfigureServicesExtensions
 {
-    public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services, Action<OptionsBuilder<UpnpEventsOptions>> configure = null) => services
-        .ConfigureUpnpEventsOptions(configure)
-        .AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>()
-        .AddTransient<IEventSubscriptionStore, InMemoryEventSubscriptionStore>()
-        .AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>()
-        .AddTransient<IAsyncCommandHandler<AVTPropChangedCommand>, AVTPropChangedEventCommandHandler>()
-        .AddTransient<IAsyncCommandHandler<RCPropChangedCommand>, RCPropChangedEventCommandHandler>()
-        .AddEventSubscribeClient();
-
-    public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services, Action<UpnpEventsOptions> configureOptions)
+    public static IServiceCollection AddUpnpEventsSubscription(this IServiceCollection services, Action<UpnpEventsOptions> configureOptions = null)
     {
-        ArgumentNullException.ThrowIfNull(configureOptions);
+        services.AddTransient<IValidateOptions<UpnpEventsOptions>, UpnpEventsOptionsValidator>();
+        var builder = services.AddOptions<UpnpEventsOptions>().
+            Configure<IConfiguration>(ConfigureUpnpEventsOptions);
+        if (configureOptions is not null)
+        {
+            builder.Configure(configureOptions);
+        }
 
-        return services.AddUpnpEventsSubscription(builder => builder.Configure(configureOptions));
-    }
-
-    public static IServiceCollection ConfigureUpnpEventsOptions(this IServiceCollection services, Action<OptionsBuilder<UpnpEventsOptions>> configure)
-    {
-        var builder = services.AddOptions<UpnpEventsOptions>().Configure<IConfiguration>(ConfigureUpnpEventsOptions);
-        configure?.Invoke(builder);
+        services.AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>();
+        services.AddTransient<IEventSubscriptionStore, InMemoryEventSubscriptionStore>();
+        services.AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>();
+        services.AddTransient<IAsyncCommandHandler<AVTPropChangedCommand>, AVTPropChangedEventCommandHandler>();
+        services.AddTransient<IAsyncCommandHandler<RCPropChangedCommand>, RCPropChangedEventCommandHandler>();
+        services.AddEventSubscribeClient();
         return services;
     }
 

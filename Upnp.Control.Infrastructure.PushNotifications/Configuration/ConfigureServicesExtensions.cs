@@ -28,7 +28,9 @@ public static class ConfigureServicesExtensions
 
     public static IServiceCollection AddWebPushClient(this IServiceCollection services)
     {
+        services.AddTransient<IValidateOptions<VAPIDSecretOptions>, VAPIDSecretOptionsValidator>();
         services.AddOptions<VAPIDSecretOptions>();
+        services.AddTransient<IValidateOptions<WebPushOptions>, WebPushOptionsValidator>();
         services.AddOptions<WebPushOptions>().BindConfiguration("WebPush");
         services.AddTransient<IJwtTokenHandler>(sp =>
         {
