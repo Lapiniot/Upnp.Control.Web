@@ -29,9 +29,11 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
         this.jsonOptions = jsonOptions;
         this.wpOptions = wpOptions;
 
-        channel = Channel.CreateBounded<(NotificationType, byte[])>(new BoundedChannelOptions(100)
+        var options = wpOptions.Value;
+
+        channel = Channel.CreateBounded<(NotificationType, byte[])>(new BoundedChannelOptions(options.QueueCapacity)
         {
-            FullMode = BoundedChannelFullMode.DropOldest,
+            FullMode = options.QueueFullMode,
             SingleReader = true,
             SingleWriter = false
         });
@@ -43,6 +45,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
         {
             var reader = channel.Reader;
             var ttlSeconds = wpOptions.Value.TTLSeconds;
+            var timeoutMilliseconds = wpOptions.Value.TimeoutMiliseconds;
 
             while (await reader.WaitToReadAsync(stoppingToken).ConfigureAwait(false))
             {
@@ -60,7 +63,9 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                     {
                         try
                         {
-                            await client.SendAsync(endpoint, p256dhKey, authKey, message.Payload, ttlSeconds, stoppingToken).ConfigureAwait(false);
+                            using var timeoutCts = new CancellationTokenSource(timeoutMilliseconds);
+                            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken, timeoutCts.Token);
+                            await client.SendAsync(endpoint, p256dhKey, authKey, message.Payload, ttlSeconds, linkedCts.Token).ConfigureAwait(false);
                         }
                         catch (HttpRequestException hre) when (hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
                         {

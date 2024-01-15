@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Channels;
 using static System.StringComparison;
 
 namespace Upnp.Control.Infrastructure.PushNotifications;
@@ -13,6 +14,15 @@ public class WebPushOptions
 
     [Range(5, 86400)]
     public int TTLSeconds { get; set; } = 3600;
+
+    [Range(10, 120 * 1000)]
+    public int TimeoutMiliseconds { get; set; } = 5 * 1000;
+
+    [Range(5, 1000)]
+    public int QueueCapacity { get; set; } = 100;
+
+    [EnumDataType(typeof(BoundedChannelFullMode))]
+    public BoundedChannelFullMode QueueFullMode { get; set; } = BoundedChannelFullMode.DropOldest;
 }
 
 internal sealed class JwtSubjectAttribute : DataTypeAttribute
