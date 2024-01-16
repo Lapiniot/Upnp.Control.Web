@@ -14,6 +14,7 @@ import UpnpDevicesPage from "./routes/upnp/Router";
 import * as SW from "./serviceWorkerRegistration";
 import { DeviceDiscoveryNotifier } from "./routes/common/DeviceDiscoveryNotifier";
 import $s from "./routes/common/Settings";
+import { PlaybackStateNotifier } from "./routes/common/PlaybackStateNotifier";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href")!;
 const container = document.getElementById("main-root")!;
@@ -21,6 +22,10 @@ const root = createRoot(container);
 
 function shouldShowDiscoveryNotifications() {
     return $s.get("showDiscoveryNotifications");
+}
+
+function shouldShowPlaybackStateNotification() {
+    return $s.get("showPlaybackNotifications");
 }
 
 root.render(
@@ -42,6 +47,7 @@ root.render(
                     <div id="notifications-root" className="nt-host" />
                     <SignalRConnection url="/upnpevents">
                         <DeviceDiscoveryNotifier callback={shouldShowDiscoveryNotifications} />
+                        <PlaybackStateNotifier callback={shouldShowPlaybackStateNotification} />
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/index.html" element={<HomePage />} />

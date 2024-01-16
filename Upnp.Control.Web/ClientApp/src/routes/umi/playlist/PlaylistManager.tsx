@@ -18,7 +18,6 @@ import { isMusicTrack } from "../../common/DIDLTools";
 import ItemInfoDialog from "../../common/ItemInfoDialog";
 import Pagination from "../../common/Pagination";
 import { PlaybackStateContext, PlaybackStateProvider } from "../../common/PlaybackStateContext";
-import { PlaybackStateNotifier } from "../../common/PlaybackStateNotifier";
 import RowStateContext, { RowState } from "../../common/RowStateContext";
 import $s from "../../common/Settings";
 import MainCell from "./CellTemplate";
@@ -291,10 +290,6 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
             : `${parents[0]?.res?.url}#tracknr=${(p ? parseInt(p) - 1 : 0) * (s ? parseInt(s) : $s.get("pageSize")) + index + 1},play`;
     }
 
-    private playbackStateChanged = () => {
-        return $s.get("showPlaybackNotifications");
-    }
-
     render() {
 
         const { dataContext: data, navigate, fetching, error, id, s, p, device } = this.props;
@@ -311,7 +306,6 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
         return <>
             {fetching && <LoadIndicatorOverlay />}
             <DropTarget className="browser-shell flex-fill overflow-hidden" acceptedTypes={fileTypes} onDropped={this.dropFilesHandler}>
-                <PlaybackStateNotifier device={device} callback={this.playbackStateChanged} />
                 <PlaybackStateProvider device={device} trackPosition fetchVendorState={fetchPlaylistStateAsync}>
                     <PlaylistRowStateProvider items={data?.source.items} getActiveTrackIndexHook={data?.source.items && this.getActiveTrackIndex}>
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} compact={!largeScreen} rootLevel={isRootLevel}
