@@ -1,10 +1,9 @@
-﻿import { useCallback, useEffect, useRef } from "react";
-import { DataFetchProps } from "../../hooks/DataFetch";
+﻿import { useEffect, useMemo, useRef } from "react";
 import { GridView, GridViewMode } from "../../components/GridView";
-import { useLocalStorage } from "../../hooks/LocalStorage";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { DeviceDiscoveryNotifier } from "./DeviceDiscoveryNotifier";
-import $s from "./Settings";
+import { DataFetchProps } from "../../hooks/DataFetch";
+import { useLocalStorage } from "../../hooks/LocalStorage";
+import { useSignalR } from "../../hooks/SignalR";
 
 export type DeviceViewProps = TemplatedDataComponentProps<DataSourceProps<Upnp.Device> & UI.CategoryRouteParams> &
     UI.CategoryRouteParams & { viewMode?: GridViewMode }
@@ -24,15 +23,10 @@ export function DeviceView({ itemTemplate: Item, dataContext, category, fetching
 type DeviceListViewProps = DeviceViewProps & DataFetchProps<Upnp.Device[]>;
 
 export function DeviceListView({ dataContext, fetching, category, viewMode = "grid", itemTemplate: Item }: DeviceListViewProps) {
-
     const dataContextRef = useRef<typeof dataContext>();
-
-    const reload = useCallback(() => {
-        dataContextRef.current?.reload();
-        return $s.get("showDiscoveryNotifications");
-    }, []);
-
-    useEffect(() => { dataContextRef.current = dataContext; }, [dataContext]);
+    const handlers = useMemo(() => ({ "SsdpDiscoveryEvent": () => dataContextRef.current?.reload() }), []);
+    useEffect(() => { dataContextRef.current = dataContext }, [dataContext]);
+    useSignalR(handlers);
 
     const useSkeletons = $cfg[category]?.useSkeletons ?? $cfg.useSkeletons;
     const [count, setCount] = useLocalStorage(`cache:${category}:count`);
@@ -51,6 +45,5 @@ export function DeviceListView({ dataContext, fetching, category, viewMode = "gr
             {list?.length ? list.map((item, i) => <Item key={i} dataSource={item} category={category} />) : null}
             {empty ? <span className="text-center text-muted">No devices discovered</span> : null}
         </GridView>
-        <DeviceDiscoveryNotifier callback={reload} />
     </>
 }

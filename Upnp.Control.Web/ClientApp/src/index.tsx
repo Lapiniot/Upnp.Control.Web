@@ -12,10 +12,16 @@ import SettingsPage from "./routes/settings/Settings";
 import UmiDevicesPage from "./routes/umi/Router";
 import UpnpDevicesPage from "./routes/upnp/Router";
 import * as SW from "./serviceWorkerRegistration";
+import { DeviceDiscoveryNotifier } from "./routes/common/DeviceDiscoveryNotifier";
+import $s from "./routes/common/Settings";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href")!;
 const container = document.getElementById("main-root")!;
 const root = createRoot(container);
+
+function shouldShowDiscoveryNotifications() {
+    return $s.get("showDiscoveryNotifications");
+}
 
 root.render(
     <ThemeProvider>
@@ -35,6 +41,7 @@ root.render(
                 <main>
                     <div id="notifications-root" className="nt-host" />
                     <SignalRConnection url="/upnpevents">
+                        <DeviceDiscoveryNotifier callback={shouldShowDiscoveryNotifications} />
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/index.html" element={<HomePage />} />
