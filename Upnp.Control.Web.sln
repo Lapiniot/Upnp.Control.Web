@@ -57,6 +57,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOs.Common", "IoT.Device\Io
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOs.Common.Net.Http", "IoT.Device\IoT.Protocol\OOs.Common\OOs.Common.Net.Http\OOs.Common.Net.Http.csproj", "{2DD671B7-D254-4B4D-9BA1-87721AC4A319}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOs.Common.Net", "IoT.Device\IoT.Protocol\OOs.Common\OOs.Common.Net\OOs.Common.Net.csproj", "{CDCDBB08-389D-4B00-9113-3437A22132E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{2DD671B7-D254-4B4D-9BA1-87721AC4A319}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DD671B7-D254-4B4D-9BA1-87721AC4A319}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DD671B7-D254-4B4D-9BA1-87721AC4A319}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDCDBB08-389D-4B00-9113-3437A22132E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDCDBB08-389D-4B00-9113-3437A22132E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDCDBB08-389D-4B00-9113-3437A22132E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDCDBB08-389D-4B00-9113-3437A22132E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -174,6 +180,7 @@ Global
 		{C9BF184B-F18C-4C47-BE09-8DE8FA56F5DD} = {2440C2B7-7E0B-417D-922F-B8DDE141996D}
 		{67D5F630-391C-470C-8158-42B9F8F0EF39} = {C9BF184B-F18C-4C47-BE09-8DE8FA56F5DD}
 		{2DD671B7-D254-4B4D-9BA1-87721AC4A319} = {C9BF184B-F18C-4C47-BE09-8DE8FA56F5DD}
+		{CDCDBB08-389D-4B00-9113-3437A22132E7} = {C9BF184B-F18C-4C47-BE09-8DE8FA56F5DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1B25152-FCEF-47A1-A52B-A9EA163B548A}
