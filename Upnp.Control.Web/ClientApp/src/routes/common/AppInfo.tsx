@@ -10,7 +10,7 @@ export function AppInfo({ className, ...other }: HTMLAttributes<HTMLElement>) {
 
     const { build: { date, version }, hostName } = appInfo;
     return <p className={`text-white-50 text-center cursor-default${className ? ` ${className}` : ""}`} {...other}
-        title={date ? `Build from ${new Date(date).toUTCString()}` : undefined}>
+        title={date ? `Build from ${new Date(date).toLocaleString()}` : undefined}>
         {hostName}<br />v{version}
     </p>;
 }
