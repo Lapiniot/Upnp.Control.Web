@@ -61,6 +61,20 @@
             ]
         },
         {
+            "label": ".NET: publish Docker image (sc-trimmed)",
+            "detail": "Publishes as Docker container image (self-contained + trimmed)",
+            "group": "build",
+            "command": "dotnet",
+            "args": [
+                "publish",
+                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
+                "--runtime=${input:docker_rid}",
+                "--self-contained",
+                "-p:PublishTrimmed=true",
+                "-p:PublishProfile=DefaultContainer"
+            ]
+        },
+        {
             "label": ".NET: publish (self-contained)",
             "dependsOn": [
                 ".NET: publish (sc-trimmed)"
@@ -117,133 +131,6 @@
             "problemMatcher": "$gulp-tsc"
         },
         {
-            "label": "docker-build: debug",
-            "type": "docker-build",
-            "dockerBuild": {
-                "tag": "upnp-dashboard:dev",
-                "target": "base",
-                "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/Dockerfile",
-                "context": "${workspaceFolder}",
-                "labels": {
-                    "includeDefaults": false
-                },
-                "buildArgs": {
-                    "NET_VERSION": "7.0"
-                },
-                "pull": true
-            },
-            "netCore": {
-                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
-            }
-        },
-        {
-            "label": "docker-build: release",
-            "type": "docker-build",
-            "dockerBuild": {
-                "tag": "upnp-dashboard:latest",
-                "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/Dockerfile",
-                "context": "${workspaceFolder}",
-                "labels": {
-                    "includeDefaults": false
-                },
-                "buildArgs": {
-                    "NET_VERSION": "7.0"
-                },
-                "pull": true
-            },
-            "netCore": {
-                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
-            }
-        },
-        {
-            "label": "docker-build: release, self-contained",
-            "type": "docker-build",
-            "dockerBuild": {
-                "tag": "upnp-dashboard:latest-scd",
-                "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/Dockerfile.SCD",
-                "context": "${workspaceFolder}",
-                "labels": {
-                    "includeDefaults": false
-                },
-                "buildArgs": {
-                    "NET_VERSION": "7.0"
-                },
-                "pull": true
-            },
-            "netCore": {
-                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
-            }
-        },
-        {
-            "label": "docker-build-outside: release, self-contained",
-            "type": "docker-build",
-            "dependsOn": [
-                ".NET: publish (self-contained)"
-            ],
-            "dockerBuild": {
-                "tag": "upnp-dashboard:latest-scd-${input:rid}",
-                "dockerfile": "${workspaceFolder}/Upnp.Control.Web/Docker/${input:rid}/Dockerfile",
-                "context": "${workspaceFolder}/artifacts/publish/Upnp.Control.Web/release_${input:rid}/",
-                "labels": {
-                    "includeDefaults": false
-                },
-                "buildArgs": {
-                    "NET_VERSION": "7.0"
-                },
-                "pull": true
-            },
-            "netCore": {
-                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
-            }
-        },
-        {
-            "label": "docker-run: debug",
-            "type": "docker-run",
-            "dependsOn": [
-                "docker-build: debug"
-            ],
-            "dockerRun": {},
-            "netCore": {
-                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
-                "enableDebugging": true
-            }
-        },
-        {
-            "label": "docker-run: release",
-            "type": "docker-run",
-            "dependsOn": [
-                "docker-build-outside: release, self-contained"
-            ],
-            "dockerRun": {
-                "image": "upnp-dashboard:latest-scd-${input:rid}",
-                "volumes": [
-                    {
-                        "containerPath": "/app/config",
-                        "localPath": "upnp-dashboard-config"
-                    },
-                    {
-                        "containerPath": "/app/data",
-                        "localPath": "upnp-dashboard-data"
-                    }
-                ],
-                "ports": [
-                    {
-                        "hostPort": 8080,
-                        "containerPort": 8080,
-                        "protocol": "tcp"
-                    },
-                    {
-                        "hostPort": 8081,
-                        "containerPort": 8081,
-                        "protocol": "tcp"
-                    }
-                ]
-            },
-            "netCore": {
-                "appProject": "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
-            }
-        },
-        {
             "label": "tsc: build - Upnp.Control.Web/ClientApp/tsconfig.json",
             "type": "typescript",
             "tsconfig": "Upnp.Control.Web/ClientApp/tsconfig.json",
@@ -289,6 +176,17 @@
                 "linux-arm64"
             ],
             "default": "osx-x64"
+        },
+        {
+            "id": "docker_rid",
+            "description": "Runtime Identifier",
+            "type": "pickString",
+            "options": [
+                "linux-x64",
+                "linux-arm64",
+                "linux-musl-x64",
+                "linux-musl-arm64"
+            ]
         }
     ]
 }

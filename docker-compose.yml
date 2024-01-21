@@ -3,11 +3,13 @@
 version: '3.4'
 
 services:
-  webupnpcontrol:
-    image: webupnpcontrol
-    build:
-      context: .
-      dockerfile: Upnp.Control.Web/Dockerfile
-    ports:
-      - 8080
-      - 8081
+  upnp-dashboard:
+    image: upnp-dashboard
+    container_name: upnp-dashboard
+    network_mode: host
+    environment:
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    volumes:
+      - /path/to/config:/home/app/.config/upnp-dashboard # app configuration is stored here
+      - /path/to/data:/home/app/.local/share/upnp-dashboard # app data is stored here
