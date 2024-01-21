@@ -6,8 +6,8 @@ internal sealed class VAPIDKeyConfigInitializer(IHostEnvironment environment, IC
 {
     public Task InitializeAsync(CancellationToken cancellationToken)
     {
-        var configRoot = Path.Combine(environment.ContentRootPath, "config");
-        Directory.CreateDirectory(configRoot);
-        return ConfigMigrations.EnsureVapidConfigExistsAsync(Path.Combine(configRoot, "appsettings.Secrets.json"), configuration, base64Encoder);
+        var configDirectory = environment.GetAppConfigPath();
+        Directory.CreateDirectory(configDirectory);
+        return ConfigMigrations.EnsureVapidConfigExistsAsync(Path.Combine(configDirectory, "appsettings.Secrets.json"), configuration, base64Encoder);
     }
 }

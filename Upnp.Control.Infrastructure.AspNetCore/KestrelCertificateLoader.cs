@@ -1,5 +1,4 @@
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.Extensions.FileProviders;
 
 namespace Upnp.Control.Infrastructure.AspNetCore;
 
@@ -16,10 +15,10 @@ internal static class KestrelCertificateLoader
     private const string SubjectKey = "Subject";
     private const string AllowInvalidKey = "AllowInvalid";
 
-    public static X509Certificate2? LoadFromConfiguration(IConfiguration configuration, IFileProvider contentRootFileProvider)
+    public static X509Certificate2? LoadFromConfiguration(IConfiguration configuration, IWebHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(configuration);
-        ArgumentNullException.ThrowIfNull(contentRootFileProvider);
+        ArgumentNullException.ThrowIfNull(environment);
 
         foreach (var endpoint in configuration.GetSection(EndpointsSectionName).GetChildren())
         {
@@ -36,7 +35,7 @@ internal static class KestrelCertificateLoader
 
             if (certSection.Exists())
             {
-                return LoadFromConfiguration(certSection, contentRootFileProvider);
+                return LoadFromConfiguration(certSection, environment);
             }
         }
 
@@ -44,12 +43,12 @@ internal static class KestrelCertificateLoader
     }
 
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Preserved manually")]
-    private static X509Certificate2? LoadFromConfiguration(IConfigurationSection section, IFileProvider contentRootFileProvider)
+    private static X509Certificate2? LoadFromConfiguration(IConfigurationSection section, IWebHostEnvironment environment)
     {
         var path = section.GetValue<string?>(PathKey);
         if (!string.IsNullOrEmpty(path))
         {
-            return CertificateLoader.LoadFromFile(contentRootFileProvider.GetFileInfo(path), section.GetValue<string>(PasswordKey));
+            return CertificateLoader.LoadFromFile(Path.Combine(environment.ContentRootPath, path), section.GetValue<string>(PasswordKey));
         }
 
         var subject = section.GetValue<string?>(SubjectKey);

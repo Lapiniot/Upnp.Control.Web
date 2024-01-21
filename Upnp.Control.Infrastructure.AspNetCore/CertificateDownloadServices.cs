@@ -2,7 +2,6 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.IO.Compression;
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.Extensions.FileProviders;
 using static System.Text.Encoding;
 
 namespace Upnp.Control.Infrastructure.AspNetCore;
@@ -13,11 +12,11 @@ public static class CertificateDownloadServices
 
     public static IResult GetCertificatesArchive(IConfiguration configuration, IWebHostEnvironment environment, HttpRequest request) =>
         new PushZipStreamHttpResult($"{request.Host.Host}-certificates.zip",
-            (archive, cancellationToken) => BuildChainArchiveAsync(archive, configuration, environment.ContentRootFileProvider, cancellationToken));
+            (archive, cancellationToken) => BuildChainArchiveAsync(archive, configuration, environment, cancellationToken));
 
-    private static async Task BuildChainArchiveAsync(ZipArchive archive, IConfiguration configuration, IFileProvider fileProvider, CancellationToken cancellationToken)
+    private static async Task BuildChainArchiveAsync(ZipArchive archive, IConfiguration configuration, IWebHostEnvironment environment, CancellationToken cancellationToken)
     {
-        using var certificate = KestrelCertificateLoader.LoadFromConfiguration(configuration, fileProvider);
+        using var certificate = KestrelCertificateLoader.LoadFromConfiguration(configuration, environment);
         using var chain = new X509Chain();
         chain.Build(certificate!);
 
