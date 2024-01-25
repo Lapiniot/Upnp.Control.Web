@@ -1,5 +1,3 @@
-# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
-
 version: '3.4'
 
 services:
@@ -10,6 +8,9 @@ services:
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_GENERATE_SSL_CERTIFICATE=1 #optional, whether self-signed SSL certificate (~/.config/upnp-dashboard/upnp-dashboard.pfx) should be generated on startup if missing
+      - ASPNETCORE_SSL_CERTIFICATE_HOSTNAME=hostname #optional, hostname to be added as DNS alternate name to the generated SSL certificate
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/home/app/.config/upnp-dashboard/upnp-dashboard.pfx #optional, path to SSL certificate
     volumes:
       - /path/to/config:/home/app/.config/upnp-dashboard # app configuration is stored here
       - /path/to/data:/home/app/.local/share/upnp-dashboard # app data is stored here

@@ -50,6 +50,7 @@ else if (OperatingSystem.IsWindows())
 #region Services configuration
 
 builder.Services.AddServicesInit()
+    .AddCertificateGenInitializer()
     .AddWebPushSender()
     .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/rc").MapAVTransport("api/events/{0}/avt"))
     .AddUpnpDiscovery()

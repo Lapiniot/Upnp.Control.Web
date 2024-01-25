@@ -41,6 +41,9 @@ public static class ConfigureServicesExtensions
         return services.AddTransient<ContentProxyMiddleware>();
     }
 
+    public static IServiceCollection AddCertificateGenInitializer(this IServiceCollection services) =>
+        services.AddTransient<IServiceInitializer, CertificateGenerateInitializer>();
+
     public static IEndpointConventionBuilder MapImageLoaderProxy(this IEndpointRouteBuilder routeBuilder, string route)
     {
         ArgumentNullException.ThrowIfNull(routeBuilder);

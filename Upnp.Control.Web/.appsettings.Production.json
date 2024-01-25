@@ -2,20 +2,21 @@
     "Kestrel": {
         "Endpoints": {
             "Https": {
-                "Url": "https://0.0.0.0:8081",
-                "Certificate": {
-                    "Path": "upnp-dashboard.crt",
-                    "KeyPath": "upnp-dashboard.key"
-                },
-                "Protocols": "Http1AndHttp2AndHttp3"
+                "Url": "https://0.0.0.0:8081"
+            }
+        },
+        "Certificates": {
+            "Default": {
+                "Path": "/home/app/.config/upnp-dashboard/upnp-dashboard.pfx",
+                "Password": ""
             }
         }
     },
     "Logging": {
         "LogLevel": {
             "Microsoft.AspNetCore.Server.Kestrel": "Error",
-            "Microsoft.Hosting.Lifetime": "Error",
-            "System.Net.Http.HttpClient": "Error"
+            "Microsoft.Hosting.Lifetime": "Information",
+            "Upnp.Control.Infrastructure": "Error"
         }
     }
 }
