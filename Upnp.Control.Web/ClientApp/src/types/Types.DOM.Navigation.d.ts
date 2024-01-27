@@ -1,5 +1,3 @@
-import { type } from "os";
-
 declare global {
     type NavigationType = "reload" | "push" | "replace" | "traverse";
 
