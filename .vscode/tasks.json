@@ -61,17 +61,21 @@
             ]
         },
         {
-            "label": ".NET: publish Docker image (sc-trimmed)",
-            "detail": "Publishes as Docker container image (self-contained + trimmed)",
+            "label": ".NET: publish Docker images (sc-trimmed)",
+            "detail": "Publishes as Docker container images (self-contained + trimmed)",
             "group": "build",
             "command": "dotnet",
             "args": [
-                "publish",
-                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
-                "--runtime=${input:docker_rid}",
-                "--self-contained",
+                "build",
+                "-t:PublishAllImages",
+                "-p:Configuration=Release",
+                "-p:PublishProfile=DefaultContainer",
+                "-p:RuntimeIdentifiers=\"${input:container_rids}\"",
+                "-p:ContainerRepository=\"${input:container_repository}\"",
+                "-p:ContainerRegistry=\"${input:container_registry}\"",
+                "-p:SelfContained=true",
                 "-p:PublishTrimmed=true",
-                "-p:PublishProfile=DefaultContainer"
+                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
             ]
         },
         {
@@ -178,15 +182,22 @@
             "default": "osx-x64"
         },
         {
-            "id": "docker_rid",
-            "description": "Runtime Identifier",
-            "type": "pickString",
-            "options": [
-                "linux-x64",
-                "linux-arm64",
-                "linux-musl-x64",
-                "linux-musl-arm64"
-            ]
+            "id": "container_rids",
+            "description": "Runtime Identifiers To Publish",
+            "type": "promptString",
+            "default": "linux-x64;linux-arm64"
+        },
+        {
+            "id": "container_repository",
+            "description": "Container Registry",
+            "type": "promptString",
+            "default": "<username>/upnp-dashboard"
+        },
+        {
+            "id": "container_registry",
+            "description": "Container Registry",
+            "type": "promptString",
+            "default": "docker.io"
         }
     ]
 }

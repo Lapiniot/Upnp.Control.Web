@@ -1,0 +1,38 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+  </PropertyGroup>
+
+  <Target Name="GenerateRuntimeIdentifierItems">
+    <ItemGroup>
+      <RuntimeIdentifiersToPublish Include="$(RuntimeIdentifiers)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PublishAll" DependsOnTargets="GenerateRuntimeIdentifierItems">
+    <ItemGroup>
+      <ProjectsToPublish Include="@(RuntimeIdentifiersToPublish->'$(MSBuildProjectFullPath)')">
+        <AdditionalProperties>RuntimeIdentifier=%(RuntimeIdentifiersToPublish.Identity)</AdditionalProperties>
+      </ProjectsToPublish>
+    </ItemGroup>
+    <MSBuild Projects="@(ProjectsToPublish)" Targets="Publish" Properties="$(ExtraPublishProps)" BuildInParallel="True" />
+  </Target>
+
+  <Target Name="ConfigurePublishContainer">
+    <PropertyGroup>
+      <PublishProfile Condition=" '$(PublishProfile)' == '' OR '$(PublishProfile)' == 'Default' ">DefaultContainer</PublishProfile>
+      <ExtraPublishProps>PublishProfile=$(PublishProfile)</ExtraPublishProps>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="PublishAllImages" DependsOnTargets="ConfigurePublishContainer;PublishAll">
+    <PropertyGroup>
+      <ContainerManifest>$(ContainerRepository):latest</ContainerManifest>
+    </PropertyGroup>
+    <Exec Command="docker manifest rm $(ContainerManifest)" ConsoleToMsBuild="true" IgnoreExitCode="true" />
+    <Exec Command="docker manifest create $(ContainerManifest) @(RuntimeIdentifiersToPublish->'--amend $(ContainerRepository):%(Identity)', ' ')" />
+    <Exec Command="docker manifest push $(ContainerManifest)" />
+  </Target>
+
+</Project>
