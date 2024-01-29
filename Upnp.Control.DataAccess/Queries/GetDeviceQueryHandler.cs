@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 using static IoT.Protocol.Upnp.UpnpServices;
@@ -55,6 +55,6 @@ internal sealed class GetDeviceQueryHandler : IAsyncEnumerableQueryHandler<GetDe
     {
         ArgumentNullException.ThrowIfNull(query);
 
-        return await context.UpnpDevices.FindAsync(new object[] { query.DeviceId }, cancellationToken).ConfigureAwait(false);
+        return await context.UpnpDevices.FindAsync([query.DeviceId], cancellationToken).ConfigureAwait(false);
     }
 }

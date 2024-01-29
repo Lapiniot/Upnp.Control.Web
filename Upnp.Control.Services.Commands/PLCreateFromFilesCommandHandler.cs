@@ -24,7 +24,7 @@ internal sealed class PLCreateFromFilesCommandHandler(IUpnpServiceFactory servic
         {
             foreach (var file in files)
             {
-                await CreateFromFilesAsync(deviceId, new[] { file },
+                await CreateFromFilesAsync(deviceId, [file],
                     !IsNullOrWhiteSpace(title) ? $"{title}: {file.FileName}" : file.FileName,
                     useProxy, cancellationToken).ConfigureAwait(false);
             }

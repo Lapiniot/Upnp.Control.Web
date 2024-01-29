@@ -9,7 +9,7 @@ namespace Upnp.Control.Infrastructure.AspNetCore;
 
 internal sealed class ServerAddressesProvider(IServer server) : IServerAddressesProvider
 {
-    public IEnumerable<string> GetServerAddresses() => server.Features.Get<IServerAddressesFeature>()?.Addresses ?? Array.Empty<string>();
+    public IEnumerable<string> GetServerAddresses() => server.Features.Get<IServerAddressesFeature>()?.Addresses ?? [];
 
     private const string NoProtocolExternalEndpoint = "Server is not listening for specified protocol on external addresses";
     private const string NoActiveExternalAddress = "Cannot find external address on active interface for requested address family";

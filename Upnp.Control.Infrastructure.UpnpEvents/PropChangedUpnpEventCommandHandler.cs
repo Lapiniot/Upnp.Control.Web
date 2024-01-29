@@ -2,22 +2,15 @@ using System.Xml;
 
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
-internal abstract partial class PropChangedUpnpEventCommandHandler<TCommand, TEvent> : IAsyncCommandHandler<TCommand>
+internal abstract partial class PropChangedUpnpEventCommandHandler<TCommand, TEvent>(IEnumerable<IObserver<TEvent>> eventObservers,
+    IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler, ILogger logger) : IAsyncCommandHandler<TCommand>
     where TCommand : NotifyPropChangedCommand
     where TEvent : PropChangedEvent, new()
 {
-    private readonly IEnumerable<IObserver<TEvent>> eventObservers;
-    private readonly IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler;
-    private readonly ILogger logger;
+#pragma warning disable CA1823 // Avoid unused private fields
+    private readonly ILogger logger = logger;
+#pragma warning restore CA1823 // Avoid unused private fields
     private readonly XmlReaderSettings settings = new() { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
-
-    protected PropChangedUpnpEventCommandHandler(IEnumerable<IObserver<TEvent>> eventObservers,
-        IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler, ILogger logger)
-    {
-        this.eventObservers = eventObservers;
-        this.handler = handler;
-        this.logger = logger;
-    }
 
     public async Task ExecuteAsync(TCommand command, CancellationToken cancellationToken)
     {

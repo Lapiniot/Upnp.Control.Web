@@ -19,7 +19,7 @@ internal sealed class PSAddCommandHandler : IAsyncCommandHandler<PSAddCommand>
 
         var (type, endpoint, p256dhKey, authKey) = command;
 
-        var entity = await context.Subscriptions.FindAsync(new object[] { endpoint }, cancellationToken).ConfigureAwait(false);
+        var entity = await context.Subscriptions.FindAsync([endpoint], cancellationToken).ConfigureAwait(false);
 
         if (entity is not null)
         {
