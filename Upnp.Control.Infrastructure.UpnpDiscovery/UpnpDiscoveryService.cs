@@ -49,7 +49,6 @@ internal sealed partial class UpnpDiscoveryService(
                                     await rmHandler.ExecuteAsync(new(udn), stoppingToken).ConfigureAwait(false);
 
                                     Notify(observers, new UpnpDeviceDisappearedEvent(udn, existing));
-
                                     LogDeviceDisappeared(udn);
                                 }
 
@@ -68,7 +67,6 @@ internal sealed partial class UpnpDiscoveryService(
                             var updateHandler = scope.ServiceProvider.GetRequiredService<IAsyncCommandHandler<UpdateDeviceExpirationCommand>>();
                             await updateHandler.ExecuteAsync(new(udn, DateTime.UtcNow.AddSeconds(reply.MaxAge + 10)), stoppingToken).ConfigureAwait(false);
 
-                            device = await getQueryHandler.ExecuteAsync(new(udn), stoppingToken).ConfigureAwait(false);
                             Notify(observers, new UpnpDeviceUpdatedEvent(udn, device));
                             LogExpirationUpdated(udn);
 
