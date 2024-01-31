@@ -70,7 +70,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                         catch (HttpRequestException hre) when (hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
                         {
                             var removeHandler = serviceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
-                            await removeHandler.ExecuteAsync(new(type, endpoint), stoppingToken).ConfigureAwait(false);
+                            await removeHandler.ExecuteAsync(PSRemoveCommand.All(endpoint), stoppingToken).ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {
