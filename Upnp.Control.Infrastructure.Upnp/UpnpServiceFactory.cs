@@ -1,9 +1,10 @@
 using IoT.Protocol.Upnp;
+using UpnpDevice = Upnp.Control.Models.UpnpDevice;
 using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Infrastructure.Upnp;
 
-public class UpnpServiceFactory(IHttpClientFactory clientFactory, IAsyncQueryHandler<GetDeviceQuery, Models.UpnpDevice> queryHandler) : IUpnpServiceFactory
+public class UpnpServiceFactory(IHttpClientFactory clientFactory, IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> queryHandler) : IUpnpServiceFactory
 {
     private static readonly Dictionary<string, string> UmiMappings = new()
     {
@@ -14,20 +15,10 @@ public class UpnpServiceFactory(IHttpClientFactory clientFactory, IAsyncQueryHan
         {"urn:schemas-upnp-org:service:RenderingControl:1", "/{0}-MR/upnp.org-RenderingControl-1/control"}
     };
 
-    public async Task<(TService, DeviceDescription)> GetAsync<TService>(string deviceId, CancellationToken cancellationToken)
-        where TService : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService>
-    {
-        var device = await FindDeviceAsync(deviceId, cancellationToken).ConfigureAwait(false);
-
-        return (GetService<TService>(GetControlUrl<TService>(device)),
-            new(device.Udn, device.FriendlyName, device.Description));
-    }
-
     public async Task<TService> GetServiceAsync<TService>(string deviceId, CancellationToken cancellationToken)
         where TService : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService>
     {
-        var device = await FindDeviceAsync(deviceId, cancellationToken).ConfigureAwait(false);
-
+        var device = await queryHandler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
         return GetService<TService>(controlUrl: GetControlUrl<TService>(device));
     }
 
@@ -35,20 +26,11 @@ public class UpnpServiceFactory(IHttpClientFactory clientFactory, IAsyncQueryHan
         where TService1 : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService1>
         where TService2 : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService2>
     {
-        var device = await FindDeviceAsync(deviceId, cancellationToken).ConfigureAwait(false);
-
-        return (GetService<TService1>(GetControlUrl<TService1>(device)),
-            GetService<TService2>(GetControlUrl<TService2>(device)));
-    }
-
-    private async Task<Models.UpnpDevice> FindDeviceAsync(string deviceId, CancellationToken cancellationToken)
-    {
         var device = await queryHandler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
-        if (device is null) DeviceNotFoundException.Throw(deviceId);
-        return device;
+        return (GetService<TService1>(GetControlUrl<TService1>(device)), GetService<TService2>(GetControlUrl<TService2>(device)));
     }
 
-    private static Uri GetControlUrl<TService>(Models.UpnpDevice device) where TService : IUpnpService
+    private static Uri GetControlUrl<TService>(UpnpDevice device) where TService : IUpnpService
     {
         var serviceType = TService.ServiceSchema;
         var service = device.Services.FirstOrDefault(s => s.ServiceType == serviceType);

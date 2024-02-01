@@ -4,31 +4,26 @@ using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Services.Queries;
 
-internal sealed partial class GetContentQueryHandler : IAsyncQueryHandler<CDGetContentQuery, CDContent>
+internal sealed partial class GetContentQueryHandler(IUpnpServiceFactory factory,
+    IAsyncQueryHandler<GetDeviceDescriptionQuery, DeviceDescription> queryHandler,
+    ILogger<GetContentQueryHandler> logger) :
+    IAsyncQueryHandler<CDGetContentQuery, CDContent>
 {
-    private readonly IUpnpServiceFactory factory;
-    private readonly ILogger<GetContentQueryHandler> logger;
-
-    public GetContentQueryHandler(IUpnpServiceFactory factory, ILogger<GetContentQueryHandler> logger)
-    {
-        ArgumentNullException.ThrowIfNull(factory);
-        ArgumentNullException.ThrowIfNull(logger);
-
-        this.factory = factory;
-        this.logger = logger;
-    }
+#pragma warning disable CA1823 // Avoid unused private fields
+    private readonly ILogger<GetContentQueryHandler> logger = logger;
+#pragma warning restore CA1823 // Avoid unused private fields
 
     public async Task<CDContent> ExecuteAsync(CDGetContentQuery query, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(query);
 
-        var (deviceId, path, (withParents, withResource, withVendor, withMetadata, _, take, skip)) = query;
+        var (deviceId, path, (withParents, withResource, withVendor, withMetadata, withDevice, take, skip)) = query;
 
         path ??= "0";
 
-        var (service, description) = query.Options.WithDevice ?
-            await factory.GetAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false) :
-            (await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false), null);
+        var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false);
+
+        var description = withDevice ? await queryHandler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false) : null;
 
         Item metadata = null;
         if (withMetadata)
