@@ -13,6 +13,7 @@ public static class ConfigureServicesExtensions
     public static IServiceCollection AddUpnpDeviceSqliteDatabase(this IServiceCollection services, string fileName) => services
         .AddSqliteDatabase<UpnpDbContext>(fileName, UpnpDbContextModel.Instance)
         .AddQuery<GetDeviceQuery, UpnpDevice, GetDeviceQueryHandler>()
+        .AddQuery<GetDeviceDescriptionQuery, DeviceDescription, GetDeviceQueryHandler>()
         .AddEnumerableQuery<GetDevicesQuery, UpnpDevice, GetDeviceQueryHandler>()
         .AddCommand<AddDeviceCommand, AddDeviceCommandHandler>()
         .AddCommand<RemoveDeviceCommand, RemoveDeviceCommandHandler>()

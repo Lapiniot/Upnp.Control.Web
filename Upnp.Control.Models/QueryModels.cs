@@ -8,6 +8,8 @@ public record struct GetDevicesQuery(string Category, bool WithOffline);
 
 public record struct GetDeviceQuery(string DeviceId);
 
+public record struct GetDeviceDescriptionQuery(string DeviceId);
+
 #endregion
 
 #region ContentDirectory queries

@@ -3,7 +3,7 @@ using System.Xml;
 namespace Upnp.Control.Infrastructure.UpnpEvents;
 
 internal abstract partial class PropChangedUpnpEventCommandHandler<TCommand, TEvent>(IEnumerable<IObserver<TEvent>> eventObservers,
-    IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler, ILogger logger) : IAsyncCommandHandler<TCommand>
+    IAsyncQueryHandler<GetDeviceDescriptionQuery, DeviceDescription> handler, ILogger logger) : IAsyncCommandHandler<TCommand>
     where TCommand : NotifyPropChangedCommand
     where TEvent : PropChangedEvent, new()
 {
@@ -36,11 +36,11 @@ internal abstract partial class PropChangedUpnpEventCommandHandler<TCommand, TEv
         IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, string> vendorProperties,
         CancellationToken cancellationToken)
     {
-        var device = await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
+        var description = await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
 
         var e = new TEvent
         {
-            Device = new(device.Udn, device.FriendlyName, device.Description),
+            Device = description,
             Properties = properties,
             VendorProperties = vendorProperties
         };

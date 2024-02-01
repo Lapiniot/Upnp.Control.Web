@@ -7,13 +7,21 @@ namespace Upnp.Control.DataAccess.Queries;
 
 internal sealed class GetDeviceQueryHandler(UpnpDbContext context) :
     IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice>,
-    IAsyncQueryHandler<GetDeviceQuery, UpnpDevice>
+    IAsyncQueryHandler<GetDeviceQuery, UpnpDevice>,
+    IAsyncQueryHandler<GetDeviceDescriptionQuery, DeviceDescription>
 {
     private const string UmiPlaylistSchema = "urn:xiaomi-com:service:Playlist:1";
 
     private static readonly Func<UpnpDbContext, string, CancellationToken, Task<UpnpDevice>> GetDeviceByUdnQuery =
         EF.CompileAsyncQuery((UpnpDbContext ctx, string udn, CancellationToken ct) =>
             ctx.UpnpDevices.AsNoTracking().FirstOrDefault(d => d.Udn == udn));
+
+    private static readonly Func<UpnpDbContext, string, CancellationToken, Task<DeviceDescription>> GetDeviceDescriptionByUdnQuery =
+        EF.CompileAsyncQuery((UpnpDbContext ctx, string udn, CancellationToken ct) =>
+            ctx.UpnpDevices.AsNoTracking()
+                .Where(d => d.Udn == udn)
+                .Select(d => new DeviceDescription(d.Udn, d.FriendlyName, d.Description))
+                .FirstOrDefault());
 
     private static readonly Dictionary<string, Func<UpnpDbContext, bool, IAsyncEnumerable<UpnpDevice>>> GetDevicesInCategoryQueries = new()
     {
@@ -44,6 +52,9 @@ internal sealed class GetDeviceQueryHandler(UpnpDbContext context) :
 
     public async Task<UpnpDevice> ExecuteAsync(GetDeviceQuery query, CancellationToken cancellationToken) =>
         await GetDeviceByUdnQuery(context, query.DeviceId, cancellationToken).ConfigureAwait(false);
+
+    public async Task<DeviceDescription> ExecuteAsync(GetDeviceDescriptionQuery query, CancellationToken cancellationToken) =>
+        await GetDeviceDescriptionByUdnQuery(context, query.DeviceId, cancellationToken).ConfigureAwait(false);
 
     [DoesNotReturn]
     private static void ThrowInvalidCategory(string category) =>
