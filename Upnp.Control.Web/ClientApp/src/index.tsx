@@ -30,7 +30,7 @@ function shouldShowPlaybackStateNotification() {
 
 root.render(
     <ThemeProvider>
-        <BrowserRouter basename={baseUrl}>
+        <BrowserRouter basename={baseUrl} future={{ v7_relativeSplatPath: true }}>
             <div className="shell">
                 <div className="navbar">
                     <a className="navbar-brand d-none d-lg-inline" href="/">UPnP Dashboard</a>

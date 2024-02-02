@@ -212,7 +212,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
 
                 const state = this.context.get(index);
                 if (item.container && state & RowState.Navigable)
-                    this.props.navigate(item.id);
+                    this.props.navigate(`../${item.id}`);
                 else if (state ^ RowState.Readonly && event.code === "Enter" && this.props.openHandler) {
                     const item = this.props.dataContext?.source.items?.[index];
                     if (item) this.props.openHandler(item, index);
@@ -222,7 +222,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
             case "Backspace":
             case "ArrowLeft":
                 const parents = this.props.dataContext?.source.parents;
-                this.props.navigate(parents?.[1]?.id ?? "-1");
+                this.props.navigate(`../${parents?.[1]?.id ?? "-1"}`);
                 break;
             case "KeyA":
                 if (this.props.multiSelect && !event.cancelBubble && (event.metaKey || event.ctrlKey)) {
@@ -274,13 +274,13 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
 
     private navigateTo = (index: number) => {
         if (index === -1) {
-            this.props.navigate(this.props.dataContext?.source.parents?.[1]?.id ?? "-1");
+            this.props.navigate(`../${this.props.dataContext?.source.parents?.[1]?.id ?? "-1"}`);
         }
         else {
             const item = this.props.dataContext?.source.items?.[index];
             if (!item) return;
             if (item.container && this.context.get(index) & RowState.Navigable)
-                this.props.navigate(item.id);
+                this.props.navigate(`../${item.id}`);
             else if (this.props.openHandler) {
                 const item = this.props.dataContext?.source.items?.[index];
                 if (item) this.props.openHandler(item, index);

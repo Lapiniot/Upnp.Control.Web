@@ -87,7 +87,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
     });
 
     openHandler = (item: Upnp.DIDL.Item) => {
-        this.props.navigate(`../view/${item.id}`);
+        this.props.navigate(`../../view/${item.id}`);
         return true;
     }
 

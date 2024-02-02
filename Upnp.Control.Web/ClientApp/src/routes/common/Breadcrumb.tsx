@@ -13,7 +13,7 @@ export default function ({ items = [], disabled, ...other }: BreadcrumbParams & 
             {reversemap(items, ({ title, id }, i) => disabled || i === 0
                 ? <li className="breadcrumb-item active" aria-current="page" key={i}>{title}</li>
                 : <li className="breadcrumb-item text-decoration-none" key={i}>
-                    <NavigatorLink className="text-decoration-none" to={id}>{title}</NavigatorLink>
+                    <NavigatorLink className="text-decoration-none" to={`../${id}`}>{title}</NavigatorLink>
                 </li>)}
             &nbsp;
         </ol>

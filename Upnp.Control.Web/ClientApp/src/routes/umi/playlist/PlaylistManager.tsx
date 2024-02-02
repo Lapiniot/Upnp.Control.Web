@@ -80,7 +80,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
             addPlaylistFiles: () => this.addPlaylistFiles(this.props.id),
             deleteItems: this.deletePlaylistItems,
             toggleEditMode: () => this.setState(({ editMode }) => ({ editMode: !editMode })),
-            navigateBack: () => this.props.navigate(this.props.dataContext?.source.parents?.[1]?.id ?? "-1")
+            navigateBack: () => this.props.navigate(`../${this.props.dataContext?.source.parents?.[1]?.id ?? "-1"}`)
         };
         this.actionHandlers = {
             addItems: this.createHandler(i => this.addPlaylistItems(i.id)),

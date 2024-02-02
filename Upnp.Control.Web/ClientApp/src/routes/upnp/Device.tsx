@@ -4,8 +4,8 @@ import { DownloadMetadataAction, BrowseContentAction } from "../common/actions/A
 import { ActionDescriptor, DeviceCard } from "../common/DeviceCard";
 
 const upnpActions: ActionDescriptor[] = [
-    ["download", DownloadMetadataAction],
-    ["browse", BrowseContentAction]
+    ["browse", BrowseContentAction],
+    ["download", DownloadMetadataAction]
 ]
 
 export default function ({ dataSource: d, ...props }: DataSourceProps<Upnp.Device> & UI.CategoryRouteParams) {
