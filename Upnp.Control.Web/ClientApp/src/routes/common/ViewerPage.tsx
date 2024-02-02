@@ -5,7 +5,7 @@ import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import WebApi from "../../services/WebApi";
 import { MediaViewer } from "./MediaViewer";
 
-const options = { withParents: true, withMetadata: true, withResourceProps: true }
+const options = { withChildren: false, withParents: true, withMetadata: true, withResourceProps: true }
 
 const fetchItemAsync = (device: string, id: string) => WebApi.browse(device).get(id).withOptions(options).json()
 

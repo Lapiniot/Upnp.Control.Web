@@ -4,8 +4,11 @@ namespace Upnp.Control.Models;
 
 public sealed record DeviceDescription(string Udn, string Name, string Description);
 
-public record struct GetContentOptions(bool WithParents = true, bool WithResourceProps = false, bool WithVendorProps = false,
-    bool WithMetadata = false, bool WithDevice = true, uint Take = 50, uint Skip = 0);
+public record struct GetContentOptions(
+    bool WithChildren = true, bool WithParents = true,
+    bool WithResourceProps = false, bool WithVendorProps = false,
+    bool WithMetadata = false, bool WithDevice = true,
+    uint Take = 50, uint Skip = 0);
 
 public sealed record CDContent(int Total, DeviceDescription Device, Item Metadata, IEnumerable<Item> Items, IEnumerable<Item> Parents);
 

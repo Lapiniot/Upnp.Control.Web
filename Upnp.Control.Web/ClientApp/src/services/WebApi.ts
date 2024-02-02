@@ -4,7 +4,7 @@ import { HttpFetch, JsonHttpFetch, RequestQuery, HttpPostFetch, HttpPutFetch, Ht
 const baseUri = "/api";
 const devicesBaseUri = baseUri + "/devices";
 
-type BrowseOptionFlags = "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata" | "withDevice"
+type BrowseOptionFlags = "withChildren" | "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata" | "withDevice"
 export type BrowseOptions = Partial<Record<BrowseOptionFlags, boolean>>
 export type ApplicationInfo = {
     build: { version?: string, date?: string },
