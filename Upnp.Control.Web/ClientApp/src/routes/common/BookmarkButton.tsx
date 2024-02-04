@@ -47,7 +47,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
     icons?: [string, string];
 };
 
-const defaultIcons: [string, string] = ["symbols.svg#star", "symbols.svg#star_border"];
+const defaultIcons: [string, string] = ["symbols.svg#star_rate_fill1", "symbols.svg#star_rate"];
 
 export function BookmarkButton({ className, children, bookmarked, icons = defaultIcons, ...other }: Props) {
     const title = bookmarked ? "Remove bookmark from the Home section" : "Add bookmark to the Home section";

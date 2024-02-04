@@ -4,23 +4,19 @@ import spriteIcons from "./symbols-icons.json";
 import stackSvgs from "./stack-icons.json";
 import { Element } from "libxmljs2";
 
-type IconType = "" | "outlined" | "round" | "sharp" | "twotone";
-type IconImportConfig = (string | [name: string, type: string])[];
+type IconType = "materialsymbolsoutlined" | "materialsymbolsrounded" | "materialsymbolssharp";
+type IconImportConfig = (string | [name: string, path: string])[];
 
-const sourceFolder = "../../../material-design-icons/src";
+const sourceFolder = "../../../material-design-icons/symbols/web/";
 const destFolder = "./public";
-const iconType: IconType = "outlined";
+const iconType: IconType = "materialsymbolsoutlined";
 
 function generateId(name: string) {
-    const end = name.lastIndexOf('/', name.lastIndexOf('/') - 1);
-    const start = name.lastIndexOf('/', end - 1) + 1;
-    return name.substring(start, end);
+    return name.substring(name.lastIndexOf('/') + 1, name.lastIndexOf('_'));
 }
 
 function getGlobs(config: IconImportConfig) {
-    return config.map(s => typeof s === "string"
-        ? `${s}/materialicons${iconType}/24px.svg`
-        : `${s[1]}/materialicons${s[0]}/24px.svg`);
+    return config.map(s => typeof s === "string" ? `${s}/${iconType}/${s}_24px.svg` : s[1])
 }
 
 function addColorFill(svg: Element) {
@@ -28,7 +24,7 @@ function addColorFill(svg: Element) {
 }
 
 gulp.task("svg-symbols", function buildSvg(done) {
-    gulp.src(getGlobs(spriteIcons), { cwd: sourceFolder, cwdbase: true })
+    gulp.src(getGlobs(spriteIcons as IconImportConfig), { cwd: sourceFolder, cwdbase: true })
         .pipe(merge({
             mode: "symbols", generateId,
             transformations: ["promoteGroupChildren", "removeInvisible"]

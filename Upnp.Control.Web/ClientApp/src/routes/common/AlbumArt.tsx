@@ -1,7 +1,7 @@
 import { HTMLAttributes } from "react";
 import { viaProxy } from "../../services/Extensions";
 
-type ItemClassIcon = "folder" | "audio_file" | "video_file" | "insert_drive_file" | "insert_photo" | "album" | "queue_music" | "audiotrack" | "movie";
+type ItemClassIcon = "folder" | "audio_file" | "video_file" | "unknown_document" | "image" | "album" | "queue_music" | "music_note" | "movie";
 
 type IconMap = {
     [K in string]: ItemClassIcon;
@@ -14,14 +14,14 @@ const classicMap: IconMap = {
     "item.audioItem.musicTrack": "audio_file",
     "item.videoItem": "video_file",
     "item.videoItem.movie": "video_file",
-    "item.imageItem": "insert_photo",
-    "item.imageItem.photo": "insert_photo"
+    "item.imageItem": "image",
+    "item.imageItem.photo": "image"
 }
 
 const playerMap: IconMap = {
     ...classicMap,
     "container.playlistContainer": "album",
-    "item.audioItem.musicTrack": "audiotrack",
+    "item.audioItem.musicTrack": "music_note",
     "item.videoItem.movie": "movie"
 };
 
@@ -35,6 +35,6 @@ export default function AlbumArt({ itemClass, albumArts, className, hint, ...oth
     return albumArts?.length
         ? <img src={viaProxy(albumArts[0])} loading="lazy" className={`album-art fallback${className ? ` ${className}` : ""}`} alt="" {...other} />
         : <svg className={`album-art fallback${className ? ` ${className}` : ""}`} {...other} width="512px" height="512px">
-            <use href={`symbols.svg#${map[itemClass] ?? (itemClass.startsWith("container") ? "folder" : "insert_drive_file")}`} />
+            <use href={`symbols.svg#${map[itemClass] ?? (itemClass.startsWith("container") ? "folder" : "unknown_document")}`} />
         </svg>
 }

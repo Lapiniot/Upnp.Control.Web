@@ -76,6 +76,6 @@ export function PlaylistManagerToolbar({ editMode, compact, rootLevel: rootLevel
         {editMode &&
             <Toolbar.Button glyph="symbols.svg#checklist" onClick={handlers.selectAll} className={className} />}
         {!editMode && !expanded &&
-            <Toolbar.Button glyph="symbols.svg#mode_edit" onClick={handlers.toggleEditMode} className={className} disabled={fetching} />}
+            <Toolbar.Button glyph="symbols.svg#edit" onClick={handlers.toggleEditMode} className={className} disabled={fetching} />}
     </Toolbar>
 }

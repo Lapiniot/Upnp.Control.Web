@@ -1,3 +1,4 @@
+/// <reference lib="es2021" />
 import Vinyl from "vinyl";
 import { Document, Element, parseXml } from "libxmljs2";
 import { Transform, TransformCallback } from "stream";
@@ -85,8 +86,8 @@ export default abstract class SvgMergeTransform<TOptions extends SvgMergeOptions
             container.attr("viewBox", viewBox.value());
         }
         else {
-            const width = source.attr("width");
-            const height = source.attr("height");
+            const width = source.attr("width")?.value();
+            const height = source.attr("height")?.value();
             if (width && height) {
                 container.attr({ viewBox: `0 0 ${width} ${height}` });
             }

@@ -15,7 +15,7 @@ type CellContext = {
     deviceName?: string;
 }
 
-const BookmarkItemButton = createBookmarkButton("PlaylistBookmarkWidget", playlistBookmarks, ["symbols.svg#favorite", "symbols.svg#favorite_border"]);
+const BookmarkItemButton = createBookmarkButton("PlaylistBookmarkWidget", playlistBookmarks, ["symbols.svg#favorite_fill1", "symbols.svg#favorite"]);
 
 export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
     const active = !!(rowState & RowState.Active);
