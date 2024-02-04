@@ -53,7 +53,7 @@ export function PlaylistManagerToolbar({ editMode, compact, rootLevel: rootLevel
                 {selectedCount > 0 ? `${selectedCount} item${selectedCount > 1 ? "s" : ""} selected` : ""}
             </small>
         </> : <>
-            <Toolbar.Button glyph="symbols.svg#arrow_back_ios" onClick={handlers.navigateBack} className={className} />
+            <Toolbar.Button glyph="symbols.svg#arrow_back_ios_new" onClick={handlers.navigateBack} className={className} />
             <div className="vstack align-items-stretch overflow-hidden text-center text-md-start mx-2">
                 <h6 className="mb-0 text-truncate">{title ?? "\xa0"}</h6>
                 <small className="text-muted text-truncate">{subtitle ?? "\xa0"}</small>

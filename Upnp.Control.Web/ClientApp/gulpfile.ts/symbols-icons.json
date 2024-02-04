@@ -1,7 +1,7 @@
 [
     "home_work",
     "more_vert",
-    "arrow_back_ios",
+    "arrow_back_ios_new",
     "first_page",
     "chevron_left",
     "chevron_right",
@@ -17,6 +17,10 @@
         "favorite/materialsymbolsoutlined/favorite_fill1_24px.svg"
     ],
     "devices",
+    "important_devices",
+    "bookmark_added",
+    "heart_check",
+    "sentiment_very_dissatisfied",
     "storage",
     "dark_mode",
     "light_mode",

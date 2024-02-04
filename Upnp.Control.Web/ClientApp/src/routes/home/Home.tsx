@@ -7,12 +7,13 @@ import { KnownWidgets, Widgets } from "../common/widgets/Widgets";
 
 type WC<T> = { widget: string, props: T }[] | null
 
-type State = { [K in BookmarkGroup]: { key: string; widget: KnownWidgets; props: any; }[] };
+type State = { [K in BookmarkGroup]: { key: string; widget: KnownWidgets; props: any; }[] }
+type Group = [BookmarkGroup, State["devices"]]
 
-const headers: { [K in BookmarkGroup]: string } = {
-    "devices": "Favourite devices",
-    "items": "Favourite items",
-    "playlists": "Favourite playlists"
+const headers: { [K in BookmarkGroup]: [title: string, icon: string] } = {
+    "devices": ["Favourite devices", "important_devices"],
+    "items": ["Favourite items", "bookmark_added"],
+    "playlists": ["Favourite playlists", "heart_check"]
 }
 
 export default function () {
@@ -52,13 +53,19 @@ export default function () {
 
     const expanded = profile.home.get("expandSection");
 
+
     return <div className="overflow-auto">
         <div className="accordion accordion-flush" id="bookmarks-section">
-            {Object.entries(data).map(([id, value], index) => <div className="accordion-item" key={index}>
+            {(Object.entries(data) as Group[]).map(([id, value]) => <div className="accordion-item" key={id}>
                 <h2 className="accordion-header" id={`h-${id}`}>
                     <button type="button" className={`accordion-button${id !== expanded ? " collapsed" : ""}`} data-bs-toggle="collapse"
                         data-bs-target={`#${id}`} aria-expanded={id === expanded ? "true" : "false"}
-                        aria-controls={id} onClick={clickHandler}>{headers[id as BookmarkGroup]}<span className="badge rounded-pill bg-secondary ms-1 small">{value.length}</span></button>
+                        aria-controls={id} onClick={clickHandler}>
+                        <svg className="me-1">
+                            <use href={`symbols.svg#${headers[id][1]}`} />
+                        </svg>
+                        {headers[id][0]}
+                        <span className="badge rounded-pill bg-secondary ms-1 small">{value.length}</span></button>
                 </h2>
                 <div id={id} className={`accordion-collapse collapse${id === expanded ? " show" : ""}`}
                     aria-labelledby={`h-${id}`} data-bs-parent="#bookmarks-section">
