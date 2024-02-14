@@ -14,10 +14,10 @@
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Systemd" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.2" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
