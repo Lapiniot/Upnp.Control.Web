@@ -25,7 +25,7 @@ export interface IBookmarkStore<TKey extends BookmarkKey, TProps = {}> {
     contains(key: TKey): Promise<boolean>;
 }
 
-export class BookmarkService<TKey extends BookmarkKey, TProps = {}> implements IBookmarkStore<TKey, TProps> {
+export class BookmarkService<TKey extends BookmarkKey = any, TProps = {}> implements IBookmarkStore<TKey, TProps> {
     storeName: string;
     db: Database | null = null;
 
@@ -54,6 +54,11 @@ export class BookmarkService<TKey extends BookmarkKey, TProps = {}> implements I
     remove = async (key: TKey) => {
         this.db = this.db ?? await this.open();
         return await this.store(this.db, "readwrite").delete(key);
+    }
+
+    clear = async () => {
+        this.db = this.db ?? await this.open();
+        return await this.store(this.db, "readwrite").clear();
     }
 
     contains = async (key: TKey) => {
