@@ -14,3 +14,4 @@ services:
     volumes:
       - /path/to/config:/home/app/.config/upnp-dashboard # app configuration is stored here
       - /path/to/data:/home/app/.local/share/upnp-dashboard # app data is stored here
+    restart: unless-stopped

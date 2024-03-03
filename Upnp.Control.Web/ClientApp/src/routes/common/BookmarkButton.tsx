@@ -6,7 +6,6 @@ type BookmarkButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     device: string;
     deviceName: string;
     item: Upnp.DIDL.Item;
-    store?: IBookmarkStore<[string, string], WidgetPropsType>;
 };
 
 type WidgetPropsType = {
@@ -19,24 +18,31 @@ type WidgetPropsType = {
 };
 
 export function createBookmarkButton(widgetName: KnownWidgets,
-    storeInstance?: IBookmarkStore<[string, string], WidgetPropsType>, icons?: [string, string]) {
-    return function ({ device, deviceName, item, store = storeInstance, ...other }: BookmarkButtonProps) {
+    store: IBookmarkStore<[string, string], WidgetPropsType>,
+    icons?: [string, string]) {
+    return function ({ device, deviceName, item, ...other }: BookmarkButtonProps) {
         const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);
+
         const toggleHandler = useCallback<MouseEventHandler<HTMLButtonElement>>(
             async (event) => {
                 event.stopPropagation();
                 if (!store) return;
                 const key: [string, string] = [device, item.id];
                 if (!await store.contains(key)) {
-                    await store.add(widgetName, { device, deviceName, id: item.id, title: item.title, icon: item.albumArts?.[0], itemClass: item.class });
+                    await store.add(widgetName, {
+                        device, deviceName, id: item.id,
+                        title: item.title, icon: item.albumArts?.[0],
+                        itemClass: item.class
+                    });
                     setBookmarked(true);
                 }
                 else {
                     await store.remove(key);
                     setBookmarked(false);
                 }
-            }, []);
-        useEffect(() => { store?.contains([device, item.id]).then(v => setBookmarked(v)) }, []);
+            }, [device, deviceName, item]);
+
+        useEffect(() => { store.contains([device, item.id]).then(value => setBookmarked(value)) }, [device, item.id]);
 
         return <BookmarkButton bookmarked={bookmarked} icons={icons} {...other} onClick={toggleHandler} />;
     }

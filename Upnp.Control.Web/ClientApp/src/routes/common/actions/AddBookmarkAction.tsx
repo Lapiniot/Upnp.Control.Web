@@ -5,11 +5,10 @@ import { UpnpDeviceTools as UDT } from "../UpnpDeviceTools";
 import { DeviceActionProps } from "./Actions";
 
 export function AddBookmarkAction({ device, category = "upnp", ...other }: DeviceActionProps) {
-    const { udn, name, description, icons, type } = device ?? {};
-
     const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);
 
     const toggleHandler = useCallback(async () => {
+        const { udn, name, description, icons, type } = device ?? {};
         if (!udn || !icons || !type) return;
         const key: [string, string] = [category, udn];
         if (!await bookmarks.contains(key)) {
@@ -23,12 +22,14 @@ export function AddBookmarkAction({ device, category = "upnp", ...other }: Devic
             await bookmarks.remove(key);
             setBookmarked(false);
         }
-    }, [udn, name, description, icons, type]);
+    }, [category, device]);
 
     useEffect(() => {
-        if (!udn) return;
-        bookmarks.contains([category, udn]).then(v => setBookmarked(v))
-    }, [category, udn]);
+        const udn = device?.udn;
+        if (udn) {
+            bookmarks.contains([category, udn]).then(value => setBookmarked(value))
+        }
+    }, [category, device]);
 
     return <BookmarkButton bookmarked={bookmarked} {...other} onClick={toggleHandler} />
 }
