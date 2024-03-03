@@ -3,12 +3,15 @@ import Dialog, { DialogProps } from "./Dialog";
 
 type TextValueEditDialogProps = PropsWithRef<DialogProps> & {
     confirmText?: string;
+    confirmColor?: UI.ThemeColors,
+    dismissText?: string,
     required?: boolean;
     onConfirmed(value: string): void;
 }
 
 export default function (props: TextValueEditDialogProps) {
-    const { defaultValue, confirmText = "OK", required = true, onConfirmed, onDismissed, ...other } = props;
+    const { defaultValue, confirmText = "OK", confirmColor = "primary", dismissText = "Cancel",
+        required = true, onConfirmed, onDismissed, ...other } = props;
 
     const onDismissedHandler = useCallback((action: string, data: FormData | undefined) => {
         if (action === "confirm" && data) {
@@ -18,8 +21,8 @@ export default function (props: TextValueEditDialogProps) {
     }, [onConfirmed, onDismissed]);
 
     const renderFooter = useCallback(() => <Dialog.Footer>
-        <Dialog.Button autoFocus>Cancel</Dialog.Button>
-        <Dialog.Button value="confirm" className="text-primary">{confirmText}</Dialog.Button>
+        <Dialog.Button>{dismissText}</Dialog.Button>
+        <Dialog.Button value="confirm" className={`text-${confirmColor}`}>{confirmText}</Dialog.Button>
     </Dialog.Footer>, [confirmText]);
 
     return <Dialog {...other} onDismissed={onDismissedHandler} renderFooter={renderFooter}>

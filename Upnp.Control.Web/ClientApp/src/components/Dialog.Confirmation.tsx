@@ -3,10 +3,13 @@ import Dialog, { DialogProps } from "./Dialog";
 
 type ConfirmationDialogProps = DialogProps & {
     confirmText?: string;
+    confirmColor?: UI.ThemeColors,
+    dismissText?: string,
     onConfirmed(): void;
 }
 
-export default function ({ title, confirmText = "OK", onDismissed, onConfirmed, children, ...other }: ConfirmationDialogProps) {
+export default function ({ confirmText = "OK", confirmColor = "primary", dismissText = "Cancel",
+    onDismissed, onConfirmed, children, ...other }: ConfirmationDialogProps) {
     const onDismissedHandler = useCallback((action: string, data: FormData | undefined) => {
         if (action === "confirm") {
             onConfirmed?.();
@@ -15,9 +18,9 @@ export default function ({ title, confirmText = "OK", onDismissed, onConfirmed, 
     }, [onDismissed, onConfirmed]);
 
     const renderFooter = useCallback(() => <Dialog.Footer>
-        <Dialog.Button>Cancel</Dialog.Button>
-        <Dialog.Button value="confirm" className="text-primary">{confirmText}</Dialog.Button>
+        <Dialog.Button>{dismissText}</Dialog.Button>
+        <Dialog.Button value="confirm" className={`text-${confirmColor}`}>{confirmText}</Dialog.Button>
     </Dialog.Footer>, [confirmText]);
 
-    return <Dialog title={title} {...other} renderFooter={renderFooter} onDismissed={onDismissedHandler}>{children}</Dialog>;
+    return <Dialog {...other} renderFooter={renderFooter} onDismissed={onDismissedHandler}>{children}</Dialog>;
 }
