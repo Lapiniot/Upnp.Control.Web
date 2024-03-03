@@ -39,11 +39,11 @@ export function DataList({ children, className, editable, template, tag, onDelet
                     {child}
                     {editMode && <button type="button" className="btn btn-round btn-plain ms-auto mx-2" onClick={deleteHandler}
                         data-index={index} data-key={(child && typeof child === "object" && "key" in child) ? child.key : undefined}>
-                        <svg><use href="symbols.svg#delete" /></svg>
+                        <svg><use href="symbols.svg#delete_forever" /></svg>
                     </button>}
                 </Container>)}
             {editMode && onDeleteAll && <Toolbar.Button className="btn-outline-danger btn-round btn-sm icon-md place-self-center place-self-md-center-start"
-                glyph="symbols.svg#delete" onClick={deleteAllHandler}
+                glyph="symbols.svg#delete_forever" onClick={deleteAllHandler}
                 title="Delete all items" />}
         </div>
         {editable && <Toolbar.Button className="place-self-center m-3 ms-0 btn-round btn-plain d-none d-sm-inline"
