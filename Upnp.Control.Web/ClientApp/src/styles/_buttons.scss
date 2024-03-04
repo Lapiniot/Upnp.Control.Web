@@ -30,6 +30,10 @@
         --#{$prefix}btn-hover-bg: rgba(0, 0, 0, .1);
     }
 }
+
+.btn-flat {
+    --#{$prefix}btn-box-shadow: none;
+    --#{$prefix}gradient: none;
 }
 
 .btn-round,
@@ -69,10 +73,43 @@
     }
 }
 
+@mixin btn-fab {
+    --#{$prefix}fab-shadow-offset: 2px;
+    --#{$prefix}fab-shadow-radius: 6px;
+    --#{$prefix}fab-shadow-expand: 6px;
+    --#{$prefix}fab-shadow-color: rgb(0 0 0 / 0.5);
+    --#{$prefix}fab-font-size: calc(1.5rem + 1.5vw);
+    font-size: var(--#{$prefix}fab-font-size);
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: $zindex-dropdown - 5;
+    box-shadow: var(--#{$prefix}fab-shadow-offset) var(--#{$prefix}fab-shadow-offset) var(--#{$prefix}fab-shadow-radius) var(--#{$prefix}fab-shadow-color);
+
+    &.btn-fab-start {
+        left: 0;
+        right: initial;
+    }
+
+    &.btn-fab-small {
+        --#{$prefix}fab-font-size: calc(0.5rem + 1.5vw);
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .btn-sm-fab {
+        @include btn-fab;
+    }
+
+    .pb-sm-fab {
+        margin-bottom: calc(1.5rem + 1.5vw + 2*#{map-get($spacers, 3)});
+    }
+}
+
 .float-container {
     --#{$prefix}float-shadow-offset: 2px;
     --#{$prefix}float-shadow-radius: 4px;
-    --#{$prefix}float-shadow-color: #00000088;
+    --#{$prefix}float-shadow-color: rgb(0 0 0 / 0.2);
     --#{$prefix}float-size: calc(1.375rem + 1.5vw);
     z-index: $zindex-dropdown - 5;
     position: absolute;
