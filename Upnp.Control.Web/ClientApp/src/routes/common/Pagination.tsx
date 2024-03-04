@@ -10,7 +10,7 @@ type PaginationProps = HTMLProps<HTMLHtmlElement> & {
 };
 
 function PageLink({ title, to, label, children, className, ...other }: LinkProps & { label?: string; }) {
-    return <NavigatorLink to={to} aria-label={label} className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`} {...other}>
+    return <NavigatorLink to={to} aria-label={label} className={`btn${className ? ` ${className}` : ""}`} {...other}>
         {children}
         {title && <span aria-hidden="true">{title}</span>}
         {label && <span className="visually-hidden">{label}</span>}
@@ -42,7 +42,7 @@ export default function (props: PaginationProps & { pageSizes?: number[] }) {
             {pageSizes.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
         <span className="text-muted small pe-2 text-nowrap">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
-        <nav aria-label="Page navigation" className={`hstack${className ? ` ${className}` : ""}`} {...other}>
+        <nav aria-label="Page navigation" className={`hstack toolbar toolbar-compact g-1${className ? ` ${className}` : ""}`} {...other}>
             <PageLink to={`?${createSearchParams({ ...init, p: "1" })}`} label="First" disabled={current === 1}>
                 <svg><use href="symbols.svg#first_page" /></svg>
             </PageLink>

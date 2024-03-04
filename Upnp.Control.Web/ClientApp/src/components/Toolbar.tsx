@@ -16,7 +16,7 @@ export default class Toolbar extends React.Component<HTMLAttributes<HTMLDivEleme
 
     render() {
         const { className, children, ...other } = this.props;
-        return <div className={`d-flex${className ? ` ${className}` : ""}`} role="toolbar" {...other}>
+        return <div className={`toolbar${className ? ` ${className}` : ""}`} role="toolbar" {...other}>
             {children}
         </div>;
     }

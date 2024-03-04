@@ -14,8 +14,6 @@ type PlaylistManagetToolbarProps = {
     service: PlaylistManagerService
 };
 
-const className = "btn-round btn-plain flex-grow-0";
-
 const initial = {
     selection: [] as Upnp.DIDL.Item[],
     dispatch: (_value: RowStateAction): void => { throw new Error("Unsupported in this state") }
@@ -46,36 +44,36 @@ export function PlaylistManagerToolbar({ editMode, compact, rootLevel: rootLevel
     const onlySelected = selectedCount === 1;
     const expanded = compact !== true;
 
-    return <Toolbar className="px-2 py-1 border-bottom flex-nowrap">
+    return <Toolbar className="toolbar-compact px-2 py-1 border-bottom flex-nowrap">
         {editMode ? <>
-            <Toolbar.Button glyph="symbols.svg#close" onClick={handlers.toggleEditMode} className={className} />
+            <Toolbar.Button glyph="symbols.svg#close" onClick={handlers.toggleEditMode} />
             <small className="flex-fill my-0 mx-2 text-center text-truncate">
                 {selectedCount > 0 ? `${selectedCount} item${selectedCount > 1 ? "s" : ""} selected` : ""}
             </small>
         </> : <>
-            <Toolbar.Button glyph="symbols.svg#arrow_back_ios_new" onClick={handlers.navigateBack} className={className} />
+            <Toolbar.Button glyph="symbols.svg#arrow_back_ios_new" onClick={handlers.navigateBack} />
             <div className="vstack align-items-stretch overflow-hidden text-center text-md-start mx-2">
                 <h6 className="mb-0 text-truncate">{title ?? "\xa0"}</h6>
                 <small className="text-muted text-truncate">{subtitle ?? "\xa0"}</small>
             </div>
         </>}
         {rootLevel && expanded && !editMode &&
-            <Toolbar.Button glyph="symbols.svg#playlist_add" title={`Add new (${HotKeys.createNew})`} onClick={handlers.create} className={className} disabled={fetching} />}
+            <Toolbar.Button glyph="symbols.svg#playlist_add" title={`Add new (${HotKeys.createNew})`} onClick={handlers.create} disabled={fetching} />}
         {rootLevel && (editMode || expanded) && <>
-            <Toolbar.Button glyph="symbols.svg#delete" title={`Delete (${HotKeys.delete})`} onClick={handlers.deletePlaylists} className={className} disabled={hasNoSelection} />
-            <Toolbar.Button glyph="symbols.svg#drive_file_rename_outline" title={`Rename (${HotKeys.rename})`} onClick={handlers.rename} className={className} disabled={!onlySelected} />
-            <Toolbar.Button glyph="symbols.svg#content_copy" title={`Duplicate (${HotKeys.duplicate})`} onClick={handlers.copy} className={className} disabled={!onlySelected} />
+            <Toolbar.Button glyph="symbols.svg#delete" title={`Delete (${HotKeys.delete})`} onClick={handlers.deletePlaylists} disabled={hasNoSelection} />
+            <Toolbar.Button glyph="symbols.svg#drive_file_rename_outline" title={`Rename (${HotKeys.rename})`} onClick={handlers.rename} disabled={!onlySelected} />
+            <Toolbar.Button glyph="symbols.svg#content_copy" title={`Duplicate (${HotKeys.duplicate})`} onClick={handlers.copy} disabled={!onlySelected} />
         </>}
         {!rootLevel && expanded && !editMode && <>
-            <Toolbar.Button glyph="symbols.svg#add" onClick={handlers.addItems} title="Add from media server" className={className} disabled={fetching} />
-            <Toolbar.Button glyph="symbols.svg#podcasts" onClick={handlers.addItemsFromUrl} title="Add Internet stream url" className={className} disabled={fetching} />
-            <Toolbar.Button glyph="symbols.svg#feed" onClick={handlers.addItemsFromFiles} title="Add from playlist file" className={className} disabled={fetching} />
+            <Toolbar.Button glyph="symbols.svg#add" onClick={handlers.addItems} title="Add from media server" disabled={fetching} />
+            <Toolbar.Button glyph="symbols.svg#podcasts" onClick={handlers.addItemsFromUrl} title="Add Internet stream url" disabled={fetching} />
+            <Toolbar.Button glyph="symbols.svg#feed" onClick={handlers.addItemsFromFiles} title="Add from playlist file" disabled={fetching} />
         </>}
         {!rootLevel && (editMode || expanded) &&
-            <Toolbar.Button glyph="symbols.svg#delete" title={`Delete (${HotKeys.delete})`} onClick={handlers.deleteItems} className={className} disabled={hasNoSelection} />}
+            <Toolbar.Button glyph="symbols.svg#delete" title={`Delete (${HotKeys.delete})`} onClick={handlers.deleteItems} disabled={hasNoSelection} />}
         {editMode &&
-            <Toolbar.Button glyph="symbols.svg#checklist" onClick={handlers.selectAll} className={className} />}
+            <Toolbar.Button glyph="symbols.svg#checklist" onClick={handlers.selectAll} />}
         {!editMode && !expanded &&
-            <Toolbar.Button glyph="symbols.svg#edit" onClick={handlers.toggleEditMode} className={className} disabled={fetching} />}
+            <Toolbar.Button glyph="symbols.svg#edit" onClick={handlers.toggleEditMode} disabled={fetching} />}
     </Toolbar>
 }
