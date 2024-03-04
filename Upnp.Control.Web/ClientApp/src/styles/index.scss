@@ -50,6 +50,10 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
     --#{$prefix}accent-color-subtle: #{tint-color($primary, 40%)};
     --#{$prefix}accent-color-emphasis: #{shade-color($primary, 60%)};
     --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon)};
+
+    .navbar :focus-visible {
+        --#{$prefix}focus-ring-color: rgb(0 0 0 / .2);
+    }
 }
 
 @include color-mode(dark) {
@@ -58,6 +62,10 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
     --#{$prefix}accent-color-subtle: #{shade-color($primary, 60%)};
     --#{$prefix}accent-color-emphasis: #{tint-color($primary, 40%)};
     --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon-dark)};
+
+    .navbar :focus-visible {
+        --#{$prefix}focus-ring-color: rgb(255 255 255 / .2);
+    }
 }
 
 @import "bootstrap/scss/reboot";
@@ -115,6 +123,15 @@ $enable-shadows: true;
 
 ::-webkit-file-upload-button {
     display: none;
+}
+
+:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 var(--#{$prefix}focus-ring-width) var(--#{$prefix}focus-ring-color);
+}
+
+a:not(.btn):focus-visible {
+    border-radius: var(--#{$prefix}border-radius-sm);
 }
 
 input {

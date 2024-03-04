@@ -37,17 +37,12 @@
     touch-action: none;
     user-select: none;
     padding: calc((var(--slider-ticker-size) * var(--slider-ticker-scale-factor) - var(--slider-size)) / 2) 0;
+    border-radius: var(--#{$prefix}border-radius-sm);
 
     &:hover,
     &[data-manipulated="1"],
     &:focus-visible {
         --slider-color: var(--slider-hover-color);
-    }
-
-    &:focus-visible {
-        outline: 0;
-        border-radius: 3px;
-        box-shadow: 0 0 0 1px var(--slider-color);
     }
 
     &[data-manipulated="1"] .slider-thumb {

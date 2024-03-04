@@ -5,8 +5,9 @@
     grid-template-areas: "main main" "navbar navbar";
 
     & > .navbar {
+        --#{$prefix}navbar-padding-x: #{map-get($spacers, 1)};
+        --#{$prefix}navbar-padding-y: #{map-get($spacers, 1)};
         grid-area: navbar;
-        --#{$prefix}navbar-padding-y: 0;
 
         & > nav {
             display: flex;
@@ -42,7 +43,6 @@
         grid-template-areas: "navbar main" "navbar main";
 
         & > .navbar {
-            --#{$prefix}navbar-padding-y: #{$navbar-padding-y};
             --#{$prefix}navbar-nav-link-padding-x: #{calc($nav-link-padding-x / 2)};
             flex-direction: column;
             align-items: stretch;
