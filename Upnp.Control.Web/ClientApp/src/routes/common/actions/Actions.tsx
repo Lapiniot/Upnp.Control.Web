@@ -11,7 +11,9 @@ export function BrowseContentAction({ device, category, className, ...other }: D
     const isMediaServer = device && UDT.isMediaServer(device);
     const url = isMediaServer ? `/${category}/${device.udn}/browse` : undefined;
     return <RouteLink to={url} glyph="symbols.svg#folder_open"
-        className={`text-decoration-none${className ? ` ${className}` : ""}`} {...other}>Browse</RouteLink>
+        className={`text-decoration-none${className ? ` ${className}` : ""}`} {...other}>
+        <span>Browse</span>
+    </RouteLink>
 }
 
 export function DownloadMetadataAction({ device, category, ...other }: DeviceActionProps) {
