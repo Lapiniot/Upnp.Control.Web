@@ -44,15 +44,15 @@ export function PlaylistManagerToolbar({ editMode, compact, rootLevel: rootLevel
     const onlySelected = selectedCount === 1;
     const expanded = compact !== true;
 
-    return <Toolbar className="toolbar-compact px-2 py-1 border-bottom flex-nowrap">
+    return <Toolbar className="toolbar-compact align-items-center p-2 border-bottom">
         {editMode ? <>
             <Toolbar.Button glyph="symbols.svg#close" onClick={handlers.toggleEditMode} />
-            <small className="flex-fill my-0 mx-2 text-center text-truncate">
+            <small className="flex-fill overflow-hidden text-center text-truncate">
                 {selectedCount > 0 ? `${selectedCount} item${selectedCount > 1 ? "s" : ""} selected` : ""}
             </small>
         </> : <>
             <Toolbar.Button glyph="symbols.svg#arrow_back_ios_new" onClick={handlers.navigateBack} />
-            <div className="vstack align-items-stretch overflow-hidden text-center text-md-start mx-2">
+            <div className="flex-fill overflow-hidden text-center text-md-start">
                 <h6 className="mb-0 text-truncate">{title ?? "\xa0"}</h6>
                 <small className="text-muted text-truncate">{subtitle ?? "\xa0"}</small>
             </div>

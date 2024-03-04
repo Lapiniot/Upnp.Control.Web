@@ -50,7 +50,6 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
     static contextType = RowStateContext;
     override context: React.ContextType<typeof RowStateContext>;
     private ref;
-    private resizeObserver
     private dialogMode = false;
 
     static defaultProps: BrowserProps<unknown> = {
@@ -67,7 +66,6 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
 
     constructor(props: BrowserViewProps<TContext>) {
         super(props);
-        this.resizeObserver = new ResizeObserver(this.updateStickyElementsLayout);
         this.ref = createRef<HTMLDivElement>();
         this.context = {
             enabled: false, current: undefined, selection: [],
@@ -75,13 +73,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         }
     }
 
-    componentDidUpdate({ useCheckboxes: prevUseCheckboxes }: BrowserViewProps<TContext>) {
-        const { useCheckboxes } = this.props;
-
-        if (prevUseCheckboxes !== useCheckboxes) {
-            this.updateStickyElementsLayout();
-        }
-
+    componentDidUpdate() {
         if (this.context.current !== undefined) {
             const row = this.ref.current?.querySelector<HTMLDivElement>(`div[data-index="${this.context.current}"]`);
 
@@ -100,40 +92,14 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
     componentDidMount() {
         this.dialogMode = this.ref.current?.closest("dialog") !== null;
         document.addEventListener("keydown", this.keydownListener);
-        this.resizeObserver.disconnect();
-        this.resizeObserver.observe(this.ref.current as HTMLDivElement);
     }
 
     componentWillUnmount() {
         document.removeEventListener("keydown", this.keydownListener);
-        this.resizeObserver.disconnect();
     }
 
     screenQueryChangedHandler = () => {
         this.forceUpdate();
-    }
-
-    updateStickyElementsLayout = () => {
-        const table = this.ref.current!;
-
-        let offset = table.offsetTop;
-
-        if (this.props.stickyCaption) {
-            const caption = table.querySelector<HTMLDivElement>(CAPTION_SELECTOR);
-            if (caption) {
-                const rect = caption.getBoundingClientRect();
-                caption.style.top = `${Math.round(offset)}px`;
-                offset += rect.height;
-            }
-        }
-
-        if (this.props.stickyHeaders) {
-            const top = `${Math.round(offset)}px`;
-            const header = table.querySelector<HTMLElement>(HEADER_GROUP_SELECTOR);
-            if (header) {
-                header.style.top = top;
-            }
-        }
     }
 
     onCheckboxChanged: ChangeEventHandler<HTMLInputElement> = e => {
