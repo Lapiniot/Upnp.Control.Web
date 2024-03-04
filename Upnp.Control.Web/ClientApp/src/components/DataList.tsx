@@ -32,7 +32,7 @@ export function DataList({ children, className, editable, template, tag, onDelet
 
     const Container: ElementType = template ?? "div";
 
-    return <div className="d-flex flex-nowrap">
+    return <div className="d-flex flex-nowrap align-items-center">
         <div role="list" {...other} className={`d-grid grid-auto-m15 flex-fill g-3 p-3${className ? ` ${className}` : ""}`} ref={ref}>
             {React.Children.map(children, (child, index) =>
                 <Container role="listitem" className="d-flex align-items-center g-0 border rounded-1 shadow-sm overflow-hidden">
@@ -42,13 +42,15 @@ export function DataList({ children, className, editable, template, tag, onDelet
                         <svg><use href="symbols.svg#delete_forever" /></svg>
                     </button>}
                 </Container>)}
-            {editMode && onDeleteAll && <Toolbar.Button className="btn-outline-danger btn-round btn-sm icon-md place-self-center place-self-md-center-start"
-                glyph="symbols.svg#delete_forever" onClick={deleteAllHandler}
-                title="Delete all items" />}
         </div>
-        {editable && <Toolbar.Button className="place-self-center m-3 ms-0 btn-round btn-plain d-none d-sm-inline"
-            glyph={editMode ? "symbols.svg#edit_off" : "symbols.svg#edit"} onClick={toggleHandler}
-            title="Toggle edit list mode" />}
+        {editMode && onDeleteAll &&
+            <Toolbar.Button className="btn-outline-danger btn-round m-3 ms-0 d-none d-sm-inline"
+                glyph="symbols.svg#delete_forever" onClick={deleteAllHandler}
+                title="Delete all bookmarks" />}
+        {editable &&
+            <Toolbar.Button className="btn-outline-secondary btn-round m-3 ms-0 d-none d-sm-inline"
+                glyph={editMode ? "symbols.svg#edit_off" : "symbols.svg#edit"} onClick={toggleHandler}
+                title="Toggle edit list mode" />}
     </div>;
 }
 
