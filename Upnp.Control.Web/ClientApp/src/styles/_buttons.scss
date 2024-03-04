@@ -1,13 +1,8 @@
 :where(button, a, .link-placeholder) {
-
     > :where(img, svg) {
         &:first-child {
             @extend %image-icon;
         }
-    }
-
-    > :is(svg, img):not(:only-child) {
-        margin-right: map-get($spacers, 1);
     }
 }
 
@@ -22,14 +17,19 @@
 
 .btn-plain,
 .toolbar > :is(button, .btn:is(a, span)) {
-    --#{$prefix}btn-color: inherit;
+    //--#{$prefix}btn-color: inherit;
     --#{$prefix}btn-border-width: 0;
-    --#{$prefix}btn-box-shadow: none;
+    //--#{$prefix}btn-box-shadow: none;
     --#{$prefix}gradient: none;
-    --#{$prefix}btn-active-bg: rgba(0, 0, 0, .25);
+    --#{$prefix}btn-active-bg: rgba(0, 0, 0, .3);
     --#{$prefix}btn-hover-bg: rgba(0, 0, 0, .2);
     --#{$prefix}btn-focus-shadow-rgb: 0, 0, 0;
-    --#{$prefix}btn-focus-box-shadow: 0 0 0 #{$btn-focus-width} rgba(var(--#{$prefix}btn-focus-shadow-rgb), .4);
+    --#{$prefix}btn-focus-box-shadow: 0 0 0 0.25rem rgba(var(--bs-btn-focus-shadow-rgb), .4);
+
+    &:focus-visible {
+        --#{$prefix}btn-hover-bg: rgba(0, 0, 0, .1);
+    }
+}
 }
 
 .btn-round,
@@ -37,10 +37,6 @@
     --#{$prefix}btn-border-radius: 50%;
     --#{$prefix}btn-line-height: 0;
     --#{$prefix}btn-padding-y: var(--#{$prefix}btn-padding-x);
-
-    & > :is(svg, img):first-child {
-        margin: 0;
-    }
 }
 
 .btn-stack {

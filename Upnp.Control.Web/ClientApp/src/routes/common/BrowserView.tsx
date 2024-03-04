@@ -360,7 +360,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
 
 export function CellTemplate({ children, data, index, rowState, context, ...other }: CellTemplateProps<unknown>) {
     const { class: itemClass, albumArts, title, creator, album, res } = data;
-    return <div className="hstack g-1" title={formatMediaInfo(res) ?? undefined} {...other}>
+    return <div className="hstack g-3" title={formatMediaInfo(res) ?? undefined} {...other}>
         <AlbumArt itemClass={itemClass} albumArts={albumArts} />
         <span className="text-truncate flex-grow-1">
             {title}

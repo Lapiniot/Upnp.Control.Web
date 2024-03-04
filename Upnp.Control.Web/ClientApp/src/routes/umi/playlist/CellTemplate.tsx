@@ -20,7 +20,7 @@ const BookmarkItemButton = createBookmarkButton("PlaylistBookmarkWidget", playli
 export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
     const active = !!(rowState & RowState.Active);
     const playing = ctx?.state === "PLAYING";
-    return <div className="hstack g-1">
+    return <div className="hstack g-3">
         <button type="button" className="btn btn-stack flex-shrink-0" data-index={index}
             onClick={active ? (playing ? ctx?.pause : ctx?.play) : ctx?.playItem}>
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} hint="player" />
