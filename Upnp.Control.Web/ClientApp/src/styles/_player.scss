@@ -25,7 +25,7 @@
     .pl-progress {
         grid-area: prog;
         justify-self: stretch;
-        margin: map-get($spacers, 1) map-get($spacers, 2);
+        margin: map-get($spacers, 2) map-get($spacers, 2);
     }
 
     .pl-title {

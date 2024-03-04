@@ -41,8 +41,8 @@ export default class SeekBar extends React.Component<PositionProps> {
             <Timer className="fs-tiny" current={time / 1000} running={running} />
             <time className="fs-tiny ms-auto">{formatTime(!infinite ? duration / 1000 : Infinity)}</time>
             {!infinite
-                ? <Slider className="w-100" value={progress} step={0.02} style={this.getSliderStyle(running, time, duration)} onChange={onChange} />
-                : <Progress className="w-100" infinite={running} value={progress} />}
+                ? <Slider className="w-100 mt-1" value={progress} step={0.02} style={this.getSliderStyle(running, time, duration)} onChange={onChange} />
+                : <Progress className="w-100 mt-1" infinite={running} value={progress} />}
         </div>;
     }
 }

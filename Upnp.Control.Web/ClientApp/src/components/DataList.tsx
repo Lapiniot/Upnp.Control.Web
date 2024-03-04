@@ -44,11 +44,11 @@ export function DataList({ children, className, editable, template, tag, onDelet
                 </Container>)}
         </div>
         {editMode && onDeleteAll &&
-            <Toolbar.Button className="btn-danger btn-round btn-flat m-3 btn-sm-fab btn-fab-small btn-fab-start"
+            <Toolbar.Button className="btn-danger btn-round m-3 btn-sm-fab btn-fab-small btn-fab-start"
                 glyph="symbols.svg#delete_forever" onClick={deleteAllHandler}
                 title="Delete all bookmarks" />}
         {editable &&
-            <Toolbar.Button className="btn-secondary btn-round btn-flat m-3 ms-0 btn-sm-fab"
+            <Toolbar.Button className="btn-secondary btn-round m-3 ms-0 btn-sm-fab"
                 glyph={editMode ? "symbols.svg#edit_off" : "symbols.svg#edit"} onClick={toggleHandler}
                 title="Toggle edit list mode" />}
     </div>;
