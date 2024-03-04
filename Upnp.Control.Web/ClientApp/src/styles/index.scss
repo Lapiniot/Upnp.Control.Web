@@ -110,8 +110,8 @@ $enable-shadows: true;
 
 ::backdrop {
     --#{$prefix}backdrop-bg-color: rgba(0 0 0 / 0.5);
-    --#{$prefix}backdrop-blur-radius: 0px;
-    --#{$prefix}backdrop-transition-duration: var(--#{$animation-prefix}duration-3);
+    --#{$prefix}backdrop-blur-radius: 0;
+    --#{$prefix}backdrop-transition-duration: var(--#{$animation-prefix}duration-1);
 }
 
 ::-webkit-file-upload-button {

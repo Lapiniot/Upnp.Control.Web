@@ -1,5 +1,5 @@
 .shell {
-    height: 100vh;
+    height: 100dvb;
     display: grid;
     grid-template: 1fr auto / auto 1fr;
     grid-template-areas: "main main" "navbar navbar";
@@ -34,6 +34,8 @@
         flex-direction: column;
         overflow: hidden;
         position: relative;
+        contain: content;
+        container: main / size;
     }
 
     @include media-breakpoint-up(sm) {
