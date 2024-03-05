@@ -191,9 +191,16 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
                 this.props.navigate(`../${parents?.[1]?.id ?? "-1"}`);
                 break;
             case "KeyA":
-                if (this.props.multiSelect && !event.cancelBubble && (event.metaKey || event.ctrlKey)) {
+                if (this.props.multiSelect && (event.metaKey || event.ctrlKey)) {
                     event.preventDefault();
                     this.context.dispatch({ type: "SET_ALL", selected: true });
+                }
+                break;
+            case "Escape":
+                if (this.props.multiSelect && this.context.selection.length > 1) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    this.context.dispatch({ type: "SET_ALL", selected: false });
                 }
                 break;
             case "ArrowUp":
@@ -265,7 +272,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         const tableMode = displayMode === "table";
         const headerClass = tableMode ? (stickyHeaders ? "sticky-top" : "") : "d-none";
 
-        return <div ref={nodeRef} className={`browser-view vstack pb-3 position-relative overflow-auto${className ? ` ${className}` : ""}`} style={style}
+        return <div ref={nodeRef} className={`browser-view vstack position-relative overflow-auto${className ? ` ${className}` : ""}`} style={style}
             onPointerDown={this.pointerDownHandler}
             onPointerUp={navigationMode !== "dbl-click" && !editMode ? this.navigateHandler : undefined}
             onDoubleClick={navigationMode === "dbl-click" && !editMode ? this.navigateHandler : undefined}>
