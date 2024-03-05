@@ -57,7 +57,7 @@ export default function () {
 
     const expanded = profile.home.get("expandSection");
 
-    return <div className="overflow-auto">
+    return <div className="overflow-auto pb-sm-fab">
         <div className="accordion accordion-flush pb-3 pb-sm-fab" id="bookmarks-section">
             {(Object.entries(data) as Group[]).map(([id, value]) => <div className="accordion-item" key={id}>
                 <h2 className="accordion-header" id={`h-${id}`}>

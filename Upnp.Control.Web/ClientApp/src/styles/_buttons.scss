@@ -11,7 +11,7 @@
 }
 
 .toolbar {
-    display: inline-flex;
+    display: flex;
     gap: map-get($spacers, 2);
 }
 
@@ -78,50 +78,57 @@
     }
 }
 
+$fab-font-size: var(--#{$prefix}fab-font-size, calc(2rem + 1.5vw));
+$fab-margin-x: var(--#{$prefix}fab-margin-x, map-get($spacers, 3));
+$fab-margin-y: var(--#{$prefix}fab-margin-y, map-get($spacers, 3));
+$fab-shadow-offset: var(--#{$prefix}fab-shadow-offset, 2px);
+$fab-shadow-radius: var(--#{$prefix}fab-shadow-radius, 10px);
+$fab-shadow-expand: var(--#{$prefix}fab-shadow-expand, 0px);
+$fab-shadow-color: var(--#{$prefix}fab-shadow-color, rgb(0 0 0 / 0.5));
+
 @mixin btn-fab {
-    --#{$prefix}fab-shadow-offset: 2px;
-    --#{$prefix}fab-shadow-radius: 6px;
-    --#{$prefix}fab-shadow-expand: 6px;
-    --#{$prefix}fab-shadow-color: rgb(0 0 0 / 0.5);
-    --#{$prefix}fab-font-size: calc(1.5rem + 1.5vw);
-    font-size: var(--#{$prefix}fab-font-size);
-    position: fixed;
+    font-size: $fab-font-size;
+    z-index: $zindex-dropdown;
+    isolation: isolate;
     right: 0;
     bottom: 0;
-    z-index: $zindex-dropdown - 5;
-    box-shadow: var(--#{$prefix}fab-shadow-offset) var(--#{$prefix}fab-shadow-offset) var(--#{$prefix}fab-shadow-radius) var(--#{$prefix}fab-shadow-color);
+    margin: $fab-margin-y $fab-margin-x;
+    box-shadow: $fab-shadow-offset $fab-shadow-offset $fab-shadow-radius $fab-shadow-expand $fab-shadow-color;
 
-    &.btn-fab-start {
+    &-start {
         left: 0;
         right: initial;
     }
 
-    &.btn-fab-small {
+    &-fixed {
+        position: fixed;
+    }
+
+    &-small {
         --#{$prefix}fab-font-size: calc(0.5rem + 1.5vw);
     }
 }
 
-@include media-breakpoint-down(sm) {
-    .btn-sm-fab {
-        @include btn-fab;
+$fab-breakpoints: null, sm, md, lg !default;
+
+@each $value in $fab-breakpoints {
+    @if($value ==null) {
+        .btn-fab {
+            @include btn-fab;
+        }
     }
 
-    .pb-sm-fab {
-        margin-bottom: calc(1.5rem + 1.5vw + 2*#{map-get($spacers, 3)});
-    }
-}
+    @else {
+        @include media-breakpoint-down($value) {
+            .btn-#{$value}-fab {
+                @include btn-fab;
+            }
 
-.float-container {
-    --#{$prefix}float-shadow-offset: 2px;
-    --#{$prefix}float-shadow-radius: 4px;
-    --#{$prefix}float-shadow-color: rgb(0 0 0 / 0.2);
-    --#{$prefix}float-size: calc(1.375rem + 1.5vw);
-    z-index: $zindex-dropdown - 5;
-    position: absolute;
-    bottom: 0;
-    filter: drop-shadow(var(--#{$prefix}float-shadow-offset) var(--#{$prefix}float-shadow-offset) var(--#{$prefix}float-shadow-radius) var(--#{$prefix}float-shadow-color));
-
-    & > button {
-        font-size: var(--#{$prefix}float-size);
+            .pb-#{$value}-fab {
+                /* dynamic bottom padding which is suitable enough 
+                to avoid content overlapping with standard size FAB */
+                padding-bottom: calc(#{$fab-font-size} + 2*#{$fab-margin-y});
+            }
+        }
     }
 }

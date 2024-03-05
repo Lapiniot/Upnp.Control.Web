@@ -311,7 +311,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} compact={!largeScreen} rootLevel={isRootLevel}
                             fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.dev?.name} />
                         <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
-                            className={"flex-fill mb-1 br-area-main" + (largeScreen ? "" : " pb-5")}
+                            className="flex-fill br-area-main pb-lg-fab"
                             device={device} deviceName={this.props.dataContext?.source.device?.name} getUrlHook={this.getPlayUrl}
                             navigate={navigate} hotKeyHandler={this.hotKeyHandler}
                             editMode={this.state.editMode} useCheckboxes={this.state.editMode || hasTouch && largeScreen}
@@ -322,28 +322,25 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                             <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
                                 <svg className="icon icon-5x"><use href="symbols.svg#folder" /></svg>
                             </div>}
-                        <div className="sticky-bottom br-area-bottom">
-                            <RowStateContext.Consumer>
-                                {({ selection: { length: selected } }) => <>
-                                    {!largeScreen && !fetching &&
-                                        <div className="position-relative d-flex justify-content-center justify-content-sm-end">
-                                            <div className="float-container m-3">
-                                                <button type="button" className="btn btn-round btn-primary"
-                                                    onClick={isRootLevel && selected === 0 ? this.createPlaylist : undefined}
-                                                    data-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>
-                                                    <svg><use href="symbols.svg#add" /></svg>
-                                                </button>
-                                            </div>
-                                            <DropdownMenu render={this.renderActionMenu} />
-                                        </div>}
-                                    <BottomBar>
-                                        {selected > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${selected} of ${fetched} selected`}</span> : null}
-                                        <Pagination total={total} current={page} pageSize={pageSize} />
-                                    </BottomBar>
-                                </>}
-                            </RowStateContext.Consumer>
-                            {largeScreen && <Breadcrumb className="border-top" items={parents} />}
-                        </div>
+                        <RowStateContext.Consumer>
+                            {({ selection: { length: selected } }) => <>
+                                {!largeScreen && !fetching &&
+                                    <>
+                                        <button type="button"
+                                            className="br-area-main btn btn-round btn-primary btn-fab place-self-end-end place-self-md-end-center"
+                                            onClick={isRootLevel && selected === 0 ? this.createPlaylist : undefined}
+                                            data-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>
+                                            <svg><use href="symbols.svg#add" /></svg>
+                                        </button>
+                                        <DropdownMenu render={this.renderActionMenu} />
+                                    </>}
+                                <BottomBar>
+                                    {selected > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${selected} of ${fetched} selected`}</span> : null}
+                                    <Pagination total={total} current={page} pageSize={pageSize} />
+                                </BottomBar>
+                            </>}
+                        </RowStateContext.Consumer>
+                        {largeScreen && <Breadcrumb className="border-top" items={parents} />}
                     </PlaylistRowStateProvider>
                 </PlaybackStateProvider>
                 <DialogHost ref={this.dialogHostRef} />

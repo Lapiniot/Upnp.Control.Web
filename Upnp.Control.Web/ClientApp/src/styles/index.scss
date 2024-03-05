@@ -35,8 +35,6 @@ $card-box-shadow: var(--switch-shadow, $box-shadow-sm);
 $card-border-width: var(--switch-border, $card-border-width);
 $card-border-radius: var(--switch-border-radius, $card-border-radius);
 
-$zindex-dropdown: $zindex-sticky + 5;
-
 $expand-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$body-color}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
 $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$body-color-dark}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
 

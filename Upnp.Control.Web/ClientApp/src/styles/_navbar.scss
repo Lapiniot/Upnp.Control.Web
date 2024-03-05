@@ -25,7 +25,6 @@ nav {
     display: flex;
     padding: var(--#{$prefix}navbar-padding-y) var(--#{$prefix}navbar-padding-x);
     background-color: var(--#{$prefix}navbar-bg);
-    @include gradient-bg();
 
     & > nav {
         --#{$prefix}nav-link-color: var(--#{$prefix}navbar-color);

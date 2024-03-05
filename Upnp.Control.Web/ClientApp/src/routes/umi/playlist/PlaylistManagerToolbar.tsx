@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useMemo, useRef } from "react";
+import { HTMLAttributes, PropsWithChildren, useEffect, useMemo, useRef } from "react";
 import { HotKeys } from "../../../services/HotKey";
 import Toolbar from "../../../components/Toolbar";
 import { RowStateAction, useRowStates } from "../../common/RowStateContext";
@@ -19,8 +19,8 @@ const initial = {
     dispatch: (_value: RowStateAction): void => { throw new Error("Unsupported in this state") }
 }
 
-export function PlaylistManagerToolbar({ editMode, compact, rootLevel: rootLevel, fetching, title, subtitle, service }:
-    PropsWithChildren<PlaylistManagetToolbarProps>) {
+export function PlaylistManagerToolbar({ className, editMode, compact, rootLevel: rootLevel, fetching, title, subtitle, service, ...other }:
+    HTMLAttributes<HTMLDivElement> & PropsWithChildren<PlaylistManagetToolbarProps>) {
 
     const { selection, dispatch } = useRowStates();
     const ref = useRef(initial);
@@ -44,7 +44,7 @@ export function PlaylistManagerToolbar({ editMode, compact, rootLevel: rootLevel
     const onlySelected = selectedCount === 1;
     const expanded = compact !== true;
 
-    return <Toolbar className="toolbar-compact align-items-center p-2 border-bottom">
+    return <Toolbar className={`toolbar-compact align-items-center p-2 border-bottom${className ? ` ${className}` : ""}`} {...other}>
         {editMode ? <>
             <Toolbar.Button glyph="symbols.svg#close" onClick={handlers.toggleEditMode} />
             <small className="flex-fill overflow-hidden text-center text-truncate">
