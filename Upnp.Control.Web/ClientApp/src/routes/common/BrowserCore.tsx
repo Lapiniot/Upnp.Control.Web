@@ -1,10 +1,10 @@
 import { ReactNode, useCallback } from "react";
+import { BottomBar } from "../../components/BottomBar";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
+import { useRowStates } from "../../components/RowStateContext";
 import Toolbar from "../../components/Toolbar";
-import { BottomBar } from "./BottomBar";
 import BrowserView, { BrowserViewProps } from "./BrowserView";
 import Pagination from "./Pagination";
-import { useRowStates } from "./RowStateContext";
 import $s from "./Settings";
 
 type FetchProps = {

@@ -4,7 +4,7 @@ import WebApi from "../../../services/WebApi";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
 import { isMusicTrack } from "../DIDLTools";
 import { BrowserProps } from "../BrowserView";
-import { RowState, RowStateMapperFunction } from "../RowStateContext";
+import { RowState, RowStateMapperFunction } from "../../../components/RowStateContext";
 import { DeviceActionProps } from "./Actions";
 
 type OpenActionProps = DeviceActionProps & {

@@ -1,14 +1,12 @@
 ﻿import { ChangeEventHandler, Component, ComponentType, createRef, FocusEvent, HTMLAttributes, PointerEvent, ReactNode, RefObject, UIEvent } from "react";
+import RowStateContext, { RowState } from "../../components/RowStateContext";
 import { DataFetchProps } from "../../hooks/DataFetch";
 import { HotKey } from "../../services/HotKey";
 import AlbumArt from "./AlbumArt";
 import { formatMediaInfo, formatSize, formatTime, getDisplayName } from "./DIDLTools";
-import RowStateContext, { RowState } from "./RowStateContext";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";
-const CAPTION_SELECTOR = ":scope > div.table-caption";
-const HEADER_GROUP_SELECTOR = ":scope > div.table-header";
 
 type ModeFlags = "multiSelect" | "useCheckboxes" | "useLevelUpRow" | "stickyCaption" | "stickyHeaders";
 

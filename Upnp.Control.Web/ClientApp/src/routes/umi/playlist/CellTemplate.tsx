@@ -3,7 +3,7 @@ import { playlistBookmarks } from "../../../services/BookmarkService";
 import AlbumArt from "../../common/AlbumArt";
 import { createBookmarkButton } from "../../common/BookmarkButton";
 import { CellTemplateProps } from "../../common/BrowserView";
-import { RowState } from "../../common/RowStateContext";
+import { RowState } from "../../../components/RowStateContext";
 import { TrackInfoLine } from "../../common/TrackInfoLine";
 
 type CellContext = {

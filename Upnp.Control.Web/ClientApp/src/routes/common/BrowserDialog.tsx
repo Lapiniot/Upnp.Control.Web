@@ -10,8 +10,8 @@ import DeviceIcon from "../common/DeviceIcon";
 import BrowserCore from "./BrowserCore";
 import { useContentBrowser } from "./BrowserUtils";
 import { BrowserProps } from "./BrowserView";
-import { RowStateMapperFunction, RowStateProvider, useRowStates } from "./RowStateContext";
-import { Route, Routes, VirtualRouter } from "./VirtualRouter";
+import { RowStateMapperFunction, RowStateProvider, useRowStates } from "../../components/RowStateContext";
+import { Route, Routes, VirtualRouter } from "../../components/VirtualRouter";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;

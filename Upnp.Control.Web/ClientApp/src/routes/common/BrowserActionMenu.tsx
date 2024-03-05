@@ -1,7 +1,7 @@
 import { DropdownMenu, MenuItem } from "../../components/DropdownMenu";
 import Toolbar from "../../components/Toolbar";
 import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
-import { useRowStates } from "./RowStateContext";
+import { useRowStates } from "../../components/RowStateContext";
 
 export function renderActionMenuItem(udn: string, action: string, name: string) {
     return <MenuItem key={`${action}.${udn}`} action={`${action}.${udn}`} data-udn={udn}>&laquo;{name}&raquo;</MenuItem>;

@@ -1,19 +1,19 @@
 import { createRef, PureComponent } from "react";
-import { itemBookmarks } from "../../services/BookmarkService";
+import { BottomBar } from "../../components/BottomBar";
+import Breadcrumb from "../../components/Breadcrumb";
 import DialogHost from "../../components/DialogHost";
 import { DropdownMenu, MenuItem, MenuItemSeparator } from "../../components/DropdownMenu";
+import { RowStateProvider } from "../../components/RowStateContext";
+import { itemBookmarks } from "../../services/BookmarkService";
 import { HotKey, HotKeys } from "../../services/HotKey";
 import WebApi from "../../services/WebApi";
 import { createBookmarkButton } from "./BookmarkButton";
-import { BottomBar } from "./BottomBar";
-import Breadcrumb from "./Breadcrumb";
 import { BrowserActionMenu, renderActionMenuItem } from "./BrowserActionMenu";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { CellTemplate, CellTemplateProps } from "./BrowserView";
 import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
 import ItemInfoDialog from "./ItemInfoDialog";
 import Pagination from "./Pagination";
-import { RowStateProvider } from "./RowStateContext";
 import $s from "./Settings";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 
