@@ -16,8 +16,8 @@ type PositionCalculators = { [K in Placement]: { (size: Size, anchorRect: Rect, 
 const defaults = {
     distance: 5,
     flip: <"main" | "alt" | boolean | undefined>true,
-    resize: <"width" | "height" | boolean | undefined>"height",
-    margin: <Margin>[-5, -5, -5, -5]
+    resize: <"width" | "height" | boolean | undefined>true,
+    margin: <Margin>[-16, -16, -16, -16]
 }
 
 //#region Precomputed maps
@@ -129,8 +129,6 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
     resizeObserver: ResizeObserver;
     intersectionObserver: IntersectionObserver;
     options: typeof defaults;
-    maxHeight: string = "";
-    maxWidth: string = "";
 
     constructor(public readonly placement: Placement, options?: Partial<typeof defaults>) {
         super();
@@ -156,17 +154,14 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
     public override toggle(visibility: boolean): void | Promise<void> {
         if (this.popup && this.anchor) {
             if (visibility) {
-                this.maxHeight = this.popup.style.maxHeight;
-                this.maxWidth = this.popup.style.maxWidth;
                 this.resizeObserver.observe(this.popup);
                 this.intersectionObserver.observe(this.popup);
             }
             else {
                 this.resizeObserver.unobserve(this.popup);
                 this.intersectionObserver.unobserve(this.popup);
-                this.popup.style.maxHeight = this.maxHeight;
-                this.popup.style.maxWidth = this.maxWidth;
             }
+            this.reset();
         }
     }
 
@@ -175,64 +170,111 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
         this.intersectionObserver.disconnect();
     }
 
-    resizeCallback = ([{ target, borderBoxSize: [{ blockSize, inlineSize }] }]: ResizeObserverEntry[]) => {
+    private resizeCallback = ([{ borderBoxSize: [{ inlineSize, blockSize }] }]: ResizeObserverEntry[]) => {
         // Reposition target only when it is visible
-        const element = <HTMLElement>target;
-        if (blockSize > 0 && inlineSize > 0) {
-            const { flip, margin } = this.options;
-            const size: Size = { width: inlineSize, height: blockSize };
-            const anchorRect = this.anchor!.getBoundingClientRect();
-            const rootBounds = getViewportRect(margin);
-            const placement = this.placement === "auto" ? getOptimalPlacement(anchorRect, rootBounds) : this.placement;
-            let point = positions[placement](size, anchorRect, this.options);
-            if (flip && this.placement !== "auto") {
-                // Check whether desired placement provides 100% visibility 
-                let ratio = getIntersectionRatio({ ...point, ...size }, rootBounds);
-                if (ratio < 1) {
-                    // partial intersection with view-port detected, so try to compute 
-                    // foptimal fallback placements allowed by options.flip setting
-                    const placements = getFallbackPlacements(placement, flip);
-
-                    // compute the best intersecting placement
-                    for (const i in placements) {
-                        const p = positions[placements[i]](size, anchorRect, this.options);
-                        const r = getIntersectionRatio({ ...p, ...size }, rootBounds);
-                        if (r > ratio) {
-                            ratio = r;
-                            point = p;
-                        }
-                    }
-                }
-            }
-
-            element.style.position = "fixed";
-            element.style.inset = `${Math.round(point.y)}px auto auto ${Math.round(point.x)}px`;
+        if (blockSize > 0 && inlineSize > 0 && this.anchor) {
+            this.reflow(inlineSize, blockSize,
+                this.anchor.getBoundingClientRect(),
+                getViewportRect(this.options.margin));
         }
     }
 
-    intersectCallback = ([{ isIntersecting, target, boundingClientRect: r, intersectionRect: ir }]: IntersectionObserverEntry[]) => {
-        if (!isIntersecting && target.checkVisibility()) {
-            const element = <HTMLElement>target;
-            const resize = this.options.resize;
+    private intersectCallback = ([entry]: IntersectionObserverEntry[]) => {
+        console.log(entry);
+        // if (!isIntersecting && target.checkVisibility()) {
+        //     const element = <HTMLElement>target;
+        //     const resize = this.options.resize;
 
-            if (resize === "height" || resize == true) {
-                if (this.placement === "left-center" || this.placement === "right-center") {
-                    const maxOverflow = Math.max((ir.top - r.top), (r.bottom - ir.bottom), 0);
-                    element.style.maxHeight = `${Math.round(r.height - 2 * maxOverflow)}px`;
-                } else {
-                    element.style.maxHeight = `${Math.round(ir.height)}px`;
-                }
-            }
+        //     if (resize === "height" || resize == true) {
+        //         if (this.placement === "left-center" || this.placement === "right-center") {
+        //             const maxOverflow = Math.max((ir.top - r.top), (r.bottom - ir.bottom), 0);
+        //             element.style.maxHeight = `${Math.round(r.height - 2 * maxOverflow)}px`;
+        //         } else {
+        //             element.style.maxHeight = `${Math.round(ir.height)}px`;
+        //         }
+        //     }
 
-            if (resize === "width" || resize === true) {
-                if (this.placement === "top-center" || this.placement === "bottom-center") {
-                    const maxOverflow = Math.max((ir.left - r.left), (r.right - ir.right), 0);
-                    element.style.maxWidth = `${Math.round(r.width - 2 * maxOverflow)}px`;
-                } else {
-                    element.style.maxWidth = `${Math.round(ir.width)}px`;
+        //     if (resize === "width" || resize === true) {
+        //         if (this.placement === "top-center" || this.placement === "bottom-center") {
+        //             const maxOverflow = Math.max((ir.left - r.left), (r.right - ir.right), 0);
+        //             element.style.maxWidth = `${Math.round(r.width - 2 * maxOverflow)}px`;
+        //         } else {
+        //             element.style.maxWidth = `${Math.round(ir.width)}px`;
+        //         }
+        //     }
+        // }
+    }
+
+    private reset() {
+        this.popup!.style.maxHeight = "";
+        this.popup!.style.maxWidth = "";
+    }
+
+    private reflow(inlineSize: number, blockSize: number, anchor: Rect, root: Rect) {
+        const { flip } = this.options;
+        const size: Size = { width: inlineSize, height: blockSize };
+        const placement = this.placement === "auto" ? getOptimalPlacement(anchor, root) : this.placement;
+        let point = positions[placement](size, anchor, this.options);
+        if (flip && this.placement !== "auto") {
+            // Check whether desired placement provides 100% visibility 
+            let ratio = getIntersectionRatio({ ...point, ...size }, root);
+            if (ratio < 1) {
+                // partial intersection with view-port detected, so try to compute 
+                // foptimal fallback placements allowed by options.flip setting
+                const placements = getFallbackPlacements(placement, flip);
+
+                // compute the best intersecting placement
+                for (const i in placements) {
+                    const p = positions[placements[i]](size, anchor, this.options);
+                    const r = getIntersectionRatio({ ...p, ...size }, root);
+                    if (r > ratio) {
+                        ratio = r;
+                        point = p;
+                    }
                 }
             }
         }
+
+        const popup = this.popup!;
+        const resize = this.options.resize;
+        let top = point.y, left = point.x;
+
+        if (resize === "width" || resize === true) {
+            if (placement === "top-center" || placement === "bottom-center") {
+                const overflow = Math.round(Math.max(point.x + inlineSize - root.x - root.width, root.x - point.x, 0));
+                if (overflow > 0) {
+                    left = point.x - overflow / 2;
+                    popup.style.maxWidth = `${Math.round(inlineSize - 2 * overflow)}px`;
+                }
+            }
+            else {
+                const overflow = Math.round(Math.max(root.x - point.x, 0) +
+                    Math.max(point.x + inlineSize - root.x - root.width, 0));
+                if (overflow > 0) {
+                    popup.style.maxWidth = `${Math.round(inlineSize - overflow)}px`;
+                }
+            }
+        }
+
+        if (resize === "height" || resize === true) {
+            if (placement === "left-center" || placement === "right-center") {
+                const overflow = Math.round(Math.max(point.y + blockSize - root.y - root.height, root.y - point.y, 0));
+                if (overflow > 0) {
+                    top = point.y - overflow / 2;
+                    popup.style.maxHeight = `${Math.round(blockSize - 2 * overflow)}px`;
+                }
+            }
+            else {
+                const overflow = Math.round(Math.max(root.y - point.y,
+                    point.y + blockSize - root.y - root.height, 0));
+                if (overflow > 0) {
+                    popup.style.maxHeight = `${Math.round(blockSize - overflow)}px`;
+                }
+            }
+        }
+
+        popup.style.position = "fixed";
+        popup.style.inset = `${Math.round(top)}px auto auto ${Math.round(left)}px`;
     }
 }
 
