@@ -48,3 +48,11 @@ export function fromBase64(str: string): Uint8Array {
     }
     return array;
 }
+
+export function debounce(fn: Function, delay: number = 500) {
+    let timeout: any;
+    return function (this: any, ...args: any[]) {
+        clearTimeout(timeout);
+        timeout = setTimeout(args => fn.apply(this, args), delay, args);
+    }
+}

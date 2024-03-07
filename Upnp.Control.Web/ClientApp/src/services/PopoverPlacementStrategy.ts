@@ -1,7 +1,10 @@
+import { debounce } from "./Extensions";
+
 export abstract class PopupPlacementStrategy {
     public abstract update(popup: HTMLElement, anchor: HTMLElement): Promise<void> | void;
     public abstract toggle(visibility: boolean): Promise<void> | void;
     public abstract destroy(): void;
+    public [Symbol.dispose] = () => this.destroy();
 }
 
 type MainPlacement = "left" | "right" | "top" | "bottom"
@@ -127,7 +130,6 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
     popup: HTMLElement | undefined;
     anchor: HTMLElement | undefined;
     resizeObserver: ResizeObserver;
-    intersectionObserver: IntersectionObserver;
     options: typeof defaults;
     intrinsicWidth = 0;
     intrinsicHeight = 0;
@@ -136,17 +138,11 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
         super();
         this.options = { ...defaults, ...options };
         this.resizeObserver = new ResizeObserver(this.resizeCallback);
-
-        this.intersectionObserver = new IntersectionObserver(this.intersectCallback, {
-            rootMargin: this.options.margin.map(v => v + "px").join(" "),
-            threshold: [0.99999]
-        });
     }
 
     public override update(popup: HTMLElement, anchor: HTMLElement): void | Promise<void> {
         if (this.popup && this.popup !== popup) {
-            this.resizeObserver.unobserve(this.popup);
-            this.intersectionObserver.unobserve(this.popup);
+            this.unsubscribe();
         }
 
         this.anchor = anchor;
@@ -156,12 +152,10 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
     public override toggle(visibility: boolean): void | Promise<void> {
         if (this.popup && this.anchor) {
             if (visibility) {
-                this.resizeObserver.observe(this.popup);
-                this.intersectionObserver.observe(this.popup);
+                this.subscribe();
             }
             else {
-                this.resizeObserver.unobserve(this.popup);
-                this.intersectionObserver.unobserve(this.popup);
+                this.unsubscribe();
             }
             this.reset();
         }
@@ -169,7 +163,16 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
 
     public override destroy(): void {
         this.resizeObserver.disconnect();
-        this.intersectionObserver.disconnect();
+    }
+
+    private subscribe() {
+        this.resizeObserver.observe(this.popup!);
+        this.resizeObserver.observe(document.documentElement);
+    }
+
+    private unsubscribe() {
+        this.resizeObserver.unobserve(this.popup!);
+        this.resizeObserver.unobserve(document.documentElement);
     }
 
     private resizeCallback = ([entry]: ResizeObserverEntry[], observer: ResizeObserver) => {
@@ -180,33 +183,9 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
             this.intrinsicWidth = inlineSize;
             this.intrinsicHeight = blockSize;
             this.reflow();
+        } else if (target === document.documentElement) {
+            this.reflowDebounced();
         }
-    }
-
-    private intersectCallback = ([entry]: IntersectionObserverEntry[]) => {
-        console.log(entry);
-        // if (!isIntersecting && target.checkVisibility()) {
-        //     const element = <HTMLElement>target;
-        //     const resize = this.options.resize;
-
-        //     if (resize === "height" || resize == true) {
-        //         if (this.placement === "left-center" || this.placement === "right-center") {
-        //             const maxOverflow = Math.max((ir.top - r.top), (r.bottom - ir.bottom), 0);
-        //             element.style.maxHeight = `${Math.round(r.height - 2 * maxOverflow)}px`;
-        //         } else {
-        //             element.style.maxHeight = `${Math.round(ir.height)}px`;
-        //         }
-        //     }
-
-        //     if (resize === "width" || resize === true) {
-        //         if (this.placement === "top-center" || this.placement === "bottom-center") {
-        //             const maxOverflow = Math.max((ir.left - r.left), (r.right - ir.right), 0);
-        //             element.style.maxWidth = `${Math.round(r.width - 2 * maxOverflow)}px`;
-        //         } else {
-        //             element.style.maxWidth = `${Math.round(ir.width)}px`;
-        //         }
-        //     }
-        // }
     }
 
     private reflow() {
@@ -214,6 +193,8 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
             this.anchor!.getBoundingClientRect(),
             getViewportRect(this.options.margin));
     }
+
+    private reflowDebounced = debounce(this.reflow, 125);
 
     private reset() {
         this.intrinsicWidth = 0;
@@ -225,23 +206,24 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
     private tetherToAnchor(inlineSize: number, blockSize: number, anchor: Rect, root: Rect) {
         const { flip } = this.options;
         const size: Size = { width: inlineSize, height: blockSize };
-        const placement = this.placement === "auto" ? getOptimalPlacement(anchor, root) : this.placement;
+        let placement = this.placement === "auto" ? getOptimalPlacement(anchor, root) : this.placement;
         let point = positions[placement](size, anchor, this.options);
         if (flip && this.placement !== "auto") {
             // Check whether desired placement provides 100% visibility 
             let ratio = getIntersectionRatio({ ...point, ...size }, root);
             if (ratio < 1) {
                 // partial intersection with view-port detected, so try to compute 
-                // foptimal fallback placements allowed by options.flip setting
-                const placements = getFallbackPlacements(placement, flip);
-
+                // optimal fallback placements allowed by options.flip setting
+                const fallbacks = getFallbackPlacements(placement, flip);
                 // compute the best intersecting placement
-                for (const i in placements) {
-                    const p = positions[placements[i]](size, anchor, this.options);
-                    const r = getIntersectionRatio({ ...p, ...size }, root);
+                for (let index = 0; index < fallbacks.length; index++) {
+                    const fallback = fallbacks[index];
+                    const pt = positions[fallback](size, anchor, this.options);
+                    const r = getIntersectionRatio({ ...pt, ...size }, root);
                     if (r > ratio) {
                         ratio = r;
-                        point = p;
+                        point = pt;
+                        placement = fallback;
                     }
                 }
             }
@@ -292,12 +274,8 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
         }
 
         popup.style.position = "fixed";
-
-        if (maxw > 0)
-            popup.style.maxWidth = Math.round(maxw) + "px";
-        if (maxh > 0)
-            popup.style.maxHeight = Math.round(maxh) + "px";
-
+        popup.style.maxWidth = maxw > 0 ? Math.round(maxw) + "px" : "";
+        popup.style.maxHeight = maxh > 0 ? Math.round(maxh) + "px" : "";
         popup.style.inset = `${Math.round(top)}px auto auto ${Math.round(left)}px`;
     }
 }
