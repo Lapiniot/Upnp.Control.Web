@@ -14,7 +14,7 @@ type Rect = Point & Size;
 type PositionCalculators = { [K in Placement]: { (size: Size, anchorRect: Rect, options: typeof defaults): Point } }
 
 const defaults = {
-    distance: 5,
+    distance: 8,
     flip: <"main" | "alt" | boolean | undefined>true,
     resize: <"width" | "height" | boolean | undefined>true,
     margin: <Margin>[-16, -16, -16, -16]
@@ -129,6 +129,8 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
     resizeObserver: ResizeObserver;
     intersectionObserver: IntersectionObserver;
     options: typeof defaults;
+    intrinsicWidth = 0;
+    intrinsicHeight = 0;
 
     constructor(public readonly placement: Placement, options?: Partial<typeof defaults>) {
         super();
@@ -170,12 +172,14 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
         this.intersectionObserver.disconnect();
     }
 
-    private resizeCallback = ([{ borderBoxSize: [{ inlineSize, blockSize }] }]: ResizeObserverEntry[]) => {
+    private resizeCallback = ([entry]: ResizeObserverEntry[], observer: ResizeObserver) => {
+        const { borderBoxSize: [{ inlineSize, blockSize }], target } = entry;
         // Reposition target only when it is visible
-        if (blockSize > 0 && inlineSize > 0 && this.anchor) {
-            this.reflow(inlineSize, blockSize,
-                this.anchor.getBoundingClientRect(),
-                getViewportRect(this.options.margin));
+        if (target === this.popup && blockSize > 0 && inlineSize > 0 && this.anchor) {
+            observer.unobserve(this.popup!);
+            this.intrinsicWidth = inlineSize;
+            this.intrinsicHeight = blockSize;
+            this.reflow();
         }
     }
 
@@ -205,12 +209,20 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
         // }
     }
 
+    private reflow() {
+        this.tetherToAnchor(this.intrinsicWidth, this.intrinsicHeight,
+            this.anchor!.getBoundingClientRect(),
+            getViewportRect(this.options.margin));
+    }
+
     private reset() {
+        this.intrinsicWidth = 0;
+        this.intrinsicHeight = 0;
         this.popup!.style.maxHeight = "";
         this.popup!.style.maxWidth = "";
     }
 
-    private reflow(inlineSize: number, blockSize: number, anchor: Rect, root: Rect) {
+    private tetherToAnchor(inlineSize: number, blockSize: number, anchor: Rect, root: Rect) {
         const { flip } = this.options;
         const size: Size = { width: inlineSize, height: blockSize };
         const placement = this.placement === "auto" ? getOptimalPlacement(anchor, root) : this.placement;
@@ -237,21 +249,24 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
 
         const popup = this.popup!;
         const resize = this.options.resize;
-        let top = point.y, left = point.x;
+        let top = point.y, left = point.x, maxw = 0, maxh = 0;
 
         if (resize === "width" || resize === true) {
             if (placement === "top-center" || placement === "bottom-center") {
                 const overflow = Math.round(Math.max(point.x + inlineSize - root.x - root.width, root.x - point.x, 0));
                 if (overflow > 0) {
-                    left = point.x - overflow / 2;
-                    popup.style.maxWidth = `${Math.round(inlineSize - 2 * overflow)}px`;
+                    maxw = inlineSize - 2 * overflow;
+                    left = point.x + overflow;
                 }
             }
             else {
                 const overflow = Math.round(Math.max(root.x - point.x, 0) +
                     Math.max(point.x + inlineSize - root.x - root.width, 0));
                 if (overflow > 0) {
-                    popup.style.maxWidth = `${Math.round(inlineSize - overflow)}px`;
+                    maxw = inlineSize - overflow;
+                    if (placement.startsWith("left-") || placement === "bottom-end" || placement === "top-end") {
+                        left += overflow;
+                    }
                 }
             }
         }
@@ -260,20 +275,29 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
             if (placement === "left-center" || placement === "right-center") {
                 const overflow = Math.round(Math.max(point.y + blockSize - root.y - root.height, root.y - point.y, 0));
                 if (overflow > 0) {
-                    top = point.y - overflow / 2;
-                    popup.style.maxHeight = `${Math.round(blockSize - 2 * overflow)}px`;
+                    maxh = blockSize - 2 * overflow;
+                    top = point.y + overflow;
                 }
             }
             else {
                 const overflow = Math.round(Math.max(root.y - point.y,
                     point.y + blockSize - root.y - root.height, 0));
                 if (overflow > 0) {
-                    popup.style.maxHeight = `${Math.round(blockSize - overflow)}px`;
+                    maxh = blockSize - overflow;
+                    if (placement.startsWith("top-") || placement === "left-end" || placement === "right-end") {
+                        top += overflow;
+                    }
                 }
             }
         }
 
         popup.style.position = "fixed";
+
+        if (maxw > 0)
+            popup.style.maxWidth = Math.round(maxw) + "px";
+        if (maxh > 0)
+            popup.style.maxHeight = Math.round(maxh) + "px";
+
         popup.style.inset = `${Math.round(top)}px auto auto ${Math.round(left)}px`;
     }
 }

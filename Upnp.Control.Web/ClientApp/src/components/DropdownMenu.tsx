@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes, FocusEvent, HTMLAttributes, PureComponent, MouseEvent as ReactMouseEvent, ReactNode, createRef } from "react";
 import { MediaQueries } from "../services/MediaQueries";
-import { PopoverAnchorStrategy, FixedStrategy, Placement, PopupPlacementStrategy } from "../services/PopupPlacementStrategy";
+import { PopoverAnchorStrategy, FixedStrategy, Placement, PopupPlacementStrategy } from "../services/PopoverPlacementStrategy";
 import { SwipeGestureRecognizer, SwipeGestures } from "../services/gestures/SwipeGestureRecognizer";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
