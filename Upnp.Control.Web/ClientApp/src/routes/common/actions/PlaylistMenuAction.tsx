@@ -24,7 +24,7 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
                 </button>
                 {device && <Menu data-device={device.udn}>
                     {items?.map(({ title, class: cls, albumArts, res }, index) =>
-                        <MenuItem key={index} data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
+                        <MenuItem key={index} className="mwc-75" data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
                             <AlbumArt itemClass={cls} albumArts={albumArts} className="rounded-1" hint="player" />
                             <span>{title}</span>
                         </MenuItem>)}
