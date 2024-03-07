@@ -1,5 +1,5 @@
-﻿$enable-gradients: true;
-$enable-shadows: true;
+﻿$enable-gradients: false;
+$enable-shadows: false;
 $enable-rounded: true;
 $enable-grid-classes: false;
 $enable-container-classes: false;
@@ -68,11 +68,7 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
 
 @import "bootstrap/scss/reboot";
 @import "bootstrap/scss/type";
-$enable-shadows: false;
-$enable-gradients: false;
 @import "bootstrap/scss/buttons";
-$enable-shadows: true;
-$enable-gradients: true;
 @import "bootstrap/scss/button-group";
 @import "bootstrap/scss/forms";
 @import "bootstrap/scss/transitions";

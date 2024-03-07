@@ -72,7 +72,7 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
             onDragOver={this.dragOverHandler} onDrop={this.dropHandler}>
             {children}
             {dragging && <div className={`d-flex pe-none border border-2 border-${color} backdrop-${color}`}>
-                <div className={`d-flex flex-column flex-fill m-auto justify-content-center align-items-center bg-${color} bg-gradient text-white rounded-1 shadow-sm p-3`}
+                <div className={`d-flex flex-column flex-fill m-auto justify-content-center align-items-center bg-${color} text-white rounded-1 p-3`}
                     style={{ maxWidth: "min(40ch,80%)" }}>
                     <svg className="icon icon-3x">
                         <use href={`symbols.svg#${acceptable ? "upload_file" : "block"}`} />

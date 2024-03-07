@@ -136,7 +136,10 @@
 
     > .table-body {
         > :where(:hover) {
-            background-image: linear-gradient(var(--#{$prefix}table-hover-bg), var(--#{$prefix}table-hover-bg));
+            @if $enable-gradients {
+                background-image: linear-gradient(var(--#{$prefix}table-hover-bg), var(--#{$prefix}table-hover-bg));
+            }
+
             color: var(--#{$prefix}table-hover-color);
         }
     }
