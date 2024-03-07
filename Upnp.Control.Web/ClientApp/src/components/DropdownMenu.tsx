@@ -73,11 +73,13 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
 
         if (!anchor) {
             this.strategy.destroy();
+            return;
         } else {
             await this.strategy.update(popover, anchor);
         }
 
         if (show) {
+            anchor.dataset["anchorActive"] = "";
             await this.strategy.toggle(true);
             popover.showPopover();
             this.subscribe();
@@ -86,6 +88,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
             popover.hidePopover();
             await Promise.allSettled(this.popoverRef.current!.getAnimations().map(animation => animation.finished));
             await this.strategy.toggle(false);
+            delete anchor.dataset["anchorActive"];
         }
     }
 

@@ -15,30 +15,24 @@
     gap: map-get($spacers, 2);
 }
 
-.btn:focus-visible {
+.btn {
     $background: map-get($theme-colors, secondary);
     $color: color-contrast($background);
-    --#{$prefix}btn-focus-shadow-rgb: #{to-rgb(mix($color, $background, 15%))};
-}
-
-.btn:is(:disabled, .disabled) {
+    --#{$prefix}btn-active-border-color: transparent;
     --#{$prefix}btn-disabled-border-color: transparent;
+    --#{$prefix}btn-focus-shadow-rgb: #{to-rgb(mix($color, $background, 15%))};
+
+    &[data-anchor-active] {
+        --#{$prefix}btn-bg: var(--#{$prefix}btn-active-bg);
+    }
 }
 
 .btn-plain,
 .toolbar > :is(button, .btn:is(a, span)) {
-    //--#{$prefix}btn-color: inherit;
+    --#{$prefix}btn-color: inherit;
     --#{$prefix}btn-border-width: 0;
-    //--#{$prefix}btn-box-shadow: none;
-    --#{$prefix}gradient: none;
     --#{$prefix}btn-active-bg: rgba(0, 0, 0, .3);
     --#{$prefix}btn-hover-bg: rgba(0, 0, 0, .2);
-    --#{$prefix}btn-focus-shadow-rgb: 0, 0, 0;
-    --#{$prefix}btn-focus-box-shadow: 0 0 0 0.25rem rgba(var(--bs-btn-focus-shadow-rgb), .4);
-
-    &:focus-visible {
-        --#{$prefix}btn-hover-bg: rgba(0, 0, 0, .1);
-    }
 }
 
 .btn-round,
@@ -53,11 +47,8 @@
     --#{$prefix}btn-padding-y: 0;
     --#{$prefix}btn-color: inherit;
     --#{$prefix}btn-border-width: 0;
-    --#{$prefix}btn-box-shadow: none;
-    --#{$prefix}gradient: none;
-    --#{$prefix}btn-focus-shadow-rgb: 0, 0, 0;
     @extend %grid-stack;
-    overflow: hidden;
+    overflow: clip;
 
     > :first-child {
         margin: initial;

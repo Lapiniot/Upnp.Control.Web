@@ -17,7 +17,7 @@ type Rect = Point & Size;
 type PositionCalculators = { [K in Placement]: { (size: Size, anchorRect: Rect, options: typeof defaults): Point } }
 
 const defaults = {
-    distance: 8,
+    distance: 4,
     flip: <"main" | "alt" | boolean | undefined>true,
     resize: <"width" | "height" | boolean | undefined>true,
     margin: <Margin>[-16, -16, -16, -16]
