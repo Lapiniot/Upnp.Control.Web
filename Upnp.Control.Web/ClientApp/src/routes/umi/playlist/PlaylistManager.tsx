@@ -4,7 +4,7 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import { DialogProps } from "../../../components/Dialog";
 import PromptDialog from "../../../components/Dialog.Prompt";
 import DialogHost from "../../../components/DialogHost";
-import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
+import { Menu, MenuItem } from "../../../components/Menu";
 import { DropTarget } from "../../../components/DropTarget";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import RowStateContext, { RowState } from "../../../components/RowStateContext";
@@ -316,7 +316,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                             navigate={navigate} hotKeyHandler={this.hotKeyHandler}
                             editMode={this.state.editMode} useCheckboxes={this.state.editMode || hasTouch && largeScreen}
                             displayMode={largeScreen ? "table" : "list"} navigationMode={hasTouch ? "tap" : "dbl-click"}>
-                            <DropdownMenu render={this.renderItemActionMenu} />
+                            <Menu render={this.renderItemActionMenu} />
                         </Browser>
                         {!fetching && data?.source.items?.length === 0 &&
                             <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
@@ -332,7 +332,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                                             data-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>
                                             <svg><use href="symbols.svg#add" /></svg>
                                         </button>
-                                        <DropdownMenu render={this.renderActionMenu} />
+                                        <Menu render={this.renderActionMenu} />
                                     </>}
                                 <BottomBar>
                                     {selected > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${selected} of ${fetched} selected`}</span> : null}

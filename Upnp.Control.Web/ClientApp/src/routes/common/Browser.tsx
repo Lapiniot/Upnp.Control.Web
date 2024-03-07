@@ -2,7 +2,7 @@ import { createRef, PureComponent } from "react";
 import { BottomBar } from "../../components/BottomBar";
 import Breadcrumb from "../../components/Breadcrumb";
 import DialogHost from "../../components/DialogHost";
-import { DropdownMenu, MenuItem, MenuItemSeparator } from "../../components/DropdownMenu";
+import { Menu, MenuItem, MenuItemSeparator } from "../../components/Menu";
 import { RowStateProvider } from "../../components/RowStateContext";
 import { itemBookmarks } from "../../services/BookmarkService";
 import { HotKey, HotKeys } from "../../services/HotKey";
@@ -201,7 +201,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
                 <BrowserCore mainCellTemplate={Template} mainCellContext={this.getCellContext()} withPagination={false} useCheckboxes multiSelect
                     {...this.props} fetching={this.state.fetching || this.props.fetching} openHandler={this.openHandler} hotKeyHandler={this.hotKeyHandler}
                     renderActionMenu={this.renderActionMenu}>
-                    <DropdownMenu render={this.renderItemActionMenuItems} onSelected={this.itemMenuSelectedHandler} />
+                    <Menu render={this.renderItemActionMenuItems} onSelected={this.itemMenuSelectedHandler} />
                 </BrowserCore>
             </RowStateProvider>
             <div className="sticky-bottom">

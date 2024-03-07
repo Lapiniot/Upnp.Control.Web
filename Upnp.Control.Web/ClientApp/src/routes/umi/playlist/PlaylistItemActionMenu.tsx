@@ -1,5 +1,5 @@
 import { PropsWithChildren, UIEvent, useCallback, useContext } from "react";
-import { MenuItem, MenuItemSeparator } from "../../../components/DropdownMenu";
+import { MenuItem, MenuItemSeparator } from "../../../components/Menu";
 import { PlaybackStateContext } from "../../common/PlaybackStateContext";
 import { RowState, useRowStates } from "../../../components/RowStateContext";
 import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";

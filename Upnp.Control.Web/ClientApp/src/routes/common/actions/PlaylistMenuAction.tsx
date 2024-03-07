@@ -1,5 +1,5 @@
 import { useDataFetch } from "../../../hooks/DataFetch";
-import { DropdownMenu, MenuItem } from "../../../components/DropdownMenu";
+import { Menu, MenuItem } from "../../../components/Menu";
 import { MicroLoader } from "../../../components/LoadIndicator";
 import WebApi from "../../../services/WebApi";
 import AlbumArt from "../AlbumArt";
@@ -22,13 +22,13 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
                 <button type="button" disabled={!items} className="btn btn-round btn-plain" data-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
                     <svg><use href="symbols.svg#playlist_play" /></svg>
                 </button>
-                {device && <DropdownMenu data-device={device.udn}>
+                {device && <Menu data-device={device.udn}>
                     {items?.map(({ title, class: cls, albumArts, res }, index) =>
                         <MenuItem key={index} data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
                             <AlbumArt itemClass={cls} albumArts={albumArts} className="rounded-1" hint="player" />
                             <span>{title}</span>
                         </MenuItem>)}
-                </DropdownMenu>}
+                </Menu>}
             </>
             : <MicroLoader />}
     </div>

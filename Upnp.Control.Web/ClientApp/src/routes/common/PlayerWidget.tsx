@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, useCallback, useContext, useMemo } from "react";
-import { DropdownMenu } from "../../components/DropdownMenu";
+import { Menu } from "../../components/Menu";
 import Slider from "../../components/Slider";
 import { parseMilliseconds } from "../../services/Extensions";
 import { SwipeGestureRecognizer, SwipeGestures } from "../../services/gestures/SwipeGestureRecognizer";
@@ -73,14 +73,14 @@ function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonE
     const volumeIcon = muted ? "volume_off" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
     return <>
         <Button {...other} title={volumeStr} className={`pl-volume-btn${className ? ` ${className}` : ""}`} glyph={`symbols.svg#${volumeIcon}`} data-toggle="dropdown" />
-        <DropdownMenu className="volume-ctrl" mode="menu" placement="left-center">
+        <Menu className="volume-ctrl" mode="menu" placement="left-center">
             <li className="hstack">
                 <button type="button" className="btn btn-plain btn-round ms-1" onClick={toggleMute}>
                     <svg><use href={"symbols.svg#" + (muted ? "volume_up" : "volume_off")} /></svg>
                 </button>
                 <Slider className="flex-fill mx-2" style={{ width: "10rem" }} value={volume / 100} onChange={setVolume} />
             </li>
-        </DropdownMenu>
+        </Menu>
     </>
 }
 

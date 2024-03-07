@@ -37,7 +37,7 @@ export function MenuItemSeparator({ className, ...other }: HTMLAttributes<HTMLHR
 
 const activationEvents: (keyof GlobalEventHandlersEventMap)[] = ["click", "pointerdown", "pointerup"]
 
-export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
+export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     private readonly popoverRef = createRef<HTMLUListElement>();
     private readonly swipeRecognizer: SwipeGestureRecognizer;
     private readonly observer: ResizeObserver;
