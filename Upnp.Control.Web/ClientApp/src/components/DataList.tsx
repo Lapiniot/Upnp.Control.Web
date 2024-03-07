@@ -35,7 +35,7 @@ export function DataList({ children, className, editable, template, tag, onDelet
     return <div className="d-flex flex-nowrap align-items-center">
         <div role="list" {...other} className={`d-grid grid-auto-m15 flex-fill g-3 p-3${className ? ` ${className}` : ""}`} ref={ref}>
             {React.Children.map(children, (child, index) =>
-                <Container role="listitem" className="d-flex align-items-center g-0 border rounded-1 shadow-sm overflow-hidden">
+                <Container role="listitem" className="d-flex align-items-center g-0 border rounded-1 shadow-sm overflow-clip">
                     {child}
                     {editMode && <button type="button" className="btn btn-round btn-plain ms-auto mx-2" onClick={deleteHandler}
                         data-index={index} data-key={(child && typeof child === "object" && "key" in child) ? child.key : undefined}>
