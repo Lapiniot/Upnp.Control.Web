@@ -262,7 +262,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
     render() {
 
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
-            useCheckboxes, useLevelUpRow, stickyCaption, stickyHeaders, displayMode, navigationMode, editMode, style, nodeRef,
+            useCheckboxes, useLevelUpRow, stickyCaption, stickyHeaders, displayMode, navigationMode, editMode, nodeRef,
             renderCaption, renderFooter, children } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
@@ -270,7 +270,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         const tableMode = displayMode === "table";
         const headerClass = tableMode ? (stickyHeaders ? "sticky-top" : "") : "d-none";
 
-        return <div ref={nodeRef} className={`browser-view vstack position-relative overflow-auto${className ? ` ${className}` : ""}`} style={style}
+        return <div ref={nodeRef} className={`browser-view vstack position-relative overflow-auto${className ? ` ${className}` : ""}`}
             onPointerDown={this.pointerDownHandler}
             onPointerUp={navigationMode !== "dbl-click" && !editMode ? this.navigateHandler : undefined}
             onDoubleClick={navigationMode === "dbl-click" && !editMode ? this.navigateHandler : undefined}>

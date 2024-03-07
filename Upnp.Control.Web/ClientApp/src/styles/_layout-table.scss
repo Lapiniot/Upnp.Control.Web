@@ -61,10 +61,12 @@
                 color: var(--#{$prefix}table-active-color);
             }
 
-            &:is([data-selected="true"], .selected, [data-focused="true"], :focus) {
+            &:is([data-selected="true"], .selected, [data-focused="true"], :focus-visible) {
                 --#{$prefix}accent-color: var(--#{$prefix}table-focused-accent);
                 background-color: var(--#{$prefix}table-selected-bg);
                 color: var(--#{$prefix}table-selected-color);
+                box-shadow: none;
+                outline: none;
             }
         }
     }
@@ -118,7 +120,7 @@
     }
 
     > .table-body {
-        > :is([data-focused="true"], :focus) {
+        > :is([data-focused="true"], :focus-visible) {
             outline: 0;
 
             > :first-child {
