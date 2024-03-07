@@ -123,13 +123,13 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
     }
 
     private subscribe() {
-        document.addEventListener("keydown", this.documentKeydownListener);
+        document.addEventListener("keydown", this.documentKeydownListener, { capture: true });
         activationEvents.forEach(name => document.addEventListener(name, this.preventActivationListener, true));
         this.popoverRef.current!.addEventListener("toggle", this.popoverToggleListener);
     }
 
     private unsubscribe() {
-        document.removeEventListener("keydown", this.documentKeydownListener);
+        document.removeEventListener("keydown", this.documentKeydownListener, { capture: true });
         activationEvents.forEach(name => document.removeEventListener(name, this.preventActivationListener, true));
         this.popoverRef.current!.removeEventListener("toggle", this.popoverToggleListener);
     }
@@ -214,6 +214,7 @@ export class DropdownMenu extends PureComponent<DropdownMenuProps, DropdownMenuS
             default: return;
         }
 
+        event.stopImmediatePropagation();
         event.preventDefault();
     }
 
