@@ -214,11 +214,20 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
             case "ArrowDown":
                 this.focusNext();
                 break;
+            case "Tab":
+                // Capture focus on the first (last with Shift key) selectable menu item and prevent default handling
+                if (!this.popoverRef.current?.contains(document.activeElement)) {
+                    if (event.shiftKey)
+                        this.focusPrev();
+                    else
+                        this.focusNext();
+                    event.preventDefault();
+                }
+                break;
             default: return;
         }
 
         event.stopImmediatePropagation();
-        event.preventDefault();
     }
 
     private preventActivationListener = (event: Event) => {
@@ -232,6 +241,7 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     private focusOutHandler = (event: FocusEvent<HTMLElement>) => {
         if (!this.popoverRef.current?.contains(event.relatedTarget as Node)) {
             this.hide();
+            this.state.anchor?.focus();
         }
     }
 
