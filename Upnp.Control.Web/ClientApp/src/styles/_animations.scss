@@ -70,6 +70,7 @@ $animation-prefix: "an-";
     --#{$animation-prefix}ease-in-circ: cubic-bezier(0.55, 0, 1, 0.45);
     --#{$animation-prefix}ease-out-circ: cubic-bezier(0, 0.55, 0.45, 1);
 
+    --#{$animation-prefix}duration-0: 125ms;
     --#{$animation-prefix}duration-1: 250ms;
     --#{$animation-prefix}duration-2: 500ms;
     --#{$animation-prefix}duration-3: 2s;
