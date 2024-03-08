@@ -33,7 +33,7 @@ export function DataList({ children, className, editable, template, tag, onDelet
     const Container: ElementType = template ?? "div";
 
     return <div className="d-flex flex-nowrap align-items-center">
-        <div role="list" {...other} className={`d-grid grid-auto-m15 flex-fill g-3 p-3${className ? ` ${className}` : ""}`} ref={ref}>
+        <div role="list" {...other} className={`d-grid grid-list flex-1 overflow-hidden g-3 p-3${className ? ` ${className}` : ""}`} ref={ref}>
             {React.Children.map(children, (child, index) =>
                 <Container role="listitem" className="d-flex align-items-center g-0 border rounded-1 overflow-clip">
                     {child}

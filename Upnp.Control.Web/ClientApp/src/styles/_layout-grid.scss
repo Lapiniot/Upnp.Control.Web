@@ -62,6 +62,10 @@ $grid-responsive-auto-breakpoints: null sm;
     }
 }
 
+.grid-list {
+    grid: auto / 100%;
+}
+
 .grid-auto-m15 {
     @include grid-auto-columns($min: 15rem, $max: 1fr, $mode: auto-fill);
 }

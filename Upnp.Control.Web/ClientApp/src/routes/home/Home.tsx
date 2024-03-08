@@ -73,7 +73,7 @@ export default function () {
                 <div id={id} className={`accordion-collapse collapse${id === expanded ? " show" : ""}`}
                     aria-labelledby={`h-${id}`} data-bs-parent="#bookmarks-section">
                     {value.length > 0 ?
-                        <DataList className="accordion-body" tag={id} editable
+                        <DataList className="grid-auto-m15" tag={id} editable
                             onDelete={deleteHandler} onDeleteAll={deleteAllHandler}>
                             {value.map(({ widget, props }) =>
                                 React.createElement(Widgets[widget] as any, { ...props, key: groups[id][2](props) }))}
