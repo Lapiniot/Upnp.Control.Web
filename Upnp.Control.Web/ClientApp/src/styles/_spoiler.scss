@@ -38,32 +38,10 @@ $spoiler-padding-y: $input-btn-padding-y !default;
 
         & + * {
             display: grid;
-            grid-template-rows: 0fr;
-            @include transition(grid-template-rows var(--#{$prefix}spoiler-animation-duration) ease-in);
 
             & > * {
                 overflow: hidden;
             }
-        }
-
-        &:has(input[type="checkbox"]:checked) {
-            & + * {
-                grid-template-rows: 1fr;
-                transition-timing-function: ease-out;
-            }
-
-            &::before {
-                rotate: -180deg;
-            }
-        }
-
-        & > input[type="checkbox"] {
-            position: absolute;
-            display: block;
-            inset: 0;
-            width: unset;
-            height: unset;
-            appearance: none;
         }
 
         &::before {
@@ -71,9 +49,37 @@ $spoiler-padding-y: $input-btn-padding-y !default;
             width: 24px;
             height: 24px;
             order: 1;
-            pointer-events: none;
             content: var(--#{$prefix}expand-button-icon);
-            @include transition(rotate var(--#{$prefix}spoiler-animation-duration) ease);
+        }
+    }
+
+    &.sp-expanding {
+        & > summary {
+            &::before {
+                @include animation(half-turn var(--#{$prefix}spoiler-animation-duration));
+            }
+
+            & + * {
+                @include animation(grid-expand var(--#{$prefix}spoiler-animation-duration) ease-in);
+            }
+        }
+    }
+
+    &.sp-collapsing {
+        & > summary {
+            &::before {
+                @include animation(half-turn var(--#{$prefix}spoiler-animation-duration) reverse);
+            }
+
+            & + * {
+                @include animation(grid-expand var(--#{$prefix}spoiler-animation-duration) ease-out reverse);
+            }
+        }
+    }
+
+    &[open] > summary {
+        &::before {
+            rotate: -0.5turn;
         }
     }
 

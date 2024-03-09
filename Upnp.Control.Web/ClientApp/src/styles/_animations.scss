@@ -9,13 +9,65 @@ $animation-prefix: "an-";
     }
 }
 
-@keyframes spin {
+@keyframes fade {
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes flip-y {
     from {
-        transform: rotate(0deg);
+        scale: 1;
     }
 
     to {
-        transform: rotate(360deg);
+        scale: 1 -1;
+    }
+}
+
+@keyframes flip-x {
+    from {
+        scale: 1;
+    }
+
+    to {
+        scale: -1 1;
+    }
+}
+
+@keyframes half-turn {
+    from {
+        rotate: 0turn;
+    }
+
+    to {
+        rotate: -0.5turn;
+    }
+}
+
+@keyframes grid-expand {
+    from {
+        grid-template-rows: 0fr;
+    }
+
+    to {
+        grid-template-rows: 1fr;
+    }
+}
+
+@keyframes zoom {
+    50% {
+        scale: var(--#{$animation-prefix}zoom-scale) var(--#{$animation-prefix}zoom-scale) 1;
+    }
+}
+
+@keyframes spin {
+    from {
+        rotate: 0deg;
+    }
+
+    to {
+        rotate: 360deg;
     }
 }
 
@@ -33,26 +85,27 @@ $animation-prefix: "an-";
 
 @keyframes pop-in {
     from {
-        transform: scale3d(var(--#{$animation-prefix}pop-scale), var(--#{$animation-prefix}pop-scale), 1);
+        scale: var(--#{$animation-prefix}pop-scale) var(--#{$animation-prefix}pop-scale) 1;
     }
 }
 
 @keyframes pop-out {
     to {
-        transform: scale3d(var(--#{$animation-prefix}pop-scale), var(--#{$animation-prefix}pop-scale), 1);
+        scale: var(--#{$animation-prefix}pop-scale) var(--#{$animation-prefix}pop-scale) 1;
     }
 
 }
 
 @keyframes slide-up {
     from {
-        transform: translate3d(0, var(--#{$animation-prefix}slide-y), 0);
+        translate: 0 var(--#{$animation-prefix}slide-y) 0;
     }
 }
 
 @keyframes slide-pop {
     from {
-        transform: translate3d(0, var(--#{$animation-prefix}slide-y), 0) scale3d(var(--#{$animation-prefix}pop-scale), var(--#{$animation-prefix}pop-scale), 1);
+        translate: 0 var(--#{$animation-prefix}slide-y) 0;
+        scale: var(--#{$animation-prefix}pop-scale) var(--#{$animation-prefix}pop-scale) 1;
     }
 }
 
@@ -78,6 +131,7 @@ $animation-prefix: "an-";
     --#{$animation-prefix}pulse-opacity-1: 1;
     --#{$animation-prefix}pulse-opacity-2: 0.7;
     --#{$animation-prefix}pop-scale: 0.5;
+    --#{$animation-prefix}zoom-scale: 1.2;
     --#{$animation-prefix}slide-y: 50%;
     --#{$animation-prefix}pulse: pulse var(--#{$animation-prefix}duration-3) ease-in-out infinite;
     --#{$animation-prefix}spin: spin var(--#{$animation-prefix}duration-3) linear infinite;

@@ -56,3 +56,9 @@ export function debounce(fn: Function, delay: number = 500) {
         timeout = setTimeout(args => fn.apply(this, args), delay, args);
     }
 }
+
+export async function animate(element: HTMLElement, completion: (element: HTMLElement) => Promise<any>, ...classTokens: string[]) {
+    element.classList.add(...classTokens);
+    await completion(element);
+    element.classList.remove(...classTokens);
+}
