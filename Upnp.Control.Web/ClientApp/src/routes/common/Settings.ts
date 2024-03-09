@@ -12,8 +12,10 @@ const defaults = {
 
 export type BookmarkGroup = "devices" | "playlists" | "items"
 
-const homeDefaults: { expandSection: BookmarkGroup | "" } = {
-    expandSection: "devices"
+const homeDefaults: { [K in `expand.${BookmarkGroup}`]: boolean } = {
+    "expand.devices": false,
+    "expand.items": false,
+    "expand.playlists": false
 }
 
 export class Settings<T extends { [P: string]: string | number | boolean | object }> {

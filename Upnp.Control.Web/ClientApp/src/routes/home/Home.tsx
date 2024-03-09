@@ -1,8 +1,9 @@
 ﻿import "bootstrap/js/dist/collapse";
-import React, { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
+import React, { SyntheticEvent, useCallback, useEffect, useRef, useState } from "react";
 import { DataList, DeleteRowHandler } from "../../components/DataList";
 import ConfirmDialog from "../../components/Dialog.Confirmation";
 import DialogHost from "../../components/DialogHost";
+import Spoiler from "../../components/Spoiler";
 import { BookmarkService } from "../../services/BookmarkService";
 import { BookmarkGroup, profile } from "../common/Settings";
 import { KnownWidgets, Widgets } from "../common/widgets/Widgets";
@@ -16,6 +17,14 @@ const groups: { [K in BookmarkGroup]: [title: string, icon: string, idGenerator:
     "playlists": ["Favourite playlists", "heart_check", p => `${p.device}:${p.id}`]
 }
 
+function renderCaption(caption: string, icon: string, count: number): React.ReactNode {
+    return <>
+        <svg className="icon"><use href={`symbols.svg#${icon}`} /></svg>
+        {caption}
+        <span className="badge rounded-pill text-bg-primary">{count}</span>
+    </>;
+}
+
 export default function () {
     const [data, setData] = useState<State>({ "devices": [], "playlists": [], "items": [] });
     const dialogHostRef = useRef<DialogHost>(null);
@@ -27,9 +36,8 @@ export default function () {
             .then(data => setData(data as State));
     }, []);
 
-    const clickHandler = useCallback(({ currentTarget: { classList, attributes } }: MouseEvent) =>
-        profile.home.set("expandSection", !classList.contains("collapsed")
-            ? attributes.getNamedItem("aria-controls")?.value as BookmarkGroup : ""), []);
+    const toggleHandler = useCallback(({ currentTarget: { dataset: { group }, open } }: SyntheticEvent<HTMLDetailsElement>) =>
+        profile.home.set(`expand.${group as BookmarkGroup}`, open), []);
 
     const deleteHandler = useCallback<DeleteRowHandler>(async (_: any, itemKey, group) => {
         if (typeof itemKey !== "string" || typeof group !== "string") return;
@@ -55,33 +63,19 @@ export default function () {
         );
     }, []);
 
-    const expanded = profile.home.get("expandSection");
-
-    return <div className="overflow-auto pb-sm-fab">
-        <div className="accordion accordion-flush pb-3 pb-sm-fab" id="bookmarks-section">
-            {(Object.entries(data) as Group[]).map(([id, value]) => <div className="accordion-item" key={id}>
-                <h2 className="accordion-header" id={`h-${id}`}>
-                    <button type="button" className={`accordion-button${id !== expanded ? " collapsed" : ""}`} data-bs-toggle="collapse"
-                        data-bs-target={`#${id}`} aria-expanded={id === expanded ? "true" : "false"}
-                        aria-controls={id} onClick={clickHandler}>
-                        <svg className="me-1">
-                            <use href={`symbols.svg#${groups[id][1]}`} />
-                        </svg>
-                        {groups[id][0]}
-                        <span className="badge rounded-pill bg-secondary ms-1 small">{value.length}</span></button>
-                </h2>
-                <div id={id} className={`accordion-collapse collapse${id === expanded ? " show" : ""}`}
-                    aria-labelledby={`h-${id}`} data-bs-parent="#bookmarks-section">
-                    {value.length > 0 ?
-                        <DataList className="grid-auto-m15" tag={id} editable
-                            onDelete={deleteHandler} onDeleteAll={deleteAllHandler}>
-                            {value.map(({ widget, props }) =>
-                                React.createElement(Widgets[widget] as any, { ...props, key: groups[id][2](props) }))}
-                        </DataList> :
-                        <div className="text-muted p-3 text-center">[No items bookmarked yet]</div>}
-                </div>
-            </div>)}
-        </div>
+    return <div className="d-grid p-3 g-3 overflow-auto pb-sm-fab">
+        {(Object.entries(data) as Group[]).map(([id, value]) =>
+            <Spoiler name="accordion" className="shadow-sm bg-light-subtle border-light-subtle"
+                open={profile.home.get(`expand.${id}`)} onToggle={toggleHandler}
+                caption={renderCaption(groups[id][0], groups[id][1], value.length)} data-group={id} key={id}>
+                {value.length > 0 ?
+                    <DataList className="grid-auto-m15" tag={id} editable
+                        onDelete={deleteHandler} onDeleteAll={deleteAllHandler}>
+                        {value.map(({ widget, props }) =>
+                            React.createElement(Widgets[widget] as any, { ...props, key: groups[id][2](props) }))}
+                    </DataList> :
+                    <div className="text-muted p-3 text-center">[No items bookmarked yet]</div>}
+            </Spoiler>)}
         <DialogHost ref={dialogHostRef} />
     </div>
 }

@@ -1,12 +1,14 @@
-import { DetailsHTMLAttributes, useCallback, useRef, MouseEvent } from "react";
+import { DetailsHTMLAttributes, useCallback, useRef, MouseEvent, ReactNode } from "react";
 import { animate } from "../services/Extensions";
 
 type SpoilerProps = DetailsHTMLAttributes<HTMLDetailsElement> & {
-    caption: string;
-    disabled?: boolean;
+    caption: ReactNode,
+    disabled?: boolean,
+    context?: unknown,
+    renderCaption?(caption: ReactNode, context: unknown): ReactNode
 }
 
-export default ({ caption, children, className, disabled, ...other }: SpoilerProps) => {
+export default ({ caption, children, className, disabled, context, renderCaption, ...other }: SpoilerProps) => {
     const ref = useRef<HTMLDetailsElement>(null);
     const handler = useCallback(async (event: MouseEvent<HTMLElement>) => {
         event.preventDefault();
@@ -36,7 +38,7 @@ export default ({ caption, children, className, disabled, ...other }: SpoilerPro
     return <details ref={ref} className={`spoiler${className ? ` ${className}` : ""}`}
         {...other} inert={disabled ? "" : undefined}>
         <summary onClick={handler}>
-            <span>{caption}</span>
+            <div>{typeof renderCaption === "function" ? renderCaption(caption, context) : caption}</div>
         </summary>
         <div>
             {/* Do not remove this wrapper div! It wraps children content and has to have overflow: hidden set.
