@@ -9,6 +9,7 @@ $primary: #6f42c1;
 $icon-scale: 1.25;
 $missing-image-content: '';
 $border-radius-sm: .1875rem;
+$display-font-sizes: ();
 
 // Configuration
 @import "bootstrap/scss/functions";
@@ -70,7 +71,6 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
 @import "bootstrap/scss/buttons";
 @import "bootstrap/scss/button-group";
 @import "bootstrap/scss/forms";
-@import "bootstrap/scss/transitions";
 @import "bootstrap/scss/card";
 @import "bootstrap/scss/breadcrumb";
 @import "bootstrap/scss/badge";

@@ -1,8 +1,10 @@
 $utilities: map-remove($utilities,
         "float", "opacity", "top", "bottom", "start", "end", "translate-middle",
-        "border-opacity", "border-end", "border-start", "order", "font-size", "font-style", "align-self",
-        "font-weight", "text-opacity", "rounded-top", "rounded-end", "rounded-bottom",
-        "rounded-start", "visibility");
+        "border-opacity", "border-end", "border-start", "order", "align-self",
+        "font-weight", "font-family", "font-size", "font-style", "text-opacity",
+        "link-opacity", "link-offset", "link-underline","link-underline-opacity",
+        "rounded-top", "rounded-end", "rounded-bottom", "rounded-start",
+        "visibility", "row-gap", "column-gap");
 
 $utilities: map-merge($utilities,
         ("display": map-merge(map-get($utilities, "display"), (values: block inline grid flex inline-flex none)),
