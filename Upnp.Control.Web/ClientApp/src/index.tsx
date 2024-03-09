@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./GlobalConfig";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalRConnection";
-import { ThemeProvider } from "./components/ThemeContext";
+import { ThemeProvider } from "./routes/common/ThemeContext";
 import { AppInfo } from "./routes/common/AppInfo";
 import HomePage from "./routes/home/Home";
 import RendererDevicesPage from "./routes/renderers/Router";
@@ -15,6 +15,7 @@ import * as SW from "./serviceWorkerRegistration";
 import { DeviceDiscoveryNotifier } from "./routes/common/DeviceDiscoveryNotifier";
 import $s from "./routes/common/Settings";
 import { PlaybackStateNotifier } from "./routes/common/PlaybackStateNotifier";
+import { ThemeSwitch } from "./routes/common/ThemeSwitch";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href")!;
 const container = document.getElementById("main-root")!;
@@ -41,7 +42,10 @@ root.render(
                         <RouteLink to="/umi" glyph="symbols.svg#speaker" className="nav-link"><span><span className="d-none d-lg-inline">Xiaomi&nbsp;</span>Speakers</span></RouteLink>
                         <RouteLink to="/settings" glyph="symbols.svg#settings" className="nav-link">Settings</RouteLink>
                     </nav>
-                    <AppInfo className="mt-auto mb-0 small d-none d-lg-inline" />
+                    <div className="d-none d-md-flex flex-column align-items-center g-3 mt-auto mb-3">
+                        <ThemeSwitch mode="responsive" btnClassName="btn-outline-primary" />
+                        <AppInfo className="small d-none d-lg-block text-white-50 mb-0" />
+                    </div>
                 </div>
                 <main>
                     <div id="notifications-root" className="nt-host" />

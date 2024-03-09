@@ -1,6 +1,6 @@
 import { PropsWithChildren, createContext, useLayoutEffect, useMemo, useState } from "react";
-import { MediaQueries } from "../hooks/MediaQuery";
-import settings from "../routes/common/Settings";
+import { MediaQueries } from "../../hooks/MediaQuery";
+import settings from "./Settings";
 
 type ThemeContextValue = [UI.Theme, (theme: UI.Theme) => void];
 

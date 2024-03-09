@@ -1,10 +1,9 @@
 ﻿import { FlagEditor } from "../../components/editors/FlagEditor";
 import { NumberEditor } from "../../components/editors/NumberEditor";
 import { OptionsEditor } from "../../components/editors/OptionsEditor";
-import { PushNotificationsSection } from "./PushNotificationSection";
 import $s from "../common/Settings";
-import { useCallback, useContext } from "react";
-import { ThemeContext } from "../../components/ThemeContext";
+import { ThemeSwitch } from "../common/ThemeSwitch";
+import { PushNotificationsSection } from "./PushNotificationSection";
 
 function setPageSize(value: string) {
     const pageSize = parseInt(value);
@@ -36,26 +35,12 @@ function setShowPlaybackNotifications(value: boolean) {
 }
 
 export default () => {
-    const themeToggleClass = "btn btn-primary flex-1";
-    const [theme, setTheme] = useContext(ThemeContext);
-    const toggleTheme = useCallback((event: React.UIEvent<HTMLElement, Event>) => setTheme(event.currentTarget.dataset["themeToggle"] as typeof theme), []);
-
     return <div className="overflow-auto">
         <ul className="list-group list-group-flush m-sm-3 w-md-50 no-font-boost">
             <li className="list-group-item">
                 <small>Appearence</small>
                 <div className="vstack mt-2">
-                    <div className="btn-group">
-                        <button onClick={toggleTheme} data-theme-toggle="light" className={themeToggleClass + (theme == "light" ? " active" : "")}>
-                            <svg><use href="symbols.svg#light_mode"></use></svg>Light
-                        </button>
-                        <button onClick={toggleTheme} data-theme-toggle="dark" className={themeToggleClass + (theme == "dark" ? " active" : "")}>
-                            <svg><use href="symbols.svg#dark_mode"></use></svg>Dark
-                        </button>
-                        <button onClick={toggleTheme} data-theme-toggle="auto" className={themeToggleClass + (theme == "auto" ? " active" : "")}>
-                            <svg><use href="symbols.svg#contrast"></use></svg>Auto
-                        </button>
-                    </div>
+                    <ThemeSwitch mode="full" btnClassName="btn-primary" />
                 </div>
             </li>
             <li className="list-group-item">
