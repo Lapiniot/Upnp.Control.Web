@@ -11,6 +11,8 @@
         --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-y};
         grid-area: navbar;
 
+        gap: #{map-get($spacers, 2)};
+
         & > nav {
             display: flex;
             flex: 1;
@@ -80,25 +82,29 @@
             --#{$prefix}nav-link-font-size: ;
             font-size: unset;
 
-            & > nav > .nav-link {
-                flex-direction: row;
-                @include font-size(var(--#{$prefix}nav-link-font-size));
-                border-radius: 1lh;
+            & > nav {
+                gap: map-get($spacers, 1);
 
-                &:is(.active, :active) {
-                    background-color: var(--#{$prefix}navbar-active-bg);
-                }
+                & > .nav-link {
+                    flex-direction: row;
+                    @include font-size(var(--#{$prefix}nav-link-font-size));
+                    border-radius: 1lh;
 
-                & > svg {
-                    font-size: calc(1rem + 0.75vw);
-                    width: 1em;
-                    margin-right: #{map-get($spacers, 3)};
-                    padding: 0;
-                    border-radius: 0;
-                }
+                    &:is(.active, :active) {
+                        background-color: var(--#{$prefix}navbar-active-bg);
+                    }
 
-                &:is(.active, :active) > svg {
-                    background-color: initial;
+                    & > svg {
+                        font-size: calc(1rem + 0.75vw);
+                        width: 1em;
+                        margin-right: #{map-get($spacers, 3)};
+                        padding: 0;
+                        border-radius: 0;
+                    }
+
+                    &:is(.active, :active) > svg {
+                        background-color: initial;
+                    }
                 }
             }
         }
