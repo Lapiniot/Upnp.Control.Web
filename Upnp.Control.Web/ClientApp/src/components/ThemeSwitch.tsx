@@ -1,5 +1,5 @@
-import { useMediaQuery } from "../../hooks/MediaQuery";
-import { MediaQueries } from "../../services/MediaQueries";
+import { useMediaQuery } from "../hooks/MediaQuery";
+import { MediaQueries } from "../services/MediaQueries";
 import { ThemeContext } from "./ThemeContext";
 import { HTMLAttributes, useCallback, useContext } from "react";
 

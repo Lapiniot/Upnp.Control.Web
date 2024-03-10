@@ -1,16 +1,20 @@
 import { PropsWithChildren, createContext, useLayoutEffect, useMemo, useState } from "react";
-import { MediaQueries } from "../../hooks/MediaQuery";
-import settings from "./Settings";
+import { MediaQueries } from "../hooks/MediaQuery";
 
 type ThemeContextValue = [UI.Theme, (theme: UI.Theme) => void];
 
+export interface ThemeStorage {
+    get theme(): UI.Theme;
+    set theme(theme: UI.Theme);
+}
+
 export const ThemeContext = createContext<ThemeContextValue>(["auto", () => { }]);
 
-export function ThemeProvider({ children }: PropsWithChildren) {
-    const [theme, toggle] = useState<UI.Theme>(() => settings.get("theme"));
+export function ThemeProvider({ children, storage }: PropsWithChildren & { storage: ThemeStorage }) {
+    const [theme, toggle] = useState<UI.Theme>(() => storage.theme);
     const value = useMemo<ThemeContextValue>(() => [theme, toggle], [theme]);
     useLayoutEffect(() => {
-        settings.set("theme", theme);
+        storage.theme = theme;
         if (theme === "auto") {
             const query = MediaQueries.prefersDarkScheme;
             setColorMode(query.matches ? "dark" : "light");
@@ -19,7 +23,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
         };
 
         setColorMode(theme);
-    }, [theme]);
+    }, [theme, storage]);
 
     return <ThemeContext.Provider value={value}>
         {children}

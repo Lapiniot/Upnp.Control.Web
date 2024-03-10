@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./GlobalConfig";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalRConnection";
-import { ThemeProvider } from "./routes/common/ThemeContext";
+import { ThemeProvider, ThemeStorage } from "./components/ThemeContext";
 import { AppInfo } from "./routes/common/AppInfo";
 import HomePage from "./routes/home/Home";
 import RendererDevicesPage from "./routes/renderers/Router";
@@ -15,22 +15,19 @@ import * as SW from "./serviceWorkerRegistration";
 import { DeviceDiscoveryNotifier } from "./routes/common/DeviceDiscoveryNotifier";
 import $s from "./routes/common/Settings";
 import { PlaybackStateNotifier } from "./routes/common/PlaybackStateNotifier";
-import { ThemeSwitch } from "./routes/common/ThemeSwitch";
+import { ThemeSwitch } from "./components/ThemeSwitch";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href")!;
 const container = document.getElementById("main-root")!;
 const root = createRoot(container);
 
-function shouldShowDiscoveryNotifications() {
-    return $s.get("showDiscoveryNotifications");
-}
-
-function shouldShowPlaybackStateNotification() {
-    return $s.get("showPlaybackNotifications");
+const themeStorage: ThemeStorage = {
+    get theme() { return $s.get("theme") },
+    set theme(theme: UI.Theme) { $s.set("theme", theme) }
 }
 
 root.render(
-    <ThemeProvider>
+    <ThemeProvider storage={themeStorage}>
         <BrowserRouter basename={baseUrl} future={{ v7_relativeSplatPath: true }}>
             <div className="shell">
                 <div className="navbar">
@@ -77,3 +74,11 @@ if (import.meta.env.DEV && import.meta.env.VITE_REG_DEV_SW !== "true") {
 }
 
 SW.register();
+
+function shouldShowDiscoveryNotifications() {
+    return $s.get("showDiscoveryNotifications");
+}
+
+function shouldShowPlaybackStateNotification() {
+    return $s.get("showPlaybackNotifications");
+}

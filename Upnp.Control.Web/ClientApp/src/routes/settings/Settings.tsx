@@ -1,8 +1,8 @@
-﻿import { FlagEditor } from "../../components/editors/FlagEditor";
+﻿import { ThemeSwitch } from "../../components/ThemeSwitch";
+import { FlagEditor } from "../../components/editors/FlagEditor";
 import { NumberEditor } from "../../components/editors/NumberEditor";
 import { OptionsEditor } from "../../components/editors/OptionsEditor";
 import $s from "../common/Settings";
-import { ThemeSwitch } from "../common/ThemeSwitch";
 import { PushNotificationsSection } from "./PushNotificationSection";
 
 function setPageSize(value: string) {
