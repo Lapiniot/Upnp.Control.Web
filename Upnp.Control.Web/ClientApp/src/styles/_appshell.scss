@@ -7,6 +7,7 @@
     & > .navbar {
         --#{$prefix}navbar-padding-x: #{map-get($spacers, 1)};
         --#{$prefix}navbar-padding-y: #{map-get($spacers, 1)};
+        --#{$prefix}nav-link-font-size: x-small;
         grid-area: navbar;
 
         & > nav {
@@ -19,7 +20,6 @@
                 align-items: center;
                 flex: 1;
                 overflow: hidden;
-                @include font-size(var(--#{$prefix}nav-link-font-size-md));
 
                 & > svg {
                     margin: unset;
@@ -44,6 +44,7 @@
 
         & > .navbar {
             --#{$prefix}navbar-nav-link-padding-x: #{calc($nav-link-padding-x / 2)};
+            --#{$prefix}nav-link-font-size: ;
             flex-direction: column;
             align-items: stretch;
 
