@@ -11,13 +11,14 @@ nav {
 .navbar {
     --#{$prefix}navbar-padding-x: #{if($navbar-padding-x == null, 0, $navbar-padding-x)};
     --#{$prefix}navbar-padding-y: #{$navbar-padding-y};
-    --#{$prefix}navbar-color: rgba(var(--#{$prefix}body-color-rgb), .85);
+    --#{$prefix}navbar-color: rgba(var(--#{$prefix}body-color-rgb), .8);
     --#{$prefix}navbar-hover-color: rgba(var(--#{$prefix}body-color-rgb), 1);
     --#{$prefix}navbar-disabled-color: rgba(var(--#{$prefix}body-color-rgb), .5);
     --#{$prefix}navbar-active-color: rgba(var(--#{$prefix}body-color-rgb), 1);
+    --#{$prefix}navbar-active-bg: var(--#{$prefix}secondary-bg);
     --#{$prefix}navbar-focus-box-shadow: 0 0 #{$focus-ring-blur} #{$focus-ring-width} rgba(var(--#{$prefix}body-color-rgb), .25);
     --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-x};
-    --#{$prefix}navbar-brand-color: rgba(var(--#{$prefix}body-color-rgb), .85);
+    --#{$prefix}navbar-brand-color: rgba(var(--#{$prefix}body-color-rgb), .8);
     --#{$prefix}navbar-brand-hover-color: rgba(var(--#{$prefix}body-color-rgb), 1);
     --#{$prefix}navbar-brand-padding-y: #{$navbar-brand-padding-y};
     display: flex;
@@ -33,6 +34,10 @@ nav {
         --#{$prefix}nav-link-hover-color: var(--#{$prefix}navbar-hover-color);
         --#{$prefix}nav-link-disabled-color: var(--#{$prefix}navbar-disabled-color);
         --#{$prefix}nav-link-padding-x: var(--#{$prefix}navbar-nav-link-padding-x);
+    }
+
+    .nav-link:is(.active,:active){
+        color: var(--#{$prefix}navbar-active-color);
     }
 
     .btn {

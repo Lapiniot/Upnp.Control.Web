@@ -6,19 +6,19 @@ export class MediaQueries {
     private static prefersDarkSchemeQuery: MediaQueryList;
 
     static minWidth(width: string) {
-        return matchMedia(`(min-width: ${width})`);
+        return matchMedia(`(width >= ${width})`);
     }
 
     static minHeight(height: string) {
-        return matchMedia(`(min-height: ${height})`);
+        return matchMedia(`(height >= ${height})`);
     }
 
     static maxWidth(width: string) {
-        return matchMedia(`(max-width: ${width})`);
+        return matchMedia(`(width <= ${width})`);
     }
 
     static maxHeight(height: string) {
-        return matchMedia(`(max-height: ${height})`);
+        return matchMedia(`(height <= ${height})`);
     }
 
     static prefersColorScheme(scheme: "light" | "dark") {

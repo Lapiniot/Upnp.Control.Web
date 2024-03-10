@@ -5,9 +5,10 @@
     grid-template-areas: "main main" "navbar navbar";
 
     & > .navbar {
-        --#{$prefix}navbar-padding-x: #{map-get($spacers, 1)};
-        --#{$prefix}navbar-padding-y: #{map-get($spacers, 1)};
+        --#{$prefix}navbar-padding-x: 0;
+        --#{$prefix}navbar-padding-y: 0;
         --#{$prefix}nav-link-font-size: x-small;
+        --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-y};
         grid-area: navbar;
 
         & > nav {
@@ -23,7 +24,15 @@
 
                 & > svg {
                     margin: unset;
-                    font-size: 1rem;
+                    box-sizing: content-box;
+                    font-size: calc(1rem + 1vw);
+                    width: min(2.5em, 100%);
+                    padding-block: #{map-get($spacers, 1)};
+                    border-radius: 1em;
+                }
+
+                &:is(.active, :active) > svg {
+                    background-color: var(--#{$prefix}navbar-active-bg);
                 }
             }
         }
@@ -43,29 +52,53 @@
         grid-template-areas: "navbar main" "navbar main";
 
         & > .navbar {
+            --#{$prefix}navbar-padding-y: #{map-get($spacers, 3)};
             --#{$prefix}navbar-nav-link-padding-x: #{calc($nav-link-padding-x / 2)};
-            --#{$prefix}nav-link-font-size: ;
+            --#{$prefix}nav-link-font-size: smaller;
             flex-direction: column;
             align-items: stretch;
+            justify-content: center;
+            font-size: small;
 
             & > nav {
                 flex-direction: column;
                 flex: 0;
+
+                & > .nav-link {
+                    svg {
+                        width: 2.5em;
+                    }
+                }
             }
         }
     }
 
     @include media-breakpoint-up(md) {
         & > .navbar {
+            --#{$prefix}navbar-padding-x: #{map-get($spacers, 3)};
             --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-x};
+            --#{$prefix}nav-link-font-size: ;
+            font-size: unset;
 
             & > nav > .nav-link {
                 flex-direction: row;
                 @include font-size(var(--#{$prefix}nav-link-font-size));
+                border-radius: 1lh;
+
+                &:is(.active, :active) {
+                    background-color: var(--#{$prefix}navbar-active-bg);
+                }
 
                 & > svg {
-                    margin-right: calc($spacer / 2);
-                    font-size: calc($icon-scale * 1em);
+                    font-size: calc(1rem + 0.75vw);
+                    width: 1em;
+                    margin-right: #{map-get($spacers, 3)};
+                    padding: 0;
+                    border-radius: 0;
+                }
+
+                &:is(.active, :active) > svg {
+                    background-color: initial;
                 }
             }
         }

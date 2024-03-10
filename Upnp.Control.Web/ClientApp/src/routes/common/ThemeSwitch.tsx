@@ -1,3 +1,4 @@
+import { useMediaQuery } from "../../hooks/MediaQuery";
 import { MediaQueries } from "../../services/MediaQueries";
 import { ThemeContext } from "./ThemeContext";
 import { HTMLAttributes, useCallback, useContext } from "react";
@@ -12,10 +13,11 @@ const sequence: { [K in UI.Theme]: number } = { "light": 1, "dark": 2, "auto": 0
 
 export function ThemeSwitch({ mode = "compact", className, btnClassName }: HTMLAttributes<HTMLDivElement> & ThemeSwitchProps) {
     const [current, setTheme] = useContext(ThemeContext);
+    const largeScreen = useMediaQuery(MediaQueries.largeScreen, mode === "responsive");
     const toggleTheme = useCallback((event: React.MouseEvent<HTMLButtonElement>) => setTheme(event.currentTarget.dataset["themeToggle"] as UI.Theme), []);
     const next = themes[sequence[current]];
     const renderMode: typeof mode = mode === "responsive"
-        ? MediaQueries.largeScreen.matches ? "compact" : "icon"
+        ? largeScreen ? "compact" : "icon"
         : mode;
     return <div className={`btn-group theme-switch${className ? ` ${className}` : ""}`}>
         {renderMode === "icon"

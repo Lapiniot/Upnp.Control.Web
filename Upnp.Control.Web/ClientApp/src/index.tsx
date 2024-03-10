@@ -42,7 +42,7 @@ root.render(
                         <RouteLink to="/umi" glyph="symbols.svg#speaker" className="nav-link"><span><span className="d-none d-lg-inline">Xiaomi&nbsp;</span>Speakers</span></RouteLink>
                         <RouteLink to="/settings" glyph="symbols.svg#settings" className="nav-link">Settings</RouteLink>
                     </nav>
-                    <div className="d-none d-md-flex flex-column align-items-center g-3 mt-auto mb-3">
+                    <div className="d-none d-sm-flex flex-column align-items-center g-3 mt-auto">
                         <ThemeSwitch mode="responsive" />
                         <AppInfo className="small d-none d-lg-block mb-0" />
                     </div>
