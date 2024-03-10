@@ -24,6 +24,7 @@ $spoiler-padding-y: $input-btn-padding-y !default;
         overflow: hidden;
         gap: var(--#{$prefix}spoiler-padding-x);
         padding: var(--#{$prefix}spoiler-padding-y) var(--#{$prefix}spoiler-padding-x);
+        margin: map-get($spacers, 1);
 
         &::-webkit-details-marker {
             display: none;

@@ -2,8 +2,7 @@ nav {
     --#{$prefix}nav-link-padding-x: #{$nav-link-padding-x};
     --#{$prefix}nav-link-padding-y: #{$nav-link-padding-y};
     @include rfs($nav-link-font-size, --#{$prefix}nav-link-font-size);
-    --#{$prefix}nav-link-font-size-md: x-small;
-    @include rfs($nav-link-font-weight, --#{$prefix}nav-link-font-weight);
+    --#{$prefix}nav-link-font-weight: #{$nav-link-font-weight};
     --#{$prefix}nav-link-color: #{$nav-link-color};
     --#{$prefix}nav-link-hover-color: #{$nav-link-hover-color};
     --#{$prefix}nav-link-disabled-color: #{$nav-link-disabled-color};
@@ -12,32 +11,46 @@ nav {
 .navbar {
     --#{$prefix}navbar-padding-x: #{if($navbar-padding-x == null, 0, $navbar-padding-x)};
     --#{$prefix}navbar-padding-y: #{$navbar-padding-y};
-    --#{$prefix}navbar-bg: var(--#{$prefix}brand-color);
-    --#{$prefix}navbar-color: #{$navbar-dark-color};
-    --#{$prefix}navbar-hover-color: #{$navbar-dark-hover-color};
-    --#{$prefix}navbar-disabled-color: #{$navbar-dark-disabled-color};
-    --#{$prefix}navbar-active-color: #{$navbar-dark-active-color};
+    --#{$prefix}navbar-color: rgba(var(--#{$prefix}body-color-rgb), .85);
+    --#{$prefix}navbar-hover-color: rgba(var(--#{$prefix}body-color-rgb), 1);
+    --#{$prefix}navbar-disabled-color: rgba(var(--#{$prefix}body-color-rgb), .5);
+    --#{$prefix}navbar-active-color: rgba(var(--#{$prefix}body-color-rgb), 1);
+    --#{$prefix}navbar-focus-box-shadow: 0 0 #{$focus-ring-blur} #{$focus-ring-width} rgba(var(--#{$prefix}body-color-rgb), .25);
     --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-x};
-    --#{$prefix}navbar-brand-color: #{$navbar-dark-brand-color};
-    --#{$prefix}navbar-brand-hover-color: #{$navbar-dark-brand-hover-color};
+    --#{$prefix}navbar-brand-color: rgba(var(--#{$prefix}body-color-rgb), .85);
+    --#{$prefix}navbar-brand-hover-color: rgba(var(--#{$prefix}body-color-rgb), 1);
     --#{$prefix}navbar-brand-padding-y: #{$navbar-brand-padding-y};
-    --#{$prefix}navbar-brand-font-size: #{$navbar-brand-font-size};
     display: flex;
     padding: var(--#{$prefix}navbar-padding-y) var(--#{$prefix}navbar-padding-x);
-    background-color: var(--#{$prefix}navbar-bg);
+    background-color: var(--#{$prefix}navbar-bg, var(--#{$prefix}tertiary-bg));
+
+    :is(a, btn, .nav-link):focus-visible {
+        box-shadow: var(--#{$prefix}navbar-focus-box-shadow);
+    }
 
     & > nav {
         --#{$prefix}nav-link-color: var(--#{$prefix}navbar-color);
         --#{$prefix}nav-link-hover-color: var(--#{$prefix}navbar-hover-color);
         --#{$prefix}nav-link-disabled-color: var(--#{$prefix}navbar-disabled-color);
         --#{$prefix}nav-link-padding-x: var(--#{$prefix}navbar-nav-link-padding-x);
+    }
 
-        .nav-link {
-            &:active,
-            &.active {
-                color: var(--#{$prefix}navbar-active-color);
-            }
-        }
+    .btn {
+        $color: var(--#{$prefix}navbar-color);
+        $hover-color: var(--#{$prefix}navbar-bg, var(--#{$prefix}tertiary-bg));
+        $hover-bg: var(--#{$prefix}navbar-hover-color);
+        --#{$prefix}btn-color: #{$color};
+        --#{$prefix}btn-border-color: #{$color};
+        --#{$prefix}btn-hover-color: #{$hover-color};
+        --#{$prefix}btn-hover-bg: #{$hover-bg};
+        --#{$prefix}btn-hover-border-color: #{$hover-bg};
+        --#{$prefix}btn-active-color: #{$hover-color};
+        --#{$prefix}btn-active-bg: var(--#{$prefix}navbar-active-color);
+        --#{$prefix}btn-active-border-color: #{$color};
+        --#{$prefix}btn-disabled-color: #{$color};
+        --#{$prefix}btn-disabled-bg: transparent;
+        --#{$prefix}btn-disabled-border-color: #{$color};
+        --#{$prefix}gradient: none;
     }
 }
 
@@ -61,14 +74,21 @@ nav {
     font-weight: var(--#{$prefix}nav-link-font-weight);
     color: var(--#{$prefix}nav-link-color);
     text-decoration: none;
-    @include transition($nav-link-transition);
+    background: none;
+    border: 0;
 
     &:hover,
     &:focus {
         color: var(--#{$prefix}nav-link-hover-color);
     }
 
-    &.disabled {
+    &:focus-visible {
+        outline: 0;
+        box-shadow: $nav-link-focus-box-shadow;
+    }
+
+    &.disabled,
+    &:disabled {
         color: var(--#{$prefix}nav-link-disabled-color);
         pointer-events: none;
         cursor: default;
