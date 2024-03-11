@@ -2,7 +2,7 @@ $utilities: map-remove($utilities,
         "float", "opacity", "top", "bottom", "start", "end", "translate-middle",
         "border-opacity", "border-end", "border-start", "order", "align-self",
         "font-weight", "font-family", "font-size", "font-style", "text-opacity",
-        "link-opacity", "link-offset", "link-underline","link-underline-opacity",
+        "link-opacity", "link-offset", "link-underline", "link-underline-opacity",
         "rounded-top", "rounded-end", "rounded-bottom", "rounded-start",
         "visibility", "row-gap", "column-gap");
 
@@ -44,28 +44,3 @@ $utilities : map-merge($utilities,
         "gap-x":(property:"column-gap", class:"gx", values:map-remove($spacers, 0, 1, 3, 4, 5)),
         "gap-y":(property:"row-gap", class:"gy", values:map-remove($spacers, 0, 2, 3, 4, 5)),
         "place-self":(property:"place-self", class:"place-self", values:(center: center, center-start: center start, end-center: end center, end-end: end end), responsive: true)));
-
-%sticky {
-    position: sticky;
-    z-index: $zindex-sticky;
-}
-
-.sticky-top {
-    @extend %sticky;
-    top: 0;
-}
-
-.sticky-bottom {
-    @extend %sticky;
-    bottom: 0;
-}
-
-.container-inline {
-    container-type: inline-size;
-}
-
-@include media-breakpoint-up(md) {
-    .w-md-50 {
-        width: 50% !important;
-    }
-}

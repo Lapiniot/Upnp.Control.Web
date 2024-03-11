@@ -114,12 +114,6 @@ $fab-breakpoints: null, sm, md, lg !default;
             .btn-#{$value}-fab {
                 @include btn-fab;
             }
-
-            .pb-#{$value}-fab {
-                /* dynamic bottom padding which is suitable enough 
-                to avoid content overlapping with standard size FAB */
-                padding-bottom: calc(#{$fab-font-size} + 2*#{$fab-margin-y});
-            }
         }
     }
 }

@@ -18,6 +18,7 @@ $display-font-sizes: (
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
+@import "utilities";
 
 $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
 $card-border-radius: $border-radius-sm;
@@ -98,7 +99,6 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
 @import "dialog";
 
 // Utilities
-@import "utilities";
 @import "bootstrap/scss/utilities/api";
 
 /********** Specific site element styles **********/
@@ -111,6 +111,39 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
 
 ::-webkit-file-upload-button {
     display: none;
+}
+
+.pb-6 {
+    padding-bottom: #{$spacer * 5} !important;
+}
+
+.pb-7 {
+    padding-bottom: #{$spacer * 7} !important;
+}
+
+%sticky {
+    position: sticky;
+    z-index: $zindex-sticky;
+}
+
+.sticky-top {
+    @extend %sticky;
+    top: 0;
+}
+
+.sticky-bottom {
+    @extend %sticky;
+    bottom: 0;
+}
+
+.container-inline {
+    container-type: inline-size;
+}
+
+@include media-breakpoint-up(md) {
+    .w-md-50 {
+        width: 50% !important;
+    }
 }
 
 :focus-visible {

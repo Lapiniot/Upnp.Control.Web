@@ -63,7 +63,7 @@ export default function () {
         );
     }, []);
 
-    return <div className="d-grid p-3 g-3 overflow-auto pb-sm-fab">
+    return <div className="d-grid p-3 pb-7 g-3 overflow-auto">
         {(Object.entries(data) as Group[]).map(([id, value]) =>
             <Spoiler name="accordion" className="shadow-sm bg-light-subtle border-light-subtle"
                 open={profile.home.get(`expand.${id}`)} onToggle={toggleHandler}

@@ -311,7 +311,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} compact={!largeScreen} rootLevel={isRootLevel}
                             fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.dev?.name} />
                         <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
-                            className="flex-fill br-area-main pb-lg-fab"
+                            className="flex-fill br-area-main pb-6"
                             device={device} deviceName={this.props.dataContext?.source.device?.name} getUrlHook={this.getPlayUrl}
                             navigate={navigate} hotKeyHandler={this.hotKeyHandler}
                             editMode={this.state.editMode} useCheckboxes={this.state.editMode || hasTouch && largeScreen}
