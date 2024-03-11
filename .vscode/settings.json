@@ -42,5 +42,9 @@
     ],
     "dotnet.defaultSolution": "Upnp.Control.Web.sln",
     "material-icon-theme.activeIconPack": "react",
-    "material-icon-theme.folders.theme": "specific"
+    "material-icon-theme.folders.theme": "specific",
+    "css.styleSheets": [
+        "Upnp.Control.Web/ClientApp/src/styles/*.scss",
+        "Upnp.Control.Web/ClientApp/src/css/*.css"
+    ]
 }
