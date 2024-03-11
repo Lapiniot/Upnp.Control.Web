@@ -5,8 +5,11 @@ nav {
     --#{$prefix}nav-link-font-weight: #{$nav-link-font-weight};
     --#{$prefix}nav-link-color: #{$nav-link-color};
     --#{$prefix}nav-link-hover-color: #{$nav-link-hover-color};
+    --#{$prefix}nav-link-focus-box-shadow: #{$nav-link-focus-box-shadow};
     --#{$prefix}nav-link-disabled-color: #{$nav-link-disabled-color};
 }
+
+$navbar-focus-box-shadow: 0 0 #{$focus-ring-blur} #{$focus-ring-width} rgba(var(--#{$prefix}body-color-rgb), .25);
 
 .navbar {
     --#{$prefix}navbar-padding-x: #{if($navbar-padding-x == null, 0, $navbar-padding-x)};
@@ -16,7 +19,7 @@ nav {
     --#{$prefix}navbar-disabled-color: rgba(var(--#{$prefix}body-color-rgb), .5);
     --#{$prefix}navbar-active-color: rgba(var(--#{$prefix}body-color-rgb), 1);
     --#{$prefix}navbar-active-bg: var(--#{$prefix}secondary-bg);
-    --#{$prefix}navbar-focus-box-shadow: 0 0 #{$focus-ring-blur} #{$focus-ring-width} rgba(var(--#{$prefix}body-color-rgb), .25);
+    --#{$prefix}navbar-focus-box-shadow: #{$navbar-focus-box-shadow};
     --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-x};
     --#{$prefix}navbar-brand-color: rgba(var(--#{$prefix}body-color-rgb), .8);
     --#{$prefix}navbar-brand-hover-color: rgba(var(--#{$prefix}body-color-rgb), 1);
@@ -25,7 +28,7 @@ nav {
     padding: var(--#{$prefix}navbar-padding-y) var(--#{$prefix}navbar-padding-x);
     background-color: var(--#{$prefix}navbar-bg, var(--#{$prefix}tertiary-bg));
 
-    :is(a, btn, .nav-link):focus-visible {
+    :is(a, btn):focus-visible {
         box-shadow: var(--#{$prefix}navbar-focus-box-shadow);
     }
 
@@ -34,9 +37,10 @@ nav {
         --#{$prefix}nav-link-hover-color: var(--#{$prefix}navbar-hover-color);
         --#{$prefix}nav-link-disabled-color: var(--#{$prefix}navbar-disabled-color);
         --#{$prefix}nav-link-padding-x: var(--#{$prefix}navbar-nav-link-padding-x);
+        --#{$prefix}nav-link-focus-box-shadow: var(--#{$prefix}navbar-focus-box-shadow);
     }
 
-    .nav-link:is(.active,:active){
+    .nav-link:is(.active, :active) {
         color: var(--#{$prefix}navbar-active-color);
     }
 
@@ -83,13 +87,14 @@ nav {
     border: 0;
 
     &:hover,
-    &:focus {
+    &:focus,
+    &:active {
         color: var(--#{$prefix}nav-link-hover-color);
     }
 
     &:focus-visible {
         outline: 0;
-        box-shadow: $nav-link-focus-box-shadow;
+        box-shadow: var(--#{$prefix}nav-link-focus-box-shadow);
     }
 
     &.disabled,

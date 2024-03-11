@@ -8,6 +8,7 @@
         --#{$prefix}navbar-padding-x: 0;
         --#{$prefix}navbar-padding-y: 0;
         --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-y};
+        --#{$prefix}navbar-focus-box-shadow: ;
         grid-area: navbar;
         font-size: small;
         gap: #{map-get($spacers, 2)};
@@ -32,7 +33,7 @@
                     border-radius: 1em;
                 }
 
-                &:is(.active, :active) > svg {
+                &:is(.active, :active, :focus) > svg {
                     background-color: var(--#{$prefix}navbar-active-bg);
                 }
             }
@@ -77,6 +78,7 @@
         & > .navbar {
             --#{$prefix}navbar-padding-x: #{map-get($spacers, 3)};
             --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-x};
+            --#{$prefix}navbar-focus-box-shadow: #{$navbar-focus-box-shadow};
             font-size: unset;
 
             & > nav {
@@ -98,7 +100,7 @@
                         border-radius: 0;
                     }
 
-                    &:is(.active, :active) > svg {
+                    &:is(.active, :active, :focus) > svg {
                         background-color: initial;
                     }
                 }
