@@ -1,5 +1,5 @@
 ﻿import "bootstrap/js/dist/collapse";
-import React, { SyntheticEvent, useCallback, useEffect, useRef, useState } from "react";
+import React, { HTMLAttributes, SyntheticEvent, useCallback, useEffect, useRef, useState } from "react";
 import { DataList, DeleteRowHandler } from "../../components/DataList";
 import ConfirmDialog from "../../components/Dialog.Confirmation";
 import DialogHost from "../../components/DialogHost";
@@ -69,7 +69,7 @@ export default function () {
                 open={profile.home.get(`expand.${id}`)} onToggle={toggleHandler}
                 caption={renderCaption(groups[id][0], groups[id][1], value.length)} data-group={id} key={id}>
                 {value.length > 0 ?
-                    <DataList className="grid-auto-m15" tag={id} editable
+                    <DataList className="grid-auto-m15 overflow-clip" tag={id} editable template={ItemContainer}
                         onDelete={deleteHandler} onDeleteAll={deleteAllHandler}>
                         {value.map(({ widget, props }) =>
                             React.createElement(Widgets[widget] as any, { ...props, key: groups[id][2](props) }))}
@@ -77,5 +77,11 @@ export default function () {
                     <div className="text-muted p-3 text-center">[No items bookmarked yet]</div>}
             </Spoiler>)}
         <DialogHost ref={dialogHostRef} />
+    </div>
+}
+
+function ItemContainer({ children, className, ...other }: HTMLAttributes<HTMLDivElement>) {
+    return <div className={`${className ? `${className} ` : ""}rounded-3 bg-primary bg-opacity-10`} {...other}>
+        {children}
     </div>
 }

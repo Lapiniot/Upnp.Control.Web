@@ -12,12 +12,12 @@ type DeviceBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
 
 export default function ({ category, device, name, description, icon }: DeviceBookmarkWidgetProps) {
     const iconUrl = icon.startsWith("http") ? viaProxy(icon) : icon;
-    return <RouteLink to={`/${category}/${device}`} className="hstack flex-1 text-decoration-none m-1 overflow-clip">
+    return <RouteLink to={`/${category}/${device}`} className="hstack flex-1 text-decoration-none rounded-auto overflow-clip">
         {iconUrl.includes(".svg")
-            ? <svg className="icon-2x ms-2"><use href={iconUrl} /></svg>
-            : <img src={iconUrl} className="icon-2x ms-2" alt="" />}
-        <div className="p-2 overflow-clip">
-            <h5 className="mb-0 text-truncate">{name}</h5>
+            ? <svg className="icon-3x ms-2"><use href={iconUrl} /></svg>
+            : <img src={iconUrl} className="icon-3x ms-2" alt="" />}
+        <div className="m-2 overflow-clip flex-1">
+            <h6 className="mb-0 text-truncate">{name}</h6>
             <p className="mb-0 text-truncate">{description}</p>
         </div>
     </RouteLink>

@@ -26,8 +26,10 @@ $spoiler-border-radius: $border-radius-sm;
 $btn-border-radius: $border-radius-sm;
 $badge-border-radius: $border-radius-sm;
 $toast-border-radius: $border-radius-sm;
-$modal-content-border-radius: $border-radius-sm;
+$modal-content-border-radius: $border-radius-xl;
+$modal-content-border-width: 0;
 $dropdown-border-radius: $border-radius-sm;
+$list-group-border-color: 0;
 
 $breadcrumb-border-radius: 0;
 $breadcrumb-divider: quote("\276f");
@@ -35,7 +37,7 @@ $breadcrumb-item-padding-x: map-get($spacers, 1);
 
 $card-box-shadow: var(--switch-shadow, $box-shadow-sm);
 $card-border-width: var(--switch-border, $card-border-width);
-$card-border-radius: var(--switch-border-radius, $card-border-radius);
+$card-border-radius: var(--switch-border-radius, $border-radius-xl);
 
 $expand-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$body-color}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
 $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$body-color-dark}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
@@ -153,6 +155,10 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
 
 a:not(.btn):focus-visible {
     border-radius: var(--#{$prefix}border-radius-sm);
+}
+
+.rounded-auto {
+    border-radius: inherit !important;
 }
 
 input {

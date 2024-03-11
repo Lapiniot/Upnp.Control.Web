@@ -10,7 +10,7 @@ type DataListProps = HTMLAttributes<HTMLDivElement> & {
     template?: ElementType;
     onDelete?: DeleteRowHandler;
     onDeleteAll?: (tag?: string | number | object) => void;
-};
+}
 
 export function DataList({ children, className, editable, template, tag, onDelete, onDeleteAll, ...other }: DataListProps) {
     const ref = useRef<HTMLDivElement>(null);
@@ -33,9 +33,9 @@ export function DataList({ children, className, editable, template, tag, onDelet
     const Container: ElementType = template ?? "div";
 
     return <div className="d-flex flex-nowrap align-items-center">
-        <div role="list" {...other} className={`d-grid grid-list flex-1 overflow-hidden g-3 p-3${className ? ` ${className}` : ""}`} ref={ref}>
+        <div role="list" {...other} className={`d-grid grid-list flex-1 g-3 p-3${className ? ` ${className}` : ""}`} ref={ref}>
             {React.Children.map(children, (child, index) =>
-                <Container role="listitem" className="d-flex align-items-center g-0 border rounded-1 overflow-clip">
+                <Container role="listitem" className="d-flex align-items-center">
                     {child}
                     {editMode && <button type="button" className="btn btn-round btn-plain ms-auto mx-2" onClick={deleteHandler}
                         data-index={index} data-key={(child && typeof child === "object" && "key" in child) ? child.key : undefined}>
