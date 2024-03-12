@@ -16,7 +16,7 @@ type PlaylistManagetToolbarProps = {
 
 const initial = {
     selection: [] as Upnp.DIDL.Item[],
-    dispatch: (_value: RowStateAction): void => { throw new Error("Unsupported in this state") }
+    dispatch: (_: RowStateAction): void => { throw new Error("Unsupported in this state") }
 }
 
 export function PlaylistManagerToolbar({ className, editMode, compact, rootLevel: rootLevel, fetching, title, subtitle, service, ...other }:

@@ -65,7 +65,7 @@ function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: Confirm
         </Dialog.Button>)
 }
 
-function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps<any> & { mapper?: RowStateMapperFunction } & ConfirmProps) {
+function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps<unknown> & { mapper?: RowStateMapperFunction } & ConfirmProps) {
     const { params, ...other } = useContentBrowser();
     const largeScreen = useMediaQuery(MediaQueries.largeScreen);
     const touchScreen = useMediaQuery(MediaQueries.touchDevice);

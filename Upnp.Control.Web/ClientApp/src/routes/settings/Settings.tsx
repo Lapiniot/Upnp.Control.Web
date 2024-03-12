@@ -55,16 +55,16 @@ export default () => {
                     <label htmlFor="scan-timeout-editor">Container scan timeout (ms.)</label>
                     <NumberEditor id="scan-timeout-editor" min="1000" max="90000" step="200" value={$s.get("containerScanTimeout")} callback={setScanTimeout} />
                     <label htmlFor="use-proxy-editor">Use DLNA proxy</label>
-                    <FlagEditor className="ms-auto" id="use-proxy-editor" checked={$s.get("useDlnaProxy")} callback={setUseProxy} />
+                    <FlagEditor className="ms-auto" id="use-proxy-editor" checked={$s.get("useDlnaProxy")} callback={setUseProxy} context={undefined} />
                 </div>
             </li>
             <li className="list-group-item">
                 <small>In-app notifications</small>
                 <div className="d-grid grid-1fr-auto g-3 mt-2 align-items-center">
                     <label htmlFor="discovery-nt">Device discovery</label>
-                    <FlagEditor id="discovery-nt" checked={$s.get("showDiscoveryNotifications")} callback={setShowDiscoveryNotifications} />
+                    <FlagEditor id="discovery-nt" checked={$s.get("showDiscoveryNotifications")} callback={setShowDiscoveryNotifications} context={undefined} />
                     <label htmlFor="playback-nt">Playback state changes</label>
-                    <FlagEditor id="playback-nt" checked={$s.get("showPlaybackNotifications")} callback={setShowPlaybackNotifications} />
+                    <FlagEditor id="playback-nt" checked={$s.get("showPlaybackNotifications")} callback={setShowPlaybackNotifications} context={undefined} />
                 </div>
             </li>
             {("serviceWorker" in navigator) && ("PushManager" in window) &&

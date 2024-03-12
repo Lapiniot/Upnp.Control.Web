@@ -8,13 +8,13 @@ import { BookmarkService } from "../../services/BookmarkService";
 import { BookmarkGroup, profile } from "../common/Settings";
 import { KnownWidgets, Widgets } from "../common/widgets/Widgets";
 
-type State = { [K in BookmarkGroup]: { widget: KnownWidgets; props: {} }[] }
+type State = { [K in BookmarkGroup]: { widget: KnownWidgets; props: object }[] }
 type Group = [BookmarkGroup, State["devices"]]
 
-const groups: { [K in BookmarkGroup]: [title: string, icon: string, idGenerator: (props: any) => string] } = {
-    "devices": ["Favourite devices", "important_devices", p => `${p.category}:${p.device}`],
-    "items": ["Favourite items", "bookmark_added", p => `${p.device}:${p.id}`],
-    "playlists": ["Favourite playlists", "heart_check", p => `${p.device}:${p.id}`]
+const groups: { [K in BookmarkGroup]: [title: string, icon: string, idGenerator: (props: unknown) => string] } = {
+    "devices": ["Favourite devices", "important_devices", (p: any) => `${p.category}:${p.device}`],
+    "items": ["Favourite items", "bookmark_added", (p: any) => `${p.device}:${p.id}`],
+    "playlists": ["Favourite playlists", "heart_check", (p: any) => `${p.device}:${p.id}`]
 }
 
 function renderCaption(caption: string, icon: string, count: number): React.ReactNode {

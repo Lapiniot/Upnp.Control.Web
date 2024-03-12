@@ -1,11 +1,5 @@
 ﻿export type RequestQuery = { [key: string]: any } | undefined | null
 
-declare var AbortSignal: {
-    prototype: AbortSignal;
-    new(): AbortSignal;
-    timeout(milliseconds: number): AbortSignal;
-}
-
 const fetch = "timeout" in AbortSignal
     ? function (url: string, init?: RequestInit, timeoutMilliseconds?: number) {
         const signal = timeoutMilliseconds ? AbortSignal.timeout(timeoutMilliseconds) : null;

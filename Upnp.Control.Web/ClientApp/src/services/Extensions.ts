@@ -13,9 +13,9 @@ export function parseMilliseconds(time: string): number {
 
 export function formatTime(seconds: number): string {
     if (!Number.isFinite(seconds)) return "--:--";
-    let h = Math.floor(seconds / 3600);
-    let m = Math.floor((seconds % 3600) / 60);
-    let s = Math.round((seconds % 3600) % 60);
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.round((seconds % 3600) % 60);
     return h > 0
         ? `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
         : `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
@@ -49,7 +49,7 @@ export function fromBase64(str: string): Uint8Array {
     return array;
 }
 
-export function debounce(fn: Function, delay: number = 500) {
+export function debounce(fn: (...args: any[]) => any, delay: number = 500) {
     let timeout: any;
     return function (this: any, ...args: any[]) {
         clearTimeout(timeout);

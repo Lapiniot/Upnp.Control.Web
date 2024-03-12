@@ -74,7 +74,7 @@ declare global {
 
     interface NavigationNavigateOptions extends NavigationOptions {
         state?: any;
-        history?: NavigationHistoryBehavior = "auto"
+        history?: NavigationHistoryBehavior
     }
 
     interface NavigationResult extends Record<string, any> {

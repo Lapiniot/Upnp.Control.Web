@@ -6,7 +6,7 @@ function clamp(value: number, min: number, max: number) {
     return Math.min(Math.max(value, min), max);
 }
 
-export type SliderChangeHandler = (position: number) => any;
+export type SliderChangeHandler = (position: number) => boolean | void;
 
 type SliderProps = Omit<HTMLProps<HTMLDivElement>, "onChange">
     & Omit<ProgressProps, "infinite">

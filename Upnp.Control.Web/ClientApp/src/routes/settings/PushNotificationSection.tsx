@@ -16,10 +16,10 @@ export function PushNotificationsSection() {
             </p>
         </div> : null}
         <label htmlFor="discovery-pushes-editor">Device discovery</label>
-        <FlagEditor id="discovery-pushes-editor" state={PNType.DeviceDiscovery}
+        <FlagEditor id="discovery-pushes-editor" context={PNType.DeviceDiscovery}
             checked={!!(types & PNType.DeviceDiscovery)} disabled={!valid || loading} callback={toggle} />
         <label htmlFor="playback-pushes-editor">Playback state changes</label>
-        <FlagEditor id="playback-pushes-editor" state={PNType.PlaybackStateChange}
+        <FlagEditor id="playback-pushes-editor" context={PNType.PlaybackStateChange}
             checked={!!(types & PNType.PlaybackStateChange)} disabled={!valid || loading} callback={toggle} />
     </>
 }

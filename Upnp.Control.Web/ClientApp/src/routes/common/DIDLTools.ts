@@ -41,7 +41,7 @@ export function formatSizeFull(size: number | undefined) {
 export function formatMediaInfo(data?: Upnp.DIDL.Resource, separator = "\r") {
     if (!data)
         return null;
-    let lines = [];
+    const lines = [];
     if (data.proto)
         lines.push(getContentType(data.proto));
     if (data.resolution)

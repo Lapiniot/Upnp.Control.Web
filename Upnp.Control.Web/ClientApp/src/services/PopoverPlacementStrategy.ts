@@ -38,7 +38,7 @@ const positions: PositionCalculators = {
     "bottom-start": (_, { x, y, height: h }, { distance: offset }) => ({ x, y: y + h + offset }),
     "bottom-end": ({ width }, { x, y, width: w, height: h }, { distance: offset }) => ({ x: x + w - width, y: y + h + offset }),
     "bottom-center": ({ width }, { x, y, width: w, height: h }, { distance: offset }) => ({ x: x + (w - width) / 2, y: y + h + offset }),
-    auto({ }, { }) {
+    auto() {
         return { x: 0, y: 0 }
     }
 }

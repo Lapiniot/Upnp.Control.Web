@@ -70,14 +70,17 @@ function reducer(state: InternalState, action: StateAction | MediaAction) {
         case "UPDATE":
             return { ...state, media: { ...state.media, ...action.state } };
         case "REFRESH":
-            const { client, dispatch, fetch } = state;
-            if (client && dispatch && fetch) {
-                fetch(client)
-                    .then(state => dispatch({ type: "UPDATE", state }))
-                    .catch(error => console.error(error));
-            } else {
-                throw new Error("Invalid state. Not ready.")
+            {
+                const { client, dispatch, fetch } = state;
+                if (client && dispatch && fetch) {
+                    fetch(client)
+                        .then(state => dispatch({ type: "UPDATE", state }))
+                        .catch(error => console.error(error));
+                } else {
+                    throw new Error("Invalid state. Not ready.")
+                }
             }
+
             break;
         case "PLAY":
             state.client?.play().fetch();
@@ -140,7 +143,7 @@ export function PlaybackStateProvider({ device, trackState = true, trackPosition
     }, [device, trackState, trackPosition, trackVolume, fetchVendorState]);
 
     const handlers = useMemo(() => {
-        const handlers = {} as Record<string, (...args: any) => void>;
+        const handlers = {} as Record<string, (...args: any[]) => void>;
 
         if (trackState || trackPosition || fetchVendorState) {
             handlers["AVTransportEvent"] = (target: string, { state, position, vendorProps = {} }: AVTEventArgs) => {

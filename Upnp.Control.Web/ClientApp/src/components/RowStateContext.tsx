@@ -50,7 +50,7 @@ const RowStateContext = createContext<RowStateContextData>({
 
 export default RowStateContext
 
-export type RowStateProviderProps = PropsWithChildren<{}> & {
+export type RowStateProviderProps = PropsWithChildren<unknown> & {
     items: Upnp.DIDL.Item[] | undefined,
     mapper?: RowStateMapperFunction,
     enabled?: boolean

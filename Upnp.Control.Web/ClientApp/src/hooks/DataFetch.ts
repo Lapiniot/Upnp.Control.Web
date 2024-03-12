@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 
-export interface DataContext<T extends any> {
+export interface DataContext<T> {
     source: T,
-    reload(callback?: () => Promise<any>): Promise<void>
+    reload(callback?: () => Promise<unknown | void>): Promise<void>
 }
 
 export type DataFetchProps<T> = {
@@ -13,13 +13,13 @@ export type DataFetchProps<T> = {
 
 type FetchState<T> = { fetching: boolean, dataContext: DataContext<T> | undefined, error: unknown }
 
-type Unwrap<F extends (...args: any) => any> = PromiseResult<ReturnType<F>>
+type Unwrap<F extends (...args: unknown[]) => unknown> = PromiseResult<ReturnType<F>>
 
-type CtxType<F extends (...args: any) => any> = Exclude<Unwrap<F>, undefined | null>
+type CtxType<F extends (...args: unknown[]) => unknown> = Exclude<Unwrap<F>, undefined | null>
 
 export function useDataFetch<F extends (...args: any[]) => any>(fetcher: F, ...args: Parameters<F>): FetchState<CtxType<F>> {
     const [state, setState] = useState<FetchState<CtxType<F>>>({ fetching: true, dataContext: undefined, error: undefined });
-    const fetchData = useMemo(() => (async (callback?: () => any) => {
+    const fetchData = useMemo(() => (async (callback?: () => unknown) => {
         try {
             setState(state => ({ ...state, fetching: true, error: undefined }));
             await callback?.();

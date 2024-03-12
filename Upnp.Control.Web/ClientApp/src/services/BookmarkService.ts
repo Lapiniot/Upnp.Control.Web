@@ -3,7 +3,7 @@ import { Database } from "./Database";
 const DB_NAME = "bookmarks";
 const DB_VERSION = 1;
 
-type WidgetProps<T = {}> = T & { [index: string]: any };
+type WidgetProps<T = object> = T & { [index: string]: any };
 
 function databaseMigrate(this: IDBOpenDBRequest, { newVersion }: IDBVersionChangeEvent) {
     const { result: db } = this;

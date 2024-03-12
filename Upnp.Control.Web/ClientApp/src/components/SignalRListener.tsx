@@ -1,7 +1,7 @@
 import React, { ContextType, PropsWithChildren } from "react";
 import { SignalRContext } from "./SignalRConnection";
 
-interface Callback { (...args: any): void }
+interface Callback { (...args: unknown[]): void }
 
 type SignalRListenerProps = { callbacks: Record<string, Callback> }
 

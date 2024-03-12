@@ -132,7 +132,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
 
     //#region API calls wrapped with UI indication and automatic data reload
 
-    private reload = (action?: () => Promise<any>) => this.props.dataContext ? this.props.dataContext.reload(action) : Promise.resolve(null);
+    private reload = (action?: () => Promise<unknown>) => this.props.dataContext ? this.props.dataContext.reload(action) : Promise.resolve(null);
 
     private rename = (id: string, title: string) => this.reload(() => this.pls.rename(id, title).fetch($s.get("timeout")));
 
@@ -154,7 +154,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
     private deleteItems = (ids: string[]) => this.reload(() => this.pls.removeItems(this.props.id, ids).fetch($s.get("timeout")));
 
     private showInfo = (id: string) => {
-        var item = this.props.dataContext?.source.items?.find(i => i.id === id);
+        const item = this.props.dataContext?.source.items?.find(i => i.id === id);
         if (!item) return;
         this.dialog(<ItemInfoDialog item={item} />);
     }
@@ -365,7 +365,7 @@ function Browser({ device, deviceName, getUrlHook, ...props }: PlaylistBrowserPr
         playItem: ({ currentTarget: { dataset: { index } } }) => dispatch({ type: "PLAY_URL", url: getUrlHook(parseInt(index!)) ?? "" }),
         state, device, deviceName
     }), [getUrlHook, state, device, deviceName]); // eslint-disable-line
-    const openCallback = useCallback((_: any, index: number) => {
+    const openCallback = useCallback((_: unknown, index: number) => {
         const url = getUrlHook(index);
         if (url) dispatch({ type: "PLAY_URL", url })
     }, [getUrlHook]); // eslint-disable-line

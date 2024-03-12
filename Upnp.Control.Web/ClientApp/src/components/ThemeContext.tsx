@@ -20,7 +20,7 @@ export function ThemeProvider({ children, storage }: PropsWithChildren & { stora
             setColorMode(query.matches ? "dark" : "light");
             query.addEventListener("change", mediaQueryChangeListener);
             return () => query.removeEventListener("change", mediaQueryChangeListener);
-        };
+        }
 
         setColorMode(theme);
     }, [theme, storage]);

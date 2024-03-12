@@ -2,7 +2,7 @@ import { cloneElement, Component, ReactElement, ReactNode } from "react";
 import { DialogProps } from "./Dialog";
 import { Portal } from "./Portal";
 
-export default class DialogHost extends Component<{}, { dialog?: ReactNode }> {
+export default class DialogHost extends Component<unknown, { dialog?: ReactNode }> {
 
     state = { dialog: undefined };
 

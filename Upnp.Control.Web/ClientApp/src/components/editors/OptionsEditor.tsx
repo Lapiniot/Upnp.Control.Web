@@ -1,7 +1,7 @@
 import { ChangeEventHandler, SelectHTMLAttributes, useCallback, useEffect, useState } from "react";
 
 type OptionsEditor = SelectHTMLAttributes<HTMLSelectElement> & {
-    options: any[];
+    options: (string | number | undefined)[];
     callback(value: string): void | boolean
 };
 

@@ -57,6 +57,6 @@ export function useNavigatorClickHandler() {
 
 export function createSearchParams(init: { [K in string]: string }) {
     const search = new URLSearchParams();
-    for (let k in init) search.set(k, init[k]);
+    for (const key in init) search.set(key, init[key]);
     return search;
 }

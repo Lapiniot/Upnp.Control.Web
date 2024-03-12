@@ -12,7 +12,7 @@ type FetchProps = {
     p?: string;
 };
 
-type RenderFlags = "withBreadcrumb" | "withPagination";
+type RenderFlags = "withPagination";
 
 export type BrowserCoreProps<TContext> =
     BrowserViewProps<TContext> & FetchProps &
@@ -22,7 +22,7 @@ export type BrowserCoreProps<TContext> =
 export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>) {
     useRowStates();
     const { dataContext: data, s: size, p: page, fetching, navigate, renderActionMenu, children } = props;
-    const { withBreadcrumb = true, withPagination = true, className, ...forwardProps } = props;
+    const { withPagination = true, className, ...forwardProps } = props;
     const { source: { total = 0, parents = undefined, device: dev = undefined } = {} } = data || {};
     const navBackHandler = useCallback(() => navigate(`../${parents?.[1]?.id ?? "-1"}`), [navigate, parents]);
 

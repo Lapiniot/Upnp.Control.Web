@@ -113,7 +113,7 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
         return this.props.mode === "menu" || (this.props.mode === "auto" && !MediaQueries.smallScreen.matches);
     }
 
-    private createPlacementStrategy(placement: any) {
+    private createPlacementStrategy(placement: Placement) {
         if (this.menuMode) {
             return new PopoverAnchorStrategy(placement);
         } else {

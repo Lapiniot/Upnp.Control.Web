@@ -9,7 +9,7 @@ function link(title?: string) {
     return (value: string) => <a href={value}>{title ?? value}</a>;
 }
 
-type AttributeDescriptor<T extends {}> = [name: keyof T & string, title: string, converter?: (value: any) => string | number | JSX.Element];
+type AttributeDescriptor<T extends object> = [name: keyof T & string, title: string, converter?: (value: any) => string | number | JSX.Element];
 type AttributeGroup<T extends {}> = [name: string, title: string, attributes: AttributeDescriptor<T>[]];
 
 const attributes: AttributeGroup<Upnp.DIDL.Item>[] = [

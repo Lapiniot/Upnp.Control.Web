@@ -174,7 +174,7 @@ export function Routes({ children }: { children: ReactElement | Iterable<ReactNo
     </RouterMatchContext.Provider>
 }
 
-export function Route({ }: RouteProps): never {
+export function Route(_: RouteProps): never {
     throw new Error("<Route> element cannot be used as standalone outside of its parent <Routes> or <Route>");
 }
 

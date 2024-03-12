@@ -27,8 +27,8 @@ export class SlideGestureRecognizer<TElement extends HTMLElement = HTMLElement> 
         super.onPointerDownEvent(event);
 
         requestAnimationFrame(() => {
-            var r = element.getBoundingClientRect();
-            this.handler(element, "slide", { phase: "start", x: clientX - r.x, y: clientY - r.y })
+            const rect = element.getBoundingClientRect();
+            this.handler(element, "slide", { phase: "start", x: clientX - rect.x, y: clientY - rect.y })
         });
     }
 
@@ -41,8 +41,8 @@ export class SlideGestureRecognizer<TElement extends HTMLElement = HTMLElement> 
         super.onPointerUpEvent(event);
 
         requestAnimationFrame(() => {
-            var r = element.getBoundingClientRect();
-            this.handler(element, "slide", { phase: "end", x: clientX - r.x, y: clientY - r.y })
+            const rect = element.getBoundingClientRect();
+            this.handler(element, "slide", { phase: "end", x: clientX - rect.x, y: clientY - rect.y })
         });
     }
 
@@ -56,8 +56,8 @@ export class SlideGestureRecognizer<TElement extends HTMLElement = HTMLElement> 
 
     protected override update() {
         if (this.target) {
-            var r = this.target.getBoundingClientRect();
-            this.handler(this.target as TElement, "slide", { phase: "move", x: this.x - r.x, y: this.y - r.y });
+            const rect = this.target.getBoundingClientRect();
+            this.handler(this.target as TElement, "slide", { phase: "move", x: this.x - rect.x, y: this.y - rect.y });
         }
     }
 }

@@ -68,7 +68,7 @@ export default {
         if (pushManager) {
             let subscription = await pushManager.getSubscription();
             if (subscription) {
-                var [, skr] = await Promise.allSettled([
+                const [, skr] = await Promise.allSettled([
                     WebApi.notifications().unsubscribe(subscription.endpoint, types).fetch(),
                     fetchServerPublicKey(),
                     subscription.unsubscribe()

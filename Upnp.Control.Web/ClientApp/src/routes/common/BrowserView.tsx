@@ -158,35 +158,40 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         switch (event.code) {
             case "Enter":
             case "ArrowRight":
-                const focusedRow = this.ref.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUSED_SELECTOR);
+                {
+                    const focusedRow = this.ref.current?.querySelector<HTMLDivElement>(DATA_ROW_FOCUSED_SELECTOR);
 
-                if (!focusedRow) {
-                    if (event.code === "ArrowRight")
-                        this.context.dispatch({ type: "SET_ONLY", index: 0 });
-                    return;
-                }
+                    if (!focusedRow) {
+                        if (event.code === "ArrowRight")
+                            this.context.dispatch({ type: "SET_ONLY", index: 0 });
+                        return;
+                    }
 
-                if (event.code === "Enter" && event.target !== focusedRow) return;
+                    if (event.code === "Enter" && event.target !== focusedRow) return;
 
-                const items = this.props.dataContext?.source.items;
-                if (!items) return;
-                const index = parseInt(focusedRow.dataset.index ?? "");
-                const item = items[index];
-                if (!item) return;
+                    const items = this.props.dataContext?.source.items;
+                    if (!items) return;
+                    const index = parseInt(focusedRow.dataset.index ?? "");
+                    const item = items[index];
+                    if (!item) return;
 
-                const state = this.context.get(index);
-                if (item.container && state & RowState.Navigable)
-                    this.props.navigate(`../${item.id}`);
-                else if (state ^ RowState.Readonly && event.code === "Enter" && this.props.openHandler) {
-                    const item = this.props.dataContext?.source.items?.[index];
-                    if (item) this.props.openHandler(item, index);
+                    const state = this.context.get(index);
+                    if (item.container && state & RowState.Navigable)
+                        this.props.navigate(`../${item.id}`);
+                    else if (state ^ RowState.Readonly && event.code === "Enter" && this.props.openHandler) {
+                        const item = this.props.dataContext?.source.items?.[index];
+                        if (item) this.props.openHandler(item, index);
+                    }
                 }
 
                 break;
             case "Backspace":
             case "ArrowLeft":
-                const parents = this.props.dataContext?.source.parents;
-                this.props.navigate(`../${parents?.[1]?.id ?? "-1"}`);
+                {
+                    const parents = this.props.dataContext?.source.parents;
+                    this.props.navigate(`../${parents?.[1]?.id ?? "-1"}`);
+                }
+
                 break;
             case "KeyA":
                 if (this.props.multiSelect && (event.metaKey || event.ctrlKey)) {

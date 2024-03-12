@@ -44,7 +44,13 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
         this.observer = new MutationObserver(this.onMutation);
     }
 
-    get open() { return this.dialogRef.current?.open! }
+    public static Header = Header;
+    public static Body = Body;
+    public static Footer = Footer;
+    public static Button = Button;
+
+
+    get open() { return this.dialogRef.current?.open ?? false }
 
     show = () => {
         this.dialogRef.current?.show();
@@ -143,37 +149,37 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
         return <dialog role="dialog" ref={this.dialogRef} className={`dialog${className ? ` ${className}` : ""}`}
             {...other} onClose={this.onClose} onClick={this.onClick}>
             <form ref={this.formRef} method="dialog" noValidate onSubmit={this.onSubmit}>
-                {renderHeader ? renderHeader() : <Dialog.Header><h5 className="dialog-title">{this.props.caption}</h5></Dialog.Header>}
-                {renderBody ? renderBody() : <Dialog.Body>{this.props.children}</Dialog.Body>}
-                {renderFooter ? renderFooter() : <Dialog.Footer>
-                    <Dialog.Button className="text-secondary">Cancel</Dialog.Button>
-                    <Dialog.Button className="text-primary" value="ok">OK</Dialog.Button>
-                </Dialog.Footer>}
+                {renderHeader ? renderHeader() : <Header><h5 className="dialog-title">{caption}</h5></Header>}
+                {renderBody ? renderBody() : <Body>{children}</Body>}
+                {renderFooter ? renderFooter() : <Footer>
+                    <Button className="text-secondary">Cancel</Button>
+                    <Button className="text-primary" value="ok">OK</Button>
+                </Footer>}
             </form>
         </dialog>
     }
+}
 
-    public static Header({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) {
-        return <header className={`dialog-header${className ? ` ${className}` : ""}`} {...other}>
-            {children}
-            <button className="btn-close" aria-label="Close" />
-        </header>
-    }
+function Header({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) {
+    return <header className={`dialog-header${className ? ` ${className}` : ""}`} {...other}>
+        {children}
+        <button className="btn-close" aria-label="Close" />
+    </header>
+}
 
-    public static Body({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
-        return <article className={`dialog-body${className ? ` ${className}` : ""}`} {...other}></article>
-    }
+function Body({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
+    return <article className={`dialog-body${className ? ` ${className}` : ""}`} {...other}></article>
+}
 
-    public static Footer({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
-        return <footer className={`dialog-footer${className ? ` ${className}` : ""}`} {...other}></footer>
-    }
+function Footer({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
+    return <footer className={`dialog-footer${className ? ` ${className}` : ""}`} {...other}></footer>
+}
 
-    public static Button({ className, icon, children, autoFocus, ...other }: DialogButtonProps) {
-        const cls = `btn btn-plain text-uppercase ${className ? ` ${className}` : ""}`;
-        const ref = useRef<HTMLButtonElement>(null);
-        useAutoFocus(ref, autoFocus);
-        return <button ref={ref} type="submit" className={cls} {...other}>
-            {icon && <svg><use href={icon} /></svg>}{children}
-        </button>
-    }
+function Button({ className, icon, children, autoFocus, ...other }: DialogButtonProps) {
+    const cls = `btn btn-plain text-uppercase ${className ? ` ${className}` : ""}`;
+    const ref = useRef<HTMLButtonElement>(null);
+    useAutoFocus(ref, autoFocus);
+    return <button ref={ref} type="submit" className={cls} {...other}>
+        {icon && <svg><use href={icon} /></svg>}{children}
+    </button>
 }

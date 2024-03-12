@@ -213,7 +213,7 @@ export class BrowseFetch extends JsonHttpFetch<Upnp.BrowseFetchResult> {
 
 function createFormData(files: Iterable<File>, useProxy?: boolean) {
     const data = new FormData();
-    for (let file of files) data.append("files", file);
+    for (const file of files) data.append("files", file);
     if (useProxy) data.set("useProxy", "true");
     return data;
 }

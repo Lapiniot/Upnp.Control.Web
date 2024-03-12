@@ -2,13 +2,13 @@ export interface GestureHandler<TElement extends HTMLElement, TGesture extends s
     (target: TElement, gesture: TGesture, params: TParams): void;
 }
 
-export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture extends string, TParams extends unknown> {
+export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture extends string, TParams> {
     protected handler: GestureHandler<TElement, TGesture, TParams>;
     protected target: TElement | null = null;
     protected startX: number = 0;
     protected startY: number = 0;
     protected startTime: number = 0;
-    private updatePending: any;
+    private updatePending = false;
     private options: AddEventListenerOptions;
     private readonly pointerDownListener = this.onPointerDownEvent.bind(this);
     private readonly pointerUpListener = this.onPointerUpEvent.bind(this);
