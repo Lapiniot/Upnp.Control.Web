@@ -15,7 +15,7 @@ export const enum RowState {
 }
 
 export type RowStateAction =
-    { type: "UPDATE"; props: Partial<Omit<RowStateProviderState, "states" | "current" | "updateId">> } |
+    { type: "INIT", initial: { items: Upnp.DIDL.Item[] | undefined, mapper: RowStateMapperFunction } } |
     { type: "TOGGLE", index: number } |
     { type: "TOGGLE_ALL" } |
     { type: "SET", index: number, selected: boolean } |
@@ -60,15 +60,14 @@ type RowStateProviderState = {
     items: Upnp.DIDL.Item[] | undefined,
     mapper: RowStateMapperFunction | undefined,
     states: RowState[] | undefined,
-    current: number | undefined,
-    updateId: number
+    current: number | undefined
 }
 
 function set(state: RowStateProviderState, index: number, selected: boolean): RowStateProviderState {
     if (index < 0 || !state.states || index >= state.states.length)
         throw new Error(IndexOutOfRangeError);
 
-    const { states, updateId, current } = state;
+    const { states, current } = state;
 
     if (selected) {
         states[index] |= RowState.Selected;
@@ -77,36 +76,36 @@ function set(state: RowStateProviderState, index: number, selected: boolean): Ro
         states[index] &= ~RowState.Selected;
     }
 
-    return { ...state, current: selected ? index : index === current ? undefined : current, updateId: updateId + 1 };
+    return { ...state, current: selected ? index : index === current ? undefined : current };
 }
 
 function toggle(state: RowStateProviderState, index: number): RowStateProviderState {
     if (!state.states) return state;
 
-    const { states, updateId } = state;
+    const { states } = state;
     states[index] ^= RowState.Selected;
     const current = states[index] & RowState.Selected ? index :
         state.current === index ? undefined : state.current;
-    return { ...state, current, updateId: updateId + 1 };
+    return { ...state, current };
 }
 
 function setOnly(state: RowStateProviderState, index: number): RowStateProviderState {
     if (index < 0 || !state.states || index >= state.states.length)
         throw new Error(IndexOutOfRangeError);
 
-    const { states, updateId } = state;
+    const { states } = state;
 
     for (let i = 0; i < states.length; i++) {
         states[i] &= ~RowState.Selected;
     }
 
     states[index] |= RowState.Selected;
-    return { ...state, current: index, updateId: updateId + 1 };
+    return { ...state, current: index };
 }
 
 function setAll(state: RowStateProviderState, selected: boolean): RowStateProviderState {
     if (!state.states) return state;
-    const { states, updateId } = state;
+    const { states } = state;
 
     if (selected) {
         for (let i = 0; i < states.length; i++)
@@ -118,7 +117,7 @@ function setAll(state: RowStateProviderState, selected: boolean): RowStateProvid
     }
 
     const current = selected ? states.length - 1 : undefined;
-    return { ...state, current, updateId: updateId + 1 };
+    return { ...state, current };
 }
 
 function expandTo(state: RowStateProviderState, index: number): RowStateProviderState {
@@ -129,7 +128,7 @@ function expandTo(state: RowStateProviderState, index: number): RowStateProvider
         return set(state, index, true);
     }
 
-    const { states, current, updateId } = state;
+    const { states, current } = state;
 
     const start = Math.min(current, index);
     const end = Math.max(current, index);
@@ -150,7 +149,7 @@ function expandTo(state: RowStateProviderState, index: number): RowStateProvider
             states[i] |= RowState.Selected;
     }
 
-    return { ...state, current: index, updateId: updateId + 1 };
+    return { ...state, current: index };
 }
 
 function expandDown(state: RowStateProviderState): RowStateProviderState {
@@ -160,7 +159,7 @@ function expandDown(state: RowStateProviderState): RowStateProviderState {
         return setOnly(state, 0);
     }
 
-    const { states, current, updateId } = state;
+    const { states, current } = state;
     const index = current + 1;
 
     if (index < states.length) {
@@ -177,7 +176,7 @@ function expandDown(state: RowStateProviderState): RowStateProviderState {
         }
     }
 
-    return { ...state, updateId: updateId + 1 };
+    return { ...state };
 }
 
 function expandUp(state: RowStateProviderState): RowStateProviderState {
@@ -188,7 +187,7 @@ function expandUp(state: RowStateProviderState): RowStateProviderState {
         return setOnly(state, state.states.length - 1);
     }
 
-    const { states, current, updateId } = state;
+    const { states, current } = state;
     const index = current - 1;
 
     if (index >= 0) {
@@ -205,7 +204,7 @@ function expandUp(state: RowStateProviderState): RowStateProviderState {
         }
     }
 
-    return { ...state, updateId: updateId + 1 };
+    return { ...state };
 }
 
 function findFirstInRange(states: RowState[], state: boolean, start: number, end: number) {
@@ -227,7 +226,7 @@ function findLastInRange(states: RowState[], state: boolean, start: number, end:
 function setActive(state: RowStateProviderState, index: number | undefined): RowStateProviderState {
     if (!state.states) return state;
 
-    const { states, updateId } = state;
+    const { states } = state;
 
     for (let index = 0; index < states.length; index++) {
         states[index] &= ~RowState.Active;
@@ -237,16 +236,20 @@ function setActive(state: RowStateProviderState, index: number | undefined): Row
         states[index] |= RowState.Active;
     }
 
-    return { ...state, updateId: updateId + 1 };
+    return { ...state };
+}
+
+function getInitialState({ items, mapper }: { items: Upnp.DIDL.Item[] | undefined, mapper: RowStateMapperFunction }): RowStateProviderState {
+    return {
+        items, mapper, current: undefined,
+        states: items?.map((item, index) => mapper(item, index, undefined))
+    }
 }
 
 function reducer(state: RowStateProviderState, action: RowStateAction): RowStateProviderState {
     switch (action.type) {
-        case "UPDATE":
-            const { mapper, items } = action.props;
-            return items && mapper
-                ? { items, mapper, states: items.map((i, index) => mapper(i, index, undefined)), current: undefined, updateId: state.updateId + 1 }
-                : { items, mapper, states: undefined, current: undefined, updateId: state.updateId + 1 };
+        case "INIT":
+            return getInitialState(action.initial);
         case "TOGGLE":
             return toggle(state, action.index);
         case "TOGGLE_ALL":
@@ -278,26 +281,22 @@ function getRowState() {
 }
 
 export function RowStateProvider({ items, mapper = getRowState, enabled = true, ...other }: RowStateProviderProps) {
+    const [state, dispatch] = useReducer(reducer, { items, mapper }, getInitialState);
 
-    const [state, dispatch] = useReducer(reducer, null, () => ({
-        items: items,
-        mapper: mapper,
-        states: items?.map((item, index) => mapper(item, index, undefined)),
-        current: undefined,
-        updateId: 0
-    }));
-
-    const value = useMemo(() => ({
-        selection: (items && state.states?.reduce((acc: Upnp.DIDL.Item[], current, index) => ((current & RowState.SelectMask) === RowState.SelectMask && acc.push(items[index]), acc), [])) ?? [],
-        current: state.current,
-        enabled: enabled && !!(state.states),
-        allSelected: !!(state.states?.every(s => s & RowState.Selected)),
-        get: (index: number) => state.states?.[index] ?? RowState.None,
-        dispatch
-    }), [enabled, state.updateId]);
+    const value = useMemo(() => {
+        const { items, states, current } = state;
+        return {
+            selection: (items && states?.reduce((acc, current, index) => ((current & RowState.SelectMask) === RowState.SelectMask && acc.push(items[index]), acc), [] as Upnp.DIDL.Item[])) ?? [],
+            current,
+            enabled: enabled && !!states,
+            allSelected: !!(states?.every(s => s & RowState.Selected)),
+            get: (index: number) => states?.[index] ?? RowState.None,
+            dispatch
+        }
+    }, [enabled, state]);
 
     if (state.items !== items || state.mapper !== mapper) {
-        dispatch({ type: "UPDATE", props: { items, mapper } });
+        dispatch({ type: "INIT", initial: { items, mapper } });
     }
 
     return <RowStateContext.Provider {...other} value={value} />;
