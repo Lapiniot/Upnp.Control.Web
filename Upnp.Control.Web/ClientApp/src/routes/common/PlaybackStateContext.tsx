@@ -166,7 +166,7 @@ export function PlaybackStateProvider({ device, trackState = true, trackPosition
         }
 
         return handlers;
-    }, [device, trackState, trackPosition, trackVolume]);
+    }, [device, trackState, trackPosition, trackVolume, fetchVendorState]);
 
     useSignalR(handlers);
 

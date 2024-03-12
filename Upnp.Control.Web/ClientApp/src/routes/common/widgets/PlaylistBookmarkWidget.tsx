@@ -14,7 +14,7 @@ export type PlaylistBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
 // TODO: consider merge of album-art and generic icon styles
 
 export default function ({ device, id, title, icon, deviceName }: PlaylistBookmarkWidgetProps) {
-    const clickHandler = useCallback(() => WebApi.control(device).playUri(`x-mi://sys/playlist?id=${id.substring(3)}#play`).fetch(), []);
+    const clickHandler = useCallback(() => WebApi.control(device).playUri(`x-mi://sys/playlist?id=${id.substring(3)}#play`).fetch(), [device, id]);
     return <div className="hstack flex-1 rounded-auto overflow-clip">
         <button type="button" className={`btn btn-stack m-2 me-1`}
             title={`Play \u00AB${title}\u00BB on ${deviceName}`} onClick={clickHandler}>

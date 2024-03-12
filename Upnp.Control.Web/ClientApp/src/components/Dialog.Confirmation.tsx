@@ -20,7 +20,7 @@ export default function ({ confirmText = "OK", confirmColor = "primary", dismiss
     const renderFooter = useCallback(() => <Dialog.Footer>
         <Dialog.Button>{dismissText}</Dialog.Button>
         <Dialog.Button value="confirm" className={`text-${confirmColor}`}>{confirmText}</Dialog.Button>
-    </Dialog.Footer>, [confirmText]);
+    </Dialog.Footer>, [confirmText, dismissText, confirmColor]);
 
     return <Dialog {...other} renderFooter={renderFooter} onDismissed={onDismissedHandler}>{children}</Dialog>;
 }

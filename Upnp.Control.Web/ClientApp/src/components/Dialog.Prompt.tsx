@@ -23,7 +23,7 @@ export default function (props: TextValueEditDialogProps) {
     const renderFooter = useCallback(() => <Dialog.Footer>
         <Dialog.Button>{dismissText}</Dialog.Button>
         <Dialog.Button value="confirm" className={`text-${confirmColor}`}>{confirmText}</Dialog.Button>
-    </Dialog.Footer>, [confirmText]);
+    </Dialog.Footer>, [confirmText, dismissText, confirmColor]);
 
     return <Dialog {...other} onDismissed={onDismissedHandler} renderFooter={renderFooter}>
         <input type="text" name="text-input" className="form-control" defaultValue={defaultValue}

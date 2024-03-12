@@ -364,11 +364,11 @@ function Browser({ device, deviceName, getUrlHook, ...props }: PlaylistBrowserPr
         pause: () => dispatch({ type: "PAUSE" }),
         playItem: ({ currentTarget: { dataset: { index } } }) => dispatch({ type: "PLAY_URL", url: getUrlHook(parseInt(index!)) ?? "" }),
         state, device, deviceName
-    }), [getUrlHook, state, device, deviceName]);
+    }), [getUrlHook, state, device, deviceName]); // eslint-disable-line
     const openCallback = useCallback((_: any, index: number) => {
         const url = getUrlHook(index);
         if (url) dispatch({ type: "PLAY_URL", url })
-    }, [getUrlHook]);
+    }, [getUrlHook]); // eslint-disable-line
 
     return <BrowserView {...props} useLevelUpRow={false} mainCellTemplate={MainCell} mainCellContext={context} openHandler={openCallback} />
 }

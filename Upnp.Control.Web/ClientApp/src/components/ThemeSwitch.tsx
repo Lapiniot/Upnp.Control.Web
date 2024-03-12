@@ -14,6 +14,7 @@ const sequence: { [K in UI.Theme]: number } = { "light": 1, "dark": 2, "auto": 0
 export function ThemeSwitch({ mode = "compact", className, btnClassName }: HTMLAttributes<HTMLDivElement> & ThemeSwitchProps) {
     const [current, setTheme] = useContext(ThemeContext);
     const largeScreen = useMediaQuery(MediaQueries.largeScreen, mode === "responsive");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const toggleTheme = useCallback((event: React.MouseEvent<HTMLButtonElement>) => setTheme(event.currentTarget.dataset["themeToggle"] as UI.Theme), []);
     const next = themes[sequence[current]];
     const renderMode: typeof mode = mode === "responsive"

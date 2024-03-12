@@ -11,14 +11,13 @@ function useMediaQuery(query: MediaQueryList, enabled: boolean = true) {
 
         if (enabled) {
             query.addEventListener("change", listener);
-            if (matches !== query.matches)
-                setMatches(query.matches);
+            setMatches(query.matches);
         }
 
         return () => {
             query.removeEventListener("change", listener);
         }
-    }, [query.media, enabled]);
+    }, [query, enabled]); // eslint-disable-line
 
     return matches;
 }

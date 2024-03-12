@@ -15,12 +15,14 @@ type DataListProps = HTMLAttributes<HTMLDivElement> & {
 export function DataList({ children, className, editable, template, tag, onDelete, onDeleteAll, ...other }: DataListProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [editMode, setEditMode] = useState(false);
-    const toggleHandler = useCallback(() => setEditMode(prev => !prev), []);
+    const toggleHandler = useCallback(() => setEditMode(mode => !mode), []);
     const deleteHandler = useCallback<MouseEventHandler<HTMLButtonElement>>(
         ({ currentTarget: { dataset: { index, key } } }) =>
             onDelete?.(parseInt(index ?? ""), key, tag), [onDelete, tag]);
     const deleteAllHandler = useCallback(() => onDeleteAll?.(tag), [onDeleteAll, tag]);
-    const recognizer = useMemo(() => new PressHoldGestureRecognizer<HTMLDivElement>(toggleHandler), []);
+    const recognizer = useMemo(() => new PressHoldGestureRecognizer<HTMLDivElement>(() => setEditMode(mode => !mode)), []);
+
+    /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
         recognizer.unbind();
         if (editable)
@@ -28,7 +30,7 @@ export function DataList({ children, className, editable, template, tag, onDelet
         else if (editMode)
             setEditMode(false);
         return () => recognizer.unbind();
-    }, [editable]);
+    }, [editable, editMode]);
 
     const Container: ElementType = template ?? "div";
 

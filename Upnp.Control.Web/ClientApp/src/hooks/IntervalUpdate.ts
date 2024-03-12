@@ -29,5 +29,5 @@ export function useIntervalUpdate(callback: UpdateCallback, active = true, inter
         }
 
         return () => props.current.controller?.abort();
-    }, [active, interval, callback]);
+    }, [active, interval, callback]); // eslint-disable-line
 }

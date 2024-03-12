@@ -30,9 +30,9 @@ function PlayerCore({ udn }: { udn: string | undefined }) {
             case "swipe-left": dispatch({ type: "NEXT" }); break;
             case "swipe-right": dispatch({ type: "PREV" }); break;
         }
-    }), []);
+    }), []); // eslint-disable-line
 
-    const refCallback = useCallback((e: HTMLDivElement) => { if (e) { sgr.bind(e) } else { sgr.unbind() } }, []);
+    const refCallback = useCallback((e: HTMLDivElement) => { if (e) { sgr.bind(e) } else { sgr.unbind() } }, []); // eslint-disable-line
 
     const loading = state === "UNKNOWN" || state === undefined;
     const { title, album, creator } = current || {};

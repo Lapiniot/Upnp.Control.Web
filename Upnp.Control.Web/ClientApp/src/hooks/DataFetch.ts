@@ -31,7 +31,7 @@ export function useDataFetch<F extends (...args: any[]) => any>(fetcher: F, ...a
             setState(state => ({ ...state, fetching: false, error: error }));
             throw error;
         }
-    }), [fetcher, ...args]);
+    }), [fetcher, ...args]); // eslint-disable-line
 
     useEffect(() => { fetchData() }, [fetchData]);
 
