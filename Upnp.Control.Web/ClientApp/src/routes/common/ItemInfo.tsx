@@ -1,16 +1,19 @@
 import AlbumArt from "./AlbumArt";
 import { formatBitrate, formatChannels, formatSampleFrequency, formatSize, formatSizeFull, formatTime, getContentType, getDisplayName, getYear } from "./DIDLTools";
 
-function join(value: string[]) {
-    return value.join(", ");
+function join(values: string[]) {
+    return values.join(", ");
 }
 
 function link(title?: string) {
     return (value: string) => <a href={value}>{title ?? value}</a>;
 }
 
-type AttributeDescriptor<T extends object> = [name: keyof T & string, title: string, converter?: (value: any) => string | number | JSX.Element];
-type AttributeGroup<T extends {}> = [name: string, title: string, attributes: AttributeDescriptor<T>[]];
+type AttributeDescriptor<T extends object, K extends keyof T & string = keyof T & string> = K extends keyof T ?
+    [name: K, title: string, converter?: (value: NonNullable<T[K]>) => string | number | JSX.Element]
+    : never;
+
+type AttributeGroup<T extends object> = [name: string, title: string, attributes: AttributeDescriptor<T>[]]
 
 const attributes: AttributeGroup<Upnp.DIDL.Item>[] = [
     ["gen", "General", [
@@ -53,13 +56,15 @@ const resAttributes: AttributeGroup<Upnp.DIDL.Resource>[] = [
         ["infoUri", "Info Url", link()],
         ["protection", "Protection"]]]];
 
-function render<T extends {}>(item: T, groups: AttributeGroup<T>[]) {
+function render<T extends object>(item: T, groups: AttributeGroup<T>[]) {
     return groups.flatMap(({ 0: groupName, 1: groupTitle, 2: attributes }) => {
         const attrs = attributes.flatMap(({ 0: name, 1: title, 2: converter }) => {
-            const value = item[name] as any;
-            return value ? [
+            const value = item[name];
+            return value !== undefined && value !== null ? [
                 <span key={`l-${name}}`} className="grid-form-label text-end">{title}</span>,
-                <span key={`t-${name}`} className="grid-form-text text-wrap">{converter?.(value) ?? value}</span>
+                <span key={`t-${name}`} className="grid-form-text text-wrap">
+                    {converter ? converter(value) : String(value)}
+                </span>
             ] : [];
         });
 

@@ -1,4 +1,4 @@
-﻿export type RequestQuery = { [key: string]: any } | undefined | null
+﻿export type RequestQuery = Record<string, string> | undefined
 
 const fetch = "timeout" in AbortSignal
     ? function (url: string, init?: RequestInit, timeoutMilliseconds?: number) {
@@ -47,6 +47,7 @@ export class HttpFetch extends UrlBuilder {
 
     withTimeout(timeout: number) {
         const { constructor } = this;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const speciesConstructor = (<any>constructor)[Symbol.species];
         const instance = new (speciesConstructor ?? constructor)(this.path, this.query, this.init);
         instance.timeout = timeout;

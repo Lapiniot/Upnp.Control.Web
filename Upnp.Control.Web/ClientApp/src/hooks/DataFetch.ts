@@ -13,12 +13,14 @@ export type DataFetchProps<T> = {
 
 type FetchState<T> = { fetching: boolean, dataContext: DataContext<T> | undefined, error: unknown }
 
-type Unwrap<F extends (...args: unknown[]) => unknown> = PromiseResult<ReturnType<F>>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DataType<T extends (...args: any[]) => any> = NonNullable<(T extends (...args: any[]) => infer U
+    ? U extends Promise<infer V> ? V : U
+    : never)>
 
-type CtxType<F extends (...args: unknown[]) => unknown> = Exclude<Unwrap<F>, undefined | null>
-
-export function useDataFetch<F extends (...args: any[]) => any>(fetcher: F, ...args: Parameters<F>): FetchState<CtxType<F>> {
-    const [state, setState] = useState<FetchState<CtxType<F>>>({ fetching: true, dataContext: undefined, error: undefined });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useDataFetch<F extends (...args: any[]) => any>(fetcher: F, ...args: Parameters<F>): FetchState<DataType<F>> {
+    const [state, setState] = useState<FetchState<DataType<F>>>({ fetching: true, dataContext: undefined, error: undefined });
     const fetchData = useMemo(() => (async (callback?: () => unknown) => {
         try {
             setState(state => ({ ...state, fetching: true, error: undefined }));

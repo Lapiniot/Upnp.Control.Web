@@ -97,38 +97,38 @@ export default class WebApi {
         return {
             get deviceId() { return deviceId },
             state() { return new JsonHttpFetch(`${devicesBaseUri}/${deviceId}/playlists/state`) },
-            create(title: string) { return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists`, null, json(title)) },
+            create(title: string) { return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists`, undefined, json(title)) },
             createFromItems(title: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) {
-                return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists/items`, null,
+                return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists/items`, undefined,
                     json({ title, source: { deviceId: sourceDevice, items: sourceIds, maxDepth } }))
             },
             createFromFiles(data: Iterable<File> | FormData, title?: string | null, merge?: boolean, useProxy?: boolean) {
                 const url = `${devicesBaseUri}/${deviceId}/playlists/files`;
 
                 if (data instanceof FormData) {
-                    return new HttpPostFetch(url, null, { body: data });
+                    return new HttpPostFetch(url, undefined, { body: data });
                 }
 
                 const formData = createFormData(data, useProxy);
                 if (title) formData.set("title", title);
                 if (merge) formData.set("merge", "true");
 
-                return new HttpPostFetch(url, null, { body: formData });
+                return new HttpPostFetch(url, undefined, { body: formData });
             },
-            rename(id: string, title: string) { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}`, null, json(title)) },
-            delete(ids: string[]) { return new HttpDeleteFetch(`${devicesBaseUri}/${deviceId}/playlists`, null, json(ids)) },
-            copy(id: string, title?: string) { return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/copy`, null, json(title)) },
+            rename(id: string, title: string) { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}`, undefined, json(title)) },
+            delete(ids: string[]) { return new HttpDeleteFetch(`${devicesBaseUri}/${deviceId}/playlists`, undefined, json(ids)) },
+            copy(id: string, title?: string) { return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/copy`, undefined, json(title)) },
             addItems(id: string, sourceDevice: string, sourceIds: string[], maxDepth?: number) {
-                return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/items`, null, json({ deviceId: sourceDevice, items: sourceIds, maxDepth }))
+                return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/items`, undefined, json({ deviceId: sourceDevice, items: sourceIds, maxDepth }))
             },
             addUrl(id: string, url: string, title?: string, useProxy?: boolean) {
-                return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/feeds`, null, json({ url, title, useProxy }))
+                return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/feeds`, undefined, json({ url, title, useProxy }))
             },
             addFromFiles(id: string, data: Iterable<File> | FormData, useProxy?: boolean) {
-                return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/files`, null, { body: data instanceof FormData ? data : createFormData(data, useProxy) })
+                return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/files`, undefined, { body: data instanceof FormData ? data : createFormData(data, useProxy) })
             },
             removeItems(id: string, ids: string[]) {
-                return new HttpDeleteFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/items`, null, json(ids))
+                return new HttpDeleteFetch(`${devicesBaseUri}/${deviceId}/playlists/${id}/items`, undefined, json(ids))
             }
         }
     }
@@ -137,10 +137,10 @@ export default class WebApi {
         return {
             get deviceId() { return deviceId },
             enqueue(queueId: string, sourceDevice: string, sourceIds: string[]) {
-                return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/queues/${queueId}/items`, null, json({ deviceId: sourceDevice, items: sourceIds }))
+                return new HttpPostFetch(`${devicesBaseUri}/${deviceId}/queues/${queueId}/items`, undefined, json({ deviceId: sourceDevice, items: sourceIds }))
             },
             clear(queueId: string) {
-                return new HttpDeleteFetch(`${devicesBaseUri}/${deviceId}/queues/${queueId}/items`, null)
+                return new HttpDeleteFetch(`${devicesBaseUri}/${deviceId}/queues/${queueId}/items`, undefined)
             }
         }
     }
@@ -151,23 +151,23 @@ export default class WebApi {
             get deviceId() { return deviceId },
             state(detailed = false) { return new JsonHttpFetch(`${devicesBaseUri}/${deviceId}/state${detailed ? "?detailed=true" : ""}`) },
             play(id?: string, sourceDevice?: string) {
-                return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, json({ state: "playing", objectId: id, sourceDevice }))
+                return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, undefined, json({ state: "playing", objectId: id, sourceDevice }))
             },
-            playUri(id: string) { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, json({ state: "playing", currentUri: id })) },
-            pause() { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, json({ state: "paused" })) },
-            stop() { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, json({ state: "stopped" })) },
-            prev() { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, json({ state: "playing-prev" })) },
-            next() { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, null, json({ state: "playing-next" })) },
+            playUri(id: string) { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, undefined, json({ state: "playing", currentUri: id })) },
+            pause() { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, undefined, json({ state: "paused" })) },
+            stop() { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, undefined, json({ state: "stopped" })) },
+            prev() { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, undefined, json({ state: "playing-prev" })) },
+            next() { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/state`, undefined, json({ state: "playing-next" })) },
             position(detailed = false) { return new JsonHttpFetch(`${devicesBaseUri}/${deviceId}/position${detailed ? "?detailed=true" : ""}`) },
             seek(position: number | string) {
-                return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/position`, null,
+                return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/position`, undefined,
                     json(typeof position === "number" ? { position: position } : { relTime: position }))
             },
-            setPlayMode(mode: string) { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/play-mode`, null, json(mode)) },
+            setPlayMode(mode: string) { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/play-mode`, undefined, json(mode)) },
             volume(detailed = false) { return new JsonHttpFetch(`${devicesBaseUri}/${deviceId}/volume${detailed ? "?detailed=true" : ""}`) },
-            setVolume(volume: number) { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/volume`, null, json(volume)) },
+            setVolume(volume: number) { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/volume`, undefined, json(volume)) },
             getMute() { return new JsonHttpFetch(`${devicesBaseUri}/${deviceId}/mute`) },
-            setMute(mute: boolean) { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/mute`, null, json(mute)) }
+            setMute(mute: boolean) { return new HttpPutFetch(`${devicesBaseUri}/${deviceId}/mute`, undefined, json(mute)) }
         }
     }
 
@@ -180,35 +180,40 @@ export default class WebApi {
 
 const pushSubscriber = {
     subscribe(endpoint: string, type: PushNotificationType, p256dh: ArrayBuffer | null, auth: ArrayBuffer | null) {
-        return new HttpPostFetch(`${baseUri}/push-subscriptions`, null, json({ endpoint, type, p256dhKey: toBase64(p256dh), authKey: toBase64(auth) }))
+        return new HttpPostFetch(`${baseUri}/push-subscriptions`, undefined, json({ endpoint, type, p256dhKey: toBase64(p256dh), authKey: toBase64(auth) }))
     },
     unsubscribe(endpoint: string, type: PushNotificationType) {
-        return new HttpDeleteFetch(`${baseUri}/push-subscriptions`, { endpoint, type })
+        return new HttpDeleteFetch(`${baseUri}/push-subscriptions`, { endpoint, type: type.toString() })
     },
     state(endpoint: string) { return new JsonHttpFetch<PushNotificationSubscriptionState>(`${baseUri}/push-subscriptions`, { endpoint }) },
     serverKey() { return new HttpFetch(`${baseUri}/push-subscriptions/server-key`) }
 }
 
 export class BrowseFetch extends JsonHttpFetch<Upnp.BrowseFetchResult> {
-    constructor(path: string, query: RequestQuery = {}) {
+    constructor(path: string, query?: RequestQuery) {
         super(path, query);
     }
 
-    withParents() { return new BrowseFetch(this.path, { ...this.query, withParents: true }) }
+    withParents() { return new BrowseFetch(this.path, { ...this.query, withParents: "true" }) }
 
-    withResource() { return new BrowseFetch(this.path, { ...this.query, withResourceProps: true }) }
+    withResource() { return new BrowseFetch(this.path, { ...this.query, withResourceProps: "true" }) }
 
-    withVendor() { return new BrowseFetch(this.path, { ...this.query, withVendorProps: true }) }
+    withVendor() { return new BrowseFetch(this.path, { ...this.query, withVendorProps: "true" }) }
 
-    withMetadata() { return new BrowseFetch(this.path, { ...this.query, withMetadata: true }) }
+    withMetadata() { return new BrowseFetch(this.path, { ...this.query, withMetadata: "true" }) }
 
-    withDevice() { return new BrowseFetch(this.path, { ...this.query, withDevice: true }) }
+    withDevice() { return new BrowseFetch(this.path, { ...this.query, withDevice: "true" }) }
 
-    withOptions(options: BrowseOptions) { return new BrowseFetch(this.path, { ...this.query, ...options }) }
+    withOptions(options: BrowseOptions) {
+        const query = { ...this.query };
+        for (const key in options)
+            query[key] = String(options[key as BrowseOptionFlags]);
+        return new BrowseFetch(this.path, query)
+    }
 
-    take(count: number) { return new BrowseFetch(this.path, { ...this.query, take: count }) }
+    take(count: number) { return new BrowseFetch(this.path, { ...this.query, take: count.toString() }) }
 
-    skip(count: number) { return new BrowseFetch(this.path, { ...this.query, skip: count }) }
+    skip(count: number) { return new BrowseFetch(this.path, { ...this.query, skip: count.toString() }) }
 }
 
 function createFormData(files: Iterable<File>, useProxy?: boolean) {
@@ -218,7 +223,7 @@ function createFormData(files: Iterable<File>, useProxy?: boolean) {
     return data;
 }
 
-function json(data: any): RequestInit {
+function json<T>(data: T): RequestInit {
     return {
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" }
