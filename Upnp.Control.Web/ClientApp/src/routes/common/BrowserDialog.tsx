@@ -1,8 +1,10 @@
-import { HTMLAttributes, ReactNode, useCallback } from "react";
-import { useDataFetch } from "../../hooks/DataFetch";
-import Dialog, { DialogProps } from "../../components/Dialog";
-import { MediaQueries, useMediaQuery } from "../../hooks/MediaQuery";
+import { ComponentPropsWithRef, HTMLAttributes, ReactNode, useCallback } from "react";
+import Dialog from "../../components/Dialog";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
+import { RowStateMapperFunction, RowStateProvider, useRowStates } from "../../components/RowStateContext";
+import { Route, Routes, VirtualRouter } from "../../components/VirtualRouter";
+import { useDataFetch } from "../../hooks/DataFetch";
+import { MediaQueries, useMediaQuery } from "../../hooks/MediaQuery";
 import { useNavigatorClickHandler } from "../../hooks/Navigator";
 import { usePortal } from "../../hooks/Portal";
 import $api from "../../services/WebApi";
@@ -10,8 +12,6 @@ import DeviceIcon from "../common/DeviceIcon";
 import BrowserCore from "./BrowserCore";
 import { useContentBrowser } from "./BrowserUtils";
 import { BrowserProps } from "./BrowserView";
-import { RowStateMapperFunction, RowStateProvider, useRowStates } from "../../components/RowStateContext";
-import { Route, Routes, VirtualRouter } from "../../components/VirtualRouter";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;
@@ -19,7 +19,7 @@ export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivEleme
     confirmContent?: ((items: Upnp.DIDL.Item[]) => ReactNode) | string;
     onConfirmed(selection: BrowseResult): void;
     dismissOnOpen?: boolean;
-} & DialogProps;
+} & ComponentPropsWithRef<typeof Dialog>
 
 type ConfirmProps = {
     confirmContent?: ((items: Upnp.DIDL.Item[]) => ReactNode) | string;

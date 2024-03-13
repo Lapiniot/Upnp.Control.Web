@@ -1,7 +1,11 @@
-import { useCallback } from "react";
-import Dialog, { DialogProps } from "../../../../components/Dialog";
+import { ComponentPropsWithRef, useCallback } from "react";
+import Dialog from "../../../../components/Dialog";
 
-export default function RemoveItemsDialog({ onDismissed, onRemove, children, className, ...other }: DialogProps & { onRemove(): void }) {
+type RemoveItemsDialogProps = ComponentPropsWithRef<typeof Dialog> & {
+    onRemove(): void;
+}
+
+export default function RemoveItemsDialog({ onDismissed, onRemove, children, className, ...other }: RemoveItemsDialogProps) {
     const onDismissHandler = useCallback((action: string, data: FormData | undefined) => {
         if (action === "remove") {
             onRemove();
@@ -18,5 +22,5 @@ export default function RemoveItemsDialog({ onDismissed, onRemove, children, cla
         className={`dialog-scrollable${className ? ` ${className}` : ""}`} {...other}
         renderFooter={renderFooter} onDismissed={onDismissHandler}>
         {children}
-    </Dialog>;
+    </Dialog>
 }

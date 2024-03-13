@@ -1,12 +1,12 @@
-import { useCallback } from "react";
-import Dialog, { DialogProps } from "../../../../components/Dialog";
+import { ComponentPropsWithRef, useCallback } from "react";
+import Dialog from "../../../../components/Dialog";
 
-type AddUrlDialogProps = DialogProps & {
+type AddUrlDialogProps = ComponentPropsWithRef<typeof Dialog> & {
     feedUrl?: string;
     feedTitle?: string;
     useProxy?: boolean;
     onAdd(url: string, title: string, useProxy: boolean): void;
-};
+}
 
 export default function AddUrlDialog({ onAdd, onDismissed, feedUrl, feedTitle, useProxy, ...other }: AddUrlDialogProps) {
 

@@ -1,12 +1,12 @@
-import { cloneElement, Component, ReactElement, ReactNode } from "react";
-import { DialogProps } from "./Dialog";
+import { cloneElement, Component, ComponentPropsWithRef, ReactElement, ReactNode } from "react";
+import Dialog from "./Dialog";
 import { Portal } from "./Portal";
 
 export default class DialogHost extends Component<unknown, { dialog?: ReactNode }> {
 
     state = { dialog: undefined };
 
-    public show(dialog: ReactElement<DialogProps>) {
+    public show(dialog: ReactElement<ComponentPropsWithRef<typeof Dialog>>) {
         const onDismissed = dialog.props.onDismissed;
 
         this.setState({

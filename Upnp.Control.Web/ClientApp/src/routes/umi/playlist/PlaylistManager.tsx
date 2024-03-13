@@ -1,12 +1,12 @@
-import { ComponentProps, ComponentType, createRef, HTMLAttributes, PureComponent, ReactElement, UIEventHandler, useCallback, useContext, useMemo } from "react";
+import { ComponentProps, ComponentPropsWithRef, ComponentType, createRef, HTMLAttributes, PureComponent, ReactElement, UIEventHandler, useCallback, useContext, useMemo } from "react";
 import { BottomBar } from "../../../components/BottomBar";
 import Breadcrumb from "../../../components/Breadcrumb";
-import { DialogProps } from "../../../components/Dialog";
+import Dialog from "../../../components/Dialog";
 import PromptDialog from "../../../components/Dialog.Prompt";
 import DialogHost from "../../../components/DialogHost";
-import { Menu, MenuItem } from "../../../components/Menu";
 import { DropTarget } from "../../../components/DropTarget";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
+import { Menu, MenuItem } from "../../../components/Menu";
 import RowStateContext, { RowState } from "../../../components/RowStateContext";
 import { DataFetchProps } from "../../../hooks/DataFetch";
 import { PressHoldGestureRecognizer } from "../../../services/gestures/PressHoldGestureRecognizer";
@@ -117,7 +117,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
 
     private mediaQueryListChanged = () => this.forceUpdate();
 
-    private dialog(dialog: ReactElement<DialogProps>) {
+    private dialog(dialog: ReactElement<ComponentPropsWithRef<typeof Dialog>>) {
         this.dialogHostRef.current?.show(dialog);
     }
 

@@ -1,7 +1,7 @@
-import { PropsWithRef, useCallback } from "react";
-import Dialog, { DialogProps } from "./Dialog";
+import { ComponentPropsWithRef, useCallback } from "react";
+import Dialog from "./Dialog";
 
-type TextValueEditDialogProps = PropsWithRef<DialogProps> & {
+type TextValueEditDialogProps = ComponentPropsWithRef<typeof Dialog> & {
     confirmText?: string;
     confirmColor?: UI.ThemeColors,
     dismissText?: string,
@@ -9,7 +9,7 @@ type TextValueEditDialogProps = PropsWithRef<DialogProps> & {
     onConfirmed(value: string): void;
 }
 
-export default function (props: TextValueEditDialogProps) {
+export default function Prompt(props: TextValueEditDialogProps) {
     const { defaultValue, confirmText = "OK", confirmColor = "primary", dismissText = "Cancel",
         required = true, onConfirmed, onDismissed, ...other } = props;
 

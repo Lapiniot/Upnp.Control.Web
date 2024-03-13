@@ -1,7 +1,7 @@
-import { useCallback } from "react";
-import Dialog, { DialogProps } from "../../../../components/Dialog";
+import { ComponentPropsWithRef, useCallback } from "react";
+import Dialog from "../../../../components/Dialog";
 
-type UploadPlaylistDialogProps = DialogProps & {
+type UploadPlaylistDialogProps = ComponentPropsWithRef<typeof Dialog> & {
     useProxy?: boolean;
     onAdd(data: FormData): void;
 }

@@ -1,7 +1,7 @@
-import { useCallback } from "react";
-import Dialog, { DialogProps } from "./Dialog";
+import { ComponentPropsWithRef, useCallback } from "react";
+import Dialog from "./Dialog";
 
-type ConfirmationDialogProps = DialogProps & {
+type ConfirmationDialogProps = ComponentPropsWithRef<typeof Dialog> & {
     confirmText?: string;
     confirmColor?: UI.ThemeColors,
     dismissText?: string,

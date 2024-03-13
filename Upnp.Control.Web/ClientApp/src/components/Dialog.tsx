@@ -15,7 +15,7 @@ interface DialogRenderProps {
     renderBody?(): ReactNode;
 }
 
-export type DialogProps = Omit<DialogHTMLAttributes<HTMLDialogElement>, "onSubmit"> &
+type DialogProps = Omit<DialogHTMLAttributes<HTMLDialogElement>, "onSubmit"> &
     DialogRenderProps & DialogEventProps & {
         immediate?: boolean,
         caption?: string
