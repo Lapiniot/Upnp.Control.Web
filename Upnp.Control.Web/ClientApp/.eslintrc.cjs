@@ -25,6 +25,14 @@ module.exports = {
         "varsIgnorePattern": "^_",
         "ignoreRestSiblings": true
       }
+    ],
+    "no-var": "off",
+    "no-restricted-syntax": [
+      "error",
+      {
+      "selector": "VariableDeclaration[kind='var'][declare!=true]",
+      "message": "Unexpected var, use let or const instead."
+      }
     ]
   },
 }

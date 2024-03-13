@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef } from "react";
 import { SignalRContext } from "../components/SignalRConnection";
 
-export function useSignalR(callbacks: Record<string, { (...args: any): void; }>) {
+export function useSignalR<T extends unknown[]>(callbacks: Record<string, (...args: T)=> void>) {
     const connection = useContext(SignalRContext);
     const prevRef = useRef<{ connection: typeof connection, callbacks: typeof callbacks }>();
 

@@ -143,6 +143,7 @@ export function PlaybackStateProvider({ device, trackState = true, trackPosition
     }, [device, trackState, trackPosition, trackVolume, fetchVendorState]);
 
     const handlers = useMemo(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const handlers = {} as Record<string, (...args: any[]) => void>;
 
         if (trackState || trackPosition || fetchVendorState) {

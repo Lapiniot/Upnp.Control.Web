@@ -8,7 +8,7 @@ declare global {
         readonly index: number;
         readonly sameDocument: boolean;
 
-        getState(): any;
+        getState(): unknown;
     }
 
     type NavigationInterceptHandler = () => Promise<void>;
@@ -32,17 +32,22 @@ declare global {
         readonly signal: AbortSignal;
         readonly formData?: FormData;
         readonly downloadRequest?: string;
-        readonly info?: any;
+        readonly info?: unknown;
 
         intercept(options?: NavigationInterceptOptions): void;
         scroll(): void;
     }
 
+    interface NavigationCurrentEntryChangeEvent extends Event {
+        from: NavigationHistoryEntry;
+        navigationType: NavigationType;
+    }
+
     interface NavigationEventMap {
+        "currententrychange": NavigationCurrentEntryChangeEvent;
         "navigate": NavigateEvent;
-        "navigatesuccess": NavigateEvent;
-        "navigateerror": NavigateEvent;
-        "currententrychange": NavigateEvent;
+        "navigatesuccess": Event;
+        "navigateerror": ErrorEvent;
     }
 
     interface NavigationHistoryEntryEventMap {
@@ -56,37 +61,37 @@ declare global {
         readonly index: number;
         readonly sameDocument: boolean;
 
-        getState(): any;
+        getState(): unknown;
 
-        addEventListener<K extends keyof NavigationHistoryEntryEventMap>(type: K, listener: (this: NavigationHistoryEntry, ev: NavigationHistoryEntryEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof NavigationHistoryEntryEventMap>(type: K, listener: (this: NavigationHistoryEntry, ev: NavigationHistoryEntryEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        addEventListener<K extends keyof NavigationHistoryEntryEventMap>(type: K, listener: (this: NavigationHistoryEntry, ev: NavigationHistoryEntryEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof NavigationHistoryEntryEventMap>(type: K, listener: (this: NavigationHistoryEntry, ev: NavigationHistoryEntryEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
     }
 
-    interface NavigationUpdateCurrentEntryOptions extends Record<string, any> {
-        state?: any
+    interface NavigationUpdateCurrentEntryOptions extends Record<string, unknown> {
+        state?: unknown
     }
 
     type NavigationHistoryBehavior = "auto" | "push" | "replace";
 
-    interface NavigationOptions extends Record<string, any> {
-        info?: any
+    interface NavigationOptions extends Record<string, unknown> {
+        info?: unknown
     }
 
     interface NavigationNavigateOptions extends NavigationOptions {
-        state?: any;
+        state?: unknown;
         history?: NavigationHistoryBehavior
     }
 
-    interface NavigationResult extends Record<string, any> {
+    interface NavigationResult extends Record<string, unknown> {
         committed: Promise<NavigationHistoryEntry>;
         finished: Promise<NavigationHistoryEntry>;
     }
 
     interface NavigationReloadOptions extends NavigationOptions {
-        state?: any
+        state?: unknown
     }
 
-    interface Navigation extends EventTarget {
+    interface Navigation extends EventTarget<NavigationEventMap> {
         entries(): ReadonlyArray<NavigationHistoryEntry>;
         readonly currentEntry?: NavigationHistoryEntry;
         updateCurrentEntry(options: NavigationUpdateCurrentEntryOptions): void;
@@ -102,20 +107,20 @@ declare global {
         back(options?: NavigationOptions = {}): NavigationResult;
         forward(options?: NavigationOptions = {}): NavigationResult;
 
-        onnavigate: EventHandler | null;
-        onnavigatesuccess: EventHandler | null;
-        onnavigateerror: EventHandler | null;
-        oncurrententrychange: EventHandler | null;
+        onnavigate: ((this: Navigation, event: NavigateEvent) => unknown) | null;
+        onnavigatesuccess: ((this: Navigation, event: Event) => unknown) | null;
+        onnavigateerror: ((this: Navigation, event: ErrorEvent) => unknown) | null;
+        oncurrententrychange: ((this: Navigation, event: NavigationCurrentEntryChangeEvent) => unknown) | null;
 
-        addEventListener<K extends keyof NavigationEventMap>(type: K, listener: (this: Navigation, ev: NavigationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof NavigationEventMap>(type: K, listener: (this: Navigation, ev: NavigationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        addEventListener<K extends keyof NavigationEventMap>(type: K, listener: (this: Navigation, event: NavigationEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof NavigationEventMap>(type: K, listener: (this: Navigation, event: NavigationEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
     }
 
     interface Window {
         readonly navigation: Navigation;
     }
 
-    var navigation: Navigation;
+    declare var navigation: Navigation;
 }
 
 export { }

@@ -1,10 +1,14 @@
-type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> }
+type RecursivePartial<T> = T extends { [K in keyof T]: unknown }
+    ? { [P in keyof T]?: RecursivePartial<T[P]> }
+    : T
 
-type RecursiveReadonly<T> = { readonly [P in keyof T]: RecursiveReadonly<T[P]> }
+type RecursiveReadonly<T> = T extends { [K in keyof T]: unknown }
+    ? { readonly [P in keyof T]: RecursiveReadonly<T[P]> }
+    : T
 
 type PromiseResult<T> = T extends Promise<infer U> ? U : T
 
-namespace Configuration {
+declare namespace Configuration {
     type Sections = "upnp" | "umi" | "renderers" | "browser-dialog-sources"
 
     type SectionConfig = {
@@ -15,10 +19,10 @@ namespace Configuration {
         }
     }
 
-    type Config = RecursiveReadonly<SectionConfig> & RecursiveReadonly<RecursivePartial<Record<Sections, SectionConfig>>>
+    type Config = RecursiveReadonly<SectionConfig & RecursivePartial<Record<Sections, SectionConfig>>>
 }
 
-var $cfg: Configuration.Config
+declare var $cfg: Configuration.Config
 
 interface DataSourceProps<T> {
     dataSource?: T

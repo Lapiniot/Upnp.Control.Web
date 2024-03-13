@@ -13,7 +13,7 @@ export class Database {
         this.db.transaction
     }
 
-    static open(name: string, version: number, upgradeHandler?: (this: IDBOpenDBRequest, ev: IDBVersionChangeEvent) => any) {
+    static open(name: string, version: number, upgradeHandler?: (this: IDBOpenDBRequest, ev: IDBVersionChangeEvent) => unknown) {
         return new Promise<Database>((resolve, reject) => {
             const request = indexedDB.open(name, version);
             if (upgradeHandler) {
@@ -52,12 +52,12 @@ export class DbTransaction {
         this.transaction.abort();
     }
 
-    store(name: string) {
-        return new DbStoreScoped(this.transaction.objectStore(name));
+    store<T>(name: string) {
+        return new DbStoreScoped<T>(this.transaction.objectStore(name));
     }
 }
 
-export class DbStoreScoped {
+export class DbStoreScoped<T> {
     private store: IDBObjectStore;
 
     get name() {
@@ -84,11 +84,11 @@ export class DbStoreScoped {
         return promisify(this.store.getAllKeys(query, count));
     }
 
-    add(value: any, key?: IDBValidKey) {
+    add(value: T, key?: IDBValidKey) {
         return promisify(this.store.add(value, key));
     }
 
-    put(value: any, key?: IDBValidKey) {
+    put(value: T, key?: IDBValidKey) {
         return promisify(this.store.put(value, key));
     }
 

@@ -49,15 +49,15 @@ export function fromBase64(str: string): Uint8Array {
     return array;
 }
 
-export function debounce(fn: (...args: any[]) => any, delay: number = 500) {
-    let timeout: any;
-    return function (this: any, ...args: any[]) {
+export function debounce(fn: (...args: unknown[]) => unknown, delay: number = 500) {
+    let timeout: number;
+    return function (this: unknown, ...args: unknown[]) {
         clearTimeout(timeout);
-        timeout = setTimeout(args => fn.apply(this, args), delay, args);
+        timeout = window.setTimeout((args: unknown[]) => fn.apply(this, args), delay, args);
     }
 }
 
-export async function animate(element: HTMLElement, completion: (element: HTMLElement) => Promise<any>, ...classTokens: string[]) {
+export async function animate(element: HTMLElement, completion: (element: HTMLElement) => Promise<unknown>, ...classTokens: string[]) {
     element.classList.add(...classTokens);
     await completion(element);
     element.classList.remove(...classTokens);

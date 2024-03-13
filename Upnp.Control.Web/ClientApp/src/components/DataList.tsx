@@ -2,24 +2,22 @@ import React, { ElementType, HTMLAttributes, MouseEventHandler, useCallback, use
 import { PressHoldGestureRecognizer } from "../services/gestures/PressHoldGestureRecognizer";
 import Toolbar from "./Toolbar";
 
-export type DeleteRowHandler = (index: number, key?: string, tag?: string | number | object) => void;
-
-type DataListProps = HTMLAttributes<HTMLDivElement> & {
-    tag?: string | number | object;
+type DataListProps<T> = HTMLAttributes<HTMLDivElement> & {
+    context?: T;
     editable?: boolean;
     template?: ElementType;
-    onDelete?: DeleteRowHandler;
-    onDeleteAll?: (tag?: string | number | object) => void;
+    onDelete?: (index: number, key?: string, context?: T) => void;
+    onDeleteAll?: (context?: T) => void;
 }
 
-export function DataList({ children, className, editable, template, tag, onDelete, onDeleteAll, ...other }: DataListProps) {
+export function DataList<T extends string | number | object>({ children, className, editable, template, context, onDelete, onDeleteAll, ...other }: DataListProps<T>) {
     const ref = useRef<HTMLDivElement>(null);
     const [editMode, setEditMode] = useState(false);
     const toggleHandler = useCallback(() => setEditMode(mode => !mode), []);
     const deleteHandler = useCallback<MouseEventHandler<HTMLButtonElement>>(
         ({ currentTarget: { dataset: { index, key } } }) =>
-            onDelete?.(parseInt(index ?? ""), key, tag), [onDelete, tag]);
-    const deleteAllHandler = useCallback(() => onDeleteAll?.(tag), [onDeleteAll, tag]);
+            onDelete?.(parseInt(index ?? ""), key, context), [onDelete, context]);
+    const deleteAllHandler = useCallback(() => onDeleteAll?.(context), [onDeleteAll, context]);
     const recognizer = useMemo(() => new PressHoldGestureRecognizer<HTMLDivElement>(() => setEditMode(mode => !mode)), []);
 
     /* eslint-disable react-hooks/exhaustive-deps */
@@ -53,10 +51,10 @@ export function DataList({ children, className, editable, template, tag, onDelet
             <Toolbar.Button className="btn-secondary btn-round m-3 ms-0 btn-sm-fab btn-sm-fab-fixed"
                 glyph={editMode ? "symbols.svg#edit_off" : "symbols.svg#edit"} onClick={toggleHandler}
                 title="Toggle edit list mode" />}
-    </div>;
+    </div>
 }
 
 DataList.defaultProps = {
     template: "div",
     editable: false
-} as DataListProps;
+}

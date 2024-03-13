@@ -3,8 +3,6 @@ import { Database } from "./Database";
 const DB_NAME = "bookmarks";
 const DB_VERSION = 1;
 
-type WidgetProps<T = object> = T & { [index: string]: any };
-
 function databaseMigrate(this: IDBOpenDBRequest, { newVersion }: IDBVersionChangeEvent) {
     const { result: db } = this;
     if (newVersion === 1) {
@@ -18,14 +16,14 @@ function databaseMigrate(this: IDBOpenDBRequest, { newVersion }: IDBVersionChang
 
 type BookmarkKey = string | number | Array<string | number>;
 
-export interface IBookmarkStore<TKey extends BookmarkKey, TProps = {}> {
+export interface IBookmarkStore<TKey extends BookmarkKey, TProps> {
     getAll(): Promise<{ widget: string, props: TProps }[]>;
     add(widgetName: string, props: TProps): Promise<IDBValidKey>;
     remove(key: TKey): Promise<undefined>;
     contains(key: TKey): Promise<boolean>;
 }
 
-export class BookmarkService<TKey extends BookmarkKey = any, TProps = {}> implements IBookmarkStore<TKey, TProps> {
+export class BookmarkService<TKey extends BookmarkKey, TProps> implements IBookmarkStore<TKey, TProps> {
     storeName: string;
     db: Database | null = null;
 
@@ -67,9 +65,9 @@ export class BookmarkService<TKey extends BookmarkKey = any, TProps = {}> implem
     }
 }
 
-const deviceBookmarks = new BookmarkService<[string, string], WidgetProps<{ category: string, device: string }>>("devices");
-const itemBookmarks = new BookmarkService<[string, string], WidgetProps<{ device: string, deviceName: string, id: string, title: string }>>("items");
-const playlistBookmarks = new BookmarkService<[string, string], WidgetProps<{ device: string, deviceName: string, id: string, title: string }>>("playlists");
+const deviceBookmarks = new BookmarkService<[string, string], { category: string, device: string, name: string, description: string, icon: string }>("devices");
+const itemBookmarks = new BookmarkService<[string, string], { device: string, deviceName: string, id: string, title: string }>("items");
+const playlistBookmarks = new BookmarkService<[string, string], { device: string, deviceName: string, id: string, title: string }>("playlists");
 
 export { deviceBookmarks, itemBookmarks, playlistBookmarks };
 

@@ -4,11 +4,11 @@ declare global {
         close(): void;
         destroy(): void;
 
-        oncancel: ((this: CloseWatcher, event: Event) => any) | null;
-        onclose: ((this: CloseWatcher, event: Event) => any) | null;
+        oncancel: ((this: CloseWatcher, event: Event) => unknown) | null;
+        onclose: ((this: CloseWatcher, event: Event) => unknown) | null;
 
-        addEventListener<K extends keyof CloseWatcherEventMap>(type: K, listener: (this: CloseWatcher, event: CloseWatcherEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof CloseWatcherEventMap>(type: K, listener: (this: CloseWatcher, event: CloseWatcherEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        addEventListener<K extends keyof CloseWatcherEventMap>(type: K, listener: (this: CloseWatcher, event: CloseWatcherEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof CloseWatcherEventMap>(type: K, listener: (this: CloseWatcher, event: CloseWatcherEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
     }
 
     interface CloseWatcherEventMap {

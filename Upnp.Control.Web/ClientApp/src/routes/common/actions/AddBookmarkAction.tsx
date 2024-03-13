@@ -9,7 +9,7 @@ export function AddBookmarkAction({ device, category = "upnp", ...other }: Devic
 
     const toggleHandler = useCallback(async () => {
         const { udn, name, description, icons, type } = device ?? {};
-        if (!udn || !icons || !type) return;
+        if (!udn || !icons || !type || !name || !description) return;
         const key: [string, string] = [category, udn];
         if (!await bookmarks.contains(key)) {
             await bookmarks.add("DeviceBookmarkWidget", {

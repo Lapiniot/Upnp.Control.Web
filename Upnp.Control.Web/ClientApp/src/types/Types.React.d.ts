@@ -1,5 +1,5 @@
 declare module "react" {
-    interface HTMLAttributes<T> {
+    interface HTMLAttributes {
         inert?: "";
         popover?: "auto" | "manual" | "";
         popovertarget?: string;
@@ -10,7 +10,7 @@ declare module "react" {
         submitter: Nullable<HTMLInputElement | HTMLButtonElement>;
     }
 
-    interface FormEvent<T> {
+    interface FormEvent {
         nativeEvent: NativeFormEvent;
     }
 }
