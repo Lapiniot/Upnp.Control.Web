@@ -1,3 +1,5 @@
+using OOs.Extensions.Hosting;
+
 namespace Upnp.Control.DataAccess;
 
 internal sealed class SqliteMigrateDbInitializer<TContext>(TContext context) : IServiceInitializer where TContext : DbContext

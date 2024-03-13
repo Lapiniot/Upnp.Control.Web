@@ -1,12 +1,12 @@
 #region usings
+
+using OOs.Extensions.Hosting;
 using System.Reflection;
 using System.Text;
 using Upnp.Control.DataAccess.Configuration;
-using Upnp.Control.Infrastructure;
 using Upnp.Control.Infrastructure.AspNetCore;
 using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Configuration;
-using Upnp.Control.Infrastructure.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
 using Upnp.Control.Infrastructure.SignalR.Configuration;
 using Upnp.Control.Infrastructure.Upnp.Configuration;

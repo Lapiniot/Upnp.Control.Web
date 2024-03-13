@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
+using OOs.Extensions.Hosting;
 using Upnp.Control.DataAccess.Commands;
 using Upnp.Control.DataAccess.CompiledModels;
 using Upnp.Control.DataAccess.Queries;

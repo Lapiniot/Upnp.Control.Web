@@ -1,3 +1,4 @@
+using OOs.Extensions.Hosting;
 using System.Net;
 using System.Net.Mime;
 using Upnp.Control.Infrastructure.AspNetCore.Middleware;

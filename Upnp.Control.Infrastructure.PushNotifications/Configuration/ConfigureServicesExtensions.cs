@@ -1,6 +1,6 @@
+using OOs.Extensions.Hosting;
 using OOs.Net.Http.Jwt;
 using Upnp.Control.Abstractions;
-using Upnp.Control.Extensions.DependencyInjection;
 using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.Infrastructure.PushNotifications.Configuration;

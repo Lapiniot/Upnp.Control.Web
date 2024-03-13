@@ -53,11 +53,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IoT.Protocol.Upnp", "IoT.De
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OOs.Common", "OOs.Common", "{C9BF184B-F18C-4C47-BE09-8DE8FA56F5DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOs.Common", "IoT.Device\IoT.Protocol\OOs.Common\OOs.Common\OOs.Common.csproj", "{67D5F630-391C-470C-8158-42B9F8F0EF39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OOs.Common", "IoT.Device\IoT.Protocol\OOs.Common\OOs.Common\OOs.Common.csproj", "{67D5F630-391C-470C-8158-42B9F8F0EF39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOs.Common.Net.Http", "IoT.Device\IoT.Protocol\OOs.Common\OOs.Common.Net.Http\OOs.Common.Net.Http.csproj", "{2DD671B7-D254-4B4D-9BA1-87721AC4A319}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OOs.Common.Net.Http", "IoT.Device\IoT.Protocol\OOs.Common\OOs.Common.Net.Http\OOs.Common.Net.Http.csproj", "{2DD671B7-D254-4B4D-9BA1-87721AC4A319}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOs.Common.Net", "IoT.Device\IoT.Protocol\OOs.Common\OOs.Common.Net\OOs.Common.Net.csproj", "{CDCDBB08-389D-4B00-9113-3437A22132E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OOs.Common.Net", "IoT.Device\IoT.Protocol\OOs.Common\OOs.Common.Net\OOs.Common.Net.csproj", "{CDCDBB08-389D-4B00-9113-3437A22132E7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OOs.Extensions.Hosting", "IoT.Device\IoT.Protocol\OOs.Common\OOs.Extensions.Hosting\OOs.Extensions.Hosting.csproj", "{4E4F8DDE-0A1D-4FE4-8AC3-A5714877FAE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -165,6 +167,10 @@ Global
 		{CDCDBB08-389D-4B00-9113-3437A22132E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDCDBB08-389D-4B00-9113-3437A22132E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDCDBB08-389D-4B00-9113-3437A22132E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E4F8DDE-0A1D-4FE4-8AC3-A5714877FAE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E4F8DDE-0A1D-4FE4-8AC3-A5714877FAE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E4F8DDE-0A1D-4FE4-8AC3-A5714877FAE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E4F8DDE-0A1D-4FE4-8AC3-A5714877FAE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -181,6 +187,7 @@ Global
 		{67D5F630-391C-470C-8158-42B9F8F0EF39} = {C9BF184B-F18C-4C47-BE09-8DE8FA56F5DD}
 		{2DD671B7-D254-4B4D-9BA1-87721AC4A319} = {C9BF184B-F18C-4C47-BE09-8DE8FA56F5DD}
 		{CDCDBB08-389D-4B00-9113-3437A22132E7} = {C9BF184B-F18C-4C47-BE09-8DE8FA56F5DD}
+		{4E4F8DDE-0A1D-4FE4-8AC3-A5714877FAE6} = {C9BF184B-F18C-4C47-BE09-8DE8FA56F5DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1B25152-FCEF-47A1-A52B-A9EA163B548A}
