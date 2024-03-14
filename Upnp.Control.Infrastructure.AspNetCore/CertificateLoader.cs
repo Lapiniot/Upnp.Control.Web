@@ -1,5 +1,4 @@
 using System.Security.Cryptography.X509Certificates;
-
 using static Microsoft.AspNetCore.Server.Kestrel.Https.CertificateLoader;
 
 namespace Upnp.Control.Infrastructure.AspNetCore;

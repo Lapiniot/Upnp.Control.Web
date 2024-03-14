@@ -1,4 +1,3 @@
-using OOs.Extensions.Hosting;
 using System.Net;
 using System.Net.Mime;
 using Upnp.Control.Infrastructure.AspNetCore.Middleware;
@@ -41,9 +40,6 @@ public static class ConfigureServicesExtensions
         services.AddOptions<ContentProxyOptions>().BindConfiguration("ContentProxy");
         return services.AddTransient<ContentProxyMiddleware>();
     }
-
-    public static IServiceCollection AddCertificateGenInitializer(this IServiceCollection services) =>
-        services.AddTransient<IServiceInitializer, CertificateGenerateInitializer>();
 
     public static IEndpointConventionBuilder MapImageLoaderProxy(this IEndpointRouteBuilder routeBuilder, string route)
     {
