@@ -29,7 +29,7 @@ export function LoadIndicator({ children, ...others }: HTMLAttributes<HTMLDivEle
 }
 
 export function LoadIndicatorOverlay({ children, className, ...other }: HTMLAttributes<HTMLDivElement>) {
-    return <div className={`backdrop-dark d-flex justify-content-center${className ? ` ${className}` : ""}`} {...other}>
+    return <div className={`backdrop d-flex justify-content-center${className ? ` ${className}` : ""}`} {...other}>
         <LoadIndicator>{children}</LoadIndicator>
     </div>
 }

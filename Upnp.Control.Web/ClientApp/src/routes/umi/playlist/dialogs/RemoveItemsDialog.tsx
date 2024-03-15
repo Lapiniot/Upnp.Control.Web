@@ -15,7 +15,7 @@ export default function RemoveItemsDialog({ onDismissed, onRemove, children, cla
 
     const renderFooter = useCallback(() => <Dialog.Footer>
         <Dialog.Button autoFocus>Cancel</Dialog.Button>
-        <Dialog.Button value="remove" className="text-danger" icon="symbols.svg#delete">Remove</Dialog.Button>
+        <Dialog.Button value="remove" className="text-error" icon="symbols.svg#delete">Remove</Dialog.Button>
     </Dialog.Footer>, []);
 
     return <Dialog caption="Do you want to remove items from the playlist?"

@@ -1,0 +1,127 @@
+$role-colors: (
+    "primary": $primary,
+    "primary-cntr": $primary-container,
+    "secondary": $secondary,
+    "secondary-cntr": $secondary-container,
+    "tertiary": $tertiary,
+    "tertiary-cntr": $tertiary-container,
+    "error": $error,
+    "error-cntr": $error-container,
+    "surface": $surface,
+    "surface-variant": $surface-variant,
+    "surface-inverse": $surface-inverse,
+    "surface-cntr-highest": $surface-container-highest,
+    "surface-cntr-high": $surface-container-high,
+    "surface-cntr": $surface-container,
+    "surface-cntr-low": $surface-container-low,
+    "surface-cntr-lowest": $surface-container-lowest
+);
+
+$role-colors-on: (
+    "on-primary": $on-primary,
+    "on-primary-cntr": $on-primary-container,
+    "on-secondary": $on-secondary,
+    "on-secondary-cntr": $on-secondary-container,
+    "on-tertiary": $on-tertiary,
+    "on-tertiary-cntr": $on-tertiary-container,
+    "on-error": $on-error,
+    "on-error-cntr": $on-error-container,
+    "on-surface": $on-surface,
+    "on-surface-variant": $on-surface-variant,
+    "on-surface-inverse": $on-surface-inverse
+);
+
+$role-colors-dark: (
+    "primary": $primary-dark,
+    "primary-cntr": $primary-container-dark,
+    "secondary": $secondary-dark,
+    "secondary-cntr": $secondary-container-dark,
+    "tertiary": $tertiary-dark,
+    "tertiary-cntr": $tertiary-container-dark,
+    "error": $error-dark,
+    "error-cntr": $error-container-dark,
+    "surface": $surface-dark,
+    "surface-variant": $surface-variant-dark,
+    "surface-inverse": $surface-inverse-dark,
+    "surface-cntr-highest": $surface-container-highest-dark,
+    "surface-cntr-high": $surface-container-high-dark,
+    "surface-cntr": $surface-container-dark,
+    "surface-cntr-low": $surface-container-low-dark,
+    "surface-cntr-lowest": $surface-container-lowest-dark
+);
+
+$role-colors-on-dark: (
+    "on-primary": $on-primary-dark,
+    "on-primary-cntr": $on-primary-container-dark,
+    "on-secondary": $on-secondary-dark,
+    "on-secondary-cntr": $on-secondary-container-dark,
+    "on-tertiary": $on-tertiary-dark,
+    "on-tertiary-cntr": $on-tertiary-container-dark,
+    "on-error": $on-error-dark,
+    "on-error-cntr": $on-error-container-dark,
+    "on-surface": $on-surface-dark,
+    "on-surface-variant": $on-surface-variant-dark,
+    "on-surface-inverse": $on-surface-inverse-dark
+);
+
+$grays: (
+);
+
+$colors: (
+);
+
+$theme-colors: (
+    "primary": $primary,
+    "secondary": $secondary,
+    "tertiary": $tertiary,
+    "error": $error
+);
+
+$theme-colors-text: (
+    "primary": $on-primary,
+    "secondary": $on-secondary,
+    "tertiary": $on-tertiary,
+    "error": $on-error
+);
+
+$theme-colors-text-dark: (
+    "primary": $on-primary-dark,
+    "secondary": $on-secondary-dark,
+    "tertiary": $on-tertiary-dark,
+    "error": $on-error-dark
+);
+
+$theme-colors-bg-subtle: (
+);
+$theme-colors-border-subtle: (
+);
+$theme-colors-bg-subtle-dark: (
+);
+$theme-colors-border-subtle-dark: (
+);
+$utilities-text-emphasis-colors: (
+);
+$utilities-bg-subtle: (
+);
+$utilities-border-subtle: (
+);
+
+$theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
+$role-colors-rgb: map-loop($role-colors, to-rgb, "$value");
+$role-colors-on-rgb: map-loop($role-colors-on, to-rgb, "$value");
+$role-colors-rgb-dark: map-loop($role-colors-dark, to-rgb, "$value");
+$role-colors-on-rgb-dark: map-loop($role-colors-on-dark, to-rgb, "$value");
+
+$utilities-colors: $theme-colors-rgb;
+
+$utilities-border: map-merge($utilities-colors, ());
+$utilities-text: map-merge($utilities-colors, ());
+$utilities-bg: map-merge($utilities-colors, $role-colors-rgb);
+
+$utilities-text-bg: (
+);
+
+@each $key in map-keys($utilities-bg) {
+    $utilities-text-bg: map-merge($utilities-text-bg,
+            ($key: if(map-has-key($role-colors-on, "on-#{$key}"), "on-#{$key}", "on-surface")));
+}

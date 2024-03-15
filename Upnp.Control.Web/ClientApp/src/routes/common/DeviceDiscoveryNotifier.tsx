@@ -16,7 +16,7 @@ export function DeviceDiscoveryNotifier({ callback }: { callback?: DiscoveryCall
             const { device: { name, description }, type } = msg;
             if (callback?.(type, msg.device) !== false) {
                 ref.current?.push({
-                    id: device, title: name, color: type === "appeared" ? "success" : "warning", delay: 120000,
+                    id: device, title: name, color: type === "appeared" ? "primary" : "secondary", delay: 120000,
                     message: <>
                         <b>&laquo;{description}&raquo;</b> has {type === "appeared" ? "appeared on" : "disappeared from"} the network
                     </>

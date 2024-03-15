@@ -33,7 +33,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
                 <Toolbar.Button glyph="symbols.svg#arrow_back_ios_new" onClick={navBackHandler} />
                 <div className="vstack align-items-stretch overflow-hidden text-center text-md-start">
                     <h6 className="mb-0 text-truncate">{parents?.[0]?.title ?? ""}</h6>
-                    <small className="text-muted text-truncate">{dev?.name ?? ""}</small>
+                    <small className="text-truncate">{dev?.name ?? ""}</small>
                 </div>
                 {renderActionMenu?.()}
             </Toolbar>
@@ -41,7 +41,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
                 {children}
             </BrowserView>
             {!fetching && data?.source.items?.length === 0 &&
-                <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
+                <div className="br-area-main d-flex align-items-center justify-content-center">
                     <svg className="icon icon-5x"><use href="symbols.svg#folder" /></svg>
                 </div>}
             {withPagination && <BottomBar className="br-area-bottom">

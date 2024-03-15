@@ -1,0 +1,6 @@
+@each $color, $on-color in $utilities-text-bg {
+    .text-bg-#{$color} {
+        color: rgba(var(--#{$prefix}#{$on-color}-rgb), 1) if($enable-important-utilities, !important, null);
+        background-color: rgba(var(--#{$prefix}#{$color}-rgb), var(--#{$prefix}bg-opacity, 1)) if($enable-important-utilities, !important, null);
+    }
+}

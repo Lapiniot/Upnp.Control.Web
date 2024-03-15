@@ -5,11 +5,11 @@ import { usePushSubscription } from "../../hooks/PushSubscription";
 export function PushNotificationsSection() {
     const { types, valid, loading, toggle, reset } = usePushSubscription();
     return <>
-        {!valid ? <div className={`alert-warning col-2 text-start${loading ? " text-body-tertiary" : ""}`}>
+        {!valid ? <div className={`alert-warning col-2 text-start${loading ? " text-tertiary" : ""}`}>
             Push notifications subscription state is invalid.
             Most likely crypto keys on the server have been changed since last subscription.
             <p className="mb-0">
-                Try to <button className="btn btn-outline-danger align-baseline py-0" disabled={loading} onClick={reset}>Reset</button> subscription state and fix this problem.
+                Try to <button className="btn btn-outline-error align-baseline py-0" disabled={loading} onClick={reset}>Reset</button> subscription state and fix this problem.
             </p>
             <p className="mb-0">
                 Alternatively, you may reset notifications permission option to the default value in the site settings of your browser and subscribe again.

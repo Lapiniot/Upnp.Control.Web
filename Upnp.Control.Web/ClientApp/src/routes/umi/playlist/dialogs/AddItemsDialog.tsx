@@ -3,7 +3,7 @@ import BrowserDialog, { BrowserDialogProps } from "../../../common/BrowserDialog
 function renderConfirmButton({ length }: Upnp.DIDL.Item[]): JSX.Element {
     return <>
         <svg><use href="symbols.svg#add" /></svg>
-        Add{length ? <span className="badge rounded-pill ms-1 bg-secondary small">{length}</span> : undefined}
+        Add{length ? <span className="badge rounded-pill ms-1 text-bg-error small">{length}</span> : undefined}
     </>
 }
 

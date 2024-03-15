@@ -24,12 +24,12 @@ export default function ({ data: d, context: ctx, index, rowState }: CellTemplat
         <button type="button" className="btn btn-stack flex-shrink-0" data-index={index}
             onClick={active ? (playing ? ctx?.pause : ctx?.play) : ctx?.playItem}>
             <AlbumArt itemClass={d.class} albumArts={d.albumArts} hint="player" />
-            {active && <div className="d-flex album-art hover-hide fade-in-out text-white bg-black bg-opacity-50">
+            {active && <div className="d-flex album-art hover-hide fade-in-out text-bg-primary bg-opacity-50">
                 <svg className={playing ? "animate-pulse" : ""}>
                     <use href={`symbols.svg#${playing ? "volume_up" : "volume_mute"}`} />
                 </svg>
             </div>}
-            <svg className="album-art hover-show fade-in-out text-white bg-black bg-opacity-25">
+            <svg className="album-art hover-show fade-in-out text-bg-primary bg-opacity-50">
                 <use href={`symbols.svg#${active && playing ? "pause_circle" : "play_circle"}`} />
             </svg>
         </button>

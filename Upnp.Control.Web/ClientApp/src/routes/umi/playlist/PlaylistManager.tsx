@@ -319,7 +319,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                             <Menu render={this.renderItemActionMenu} />
                         </Browser>
                         {!fetching && data?.source.items?.length === 0 &&
-                            <div className="br-area-main text-muted d-flex align-items-center justify-content-center">
+                            <div className="br-area-main d-flex align-items-center justify-content-center">
                                 <svg className="icon icon-5x"><use href="symbols.svg#folder" /></svg>
                             </div>}
                         <RowStateContext.Consumer>
@@ -335,7 +335,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                                         <Menu render={this.renderActionMenu} />
                                     </>}
                                 <BottomBar>
-                                    {selected > 0 ? <span className="text-muted me-auto small d-none d-sm-inline text-truncate">{`${selected} of ${fetched} selected`}</span> : null}
+                                    {selected > 0 ? <span className="me-auto small d-none d-sm-inline text-truncate">{`${selected} of ${fetched} selected`}</span> : null}
                                     <Pagination total={total} current={page} pageSize={pageSize} />
                                 </BottomBar>
                             </>}

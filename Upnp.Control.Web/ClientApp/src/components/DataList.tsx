@@ -44,7 +44,7 @@ export function DataList<T extends string | number | object>({ children, classNa
                 </Container>)}
         </div>
         {editMode && onDeleteAll &&
-            <Toolbar.Button className="btn-danger btn-round m-3 btn-sm-fab btn-sm-fab-fixed btn-sm-fab-start btn-sm-fab-small"
+            <Toolbar.Button className="btn-error btn-round m-3 btn-sm-fab btn-sm-fab-fixed btn-sm-fab-start btn-sm-fab-small"
                 glyph="symbols.svg#delete_forever" onClick={deleteAllHandler}
                 title="Delete all bookmarks" />}
         {editable &&

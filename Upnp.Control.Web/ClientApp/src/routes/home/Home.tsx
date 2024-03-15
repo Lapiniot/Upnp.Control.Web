@@ -23,7 +23,7 @@ function renderCaption(caption: string, icon: string, count: number): React.Reac
     return <>
         <svg className="icon"><use href={`symbols.svg#${icon}`} /></svg>
         {caption}
-        <span className="badge rounded-pill text-bg-primary">{count}</span>
+        <span className="badge rounded-pill text-bg-error">{count}</span>
     </>;
 }
 
@@ -62,7 +62,7 @@ export default function () {
 
         dialogHostRef.current?.show(
             <ConfirmDialog className="dialog-auto" onConfirmed={confirmHandler} caption="Clear bookmarks?"
-                confirmText="Clear" confirmColor="danger">
+                confirmText="Clear" confirmColor="error">
                 This action will delete all bookmarks in '{groups[group as BookmarkGroup][0]}'.
             </ConfirmDialog>
         )
@@ -70,7 +70,7 @@ export default function () {
 
     return <div className="d-grid p-3 pb-7 g-3 overflow-auto">
         {(Object.entries(data) as Group[]).map(([id, value]) =>
-            <Spoiler name="accordion" className="shadow-sm bg-light-subtle border-light-subtle"
+            <Spoiler name="accordion" className="border-0 bg-surface-cntr-low"
                 open={profile.home.get(`expand.${id}`)} onToggle={toggleHandler}
                 caption={renderCaption(groups[id][0], groups[id][1], value.length)} data-group={id} key={id}>
                 {value.length > 0 ?
@@ -79,14 +79,14 @@ export default function () {
                         {value.map(({ widget, props }) =>
                             React.createElement(Widgets[widget] as ComponentType, { ...props, key: groups[id][2](props) }))}
                     </DataList> :
-                    <div className="text-muted p-3 text-center">[No items bookmarked yet]</div>}
+                    <div className="p-3 text-center">[No items bookmarked yet]</div>}
             </Spoiler>)}
         <DialogHost ref={dialogHostRef} />
     </div>
 }
 
 function ItemContainer({ children, className, ...other }: HTMLAttributes<HTMLDivElement>) {
-    return <div className={`${className ? `${className} ` : ""}rounded-3 bg-primary bg-opacity-10`} {...other}>
+    return <div className={`${className ? `${className} ` : ""}rounded-3 text-bg-primary-cntr`} {...other}>
         {children}
     </div>
 }

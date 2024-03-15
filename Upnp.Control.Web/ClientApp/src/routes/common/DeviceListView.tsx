@@ -16,7 +16,7 @@ export function DeviceView({ itemTemplate: Item, dataContext, category, fetching
     return <GridView viewMode={viewMode} className={empty ? gridEmptyClass : ""}>
         {!empty
             ? <Item dataSource={data} category={category} />
-            : <span className="text-center text-muted">No device found</span>}
+            : <span className="text-center">No device found</span>}
     </GridView>
 }
 
@@ -43,7 +43,7 @@ export function DeviceListView({ dataContext, fetching, category, viewMode = "gr
         {fetching && !useSkeletons && <LoadIndicatorOverlay />}
         <GridView viewMode={viewMode} className={empty ? gridEmptyClass : ""}>
             {list?.length ? list.map((item, i) => <Item key={i} dataSource={item} category={category} />) : null}
-            {empty ? <span className="text-center text-muted">No devices discovered</span> : null}
+            {empty ? <span className="text-center">No devices discovered</span> : null}
         </GridView>
     </>
 }

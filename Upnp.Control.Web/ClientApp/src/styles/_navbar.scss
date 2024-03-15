@@ -26,7 +26,7 @@ $navbar-focus-box-shadow: 0 0 #{$focus-ring-blur} #{$focus-ring-width} rgba(var(
     --#{$prefix}navbar-brand-padding-y: #{$navbar-brand-padding-y};
     display: flex;
     padding: var(--#{$prefix}navbar-padding-y) var(--#{$prefix}navbar-padding-x);
-    background-color: var(--#{$prefix}navbar-bg, var(--#{$prefix}tertiary-bg));
+    background-color: var(--#{$prefix}navbar-bg, rgba(var(--#{$prefix}surface-cntr-rgb), var(--#{$prefix}bg-opacity, 1)));
 
     :is(a, btn):focus-visible {
         box-shadow: var(--#{$prefix}navbar-focus-box-shadow);

@@ -15,25 +15,25 @@ $animation-prefix: "an-";
     }
 }
 
-@keyframes flip-y {
-    from {
-        scale: 1;
-    }
+// @keyframes flip-y {
+//     from {
+//         scale: 1;
+//     }
 
-    to {
-        scale: 1 -1;
-    }
-}
+//     to {
+//         scale: 1 -1;
+//     }
+// }
 
-@keyframes flip-x {
-    from {
-        scale: 1;
-    }
+// @keyframes flip-x {
+//     from {
+//         scale: 1;
+//     }
 
-    to {
-        scale: -1 1;
-    }
-}
+//     to {
+//         scale: -1 1;
+//     }
+// }
 
 @keyframes half-turn {
     from {
@@ -55,11 +55,11 @@ $animation-prefix: "an-";
     }
 }
 
-@keyframes zoom {
-    50% {
-        scale: var(--#{$animation-prefix}zoom-scale) var(--#{$animation-prefix}zoom-scale) 1;
-    }
-}
+// @keyframes zoom {
+//     50% {
+//         scale: var(--#{$animation-prefix}zoom-scale) var(--#{$animation-prefix}zoom-scale) 1;
+//     }
+// }
 
 @keyframes spin {
     from {
@@ -83,31 +83,30 @@ $animation-prefix: "an-";
     }
 }
 
-@keyframes pop-in {
-    from {
-        scale: var(--#{$animation-prefix}pop-scale) var(--#{$animation-prefix}pop-scale) 1;
-    }
-}
+// @keyframes pop-in {
+//     from {
+//         scale: var(--#{$animation-prefix}pop-scale) var(--#{$animation-prefix}pop-scale) 1;
+//     }
+// }
 
-@keyframes pop-out {
-    to {
-        scale: var(--#{$animation-prefix}pop-scale) var(--#{$animation-prefix}pop-scale) 1;
-    }
+// @keyframes pop-out {
+//     to {
+//         scale: var(--#{$animation-prefix}pop-scale) var(--#{$animation-prefix}pop-scale) 1;
+//     }
+// }
 
-}
+// @keyframes slide-up {
+//     from {
+//         translate: 0 var(--#{$animation-prefix}slide-y) 0;
+//     }
+// }
 
-@keyframes slide-up {
-    from {
-        translate: 0 var(--#{$animation-prefix}slide-y) 0;
-    }
-}
-
-@keyframes slide-pop {
-    from {
-        translate: 0 var(--#{$animation-prefix}slide-y) 0;
-        scale: var(--#{$animation-prefix}pop-scale) var(--#{$animation-prefix}pop-scale) 1;
-    }
-}
+// @keyframes slide-pop {
+//     from {
+//         translate: 0 var(--#{$animation-prefix}slide-y) 0;
+//         scale: var(--#{$animation-prefix}pop-scale) var(--#{$animation-prefix}pop-scale) 1;
+//     }
+// }
 
 :root {
     // --#{$animation-prefix}ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);

@@ -57,7 +57,7 @@ root.render(
                             <Route path="/umi/*" element={<UmiDevicesPage />} />
                             <Route path="/settings" element={<SettingsPage />} />
                             <Route path="*" element={
-                                <div className="m-auto p-2 text-danger text-center">
+                                <div className="m-auto p-2 text-error text-center">
                                     <svg className="icon icon-5x"><use href="symbols.svg#sentiment_very_dissatisfied" /></svg>
                                     <h3>404 - Not Found</h3>
                                     <h5>Page you are looking for is not found</h5>

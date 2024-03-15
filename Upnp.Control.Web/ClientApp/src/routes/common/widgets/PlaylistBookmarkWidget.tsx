@@ -19,7 +19,7 @@ export default function ({ device, id, title, icon, deviceName }: PlaylistBookma
         <button type="button" className={`btn btn-stack m-2 me-1`}
             title={`Play \u00AB${title}\u00BB on ${deviceName}`} onClick={clickHandler}>
             <AlbumArt className="icon-3x" albumArts={icon ? [icon] : undefined} itemClass="object.container.playlistContainer" hint="player" />
-            <svg className="album-art icon-3x hover-show fade-in-out text-white bg-black bg-opacity-25"><use href="symbols.svg#play_circle" /></svg>
+            <svg className="album-art icon-3x hover-show fade-in-out text-bg-primary bg-opacity-50"><use href="symbols.svg#play_circle" /></svg>
         </button>
         <RouteLink to={`/umi/${device}/playlists/${id}`} title={`${title} on ${deviceName}`}
             className="m-1 p-1 flex-1 text-decoration-none overflow-clip rounded-auto">

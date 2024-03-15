@@ -54,7 +54,7 @@ export function PlaylistManagerToolbar({ className, editMode, compact, rootLevel
             <Toolbar.Button glyph="symbols.svg#arrow_back_ios_new" onClick={handlers.navigateBack} />
             <div className="flex-fill overflow-hidden text-center text-md-start">
                 <h6 className="mb-0 text-truncate">{title ?? "\xa0"}</h6>
-                <small className="text-muted text-truncate">{subtitle ?? "\xa0"}</small>
+                <small className="text-truncate">{subtitle ?? "\xa0"}</small>
             </div>
         </>}
         {rootLevel && expanded && !editMode &&

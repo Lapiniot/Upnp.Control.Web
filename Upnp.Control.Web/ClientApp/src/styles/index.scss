@@ -5,7 +5,7 @@ $enable-grid-classes: false;
 $enable-container-classes: false;
 $enable-rfs: true;
 
-$primary: #6f42c1;
+$brand: #6750A4;
 $icon-scale: 1.25;
 $missing-image-content: '';
 $border-radius-sm: .1875rem;
@@ -14,20 +14,31 @@ $display-font-sizes: (
 
 // Configuration
 @import "bootstrap/scss/functions";
+@import "colors";
 @import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "maps";
 @import "bootstrap/scss/maps";
+
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
 @import "utilities";
 
 $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
 $card-border-radius: $border-radius-sm;
+$card-border-width: 0;
+$card-cap-bg: null;
+$card-bg: rgba(var(--#{$prefix}surface-cntr-low-rgb), 1);
+
 $spoiler-border-radius: $border-radius-sm;
 $btn-border-radius: $border-radius-sm;
 $badge-border-radius: $border-radius-sm;
 $toast-border-radius: $border-radius-sm;
+
+$modal-content-bg: rgba(var(--#{$prefix}surface-cntr-high-rgb), 1);
 $modal-content-border-radius: $border-radius-xl;
 $modal-content-border-width: 0;
+
 $dropdown-border-radius: $border-radius-sm;
 $list-group-border-color: 0;
 $list-group-border-width: 0;
@@ -44,8 +55,7 @@ $card-border-radius: var(--switch-border-radius, $border-radius-xl);
 $expand-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$body-color}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
 $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$body-color-dark}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
 
-// Layout & components
-@import "bootstrap/scss/root";
+@import "root";
 
 :root,
 [data-bs-theme="light"] {
@@ -73,16 +83,24 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
 @import "bootstrap/scss/breadcrumb";
 @import "bootstrap/scss/badge";
 @import "bootstrap/scss/toasts";
+
+// Reset $theme-colors map to avoid generation of redundand .list-group-item-* color styles
+$temp: $theme-colors;
+$theme-colors: (
+);
 @import "bootstrap/scss/list-group";
+// then restore value to original value
+$theme-colors: $temp;
+
 @import "bootstrap/scss/close";
 @import "bootstrap/scss/placeholders";
 @import "bootstrap/scss/dropdown";
 
 // Helpers
 @import "bootstrap/scss/helpers/stacks";
-@import "bootstrap/scss/helpers/color-bg";
 @import "bootstrap/scss/helpers/text-truncation";
 @import "bootstrap/scss/helpers/visually-hidden";
+@import "helpers/color-bg";
 
 @import "mixins";
 @import "text-utils";

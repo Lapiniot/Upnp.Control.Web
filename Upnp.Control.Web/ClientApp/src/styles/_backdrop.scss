@@ -1,15 +1,22 @@
-$backdrops: (dark primary secondary danger) !default;
-$backdrop-opacity: 0.6 !default;
+$backdrop-opacity: 0.2 !default;
+$backdrops-colors: (null primary error) !default;
 
 %backdrop {
-    @include overlay();
+    @include overlay;
 }
 
-@each $name in $backdrops {
+@each $name in $backdrops-colors {
     .backdrop#{infix($name)} {
         @extend %backdrop;
         $color: map-get($theme-colors, $name);
-        background-color: change-color($color: if($color, $color, #000000), $alpha: $backdrop-opacity);
-        color: var(--#{$prefix}#{$color}-text-emphasis);
+
+        @if($color !=null) {
+            background-color: rgba(var(--#{$prefix}#{$name}-rgb), $backdrop-opacity);
+            color: var(--#{$prefix}on-#{$name});
+        }
+        @else {
+            background-color: rgba(var(--#{$prefix}on-surface-rgb), $backdrop-opacity);
+            color: var(--#{$prefix}surface);
+        }
     }
 }
