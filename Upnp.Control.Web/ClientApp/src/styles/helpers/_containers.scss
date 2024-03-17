@@ -1,0 +1,7 @@
+.container-inline {
+    container-type: inline-size;
+}
+
+.container-max-md {
+    width: min(100%, map-get($container-max-widths, md));
+}

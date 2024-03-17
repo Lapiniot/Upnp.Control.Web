@@ -125,3 +125,6 @@ $utilities-text-bg: (
     $utilities-text-bg: map-merge($utilities-text-bg,
             ($key: if(map-has-key($role-colors-on, "on-#{$key}"), "on-#{$key}", "on-surface")));
 }
+
+$display-font-sizes: (
+);

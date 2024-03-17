@@ -9,7 +9,7 @@ export function PushNotificationsSection() {
             Push notifications subscription state is invalid.
             Most likely crypto keys on the server have been changed since last subscription.
             <p className="mb-0">
-                Try to <button className="btn btn-outline-error align-baseline py-0" disabled={loading} onClick={reset}>Reset</button> subscription state and fix this problem.
+                Try to <button className="btn align-baseline py-0" disabled={loading} onClick={reset}>Reset</button> subscription state and fix this problem.
             </p>
             <p className="mb-0">
                 Alternatively, you may reset notifications permission option to the default value in the site settings of your browser and subscribe again.

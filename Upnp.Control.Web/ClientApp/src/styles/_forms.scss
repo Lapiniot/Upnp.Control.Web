@@ -1,0 +1,20 @@
+::-webkit-file-upload-button {
+    display: none;
+}
+
+input {
+    accent-color: var(--#{$prefix}accent-color);
+}
+
+input[type="checkbox"] {
+    inline-size: 1em;
+    block-size: 1em;
+    outline-offset: 5px;
+    cursor: pointer;
+}
+
+.form-switch {
+    input[type="checkbox"].form-check-input {
+        font-size: 1.25em;
+    }
+}

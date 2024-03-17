@@ -57,7 +57,7 @@ const defaultIcons: [string, string] = ["symbols.svg#star_rate_fill1", "symbols.
 
 export function BookmarkButton({ className, children, bookmarked, icons = defaultIcons, ...other }: Props) {
     const title = bookmarked ? "Remove bookmark from the Home section" : "Add bookmark to the Home section";
-    return <button type="button" className={`btn btn-round btn-plain${className ? ` ${className}` : ""}`}
+    return <button type="button" className={`btn btn-round${className ? ` ${className}` : ""}`}
         disabled={bookmarked === undefined} title={title} {...other}>
         {children || <svg><use href={icons[bookmarked === true ? 0 : 1]} /></svg>}
     </button>;

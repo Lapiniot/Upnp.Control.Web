@@ -176,7 +176,7 @@ function Footer({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
 }
 
 function Button({ className, icon, children, autoFocus, ...other }: DialogButtonProps) {
-    const cls = `btn btn-plain text-uppercase ${className ? ` ${className}` : ""}`;
+    const cls = `btn text-uppercase ${className ? ` ${className}` : ""}`;
     const ref = useRef<HTMLButtonElement>(null);
     useAutoFocus(ref, autoFocus);
     return <button ref={ref} type="submit" className={cls} {...other}>

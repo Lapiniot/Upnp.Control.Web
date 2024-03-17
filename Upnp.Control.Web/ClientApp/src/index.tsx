@@ -40,7 +40,7 @@ root.render(
                         <RouteLink to="/settings" glyph="symbols.svg#settings" className="nav-link">Settings</RouteLink>
                     </nav>
                     <div className="d-none d-md-flex flex-column align-items-center g-3 mt-auto">
-                        <ThemeSwitch mode="responsive" />
+                        <ThemeSwitch mode="responsive" btnClassName="btn-outline" />
                         <AppInfo className="small d-none d-lg-block mb-0" />
                     </div>
                 </div>

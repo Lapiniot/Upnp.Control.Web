@@ -5,16 +5,9 @@ $enable-grid-classes: false;
 $enable-container-classes: false;
 $enable-rfs: true;
 
-$brand: #6750A4;
-$icon-scale: 1.25;
-$missing-image-content: '';
-$border-radius-sm: .1875rem;
-$display-font-sizes: (
-);
-
 // Configuration
 @import "bootstrap/scss/functions";
-@import "colors";
+@import "variables";
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/variables-dark";
 @import "maps";
@@ -22,38 +15,98 @@ $display-font-sizes: (
 
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
+@import "mixins";
 @import "utilities";
+
+$surface-color: var(--#{$prefix}surface);
+$surface-inverse-color: var(--#{$prefix}surface-inverse);
+$surface-container-high-color: var(--#{$prefix}surface-cntr-high);
+$surface-container-low-color: var(--#{$prefix}surface-cntr-low);
+$on-surface-color: var(--#{$prefix}on-surface);
+$on-secondary-cntr-color: var(--#{$prefix}on-secondary-cntr);
+
+$nav-link-disabled-color: $surface-inverse-color;
 
 $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
 $card-border-radius: $border-radius-sm;
 $card-border-width: 0;
 $card-cap-bg: null;
-$card-bg: rgba(var(--#{$prefix}surface-cntr-low-rgb), 1);
+$card-bg: var(--#{$prefix}surface-cntr-low);
+$card-color: $on-surface-color;
 
 $spoiler-border-radius: $border-radius-sm;
-$btn-border-radius: $border-radius-sm;
+
 $badge-border-radius: $border-radius-sm;
 $toast-border-radius: $border-radius-sm;
+
+$input-color: $on-surface-color;
+$input-bg: $surface-color;
+$input-disabled-bg: $surface-container-high-color;
+$input-plaintext-color: $on-surface-color;
+$input-placeholder-color: $surface-inverse-color;
+$input-focus-color: $input-color;
+$input-focus-bg: $input-bg;
+$form-text-color: $surface-inverse-color;
+$form-select-color: $on-surface-color;
+$form-select-bg: $surface-color;
+$form-select-disabled-bg: $surface-container-high-color;
+$form-check-input-color: $on-surface-color;
+$form-check-input-bg: $surface-color;
+$form-file-button-color: $on-surface-color;
+$form-file-button-bg: $surface-container-low-color;
+$form-file-button-hover-bg: $surface-container-high-color;
+$input-group-addon-color: $on-surface-color;
+$input-group-addon-bg: $surface-container-low-color;
+$form-range-thumb-disabled-bg: $surface-inverse-color;
+$form-range-track-bg: $surface-container-high-color;
 
 $modal-content-bg: rgba(var(--#{$prefix}surface-cntr-high-rgb), 1);
 $modal-content-border-radius: $border-radius-xl;
 $modal-content-border-width: 0;
 
 $dropdown-border-radius: $border-radius-sm;
+$dropdown-color: $on-surface-color;
+$dropdown-link-color: $on-surface-color;
+$dropdown-link-hover-color: $on-surface-color;
+$dropdown-link-hover-bg: $surface-container-low-color;
+$dropdown-link-disabled-color: $on-surface-color;
+$dropdown-bg: var(--#{$prefix}surface-cntr);
+
 $list-group-border-color: 0;
 $list-group-border-width: 0;
-$list-group-bg: null;
+$list-group-color: $on-surface-color;
+$list-group-bg: $surface-color;
+$list-group-hover-bg: $surface-container-low-color;
+$list-group-disabled-color: $surface-inverse-color;
+$list-group-disabled-bg: $list-group-bg;
+$list-group-action-color: $on-surface-color;
+$list-group-action-active-color: $list-group-action-color;
+$list-group-action-active-bg: $surface-container-high-color;
+$list-group-action-hover-color: $on-secondary-cntr-color;
+
+$table-color: $on-secondary-cntr-color;
+$table-bg: $surface-color;
+$table-caption-color: $surface-inverse-color;
+$table-active-color: $table-color;
+$table-active-bg: rgba(var(--#{$prefix}on-secondary-cntr-rgb), $table-active-bg-factor);
+$table-striped-color: $table-color;
+$table-striped-bg: rgba(var(--#{$prefix}on-secondary-cntr-rgb), $table-striped-bg-factor);
+$table-hover-color: $table-color;
+$table-hover-bg: rgba(var(--#{$prefix}on-secondary-cntr-rgb), $table-hover-bg-factor);
+
+$toast-background-color: $surface-color;
+$toast-header-background-color: $toast-background-color;
+$toast-header-color: $surface-inverse-color;
 
 $breadcrumb-border-radius: 0;
 $breadcrumb-divider: quote("\276f");
 $breadcrumb-item-padding-x: map-get($spacers, 1);
+$breadcrumb-divider-color: $surface-inverse-color;
+$breadcrumb-active-color: $surface-inverse-color;
 
 $card-box-shadow: var(--switch-shadow, $box-shadow-sm);
 $card-border-width: var(--switch-border, $card-border-width);
 $card-border-radius: var(--switch-border-radius, $border-radius-xl);
-
-$expand-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$body-color}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
-$expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$body-color-dark}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
 
 @import "root";
 
@@ -63,7 +116,6 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
     --#{$prefix}accent-color: #{$primary};
     --#{$prefix}accent-color-subtle: #{tint-color($primary, 40%)};
     --#{$prefix}accent-color-emphasis: #{shade-color($primary, 60%)};
-    --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon)};
 }
 
 @include color-mode(dark) {
@@ -71,12 +123,17 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
     --#{$prefix}accent-color: #{$primary};
     --#{$prefix}accent-color-subtle: #{shade-color($primary, 60%)};
     --#{$prefix}accent-color-emphasis: #{tint-color($primary, 40%)};
-    --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon-dark)};
 }
 
 @import "bootstrap/scss/reboot";
 @import "bootstrap/scss/type";
-@import "bootstrap/scss/buttons";
+
+@include no-theme-colors {
+    @import "bootstrap/scss/buttons";
+}
+
+@import "buttons";
+
 @import "bootstrap/scss/button-group";
 @import "bootstrap/scss/forms";
 @import "bootstrap/scss/card";
@@ -84,13 +141,9 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
 @import "bootstrap/scss/badge";
 @import "bootstrap/scss/toasts";
 
-// Reset $theme-colors map to avoid generation of redundand .list-group-item-* color styles
-$temp: $theme-colors;
-$theme-colors: (
-);
-@import "bootstrap/scss/list-group";
-// then restore value to original value
-$theme-colors: $temp;
+@include no-theme-colors {
+    @import "bootstrap/scss/list-group";
+}
 
 @import "bootstrap/scss/close";
 @import "bootstrap/scss/placeholders";
@@ -101,15 +154,15 @@ $theme-colors: $temp;
 @import "bootstrap/scss/helpers/text-truncation";
 @import "bootstrap/scss/helpers/visually-hidden";
 @import "helpers/color-bg";
+@import "helpers/containers";
+@import "helpers/position";
 
-@import "mixins";
 @import "text-utils";
 @import "animations";
 @import "layout-grid";
 @import "layout-table";
 @import "navbar";
 @import "appshell";
-@import "buttons";
 @import "dropdown";
 @import "spoiler";
 @import "slider";
@@ -119,6 +172,7 @@ $theme-colors: $temp;
 @import "icons";
 @import "alert";
 @import "dialog";
+@import "forms";
 
 // Utilities
 @import "bootstrap/scss/utilities/api";
@@ -131,41 +185,12 @@ $theme-colors: $temp;
     --#{$prefix}backdrop-transition-duration: var(--#{$animation-prefix}duration-1);
 }
 
-::-webkit-file-upload-button {
-    display: none;
-}
-
 .pb-6 {
     padding-bottom: #{$spacer * 5} !important;
 }
 
 .pb-7 {
     padding-bottom: #{$spacer * 7} !important;
-}
-
-%sticky {
-    position: sticky;
-    z-index: $zindex-sticky;
-}
-
-.sticky-top {
-    @extend %sticky;
-    top: 0;
-}
-
-.sticky-bottom {
-    @extend %sticky;
-    bottom: 0;
-}
-
-.container-inline {
-    container-type: inline-size;
-}
-
-@include media-breakpoint-up(md) {
-    .w-md-50 {
-        width: 50% !important;
-    }
 }
 
 :focus-visible {
@@ -175,27 +200,6 @@ $theme-colors: $temp;
 
 a:not(.btn):focus-visible {
     border-radius: var(--#{$prefix}border-radius-sm);
-}
-
-.rounded-auto {
-    border-radius: inherit !important;
-}
-
-input {
-    accent-color: var(--#{$prefix}accent-color);
-}
-
-input[type="checkbox"] {
-    inline-size: 1em;
-    block-size: 1em;
-    outline-offset: 5px;
-    cursor: pointer;
-}
-
-.form-switch {
-    input[type="checkbox"].form-check-input {
-        font-size: 1.25em;
-    }
 }
 
 .nt-host {
@@ -221,7 +225,7 @@ input[type="checkbox"] {
     }
 }
 
-@media (any-pointer: coarse) {
+@include any-pointer {
     .dropdown-item {
         padding-block: map-get($spacers, 3);
     }

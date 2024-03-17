@@ -1,3 +1,5 @@
+$prefix: "bs-";
+
 // Primary colors
 $primary: #6750A4;
 $on-primary: #FFFFFF;
@@ -90,3 +92,35 @@ $body-bg: $surface;
 $body-color-dark: $on-surface-dark;
 $body-emphasis-color-dark: #FFF;
 $body-bg-dark: $surface-dark;
+
+$hover-state-opacity: .08;
+$focus-state-opacity: .1;
+$disabled-state-opacity: .38;
+
+$btn-color: var(--#{$prefix}primary);
+$btn-font-weight: 500;
+$btn-border-radius: 1.5lh;
+$btn-disabled-opacity: 1;
+$btn-box-shadow: none;
+$btn-focus-box-shadow: none;
+
+$hover-layer-color: rgba($on-surface, $hover-state-opacity);
+$focus-layer-color: rgba($on-surface, $focus-state-opacity);
+
+$hover-layer-color-dark: rgba($on-surface-dark, $hover-state-opacity);
+$focus-layer-color-dark: rgba($on-surface-dark, $focus-state-opacity);
+
+$expand-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$on-surface}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
+$expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$on-surface-dark}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
+
+$transition-prefix: "tr-";
+$animation-prefix: "an-";
+
+$brand: #6750A4;
+$icon-scale: 1.25;
+$missing-image-content: '';
+$border-radius-sm: .1875rem;
+$focus-ring-width: 3px;
+$focus-ring-offset: 2px;
+$focus-ring-opacity: 1;
+$focus-ring-color: var(--#{$prefix}secondary);

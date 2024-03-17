@@ -85,7 +85,7 @@ $grid-responsive-auto-breakpoints: null sm;
 // Grid forms
 
 .grid-form-label {
-    color: $text-muted;
+    color: var(--#{$prefix}surface-inverse);
     user-select: none;
 
     &::after {

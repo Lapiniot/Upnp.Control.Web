@@ -75,7 +75,7 @@ function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonE
         <Button {...other} title={volumeStr} className={`pl-volume-btn${className ? ` ${className}` : ""}`} glyph={`symbols.svg#${volumeIcon}`} data-toggle="dropdown" />
         <Menu className="volume-ctrl" mode="menu" placement="left-center">
             <li className="hstack">
-                <button type="button" className="btn btn-plain btn-round ms-1" onClick={toggleMute}>
+                <button type="button" className="btn btn-round ms-1" onClick={toggleMute}>
                     <svg><use href={"symbols.svg#" + (muted ? "volume_up" : "volume_off")} /></svg>
                 </button>
                 <Slider className="flex-fill mx-2" style={{ width: "10rem" }} value={volume / 100} onChange={setVolume} />

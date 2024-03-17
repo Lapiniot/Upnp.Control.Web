@@ -9,24 +9,25 @@ nav {
     --#{$prefix}nav-link-disabled-color: #{$nav-link-disabled-color};
 }
 
-$navbar-focus-box-shadow: 0 0 #{$focus-ring-blur} #{$focus-ring-width} rgba(var(--#{$prefix}body-color-rgb), .25);
+$navbar-focus-box-shadow: 0 0 #{$focus-ring-blur} #{$focus-ring-width} var(--#{$prefix}secondary);
 
 .navbar {
     --#{$prefix}navbar-padding-x: #{if($navbar-padding-x == null, 0, $navbar-padding-x)};
     --#{$prefix}navbar-padding-y: #{$navbar-padding-y};
-    --#{$prefix}navbar-color: rgba(var(--#{$prefix}body-color-rgb), .8);
-    --#{$prefix}navbar-hover-color: rgba(var(--#{$prefix}body-color-rgb), 1);
-    --#{$prefix}navbar-disabled-color: rgba(var(--#{$prefix}body-color-rgb), .5);
-    --#{$prefix}navbar-active-color: rgba(var(--#{$prefix}body-color-rgb), 1);
-    --#{$prefix}navbar-active-bg: var(--#{$prefix}secondary-bg);
+    --#{$prefix}navbar-icon-active-color: var(--#{$prefix}on-secondary-cntr);
+    --#{$prefix}navbar-color: var(--#{$prefix}on-surface-variant);
+    --#{$prefix}navbar-active-color: var(--#{$prefix}on-surface);
+    --#{$prefix}navbar-hover-color: var(--#{$prefix}on-surface);
+    --#{$prefix}navbar-disabled-color: rgba(var(--#{$prefix}on-surface-variant-rgb), #{$disabled-state-opacity});
+    --#{$prefix}navbar-active-bg: var(--#{$prefix}secondary-cntr);
     --#{$prefix}navbar-focus-box-shadow: #{$navbar-focus-box-shadow};
     --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-x};
-    --#{$prefix}navbar-brand-color: rgba(var(--#{$prefix}body-color-rgb), .8);
-    --#{$prefix}navbar-brand-hover-color: rgba(var(--#{$prefix}body-color-rgb), 1);
     --#{$prefix}navbar-brand-padding-y: #{$navbar-brand-padding-y};
+    --#{$prefix}navbar-brand-color: var(--#{$prefix}on-surface-variant);
+    --#{$prefix}navbar-brand-hover-color: var(--#{$prefix}on-surface);
     display: flex;
     padding: var(--#{$prefix}navbar-padding-y) var(--#{$prefix}navbar-padding-x);
-    background-color: var(--#{$prefix}navbar-bg, rgba(var(--#{$prefix}surface-cntr-rgb), var(--#{$prefix}bg-opacity, 1)));
+    background-color: var(--#{$prefix}navbar-bg, var(--#{$prefix}surface-cntr));
 
     :is(a, btn):focus-visible {
         box-shadow: var(--#{$prefix}navbar-focus-box-shadow);
@@ -42,24 +43,6 @@ $navbar-focus-box-shadow: 0 0 #{$focus-ring-blur} #{$focus-ring-width} rgba(var(
 
     .nav-link:is(.active, :active) {
         color: var(--#{$prefix}navbar-active-color);
-    }
-
-    .btn {
-        $color: var(--#{$prefix}navbar-color);
-        $hover-color: var(--#{$prefix}navbar-bg, var(--#{$prefix}tertiary-bg));
-        $hover-bg: var(--#{$prefix}navbar-hover-color);
-        --#{$prefix}btn-color: #{$color};
-        --#{$prefix}btn-border-color: #{$color};
-        --#{$prefix}btn-hover-color: #{$hover-color};
-        --#{$prefix}btn-hover-bg: #{$hover-bg};
-        --#{$prefix}btn-hover-border-color: #{$hover-bg};
-        --#{$prefix}btn-active-color: #{$hover-color};
-        --#{$prefix}btn-active-bg: var(--#{$prefix}navbar-active-color);
-        --#{$prefix}btn-active-border-color: #{$color};
-        --#{$prefix}btn-disabled-color: #{$color};
-        --#{$prefix}btn-disabled-bg: transparent;
-        --#{$prefix}btn-disabled-border-color: #{$color};
-        --#{$prefix}gradient: none;
     }
 }
 

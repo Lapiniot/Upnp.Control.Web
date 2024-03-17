@@ -1,3 +1,82 @@
+.btn {
+    --#{$prefix}btn-bg-img: none;
+    --#{$prefix}btn-hover-color: var(--#{$prefix}primary);
+    --#{$prefix}btn-hover-bg-img: var(--#{$prefix}hover-layer-cc);
+    --#{$prefix}btn-active-color: var(--#{$prefix}primary);
+    --#{$prefix}btn-active-bg-img: var(--#{$prefix}focus-layer-cc);
+    --#{$prefix}btn-active-border-color: transparent;
+    --#{$prefix}btn-focus-bg-img: var(--#{$prefix}focus-layer-cc);
+    --#{$prefix}btn-disabled-color: rgba(var(--#{$prefix}on-surface-rgb), #{$disabled-state-opacity});
+    --#{$prefix}btn-disabled-border-color: transparent;
+    @include gradient-bg-img(var(--#{$prefix}btn-bg-img));
+    box-shadow: var(--#{$prefix}btn-box-shadow);
+
+    &:hover {
+        @include gradient-bg-img(var(--#{$prefix}btn-hover-bg-img));
+        box-shadow: var(--#{$prefix}btn-hover-box-shadow, var(--#{$prefix}btn-box-shadow));
+    }
+
+    &:focus-visible {
+        @include gradient-bg-img(var(--#{$prefix}btn-focus-bg-img));
+        outline: var(--#{$prefix}focus-ring);
+        outline-offset: #{$focus-ring-offset};
+        box-shadow: var(--#{$prefix}btn-focus-box-shadow, var(--#{$prefix}btn-box-shadow));
+    }
+
+    &:is(:active, .active, [data-anchor-active]) {
+        @include gradient-bg-img(var(--#{$prefix}btn-active-bg-img));
+    }
+
+    &:active {
+        box-shadow: var(--#{$prefix}btn-active-box-shadow, var(--#{$prefix}btn-box-shadow));
+    }
+
+    &:disabled {
+        box-shadow: var(--#{$prefix}btn-disabled-box-shadow, var(--#{$prefix}btn-box-shadow));
+    }
+}
+
+.btn-elevate {
+    --#{$prefix}btn-color: var(--#{$prefix}primary);
+    --#{$prefix}btn-bg: var(--#{$prefix}surface-cntr-low);
+    --#{$prefix}btn-hover-color: var(--#{$prefix}primary);
+    --#{$prefix}btn-hover-bg: var(--#{$prefix}surface-cntr-low);
+    --#{$prefix}btn-active-color: var(--#{$prefix}primary);
+    --#{$prefix}btn-active-bg: var(--#{$prefix}surface-cntr-low);
+    --#{$prefix}btn-disabled-bg: rgba(var(--#{$prefix}on-surface-rgb), .12);
+    --#{$prefix}btn-box-shadow: var(--#{$prefix}shadow-l1);
+    --#{$prefix}btn-hover-box-shadow: var(--#{$prefix}shadow-l2);
+    --#{$prefix}btn-disabled-box-shadow: none;
+}
+
+.btn-fill {
+    --#{$prefix}btn-color: var(--#{$prefix}on-primary);
+    --#{$prefix}btn-bg: var(--#{$prefix}primary);
+    --#{$prefix}btn-hover-color: var(--#{$prefix}on-primary);
+    --#{$prefix}btn-hover-bg: var(--#{$prefix}primary);
+    --#{$prefix}btn-active-color: var(--#{$prefix}on-primary);
+    --#{$prefix}btn-active-bg: var(--#{$prefix}primary);
+    --#{$prefix}btn-disabled-color: rgba(var(--#{$prefix}on-primary-rgb), #{$disabled-state-opacity});
+    --#{$prefix}btn-disabled-bg: rgba(var(--#{$prefix}on-surface-rgb), .12);
+}
+
+.btn-tone {
+    --#{$prefix}btn-color: var(--#{$prefix}on-secondary-cntr);
+    --#{$prefix}btn-bg: var(--#{$prefix}secondary-cntr);
+    --#{$prefix}btn-hover-color: var(--#{$prefix}on-secondary-cntr);
+    --#{$prefix}btn-hover-bg: var(--#{$prefix}secondary-cntr);
+    --#{$prefix}btn-active-color: var(--#{$prefix}on-secondary-cntr);
+    --#{$prefix}btn-active-bg: var(--#{$prefix}secondary-cntr);
+    --#{$prefix}btn-disabled-bg: rgba(var(--#{$prefix}on-surface-rgb), .12);
+}
+
+.btn-outline {
+    --#{$prefix}btn-border-color: var(--#{$prefix}outline);
+    --#{$prefix}btn-hover-border-color: var(--#{$prefix}outline);
+    --#{$prefix}btn-active-border-color: var(--#{$prefix}primary);
+    --#{$prefix}btn-disabled-border-color: rgba(var(--#{$prefix}on-surface-rgb), .12);
+}
+
 :where(button, a, .link-placeholder) {
     > :where(img, svg) {
         &:first-child {
@@ -13,26 +92,6 @@
 .toolbar {
     display: flex;
     gap: map-get($spacers, 2);
-}
-
-.btn {
-    $background: map-get($theme-colors, secondary);
-    $color: color-contrast($background);
-    --#{$prefix}btn-active-border-color: transparent;
-    --#{$prefix}btn-disabled-border-color: transparent;
-    --#{$prefix}btn-focus-shadow-rgb: #{to-rgb(mix($color, $background, 15%))};
-
-    &[data-anchor-active] {
-        --#{$prefix}btn-bg: var(--#{$prefix}btn-active-bg);
-    }
-}
-
-.btn-plain,
-.toolbar > :is(button, .btn:is(a, span)) {
-    --#{$prefix}btn-color: inherit;
-    --#{$prefix}btn-border-width: 0;
-    --#{$prefix}btn-active-bg: rgba(0, 0, 0, .3);
-    --#{$prefix}btn-hover-bg: rgba(0, 0, 0, .2);
 }
 
 .btn-round,

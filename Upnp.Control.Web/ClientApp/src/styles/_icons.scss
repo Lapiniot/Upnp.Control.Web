@@ -1,4 +1,48 @@
 $icon-sizes: (2x 2, 3x 3, 5x 5, 8x 8, md 1.5) !default;
+$missing-image-content:     "\1F61F" !default;
+$missing-image-bg:          url('/stack.svg#mood_bad') !default;
+$icon-scale:                1 !default;
+
+%image-icon {
+    position: relative;
+    width: 1em;
+    height: 1em;
+    min-width: 1em;
+    min-height: 1em;
+    object-fit: contain;
+    font-size: calc($icon-scale * 1em);
+    line-height: initial;
+    fill: currentColor;
+    vertical-align: text-top;
+}
+
+%image-fallback {
+    position: relative;
+
+    // This is rendered in case of image download error
+    &:after {
+        content: $missing-image-content;
+
+        @if($missing-image-content !="") {
+            display: grid;
+            place-content: center;
+            font-size: smaller;
+        }
+
+        position: absolute;
+        inset: 0;
+        background: no-repeat center / 80% $missing-image-bg $orange-100;
+        outline: 1px dashed $orange;
+        outline-offset: -1px;
+        border-radius: inherit;
+    }
+}
+
+%no-decoration {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
 
 .icon,
 .album-art {

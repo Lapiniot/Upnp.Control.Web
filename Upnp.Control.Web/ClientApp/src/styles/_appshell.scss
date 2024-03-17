@@ -33,8 +33,17 @@
                     border-radius: 1em;
                 }
 
-                &:is(.active, :active, :focus) > svg {
+                &.active > svg {
+                    color: var(--#{$prefix}navbar-icon-active-color);
                     background-color: var(--#{$prefix}navbar-active-bg);
+                }
+
+                &:hover > svg {
+                    background-image: var(--#{$prefix}hover-layer);
+                }
+
+                &:is(:active, :focus-visible) > svg {
+                    background-image: var(--#{$prefix}focus-layer);
                 }
             }
         }
@@ -88,8 +97,16 @@
                     flex-direction: row;
                     border-radius: 1lh;
 
-                    &:is(.active, :active) {
+                    &.active {
                         background-color: var(--#{$prefix}navbar-active-bg);
+                    }
+
+                    &:hover {
+                        background-image: var(--#{$prefix}hover-layer);
+                    }
+
+                    &:is(:focus-visible, :active) {
+                        background-image: var(--#{$prefix}focus-layer);
                     }
 
                     & > svg {
@@ -100,8 +117,8 @@
                         border-radius: 0;
                     }
 
-                    &:is(.active, :active, :focus) > svg {
-                        background-color: initial;
+                    &:is(.active, :active, :focus, :hover) > svg {
+                        background: initial;
                     }
                 }
             }

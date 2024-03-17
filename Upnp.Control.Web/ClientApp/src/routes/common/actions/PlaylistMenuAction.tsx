@@ -19,7 +19,7 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
     return <div className={className} {...other}>
         {!fetching
             ? <>
-                <button type="button" disabled={!items} className="btn btn-round btn-plain" data-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
+                <button type="button" disabled={!items} className="btn btn-round" data-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
                     <svg><use href="symbols.svg#playlist_play" /></svg>
                 </button>
                 {device && <Menu data-device={device.udn}>

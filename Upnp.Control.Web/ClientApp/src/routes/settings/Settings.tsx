@@ -36,11 +36,11 @@ function setShowPlaybackNotifications(value: boolean) {
 
 export default () => {
     return <div className="overflow-auto">
-        <ul className="list-group list-group-flush m-sm-3 w-md-50 no-font-boost">
+        <ul className="list-group list-group-flush container-max-md no-font-boost">
             <li className="list-group-item">
                 <small>Appearence</small>
                 <div className="vstack mt-2">
-                    <ThemeSwitch mode="full" btnClassName="btn-primary" />
+                    <ThemeSwitch mode="full" btnClassName="btn-fill" />
                 </div>
             </li>
             <li className="list-group-item">

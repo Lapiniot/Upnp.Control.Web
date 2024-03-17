@@ -1,14 +1,3 @@
-$transition-prefix: "tr-";
-$animation-prefix: "an-";
-
-@mixin animation($animations...) {
-    animation: $animations;
-
-    @media (prefers-reduced-motion: reduce) {
-        animation: none;
-    }
-}
-
 @keyframes fade {
     to {
         opacity: 0;

@@ -1,0 +1,19 @@
+%sticky {
+    position: sticky;
+    z-index: $zindex-sticky;
+}
+
+%fixed {
+    position: fixed;
+    z-index: $zindex-fixed;
+}
+
+.sticky-top {
+    @extend %sticky;
+    top: 0;
+}
+
+.sticky-bottom {
+    @extend %sticky;
+    bottom: 0;
+}

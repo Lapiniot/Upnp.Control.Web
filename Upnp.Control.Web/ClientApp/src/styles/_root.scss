@@ -2,6 +2,11 @@
 [data-bs-theme="light"] {
     // Note: Custom variable values only support SassScript inside `#{}`.
 
+    @each $color, $value in map-merge(map-merge($role-colors, $role-colors-on),
+        (outline: $outline, outline-variant: $outline-variant, surface-tint: $surface-tint)) {
+        --#{$prefix}#{$color}: #{$value};
+    }
+
     @each $color, $value in $role-colors-rgb {
         --#{$prefix}#{$color}-rgb: #{$value};
     }
@@ -9,10 +14,6 @@
     @each $color, $value in $role-colors-on-rgb {
         --#{$prefix}#{$color}-rgb: #{$value};
     }
-
-    // @each $color, $value in $theme-colors-text {
-    //     --#{$prefix}#{$color}-text-emphasis: #{$value};
-    // }
 
     // Fonts
 
@@ -41,19 +42,6 @@
     --#{$prefix}body-color-rgb: #{to-rgb($body-color)};
     --#{$prefix}body-bg: #{$body-bg};
     --#{$prefix}body-bg-rgb: #{to-rgb($body-bg)};
-
-    --#{$prefix}emphasis-color: #{$body-emphasis-color};
-    --#{$prefix}emphasis-color-rgb: #{to-rgb($body-emphasis-color)};
-
-    --#{$prefix}secondary-color: #{$body-secondary-color};
-    --#{$prefix}secondary-color-rgb: #{to-rgb($body-secondary-color)};
-    --#{$prefix}secondary-bg: #{$body-secondary-bg};
-    --#{$prefix}secondary-bg-rgb: #{to-rgb($body-secondary-bg)};
-
-    --#{$prefix}tertiary-color: #{$body-tertiary-color};
-    --#{$prefix}tertiary-color-rgb: #{to-rgb($body-tertiary-color)};
-    --#{$prefix}tertiary-bg: #{$body-tertiary-bg};
-    --#{$prefix}tertiary-bg-rgb: #{to-rgb($body-tertiary-bg)};
     // scss-docs-end root-body-variables
 
     --#{$prefix}heading-color: #{$headings-color};
@@ -96,9 +84,20 @@
     // Focus styles
     // scss-docs-start root-focus-variables
     --#{$prefix}focus-ring-width: #{$focus-ring-width};
+    --#{$prefix}focus-ring-offset: #{$focus-ring-offset};
     --#{$prefix}focus-ring-opacity: #{$focus-ring-opacity};
     --#{$prefix}focus-ring-color: #{$focus-ring-color};
     // scss-docs-end root-focus-variables
+
+    --#{$prefix}shadow-l1: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
+    --#{$prefix}shadow-l2: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+    0 6px 10px 0 rgba(0, 0, 0, 0.3);
+    --#{$prefix}shadow-l3: 0 11px 7px 0 rgba(0, 0, 0, 0.19),
+    0 13px 25px 0 rgba(0, 0, 0, 0.3);
+    --#{$prefix}shadow-l4: 0 14px 12px 0 rgba(0, 0, 0, 0.17),
+    0 20px 40px 0 rgba(0, 0, 0, 0.3);
+    --#{$prefix}shadow-l5: 0 17px 17px 0 rgba(0, 0, 0, 0.15),
+    0 27px 55px 0 rgba(0, 0, 0, 0.3);
 
     // scss-docs-start root-form-validation-variables
     --#{$prefix}form-valid-color: #{$form-valid-color};
@@ -106,30 +105,28 @@
     --#{$prefix}form-invalid-color: #{$form-invalid-color};
     --#{$prefix}form-invalid-border-color: #{$form-invalid-border-color};
     // scss-docs-end root-form-validation-variables
+
+    --#{$prefix}hover-layer: linear-gradient(#{$hover-layer-color}, #{$hover-layer-color});
+    --#{$prefix}focus-layer: linear-gradient(#{$focus-layer-color}, #{$focus-layer-color});
+
+    --#{$prefix}hover-layer-cc: linear-gradient(color-mix(in srgb, currentColor #{$hover-state-opacity*100%}, transparent),
+        color-mix(in srgb, currentColor #{$hover-state-opacity*100%}, transparent));
+    --#{$prefix}focus-layer-cc: linear-gradient(color-mix(in srgb, currentColor #{$focus-state-opacity*100%}, transparent),
+        color-mix(in srgb, currentColor #{$focus-state-opacity*100%}, transparent));
+
+    --#{$prefix}focus-ring: solid var(--#{$prefix}secondary) #{$focus-ring-width};
+
+    --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon)};
 }
 
 @if $enable-dark-mode {
     @include color-mode(dark, true) {
         color-scheme: dark;
 
-        // scss-docs-start root-dark-mode-vars
-        --#{$prefix}body-color: #{$body-color-dark};
-        --#{$prefix}body-color-rgb: #{to-rgb($body-color-dark)};
-        --#{$prefix}body-bg: #{$body-bg-dark};
-        --#{$prefix}body-bg-rgb: #{to-rgb($body-bg-dark)};
-
-        --#{$prefix}emphasis-color: #{$body-emphasis-color-dark};
-        --#{$prefix}emphasis-color-rgb: #{to-rgb($body-emphasis-color-dark)};
-
-        --#{$prefix}secondary-color: #{$body-secondary-color-dark};
-        --#{$prefix}secondary-color-rgb: #{to-rgb($body-secondary-color-dark)};
-        --#{$prefix}secondary-bg: #{$body-secondary-bg-dark};
-        --#{$prefix}secondary-bg-rgb: #{to-rgb($body-secondary-bg-dark)};
-
-        --#{$prefix}tertiary-color: #{$body-tertiary-color-dark};
-        --#{$prefix}tertiary-color-rgb: #{to-rgb($body-tertiary-color-dark)};
-        --#{$prefix}tertiary-bg: #{$body-tertiary-bg-dark};
-        --#{$prefix}tertiary-bg-rgb: #{to-rgb($body-tertiary-bg-dark)};
+        @each $color, $value in map-merge(map-merge($role-colors-dark, $role-colors-on-dark),
+            (outline: $outline-dark, outline-variant: $outline-variant-dark, surface-tint: $surface-tint-dark)) {
+            --#{$prefix}#{$color}: #{$value};
+        }
 
         @each $color, $value in $role-colors-rgb-dark {
             --#{$prefix}#{$color}-rgb: #{$value};
@@ -139,9 +136,11 @@
             --#{$prefix}#{$color}-rgb: #{$value};
         }
 
-        // @each $color, $value in $theme-colors-text-dark {
-        //     --#{$prefix}#{$color}-text-emphasis: #{$value};
-        // }
+        // scss-docs-start root-dark-mode-vars
+        --#{$prefix}body-color: #{$body-color-dark};
+        --#{$prefix}body-color-rgb: #{to-rgb($body-color-dark)};
+        --#{$prefix}body-bg: #{$body-bg-dark};
+        --#{$prefix}body-bg-rgb: #{to-rgb($body-bg-dark)};
 
         --#{$prefix}heading-color: #{$headings-color-dark};
 
@@ -162,5 +161,10 @@
         --#{$prefix}form-invalid-color: #{$form-invalid-color-dark};
         --#{$prefix}form-invalid-border-color: #{$form-invalid-border-color-dark};
         // scss-docs-end root-dark-mode-vars
+
+        --#{$prefix}hover-layer: linear-gradient(#{$hover-layer-color-dark}, #{$hover-layer-color-dark});
+        --#{$prefix}focus-layer: linear-gradient(#{$focus-layer-color-dark}, #{$focus-layer-color-dark});
+
+        --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon-dark)};
     }
 }
