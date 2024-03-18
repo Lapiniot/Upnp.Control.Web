@@ -27,8 +27,7 @@
                 & > svg {
                     margin: unset;
                     box-sizing: content-box;
-                    font-size: calc(1rem + 1vw);
-                    width: min(2.5em, 100%);
+                    width: min(64px, 100%);
                     padding-block: #{map-get($spacers, 1)};
                     border-radius: 1em;
                 }
@@ -73,11 +72,8 @@
                 flex-direction: column;
                 flex: 0;
 
-                & > .nav-link {
-                    svg {
-                        width: 2.5em;
-                        font-size: calc(1rem + 0.75vw);
-                    }
+                & > .nav-link > svg {
+                    width: min(56px, 100%);
                 }
             }
         }
@@ -110,7 +106,6 @@
                     }
 
                     & > svg {
-                        font-size: calc(1rem + 0.5vw);
                         width: 1em;
                         margin-right: #{map-get($spacers, 3)};
                         padding: 0;

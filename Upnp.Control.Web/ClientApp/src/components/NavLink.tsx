@@ -5,21 +5,21 @@ import { useNavigatorClickHandler, useNavigatorResolvedPath } from "../hooks/Nav
 export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
     to: string | undefined;
     disabled?: boolean;
-    glyph?: string
+    icon?: string
 }
 
-export function Link({ to, glyph, className, disabled, children, ...other }: LinkProps) {
-    const content = <>{glyph && <svg><use href={glyph} /></svg>}{children}</>;
+export function Link({ to, icon, className, disabled, children, ...other }: LinkProps) {
+    const content = <>{icon && <svg><use href={icon} /></svg>}{children}</>;
     return !disabled && to
         ? <a href={to} className={className} {...other}>{content}</a>
-        : <span className={`link-placeholder disabled${className ? ` ${className}` : ""}`}>{content}</span>
+        : <span className={`disabled${className ? ` ${className}` : ""}`}>{content}</span>
 }
 
-export function RouteLink({ glyph, className, disabled, children, to, ...other }: Omit<NavLinkProps, "to"> & LinkProps) {
+export function RouteLink({ icon: glyph, className, disabled, children, to, ...other }: Omit<NavLinkProps, "to"> & LinkProps) {
     const content = <>{glyph && <svg><use href={glyph} /></svg>}{children}</>;
     return !disabled && to
         ? <NavLink to={to} className={className} {...other}>{content}</NavLink>
-        : <span className={`link-placeholder disabled${className ? ` ${className}` : ""}`}>{content}</span>
+        : <span className={`disabled${className ? ` ${className}` : ""}`}>{content}</span>
 }
 
 export function NavigatorLink({ to = "#", ...other }: LinkProps) {

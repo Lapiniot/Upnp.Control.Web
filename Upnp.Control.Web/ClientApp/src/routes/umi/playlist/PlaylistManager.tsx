@@ -320,7 +320,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                         </Browser>
                         {!fetching && data?.source.items?.length === 0 &&
                             <div className="br-area-main d-flex align-items-center justify-content-center">
-                                <svg className="icon icon-5x"><use href="symbols.svg#folder" /></svg>
+                                <svg className="icon-5x"><use href="symbols.svg#folder" /></svg>
                             </div>}
                         <RowStateContext.Consumer>
                             {({ selection: { length: selected } }) => <>

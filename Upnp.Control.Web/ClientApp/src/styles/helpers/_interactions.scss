@@ -1,0 +1,9 @@
+// Element is fully transparent, and becomes opaque on parent container hover or keyboard focused
+.hover-show {
+    @include toggle-on-state(opacity, 0, 1, ":hover", ":focus-visible");
+}
+
+// Element is fully opaque, and becomes transparent on parent container hover or keyboard focused
+.hover-hide {
+    @include toggle-on-state(opacity, 1, 0, ":hover", ":focus-visible");
+}

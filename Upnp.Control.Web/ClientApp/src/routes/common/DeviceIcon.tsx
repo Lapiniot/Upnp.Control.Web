@@ -10,7 +10,7 @@ type DeviceIconProps = ImgOrSvgCommonProps & { device: Upnp.Device | null | unde
 export default ({ device, className, ...props }: DeviceIconProps) => {
     const { icons, type } = device ?? {};
     const icon = icons && UDT.getOptimalIcon(icons);
-    const iconClass = `icon icon-3x me-2${className ? ` ${className}` : ""}`;
+    const iconClass = `icon-3x me-2${className ? ` ${className}` : ""}`;
     return icon
         ? <img src={viaProxy(icon.url)} className={iconClass} alt="" {...props} />
         : <svg className={iconClass} {...props}><use href={`stack.svg#${UDT.getSpecialRoleIcon(type!)}`} /></svg>

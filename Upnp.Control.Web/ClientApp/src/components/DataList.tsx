@@ -37,18 +37,18 @@ export function DataList<T extends string | number | object>({ children, classNa
             {React.Children.map(children, (child, index) =>
                 <Container role="listitem" className="d-flex align-items-center">
                     {child}
-                    {editMode && <button type="button" className="btn btn-round ms-auto mx-2" onClick={deleteHandler}
+                    {editMode && <button type="button" className="btn btn-icon ms-auto mx-2" onClick={deleteHandler}
                         data-index={index} data-key={(child && typeof child === "object" && "key" in child) ? child.key : undefined}>
                         <svg><use href="symbols.svg#delete_forever" /></svg>
                     </button>}
                 </Container>)}
         </div>
         {editMode && onDeleteAll &&
-            <Toolbar.Button className="btn-round m-3 btn-sm-fab btn-sm-fab-fixed btn-sm-fab-start btn-sm-fab-small"
+            <Toolbar.Button className="btn btn-icon m-3 btn-sm-fab btn-sm-fab-fixed btn-sm-fab-start btn-sm-fab-small"
                 glyph="symbols.svg#delete_forever" onClick={deleteAllHandler}
                 title="Delete all bookmarks" />}
         {editable &&
-            <Toolbar.Button className="btn-round m-3 ms-0 btn-sm-fab btn-sm-fab-fixed"
+            <Toolbar.Button className="btn btn-icon btn-outline m-3 ms-0 btn-sm-fab btn-sm-fab-fixed"
                 glyph={editMode ? "symbols.svg#edit_off" : "symbols.svg#edit"} onClick={toggleHandler}
                 title="Toggle edit list mode" />}
     </div>

@@ -16,7 +16,7 @@ function formatAlbumTitle(creator: string | undefined, album: string | undefined
 
 function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }) {
     const { className, glyph, children, active, ...other } = props;
-    return <button type="button" className={`btn btn-round${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
+    return <button type="button" className={`btn btn-icon${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
         {glyph && <svg><use href={glyph} /></svg>}{children}
     </button>
 }
@@ -75,7 +75,7 @@ function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonE
         <Button {...other} title={volumeStr} className={`pl-volume-btn${className ? ` ${className}` : ""}`} glyph={`symbols.svg#${volumeIcon}`} data-toggle="dropdown" />
         <Menu className="volume-ctrl" mode="menu" placement="left-center">
             <li className="hstack">
-                <button type="button" className="btn btn-round ms-1" onClick={toggleMute}>
+                <button type="button" className="btn btn-icon ms-1" onClick={toggleMute}>
                     <svg><use href={"symbols.svg#" + (muted ? "volume_up" : "volume_off")} /></svg>
                 </button>
                 <Slider className="flex-fill mx-2" style={{ width: "10rem" }} value={volume / 100} onChange={setVolume} />

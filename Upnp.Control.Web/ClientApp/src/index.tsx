@@ -33,11 +33,11 @@ root.render(
                 <div className="navbar">
                     <a className="navbar-brand d-none d-lg-inline" href="/">UPnP Dashboard</a>
                     <nav>
-                        <RouteLink to="/" end glyph="symbols.svg#home_work" className="nav-link">Home</RouteLink>
-                        <RouteLink to="/upnp" glyph="symbols.svg#devices" className="nav-link"><span><span className="d-none d-lg-inline">UPnP&nbsp;</span>Devices</span></RouteLink>
-                        <RouteLink to="/renderers" glyph="symbols.svg#connected_tv" className="nav-link"><span><span className="d-none d-lg-inline">Network&nbsp;</span>Players</span></RouteLink>
-                        <RouteLink to="/umi" glyph="symbols.svg#speaker" className="nav-link"><span><span className="d-none d-lg-inline">Xiaomi&nbsp;</span>Speakers</span></RouteLink>
-                        <RouteLink to="/settings" glyph="symbols.svg#settings" className="nav-link">Settings</RouteLink>
+                        <RouteLink to="/" end icon="symbols.svg#home_work" className="nav-link">Home</RouteLink>
+                        <RouteLink to="/upnp" icon="symbols.svg#devices" className="nav-link"><span><span className="d-none d-lg-inline">UPnP&nbsp;</span>Devices</span></RouteLink>
+                        <RouteLink to="/renderers" icon="symbols.svg#connected_tv" className="nav-link"><span><span className="d-none d-lg-inline">Network&nbsp;</span>Players</span></RouteLink>
+                        <RouteLink to="/umi" icon="symbols.svg#speaker" className="nav-link"><span><span className="d-none d-lg-inline">Xiaomi&nbsp;</span>Speakers</span></RouteLink>
+                        <RouteLink to="/settings" icon="symbols.svg#settings" className="nav-link">Settings</RouteLink>
                     </nav>
                     <div className="d-none d-md-flex flex-column align-items-center g-3 mt-auto">
                         <ThemeSwitch mode="responsive" btnClassName="btn-outline" />
@@ -58,7 +58,7 @@ root.render(
                             <Route path="/settings" element={<SettingsPage />} />
                             <Route path="*" element={
                                 <div className="m-auto p-2 text-error text-center">
-                                    <svg className="icon icon-5x"><use href="symbols.svg#sentiment_very_dissatisfied" /></svg>
+                                    <svg className="icon-5x"><use href="symbols.svg#sentiment_very_dissatisfied" /></svg>
                                     <h3>404 - Not Found</h3>
                                     <h5>Page you are looking for is not found</h5>
                                 </div>} />

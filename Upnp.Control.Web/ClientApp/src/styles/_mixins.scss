@@ -57,10 +57,6 @@
     }
 }
 
-@mixin font-scale($scale) {
-    font-size: $scale * 1rem !important;
-}
-
 @mixin overlay {
     position: absolute;
     z-index: $zindex-modal;
@@ -72,6 +68,14 @@
 
     @media (prefers-reduced-motion: reduce) {
         animation: none;
+    }
+}
+
+@mixin toggle-on-state($property, $from, $to, $states...) {
+    #{$property}: #{$from};
+
+    @at-root :is(#{$states}) > & {
+        opacity: $to;
     }
 }
 

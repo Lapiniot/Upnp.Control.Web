@@ -33,8 +33,8 @@ export default function AlbumArt({ itemClass, albumArts, className, hint, ...oth
     itemClass = itemClass.substring(7);
     const map = hint === "player" ? playerMap : classicMap;
     return albumArts?.length
-        ? <img src={viaProxy(albumArts[0])} loading="lazy" className={`album-art fallback${className ? ` ${className}` : ""}`} alt="" {...other} />
-        : <svg className={`album-art fallback${className ? ` ${className}` : ""}`} {...other} width="512px" height="512px">
+        ? <img src={viaProxy(albumArts[0])} loading="lazy" className={`album-art${className ? ` ${className}` : ""}`} alt="" {...other} />
+        : <svg className={`album-art${className ? ` ${className}` : ""}`} {...other}>
             <use href={`symbols.svg#${map[itemClass] ?? (itemClass.startsWith("container") ? "folder" : "unknown_document")}`} />
         </svg>
 }

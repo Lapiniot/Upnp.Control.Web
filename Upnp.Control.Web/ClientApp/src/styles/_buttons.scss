@@ -10,6 +10,7 @@
     --#{$prefix}btn-disabled-border-color: transparent;
     @include gradient-bg-img(var(--#{$prefix}btn-bg-img));
     box-shadow: var(--#{$prefix}btn-box-shadow);
+    white-space: nowrap; // prevent content wrapping on overflow as it is prohibited by MUI3
 
     &:hover {
         @include gradient-bg-img(var(--#{$prefix}btn-hover-bg-img));
@@ -34,6 +35,29 @@
     &:disabled {
         box-shadow: var(--#{$prefix}btn-disabled-box-shadow, var(--#{$prefix}btn-box-shadow));
     }
+}
+
+// All, but toolbar, btn-icon and btn-stack, buttons will have fixed 18px size, 
+// proper vertical align and inline margins (to match MUI3 guidelines).
+//.btn:not(:where(.btn-icon, .btn-stack)) > :is(svg, img):first-child,
+:not(.toolbar) > .btn:not(.btn-icon):not(.btn-stack) > :is(svg, img):first-child {
+    font-size: 18px;
+    vertical-align: sub;
+    margin-inline: -#{map-get($spacers, 2)} #{map-get($spacers, 2)};
+}
+
+.btn-icon,
+.toolbar .btn {
+    --#{$prefix}btn-padding-x: #{map-get($spacers, 2)};
+    --#{$prefix}btn-padding-y: #{map-get($spacers, 2)};
+    --#{$prefix}btn-border-radius: 50%;
+    --#{$prefix}btn-line-height: 0;
+    --#{$prefix}btn-color: var(--#{$prefix}on-surface-variant);
+    --#{$prefix}btn-hover-color: var(--#{$prefix}on-surface-variant);
+    --#{$prefix}btn-active-color: var(--#{$prefix}on-surface-variant);
+    height: fit-content; // allow to scale-up proportionally to icon size and fixed paddings
+    aspect-ratio: 1;
+    font-size: 24px;
 }
 
 .btn-elevate {
@@ -73,20 +97,8 @@
 .btn-outline {
     --#{$prefix}btn-border-color: var(--#{$prefix}outline);
     --#{$prefix}btn-hover-border-color: var(--#{$prefix}outline);
-    --#{$prefix}btn-active-border-color: var(--#{$prefix}primary);
+    --#{$prefix}btn-active-border-color: var(--#{$prefix}outline);
     --#{$prefix}btn-disabled-border-color: rgba(var(--#{$prefix}on-surface-rgb), .12);
-}
-
-:where(button, a, .link-placeholder) {
-    > :where(img, svg) {
-        &:first-child {
-            @extend %image-icon;
-        }
-    }
-}
-
-.link-placeholder.disabled {
-    opacity: #{$btn-disabled-opacity};
 }
 
 .toolbar {
@@ -94,37 +106,26 @@
     gap: map-get($spacers, 2);
 }
 
-.btn-round,
-.toolbar-compact > :is(button, .btn:is(a, span)) {
-    --#{$prefix}btn-border-radius: 50%;
-    --#{$prefix}btn-line-height: 0;
-    --#{$prefix}btn-padding-y: var(--#{$prefix}btn-padding-x);
-}
-
+// Represent flat container button with a following behavior:
+// 1. Child elements are stacked on top of each other
+// 2. No decoration on the button itself
+// 3. Button size is determined by the largest children size
+// 4. Button is "shape clip ready" via setting proper overflow value and 
+//    constraining sizes to the intrinsic content size to 
+//    prevent shrinking in flex layouts
 .btn-stack {
     --#{$prefix}btn-padding-x: 0;
     --#{$prefix}btn-padding-y: 0;
-    --#{$prefix}btn-color: inherit;
+    --#{$prefix}btn-border-radius: 0;
     --#{$prefix}btn-border-width: 0;
-    @extend %grid-stack;
+    --#{$prefix}btn-color: inherit;
     overflow: clip;
+    min-width: fit-content;
+    min-height: fit-content;
+    @extend %grid-stack;
 
-    > :first-child {
-        margin: initial;
-    }
-
-    > .hover-show {
-        opacity: 0;
-    }
-
-    &:is(:hover, :focus-visible) {
-        > .hover-show {
-            opacity: 1;
-        }
-
-        > .hover-hide {
-            opacity: 0;
-        }
+    & > * {
+        position: relative;
     }
 }
 

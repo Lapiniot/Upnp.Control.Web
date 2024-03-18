@@ -1,19 +1,24 @@
-$icon-sizes: (2x 2, 3x 3, 5x 5, 8x 8, md 1.5) !default;
-$missing-image-content:     "\1F61F" !default;
-$missing-image-bg:          url('/stack.svg#mood_bad') !default;
-$icon-scale:                1 !default;
+$icon-sizes: (
+    null 1.5rem,
+    2x 2rem,
+    3x 3rem,
+    5x 5rem,
+    8x 8rem) !default;
+$missing-image-content: "\1F61F" !default;
+$missing-image-bg: url('/stack.svg#mood_bad') !default;
 
-%image-icon {
-    position: relative;
-    width: 1em;
+// Style all <svg> elements as 1:1 icons, 1em size, by default
+svg,
+img {
     height: 1em;
-    min-width: 1em;
-    min-height: 1em;
+    aspect-ratio: 1;
     object-fit: contain;
-    font-size: calc($icon-scale * 1em);
-    line-height: initial;
     fill: currentColor;
-    vertical-align: text-top;
+}
+
+a > :is(svg, img) {
+    font-size: 1.5rem;
+    vertical-align: bottom;
 }
 
 %image-fallback {
@@ -26,40 +31,28 @@ $icon-scale:                1 !default;
         @if($missing-image-content !="") {
             display: grid;
             place-content: center;
-            font-size: smaller;
         }
 
         position: absolute;
         inset: 0;
-        background: no-repeat center / 80% $missing-image-bg $orange-100;
-        outline: 1px dashed $orange;
-        outline-offset: -1px;
+        background-blend-mode: overlay;
+        background: no-repeat center / 75% $missing-image-bg var(--#{$prefix}error-cntr, #{$error-container});
         border-radius: inherit;
     }
 }
 
-%no-decoration {
-    border: none;
-    outline: none;
-    box-shadow: none;
-}
-
-.icon,
-.album-art {
-    @extend %image-icon;
-}
-
 .album-art {
     border-radius: inherit;
-    font-size: 2rem;
+    font-size: 2.5rem;
 }
 
+.album-art,
 .fallback {
     @extend %image-fallback;
 }
 
 @each $name, $size in $icon-sizes {
     .icon#{infix($name)} {
-        @include font-scale(if($size, $size, $name));
+        font-size: $size;
     }
 }

@@ -86,4 +86,8 @@ $navbar-focus-box-shadow: 0 0 #{$focus-ring-blur} #{$focus-ring-width} var(--#{$
         pointer-events: none;
         cursor: default;
     }
+
+    :is(img, svg):first-child {
+        font-size: 24px;
+    }
 }

@@ -74,7 +74,7 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
             {dragging && <div className={`d-flex pe-none border border-2 border-${color} backdrop-${color}`}>
                 <div className={`d-flex flex-column flex-fill m-auto justify-content-center align-items-center text-bg-${color} rounded-1 p-3`}
                     style={{ maxWidth: "min(40ch,80%)" }}>
-                    <svg className="icon icon-3x">
+                    <svg className="icon-3x">
                         <use href={`symbols.svg#${acceptable ? "upload_file" : "block"}`} />
                     </svg>
                     <p className="fw-semibold m-0 text-center">{acceptable ? "Drop playlist files" : "Only playlist files (.m3u, .m3u8) are supported"}</p>

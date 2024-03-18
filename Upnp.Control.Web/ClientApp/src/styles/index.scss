@@ -129,6 +129,7 @@ $card-border-radius: var(--switch-border-radius, $border-radius-xl);
 @import "bootstrap/scss/type";
 
 @include no-theme-colors {
+    $btn-padding-x: #{map-get($spacers, 4)};
     @import "bootstrap/scss/buttons";
 }
 
@@ -156,6 +157,7 @@ $card-border-radius: var(--switch-border-radius, $border-radius-xl);
 @import "helpers/color-bg";
 @import "helpers/containers";
 @import "helpers/position";
+@import "helpers/interactions";
 
 @import "text-utils";
 @import "animations";
@@ -231,11 +233,6 @@ a:not(.btn):focus-visible {
     }
 
     .browser-view > .table {
-        --#{$prefix}table-cell-padding-y: #{1.2 * $table-cell-padding-y};
         touch-action: manipulation;
-
-        .album-art {
-            font-size: 3rem;
-        }
     }
 }
