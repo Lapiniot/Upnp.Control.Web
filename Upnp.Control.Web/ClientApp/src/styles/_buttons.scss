@@ -37,10 +37,10 @@
     }
 }
 
-// All, but toolbar, btn-icon and btn-stack, buttons will have fixed 18px size, 
+// All, but toolbar, btn-fab, btn-icon and btn-stack, buttons will have fixed 18px size, 
 // proper vertical align and inline margins (to match MUI3 guidelines).
 //.btn:not(:where(.btn-icon, .btn-stack)) > :is(svg, img):first-child,
-:not(.toolbar) > .btn:not(.btn-icon):not(.btn-stack) > :is(svg, img):first-child {
+:not(.toolbar) > .btn:not(:where(.btn-icon, .btn-stack, %btn-fab)) > :where(svg:first-child, img:first-child) {
     font-size: 18px;
     vertical-align: sub;
     margin-inline: -#{map-get($spacers, 2)} #{map-get($spacers, 2)};
@@ -137,43 +137,61 @@ $fab-shadow-radius: var(--#{$prefix}fab-shadow-radius, 10px);
 $fab-shadow-expand: var(--#{$prefix}fab-shadow-expand, 0px);
 $fab-shadow-color: var(--#{$prefix}fab-shadow-color, rgb(0 0 0 / 0.5));
 
-@mixin btn-fab {
-    font-size: $fab-font-size;
+%btn-fab {
+    --#{$prefix}btn-padding-x: 16px;
+    --#{$prefix}btn-padding-y: 16px;
+    --#{$prefix}btn-border-radius: 16px;
+    --#{$prefix}btn-border-width: 0;
+    --#{$prefix}btn-line-height: 0;
+    --#{$prefix}btn-font-size: 24px;
+    --#{$prefix}btn-box-shadow: var(--#{$prefix}shadow-l3);
+    --#{$prefix}btn-hover-box-shadow: var(--#{$prefix}shadow-l4);
+
     z-index: $zindex-dropdown;
-    isolation: isolate;
-    right: 0;
-    bottom: 0;
     margin: $fab-margin-y $fab-margin-x;
-    box-shadow: $fab-shadow-offset $fab-shadow-offset $fab-shadow-radius $fab-shadow-expand $fab-shadow-color;
+}
 
-    &-start {
-        left: 0;
-        right: initial;
-    }
+@mixin btn-fab($container: "surface-cntr-high", $icon: "primary") {
+    --#{$prefix}btn-color: var(--#{$prefix}#{$icon});
+    --#{$prefix}btn-hover-color: var(--#{$prefix}#{$icon});
+    --#{$prefix}btn-active-color: var(--#{$prefix}#{$icon});
+    --#{$prefix}btn-bg: var(--#{$prefix}#{$container});
+    --#{$prefix}btn-hover-bg: var(--#{$prefix}#{$container});
+    --#{$prefix}btn-active-bg: var(--#{$prefix}#{$container});
 
-    &-fixed {
-        position: fixed;
-    }
+    @extend %btn-fab;
+}
 
-    &-small {
-        --#{$prefix}fab-font-size: calc(0.5rem + 1.5vw);
+$configurations: (
+    null:primary-cntr on-primary-cntr,
+    "secondary":secondary-cntr on-secondary-cntr,
+    "surface":surface-cntr-high primary,
+    "tertiary":tertiary-cntr tertiary-cntr,
+    "branded":surface-cntr-high on-secondary
+);
+
+@each $name, $colors in $configurations {
+    .btn-fab#{infix($name)} {
+        @include btn-fab($colors...);
     }
 }
 
-$fab-breakpoints: null, sm, md, lg !default;
+.btn-fab-lg {
+    --#{$prefix}btn-padding-x: 30px;
+    --#{$prefix}btn-padding-y: 30px;
+    --#{$prefix}btn-border-radius: 28px;
+    --#{$prefix}btn-font-size: 36px;
+}
 
-@each $value in $fab-breakpoints {
-    @if($value ==null) {
-        .btn-fab {
-            @include btn-fab;
-        }
-    }
+.btn-fab-sm {
+    --#{$prefix}btn-padding-x: 8px;
+    --#{$prefix}btn-padding-y: 8px;
+    --#{$prefix}btn-border-radius: 12px;
+    --#{$prefix}btn-font-size: 24px;
+}
 
-    @else {
-        @include media-breakpoint-down($value) {
-            .btn-#{$value}-fab {
-                @include btn-fab;
-            }
-        }
-    }
+// FAB with low elevation
+.btn-fab-low {
+    --#{$prefix}btn-box-shadow: var(--#{$prefix}shadow-l1);
+    --#{$prefix}btn-hover-box-shadow: var(--#{$prefix}shadow-l2);
 }

@@ -327,7 +327,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                                 {!largeScreen && !fetching &&
                                     <>
                                         <button type="button"
-                                            className="br-area-main btn btn-fab place-self-end-end place-self-md-end-center"
+                                            className="br-area-main btn btn-fab btn-fab-lg btn-fab-low place-self-end-end place-self-md-end-center"
                                             onClick={isRootLevel && selected === 0 ? this.createPlaylist : undefined}
                                             data-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>
                                             <svg><use href="symbols.svg#add" /></svg>
