@@ -15,8 +15,8 @@ export function Link({ to, icon, className, disabled, children, ...other }: Link
         : <span className={`disabled${className ? ` ${className}` : ""}`}>{content}</span>
 }
 
-export function RouteLink({ icon: glyph, className, disabled, children, to, ...other }: Omit<NavLinkProps, "to"> & LinkProps) {
-    const content = <>{glyph && <svg><use href={glyph} /></svg>}{children}</>;
+export function RouteLink({ icon, className, disabled, children, to, ...other }: Omit<NavLinkProps, "to"> & LinkProps) {
+    const content = <>{icon && <svg><use href={icon} /></svg>}{children}</>;
     return !disabled && to
         ? <NavLink to={to} className={className} {...other}>{content}</NavLink>
         : <span className={`disabled${className ? ` ${className}` : ""}`}>{content}</span>

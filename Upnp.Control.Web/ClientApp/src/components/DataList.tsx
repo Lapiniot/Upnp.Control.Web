@@ -45,11 +45,11 @@ export function DataList<T extends string | number | object>({ children, classNa
         </div>
         {editMode && onDeleteAll &&
             <Toolbar.Button className="btn btn-icon m-3 d-none d-md-block"
-                glyph="symbols.svg#delete_forever" onClick={deleteAllHandler}
+                icon="symbols.svg#delete_forever" onClick={deleteAllHandler}
                 title="Delete all bookmarks" />}
         {editable &&
             <Toolbar.Button className="btn btn-icon btn-outline m-3 ms-0 d-none d-md-block"
-                glyph={editMode ? "symbols.svg#edit_off" : "symbols.svg#edit"} onClick={toggleHandler}
+                icon={editMode ? "symbols.svg#edit_off" : "symbols.svg#edit"} onClick={toggleHandler}
                 title="Toggle edit list mode" />}
     </div>
 }

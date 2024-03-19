@@ -26,7 +26,7 @@ export function BrowserActionMenu({ umis, renderers, onSelected }: BrowserAction
     }
 
     return <>
-        <Toolbar.Button key="main-menu" glyph="symbols.svg#more_vert" data-toggle="dropdown"
+        <Toolbar.Button key="main-menu" icon="symbols.svg#more_vert" data-toggle="dropdown"
             className="btn-icon ms-auto" disabled={!enabled} />
         {enabled && <Menu onSelected={onSelectedHandler}>
             {umiAcceptable && <>

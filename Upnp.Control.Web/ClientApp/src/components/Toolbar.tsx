@@ -4,9 +4,9 @@ export default class Toolbar extends React.Component<HTMLAttributes<HTMLDivEleme
 
     displayName = Toolbar.name;
 
-    static Button = ({ className, glyph, children, visible, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; visible?: boolean }) =>
+    static Button = ({ className, icon, children, visible, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { icon?: string; visible?: boolean }) =>
         <button type="button" className={`btn${className ? ` ${className}` : ""}${visible === false ? " d-none" : ""}`} {...other}>
-            {glyph && <svg><use href={glyph} /></svg>}{children}
+            {icon && <svg><use href={icon} /></svg>}{children}
         </button>;
 
     static Group = ({ className, children, visible, ...other }: HTMLAttributes<HTMLDivElement> & { visible?: boolean }) =>

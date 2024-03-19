@@ -260,9 +260,9 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
 
     renderActionMenu = () => {
         return <>
-            <MenuItem action="add-items" glyph="symbols.svg#add" onClick={this.service.addItems}>From media server</MenuItem>
-            <MenuItem action="add-url" glyph="symbols.svg#podcasts" onClick={this.service.addFeedUrl}>Internet stream url</MenuItem>
-            <MenuItem action="add-files" glyph="symbols.svg#feed" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
+            <MenuItem action="add-items" icon="symbols.svg#add" onClick={this.service.addItems}>From media server</MenuItem>
+            <MenuItem action="add-url" icon="symbols.svg#podcasts" onClick={this.service.addFeedUrl}>Internet stream url</MenuItem>
+            <MenuItem action="add-files" icon="symbols.svg#feed" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
         </>;
     }
 

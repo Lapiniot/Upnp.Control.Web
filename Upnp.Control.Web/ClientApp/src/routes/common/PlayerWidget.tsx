@@ -14,10 +14,10 @@ function formatAlbumTitle(creator: string | undefined, album: string | undefined
         return creator ?? album ?? "Unknown";
 }
 
-function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { glyph?: string; active?: boolean }) {
-    const { className, glyph, children, active, ...other } = props;
+function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { icon?: string; active?: boolean }) {
+    const { className, icon, children, active, ...other } = props;
     return <button type="button" className={`btn btn-icon${className ? ` ${className}` : ""}${active ? " text-primary" : ""}`} {...other}>
-        {glyph && <svg><use href={glyph} /></svg>}{children}
+        {icon && <svg><use href={icon} /></svg>}{children}
     </button>
 }
 
@@ -39,12 +39,12 @@ function PlayerCore({ udn }: { udn: string | undefined }) {
     const currentTime = parseMilliseconds(relTime as string);
     const totalTime = parseMilliseconds(duration as string);
     const buttonProps = state === "STOPPED" || state === "PAUSED_PLAYBACK"
-        ? { title: "Play", glyph: "symbols.svg#play_circle", onClick: play }
+        ? { title: "Play", icon: "symbols.svg#play_circle", onClick: play }
         : state === "PLAYING"
             ? Number.isFinite(currentTime) && Number.isFinite(totalTime) && totalTime > 0
-                ? { title: "Pause", glyph: "symbols.svg#pause_circle", onClick: pause }
-                : { title: "Stop", glyph: "symbols.svg#stop_circle", onClick: stop }
-            : { title: "Stop", glyph: "symbols.svg#stop_circle", disabled: true };
+                ? { title: "Pause", icon: "symbols.svg#pause_circle", onClick: pause }
+                : { title: "Stop", icon: "symbols.svg#stop_circle", onClick: stop }
+            : { title: "Stop", icon: "symbols.svg#stop_circle", disabled: true };
 
     const nextTitle = next ? `Next: ${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
     const shuffleMode = playMode === "REPEAT_SHUFFLE";
@@ -56,10 +56,10 @@ function PlayerCore({ udn }: { udn: string | undefined }) {
             <small className={`text-truncate${loading ? " placeholder w-75" : ""}`}>{formatAlbumTitle(creator, album)}</small>
         </div>
         <SeekBar className="pl-progress" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChange={seek} />
-        <Button title="Prev" className="pl-prev-btn" glyph="symbols.svg#skip_previous" onClick={playPrev} disabled={!actions.includes("Previous")} />
+        <Button title="Prev" className="pl-prev-btn" icon="symbols.svg#skip_previous" onClick={playPrev} disabled={!actions.includes("Previous")} />
         <Button className="pl-main-btn p-1" {...buttonProps} />
-        <Button title={nextTitle} className="pl-next-btn" glyph="symbols.svg#skip_next" onClick={playNext} disabled={!actions.includes("Next")} />
-        <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="pl-mode-btn" glyph={`symbols.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={toggleMode} disabled={loading} />
+        <Button title={nextTitle} className="pl-next-btn" icon="symbols.svg#skip_next" onClick={playNext} disabled={!actions.includes("Next")} />
+        <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="pl-mode-btn" icon={`symbols.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={toggleMode} disabled={loading} />
         <PlaybackStateProvider device={udn} trackVolume trackState={false}>
             <VolumeControl disabled={loading} />
         </PlaybackStateProvider>
@@ -72,7 +72,7 @@ function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonE
     const volumeStr = muted ? "Muted" : `${volume}%`;
     const volumeIcon = muted ? "volume_off" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
     return <>
-        <Button {...other} title={volumeStr} className={`pl-volume-btn${className ? ` ${className}` : ""}`} glyph={`symbols.svg#${volumeIcon}`} data-toggle="dropdown" />
+        <Button {...other} title={volumeStr} className={`pl-volume-btn${className ? ` ${className}` : ""}`} icon={`symbols.svg#${volumeIcon}`} data-toggle="dropdown" />
         <Menu className="volume-ctrl" mode="menu" placement="left-center">
             <li className="hstack">
                 <button type="button" className="btn btn-icon ms-1" onClick={toggleMute}>

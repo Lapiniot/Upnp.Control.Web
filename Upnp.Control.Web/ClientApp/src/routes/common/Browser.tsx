@@ -149,7 +149,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
             {this.renderMenu(umiAcceptable, rendererAcceptable, umis, renderers)}
             {(umiAcceptable || rendererAcceptable) &&
                 <MenuItemSeparator />}
-            <MenuItem action={"info"} glyph="symbols.svg#info">Get Info</MenuItem>
+            <MenuItem action={"info"} icon="symbols.svg#info">Get Info</MenuItem>
         </>;
     }
 
