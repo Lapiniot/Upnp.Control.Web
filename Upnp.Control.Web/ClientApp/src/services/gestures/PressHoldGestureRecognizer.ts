@@ -1,6 +1,6 @@
 import { GestureHandler, GestureRecognizer } from "./GestureRecognizer";
 
-export type { GestureHandler };
+export type { GestureHandler, HoldDelay };
 
 type HoldDelay = "short" | "normal" | "long" | number
 
