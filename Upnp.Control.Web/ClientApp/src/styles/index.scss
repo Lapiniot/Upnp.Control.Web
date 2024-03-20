@@ -28,11 +28,6 @@ $on-secondary-cntr-color: var(--#{$prefix}on-secondary-cntr);
 $nav-link-disabled-color: $surface-inverse-color;
 
 $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
-$card-border-radius: $border-radius-sm;
-$card-border-width: 0;
-$card-cap-bg: null;
-$card-bg: var(--#{$prefix}surface-cntr-low);
-$card-color: $on-surface-color;
 
 $spoiler-border-radius: $border-radius-sm;
 
@@ -104,10 +99,6 @@ $breadcrumb-item-padding-x: map-get($spacers, 1);
 $breadcrumb-divider-color: $surface-inverse-color;
 $breadcrumb-active-color: $surface-inverse-color;
 
-$card-box-shadow: var(--switch-shadow, $box-shadow-sm);
-$card-border-width: var(--switch-border, $card-border-width);
-$card-border-radius: var(--switch-border-radius, $border-radius-xl);
-
 @import "root";
 
 :root,
@@ -129,10 +120,9 @@ $card-border-radius: var(--switch-border-radius, $border-radius-xl);
 @import "bootstrap/scss/type";
 
 @import "buttons";
-
 @import "bootstrap/scss/button-group";
+@import "card";
 @import "bootstrap/scss/forms";
-@import "bootstrap/scss/card";
 @import "bootstrap/scss/breadcrumb";
 @import "bootstrap/scss/badge";
 @import "bootstrap/scss/toasts";

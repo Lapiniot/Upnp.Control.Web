@@ -1,0 +1,78 @@
+$card-cap-bg: null;
+$card-bg: var(--#{$prefix}surface-cntr-highest);
+$card-color: $on-surface-color;
+$card-box-shadow: none;
+$card-border-width: 0px;
+$card-border-color: var(--#{$prefix}outline-variant);
+$card-border-radius: $corner-md;
+$card-inner-border-radius: calc(var(--#{$prefix}card-border-radius) - var(--#{$prefix}card-border-width));
+
+@import "bootstrap/scss/card";
+
+.card {
+    --#{$prefix}card-hover-box-shadow: var(--#{$prefix}shadow-l1);
+    --#{$prefix}card-active-box-shadow: none;
+    --#{$prefix}card-focus-box-shadow: none;
+    --#{$prefix}card-disabled-bg: var(--#{$prefix}surface-variant);
+    --#{$prefix}card-disabled-border-color: transparent;
+
+    &:hover {
+        box-shadow: var(--#{$prefix}card-hover-box-shadow);
+        background-image: var(--#{$prefix}hover-layer-cc);
+    }
+
+    &:focus-within {
+        box-shadow: var(--#{$prefix}card-focus-box-shadow);
+        background-image: var(--#{$prefix}focus-layer-cc);
+    }
+
+    &:is(:active, .active) {
+        box-shadow: var(--#{$prefix}card-active-box-shadow);
+        background-image: var(--#{$prefix}focus-layer-cc);
+    }
+
+    &:is([inert], .disabled) {
+        --#{$prefix}card-bg: var(--#{$prefix}card-disabled-bg);
+        opacity: #{$disabled-state-opacity};
+    }
+}
+
+.card-elevate {
+    --#{$prefix}card-bg: var(--#{$prefix}surface-cntr-low);
+    --#{$prefix}card-disabled-bg: var(--#{$prefix}surface);
+    --#{$prefix}card-hover-box-shadow: var(--#{$prefix}shadow-l2);
+    --#{$prefix}card-active-box-shadow: var(--#{$prefix}shadow-l1);
+    --#{$prefix}card-focus-box-shadow: var(--#{$prefix}shadow-l1);
+    --#{$prefix}card-border-width: 0;
+    box-shadow: var(--#{$prefix}shadow-l1);
+}
+
+.card-outline {
+    --#{$prefix}card-bg: var(--#{$prefix}surface);
+    --#{$prefix}card-disabled-bg: var(--#{$prefix}surface);
+    --#{$prefix}card-border-width: 1px;
+}
+
+@mixin card-stripped() {
+    --#{$prefix}card-box-shadow: none;
+    --#{$prefix}card-border-width: 0;
+    --#{$prefix}card-border-radius: 0;
+
+    &:is(:hover, :active, :focus-within, .active) {
+        box-shadow: none;
+        background-image: none;
+    }
+}
+
+
+.card-stripped {
+    @include card-stripped();
+}
+
+$value: map-get($grid-breakpoints, sm);
+
+@media ((width <=#{$value}) or (height <=#{$value})) {
+    .card-stripped-sm {
+        @include card-stripped();
+    }
+}

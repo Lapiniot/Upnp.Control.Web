@@ -13,7 +13,7 @@ const umiActions: ActionDescriptor[] = [
 ]
 
 export default function ({ dataSource: d, ...props }: DataSourceProps<Upnp.Device> & UI.CategoryRouteParams) {
-    return <DeviceCard {...props} dataSource={d} actions={umiActions} className="container-inline">
+    return <DeviceCard {...props} dataSource={d} actions={umiActions} className="container-inline card-stripped-sm">
         <PlayerWidget udn={d?.udn} />
     </DeviceCard>
 }

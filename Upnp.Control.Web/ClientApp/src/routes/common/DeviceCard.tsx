@@ -13,7 +13,7 @@ type DeviceCardProps = HTMLAttributes<HTMLDivElement> & DataSourceProps<Upnp.Dev
 
 export function DeviceCard({ dataSource: d, category, children, actions, className, ...other }: DeviceCardProps) {
     const placeholderCls = d ? "" : ` placeholder-${($cfg[category]?.placeholders?.effect) ?? $cfg.placeholders.effect}`;
-    return <div className={`card${placeholderCls}${className ? ` ${className}` : ""}`} {...other}>
+    return <div className={`card card-outline${placeholderCls}${className ? ` ${className}` : ""}`} {...other}>
         <div className="card-header hstack border-0">
             <DeviceIcon device={d} className={!d ? "placeholder" : undefined} />
             {d ? <div className="flex-fill overflow-hidden">

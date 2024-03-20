@@ -30,9 +30,6 @@ $grid-responsive-auto-breakpoints: null sm;
     @include grid-scroll-snap($padding: map-get($spacers, 3) auto);
 
     > * {
-        --switch-border: initial;
-        --switch-border-radius: initial;
-        --switch-shadow: initial;
         touch-action: pan-y;
     }
 }
@@ -46,10 +43,6 @@ $grid-responsive-auto-breakpoints: null sm;
     @include grid-scroll-snap($type: x mandatory);
 
     > * {
-        --switch-border: 0;
-        --switch-border-radius: 0;
-        --switch-shadow: none;
-
         &:only-child {
             touch-action: pan-y;
         }
