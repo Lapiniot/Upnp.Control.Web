@@ -1,31 +1,43 @@
+@include no-theme-colors {
+    $btn-padding-x: #{map-get($spacers, 4)};
+    @import "bootstrap/scss/buttons";
+}
+
 .btn {
     --#{$prefix}btn-bg-img: none;
     --#{$prefix}btn-hover-color: var(--#{$prefix}primary);
-    --#{$prefix}btn-hover-bg-img: var(--#{$prefix}hover-layer-cc);
     --#{$prefix}btn-active-color: var(--#{$prefix}primary);
-    --#{$prefix}btn-active-bg-img: var(--#{$prefix}focus-layer-cc);
     --#{$prefix}btn-active-border-color: transparent;
-    --#{$prefix}btn-focus-bg-img: var(--#{$prefix}focus-layer-cc);
     --#{$prefix}btn-disabled-color: rgba(var(--#{$prefix}on-surface-rgb), #{$disabled-state-opacity});
     --#{$prefix}btn-disabled-border-color: transparent;
-    @include gradient-bg-img(var(--#{$prefix}btn-bg-img));
+    --#{$prefix}btn-icon-font-size: 18px;
+    --#{$prefix}btn-icon-margin-x: -8px 0;
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    // Produce gap between elements inside (this will work even if button contains icon followed by text node 
+    // which is currently cannot be addressed via CSS selector + margin technique)
+    gap: 8px;
+    // Prohibit shrinking in flex layout
+    flex-shrink: 0;
     box-shadow: var(--#{$prefix}btn-box-shadow);
-    white-space: nowrap; // prevent content wrapping on overflow as it is prohibited by MUI3
+    @include gradient-bg-img(var(--#{$prefix}btn-bg-img));
 
     &:hover {
-        @include gradient-bg-img(var(--#{$prefix}btn-hover-bg-img));
+        @include gradient-bg-img(var(--#{$prefix}hover-layer-cc));
         box-shadow: var(--#{$prefix}btn-hover-box-shadow, var(--#{$prefix}btn-box-shadow));
     }
 
     &:focus-visible {
-        @include gradient-bg-img(var(--#{$prefix}btn-focus-bg-img));
+        @include gradient-bg-img(var(--#{$prefix}focus-layer-cc));
         outline: var(--#{$prefix}focus-ring);
         outline-offset: #{$focus-ring-offset};
         box-shadow: var(--#{$prefix}btn-focus-box-shadow, var(--#{$prefix}btn-box-shadow));
     }
 
     &:is(:active, .active, [data-anchor-active]) {
-        @include gradient-bg-img(var(--#{$prefix}btn-active-bg-img));
+        @include gradient-bg-img(var(--#{$prefix}focus-layer-cc));
     }
 
     &:active {
@@ -35,29 +47,34 @@
     &:disabled {
         box-shadow: var(--#{$prefix}btn-disabled-box-shadow, var(--#{$prefix}btn-box-shadow));
     }
+
+    // 0 specificity selector here is used to allow easy overrides of icon properties by more specific styles
+    :where(&) > :where(svg:first-child, img:first-child) {
+        font-size: var(--#{$prefix}btn-icon-font-size);
+        margin-inline: var(--#{$prefix}btn-icon-margin-x);
+    }
 }
 
-// All, but toolbar, btn-fab, btn-icon and btn-stack, buttons will have fixed 18px size, 
-// proper vertical align and inline margins (to match MUI3 guidelines).
-//.btn:not(:where(.btn-icon, .btn-stack)) > :is(svg, img):first-child,
-:not(.toolbar) > .btn:not(:where(.btn-icon, .btn-stack, %btn-fab)) > :where(svg:first-child, img:first-child) {
-    font-size: 18px;
-    vertical-align: sub;
-    margin-inline: -#{map-get($spacers, 2)} #{map-get($spacers, 2)};
+%icon-reset {
+    --#{$prefix}btn-icon-margin-x: ;
+}
+
+:is(.btn-group, .btn-group-sm, .btn-group-lg) .btn {
+    @extend %icon-reset;
 }
 
 .btn-icon,
 .toolbar .btn {
     --#{$prefix}btn-padding-x: #{map-get($spacers, 2)};
     --#{$prefix}btn-padding-y: #{map-get($spacers, 2)};
-    --#{$prefix}btn-border-radius: 50%;
+    --#{$prefix}btn-border-radius: 100%;
     --#{$prefix}btn-line-height: 0;
     --#{$prefix}btn-color: var(--#{$prefix}on-surface-variant);
     --#{$prefix}btn-hover-color: var(--#{$prefix}on-surface-variant);
     --#{$prefix}btn-active-color: var(--#{$prefix}on-surface-variant);
-    height: fit-content; // allow to scale-up proportionally to icon size and fixed paddings
+    @extend %icon-reset;
+    --#{$prefix}btn-icon-font-size: 24px;
     aspect-ratio: 1;
-    font-size: 24px;
 }
 
 .btn-elevate {
@@ -120,35 +137,30 @@
     --#{$prefix}btn-border-width: 0;
     --#{$prefix}btn-color: inherit;
     overflow: clip;
-    min-width: fit-content;
-    min-height: fit-content;
+    @extend %icon-reset;
     @extend %grid-stack;
 
     & > * {
         position: relative;
+        z-index: 1;
     }
 }
-
-$fab-font-size: var(--#{$prefix}fab-font-size, calc(2rem + 1.5vw));
-$fab-margin-x: var(--#{$prefix}fab-margin-x, map-get($spacers, 3));
-$fab-margin-y: var(--#{$prefix}fab-margin-y, map-get($spacers, 3));
-$fab-shadow-offset: var(--#{$prefix}fab-shadow-offset, 2px);
-$fab-shadow-radius: var(--#{$prefix}fab-shadow-radius, 10px);
-$fab-shadow-expand: var(--#{$prefix}fab-shadow-expand, 0px);
-$fab-shadow-color: var(--#{$prefix}fab-shadow-color, rgb(0 0 0 / 0.5));
 
 %btn-fab {
     --#{$prefix}btn-padding-x: 16px;
     --#{$prefix}btn-padding-y: 16px;
-    --#{$prefix}btn-border-radius: 16px;
+    --#{$prefix}btn-margin-x: 16px;
+    --#{$prefix}btn-margin-y: 16px;
+    --#{$prefix}btn-border-radius: #{$corner-lg};
     --#{$prefix}btn-border-width: 0;
     --#{$prefix}btn-line-height: 0;
-    --#{$prefix}btn-font-size: 24px;
     --#{$prefix}btn-box-shadow: var(--#{$prefix}shadow-l3);
     --#{$prefix}btn-hover-box-shadow: var(--#{$prefix}shadow-l4);
+    @extend %icon-reset;
+    --#{$prefix}btn-icon-font-size: 24px;
 
     z-index: $zindex-dropdown;
-    margin: $fab-margin-y $fab-margin-x;
+    margin: var(--#{$prefix}btn-margin-x) var(--#{$prefix}btn-margin-y);
 }
 
 @mixin btn-fab($container: "surface-cntr-high", $icon: "primary") {
@@ -165,8 +177,8 @@ $fab-shadow-color: var(--#{$prefix}fab-shadow-color, rgb(0 0 0 / 0.5));
 $configurations: (
     null:primary-cntr on-primary-cntr,
     "secondary":secondary-cntr on-secondary-cntr,
+    "tertiary":tertiary-cntr on-tertiary-cntr,
     "surface":surface-cntr-high primary,
-    "tertiary":tertiary-cntr tertiary-cntr,
     "branded":surface-cntr-high on-secondary
 );
 
@@ -179,19 +191,35 @@ $configurations: (
 .btn-fab-lg {
     --#{$prefix}btn-padding-x: 30px;
     --#{$prefix}btn-padding-y: 30px;
-    --#{$prefix}btn-border-radius: 28px;
-    --#{$prefix}btn-font-size: 36px;
+    --#{$prefix}btn-border-radius: #{$corner-xl};
+    --#{$prefix}btn-icon-font-size: 36px;
 }
 
 .btn-fab-sm {
     --#{$prefix}btn-padding-x: 8px;
     --#{$prefix}btn-padding-y: 8px;
-    --#{$prefix}btn-border-radius: 12px;
-    --#{$prefix}btn-font-size: 24px;
+    --#{$prefix}btn-border-radius: #{$corner-md};
+    --#{$prefix}btn-icon-font-size: 24px;
 }
 
 // FAB with low elevation
 .btn-fab-low {
     --#{$prefix}btn-box-shadow: var(--#{$prefix}shadow-l1);
     --#{$prefix}btn-hover-box-shadow: var(--#{$prefix}shadow-l2);
+
+    &:where(.btn-fab-surface, .btn-fab-branded) {
+        --#{$prefix}btn-bg: var(--#{$prefix}surface-cntr-low);
+        --#{$prefix}btn-hover-bg: var(--#{$prefix}surface-cntr-low);
+        --#{$prefix}btn-active-bg: var(--#{$prefix}surface-cntr-low);
+    }
+}
+
+.btn-fab-ext {
+    --#{$prefix}btn-padding-x: 16px;
+    --#{$prefix}btn-padding-y: 16px;
+    --#{$prefix}btn-border-radius: #{$corner-lg};
+    --#{$prefix}btn-font-size: larger;
+    --#{$prefix}btn-font-weight: 500;
+    --#{$prefix}btn-icon-font-size: 24px;
+    min-width: 80px;
 }

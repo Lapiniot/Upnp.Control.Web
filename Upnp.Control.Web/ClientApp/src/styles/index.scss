@@ -128,11 +128,6 @@ $card-border-radius: var(--switch-border-radius, $border-radius-xl);
 @import "bootstrap/scss/reboot";
 @import "bootstrap/scss/type";
 
-@include no-theme-colors {
-    $btn-padding-x: #{map-get($spacers, 4)};
-    @import "bootstrap/scss/buttons";
-}
-
 @import "buttons";
 
 @import "bootstrap/scss/button-group";

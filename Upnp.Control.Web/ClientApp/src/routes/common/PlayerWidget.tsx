@@ -57,7 +57,7 @@ function PlayerCore({ udn }: { udn: string | undefined }) {
         </div>
         <SeekBar className="pl-progress" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChange={seek} />
         <Button title="Prev" className="pl-prev-btn" icon="symbols.svg#skip_previous" onClick={playPrev} disabled={!actions.includes("Previous")} />
-        <Button className="pl-main-btn p-1" {...buttonProps} />
+        <Button className="pl-main-btn" {...buttonProps} />
         <Button title={nextTitle} className="pl-next-btn" icon="symbols.svg#skip_next" onClick={playNext} disabled={!actions.includes("Next")} />
         <Button title={shuffleMode ? "Shuffle" : "Repeat all"} className="pl-mode-btn" icon={`symbols.svg#${shuffleMode ? "shuffle" : "repeat"}`} onClick={toggleMode} disabled={loading} />
         <PlaybackStateProvider device={udn} trackVolume trackState={false}>

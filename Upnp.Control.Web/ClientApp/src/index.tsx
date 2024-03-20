@@ -1,4 +1,4 @@
-﻿import "./styles/index.scss";
+import "./styles/index.scss";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./GlobalConfig";
@@ -40,7 +40,7 @@ root.render(
                         <RouteLink to="/settings" icon="symbols.svg#settings" className="nav-link">Settings</RouteLink>
                     </nav>
                     <div className="d-none d-md-flex flex-column align-items-center g-3 mt-auto">
-                        <ThemeSwitch mode="responsive" btnClassName="btn-outline" />
+                        <ThemeSwitch mode="responsive" />
                         <AppInfo className="small d-none d-lg-block mb-0" />
                     </div>
                 </div>

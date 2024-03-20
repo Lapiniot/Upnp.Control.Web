@@ -40,7 +40,7 @@ export default () => {
             <li className="list-group-item">
                 <small>Appearence</small>
                 <div className="vstack mt-2">
-                    <ThemeSwitch mode="full" btnClassName="btn-fill" />
+                    <ThemeSwitch mode="full" />
                 </div>
             </li>
             <li className="list-group-item">

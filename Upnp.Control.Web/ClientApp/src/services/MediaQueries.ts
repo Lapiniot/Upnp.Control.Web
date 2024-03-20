@@ -1,6 +1,7 @@
 export class MediaQueries {
     private static largeScreenQuery: MediaQueryList;
     private static smallScreenQuery: MediaQueryList;
+    private static mediumScreenQuery: MediaQueryList;
     private static pointerDeviceQuery: MediaQueryList;
     private static touchDeviceQuery: MediaQueryList;
     private static prefersDarkSchemeQuery: MediaQueryList;
@@ -29,8 +30,12 @@ export class MediaQueries {
         return MediaQueries.largeScreenQuery ?? (MediaQueries.largeScreenQuery = MediaQueries.minWidth("1024px"));
     }
 
+    static get mediumScreen() {
+        return MediaQueries.mediumScreenQuery ?? (MediaQueries.mediumScreenQuery = MediaQueries.minWidth("768px"));
+    }
+
     static get smallScreen() {
-        return MediaQueries.smallScreenQuery ?? (MediaQueries.smallScreenQuery = MediaQueries.maxWidth("575.98px"));
+        return MediaQueries.smallScreenQuery ?? (MediaQueries.smallScreenQuery = MediaQueries.maxWidth("576px"));
     }
 
     static get pointerDevice() {
