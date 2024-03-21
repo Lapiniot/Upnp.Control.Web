@@ -50,7 +50,7 @@ function PlayerCore({ udn }: { udn: string | undefined }) {
     const shuffleMode = playMode === "REPEAT_SHUFFLE";
 
     return <div className="player-skeleton" ref={refCallback}>
-        <AlbumArt className={`art rounded-1${loading ? " placeholder" : ""}`} itemClass={current?.class ?? "object.item.audioItem.musicTrack"} albumArts={current?.albumArts} hint="player" />
+        <AlbumArt className={`art${loading ? " placeholder" : ""}`} itemClass={current?.class ?? "object.item.audioItem.musicTrack"} albumArts={current?.albumArts} hint="player" />
         <div className="pl-title">
             <h5 className={`text-truncate${loading ? " placeholder w-100" : ""}`}>{title ?? "[No media]"}</h5>
             <small className={`text-truncate${loading ? " placeholder w-75" : ""}`}>{formatAlbumTitle(creator, album)}</small>
