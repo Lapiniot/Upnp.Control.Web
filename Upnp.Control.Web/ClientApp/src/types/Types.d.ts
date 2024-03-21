@@ -24,6 +24,11 @@ declare namespace Configuration {
 
 declare var $cfg: Configuration.Config
 
+interface IExternalStore<T extends object> {
+    getSnapshot(): T | undefined;
+    subscribe(onStoreChange: () => void): () => void;
+}
+
 interface DataSourceProps<T> {
     dataSource?: T
 }

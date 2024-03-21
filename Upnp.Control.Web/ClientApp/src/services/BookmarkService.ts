@@ -1,4 +1,5 @@
 import { Database } from "./Database";
+import { ExternalStore } from "./ExternalStore";
 
 const DB_NAME = "bookmarks";
 const DB_VERSION = 1;
@@ -16,18 +17,24 @@ function databaseMigrate(this: IDBOpenDBRequest, { newVersion }: IDBVersionChang
 
 type BookmarkKey = string | number | Array<string | number>;
 
-export interface IBookmarkStore<TKey extends BookmarkKey, TProps> {
-    getAll(): Promise<{ widget: string, props: TProps }[]>;
+type Bookmark<TProps> = {
+    widget: string;
+    props: TProps;
+};
+
+export interface IBookmarkStore<TKey extends BookmarkKey, TProps> extends IExternalStore<Bookmark<TProps>[]> {
+    getAll(): Promise<Bookmark<TProps>[]>;
     add(widgetName: string, props: TProps): Promise<IDBValidKey>;
-    remove(key: TKey): Promise<undefined>;
+    remove(key: TKey): Promise<void>;
     contains(key: TKey): Promise<boolean>;
 }
 
-export class BookmarkService<TKey extends BookmarkKey, TProps> implements IBookmarkStore<TKey, TProps> {
+export class BookmarkService<TKey extends BookmarkKey, TProps> extends ExternalStore<Bookmark<TProps>[]> implements IBookmarkStore<TKey, TProps> {
     storeName: string;
     db: Database | null = null;
 
     constructor(group: string) {
+        super();
         this.storeName = group;
     }
 
@@ -46,23 +53,29 @@ export class BookmarkService<TKey extends BookmarkKey, TProps> implements IBookm
 
     add = async (widgetName: string, props: TProps) => {
         this.db = this.db ?? await this.open();
-        return await this.store(this.db, "readwrite").add({ widget: widgetName, props });
+        const key = await this.store(this.db, "readwrite").add({ widget: widgetName, props });
+        this.updateSnapshot();
+        return key;
     }
 
     remove = async (key: TKey) => {
         this.db = this.db ?? await this.open();
-        return await this.store(this.db, "readwrite").delete(key);
+        await this.store(this.db, "readwrite").delete(key);
+        this.updateSnapshot();
     }
 
     clear = async () => {
         this.db = this.db ?? await this.open();
-        return await this.store(this.db, "readwrite").clear();
+        await this.store(this.db, "readwrite").clear();
+        this.updateSnapshot();
     }
 
     contains = async (key: TKey) => {
         this.db = this.db ?? await this.open();
         return await this.store(this.db, "readonly").count(key) > 0;
     }
+
+    protected getCurrentData = () => this.getAll();
 }
 
 const deviceBookmarks = new BookmarkService<[string, string], { category: string, device: string, name: string, description: string, icon: string }>("devices");
