@@ -2,7 +2,7 @@
 import React, { ComponentType, HTMLAttributes, SyntheticEvent, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { DataList } from "../../components/DataList";
 import ConfirmDialog from "../../components/Dialog.Confirmation";
-import DialogHost from "../../components/DialogHost";
+import { DialogHost, IDialogHost } from "../../components/DialogHost";
 import Spoiler from "../../components/Spoiler";
 import { BookmarkService } from "../../services/BookmarkService";
 import { BookmarkGroup, profile } from "../common/Settings";
@@ -31,7 +31,7 @@ function renderCaption(caption: string, icon: string, count: number): React.Reac
 export default function () {
     const [data, setData] = useState<State>({ devices: [], playlists: [], items: [] });
     const [editMode, setEditMode] = useState<{ [k in keyof State]: boolean }>({ devices: false, playlists: false, items: false });
-    const dialogHostRef = useRef<DialogHost>(null);
+    const dialogHostRef = useRef<IDialogHost>();
 
     useEffect(() => {
         const stores = Object.getOwnPropertyNames(groups);

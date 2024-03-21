@@ -1,7 +1,7 @@
 import { createRef, PureComponent } from "react";
 import { BottomBar } from "../../components/BottomBar";
 import Breadcrumb from "../../components/Breadcrumb";
-import DialogHost from "../../components/DialogHost";
+import { DialogHost, IDialogHost } from "../../components/DialogHost";
 import { Menu, MenuItem, MenuItemSeparator } from "../../components/Menu";
 import { RowStateProvider } from "../../components/RowStateContext";
 import { itemBookmarks } from "../../services/BookmarkService";
@@ -62,7 +62,7 @@ type BrowserState = {
 type BrowserProps = BrowserCoreProps<CellContext> & { device: string; };
 
 export class Browser extends PureComponent<BrowserProps, BrowserState> {
-    dialogHostRef = createRef<DialogHost>();
+    dialogHostRef = createRef<IDialogHost>();
 
     constructor(props: BrowserProps) {
         super(props);

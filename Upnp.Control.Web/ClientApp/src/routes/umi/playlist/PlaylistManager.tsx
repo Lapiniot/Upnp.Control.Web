@@ -3,7 +3,7 @@ import { BottomBar } from "../../../components/BottomBar";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Dialog from "../../../components/Dialog";
 import PromptDialog from "../../../components/Dialog.Prompt";
-import DialogHost from "../../../components/DialogHost";
+import { DialogHost, IDialogHost } from "../../../components/DialogHost";
 import { DropTarget } from "../../../components/DropTarget";
 import { LoadIndicatorOverlay } from "../../../components/LoadIndicator";
 import { Menu, MenuItem } from "../../../components/Menu";
@@ -57,7 +57,7 @@ const fileTypes = ["audio/mpegurl", "audio/x-mpegurl"]
 export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, PlaylistManagerState> {
 
     displayName = PlaylistManagerCore.name;
-    dialogHostRef = createRef<DialogHost>();
+    dialogHostRef = createRef<IDialogHost>();
     browserNodeRef = createRef<HTMLDivElement>();
     pressHoldGestureRecognizer: PressHoldGestureRecognizer<HTMLDivElement>;
     service: PlaylistManagerService;

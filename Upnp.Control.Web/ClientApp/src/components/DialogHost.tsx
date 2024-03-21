@@ -1,31 +1,34 @@
-import { cloneElement, Component, ComponentPropsWithRef, ReactElement, ReactNode } from "react";
+import {
+    cloneElement, ComponentPropsWithRef, ForwardedRef, forwardRef,
+    ReactElement, ReactNode, useImperativeHandle, useState
+} from "react";
 import Dialog from "./Dialog";
 import { Portal } from "./Portal";
 
-export default class DialogHost extends Component<unknown, { dialog?: ReactNode }> {
+type DialogElement = ReactElement<ComponentPropsWithRef<typeof Dialog>>;
 
-    state = { dialog: undefined };
+export interface IDialogHost {
+    show(dialog: DialogElement): void;
+}
 
-    public show(dialog: ReactElement<ComponentPropsWithRef<typeof Dialog>>) {
-        const onDismissed = dialog.props.onDismissed;
-
-        this.setState({
-            dialog: cloneElement(dialog, {
-                ...this.props, ...dialog.props,
-                immediate: true,
+function DialogHostCore(_: unknown, ref: ForwardedRef<IDialogHost | undefined>) {
+    useImperativeHandle(ref, () => ({
+        show(dialog: DialogElement) {
+            const onDismissed = dialog.props.onDismissed;
+            setState(cloneElement(dialog, {
+                ...dialog.props, immediate: true,
                 onDismissed: (action: string, data: FormData | undefined) => {
                     try {
                         onDismissed?.(action, data);
-                    }
-                    finally {
-                        this.setState({ dialog: undefined });
+                    } finally {
+                        setState(undefined);
                     }
                 }
-            })
-        });
-    }
-
-    render() {
-        return <Portal selector="#modal-root">{this.state.dialog}</Portal>;
-    }
+            }));
+        }
+    }));
+    const [state, setState] = useState<ReactNode>();
+    return <Portal selector="#modal-root">{state}</Portal>;
 }
+
+export const DialogHost = forwardRef(DialogHostCore);

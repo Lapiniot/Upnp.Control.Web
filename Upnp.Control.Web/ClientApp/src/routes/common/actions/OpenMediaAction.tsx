@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react";
-import DialogHost from "../../../components/DialogHost";
+import { DialogHost, IDialogHost } from "../../../components/DialogHost";
 import WebApi from "../../../services/WebApi";
 import BrowserDialog, { BrowseResult } from "../BrowserDialog";
 import { isMusicTrack } from "../DIDLTools";
@@ -13,7 +13,7 @@ type OpenActionProps = DeviceActionProps & {
 }
 
 export function OpenAction({ children, className, browserProps, device, category, rowStateMapper, ...other }: OpenActionProps) {
-    const dialogHostRef = useRef<DialogHost>(null);
+    const dialogHostRef = useRef<IDialogHost>();
     const deviceId = device?.udn;
     const playHandler = useCallback((data: BrowseResult) => {
         const { keys: { 0: objectId }, device: source } = data;
