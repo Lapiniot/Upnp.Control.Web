@@ -84,6 +84,7 @@
             --#{$prefix}navbar-padding-x: #{map-get($spacers, 3)};
             --#{$prefix}navbar-nav-link-padding-x: #{$nav-link-padding-x};
             --#{$prefix}navbar-focus-box-shadow: #{$navbar-focus-box-shadow};
+            --#{$prefix}navbar-bg: transparent;
             font-size: unset;
 
             & > nav {

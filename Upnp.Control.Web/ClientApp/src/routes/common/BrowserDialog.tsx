@@ -84,7 +84,7 @@ export default function BrowserDialog(props: BrowserDialogProps) {
 
     return <Dialog className={`dialog-flush dialog-scrollable dialog-lg h-auto dialog-fullscreen-sm-down${className ? ` ${className}` : ""}`}
         caption={title} {...other} renderFooter={renderFooter}>
-        <div className="vstack p-0 position-relative overflow-hidden border-bottom border-top">
+        <div className="vstack p-0 position-relative overflow-hidden">
             <VirtualRouter initialPath="/upnp">
                 <Routes>
                     <Route path="upnp">

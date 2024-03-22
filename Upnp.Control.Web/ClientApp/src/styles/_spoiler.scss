@@ -1,13 +1,14 @@
 /*********** Spoiler component general styles **********/
-$spoiler-border-radius: var(--#{$prefix}border-radius) !default;
+$spoiler-border-radius: $corner-sm;
 $spoiler-border-width: var(--#{$prefix}border-width) !default;
 $spoiler-color: var(--#{$prefix}body-color) !default;
 $spoiler-border-color: var(--#{$prefix}border-color-translucent) !default;
-$spoiler-padding-x: $input-btn-padding-x !default;
-$spoiler-padding-y: $input-btn-padding-y !default;
+$spoiler-padding-x: map-get($spacers, 3) !default;
+$spoiler-padding-y: map-get($spacers, 2) !default;
 
 .spoiler {
     --#{$prefix}spoiler-border-radius: #{$spoiler-border-radius};
+    --#{$prefix}spoiler-inner-border-radius: calc(var(--#{$prefix}spoiler-border-radius) - var(--#{$prefix}spoiler-border-width));
     --#{$prefix}spoiler-border-width: #{$spoiler-border-width};
     --#{$prefix}spoiler-border-color: #{$spoiler-border-color};
     --#{$prefix}spoiler-padding-x: #{$spoiler-padding-x};
@@ -23,7 +24,7 @@ $spoiler-padding-y: $input-btn-padding-y !default;
         align-items: center;
         gap: var(--#{$prefix}spoiler-padding-x);
         padding: var(--#{$prefix}spoiler-padding-y) var(--#{$prefix}spoiler-padding-x);
-        border-radius: var(--#{$prefix}spoiler-border-radius);
+        border-radius: var(--#{$prefix}spoiler-inner-border-radius);
 
         &::-webkit-details-marker {
             display: none;
@@ -39,8 +40,13 @@ $spoiler-padding-y: $input-btn-padding-y !default;
 
         & + * {
             display: grid;
+            border-bottom-left-radius: var(--#{$prefix}spoiler-inner-border-radius);
+            border-bottom-right-radius: var(--#{$prefix}spoiler-inner-border-radius);
+
 
             & > * {
+                border-bottom-left-radius: inherit;
+                border-bottom-right-radius: inherit;
                 overflow: hidden;
             }
         }

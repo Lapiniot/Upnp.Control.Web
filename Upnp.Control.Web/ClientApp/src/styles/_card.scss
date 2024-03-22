@@ -16,19 +16,21 @@ $card-inner-border-radius: calc(var(--#{$prefix}card-border-radius) - var(--#{$p
     --#{$prefix}card-disabled-bg: var(--#{$prefix}surface-variant);
     --#{$prefix}card-disabled-border-color: transparent;
 
-    &:hover {
-        box-shadow: var(--#{$prefix}card-hover-box-shadow);
-        background-image: var(--#{$prefix}hover-layer-cc);
-    }
+    &.card-action {
+        &:hover {
+            box-shadow: var(--#{$prefix}card-hover-box-shadow);
+            background-image: var(--#{$prefix}hover-layer-cc);
+        }
 
-    &:focus-within {
-        box-shadow: var(--#{$prefix}card-focus-box-shadow);
-        background-image: var(--#{$prefix}focus-layer-cc);
-    }
+        &:focus-within {
+            box-shadow: var(--#{$prefix}card-focus-box-shadow);
+            background-image: var(--#{$prefix}focus-layer-cc);
+        }
 
-    &:is(:active, .active) {
-        box-shadow: var(--#{$prefix}card-active-box-shadow);
-        background-image: var(--#{$prefix}focus-layer-cc);
+        &:is(:active, .active) {
+            box-shadow: var(--#{$prefix}card-active-box-shadow);
+            background-image: var(--#{$prefix}focus-layer-cc);
+        }
     }
 
     &:is([inert], .disabled) {
@@ -63,7 +65,6 @@ $card-inner-border-radius: calc(var(--#{$prefix}card-border-radius) - var(--#{$p
         background-image: none;
     }
 }
-
 
 .card-stripped {
     @include card-stripped();
