@@ -1,36 +1,21 @@
-@function infix($name) {
-    @return if(($name == null) or ($name == ""), "", "-#{$name}");
-}
-
-@function build-media-query($conditions, $operator: and) {
-    $condition: "";
-    $i: 1;
-
-    @each $feature, $value in $conditions {
-        $condition: $condition + #{if($i != 1, " #{$operator} ", "")}(#{$feature}#{if($value, ": #{$value}", "")});
-        $i: $i + 1;
-    }
-
-    @return $condition;
-}
-
-@function clone($value, $count: 1) {
-    $list: [];
-
-    @for $i from 1 through $count {
-        $list: append($list, $value);
-    }
-
-    @return $list;
-}
+@import "functions";
 
 @mixin no-theme-colors() {
     // Reset global $theme-colors map to avoid generation of theme color related styles
-    $temp: $theme-colors !global;
+    $temp: $theme-colors;
     $theme-colors: () !global;
     @content();
     // then restore value to the original one
     $theme-colors: $temp !global;
+}
+
+@mixin with-breakpoints($breakpoints) {
+    // Reset global $grid-breakpoints map to avoid generation of grid breakpoint related styles
+    $temp: $grid-breakpoints;
+    $grid-breakpoints: $breakpoints !global;
+    @content();
+    // then restore value to the original one
+    $grid-breakpoints: $temp !global;
 }
 
 @mixin responsive-class($class, $breakpoint, $conditions: min-width) {
@@ -93,4 +78,9 @@
 
 @mixin gradient-bg-img($image) {
     background-image: if($enable-gradients, (var(--#{$prefix}gradient), $image), $image);
+}
+
+@mixin divider-border-bottom($width: 1px, $color: $surface-variant-color, $padding: map-get($spacers, 3)) {
+    border-bottom: $width solid transparent;
+    border-image: divider-border-image($color, $padding...) 0 0 1 0;
 }

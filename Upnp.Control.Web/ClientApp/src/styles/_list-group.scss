@@ -1,0 +1,63 @@
+$list-group-border-color: $surface-variant-color;
+$list-group-border-width: 1px;
+$list-group-border-radius: 0;
+$list-group-color: $on-surface-color;
+$list-group-bg: $surface-color;
+$list-group-hover-bg: $surface-container-low-color;
+$list-group-action-color: $on-surface-color;
+$list-group-action-hover-color: $on-surface-color;
+$list-group-hover-bg: $surface-color;
+$list-group-action-active-color: $on-surface-color;
+$list-group-action-active-bg: $surface-color;
+$list-group-disabled-color: rgba(var(--#{$prefix}on-surface-rgb), $disabled-state-opacity);
+$list-group-disabled-bg: $list-group-bg;
+$list-group-active-color: $on-surface-color;
+$list-group-active-bg: $surface-color;
+$list-group-active-border-color: $list-group-border-color;
+
+@include with-breakpoints(()) {
+    @include no-theme-colors {
+        @import "bootstrap/scss/list-group";
+    }
+}
+
+.list-group-flush > .list-group-item {
+    border: none;
+
+    &:where(:nth-last-child(n + 2)) {
+        @include divider-border-bottom($color: var(--bs-list-group-border-color), $padding: var(--#{$prefix}list-group-item-padding-x));
+    }
+}
+
+.list-group > .list-group-item-action {
+    &:is(:hover) {
+        background-image: var(--#{$prefix}hover-layer-cc);
+    }
+
+    &:is(:active, :focus, .active) {
+        background-image: var(--#{$prefix}focus-layer-cc);
+    }
+
+    // Hide bottom divider for currently interracting item and prev. sibling to 
+    // avoid uggly visual effect when overlay layer toches sibling item bottom edge
+    &:is(:hover, :focus, :active, .active),
+    &:has(+ :is(:hover, :focus, :active, .active)) {
+        border-image: none;
+    }
+}
+
+.list-group-item {
+    // reset position: relative from bootstrap's style rule as it makes 
+    // no sense for our application and can even slightly hurt performance in some cases
+    position: initial;
+}
+
+.list-group-bare {
+    --#{$prefix}list-group-bg: transparent;
+    --#{$prefix}list-group-border-width: 0;
+    --#{$prefix}list-group-border-radius: 0;
+
+    & > .list-group-item {
+        border-image: none;
+    }
+}

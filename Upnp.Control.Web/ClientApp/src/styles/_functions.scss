@@ -1,0 +1,35 @@
+@function infix($name) {
+    @return if(($name == null) or ($name == ""), "", "-#{$name}");
+}
+
+@function build-media-query($conditions, $operator: and) {
+    $condition: "";
+    $i: 1;
+
+    @each $feature, $value in $conditions {
+        $condition: $condition + #{if($i != 1, " #{$operator} ", "")}(#{$feature}#{if($value, ": #{$value}", "")});
+        $i: $i + 1;
+    }
+
+    @return $condition;
+}
+
+@function clone($value, $count: 1) {
+    $list: [];
+
+    @for $i from 1 through $count {
+        $list: append($list, $value);
+    }
+
+    @return $list;
+}
+
+@function divider-border-image($color, $padding...) {
+    $start-x: nth($padding, 1);
+    $end-x: nth($padding, -1);
+
+    @return linear-gradient(90deg,
+        transparent $start-x,
+        $color 0 calc(100% - $end-x),
+        transparent 0);
+}

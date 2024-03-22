@@ -84,6 +84,15 @@ $surface-container-lowest-dark: #0F0D13;
 $outline-dark: #938F99;
 $outline-variant-dark: #49454F;
 
+$surface-color: var(--#{$prefix}surface);
+$surface-inverse-color: var(--#{$prefix}surface-inverse);
+$surface-variant-color: var(--#{$prefix}surface-variant);
+$surface-container-high-color: var(--#{$prefix}surface-cntr-high);
+$surface-container-low-color: var(--#{$prefix}surface-cntr-low);
+$on-surface-color: var(--#{$prefix}on-surface);
+$on-secondary-cntr-color: var(--#{$prefix}on-secondary-cntr);
+$outline-color: var(--#{$prefix}outline);
+
 // Botstrap overrides
 $body-color: $on-surface;
 $body-emphasis-color: #000;

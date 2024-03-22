@@ -18,13 +18,6 @@ $enable-rfs: true;
 @import "mixins";
 @import "utilities";
 
-$surface-color: var(--#{$prefix}surface);
-$surface-inverse-color: var(--#{$prefix}surface-inverse);
-$surface-container-high-color: var(--#{$prefix}surface-cntr-high);
-$surface-container-low-color: var(--#{$prefix}surface-cntr-low);
-$on-surface-color: var(--#{$prefix}on-surface);
-$on-secondary-cntr-color: var(--#{$prefix}on-secondary-cntr);
-
 $nav-link-disabled-color: $surface-inverse-color;
 
 $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
@@ -66,18 +59,6 @@ $dropdown-link-hover-color: $on-surface-color;
 $dropdown-link-hover-bg: $surface-container-low-color;
 $dropdown-link-disabled-color: $on-surface-color;
 $dropdown-bg: var(--#{$prefix}surface-cntr);
-
-$list-group-border-color: 0;
-$list-group-border-width: 0;
-$list-group-color: $on-surface-color;
-$list-group-bg: $surface-color;
-$list-group-hover-bg: $surface-container-low-color;
-$list-group-disabled-color: $surface-inverse-color;
-$list-group-disabled-bg: $list-group-bg;
-$list-group-action-color: $on-surface-color;
-$list-group-action-active-color: $list-group-action-color;
-$list-group-action-active-bg: $surface-container-high-color;
-$list-group-action-hover-color: $on-secondary-cntr-color;
 
 $table-color: $on-secondary-cntr-color;
 $table-bg: $surface-color;
@@ -122,14 +103,11 @@ $breadcrumb-active-color: $surface-inverse-color;
 @import "buttons";
 @import "bootstrap/scss/button-group";
 @import "card";
+@import "list-group";
 @import "bootstrap/scss/forms";
 @import "bootstrap/scss/breadcrumb";
 @import "bootstrap/scss/badge";
 @import "bootstrap/scss/toasts";
-
-@include no-theme-colors {
-    @import "bootstrap/scss/list-group";
-}
 
 @import "bootstrap/scss/close";
 @import "bootstrap/scss/placeholders";
