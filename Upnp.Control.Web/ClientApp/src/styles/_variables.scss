@@ -84,6 +84,14 @@ $surface-container-lowest-dark: #0F0D13;
 $outline-dark: #938F99;
 $outline-variant-dark: #49454F;
 
+$primary-color: var(--#{$prefix}primary);
+$on-primary-color: var(--#{$prefix}on-primary);
+$primary-cntr-color: var(--#{$prefix}primary-cntr);
+$on-primary-cntr-color: var(--#{$prefix}on-primary-cntr);
+$secondary-color: var(--#{$prefix}secondary);
+$on-secondary-color: var(--#{$prefix}on-secondary);
+$secondary-cntr-color: var(--#{$prefix}secondary-cntr);
+$on-secondary-cntr-color: var(--#{$prefix}on-secondary-cntr);
 $surface-color: var(--#{$prefix}surface);
 $surface-inverse-color: var(--#{$prefix}surface-inverse);
 $surface-variant-color: var(--#{$prefix}surface-variant);
@@ -125,7 +133,6 @@ $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/
 $transition-prefix: "tr-";
 $animation-prefix: "an-";
 
-$brand: #6750A4;
 $icon-scale: 1.25;
 $missing-image-content: '';
 $border-radius-sm: .1875rem;

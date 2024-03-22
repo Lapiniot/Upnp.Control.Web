@@ -60,16 +60,6 @@ $dropdown-link-hover-bg: $surface-container-low-color;
 $dropdown-link-disabled-color: $on-surface-color;
 $dropdown-bg: var(--#{$prefix}surface-cntr);
 
-$table-color: $on-secondary-cntr-color;
-$table-bg: $surface-color;
-$table-caption-color: $surface-inverse-color;
-$table-active-color: $table-color;
-$table-active-bg: rgba(var(--#{$prefix}on-secondary-cntr-rgb), $table-active-bg-factor);
-$table-striped-color: $table-color;
-$table-striped-bg: rgba(var(--#{$prefix}on-secondary-cntr-rgb), $table-striped-bg-factor);
-$table-hover-color: $table-color;
-$table-hover-bg: rgba(var(--#{$prefix}on-secondary-cntr-rgb), $table-hover-bg-factor);
-
 $toast-background-color: $surface-color;
 $toast-header-background-color: $toast-background-color;
 $toast-header-color: $surface-inverse-color;
@@ -81,22 +71,6 @@ $breadcrumb-divider-color: $surface-inverse-color;
 $breadcrumb-active-color: $surface-inverse-color;
 
 @import "root";
-
-:root,
-[data-bs-theme="light"] {
-    --#{$prefix}brand-color: #{shade-color($primary, 40%)};
-    --#{$prefix}accent-color: #{$primary};
-    --#{$prefix}accent-color-subtle: #{tint-color($primary, 40%)};
-    --#{$prefix}accent-color-emphasis: #{shade-color($primary, 60%)};
-}
-
-@include color-mode(dark) {
-    --#{$prefix}brand-color: #{shade-color($primary, 80%)};
-    --#{$prefix}accent-color: #{$primary};
-    --#{$prefix}accent-color-subtle: #{shade-color($primary, 60%)};
-    --#{$prefix}accent-color-emphasis: #{tint-color($primary, 40%)};
-}
-
 @import "bootstrap/scss/reboot";
 @import "bootstrap/scss/type";
 

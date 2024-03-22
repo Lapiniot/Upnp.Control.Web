@@ -1,15 +1,22 @@
 ﻿$table-striped-order: even;
+$table-color: $on-surface-color;
+$table-bg: $surface-color;
+$table-border-color: $surface-variant-color;
+$table-caption-color: $surface-inverse-color;
+$table-active-color: $on-primary-color;
+$table-active-bg: $primary-color;
+$table-striped-color: $table-color;
+$table-striped-bg: rgba(var(--#{$prefix}on-secondary-cntr-rgb), $table-striped-bg-factor);
 
 .table {
     --#{$prefix}table-color: #{$table-color};
     --#{$prefix}table-bg: #{$table-bg};
     --#{$prefix}table-caption-color: #{$table-caption-color};
-    --#{$prefix}table-header-bg: #{$light};
+    --#{$prefix}table-header-bg: #{$table-bg};
     --#{$prefix}table-active-color: #{$table-active-color};
     --#{$prefix}table-active-bg: #{$table-active-bg};
-    --#{$prefix}table-selected-bg: var(--#{$prefix}accent-color);
-    --#{$prefix}table-focused-accent: var(--#{$prefix}accent-color-emphasis);
-    --#{$prefix}table-selected-color: white;
+    --#{$prefix}table-selected-bg: var(--#{$prefix}primary-cntr);
+    --#{$prefix}table-selected-color: var(--#{$prefix}on-primary-cntr);
     --#{$prefix}table-cell-padding-x: #{$table-cell-padding-x};
     --#{$prefix}table-cell-padding-y: #{$table-cell-padding-y};
     --#{$prefix}table-padding-x: #{2 * $table-cell-padding-x};
@@ -56,17 +63,19 @@
                 border-top: 0;
             }
 
-            &:is([data-active="true"], .active) {
-                background-color: var(--#{$prefix}table-active-bg);
-                color: var(--#{$prefix}table-active-color);
+            &:focus {
+                outline: none;
+                box-shadow: none;
             }
 
-            &:is([data-selected="true"], .selected, [data-focused="true"], :focus-visible) {
-                --#{$prefix}accent-color: var(--#{$prefix}table-focused-accent);
-                background-color: var(--#{$prefix}table-selected-bg);
+            &:is([data-selected="true"], .selected) {
                 color: var(--#{$prefix}table-selected-color);
-                box-shadow: none;
-                outline: none;
+                background-color: var(--#{$prefix}table-selected-bg);
+            }
+
+            &:is([data-active="true"], .active) {
+                color: var(--#{$prefix}table-active-color);
+                background-color: var(--#{$prefix}table-active-bg);
             }
         }
     }
@@ -92,6 +101,10 @@
     > .table-footer {
         display: table-footer-group;
     }
+
+    .btn {
+        color: currentColor;
+    }
 }
 
 .table-compact {
@@ -112,36 +125,28 @@
     }
 }
 
-.table-focus-marker {
-    --#{$prefix}table-focused-marker-size: #{map-get($spacers, 1)};
-
-    > :not(.table-caption) > * > :first-child {
-        padding-inline-start: unquote("calc(var(--#{$prefix}table-padding-x) + var(--#{$prefix}table-focused-marker-size))");
-    }
-
+.table-action {
     > .table-body {
-        > :is([data-focused="true"], :focus-visible) {
-            outline: 0;
+        > :hover {
+            background-image: var(--#{$prefix}hover-layer-cc);
+        }
 
-            > :first-child {
-                box-shadow: inset var(--#{$prefix}table-focused-marker-size) 0 0 var(--#{$prefix}accent-color);
-            }
+        > :is(:active, :focus) {
+            background-image: var(--#{$prefix}focus-layer-cc);
         }
     }
 }
 
-.table-hover {
-    --#{$prefix}table-hover-color: #{$table-hover-color};
-    --#{$prefix}table-hover-bg: #{$table-hover-bg};
+.table-focus-marker {
+    --#{$prefix}table-focus-marker-width: #{map-get($spacers, 1)};
+    --#{$prefix}table-focus-marker-color: #{$secondary-color};
 
-    > .table-body {
-        > :where(:hover) {
-            @if $enable-gradients {
-                background-image: linear-gradient(var(--#{$prefix}table-hover-bg), var(--#{$prefix}table-hover-bg));
-            }
+    > :not(.table-caption) > * > :first-child {
+        padding-inline-start: calc(var(--#{$prefix}table-padding-x) + var(--#{$prefix}table-focus-marker-width));
+    }
 
-            color: var(--#{$prefix}table-hover-color);
-        }
+    > .table-body > :focus > :first-child {
+        box-shadow: inset var(--#{$prefix}table-focus-marker-width) 0 0 var(--#{$prefix}table-focus-marker-color);
     }
 }
 
@@ -155,6 +160,6 @@
     }
 
     @extend .table-compact;
-    @extend .table-hover;
+    @extend .table-action;
     @extend .table-focus-marker;
 }

@@ -3,7 +3,7 @@
 }
 
 input {
-    accent-color: var(--#{$prefix}accent-color);
+    accent-color: $primary-color;
 }
 
 input[type="checkbox"] {

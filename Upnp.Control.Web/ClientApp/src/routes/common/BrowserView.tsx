@@ -324,7 +324,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
                                 <div className="small">{formatTime(e.res?.duration)}</div>
                                 <div className="text-capitalize">{getDisplayName(e.class)}</div>
                             </>}
-                        </div>;
+                        </div>
                     })]}
                 </div>
                 {renderFooter && <div className="table-footer">{renderFooter()}</div>}

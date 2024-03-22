@@ -340,7 +340,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                                 </BottomBar>
                             </>}
                         </RowStateContext.Consumer>
-                        {largeScreen && <Breadcrumb className="border-top" items={parents} />}
+                        {largeScreen && <Breadcrumb items={parents} />}
                     </PlaylistRowStateProvider>
                 </PlaybackStateProvider>
                 <DialogHost ref={this.dialogHostRef} />

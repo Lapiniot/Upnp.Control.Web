@@ -49,6 +49,7 @@ a > :is(svg, img) {
 .album-art,
 .fallback {
     @extend %image-fallback;
+    flex-shrink: 0;
 }
 
 @each $name, $size in $icon-sizes {
