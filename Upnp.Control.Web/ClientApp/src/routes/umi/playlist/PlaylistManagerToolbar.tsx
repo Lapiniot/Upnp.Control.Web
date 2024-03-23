@@ -44,7 +44,7 @@ export function PlaylistManagerToolbar({ className, editMode, compact, rootLevel
     const onlySelected = selectedCount === 1;
     const expanded = compact !== true;
 
-    return <Toolbar className={`p-2 border-bottom${className ? ` ${className}` : ""}`} {...other}>
+    return <Toolbar className={`bg-surface-cntr p-2${className ? ` ${className}` : ""}`} {...other}>
         {editMode ? <>
             <Toolbar.Button icon="symbols.svg#close" onClick={handlers.toggleEditMode} />
             <small className="flex-fill overflow-hidden text-center text-truncate">

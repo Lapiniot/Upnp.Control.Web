@@ -36,15 +36,12 @@ export default function (props: PaginationProps & { pageSizes?: number[] }) {
     const init: { [K in string]: string } = {};
     search.forEach((value, key) => init[key] = value);
 
-    return <>
-        <div className="d-none d-md-flex align-items-center">
-            <label className="text-nowrap small pe-2">Items per page</label>
-            <select className="form-select form-select-sm me-2 my-0 w-auto" aria-label="Items per page" value={pageSize} onChange={changeHandler} >
-                {pageSizes.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-            <span className="small pe-2 text-nowrap">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
-        </div>
-        <nav aria-label="Page navigation" className={`toolbar g-1${className ? ` ${className}` : ""}`} {...other}>
+    return <div className={`d-flex align-items-center${className ? ` ${className}` : ""}`}>
+        <select className="form-select form-select-sm me-2 my-0 w-auto d-none d-md-inline" aria-label="Items per page" value={pageSize} onChange={changeHandler} >
+            {pageSizes.map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <span className="small pe-2 text-nowrap d-none d-md-inline">{(current - 1) * pageSize + 1}-{Math.min(current * pageSize, total)} / {total}</span>
+        <nav aria-label="Page navigation" className="toolbar g-1" {...other}>
             <PageLink to={`?${createSearchParams({ ...init, p: "1" })}`} label="First" disabled={current === 1}>
                 <svg><use href="symbols.svg#first_page" /></svg>
             </PageLink>
@@ -58,5 +55,5 @@ export default function (props: PaginationProps & { pageSizes?: number[] }) {
                 <svg><use href="symbols.svg#last_page" /></svg>
             </PageLink>
         </nav>
-    </>
+    </div>
 }

@@ -29,7 +29,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
     return <>
         {fetching && <LoadIndicatorOverlay />}
         <div className={`browser-shell flex-fill overflow-hidden${className ? ` ${className}` : ""}`}>
-            <Toolbar className="overflow-hidden px-2 py-1 border-bottom flex-nowrap">
+            <Toolbar className="overflow-hidden px-2 py-1 flex-nowrap bg-surface-cntr">
                 <Toolbar.Button icon="symbols.svg#arrow_back_ios_new" onClick={navBackHandler} />
                 <div className="vstack align-items-stretch overflow-hidden text-center text-md-start">
                     <h6 className="mb-0 text-truncate">{parents?.[0]?.title ?? ""}</h6>
@@ -44,7 +44,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
                 <div className="br-area-main d-flex align-items-center justify-content-center">
                     <svg className="icon-5x"><use href="symbols.svg#folder" /></svg>
                 </div>}
-            {withPagination && <BottomBar className="br-area-bottom">
+            {withPagination && <BottomBar className="br-area-bottom border-top">
                 <Pagination total={total} current={typeof page === "string" ? parseInt(page) : 1}
                     pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
             </BottomBar>}

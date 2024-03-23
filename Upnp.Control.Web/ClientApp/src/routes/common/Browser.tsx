@@ -205,7 +205,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
                 </BrowserCore>
             </RowStateProvider>
             <div className="sticky-bottom">
-                <BottomBar className="flex-wrap-reverse">
+                <BottomBar className="flex-wrap-reverse border-top">
                     {displayMode === "table" && parents.length > 1 && <Breadcrumb className="me-auto" items={parents} />}
                     <Pagination total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
                         pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />

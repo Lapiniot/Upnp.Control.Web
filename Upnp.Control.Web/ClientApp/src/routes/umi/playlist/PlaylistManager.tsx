@@ -334,13 +334,13 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                                         </button>
                                         <Menu render={this.renderActionMenu} />
                                     </>}
-                                <BottomBar>
-                                    {selected > 0 ? <span className="me-auto small d-none d-sm-inline text-truncate">{`${selected} of ${fetched} selected`}</span> : null}
-                                    <Pagination total={total} current={page} pageSize={pageSize} />
+                                <BottomBar className="flex-wrap gx-3 border-top">
+                                    {largeScreen && <Breadcrumb className="me-auto" items={parents} />}
+                                    {selected > 0 ? <span className="small d-none d-sm-inline text-truncate">{`${selected} of ${fetched} selected`}</span> : null}
+                                    <Pagination className="ms-auto" total={total} current={page} pageSize={pageSize} />
                                 </BottomBar>
                             </>}
                         </RowStateContext.Consumer>
-                        {largeScreen && <Breadcrumb items={parents} />}
                     </PlaylistRowStateProvider>
                 </PlaybackStateProvider>
                 <DialogHost ref={this.dialogHostRef} />

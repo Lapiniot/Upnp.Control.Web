@@ -110,6 +110,9 @@ $body-color-dark: $on-surface-dark;
 $body-emphasis-color-dark: #FFF;
 $body-bg-dark: $surface-dark;
 
+$border-color: $surface-variant;
+$border-color-dark: $surface-variant-dark;
+
 $hover-state-opacity: .08;
 $focus-state-opacity: .1;
 $disabled-state-opacity: .38;
@@ -141,6 +144,7 @@ $focus-ring-offset: 2px;
 $focus-ring-opacity: 1;
 $focus-ring-color: var(--#{$prefix}secondary);
 
+$corner-xs: 4px;
 $corner-sm: 8px;
 $corner-md: 12px;
 $corner-lg: 16px;
