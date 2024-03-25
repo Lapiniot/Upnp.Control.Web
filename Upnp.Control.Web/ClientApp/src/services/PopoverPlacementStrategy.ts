@@ -9,7 +9,7 @@ export abstract class PopupPlacementStrategy {
 
 type MainPlacement = "left" | "right" | "top" | "bottom"
 type AltPlacement = "start" | "end" | "center"
-export type Placement = `${MainPlacement}-${AltPlacement}` | "auto"
+export type Placement = `${MainPlacement}-${AltPlacement}` | "auto" | "fixed"
 interface Point { x: number; y: number; }
 interface Size { width: number; height: number; }
 type Margin = [top: number, right: number, bottom: number, left: number]
@@ -40,6 +40,9 @@ const positions: PositionCalculators = {
     "bottom-center": ({ width }, { x, y, width: w, height: h }, { distance: offset }) => ({ x: x + (w - width) / 2, y: y + h + offset }),
     auto() {
         return { x: 0, y: 0 }
+    },
+    fixed() {
+        return { x: 0, y: 0 }
     }
 }
 
@@ -56,7 +59,8 @@ const flipMap: { [K in Placement]: Placement } = {
     "right-center": "right-center",
     "top-center": "top-center",
     "bottom-center": "bottom-center",
-    "auto": "auto"
+    "auto": "auto",
+    "fixed": "fixed"
 }
 
 const altFlipMap: { [K in Placement]: Placement } = {
@@ -72,7 +76,8 @@ const altFlipMap: { [K in Placement]: Placement } = {
     "bottom-start": "top-start",
     "bottom-end": "top-end",
     "bottom-center": "top-center",
-    auto: "auto"
+    "auto": "auto",
+    "fixed": "fixed"
 }
 
 //#endregion
@@ -204,6 +209,11 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
     }
 
     private tetherToAnchor(inlineSize: number, blockSize: number, anchor: Rect, root: Rect) {
+        if (this.placement === "fixed") {
+            // "fixed" means "let CSS do its job"
+            return;
+        }
+
         const { flip } = this.options;
         const size: Size = { width: inlineSize, height: blockSize };
         let placement = this.placement === "auto" ? getOptimalPlacement(anchor, root) : this.placement;
@@ -277,16 +287,5 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
         popup.style.maxWidth = maxw > 0 ? Math.round(maxw) + "px" : "";
         popup.style.maxHeight = maxh > 0 ? Math.round(maxh) + "px" : "";
         popup.style.inset = `${Math.round(top)}px auto auto ${Math.round(left)}px`;
-    }
-}
-
-export class FixedStrategy extends PopupPlacementStrategy {
-    public override update() {
-    }
-
-    public override destroy() {
-    }
-
-    public override toggle() {
     }
 }

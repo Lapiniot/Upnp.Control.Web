@@ -1,6 +1,6 @@
-import { ButtonHTMLAttributes, FocusEvent, HTMLAttributes, PureComponent, MouseEvent as ReactMouseEvent, ReactNode, createRef } from "react";
+import { ButtonHTMLAttributes, HTMLAttributes, PureComponent, ReactNode, createRef } from "react";
 import { MediaQueries } from "../services/MediaQueries";
-import { PopoverAnchorStrategy, FixedStrategy, Placement, PopupPlacementStrategy } from "../services/PopoverPlacementStrategy";
+import { PopoverAnchorStrategy, Placement, PopupPlacementStrategy } from "../services/PopoverPlacementStrategy";
 import { SwipeGestureRecognizer, SwipeGestures } from "../services/gestures/SwipeGestureRecognizer";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
@@ -117,7 +117,7 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
         if (this.menuMode) {
             return new PopoverAnchorStrategy(placement);
         } else {
-            return new FixedStrategy();
+            return new PopoverAnchorStrategy("fixed");
         }
     }
 
@@ -188,6 +188,7 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
         const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
         if (item && !this.state.show) {
             this.show(item);
+            event.stopImmediatePropagation();
         }
     }
 
@@ -195,14 +196,6 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
         const { oldState, newState } = e as ToggleEvent;
         if (oldState === "open" && newState === "closed") {
             this.hide();
-        }
-    }
-
-    private popoverClickHandler = (event: ReactMouseEvent<HTMLUListElement>) => {
-        const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
-        if (item) {
-            this.hide();
-            this.props.onSelected?.(item, this.state.anchor);
         }
     }
 
@@ -238,7 +231,19 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
         }
     }
 
-    private focusOutHandler = (event: FocusEvent<HTMLElement>) => {
+    private popoverClickHandler = (event: React.MouseEvent<HTMLUListElement>) => {
+        const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
+        if (item) {
+            this.hide();
+            this.props.onSelected?.(item, this.state.anchor);
+        }
+    }
+
+    private pointerDownHandler = (event: React.PointerEvent<HTMLUListElement>) => {
+        event.stopPropagation();
+    }
+
+    private focusOutHandler = (event: React.FocusEvent<HTMLElement>) => {
         if (!this.popoverRef.current?.contains(event.relatedTarget as Node)) {
             this.hide();
             this.state.anchor?.focus();
@@ -269,11 +274,9 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
         const { show, anchor } = this.state;
         const menuMode = this.menuMode;
         const cls = `dropdown-menu user-select-none fade${!menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;
-        return <>
-            <ul popover="" role="menu" ref={this.popoverRef} inert={show ? undefined : ""} className={cls} {...other}
-                onClick={this.popoverClickHandler} onBlur={this.focusOutHandler}>
-                {render ? render(anchor) : children}
-            </ul>
-        </>
+        return <ul popover="" role="menu" ref={this.popoverRef} inert={show ? undefined : ""} className={cls} {...other}
+            onClick={this.popoverClickHandler} onBlur={this.focusOutHandler} onPointerDownCapture={this.pointerDownHandler}>
+            {render ? render(anchor) : children}
+        </ul>
     }
 }

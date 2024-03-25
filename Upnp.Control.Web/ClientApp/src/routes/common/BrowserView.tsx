@@ -275,7 +275,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         const tableMode = displayMode === "table";
         const headerClass = tableMode ? (stickyHeaders ? "sticky-top" : "") : "d-none";
 
-        return <div ref={nodeRef} className={`browser-view vstack position-relative overflow-auto${className ? ` ${className}` : ""}`}
+        return <div ref={nodeRef} className={`browser-view vstack overflow-auto${className ? ` ${className}` : ""}`}
             onPointerDown={this.pointerDownHandler}
             onPointerUp={navigationMode !== "dbl-click" && !editMode ? this.navigateHandler : undefined}
             onDoubleClick={navigationMode === "dbl-click" && !editMode ? this.navigateHandler : undefined}>

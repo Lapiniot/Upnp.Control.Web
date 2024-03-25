@@ -311,7 +311,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                         <PlaylistManagerToolbar service={this.service} editMode={this.state.editMode} compact={!largeScreen} rootLevel={isRootLevel}
                             fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source?.dev?.name} />
                         <Browser nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
-                            className="flex-fill br-area-main pb-6"
+                            className="br-area-main flex-fill pb-6"
                             device={device} deviceName={this.props.dataContext?.source.device?.name} getUrlHook={this.getPlayUrl}
                             navigate={navigate} hotKeyHandler={this.hotKeyHandler}
                             editMode={this.state.editMode} useCheckboxes={this.state.editMode || hasTouch && largeScreen}
@@ -322,24 +322,22 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                             <div className="br-area-main d-flex align-items-center justify-content-center">
                                 <svg className="icon-5x"><use href="symbols.svg#folder" /></svg>
                             </div>}
+                        {!fetching &&
+                            <div className="br-area-main d-lg-none place-self-end-end place-self-md-end-center">
+                                <button type="button" className="btn btn-fab btn-fab-lg btn-fab-low"
+                                    onClick={isRootLevel ? this.createPlaylist : undefined}
+                                    data-toggle={!isRootLevel ? "dropdown" : undefined}>
+                                    <svg><use href="symbols.svg#add" /></svg>
+                                </button>
+                                <Menu id="main-menu" render={this.renderActionMenu} />
+                            </div>}
                         <RowStateContext.Consumer>
-                            {({ selection: { length: selected } }) => <>
-                                {!largeScreen && !fetching &&
-                                    <>
-                                        <button type="button"
-                                            className="br-area-main btn btn-fab btn-fab-lg btn-fab-low place-self-end-end place-self-md-end-center"
-                                            onClick={isRootLevel && selected === 0 ? this.createPlaylist : undefined}
-                                            data-toggle={(selected > 0 || !isRootLevel) ? "dropdown" : undefined}>
-                                            <svg><use href="symbols.svg#add" /></svg>
-                                        </button>
-                                        <Menu render={this.renderActionMenu} />
-                                    </>}
+                            {({ selection: { length: selected } }) =>
                                 <BottomBar className="flex-wrap gx-3 border-top">
                                     {largeScreen && <Breadcrumb className="me-auto" items={parents} />}
                                     {selected > 0 ? <span className="small d-none d-sm-inline text-truncate">{`${selected} of ${fetched} selected`}</span> : null}
                                     <Pagination className="ms-auto" total={total} current={page} pageSize={pageSize} />
-                                </BottomBar>
-                            </>}
+                                </BottomBar>}
                         </RowStateContext.Consumer>
                     </PlaylistRowStateProvider>
                 </PlaybackStateProvider>
