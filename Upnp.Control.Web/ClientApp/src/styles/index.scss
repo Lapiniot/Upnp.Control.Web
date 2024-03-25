@@ -22,8 +22,6 @@ $nav-link-disabled-color: $surface-inverse-color;
 
 $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
 
-$spoiler-border-radius: $border-radius-sm;
-
 $badge-border-radius: $border-radius-sm;
 $toast-border-radius: $border-radius-sm;
 
@@ -52,14 +50,6 @@ $modal-content-bg: rgba(var(--#{$prefix}surface-cntr-high-rgb), 1);
 $modal-content-border-radius: $border-radius-xl;
 $modal-content-border-width: 0;
 
-$dropdown-border-radius: $border-radius-sm;
-$dropdown-color: $on-surface-color;
-$dropdown-link-color: $on-surface-color;
-$dropdown-link-hover-color: $on-surface-color;
-$dropdown-link-hover-bg: $surface-container-low-color;
-$dropdown-link-disabled-color: $on-surface-color;
-$dropdown-bg: var(--#{$prefix}surface-cntr);
-
 $toast-background-color: $surface-color;
 $toast-header-background-color: $toast-background-color;
 $toast-header-color: $surface-inverse-color;
@@ -85,7 +75,7 @@ $breadcrumb-active-color: $surface-inverse-color;
 
 @import "bootstrap/scss/close";
 @import "bootstrap/scss/placeholders";
-@import "bootstrap/scss/dropdown";
+@import "dropdown";
 
 // Helpers
 @import "bootstrap/scss/helpers/stacks";
@@ -102,7 +92,6 @@ $breadcrumb-active-color: $surface-inverse-color;
 @import "layout-table";
 @import "navbar";
 @import "appshell";
-@import "dropdown";
 @import "spoiler";
 @import "slider";
 @import "player";

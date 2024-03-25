@@ -1,18 +1,60 @@
+$dropdown-bg: $surface-container-color;
+$dropdown-color: $on-surface-color;
+$dropdown-border-radius: $corner-xs;
+$dropdown-inner-border-radius: $corner-xs;
+$dropdown-border-width: 0;
+$dropdown-border-color: transparent;
+$dropdown-link-color: $on-surface-color;
+$dropdown-link-hover-color: $on-surface-color;
+$dropdown-link-hover-bg: transparent;
+$dropdown-link-active-color: $on-surface-color;
+$dropdown-link-active-bg: transparent;
+$dropdown-link-disabled-color: rgba(var(--#{$prefix}on-surface-rgb), $disabled-state-opacity);
+$dropdown-divider-bg: $surface-variant-color;
+$dropdown-box-shadow: var(--#{$prefix}shadow-l2);
+$dropdown-item-padding-x: 12px;
+$dropdown-divider-margin-y: 8px;
+
+@include with-breakpoints(()) {
+    @import "bootstrap/scss/dropdown";
+}
+
+.dropdown-menu {
+    box-shadow: var(--#{$prefix}dropdown-box-shadow);
+}
+
 .dropdown-item {
     display: flex;
     align-items: center;
-    gap: map-get($spacers, 2);
+    gap: $dropdown-item-padding-x;
+    min-height: 48px;
 
-    > :where(span, p):first-of-type {
+    & > :is(svg, img) {
+        font-size: 24px;
+    }
+
+    &:not(:disabled, .disabled) > :is(svg, img) {
+        color: $on-surface-variant-color;
+    }
+
+    & > :where(span, p):first-of-type {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
     }
 
-    &:focus,
-    &:active {
-        outline: none;
+    &:hover {
+        background-image: var(--#{$prefix}hover-layer-cc);
+    }
+
+    &:is(:active, :focus) {
+        background-image: var(--#{$prefix}focus-layer-cc);
         box-shadow: none;
+    }
+
+    &:focus-visible {
+        outline: var(--#{$prefix}focus-ring);
+        outline-offset: -3px;
     }
 }
 
@@ -25,9 +67,9 @@
 
     &.fade {
         --#{$prefix}dropdown-transition: opacity linear, display allow-discrete, overlay allow-discrete;
+        opacity: 0;
 
-        &[popover]:popover-open,
-        .show {
+        &[popover]:popover-open {
             opacity: 1;
 
             @starting-style {

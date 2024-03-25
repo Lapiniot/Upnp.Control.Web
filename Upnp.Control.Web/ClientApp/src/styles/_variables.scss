@@ -86,20 +86,22 @@ $outline-variant-dark: #49454F;
 
 $primary-color: var(--#{$prefix}primary);
 $on-primary-color: var(--#{$prefix}on-primary);
-$primary-cntr-color: var(--#{$prefix}primary-cntr);
-$on-primary-cntr-color: var(--#{$prefix}on-primary-cntr);
+$primary-container-color: var(--#{$prefix}primary-cntr);
+$on-primary-container-color: var(--#{$prefix}on-primary-cntr);
 $secondary-color: var(--#{$prefix}secondary);
 $on-secondary-color: var(--#{$prefix}on-secondary);
-$secondary-cntr-color: var(--#{$prefix}secondary-cntr);
-$on-secondary-cntr-color: var(--#{$prefix}on-secondary-cntr);
+$secondary-container-color: var(--#{$prefix}secondary-cntr);
+$on-secondary-container-color: var(--#{$prefix}on-secondary-cntr);
 $surface-color: var(--#{$prefix}surface);
+$surface-container-color: var(--#{$prefix}surface-cntr);
 $surface-inverse-color: var(--#{$prefix}surface-inverse);
 $surface-variant-color: var(--#{$prefix}surface-variant);
+$on-surface-variant-color: var(--#{$prefix}on-surface-variant);
 $surface-container-high-color: var(--#{$prefix}surface-cntr-high);
 $surface-container-low-color: var(--#{$prefix}surface-cntr-low);
 $on-surface-color: var(--#{$prefix}on-surface);
-$on-secondary-cntr-color: var(--#{$prefix}on-secondary-cntr);
 $outline-color: var(--#{$prefix}outline);
+$outline-variant-color: var(--#{$prefix}outline-variant);
 
 // Botstrap overrides
 $body-color: $on-surface;

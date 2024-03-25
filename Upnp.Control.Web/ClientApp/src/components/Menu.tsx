@@ -31,7 +31,7 @@ export function MenuItem({ className, action, icon, children, ...other }: Button
 
 export function MenuItemSeparator({ className, ...other }: HTMLAttributes<HTMLHRElement>) {
     return <li role="menuitem">
-        <hr className={`dropdown-divider mx-3${className ? ` ${className}` : ""}`} {...other} />
+        <hr className={`dropdown-divider${className ? ` ${className}` : ""}`} {...other} />
     </li>
 }
 
