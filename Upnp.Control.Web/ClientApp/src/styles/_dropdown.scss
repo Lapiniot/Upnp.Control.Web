@@ -10,24 +10,135 @@ $dropdown-link-hover-bg: transparent;
 $dropdown-link-active-color: $on-surface-color;
 $dropdown-link-active-bg: transparent;
 $dropdown-link-disabled-color: rgba(var(--#{$prefix}on-surface-rgb), $disabled-state-opacity);
+$dropdown-header-color: $dropdown-link-color;
 $dropdown-divider-bg: $surface-variant-color;
 $dropdown-box-shadow: var(--#{$prefix}shadow-l2);
 $dropdown-item-padding-x: 12px;
 $dropdown-divider-margin-y: 8px;
 
-@include with-breakpoints(()) {
-    @import "bootstrap/scss/dropdown";
-}
-
+// The dropdown menu
 .dropdown-menu {
+    // scss-docs-start dropdown-css-vars
+    --#{$prefix}dropdown-zindex: #{$zindex-dropdown};
+    --#{$prefix}dropdown-min-width: #{$dropdown-min-width};
+    --#{$prefix}dropdown-padding-x: #{$dropdown-padding-x};
+    --#{$prefix}dropdown-padding-y: #{$dropdown-padding-y};
+    --#{$prefix}dropdown-spacer: #{$dropdown-spacer};
+    @include rfs($dropdown-font-size, --#{$prefix}dropdown-font-size);
+    --#{$prefix}dropdown-color: #{$dropdown-color};
+    --#{$prefix}dropdown-bg: #{$dropdown-bg};
+    --#{$prefix}dropdown-border-color: #{$dropdown-border-color};
+    --#{$prefix}dropdown-border-radius: #{$dropdown-border-radius};
+    --#{$prefix}dropdown-border-width: #{$dropdown-border-width};
+    --#{$prefix}dropdown-inner-border-radius: #{$dropdown-inner-border-radius};
+    --#{$prefix}dropdown-divider-bg: #{$dropdown-divider-bg};
+    --#{$prefix}dropdown-divider-margin-y: #{$dropdown-divider-margin-y};
+    --#{$prefix}dropdown-box-shadow: #{$dropdown-box-shadow};
+    --#{$prefix}dropdown-link-color: #{$dropdown-link-color};
+    --#{$prefix}dropdown-link-hover-color: #{$dropdown-link-hover-color};
+    --#{$prefix}dropdown-link-hover-bg: #{$dropdown-link-hover-bg};
+    --#{$prefix}dropdown-link-active-color: #{$dropdown-link-active-color};
+    --#{$prefix}dropdown-link-active-bg: #{$dropdown-link-active-bg};
+    --#{$prefix}dropdown-link-disabled-color: #{$dropdown-link-disabled-color};
+    --#{$prefix}dropdown-item-padding-x: #{$dropdown-item-padding-x};
+    --#{$prefix}dropdown-item-padding-y: #{$dropdown-item-padding-y};
+    --#{$prefix}dropdown-header-color: #{$dropdown-header-color};
+    --#{$prefix}dropdown-header-padding-x: #{$dropdown-header-padding-x};
+    --#{$prefix}dropdown-header-padding-y: #{$dropdown-header-padding-y};
+    --#{$prefix}dropdown-transition: none;
+    --#{$prefix}dropdown-transition-duration: var(--#{$animation-prefix}duration-1);
+
+    position: absolute;
+    z-index: var(--#{$prefix}dropdown-zindex);
+    display: none; // none by default, but block on "open" of the menu
+    overflow: hidden auto;
+    min-width: var(--#{$prefix}dropdown-min-width);
+    padding: var(--#{$prefix}dropdown-padding-y) var(--#{$prefix}dropdown-padding-x);
+    margin: 0; // Override default margin of ul
+    @include font-size(var(--#{$prefix}dropdown-font-size));
+    color: var(--#{$prefix}dropdown-color);
+    text-align: left; // Ensures proper alignment if parent has it changed (e.g., modal footer)
+    list-style: none;
+    background-color: var(--#{$prefix}dropdown-bg);
+    background-clip: padding-box;
+    border: var(--#{$prefix}dropdown-border-width) solid var(--#{$prefix}dropdown-border-color);
+    @include border-radius(var(--#{$prefix}dropdown-border-radius));
     box-shadow: var(--#{$prefix}dropdown-box-shadow);
+    @include transition(var(--#{$prefix}dropdown-transition));
+    transition-duration: var(--#{$prefix}dropdown-transition-duration);
+
+    @if $dropdown-padding-y ==0 {
+
+        > .dropdown-item:first-child,
+        > li:first-child .dropdown-item {
+            @include border-top-radius(var(--#{$prefix}dropdown-inner-border-radius));
+        }
+
+        > .dropdown-item:last-child,
+        > li:last-child .dropdown-item {
+            @include border-bottom-radius(var(--#{$prefix}dropdown-inner-border-radius));
+        }
+    }
+
+    &[popover] {
+        position: fixed;
+
+        &:popover-open {
+            display: block;
+        }
+    }
 }
 
+// Dividers (basically an `<hr>`) within the dropdown
+.dropdown-divider {
+    height: 0;
+    margin: var(--#{$prefix}dropdown-divider-margin-y) 0;
+    overflow: hidden;
+    border-top: 1px solid var(--#{$prefix}dropdown-divider-bg);
+    opacity: 1; // Revisit in v6 to de-dupe styles that conflict with <hr> element
+}
+
+// Links, buttons, and more within the dropdown menu
+//
+// `<button>`-specific styles are denoted with `// For <button>s`
 .dropdown-item {
     display: flex;
     align-items: center;
-    gap: $dropdown-item-padding-x;
     min-height: 48px;
+    width: 100%; // For `<button>`s
+    padding: var(--#{$prefix}dropdown-item-padding-y) var(--#{$prefix}dropdown-item-padding-x);
+    gap: $dropdown-item-padding-x;
+    font-weight: $font-weight-normal;
+    color: var(--#{$prefix}dropdown-link-color);
+    text-align: inherit; // For `<button>`s
+    text-decoration: none;
+    white-space: nowrap; // prevent links from randomly breaking onto new lines
+    background-color: transparent; // For `<button>`s
+    border: 0; // For `<button>`s
+    @include border-radius(var(--#{$prefix}dropdown-item-border-radius, 0));
+
+    &:hover {
+        color: var(--#{$prefix}dropdown-link-hover-color);
+        background-image: var(--#{$prefix}hover-layer-cc);
+    }
+
+    &.active, &:active, &:focus {
+        color: var(--#{$prefix}dropdown-link-active-color);
+        background-image: var(--#{$prefix}focus-layer-cc);
+        box-shadow: none;
+    }
+
+    &:focus-visible {
+        outline: var(--#{$prefix}focus-ring);
+        outline-offset: -3px;
+    }
+
+    &.disabled,
+    &:disabled {
+        color: var(--#{$prefix}dropdown-link-disabled-color);
+        pointer-events: none;
+        background-color: transparent;
+    }
 
     & > :is(svg, img) {
         font-size: 24px;
@@ -42,48 +153,34 @@ $dropdown-divider-margin-y: 8px;
         white-space: nowrap;
         text-overflow: ellipsis;
     }
-
-    &:hover {
-        background-image: var(--#{$prefix}hover-layer-cc);
-    }
-
-    &:is(:active, :focus) {
-        background-image: var(--#{$prefix}focus-layer-cc);
-        box-shadow: none;
-    }
-
-    &:focus-visible {
-        outline: var(--#{$prefix}focus-ring);
-        outline-offset: -3px;
-    }
 }
 
-.dropdown-menu {
-    --#{$prefix}dropdown-transition: none;
-    --#{$prefix}dropdown-transition-duration: var(--#{$animation-prefix}duration-1);
-    overflow: hidden auto;
-    @include transition(var(--#{$prefix}dropdown-transition));
-    transition-duration: var(--#{$prefix}dropdown-transition-duration);
+// Dropdown section headers
+.dropdown-header {
+    display: block;
+    padding: var(--#{$prefix}dropdown-header-padding-y) var(--#{$prefix}dropdown-header-padding-x);
+    margin-bottom: 0; // for use with heading elements
+    @include font-size($font-size-sm);
+    color: var(--#{$prefix}dropdown-header-color);
+    white-space: nowrap; // as with > li > a
+}
 
-    &.fade {
-        --#{$prefix}dropdown-transition: opacity linear, display allow-discrete, overlay allow-discrete;
-        opacity: 0;
+// Dropdown text
+.dropdown-item-text {
+    display: block;
+    padding: var(--#{$prefix}dropdown-item-padding-y) var(--#{$prefix}dropdown-item-padding-x);
+    color: var(--#{$prefix}dropdown-link-color);
+}
 
-        &[popover]:popover-open {
-            opacity: 1;
+.dropdown-menu.fade {
+    --#{$prefix}dropdown-transition: opacity linear, display allow-discrete, overlay allow-discrete;
+    opacity: 0;
 
-            @starting-style {
-                opacity: 0;
-            }
-        }
-    }
+    &[popover]:popover-open {
+        opacity: 1;
 
-    &[popover] {
-        position: fixed;
-        margin: 0;
-
-        &:popover-open {
-            display: block;
+        @starting-style {
+            opacity: 0;
         }
     }
 }
