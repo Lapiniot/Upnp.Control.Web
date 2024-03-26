@@ -120,6 +120,7 @@
     --#{$prefix}focus-ring: solid var(--#{$prefix}secondary) #{$focus-ring-width};
 
     --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon)};
+    --#{$prefix}drag-handle-icon: #{escape-svg($drag-handle-icon)};
 }
 
 @if $enable-dark-mode {
@@ -169,5 +170,6 @@
         --#{$prefix}focus-layer: linear-gradient(#{$focus-layer-color-dark}, #{$focus-layer-color-dark});
 
         --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon-dark)};
+        --#{$prefix}drag-handle-icon: #{escape-svg($drag-handle-icon-dark)};
     }
 }

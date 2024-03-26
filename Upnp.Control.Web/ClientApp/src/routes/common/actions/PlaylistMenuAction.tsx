@@ -22,9 +22,9 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
                 <button type="button" disabled={!items} className="btn btn-icon" data-toggle="dropdown" aria-expanded="false" title="Quick switch playlists">
                     <svg><use href="symbols.svg#playlist_play" /></svg>
                 </button>
-                {device && <Menu data-device={device.udn}>
+                {device && <Menu className="action-sheet-sm" data-device={device.udn}>
                     {items?.map(({ title, class: cls, albumArts, res }, index) =>
-                        <MenuItem key={index} className="mwc-75" data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
+                        <MenuItem key={index} data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
                             <AlbumArt itemClass={cls} albumArts={albumArts} className="rounded-1" hint="player" />
                             <span>{title}</span>
                         </MenuItem>)}

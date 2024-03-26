@@ -134,6 +134,8 @@ $focus-layer-color-dark: rgba($on-surface-dark, $focus-state-opacity);
 
 $expand-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$on-surface}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
 $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$on-surface-dark}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
+$drag-handle-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='16' viewBox='0 0 32 16' fill='rgb(#{to-rgb($on-surface-variant)},.4)'><path d='M2 6h28c1 0 2 1 2 2s-1 2-2 2H2c-1 0-2-1-2-2s1-2 2-2z' /></svg>");
+$drag-handle-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='16' viewBox='0 0 32 16' fill='rgb(#{to-rgb($on-surface-variant-dark)},.4)'><path d='M2 6h28c1 0 2 1 2 2s-1 2-2 2H2c-1 0-2-1-2-2s1-2 2-2z' /></svg>");
 
 $transition-prefix: "tr-";
 $animation-prefix: "an-";

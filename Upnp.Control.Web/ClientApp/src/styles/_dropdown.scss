@@ -15,12 +15,15 @@ $dropdown-divider-bg: $surface-variant-color;
 $dropdown-box-shadow: var(--#{$prefix}shadow-l2);
 $dropdown-item-padding-x: 12px;
 $dropdown-divider-margin-y: 8px;
+$dropdown-min-width: 15ch;
+$dropdown-max-width: 30ch;
 
 // The dropdown menu
 .dropdown-menu {
     // scss-docs-start dropdown-css-vars
     --#{$prefix}dropdown-zindex: #{$zindex-dropdown};
     --#{$prefix}dropdown-min-width: #{$dropdown-min-width};
+    --#{$prefix}dropdown-max-width: #{$dropdown-max-width};
     --#{$prefix}dropdown-padding-x: #{$dropdown-padding-x};
     --#{$prefix}dropdown-padding-y: #{$dropdown-padding-y};
     --#{$prefix}dropdown-spacer: #{$dropdown-spacer};
@@ -32,6 +35,7 @@ $dropdown-divider-margin-y: 8px;
     --#{$prefix}dropdown-border-width: #{$dropdown-border-width};
     --#{$prefix}dropdown-inner-border-radius: #{$dropdown-inner-border-radius};
     --#{$prefix}dropdown-divider-bg: #{$dropdown-divider-bg};
+    --#{$prefix}dropdown-divider-margin-x: 0;
     --#{$prefix}dropdown-divider-margin-y: #{$dropdown-divider-margin-y};
     --#{$prefix}dropdown-box-shadow: #{$dropdown-box-shadow};
     --#{$prefix}dropdown-link-color: #{$dropdown-link-color};
@@ -54,6 +58,7 @@ $dropdown-divider-margin-y: 8px;
     display: none; // none by default, but block on "open" of the menu
     overflow: hidden auto;
     min-width: var(--#{$prefix}dropdown-min-width);
+    max-width: var(--#{$prefix}dropdown-max-width);
     padding: var(--#{$prefix}dropdown-padding-y) var(--#{$prefix}dropdown-padding-x);
     margin: 0; // Override default margin of ul
     @include font-size(var(--#{$prefix}dropdown-font-size));
@@ -93,7 +98,7 @@ $dropdown-divider-margin-y: 8px;
 // Dividers (basically an `<hr>`) within the dropdown
 .dropdown-divider {
     height: 0;
-    margin: var(--#{$prefix}dropdown-divider-margin-y) 0;
+    margin: var(--#{$prefix}dropdown-divider-margin-y) var(--#{$prefix}dropdown-divider-margin-x);
     overflow: hidden;
     border-top: 1px solid var(--#{$prefix}dropdown-divider-bg);
     opacity: 1; // Revisit in v6 to de-dupe styles that conflict with <hr> element
@@ -221,18 +226,23 @@ $placement-syntax: "";
 
 @mixin action-sheet {
     --#{$prefix}placement: fixed;
+    --#{$prefix}dropdown-bg: #{$surface-container-low-color};
     --#{$prefix}dropdown-border-width: 0;
-    --#{$prefix}dropdown-box-shadow: 0 -0.5rem 2rem rgba(0, 0, 0, 0.15),
-    0 0 0 1px var(--#{$prefix}dropdown-border-color);
+    --#{$prefix}dropdown-box-shadow: var(--#{$prefix}shadow-l1);
+    --#{$prefix}dropdown-divider-margin-x: #{$dropdown-item-padding-x};
+    --#{$prefix}dropdown-min-width: unset;
+    --#{$prefix}dropdown-max-width: 640px;
+
     position: fixed;
     inset: auto 0 0 0;
     width: auto;
     height: auto;
-    max-height: calc(100vh - 4rem);
+    max-height: 50dvh;
     padding-top: 0;
-    border-top: 2rem solid transparent;
-    border-radius: 2rem 2rem 0 0;
-    background: var(--#{$prefix}dropdown-bg) center top / 3.5rem no-repeat border-box url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e0e0e0'%3E%3Cpath d='M4 3h16c.55 0 1 .45 1 1s-.45 1-1 1H4c-.55 0-1-.45-1-1s.45-1 1-1z'/%3E%3C/svg%3E");
+    margin-inline: auto;
+    border-radius: $corner-xl $corner-xl 0 0;
+    border-top: 48px solid transparent;
+    background: border-box var(--#{$prefix}dropdown-bg) center top 16px no-repeat var(--#{$prefix}drag-handle-icon);
     overscroll-behavior: contain;
 
     &.slide {
@@ -278,9 +288,7 @@ $placement-syntax: "";
     }
 }
 
-$action-sheet-breakpoints: (
-    sm
-);
+$action-sheet-breakpoints: sm;
 
 @each $breakpoint in $action-sheet-breakpoints {
     @if $breakpoint ==null {

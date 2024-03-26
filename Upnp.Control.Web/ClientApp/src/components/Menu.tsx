@@ -47,8 +47,11 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     }
 
     componentDidMount() {
-        this.popoverRef.current?.parentElement?.addEventListener("click", this.containerClickListener);
-        this.observer.observe(this.popoverRef.current!);
+        const popover = this.popoverRef.current;
+        if (popover) {
+            popover.parentElement?.addEventListener("click", this.containerClickListener);
+            this.observer.observe(popover);
+        }
     }
 
     override async componentDidUpdate(): Promise<void> {
@@ -100,12 +103,14 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
         document.addEventListener("keydown", this.documentKeydownListener, { capture: true });
         activationEvents.forEach(name => document.addEventListener(name, this.preventActivationListener, true));
         this.popoverRef.current!.addEventListener("toggle", this.popoverToggleListener);
+        this.popoverRef.current!.addEventListener("pointerdown", this.pointerDownListener);
     }
 
     private unsubscribe() {
         document.removeEventListener("keydown", this.documentKeydownListener, { capture: true });
         activationEvents.forEach(name => document.removeEventListener(name, this.preventActivationListener, true));
         this.popoverRef.current!.removeEventListener("toggle", this.popoverToggleListener);
+        this.popoverRef.current!.removeEventListener("pointerdown", this.pointerDownListener);
     }
 
     //#region Focus helpers
@@ -196,16 +201,16 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
         }
     }
 
+    private pointerDownListener = (event: PointerEvent) => {
+        event.stopPropagation();
+    }
+
     private popoverClickHandler = (event: React.MouseEvent<HTMLUListElement>) => {
         const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
         if (item) {
             this.hide();
             this.props.onSelected?.(item, this.state.anchor);
         }
-    }
-
-    private pointerDownHandler = (event: React.PointerEvent<HTMLUListElement>) => {
-        event.stopPropagation();
     }
 
     private focusOutHandler = (event: React.FocusEvent<HTMLElement>) => {
@@ -239,7 +244,7 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
         const { show, anchor } = this.state;
         return <ul popover="" role="menu" ref={this.popoverRef} inert={show ? undefined : ""}
             className={`dropdown-menu user-select-none fade${className ? ` ${className}` : ""}`} {...other}
-            onClick={this.popoverClickHandler} onBlur={this.focusOutHandler} onPointerDownCapture={this.pointerDownHandler}>
+            onClick={this.popoverClickHandler} onBlur={this.focusOutHandler}>
             {render ? render(anchor) : children}
         </ul>
     }
