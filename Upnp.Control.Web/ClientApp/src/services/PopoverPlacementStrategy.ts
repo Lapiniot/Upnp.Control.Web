@@ -9,12 +9,14 @@ export abstract class PopupPlacementStrategy {
 
 type MainPlacement = "left" | "right" | "top" | "bottom"
 type AltPlacement = "start" | "end" | "center"
-export type Placement = `${MainPlacement}-${AltPlacement}` | "auto" | "fixed"
+type StrictPlacement = `${MainPlacement}-${AltPlacement}`
+
+export type Placement = StrictPlacement | MainPlacement | "auto" | "fixed"
 interface Point { x: number; y: number; }
 interface Size { width: number; height: number; }
 type Margin = [top: number, right: number, bottom: number, left: number]
 type Rect = Point & Size;
-type PositionCalculators = { [K in Placement]: { (size: Size, anchorRect: Rect, options: typeof defaults): Point } }
+type PositionCalculators = { [K in StrictPlacement]: { (size: Size, anchorRect: Rect, options: typeof defaults): Point } }
 
 const defaults = {
     distance: 4,
@@ -37,33 +39,10 @@ const positions: PositionCalculators = {
     "top-center": ({ width, height }, { x, y, width: w }, { distance: offset }) => ({ x: x + (w - width) / 2, y: y - height - offset }),
     "bottom-start": (_, { x, y, height: h }, { distance: offset }) => ({ x, y: y + h + offset }),
     "bottom-end": ({ width }, { x, y, width: w, height: h }, { distance: offset }) => ({ x: x + w - width, y: y + h + offset }),
-    "bottom-center": ({ width }, { x, y, width: w, height: h }, { distance: offset }) => ({ x: x + (w - width) / 2, y: y + h + offset }),
-    auto() {
-        return { x: 0, y: 0 }
-    },
-    fixed() {
-        return { x: 0, y: 0 }
-    }
+    "bottom-center": ({ width }, { x, y, width: w, height: h }, { distance: offset }) => ({ x: x + (w - width) / 2, y: y + h + offset })
 }
 
-const flipMap: { [K in Placement]: Placement } = {
-    "left-start": "left-end",
-    "left-end": "left-start",
-    "right-start": "right-end",
-    "right-end": "right-start",
-    "top-start": "top-end",
-    "top-end": "top-start",
-    "bottom-start": "bottom-end",
-    "bottom-end": "bottom-start",
-    "left-center": "left-center",
-    "right-center": "right-center",
-    "top-center": "top-center",
-    "bottom-center": "bottom-center",
-    "auto": "auto",
-    "fixed": "fixed"
-}
-
-const altFlipMap: { [K in Placement]: Placement } = {
+const mainFlipMap: { [K in StrictPlacement]: StrictPlacement } = {
     "left-start": "right-start",
     "left-end": "right-end",
     "left-center": "right-center",
@@ -75,9 +54,22 @@ const altFlipMap: { [K in Placement]: Placement } = {
     "top-center": "bottom-center",
     "bottom-start": "top-start",
     "bottom-end": "top-end",
-    "bottom-center": "top-center",
-    "auto": "auto",
-    "fixed": "fixed"
+    "bottom-center": "top-center"
+}
+
+const altFlipMap: { [K in StrictPlacement]: Exclude<StrictPlacement, K>[] } = {
+    "left-start": ["left-center", "left-end"],
+    "left-end": ["left-center", "left-start"],
+    "right-start": ["right-center", "right-end"],
+    "right-end": ["right-center", "right-start"],
+    "top-start": ["top-center", "top-end"],
+    "top-end": ["top-center", "top-start"],
+    "bottom-start": ["bottom-center", "bottom-end"],
+    "bottom-end": ["bottom-center", "bottom-start"],
+    "left-center": ["left-start", "left-end"],
+    "right-center": ["right-start", "right-end"],
+    "top-center": ["top-end", "top-start"],
+    "bottom-center": ["bottom-end", "bottom-start"]
 }
 
 //#endregion
@@ -99,34 +91,40 @@ function getViewportRect([top, right, bottom, left]: Margin = [0, 0, 0, 0]): Rec
     return { x: clientLeft - left, y: clientTop - top, width: clientWidth + left + right, height: clientHeight + top + bottom };
 }
 
-function getFallbackPlacements(placement: Placement, flip: typeof defaults.flip) {
-    const placements: Placement[] = [];
-
-    if (flip === "main" || flip === true) {
-        const mainFlipPlacement = flipMap[placement];
-        if (mainFlipPlacement !== placement)
-            placements.push(mainFlipPlacement);
-    }
+function getFallbackPlacements(placement: StrictPlacement, flip: typeof defaults.flip) {
+    const placements: StrictPlacement[] = [];
 
     if (flip === "alt" || flip === true) {
-        const altFlipPlacement = altFlipMap[placement];
-        if (altFlipPlacement !== placement)
-            placements.push(altFlipPlacement);
+        for (const afp of altFlipMap[placement]) {
+            if (afp !== placement)
+                placements.push(afp);
+        }
+    }
+
+    if (flip === "main" || flip === true) {
+        const mfp = mainFlipMap[placement];
+        if (mfp !== placement)
+            placements.push(mfp);
 
         if (flip === true) {
-            const altMainPlacement = flipMap[altFlipPlacement];
-            if (altMainPlacement !== altFlipPlacement)
-                placements.push(altMainPlacement);
+            for (const afp of altFlipMap[mfp]) {
+                if (afp !== mfp)
+                    placements.push(afp);
+            }
         }
     }
 
     return placements;
 }
 
-function getOptimalPlacement(anchorRect: Rect, rootBounds: Rect): Placement {
+function getOptimalPlacement(anchorRect: Rect, rootBounds: Rect): StrictPlacement {
     const { x: ax, y: ay, width: aw, height: ah } = anchorRect;
     const { x: bx, y: by, width: bw, height: bh } = rootBounds;
     return `${ax - bx > bx + bw - ax - aw ? "left" : "right"}-${ay - by > by + bh - ay - ah ? "end" : "start"}`;
+}
+
+function isStrictPlacement(placement: Placement): placement is StrictPlacement {
+    return placement.includes("-");
 }
 
 //#endregion
@@ -139,10 +137,14 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
     intrinsicWidth = 0;
     intrinsicHeight = 0;
 
-    constructor(public readonly placement: Placement, options?: Partial<typeof defaults>) {
+    constructor(public readonly defaultPlacement: Placement, options?: Partial<typeof defaults>) {
         super();
         this.options = { ...defaults, ...options };
         this.resizeObserver = new ResizeObserver(this.resizeCallback);
+    }
+
+    public get placement(): Placement {
+        return getComputedStyle(this.popup!).getPropertyValue("--bs-placement") as Placement ?? this.defaultPlacement;
     }
 
     public override update(popup: HTMLElement, anchor: HTMLElement): void | Promise<void> {
@@ -216,9 +218,19 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
 
         const { flip } = this.options;
         const size: Size = { width: inlineSize, height: blockSize };
-        let placement = this.placement === "auto" ? getOptimalPlacement(anchor, root) : this.placement;
+        let placement: StrictPlacement = "bottom-end";
+        if (isStrictPlacement(this.placement)) {
+            placement = this.placement;
+        } else if (this.placement === "auto") {
+            placement = getOptimalPlacement(anchor, root);
+        } else if (this.placement === "left" || this.placement === "right") {
+            placement = `${this.placement}-start`;
+        } else {
+            placement = `${this.placement}-end`;
+        }
+
         let point = positions[placement](size, anchor, this.options);
-        if (flip && this.placement !== "auto") {
+        if (flip) {
             // Check whether desired placement provides 100% visibility 
             let ratio = getIntersectionRatio({ ...point, ...size }, root);
             if (ratio < 1) {

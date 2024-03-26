@@ -316,7 +316,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                             navigate={navigate} hotKeyHandler={this.hotKeyHandler}
                             editMode={this.state.editMode} useCheckboxes={this.state.editMode || hasTouch && largeScreen}
                             displayMode={largeScreen ? "table" : "list"} navigationMode={hasTouch ? "tap" : "dbl-click"}>
-                            <Menu render={this.renderItemActionMenu} />
+                            <Menu className="drop-left" render={this.renderItemActionMenu} />
                         </Browser>
                         {!fetching && data?.source.items?.length === 0 &&
                             <div className="br-area-main d-flex align-items-center justify-content-center">
@@ -329,7 +329,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                                     data-toggle={!isRootLevel ? "dropdown" : undefined}>
                                     <svg><use href="symbols.svg#add" /></svg>
                                 </button>
-                                <Menu id="main-menu" render={this.renderActionMenu} />
+                                <Menu className="drop-top-center" id="main-menu" render={this.renderActionMenu} />
                             </div>}
                         <RowStateContext.Consumer>
                             {({ selection: { length: selected } }) =>

@@ -1,17 +1,12 @@
 import { ButtonHTMLAttributes, HTMLAttributes, PureComponent, ReactNode, createRef } from "react";
-import { MediaQueries } from "../services/MediaQueries";
-import { PopoverAnchorStrategy, Placement, PopupPlacementStrategy } from "../services/PopoverPlacementStrategy";
+import { PopoverAnchorStrategy, PopupPlacementStrategy } from "../services/PopoverPlacementStrategy";
 import { SwipeGestureRecognizer, SwipeGestures } from "../services/gestures/SwipeGestureRecognizer";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
 const TOGGLE_ITEM_SELECTOR = "[data-toggle='dropdown']";
 
-type DropdownMode = "menu" | "action-sheet" | "auto";
-
 export type DropdownMenuProps = Omit<HTMLAttributes<HTMLUListElement>, "onSelect"> & {
-    mode: DropdownMode,
-    placement: Placement,
     onSelected?: (item: HTMLElement, anchor?: HTMLElement) => void,
     render?: (anchor?: HTMLElement | null) => ReactNode
 }
@@ -43,33 +38,22 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     private readonly observer: ResizeObserver;
     private strategy: PopupPlacementStrategy;
     state: DropdownMenuState = { show: false, anchor: undefined };
-    static defaultProps: Partial<DropdownMenuProps> = {
-        mode: "auto",
-        placement: "auto"
-    }
 
     constructor(props: DropdownMenuProps) {
         super(props);
-        this.strategy = this.createPlacementStrategy(props.placement);
+        this.strategy = new PopoverAnchorStrategy("auto");
         this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler);
         this.observer = new ResizeObserver(this.resizeCallback);
     }
 
     componentDidMount() {
         this.popoverRef.current?.parentElement?.addEventListener("click", this.containerClickListener);
-        MediaQueries.smallScreen.addEventListener("change", this.mediaQueryChangeListener);
         this.observer.observe(this.popoverRef.current!);
     }
 
-    override async componentDidUpdate({ mode: prevMode }: Readonly<DropdownMenuProps>): Promise<void> {
+    override async componentDidUpdate(): Promise<void> {
         const popover = this.popoverRef.current!;
         const { anchor, show } = this.state;
-        const { placement, mode } = this.props;
-
-        if (mode !== prevMode) {
-            this.strategy.destroy();
-            this.strategy = this.createPlacementStrategy(placement);
-        }
 
         if (!anchor) {
             this.strategy.destroy();
@@ -93,7 +77,6 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     }
 
     componentWillUnmount() {
-        MediaQueries.smallScreen.removeEventListener("change", this.mediaQueryChangeListener);
         this.popoverRef.current!.parentElement!.removeEventListener("click", this.containerClickListener);
         this.unsubscribe();
         this.strategy.destroy();
@@ -107,18 +90,6 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
 
     public hide() {
         this.setState({ show: false });
-    }
-
-    private get menuMode() {
-        return this.props.mode === "menu" || (this.props.mode === "auto" && !MediaQueries.smallScreen.matches);
-    }
-
-    private createPlacementStrategy(placement: Placement) {
-        if (this.menuMode) {
-            return new PopoverAnchorStrategy(placement);
-        } else {
-            return new PopoverAnchorStrategy("fixed");
-        }
     }
 
     private queryAll(selector: string) {
@@ -176,12 +147,6 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     }
 
     //#endregion
-
-    private mediaQueryChangeListener = () => {
-        this.strategy.destroy();
-        this.strategy = this.createPlacementStrategy(this.props.placement);
-        this.forceUpdate();
-    }
 
     private containerClickListener = (event: MouseEvent) => {
         if (event.defaultPrevented) return;
@@ -270,11 +235,10 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     }
 
     render() {
-        const { className, children, placement, render, onSelected, ...other } = this.props;
+        const { className, children, render, onSelected, ...other } = this.props;
         const { show, anchor } = this.state;
-        const menuMode = this.menuMode;
-        const cls = `dropdown-menu user-select-none fade${!menuMode ? " action-sheet slide" : ""}${className ? ` ${className}` : ""}`;
-        return <ul popover="" role="menu" ref={this.popoverRef} inert={show ? undefined : ""} className={cls} {...other}
+        return <ul popover="" role="menu" ref={this.popoverRef} inert={show ? undefined : ""}
+            className={`dropdown-menu user-select-none fade${className ? ` ${className}` : ""}`} {...other}
             onClick={this.popoverClickHandler} onBlur={this.focusOutHandler} onPointerDownCapture={this.pointerDownHandler}>
             {render ? render(anchor) : children}
         </ul>

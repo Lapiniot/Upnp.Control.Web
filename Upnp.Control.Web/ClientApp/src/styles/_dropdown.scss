@@ -47,6 +47,7 @@ $dropdown-divider-margin-y: 8px;
     --#{$prefix}dropdown-header-padding-y: #{$dropdown-header-padding-y};
     --#{$prefix}dropdown-transition: none;
     --#{$prefix}dropdown-transition-duration: var(--#{$animation-prefix}duration-1);
+    --#{$prefix}placement: auto;
 
     position: absolute;
     z-index: var(--#{$prefix}dropdown-zindex);
@@ -122,7 +123,9 @@ $dropdown-divider-margin-y: 8px;
         background-image: var(--#{$prefix}hover-layer-cc);
     }
 
-    &.active, &:active, &:focus {
+    &.active,
+    &:active,
+    &:focus {
         color: var(--#{$prefix}dropdown-link-active-color);
         background-image: var(--#{$prefix}focus-layer-cc);
         box-shadow: none;
@@ -185,7 +188,39 @@ $dropdown-divider-margin-y: 8px;
     }
 }
 
-.action-sheet {
+$main-placements: left right top bottom;
+$alt-placements: start end center;
+$placements: [];
+
+@each $main in $main-placements {
+    $placements: append($placements, #{$main});
+
+    @each $alt in $alt-placements {
+        $placements: append($placements, #{$main}-#{$alt});
+    }
+}
+
+$placements: join($placements, [auto fixed]);
+$placement-syntax: "";
+
+@for $i from 1 to length($placements) + 1 {
+    $placement-syntax: $placement-syntax + if($i !=1, " | ", "") + nth($placements, $i);
+}
+
+@property --#{$prefix}placement {
+    syntax: "#{$placement-syntax}";
+    inherits: true;
+    initial-value: auto;
+}
+
+@each $placement in [left left-center bottom top-center] {
+    .drop-#{$placement} {
+        --#{$prefix}placement: #{$placement};
+    }
+}
+
+@mixin action-sheet {
+    --#{$prefix}placement: fixed;
     --#{$prefix}dropdown-border-width: 0;
     --#{$prefix}dropdown-box-shadow: 0 -0.5rem 2rem rgba(0, 0, 0, 0.15),
     0 0 0 1px var(--#{$prefix}dropdown-border-color);
@@ -238,6 +273,28 @@ $dropdown-divider-margin-y: 8px;
                 @starting-style {
                     opacity: 0;
                 }
+            }
+        }
+    }
+}
+
+$action-sheet-breakpoints: (
+    sm
+);
+
+@each $breakpoint in $action-sheet-breakpoints {
+    @if $breakpoint ==null {
+        .action-sheet {
+            @include action-sheet;
+        }
+    }
+
+    @else {
+        $width: map-get($grid-breakpoints, $breakpoint);
+
+        @media (width < #{$width}) {
+            .action-sheet-#{$breakpoint} {
+                @include action-sheet;
             }
         }
     }
