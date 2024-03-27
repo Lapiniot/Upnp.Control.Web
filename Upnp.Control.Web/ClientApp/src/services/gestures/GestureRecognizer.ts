@@ -1,5 +1,5 @@
 export interface GestureHandler<TElement extends HTMLElement, TGesture extends string, TParams = undefined> {
-    (target: TElement, gesture: TGesture, params: TParams): void;
+    (target: TElement, gesture: TGesture, params: TParams): void | false;
 }
 
 export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture extends string, TParams> {
@@ -10,8 +10,9 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
     protected startTime: number = 0;
     private updatePending = false;
     private options: AddEventListenerOptions;
-    private readonly pointerDownListener = this.onPointerDownEvent.bind(this);
-    private readonly pointerUpListener = this.onPointerUpEvent.bind(this);
+    private readonly pointerDownListener = this.onPointerDown.bind(this);
+    private readonly pointerUpListener = this.onPointerUp.bind(this);
+    private readonly pointerCancelListener = this.onPointerCancel.bind(this);
     private readonly pointerMoveListener = this.onPointerMoveEvent.bind(this);
 
     constructor(handler: GestureHandler<TElement, TGesture, TParams>, capture: boolean, passive: boolean) {
@@ -31,6 +32,7 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
         if (!this.target) return;
         this.target.removeEventListener("pointerdown", this.pointerDownListener, this.options);
         this.target.removeEventListener("pointerup", this.pointerUpListener, this.options);
+        this.target.removeEventListener("pointercancel", this.pointerCancelListener, this.options);
         this.target.removeEventListener("pointermove", this.pointerMoveListener, this.options);
         this.target = null;
     }
@@ -44,22 +46,31 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
         }
     }
 
-    protected onPointerDownEvent(event: PointerEvent) {
-        const target = <TElement>event.currentTarget;
-
-        target.addEventListener("pointerup", this.pointerUpListener, this.options);
-        target.addEventListener("pointermove", this.pointerMoveListener, this.options);
-
+    protected onPointerDown(event: PointerEvent) {
+        this.startTracking();
         this.startX = event.clientX;
         this.startY = event.clientY;
         this.startTime = event.timeStamp;
     }
 
-    protected onPointerUpEvent(event: PointerEvent) {
-        const target = <TElement>event.currentTarget;
+    protected onPointerUp(_event: PointerEvent) {
+        this.stopTracking();
+    }
 
-        target.removeEventListener("pointerup", this.pointerUpListener, this.options);
-        target.removeEventListener("pointermove", this.pointerMoveListener, this.options);
+    protected onPointerCancel(_event: PointerEvent) {
+        this.stopTracking();
+    }
+
+    private startTracking() {
+        this.target!.addEventListener("pointerup", this.pointerUpListener, this.options);
+        this.target!.addEventListener("pointercancel", this.pointerCancelListener, this.options);
+        this.target!.addEventListener("pointermove", this.pointerMoveListener, this.options);
+    }
+
+    private stopTracking() {
+        this.target!.removeEventListener("pointerup", this.pointerUpListener, this.options);
+        this.target!.removeEventListener("pointercancel", this.pointerCancelListener, this.options);
+        this.target!.removeEventListener("pointermove", this.pointerMoveListener, this.options);
     }
 
     protected onPointerMoveEvent(_: PointerEvent) { }

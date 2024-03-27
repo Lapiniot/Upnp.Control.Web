@@ -59,7 +59,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
     displayName = PlaylistManagerCore.name;
     dialogHostRef = createRef<IDialogHost>();
     browserNodeRef = createRef<HTMLDivElement>();
-    pressHoldGestureRecognizer: PressHoldGestureRecognizer<HTMLDivElement>;
+    pressHoldGestureRecognizer: PressHoldGestureRecognizer<HTMLElement>;
     service: PlaylistManagerService;
     actionHandlers: PlaylistMenuActionHandlers;
     pls;
@@ -92,7 +92,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
             copy: this.createHandler(i => this.copyPlaylist(i)),
             showInfo: this.createHandler(i => this.showInfo(i.id))
         };
-        this.pressHoldGestureRecognizer = new PressHoldGestureRecognizer<HTMLDivElement>(this.service.toggleEditMode);
+        this.pressHoldGestureRecognizer = new PressHoldGestureRecognizer<HTMLElement>(this.service.toggleEditMode);
     }
 
     async componentDidUpdate(prevProps: PlaylistManagerProps) {

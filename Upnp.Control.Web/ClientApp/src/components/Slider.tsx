@@ -19,7 +19,7 @@ type SliderProps = Omit<HTMLProps<HTMLDivElement>, "onChange">
 
 export default class Slider extends React.Component<SliderProps> {
     updatePending: boolean = false;
-    slideGestureRecognizer: SlideGestureRecognizer<HTMLDivElement>;
+    slideGestureRecognizer: SlideGestureRecognizer;
     static defaultProps: Partial<SliderProps> = { reportMode: "release", value: 0, step: 0.01 };
     increment: number = 0;
     element: HTMLDivElement | null = null;
@@ -48,20 +48,21 @@ export default class Slider extends React.Component<SliderProps> {
         }
     }
 
-    private slideGestureHandler = (target: HTMLDivElement, _: "slide", { phase, x }: SlideParams) => {
-        if (this.props.readOnly) return;
+    private slideGestureHandler = (_target: unknown, _gesture: "slide", { phase, x }: SlideParams) => {
+        if (this.props.readOnly || !this.element) return;
 
         if (phase === "start") {
             // Disable potentially running animation of slider progress 
             // which could interfere with manipulation
-            target.style.setProperty("--slider-animation-duration", "0");
-            target.style.setProperty("--slider-animation-name", "none");
-            target.dataset.manipulated = "1";
+            this.element.style.setProperty("--slider-animation-duration", "0");
+            this.element.style.setProperty("--slider-animation-name", "none");
+            this.element.dataset.manipulated = "1";
         } else if (phase === "end") {
-            target.dataset.manipulated = undefined;
+            this.element.dataset.manipulated = undefined;
         }
 
-        this.tryUpdateProgress(clamp(x / target.offsetWidth, 0.0, 1.0), phase === "end");
+        const r = this.element.getBoundingClientRect();
+        this.tryUpdateProgress(clamp((x - r.x) / r.width, 0.0, 1.0), phase === "end");
     }
 
     private keyUpHandler = (e: KeyboardEvent<HTMLDivElement>) => {

@@ -12,14 +12,14 @@ export class SwipeGestureRecognizer<TElement extends HTMLElement = HTMLElement> 
     endY: number = 0;
     endTime: number = 0;
 
-    constructor(handler: GestureHandler<TElement, SwipeGestures, undefined>, delta: number = 100, time: number = 500, capture: boolean = false) {
+    constructor(handler: GestureHandler<TElement, SwipeGestures, undefined>, delta = 100, time = 500, capture = false) {
         super(handler, capture, true);
         this.delta = delta;
         this.dtime = time;
     }
 
-    protected override onPointerUpEvent(event: PointerEvent) {
-        super.onPointerUpEvent(event);
+    protected override onPointerUp(event: PointerEvent) {
+        super.onPointerUp(event);
 
         this.endX = event.clientX;
         this.endY = event.clientY;

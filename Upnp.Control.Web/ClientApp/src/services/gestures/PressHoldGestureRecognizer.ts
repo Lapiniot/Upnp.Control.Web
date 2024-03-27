@@ -9,17 +9,17 @@ export class PressHoldGestureRecognizer<TElement extends HTMLElement = HTMLEleme
     timeout: number | null = null;
     tolerance: number;
 
-    constructor(handler: GestureHandler<TElement, "hold", undefined>, delay: HoldDelay = "normal", tolerance = 5) {
-        super(handler, true, true);
+    constructor(handler: GestureHandler<TElement, "hold", undefined>, delay: HoldDelay = "normal", tolerance = 5, capture = false) {
+        super(handler, capture, true);
         this.delay = delay === "normal" ? 750 : delay === "short" ? 500 : delay === "long" ? 1000 : delay;
         this.tolerance = tolerance;
     }
 
-    protected override onPointerDownEvent(event: PointerEvent) {
+    protected override onPointerDown(event: PointerEvent) {
         if (event.pointerType === "mouse" && event.button !== 0) return;
-        super.onPointerDownEvent(event);
+        super.onPointerDown(event);
         this.reset();
-        this.timeout = window.setTimeout(() => this.handler(this.target as TElement, "hold", undefined), this.delay);
+        this.timeout = window.setTimeout(() => this.handler(event.target as TElement, "hold", undefined), this.delay);
     }
 
     protected override onPointerMoveEvent(event: PointerEvent) {
@@ -29,8 +29,8 @@ export class PressHoldGestureRecognizer<TElement extends HTMLElement = HTMLEleme
             this.reset();
     }
 
-    protected override onPointerUpEvent(event: PointerEvent) {
-        super.onPointerUpEvent(event);
+    protected override onPointerUp(event: PointerEvent) {
+        super.onPointerUp(event);
         this.reset();
     }
 

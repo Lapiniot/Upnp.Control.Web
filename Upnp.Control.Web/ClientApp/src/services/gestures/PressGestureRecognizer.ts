@@ -6,13 +6,13 @@ export type PressGestures = "press" | "release";
 
 export class PressGestureRecognizer<TElement extends HTMLElement = HTMLElement> extends GestureRecognizer<TElement, PressGestures, number> {
 
-    protected override onPointerDownEvent(event: PointerEvent) {
-        super.onPointerDownEvent(event);
-        requestAnimationFrame(() => this.handler(this.target as TElement, "press", 0));
+    protected override onPointerDown(event: PointerEvent) {
+        super.onPointerDown(event);
+        requestAnimationFrame(() => this.handler(event.target as TElement, "press", 0));
     }
 
-    protected override onPointerUpEvent(event: PointerEvent) {
-        super.onPointerUpEvent(event);
-        requestAnimationFrame(() => this.handler(this.target as TElement, "release", event.timeStamp - this.startTime));
+    protected override onPointerUp(event: PointerEvent) {
+        super.onPointerUp(event);
+        requestAnimationFrame(() => this.handler(event.target as TElement, "release", event.timeStamp - this.startTime));
     }
 }

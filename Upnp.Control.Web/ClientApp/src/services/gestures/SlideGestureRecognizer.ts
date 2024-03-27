@@ -12,37 +12,35 @@ export class SlideGestureRecognizer<TElement extends HTMLElement = HTMLElement> 
     x: number = 0;
     y: number = 0;
 
-    constructor(handler: GestureHandler<TElement, "slide", SlideParams>) {
-        super(handler, true, false);
+    constructor(handler: GestureHandler<TElement, "slide", SlideParams>, capture = false) {
+        super(handler, capture, false);
     }
 
-    protected override onPointerDownEvent(event: PointerEvent) {
-        const { currentTarget, clientX, clientY, pointerId } = event;
-        const element = currentTarget as TElement;
-
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        element.setPointerCapture(pointerId);
-        super.onPointerDownEvent(event);
+    protected override onPointerDown(event: PointerEvent) {
+        const { target, clientX, clientY, pointerId } = event;
+        const element = target as TElement;
 
         requestAnimationFrame(() => {
-            const rect = element.getBoundingClientRect();
-            this.handler(element, "slide", { phase: "start", x: clientX - rect.x, y: clientY - rect.y })
+            if (this.handler(element, "slide", { phase: "start", x: clientX, y: clientY }) !== false) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.setPointerCapture(pointerId);
+                super.onPointerDown(event);
+            }
         });
     }
 
-    protected override onPointerUpEvent(event: PointerEvent) {
-        const { currentTarget, clientX, clientY, pointerId } = event;
-        const element = currentTarget as TElement;
+    protected override onPointerUp(event: PointerEvent) {
+        const { target, clientX, clientY, pointerId } = event;
+        const element = target as TElement;
 
         event.preventDefault();
+        event.stopPropagation();
         element.releasePointerCapture(pointerId);
-        super.onPointerUpEvent(event);
+        super.onPointerUp(event);
 
         requestAnimationFrame(() => {
-            const rect = element.getBoundingClientRect();
-            this.handler(element, "slide", { phase: "end", x: clientX - rect.x, y: clientY - rect.y })
+            this.handler(element, "slide", { phase: "end", x: clientX, y: clientY })
         });
     }
 
@@ -56,8 +54,7 @@ export class SlideGestureRecognizer<TElement extends HTMLElement = HTMLElement> 
 
     protected override update() {
         if (this.target) {
-            const rect = this.target.getBoundingClientRect();
-            this.handler(this.target as TElement, "slide", { phase: "move", x: this.x - rect.x, y: this.y - rect.y });
+            this.handler(this.target as TElement, "slide", { phase: "move", x: this.x, y: this.y });
         }
     }
 }
