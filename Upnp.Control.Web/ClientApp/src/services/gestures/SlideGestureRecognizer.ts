@@ -19,32 +19,30 @@ export class SlideGestureRecognizer<TElement extends HTMLElement = HTMLElement> 
     protected override onPointerDown(event: PointerEvent) {
         const { target, clientX, clientY, pointerId } = event;
         const element = target as TElement;
-
-        requestAnimationFrame(() => {
-            if (this.handler(element, "slide", { phase: "start", x: clientX, y: clientY }) !== false) {
-                event.stopPropagation();
-                event.preventDefault();
-                element.setPointerCapture(pointerId);
-                super.onPointerDown(event);
-            }
-        });
+        if (this.handler(element, "slide", { phase: "start", x: clientX, y: clientY }) !== false) {
+            event.stopPropagation();
+            event.preventDefault();
+            element.setPointerCapture(pointerId);
+            super.onPointerDown(event);
+        }
     }
 
     protected override onPointerUp(event: PointerEvent) {
         const { target, clientX, clientY, pointerId } = event;
         const element = target as TElement;
-
         event.preventDefault();
         event.stopPropagation();
         element.releasePointerCapture(pointerId);
         super.onPointerUp(event);
+        requestAnimationFrame(() => this.handler(element, "slide", { phase: "end", x: clientX, y: clientY }));
+    }
 
-        requestAnimationFrame(() => {
-            this.handler(element, "slide", { phase: "end", x: clientX, y: clientY })
-        });
+    protected override onPointerCancel(event: PointerEvent) {
+        (<HTMLElement>event.target).releasePointerCapture(event.pointerId);
     }
 
     protected override onPointerMoveEvent(event: PointerEvent) {
+        event.stopPropagation();
         event.preventDefault();
         super.onPointerMoveEvent(event);
         this.x = event.clientX;
