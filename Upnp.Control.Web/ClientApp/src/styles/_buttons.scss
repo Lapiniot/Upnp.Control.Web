@@ -1,5 +1,5 @@
 @include no-theme-colors {
-    $btn-padding-x: #{map-get($spacers, 4)};
+    $btn-padding-x: 12px;
     @import "bootstrap/scss/buttons";
 }
 
@@ -48,31 +48,23 @@
         box-shadow: var(--#{$prefix}btn-disabled-box-shadow, var(--#{$prefix}btn-box-shadow));
     }
 
+    &:has(:where(svg:first-child, img:first-child)) {
+        padding-inline: 12px 16px;
+    }
+
     // 0 specificity selector here is used to allow easy overrides of icon properties by more specific styles
     :where(&) > :where(svg:first-child, img:first-child) {
         font-size: var(--#{$prefix}btn-icon-font-size);
-        margin-inline: var(--#{$prefix}btn-icon-margin-x);
     }
-}
-
-%icon-reset {
-    --#{$prefix}btn-icon-margin-x: ;
-}
-
-:is(.btn-group, .btn-group-sm, .btn-group-lg) .btn {
-    @extend %icon-reset;
 }
 
 .btn-icon,
 .toolbar .btn {
-    --#{$prefix}btn-padding-x: #{map-get($spacers, 2)};
-    --#{$prefix}btn-padding-y: #{map-get($spacers, 2)};
     --#{$prefix}btn-border-radius: 100%;
     --#{$prefix}btn-line-height: 0;
     --#{$prefix}btn-color: var(--#{$prefix}on-surface-variant);
     --#{$prefix}btn-hover-color: var(--#{$prefix}on-surface-variant);
     --#{$prefix}btn-active-color: var(--#{$prefix}on-surface-variant);
-    @extend %icon-reset;
     --#{$prefix}btn-icon-font-size: 24px;
     aspect-ratio: 1;
 }
@@ -88,6 +80,7 @@
     --#{$prefix}btn-box-shadow: var(--#{$prefix}shadow-l1);
     --#{$prefix}btn-hover-box-shadow: var(--#{$prefix}shadow-l2);
     --#{$prefix}btn-disabled-box-shadow: none;
+    @extend %text-button;
 }
 
 .btn-fill {
@@ -99,6 +92,7 @@
     --#{$prefix}btn-active-bg: var(--#{$prefix}primary);
     --#{$prefix}btn-disabled-color: rgba(var(--#{$prefix}on-primary-rgb), #{$disabled-state-opacity});
     --#{$prefix}btn-disabled-bg: rgba(var(--#{$prefix}on-surface-rgb), .12);
+    @extend %text-button;
 }
 
 .btn-tone {
@@ -109,6 +103,7 @@
     --#{$prefix}btn-active-color: var(--#{$prefix}on-secondary-cntr);
     --#{$prefix}btn-active-bg: var(--#{$prefix}secondary-cntr);
     --#{$prefix}btn-disabled-bg: rgba(var(--#{$prefix}on-surface-rgb), .12);
+    @extend %text-button;
 }
 
 .btn-outline {
@@ -116,11 +111,25 @@
     --#{$prefix}btn-hover-border-color: var(--#{$prefix}outline);
     --#{$prefix}btn-active-border-color: var(--#{$prefix}outline);
     --#{$prefix}btn-disabled-border-color: rgba(var(--#{$prefix}on-surface-rgb), .12);
+    @extend %text-button;
+}
+
+%text-button {
+    --#{$prefix}btn-padding-x: 24px;
+    &:has(:where(svg:first-child, img:first-child)) {
+        padding-inline: 16px 24px;
+    }
 }
 
 .toolbar {
     display: flex;
     gap: map-get($spacers, 2);
+}
+
+.btn-icon,
+.toolbar .btn {
+    --#{$prefix}btn-padding-x: 8px;
+    padding: var(--#{$prefix}btn-padding-x);
 }
 
 // Represent flat container button with a following behavior:
@@ -131,13 +140,11 @@
 //    constraining sizes to the intrinsic content size to 
 //    prevent shrinking in flex layouts
 .btn-stack {
-    --#{$prefix}btn-padding-x: 0;
-    --#{$prefix}btn-padding-y: 0;
-    --#{$prefix}btn-border-radius: 0;
-    --#{$prefix}btn-border-width: 0;
-    --#{$prefix}btn-color: inherit;
     overflow: clip;
-    @extend %icon-reset;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    color: inherit;
     @extend %grid-stack;
 
     & > * {
@@ -148,7 +155,6 @@
 
 %btn-fab {
     --#{$prefix}btn-padding-x: 16px;
-    --#{$prefix}btn-padding-y: 16px;
     --#{$prefix}btn-margin-x: 16px;
     --#{$prefix}btn-margin-y: 16px;
     --#{$prefix}btn-border-radius: #{$corner-lg};
@@ -156,11 +162,11 @@
     --#{$prefix}btn-line-height: 0;
     --#{$prefix}btn-box-shadow: var(--#{$prefix}shadow-l3);
     --#{$prefix}btn-hover-box-shadow: var(--#{$prefix}shadow-l4);
-    @extend %icon-reset;
     --#{$prefix}btn-icon-font-size: 24px;
 
     z-index: $zindex-dropdown;
     margin: var(--#{$prefix}btn-margin-x) var(--#{$prefix}btn-margin-y);
+    padding: var(--#{$prefix}btn-padding-x);
 }
 
 @mixin btn-fab($container: "surface-cntr-high", $icon: "primary") {
@@ -190,14 +196,12 @@ $configurations: (
 
 .btn-fab-lg {
     --#{$prefix}btn-padding-x: 30px;
-    --#{$prefix}btn-padding-y: 30px;
     --#{$prefix}btn-border-radius: #{$corner-xl};
     --#{$prefix}btn-icon-font-size: 36px;
 }
 
 .btn-fab-sm {
     --#{$prefix}btn-padding-x: 8px;
-    --#{$prefix}btn-padding-y: 8px;
     --#{$prefix}btn-border-radius: #{$corner-md};
     --#{$prefix}btn-icon-font-size: 24px;
 }
@@ -216,7 +220,6 @@ $configurations: (
 
 .btn-fab-ext {
     --#{$prefix}btn-padding-x: 16px;
-    --#{$prefix}btn-padding-y: 16px;
     --#{$prefix}btn-border-radius: #{$corner-lg};
     --#{$prefix}btn-font-size: larger;
     --#{$prefix}btn-font-weight: 500;
