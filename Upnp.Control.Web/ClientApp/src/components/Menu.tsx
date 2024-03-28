@@ -7,12 +7,13 @@ const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
 const TOGGLE_ITEM_SELECTOR = "[data-toggle='dropdown']";
 
-export type DropdownMenuProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> & {
+export type MenuProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> & {
+    activation?: "explicit",
     onSelected?: (item: HTMLElement, anchor?: HTMLElement) => void,
     render?: (anchor?: HTMLElement | null) => ReactNode
 }
 
-type DropdownMenuState = {
+type MenuState = {
     anchor?: HTMLElement,
     show: boolean
 }
@@ -33,66 +34,83 @@ export function MenuItemSeparator({ className, ...other }: HTMLAttributes<HTMLHR
 
 const activationEvents: (keyof GlobalEventHandlersEventMap)[] = ["click", "pointerdown", "pointerup"]
 
-export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
+export class Menu extends PureComponent<MenuProps, MenuState> {
     private readonly popoverRef = createRef<HTMLDivElement>();
     private readonly swipeRecognizer: SwipeGestureRecognizer;
     private readonly slideRecognizer: SlideGestureRecognizer;
     private readonly observer: ResizeObserver;
-    private strategy: PopupPlacementStrategy;
-    state: DropdownMenuState = { show: false, anchor: undefined };
+    private readonly strategy: PopupPlacementStrategy;
+    state: MenuState = { show: false, anchor: undefined };
     captureY = 0;
     captureHeight = 0;
     intrinsicHeight = 0;
 
-    constructor(props: DropdownMenuProps) {
+    constructor(props: MenuProps) {
         super(props);
         this.strategy = new PopoverAnchorStrategy("auto");
+        this.observer = new ResizeObserver(this.resizeCallback);
         this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler, 50);
         this.slideRecognizer = new SlideGestureRecognizer(this.slideHandler);
-        this.observer = new ResizeObserver(this.resizeCallback);
     }
 
     componentDidMount() {
         const popover = this.popoverRef.current;
         if (popover) {
-            popover.parentElement?.addEventListener("click", this.containerClickListener);
+            if (this.props.activation === undefined) {
+                popover.parentElement?.addEventListener("click", this.containerClickListener);
+            }
             this.observer.observe(popover.firstChild as HTMLElement);
+            this.popoverRef.current!.addEventListener("toggle", this.popoverToggleListener);
         }
     }
 
-    override async componentDidUpdate(): Promise<void> {
-        const popover = this.popoverRef.current!;
+    override async componentDidUpdate(prevProps: MenuProps, prevState: MenuState): Promise<void> {
         const { anchor, show } = this.state;
+        const { anchor: prevAnchor } = prevState;
+        const popover = this.popoverRef.current!;
 
-        if (!anchor) {
-            this.strategy.destroy();
-            return;
-        } else {
+        if (this.props.activation !== prevProps.activation) {
+            if (this.props.activation === undefined) {
+                popover.parentElement?.addEventListener("click", this.containerClickListener);
+            } else {
+                popover.parentElement?.removeEventListener("click", this.containerClickListener);
+            }
+        }
+
+        if (anchor !== prevAnchor) {
+            if (prevAnchor) prevAnchor.classList.toggle("active", false);
             await this.strategy.update(popover, anchor);
         }
 
+        if (!anchor) return;
+
         if (show) {
-            anchor.dataset["anchorActive"] = "";
+            anchor.classList.toggle("active", true);
             await this.strategy.toggle(true);
+
             popover.showPopover();
+
             this.subscribe();
             if (getComputedStyle(popover).getPropertyValue("--bs-action-sheet") === "1") {
                 this.slideRecognizer.bind(popover);
                 this.swipeRecognizer.bind(popover);
             }
         } else {
+            this.swipeRecognizer.unbind();
+            this.slideRecognizer.unbind();
             this.unsubscribe();
+
             popover.hidePopover();
+
             await Promise.allSettled(this.popoverRef.current!.getAnimations().map(animation => animation.finished));
             await this.strategy.toggle(false);
-            delete anchor.dataset["anchorActive"];
             popover.style.maxBlockSize = "";
-            this.slideRecognizer.unbind();
-            this.swipeRecognizer.unbind();
+            anchor.classList.toggle("active", false);
         }
     }
 
     componentWillUnmount() {
+        this.popoverRef.current!.removeEventListener("toggle", this.popoverToggleListener);
         this.popoverRef.current!.parentElement!.removeEventListener("click", this.containerClickListener);
         this.unsubscribe();
         this.strategy.destroy();
@@ -116,14 +134,12 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
     private subscribe() {
         document.addEventListener("keydown", this.documentKeydownListener, { capture: true });
         activationEvents.forEach(name => document.addEventListener(name, this.preventActivationListener, true));
-        this.popoverRef.current!.addEventListener("toggle", this.popoverToggleListener);
         this.popoverRef.current!.addEventListener("pointerdown", this.pointerDownListener);
     }
 
     private unsubscribe() {
         document.removeEventListener("keydown", this.documentKeydownListener, { capture: true });
         activationEvents.forEach(name => document.removeEventListener(name, this.preventActivationListener, true));
-        this.popoverRef.current!.removeEventListener("toggle", this.popoverToggleListener);
         this.popoverRef.current!.removeEventListener("pointerdown", this.pointerDownListener);
     }
 
@@ -180,6 +196,8 @@ export class Menu extends PureComponent<DropdownMenuProps, DropdownMenuState> {
         const { oldState, newState } = e as ToggleEvent;
         if (oldState === "open" && newState === "closed") {
             this.hide();
+        } else if (oldState === "closed" && newState === "open") {
+            this.show(document.activeElement as HTMLElement);
         }
     }
 

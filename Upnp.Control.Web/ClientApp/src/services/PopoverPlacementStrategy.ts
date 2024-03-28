@@ -1,7 +1,7 @@
 import { debounce } from "./Extensions";
 
 export abstract class PopupPlacementStrategy {
-    public abstract update(popup: HTMLElement, anchor: HTMLElement): Promise<void> | void;
+    public abstract update(popup: HTMLElement, anchor?: HTMLElement): Promise<void> | void;
     public abstract toggle(visibility: boolean): Promise<void> | void;
     public abstract destroy(): void;
     public [Symbol.dispose] = () => this.destroy();
@@ -147,7 +147,7 @@ export class PopoverAnchorStrategy extends PopupPlacementStrategy {
         return getComputedStyle(this.popup!).getPropertyValue("--bs-placement") as Placement ?? this.defaultPlacement;
     }
 
-    public override update(popup: HTMLElement, anchor: HTMLElement): void | Promise<void> {
+    public override update(popup: HTMLElement, anchor?: HTMLElement): void | Promise<void> {
         if (this.popup && this.popup !== popup) {
             this.unsubscribe();
         }
