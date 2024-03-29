@@ -1,4 +1,4 @@
-import { ComponentPropsWithRef, useCallback } from "react";
+import { ComponentPropsWithRef, useCallback, useMemo } from "react";
 import Dialog from "../../../../components/Dialog";
 
 type AddUrlDialogProps = ComponentPropsWithRef<typeof Dialog> & {
@@ -16,12 +16,13 @@ export default function AddUrlDialog({ onAdd, onDismissed, feedUrl, feedTitle, u
         onDismissed?.(action, data);
     }, [onDismissed, onAdd]);
 
-    const renderFooter = useCallback(() => <Dialog.Footer>
+    const actions = useMemo(() => <>
         <Dialog.Button autoFocus>Cancel</Dialog.Button>
-        <Dialog.Button value="add" className="text-primary" icon="symbols.svg#add">Add</Dialog.Button>
-    </Dialog.Footer>, []);
+        <Dialog.Button value="add">Add</Dialog.Button>
+    </>, []);
 
-    return <Dialog caption="Provide url for media feed" {...other} onDismissed={onSubmitHandler} renderFooter={renderFooter}>
+    return <Dialog caption="Provide url for media feed" icon="symbols.svg#podcasts" {...other}
+        onDismissed={onSubmitHandler} actions={actions}>
         <div className="form-floating mb-3">
             <input type="url" name="feed-url" className="form-control" defaultValue={feedUrl}
                 placeholder="feed url" required pattern="http(s?)://.*" aria-label="Url" />

@@ -1,4 +1,4 @@
-import { ComponentPropsWithRef, HTMLAttributes, ReactNode, useCallback } from "react";
+import { ComponentPropsWithRef, HTMLAttributes, ReactNode, useCallback, useMemo } from "react";
 import Dialog from "../../components/Dialog";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import { RowStateMapperFunction, RowStateProvider, useRowStates } from "../../components/RowStateContext";
@@ -42,15 +42,15 @@ function MediaSourceList() {
     const placeholderCls = loading ? ` placeholder-${$cfg["browser-dialog-sources"]?.placeholders?.effect ?? $cfg.placeholders.effect}` : "";
     return <>
         {fetching && !useSkeletons && <LoadIndicatorOverlay />}
-        <ul className={`list-group list-group-flush overflow-auto${placeholderCls}`}>
-            {sources?.map((d, i) => d ? <a key={i} href={`/upnp/${d.udn}/browse/0`} onClick={handler} className="list-group-item list-group-item-action hstack">
+        <div className={`list-group list-group-bare overflow-auto${placeholderCls}`}>
+            {sources?.map((d, i) => d ? <a key={i} href={`/upnp/${d.udn}/browse/0`} onClick={handler} className="list-group-item list-group-item-action hstack px-0">
                 <DeviceIcon device={d} />
                 {d.name}{d.description && ` (${d.description})`}
-            </a> : <a key={i} className="list-group-item disabled hstack">
+            </a> : <a key={i} className="list-group-item disabled hstack px-0">
                 <DeviceIcon device={d} className="placeholder" />
                 <span className={`placeholder w-${Math.ceil(2 * (1 + Math.random())) * 25}`}>&nbsp;</span>
             </a>)}
-        </ul>
+        </div>
     </>
 }
 
@@ -59,10 +59,9 @@ function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: Confirm
     const { selection } = useRowStates();
     const callback = useCallback(() => onConfirmed?.({ device, keys: selection.map(i => i.id) }), [onConfirmed, selection, device]);
 
-    return render(
-        <Dialog.Button value="confirm" className="text-primary" disabled={selection.length === 0} onClick={callback}>
-            {typeof confirmContent === "function" ? confirmContent(selection) : confirmContent}
-        </Dialog.Button>)
+    return render(<Dialog.Button value="confirm" disabled={selection.length === 0} onClick={callback}>
+        {typeof confirmContent === "function" ? confirmContent(selection) : confirmContent}
+    </Dialog.Button>)
 }
 
 function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps<unknown> & { mapper?: RowStateMapperFunction } & ConfirmProps) {
@@ -78,13 +77,13 @@ function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps
 export default function BrowserDialog(props: BrowserDialogProps) {
     const { className, title, confirmContent, onConfirmed, browserProps = {}, rowStateMapper, ...other } = props;
 
-    const renderFooter = useCallback(() => <Dialog.Footer id="browser-dialog-footer">
+    const actions = useMemo(() => <div id="browser-dialog-footer">
         <Dialog.Button autoFocus>Cancel</Dialog.Button>
-    </Dialog.Footer>, []);
+    </div>, []);
 
-    return <Dialog className={`dialog-flush dialog-scrollable dialog-lg h-auto dialog-fullscreen-sm-down${className ? ` ${className}` : ""}`}
-        caption={title} {...other} renderFooter={renderFooter}>
-        <div className="vstack p-0 position-relative overflow-hidden">
+    return <Dialog className={`h-100 dialog-scrollable dialog-lg dialog-fullscreen-sm-down dialog-body-flush${className ? ` ${className}` : ""}`}
+        caption={title} {...other} actions={actions}>
+        <div className="vstack p-0 position-relative overflow-hidden my-3">
             <VirtualRouter initialPath="/upnp">
                 <Routes>
                     <Route path="upnp">

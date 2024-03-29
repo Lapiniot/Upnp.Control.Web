@@ -51,8 +51,8 @@ function Bookmarks<TKey extends (string | string[]), TProps>({ store, caption, i
         if (group) {
             const confirmHandler = () => store.clear();
             dialogHostRef.current?.show(
-                <ConfirmDialog className="dialog-auto" onConfirmed={confirmHandler} caption="Clear bookmarks?"
-                    confirmText="Clear" confirmColor="error">
+                <ConfirmDialog onConfirmed={confirmHandler}
+                    caption="Clear bookmarks?" confirmText="Clear">
                     This action will delete all bookmarks in '{caption}'.
                 </ConfirmDialog>
             )

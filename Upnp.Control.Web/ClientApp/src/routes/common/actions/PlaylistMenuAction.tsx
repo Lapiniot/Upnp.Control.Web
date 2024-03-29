@@ -7,7 +7,7 @@ import { DeviceActionProps } from "./Actions";
 
 function playUrlHandler(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     const url = e.currentTarget.dataset["playUrl"];
-    const device = e.currentTarget.parentElement?.parentElement?.dataset["device"];
+    const device = e.currentTarget.closest<HTMLElement>("[data-device]")?.dataset.device;
     if (device && url) WebApi.control(device).playUri(url).fetch();
 }
 

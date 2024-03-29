@@ -163,13 +163,14 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
 
     //#region Action UI handlers
 
-    private createPlaylist = () => this.dialog(<PromptDialog caption="Create new playlist" confirmText="Create" defaultValue="New Playlist" onConfirmed={this.create} />);
+    private createPlaylist = () => this.dialog(<PromptDialog caption="Create new playlist" confirmText="Create"
+        icon="symbols.svg#playlist_add" className="dialog-md" defaultValue="New Playlist" onConfirmed={this.create} />);
 
     private deletePlaylists = (items: Upnp.DIDL.Item[]) => {
         const onRemove = () => this.delete(items.map(i => i.id));
 
         this.dialog(<RemoveItemsDialog title="Do you want to delete playlist(s)?" onRemove={onRemove}>
-            <ul className="list-unstyled">
+            <ul className="list-unstyled m-0">
                 {[items?.map(({ title }, index) => <li key={index}>{title}</li>)]}
             </ul>
         </RemoveItemsDialog>);
@@ -177,7 +178,9 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
 
     private renamePlaylist = (item: Upnp.DIDL.Item) => {
         const onRename = (value: string) => this.rename(item.id, value);
-        this.dialog(<PromptDialog caption="Rename playlist" confirmText="Rename" defaultValue={item.title} onConfirmed={onRename} />);
+        this.dialog(<PromptDialog caption="Rename playlist" confirmText="Rename"
+            icon="symbols.svg#drive_file_rename_outline" className="dialog-md"
+            defaultValue={item.title} onConfirmed={onRename} />);
     }
 
     private copyPlaylist = (item: Upnp.DIDL.Item) => {
@@ -188,7 +191,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
         const onRemove = () => this.deleteItems(items.map(i => i.id));
 
         this.dialog(<RemoveItemsDialog onRemove={onRemove}>
-            <ul className="list-unstyled">{[items?.map(({ title }, index) => <li key={index}>{title}</li>)]}</ul>
+            <ul className="list-unstyled m-0">{[items?.map(({ title }, index) => <li key={index}>{title}</li>)]}</ul>
         </RemoveItemsDialog>);
     }
 
@@ -199,12 +202,12 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
 
     private addPlaylistUrl = (id: string) => {
         const addUrl = (url: string, title?: string, useProxy?: boolean) => this.addUrl(id, url, title, useProxy);
-        return this.dialog(<AddUrlDialog useProxy={$s.get("useDlnaProxy")} onAdd={addUrl} />);
+        return this.dialog(<AddUrlDialog className="dialog-md" useProxy={$s.get("useDlnaProxy")} onAdd={addUrl} />);
     }
 
     private addPlaylistFiles = (id: string) => {
         const addFiles = (data: FormData) => this.addFiles(id, data);
-        return this.dialog(<UploadPlaylistDialog useProxy={$s.get("useDlnaProxy")} onAdd={addFiles} />);
+        return this.dialog(<UploadPlaylistDialog className="dialog-md" useProxy={$s.get("useDlnaProxy")} onAdd={addFiles} />);
     }
 
     //#endregion

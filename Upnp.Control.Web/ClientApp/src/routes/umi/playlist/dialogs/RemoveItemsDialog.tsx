@@ -1,4 +1,4 @@
-import { ComponentPropsWithRef, useCallback } from "react";
+import { ComponentPropsWithRef, useCallback, useMemo } from "react";
 import Dialog from "../../../../components/Dialog";
 
 type RemoveItemsDialogProps = ComponentPropsWithRef<typeof Dialog> & {
@@ -13,14 +13,14 @@ export default function RemoveItemsDialog({ onDismissed, onRemove, children, cla
         onDismissed?.(action, data);
     }, [onDismissed, onRemove]);
 
-    const renderFooter = useCallback(() => <Dialog.Footer>
+    const actions = useMemo(() => <>
         <Dialog.Button autoFocus>Cancel</Dialog.Button>
-        <Dialog.Button value="remove" className="text-error" icon="symbols.svg#delete">Remove</Dialog.Button>
-    </Dialog.Footer>, []);
+        <Dialog.Button value="remove">Remove</Dialog.Button>
+    </>, []);
 
-    return <Dialog caption="Do you want to remove items from the playlist?"
-        className={`dialog-scrollable${className ? ` ${className}` : ""}`} {...other}
-        renderFooter={renderFooter} onDismissed={onDismissHandler}>
+    return <Dialog caption="Do you want to remove items from the playlist?" icon="symbols.svg#delete"
+        className={`dialog-scrollable dialog-md${className ? ` ${className}` : ""}`} {...other}
+        actions={actions} onDismissed={onDismissHandler}>
         {children}
     </Dialog>
 }

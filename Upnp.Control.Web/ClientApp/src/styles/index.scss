@@ -18,12 +18,9 @@ $enable-rfs: true;
 @import "mixins";
 @import "utilities";
 
-$nav-link-disabled-color: $surface-inverse-color;
-
 $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
 
-$badge-border-radius: $border-radius-sm;
-$toast-border-radius: $border-radius-sm;
+$nav-link-disabled-color: $surface-inverse-color;
 
 $input-color: $on-surface-color;
 $input-bg: $surface-color;
@@ -46,10 +43,9 @@ $input-group-addon-bg: $surface-container-low-color;
 $form-range-thumb-disabled-bg: $surface-inverse-color;
 $form-range-track-bg: $surface-container-high-color;
 
-$modal-content-bg: rgba(var(--#{$prefix}surface-cntr-high-rgb), 1);
-$modal-content-border-radius: $border-radius-xl;
-$modal-content-border-width: 0;
+$badge-border-radius: $border-radius-sm;
 
+$toast-border-radius: $border-radius-sm;
 $toast-background-color: $surface-color;
 $toast-header-background-color: $toast-background-color;
 $toast-header-color: $surface-inverse-color;

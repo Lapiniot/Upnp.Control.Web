@@ -1,4 +1,4 @@
-import { ComponentPropsWithRef, useCallback } from "react";
+import { ComponentPropsWithRef, useCallback, useMemo } from "react";
 import Dialog from "../../../../components/Dialog";
 
 type UploadPlaylistDialogProps = ComponentPropsWithRef<typeof Dialog> & {
@@ -13,13 +13,13 @@ export default function UploadPlaylistDialog({ onAdd, onDismissed, useProxy, ...
         onDismissed?.(action, data);
     }, [onAdd, onDismissed]);
 
-    const renderFooter = useCallback(() =>
-        <Dialog.Footer>
-            <Dialog.Button autoFocus>Cancel</Dialog.Button>
-            <Dialog.Button value="add" className="text-primary" icon="symbols.svg#playlist_add">Add</Dialog.Button>
-        </Dialog.Footer>, []);
+    const actions = useMemo(() => <>
+        <Dialog.Button autoFocus>Cancel</Dialog.Button>
+        <Dialog.Button value="add">Add</Dialog.Button>
+    </>, []);
 
-    return <Dialog caption="Upload playlist file" {...other} onDismissed={onSubmitHandler} renderFooter={renderFooter}>
+    return <Dialog caption="Upload playlist file" {...other} icon="symbols.svg#playlist_add"
+        onDismissed={onSubmitHandler} actions={actions}>
         <input type="file" className="form-control" name="files" accept=".m3u,.m3u8" multiple required />
         <div className="invalid-feedback">Please select at least one playlist file</div>
         <div className="form-check form-switch px-0 mt-3">

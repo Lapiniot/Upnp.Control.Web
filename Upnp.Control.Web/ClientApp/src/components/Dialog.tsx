@@ -2,23 +2,18 @@ import {
     ButtonHTMLAttributes, Component, createRef, DialogHTMLAttributes,
     FormEvent, HTMLAttributes, MouseEvent, ReactNode, SyntheticEvent, useRef
 } from "react";
-import { useAutoFocus } from "../hooks/AutoFocus";
 
 interface DialogEventProps {
     onOpen?(): void;
     onDismissed?(action: string, data: FormData | undefined): void;
 }
 
-interface DialogRenderProps {
-    renderHeader?(): ReactNode;
-    renderFooter?(): ReactNode;
-    renderBody?(): ReactNode;
-}
-
 type DialogProps = Omit<DialogHTMLAttributes<HTMLDialogElement>, "onSubmit"> &
-    DialogRenderProps & DialogEventProps & {
+    DialogEventProps & {
         immediate?: boolean,
-        caption?: string
+        icon?: string,
+        caption?: ReactNode,
+        actions?: ReactNode
     }
 
 type DialogButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -44,9 +39,6 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
         this.observer = new MutationObserver(this.onMutation);
     }
 
-    public static Header = Header;
-    public static Body = Body;
-    public static Footer = Footer;
     public static Button = Button;
 
 
@@ -122,8 +114,7 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
     private onClick = (event: MouseEvent<HTMLDialogElement>) => {
         this.props.onClick?.(event);
         if (!event.defaultPrevented) {
-            const dialog = event.target as HTMLDialogElement;
-            if (dialog.tagName === "DIALOG") {
+            if (event.target === this.dialogRef.current) {
                 this.close();
             }
         }
@@ -144,17 +135,18 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
     }
 
     render() {
-        const { renderHeader, renderBody, renderFooter, onDismissed, onOpen,
-            className, immediate, caption, children, ...other } = this.props;
+        const { caption, icon, children, actions, onDismissed, onOpen,
+            className, immediate, ...other } = this.props;
         return <dialog role="dialog" ref={this.dialogRef} className={`dialog${className ? ` ${className}` : ""}`}
             {...other} onClose={this.onClose} onClick={this.onClick}>
             <form ref={this.formRef} method="dialog" noValidate onSubmit={this.onSubmit}>
-                {renderHeader ? renderHeader() : <Header><h5 className="dialog-title">{caption}</h5></Header>}
-                {renderBody ? renderBody() : <Body>{children}</Body>}
-                {renderFooter ? renderFooter() : <Footer>
-                    <Button className="text-secondary">Cancel</Button>
-                    <Button className="text-primary" value="ok">OK</Button>
-                </Footer>}
+                <Header>{icon && <svg><use href={icon} /></svg>}<h5 className="dialog-title">{caption}</h5></Header>
+                <Body>{children}</Body>
+                <Actions>{actions ? actions : <>
+                    <Button>Cancel</Button>
+                    <Button value="ok">OK</Button>
+                </>}
+                </Actions>
             </form>
         </dialog>
     }
@@ -162,8 +154,8 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
 
 function Header({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) {
     return <header className={`dialog-header${className ? ` ${className}` : ""}`} {...other}>
-        {children}
         <button className="btn-close" aria-label="Close" />
+        {children}
     </header>
 }
 
@@ -171,14 +163,13 @@ function Body({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
     return <article className={`dialog-body${className ? ` ${className}` : ""}`} {...other}></article>
 }
 
-function Footer({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
-    return <footer className={`dialog-footer${className ? ` ${className}` : ""}`} {...other}></footer>
+function Actions({ className, ...other }: HTMLAttributes<HTMLDivElement>) {
+    return <footer className={`dialog-actions${className ? ` ${className}` : ""}`} {...other}></footer>
 }
 
 function Button({ className, icon, children, autoFocus, ...other }: DialogButtonProps) {
-    const cls = `btn text-uppercase ${className ? ` ${className}` : ""}`;
+    const cls = `btn ${className ? ` ${className}` : ""}`;
     const ref = useRef<HTMLButtonElement>(null);
-    useAutoFocus(ref, autoFocus);
     return <button ref={ref} type="submit" className={cls} {...other}>
         {icon && <svg><use href={icon} /></svg>}{children}
     </button>
