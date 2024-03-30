@@ -1,7 +1,8 @@
 import { ButtonHTMLAttributes, HTMLAttributes, PureComponent, ReactNode, createRef } from "react";
+import { NavigationBackObserver } from "../services/NavigationBackObserver";
 import { PopoverAnchorStrategy, PopupPlacementStrategy } from "../services/PopoverPlacementStrategy";
-import { SwipeGestureRecognizer, SwipeGestures } from "../services/gestures/SwipeGestureRecognizer";
 import { SlideGestureRecognizer, SlideParams } from "../services/gestures/SlideGestureRecognizer";
+import { SwipeGestureRecognizer, SwipeGestures } from "../services/gestures/SwipeGestureRecognizer";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
@@ -38,7 +39,8 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
     private readonly popoverRef = createRef<HTMLDivElement>();
     private readonly swipeRecognizer: SwipeGestureRecognizer;
     private readonly slideRecognizer: SlideGestureRecognizer;
-    private readonly observer: ResizeObserver;
+    private readonly resizeObserver: ResizeObserver;
+    private readonly navBackObserver: NavigationBackObserver;
     private readonly strategy: PopupPlacementStrategy;
     state: MenuState = { show: false, anchor: undefined };
     captureY = 0;
@@ -48,7 +50,8 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
     constructor(props: MenuProps) {
         super(props);
         this.strategy = new PopoverAnchorStrategy("auto");
-        this.observer = new ResizeObserver(this.resizeCallback);
+        this.resizeObserver = new ResizeObserver(this.resizeCallback);
+        this.navBackObserver = new NavigationBackObserver(this.navigationBackCallback);
         this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler, 50);
         this.slideRecognizer = new SlideGestureRecognizer(this.slideHandler);
     }
@@ -59,7 +62,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
             if (this.props.activation === undefined) {
                 popover.parentElement?.addEventListener("click", this.containerClickListener);
             }
-            this.observer.observe(popover.firstChild as HTMLElement);
+            this.resizeObserver.observe(popover.firstChild as HTMLElement);
             this.popoverRef.current!.addEventListener("toggle", this.popoverToggleListener);
         }
     }
@@ -95,7 +98,11 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
                 this.slideRecognizer.bind(popover);
                 this.swipeRecognizer.bind(popover);
             }
+
+            this.navBackObserver.observe();
         } else {
+            this.navBackObserver.disconnect();
+
             this.swipeRecognizer.unbind();
             this.slideRecognizer.unbind();
             this.unsubscribe();
@@ -116,7 +123,8 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
         this.strategy.destroy();
         this.swipeRecognizer.unbind();
         this.slideRecognizer.unbind();
-        this.observer.disconnect();
+        this.resizeObserver.disconnect();
+        this.navBackObserver.disconnect();
     }
 
     public show(anchor: HTMLElement) {
@@ -282,6 +290,14 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
             default:
                 if (y - this.captureY > this.intrinsicHeight / 2)
                     this.hide();
+        }
+    }
+
+    private navigationBackCallback = () => {
+        if (this.state.show) {
+            this.hide();
+            // prevent default handling for navigation back
+            return false;
         }
     }
 

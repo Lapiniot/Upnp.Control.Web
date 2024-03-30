@@ -11,6 +11,18 @@ declare global {
         getState(): unknown;
     }
 
+    interface NavigationTransition {
+        readonly navigationType: NavigationType;
+        readonly from: NavigationHistoryEntry;
+        readonly finished: Promise<undefined>;
+    }
+
+    interface NavigationActivation {
+        readonly from?: NavigationHistoryEntry;
+        readonly entry: NavigationHistoryEntry;
+        readonly navigationType: NavigationType;
+    }
+
     type NavigationInterceptHandler = () => Promise<void>;
 
     type NavigationFocusReset = "after-transition" | "manual";
@@ -96,6 +108,7 @@ declare global {
         readonly currentEntry?: NavigationHistoryEntry;
         updateCurrentEntry(options: NavigationUpdateCurrentEntryOptions): void;
         readonly transition?: NavigationTransition;
+        readonly activation?: NavigationActivation;
 
         readonly canGoBack: boolean;
         readonly canGoForward: boolean;
