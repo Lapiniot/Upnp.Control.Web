@@ -24,13 +24,13 @@ export default function AddUrlDialog({ onAdd, onDismissed, feedUrl, feedTitle, u
     return <Dialog caption="Provide url for media feed" icon="symbols.svg#podcasts" {...other}
         onDismissed={onSubmitHandler} actions={actions}>
         <div className="form-floating mb-3">
-            <input type="url" name="feed-url" className="form-control" defaultValue={feedUrl}
+            <input type="url" name="feed-url" className="form-control form-control-fill" defaultValue={feedUrl}
                 placeholder="feed url" required pattern="http(s?)://.*" aria-label="Url" />
             <label htmlFor="feed-url">Feed url</label>
             <div className="invalid-feedback">Please provide a valid feed url</div>
         </div>
         <div className="form-floating mb-3">
-            <input type="text" name="feed-title" className="form-control" defaultValue={feedTitle}
+            <input type="text" name="feed-title" className="form-control form-control-fill" defaultValue={feedTitle}
                 placeholder="feed title" aria-label="Title" />
             <label htmlFor="feed-title">Title</label>
         </div>

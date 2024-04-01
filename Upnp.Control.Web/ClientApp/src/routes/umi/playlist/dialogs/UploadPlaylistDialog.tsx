@@ -20,7 +20,7 @@ export default function UploadPlaylistDialog({ onAdd, onDismissed, useProxy, ...
 
     return <Dialog caption="Upload playlist file" {...other} icon="symbols.svg#playlist_add"
         onDismissed={onSubmitHandler} actions={actions}>
-        <input type="file" className="form-control" name="files" accept=".m3u,.m3u8" multiple required />
+        <input type="file" className="form-control form-control-fill" name="files" accept=".m3u,.m3u8" multiple required />
         <div className="invalid-feedback">Please select at least one playlist file</div>
         <div className="form-check form-switch px-0 mt-3">
             <input type="checkbox" defaultChecked={useProxy} className="form-check-input m-0 mx-2" name="useProxy" value="true" />

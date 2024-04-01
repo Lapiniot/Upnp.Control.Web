@@ -25,7 +25,7 @@ export default function Prompt(props: TextValueEditDialogProps) {
     </>, [confirmText, dismissText]);
 
     return <Dialog {...other} onDismissed={onDismissedHandler} actions={actions}>
-        <input type="text" name="text-input" className="form-control" defaultValue={defaultValue}
+        <input type="text" name="text-input" className="form-control form-control-fill" defaultValue={defaultValue}
             placeholder="[provide value]" required={required} />
         <div className="invalid-feedback">Non-empty value is required</div>
     </Dialog>

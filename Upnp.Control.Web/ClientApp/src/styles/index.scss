@@ -22,27 +22,6 @@ $grid-breakpoints: map-remove($grid-breakpoints, xl, xxl);
 
 $nav-link-disabled-color: $surface-inverse-color;
 
-$input-color: $on-surface-color;
-$input-bg: $surface-color;
-$input-disabled-bg: $surface-container-high-color;
-$input-plaintext-color: $on-surface-color;
-$input-placeholder-color: $surface-inverse-color;
-$input-focus-color: $input-color;
-$input-focus-bg: $input-bg;
-$form-text-color: $surface-inverse-color;
-$form-select-color: $on-surface-color;
-$form-select-bg: $surface-color;
-$form-select-disabled-bg: $surface-container-high-color;
-$form-check-input-color: $on-surface-color;
-$form-check-input-bg: $surface-color;
-$form-file-button-color: $on-surface-color;
-$form-file-button-bg: $surface-container-low-color;
-$form-file-button-hover-bg: $surface-container-high-color;
-$input-group-addon-color: $on-surface-color;
-$input-group-addon-bg: $surface-container-low-color;
-$form-range-thumb-disabled-bg: $surface-inverse-color;
-$form-range-track-bg: $surface-container-high-color;
-
 $badge-border-radius: $border-radius-sm;
 
 $toast-border-radius: $border-radius-sm;
@@ -64,7 +43,7 @@ $breadcrumb-active-color: $surface-inverse-color;
 @import "bootstrap/scss/button-group";
 @import "card";
 @import "list-group";
-@import "bootstrap/scss/forms";
+@import "forms";
 @import "bootstrap/scss/breadcrumb";
 @import "bootstrap/scss/badge";
 @import "bootstrap/scss/toasts";
@@ -96,7 +75,6 @@ $breadcrumb-active-color: $surface-inverse-color;
 @import "icons";
 @import "alert";
 @import "dialog";
-@import "forms";
 
 // Utilities
 @import "bootstrap/scss/utilities/api";

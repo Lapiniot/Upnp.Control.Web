@@ -1,9 +1,113 @@
-::-webkit-file-upload-button {
-    display: none;
-}
+$input-color: $on-surface-color;
+$input-bg: transparent;
+$input-disabled-bg: transparent;
+$input-disabled-color: rgb(var(--#{$prefix}on-surface-rgb), .38);
+$input-disabled-border-color: rgb(var(--#{$prefix}on-surface-rgb), .12);
+$input-border-color: $outline-color;
+$input-border-radius: $corner-xs;
+$input-plaintext-color: $on-surface-color;
+$input-placeholder-color: $surface-inverse-color;
+$input-focus-color: $input-color;
+$input-focus-bg: $input-bg;
+$input-padding-x: 16px;
+$input-padding-y: 8px;
+$form-text-color: $surface-inverse-color;
+$form-select-color: $on-surface-color;
+$form-select-bg: $surface-color;
+$form-select-disabled-bg: $surface-container-high-color;
+$form-check-input-color: $on-surface-color;
+$form-check-input-bg: $surface-color;
+$form-file-button-color: $on-surface-color;
+$form-file-button-bg: $surface-container-low-color;
+$form-file-button-hover-bg: $surface-container-high-color;
+$input-group-addon-color: $on-surface-color;
+$input-group-addon-bg: $surface-container-low-color;
+$form-range-thumb-disabled-bg: $surface-inverse-color;
+$form-range-track-bg: $surface-container-high-color;
+$input-focus-width: 2px;
+$input-focus-box-shadow: 0 0 0 2px $focus-ring-color;
 
-input {
+//@import "bootstrap/scss/forms/labels";
+@import "bootstrap/scss/forms/form-text";
+//@import "bootstrap/scss/forms/form-control";
+@import "bootstrap/scss/forms/form-select";
+@import "bootstrap/scss/forms/form-check";
+//@import "bootstrap/scss/forms/form-range";
+//@import "bootstrap/scss/forms/floating-labels";
+//@import "bootstrap/scss/forms/input-group";
+//@import "bootstrap/scss/forms/validation";
+
+.form-control {
+    display: block;
+    min-height: 56px;
+    padding: $input-padding-y $input-padding-x;
+    font-family: $input-font-family;
+    @include font-size($input-font-size);
+    font-weight: $input-font-weight;
+    line-height: $input-line-height;
+    color: $input-color;
+    background: var(--#{$prefix}input-icon-image, none),
+    var(--#{$prefix}input-state-image, none) $input-bg;
+    border: $input-border-width solid $input-border-color;
+    border-radius: $input-border-radius;
+    caret-color: $primary-color;
     accent-color: $primary-color;
+
+    &:focus {
+        --#{$prefix}focus-ring-color: #{$secondary-color};
+        border-color: #{$primary-color};
+        outline: 0;
+        box-shadow: 0 0 0 2px var(--#{$prefix}focus-ring-color);
+    }
+
+    &:hover {
+        border-color: #{$on-surface-color};
+    }
+
+    &:disabled {
+        color: $input-disabled-color;
+        background-color: $input-disabled-bg;
+        border-color: $input-disabled-border-color;
+        // iOS fix for unreadable disabled content; see https://github.com/twbs/bootstrap/issues/11655.
+        opacity: 1;
+    }
+
+    &[type="file"] {
+        overflow: hidden;
+
+        &:not(:disabled):not([readonly]) {
+            cursor: pointer;
+        }
+
+        &::file-selector-button {
+            display: none;
+        }
+    }
+
+    &.form-control-fill {
+        --#{$prefix}indicator-color: #{$on-surface-variant-color};
+        --#{$prefix}indicator-width: 1px;
+        border: none;
+        border-radius: $input-border-radius $input-border-radius 0 0;
+        box-shadow: 0 var(--#{$prefix}indicator-width) 0 0 var(--#{$prefix}indicator-color);
+        background-color: $surface-container-highest-color;
+
+        &:hover {
+            --#{$prefix}indicator-color: #{$on-surface-color};
+            --#{$prefix}input-state-image: var(--#{$prefix}hover-layer-cc);
+        }
+
+        &:focus {
+            --#{$prefix}indicator-color: #{$primary-color};
+            --#{$prefix}indicator-width: 3px;
+            --#{$prefix}input-state-image: var(--#{$prefix}focus-layer-cc);
+        }
+
+        &:disabled {
+            --#{$prefix}indicator-color: rgb(var(--#{$prefix}on-surface-rgb), .38);
+            background-color: rgb(var(--#{$prefix}on-surface-rgb), .04);
+        }
+    }
 }
 
 input[type="checkbox"] {
@@ -16,5 +120,114 @@ input[type="checkbox"] {
 .form-switch {
     input[type="checkbox"].form-check-input {
         font-size: 1.25em;
+    }
+}
+
+.form-floating {
+    display: grid;
+
+    & > .form-control {
+        grid-area: 1/1;
+        line-height: $form-floating-line-height;
+
+        &.form-control-fill {
+            padding-block: 28px 8px;
+        }
+
+        &::placeholder {
+            color: transparent;
+        }
+
+        &:where(:focus, :not(:placeholder-shown)) {
+            & ~ label {
+                place-self: start stretch;
+                margin: -.5lh calc($input-padding-x - 4px) 0 calc($input-padding-x - 4px);
+                padding-inline: 4px;
+                font-size: smaller;
+                background-color: $surface-color;
+            }
+
+            &:where(.form-control-fill) ~ label {
+                margin: 8px $input-padding-x 0 $input-padding-x;
+                padding: 0;
+                background-color: transparent;
+            }
+        }
+
+        &:hover ~ label {
+            color: $on-surface-color;
+        }
+
+        &:focus ~ label {
+            color: $primary-color;
+        }
+
+        &:disabled ~ label {
+            color: $input-disabled-color;
+        }
+    }
+
+    & > label {
+        grid-area: 1/1;
+        place-self: center stretch;
+        margin: 0 $input-padding-x;
+        max-width: fit-content;
+        color: $on-surface-variant-color;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        pointer-events: none;
+    }
+}
+
+.valid-feedback,
+.invalid-feedback {
+    display: none;
+    font-size: small;
+    font-weight: 400;
+    padding-inline: $input-padding-x;
+}
+
+.valid-feedback {
+    color: $on-surface-variant-color;
+}
+
+.invalid-feedback {
+    color: $error-color;
+}
+
+.was-validated {
+    .form-control {
+        & ~ label {
+            margin-inline-end: calc($input-padding-x + 24px + 12px);
+        }
+
+        &:valid {
+            --#{$prefix}input-icon-image: no-repeat padding-box var(--#{$prefix}form-valid-icon) center right 12px / 24px;
+
+            & ~ .valid-feedback {
+                display: block;
+            }
+        }
+
+        &:invalid {
+            --#{$prefix}indicator-color: #{$error-color};
+            --#{$prefix}input-icon-image: no-repeat padding-box var(--#{$prefix}form-invalid-icon) center right 12px / 24px;
+            border-color: #{$error-color};
+            caret-color: $error-color;
+
+            &:focus {
+                --#{$prefix}focus-ring-color:#{$error-color};
+                border-color: #{$error-color};
+            }
+
+            & ~ label {
+                color: $error-color;
+            }
+
+            & ~ .invalid-feedback {
+                display: block;
+            }
+        }
     }
 }
