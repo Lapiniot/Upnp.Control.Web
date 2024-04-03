@@ -14,6 +14,7 @@ img {
     aspect-ratio: 1;
     object-fit: contain;
     fill: currentColor;
+    flex: 0 0 auto;
 }
 
 a > :is(svg, img) {
