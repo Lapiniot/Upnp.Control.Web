@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, useCallback, useContext, useMemo } from "react";
+import { ButtonHTMLAttributes, useCallback, useContext, useId, useMemo } from "react";
 import { Menu } from "../../components/Menu";
 import Slider from "../../components/Slider";
 import { parseMilliseconds } from "../../services/Extensions";
@@ -68,12 +68,13 @@ function PlayerCore({ udn }: { udn: string | undefined }) {
 
 function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonElement>) {
     const { dispatch, state: { muted = false, volume = 0 } } = useContext(PlaybackStateContext);
+    const id = useId();
     const { toggleMute, setVolume } = usePlaybackEventHandlers(dispatch);
     const volumeStr = muted ? "Muted" : `${volume}%`;
     const volumeIcon = muted ? "volume_off" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
     return <>
-        <Button {...other} title={volumeStr} className={`pl-volume-btn${className ? ` ${className}` : ""}`} icon={`symbols.svg#${volumeIcon}`} data-toggle="dropdown" />
-        <Menu className="volume-ctrl drop-left-center">
+        <Button {...other} popovertarget={id} title={volumeStr} className={`pl-volume-btn${className ? ` ${className}` : ""}`} icon={`symbols.svg#${volumeIcon}`} />
+        <Menu id={id} activation="explicit" className="volume-ctrl drop-left-center">
             <li className="hstack">
                 <button type="button" className="btn btn-icon ms-1" onClick={toggleMute}>
                     <svg><use href={"symbols.svg#" + (muted ? "volume_up" : "volume_off")} /></svg>

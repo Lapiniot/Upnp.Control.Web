@@ -81,14 +81,12 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
         }
 
         if (anchor !== prevAnchor) {
-            if (prevAnchor) prevAnchor.classList.toggle("active", false);
+            prevAnchor?.classList.toggle("active", false);
             await this.strategy.update(popover, anchor);
         }
 
-        if (!anchor) return;
-
         if (show) {
-            anchor.classList.toggle("active", true);
+            anchor?.classList.toggle("active", true);
             await this.strategy.toggle(true);
 
             popover.showPopover();
@@ -112,7 +110,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
             await Promise.allSettled(this.popoverRef.current!.getAnimations().map(animation => animation.finished));
             await this.strategy.toggle(false);
             popover.style.maxBlockSize = "";
-            anchor.classList.toggle("active", false);
+            anchor?.classList.toggle("active", false);
         }
     }
 
@@ -205,7 +203,16 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
         if (oldState === "open" && newState === "closed") {
             this.hide();
         } else if (oldState === "closed" && newState === "open") {
-            this.show(document.activeElement as HTMLElement);
+            // Explicit activation via PopoverInvokerElement
+            if (this.state.show === false && this.props.id) {
+                const anchor = (document.activeElement as unknown as PopoverInvokerElement).popoverTargetElement === this.popoverRef.current
+                    // Chrome: popover invoker stays focused active element at this moment, no need to scan entire document and we know for sure who invoked our popover!
+                    ? document.activeElement as HTMLInputElement
+                    // Safari: drops focus at <BODY> element, we need to proactively look for invoker by selector :(
+                    : document.body.querySelector<HTMLInputElement>(`:where(input, button)[popovertarget='${this.props.id}']`)
+                if (anchor)
+                    this.show(anchor);
+            }
         }
     }
 

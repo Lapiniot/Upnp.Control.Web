@@ -26,9 +26,9 @@ export function BrowserActionMenu({ umis, renderers, onSelected }: BrowserAction
     }
 
     return <>
-        <Toolbar.Button key="main-menu" icon="symbols.svg#more_vert" data-toggle="dropdown"
+        <Toolbar.Button icon="symbols.svg#more_vert" popovertarget="browser-actions"
             className="btn-icon ms-auto" disabled={!enabled} />
-        {enabled && <Menu className="drop-bottom" onSelected={onSelectedHandler}>
+        {enabled && <Menu id="browser-actions" activation="explicit" className="drop-bottom" onSelected={onSelectedHandler}>
             {umiAcceptable && <>
                 <li><h6 className="dropdown-header">Send as Playlist to</h6></li>
                 {umis.map(({ udn, name }) => renderActionMenuItem(udn, "send", name))}
