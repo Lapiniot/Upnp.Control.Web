@@ -33,7 +33,7 @@
                     box-sizing: content-box;
                     width: 64px;
                     padding-block: 4px;
-                    border-radius: 100vw;
+                    border-radius: 2lh;
                 }
 
                 &.active > svg {
@@ -102,7 +102,7 @@
                     flex: 0 0 48px;
                     flex-direction: row;
                     gap: 12px;
-                    border-radius: 100vh;
+                    border-radius: 2lh;
                     margin: 0;
                     padding: 0 28px 0 16px;
 

@@ -112,7 +112,6 @@ a:not(.btn):focus-visible {
     inset: 0 0 auto 0;
     position: absolute;
     z-index: $zindex-fixed;
-    max-height: 50vh;
     overflow: visible auto;
     scroll-snap-type: y proximity;
     container-type: inline-size;
