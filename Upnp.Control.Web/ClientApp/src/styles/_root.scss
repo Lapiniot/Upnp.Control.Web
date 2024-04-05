@@ -116,6 +116,9 @@
     --#{$prefix}form-invalid-icon: #{escape-svg($form-feedback-icon-invalid)};
     --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon)};
     --#{$prefix}drag-handle-icon: #{escape-svg($drag-handle-icon)};
+    --#{$prefix}form-check-bg-image: #{escape-svg($form-check-input-checked-bg-image)};
+    --#{$prefix}form-switch-bg-image: #{escape-svg($form-switch-checked-bg-image)};
+    --#{$prefix}form-switch-disabled-bg-image: #{escape-svg($form-switch-checked-disabled-bg-image)};
 }
 
 @if $enable-dark-mode {
@@ -162,5 +165,8 @@
         --#{$prefix}form-invalid-icon: #{escape-svg($form-feedback-icon-invalid-dark)};
         --#{$prefix}expand-button-icon: #{escape-svg($expand-button-icon-dark)};
         --#{$prefix}drag-handle-icon: #{escape-svg($drag-handle-icon-dark)};
+        --#{$prefix}form-check-bg-image: #{escape-svg($form-check-input-checked-bg-image-dark)};
+        --#{$prefix}form-switch-bg-image: #{escape-svg($form-switch-checked-bg-image-dark)};
+        --#{$prefix}form-switch-disabled-bg-image: #{escape-svg($form-switch-checked-disabled-bg-image-dark)};
     }
 }

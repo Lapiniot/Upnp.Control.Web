@@ -11,12 +11,16 @@ $input-focus-color: $input-color;
 $input-focus-bg: $input-bg;
 $input-padding-x: 16px;
 $input-padding-y: 8px;
-$form-text-color: $surface-inverse-color;
+$form-text-color: $on-surface-variant-color;
 $form-select-color: $on-surface-color;
 $form-select-bg: $surface-color;
 $form-select-disabled-bg: $surface-container-high-color;
 $form-check-input-color: $on-surface-color;
 $form-check-input-bg: $surface-color;
+$form-check-input-width: 18px;
+$form-check-input-height: 18px;
+$form-switch-width: 52px;
+$form-switch-height: 32px;
 $form-file-button-color: $on-surface-color;
 $form-file-button-bg: $surface-container-low-color;
 $form-file-button-hover-bg: $surface-container-high-color;
@@ -29,13 +33,17 @@ $input-focus-box-shadow: 0 0 0 2px $focus-ring-color;
 
 //@import "bootstrap/scss/forms/labels";
 @import "bootstrap/scss/forms/form-text";
-//@import "bootstrap/scss/forms/form-control";
-@import "bootstrap/scss/forms/form-select";
-@import "bootstrap/scss/forms/form-check";
+@import "bootstrap/scss/forms/form-control";
+//@import "bootstrap/scss/forms/form-select";
+//@import "bootstrap/scss/forms/form-check";
 //@import "bootstrap/scss/forms/form-range";
 //@import "bootstrap/scss/forms/floating-labels";
 //@import "bootstrap/scss/forms/input-group";
 //@import "bootstrap/scss/forms/validation";
+
+input {
+    accent-color: $primary-color;
+}
 
 .form-control {
     display: block;
@@ -51,7 +59,6 @@ $input-focus-box-shadow: 0 0 0 2px $focus-ring-color;
     border: $input-border-width solid $input-border-color;
     border-radius: $input-border-radius;
     caret-color: $primary-color;
-    accent-color: $primary-color;
 
     &:focus {
         --#{$prefix}focus-ring-color: #{$secondary-color};
@@ -104,22 +111,176 @@ $input-focus-box-shadow: 0 0 0 2px $focus-ring-color;
         }
 
         &:disabled {
-            --#{$prefix}indicator-color: rgb(var(--#{$prefix}on-surface-rgb), .38);
+            --#{$prefix}indicator-color: #{$input-disabled-color};
             background-color: rgb(var(--#{$prefix}on-surface-rgb), .04);
         }
     }
 }
 
-input[type="checkbox"] {
-    inline-size: 1em;
-    block-size: 1em;
-    outline-offset: 5px;
-    cursor: pointer;
+%form-check {
+    display: grid;
+    grid: auto / auto-flow;
+    justify-content: start;
+    align-items: center;
+    min-height: 24px;
+    gap: 16px;
 }
 
-.form-switch {
-    input[type="checkbox"].form-check-input {
-        font-size: 1.25em;
+.form-check {
+    @extend %form-check;
+}
+
+.form-check-reverse {
+    @extend %form-check;
+
+    :first-child{
+        order: 1;
+    }
+}
+
+input[type="checkbox"] {
+    inline-size: #{$form-check-input-width};
+    block-size: #{$form-check-input-height};
+    cursor: pointer;
+
+    &.form-check-input {
+        --#{$prefix}form-check-color: #{$on-surface-color};
+        --#{$prefix}form-check-border-color: #{$on-surface-variant-color};
+        appearance: none;
+        flex: 0 0 auto;
+        border-radius: 2px;
+        box-shadow: 0 0 0 2px var(--#{$prefix}form-check-border-color) inset;
+        color: var(--#{$prefix}form-check-color);
+
+        &::after {
+            content: '';
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin-left: calc(50% - 20px);
+            margin-top: calc(50% - 20px);
+            border-radius: 100%;
+        }
+
+        &:hover {
+            --#{$prefix}form-check-border-color: #{$on-surface-color};
+
+            &::after {
+                display: block;
+                background-image: var(--#{$prefix}hover-layer-cc);
+            }
+        }
+
+        &:is(:focus-visible, :active) {
+            --#{$prefix}form-check-border-color: #{$on-surface-color};
+
+            &::after {
+                display: block;
+                background-image: var(--#{$prefix}focus-layer-cc);
+            }
+        }
+
+        &:is(:disabled, .disabled) {
+            --#{$prefix}form-check-border-color: #{$input-disabled-color};
+            pointer-events: none;
+
+            &::after {
+                background-image: none;
+            }
+
+            & ~ .form-check-label {
+                opacity: .38;
+            }
+        }
+
+        &:checked {
+            --#{$prefix}form-check-color: #{$primary-color};
+            background: var(--#{$prefix}form-check-color) padding-box no-repeat var(--#{$prefix}form-check-bg-image) center;
+            box-shadow: none;
+
+            &:disabled {
+                --#{$prefix}form-check-color: #{$input-disabled-color};
+            }
+        }
+
+        &.form-check-input-error:not(:disabled) {
+            --#{$prefix}form-check-color: #{$error-color};
+            --#{$prefix}form-check-border-color: #{$error-color};
+        }
+    }
+}
+
+.form-switch input[type="checkbox"].form-check-input {
+    --#{$prefix}form-check-color: #{$on-surface-color};
+    --#{$prefix}form-check-bg: #{$surface-container-highest-color};
+    --#{$prefix}form-check-border-color: #{$outline-color};
+    --#{$prefix}form-switch-handle-size: 16px;
+    --#{$prefix}form-switch-handle-color: #{$outline-color};
+
+    position: relative;
+    inline-size: $form-switch-width;
+    block-size: $form-switch-height;
+    border-radius: calc($form-switch-height / 2);
+    color: var(--#{$prefix}form-check-color);
+    background-color: var(--#{$prefix}form-check-bg);
+
+    &::before {
+        content: '';
+        display: block;
+        inline-size: var(--#{$prefix}form-switch-handle-size);
+        block-size: var(--#{$prefix}form-switch-handle-size);
+        background-color: var(--#{$prefix}form-switch-handle-color);
+        border-radius: var(--#{$prefix}form-switch-handle-size);
+        margin: calc(($form-switch-height - var(--#{$prefix}form-switch-handle-size)) / 2) 0 0 calc(($form-switch-height - var(--#{$prefix}form-switch-handle-size)) / 2);
+    }
+
+    &::after {
+        position: absolute;
+        top: 0;
+        margin: calc($form-switch-height/2 - 20px) 0 0 calc($form-switch-height / 2 - 20px);
+    }
+
+    &:checked {
+        --#{$prefix}form-check-color: #{$primary-color};
+        --#{$prefix}form-check-bg: #{$primary-color};
+        --#{$prefix}form-switch-handle-size: 24px;
+        --#{$prefix}form-switch-handle-color: #{$on-primary-color};
+        background-image: none;
+
+        &::before {
+            margin: calc(($form-switch-height - var(--#{$prefix}form-switch-handle-size)) / 2) 0 0 calc($form-switch-width - ($form-switch-height + var(--#{$prefix}form-switch-handle-size)) / 2);
+            background-image: var(--#{$prefix}form-switch-bg-image);
+            background-size: 20px;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        &::after {
+            margin: calc($form-switch-height/2 - 20px) 0 0 calc($form-switch-width - $form-switch-height / 2 - 20px);
+        }
+    }
+
+    &:is(:hover, :active, :focus-visible) {
+        --#{$prefix}form-switch-handle-color: #{$on-surface-variant-color};
+
+        &:checked {
+            --#{$prefix}form-switch-handle-color: #{$primary-container-color};
+        }
+    }
+
+    &:disabled {
+        --#{$prefix}form-check-bg: rgb(var(--#{$prefix}surface-cntr-rgb), .12);
+        --#{$prefix}form-check-border-color: #{$input-disabled-border-color};
+        --#{$prefix}form-switch-handle-color: #{$input-disabled-color};
+
+        &:checked {
+            --#{$prefix}form-check-bg: #{$input-disabled-border-color};
+            --#{$prefix}form-switch-handle-color: #{$surface-color};
+
+            &::before {
+                background-image: var(--#{$prefix}form-switch-disabled-bg-image);
+            }
+        }
     }
 }
 
