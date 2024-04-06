@@ -24,12 +24,13 @@ $form-switch-height: 32px;
 $form-file-button-color: $on-surface-color;
 $form-file-button-bg: $surface-container-low-color;
 $form-file-button-hover-bg: $surface-container-high-color;
-$input-group-addon-color: $on-surface-color;
-$input-group-addon-bg: $surface-container-low-color;
-$form-range-thumb-disabled-bg: $surface-inverse-color;
-$form-range-track-bg: $surface-container-high-color;
 $input-focus-width: 2px;
 $input-focus-box-shadow: 0 0 0 2px $focus-ring-color;
+
+$input-trailing-icon-size: 24px;
+$input-trailing-icon-margin-end: 12px;
+$input-trailing-icon-margin-start: 16px;
+$input-trailing-icon-offset: calc($input-trailing-icon-margin-start + $input-trailing-icon-size + $input-trailing-icon-margin-end);
 
 //@import "bootstrap/scss/forms/labels";
 @import "bootstrap/scss/forms/form-text";
@@ -45,9 +46,9 @@ input {
     accent-color: $primary-color;
 }
 
-.form-control {
-    display: block;
-    min-height: 56px;
+%form-input {
+    display: inline-block;
+    min-block-size: 56px;
     padding: $input-padding-y $input-padding-x;
     font-family: $input-font-family;
     @include font-size($input-font-size);
@@ -58,7 +59,6 @@ input {
     var(--#{$prefix}input-state-image, none) $input-bg;
     border: $input-border-width solid $input-border-color;
     border-radius: $input-border-radius;
-    caret-color: $primary-color;
 
     &:focus {
         --#{$prefix}focus-ring-color: #{$secondary-color};
@@ -78,6 +78,16 @@ input {
         // iOS fix for unreadable disabled content; see https://github.com/twbs/bootstrap/issues/11655.
         opacity: 1;
     }
+}
+
+%input-with-icon {
+    --#{$prefix}input-icon-image: no-repeat padding-box var(--#{$prefix}input-icon, none) center right #{$input-trailing-icon-margin-end} / #{$input-trailing-icon-size};
+    padding-inline-end: $input-trailing-icon-offset;
+}
+
+.form-control {
+    @extend %form-input;
+    caret-color: $primary-color;
 
     &[type="file"] {
         overflow: hidden;
@@ -117,6 +127,14 @@ input {
     }
 }
 
+.form-select {
+    --#{$prefix}input-icon: var(--#{$prefix}expand-button-icon);
+    @extend %form-input;
+    @extend %input-with-icon;
+    appearance: none;
+    line-height: 2.25;
+}
+
 %form-check {
     display: grid;
     grid: auto / auto-flow;
@@ -133,7 +151,7 @@ input {
 .form-check-reverse {
     @extend %form-check;
 
-    :first-child{
+    :first-child {
         order: 1;
     }
 }
@@ -359,12 +377,14 @@ input[type="checkbox"] {
 
 .was-validated {
     .form-control {
+        @extend %input-with-icon;
+
         & ~ label {
-            margin-inline-end: calc($input-padding-x + 24px + 12px);
+            margin-inline-end: $input-trailing-icon-offset;
         }
 
         &:valid {
-            --#{$prefix}input-icon-image: no-repeat padding-box var(--#{$prefix}form-valid-icon) center right 12px / 24px;
+            --#{$prefix}input-icon: var(--#{$prefix}form-valid-icon);
 
             & ~ .valid-feedback {
                 display: block;
@@ -373,7 +393,7 @@ input[type="checkbox"] {
 
         &:invalid {
             --#{$prefix}indicator-color: #{$error-color};
-            --#{$prefix}input-icon-image: no-repeat padding-box var(--#{$prefix}form-invalid-icon) center right 12px / 24px;
+            --#{$prefix}input-icon: var(--#{$prefix}form-invalid-icon);
             border-color: #{$error-color};
             caret-color: $error-color;
 
