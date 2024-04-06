@@ -68,7 +68,7 @@ function render<T extends object>(item: T, groups: AttributeGroup<T>[]) {
             ] : [];
         });
 
-        return attrs.length ? [<div key={`h-${groupName}`} className="col-2 hstack">
+        return attrs.length ? [<div key={`h-${groupName}`} className="sp-2 hstack">
             <hr className="flex-grow-1" />
             <small className="mx-2">{groupTitle}</small>
             <hr className="flex-grow-1" />

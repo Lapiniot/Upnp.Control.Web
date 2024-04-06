@@ -11,5 +11,5 @@ export function NumberEditor({ className, callback, value: valueProp, ...other }
             if (callback(parseInt(value)) !== false) setValue(value);
         }, [callback]);
     return <input {...other} type="number" value={value} onChange={changedHandler}
-        className={`form-control form-control-sm${className ? ` ${className}` : ""}`} />;
+        className={`form-control${className ? ` ${className}` : ""}`} />;
 }

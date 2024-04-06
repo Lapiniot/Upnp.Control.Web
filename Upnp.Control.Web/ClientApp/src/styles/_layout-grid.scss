@@ -1,6 +1,6 @@
 ﻿/********** Grid Layout utilities **********/
 
-$utilities: map-merge($utilities, ("col-span": (class: "col", property: "grid-column", values: (2: span 2))));
+$utilities: map-merge($utilities, ("col-span": (class: "sp", property: "grid-column-end", values: (2: span 2))));
 $grid-responsive-auto-breakpoints: null sm;
 
 @mixin grid-auto-columns($min: 10rem, $max: 30rem, $mode: auto-fit) {

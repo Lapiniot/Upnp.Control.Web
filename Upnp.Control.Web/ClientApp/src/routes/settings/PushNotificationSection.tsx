@@ -5,7 +5,7 @@ import { usePushSubscription } from "../../hooks/PushSubscription";
 export function PushNotificationsSection() {
     const { types, valid, loading, toggle, reset } = usePushSubscription();
     return <>
-        {!valid ? <div className={`alert-warning col-2 text-start${loading ? " text-tertiary" : ""}`}>
+        {!valid ? <div className={`alert-warning sp-2 text-start${loading ? " text-tertiary" : ""}`}>
             Push notifications subscription state is invalid.
             Most likely crypto keys on the server have been changed since last subscription.
             <p className="mb-0">
@@ -15,11 +15,9 @@ export function PushNotificationsSection() {
                 Alternatively, you may reset notifications permission option to the default value in the site settings of your browser and subscribe again.
             </p>
         </div> : null}
-        <label htmlFor="discovery-pushes-editor">Device discovery</label>
-        <FlagEditor id="discovery-pushes-editor" context={PNType.DeviceDiscovery}
+        <FlagEditor caption="Device discovery" className="sp-2" context={PNType.DeviceDiscovery}
             checked={!!(types & PNType.DeviceDiscovery)} disabled={!valid || loading} callback={toggle} />
-        <label htmlFor="playback-pushes-editor">Playback state changes</label>
-        <FlagEditor id="playback-pushes-editor" context={PNType.PlaybackStateChange}
+        <FlagEditor caption="Playback state changes" className="sp-2" context={PNType.PlaybackStateChange}
             checked={!!(types & PNType.PlaybackStateChange)} disabled={!valid || loading} callback={toggle} />
     </>
 }
