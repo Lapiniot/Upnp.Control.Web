@@ -1,0 +1,67 @@
+.snackbar-host {
+    display: flex;
+    flex-flow: row-reverse wrap-reverse;
+    align-items: end;
+    justify-content: center;
+    gap: map-get($spacers, 3);
+    margin: map-get($spacers, 3);
+    position: fixed;
+    inset: auto 0 0 0;
+    pointer-events: none;
+    z-index: $zindex-fixed;
+    background: transparent;
+}
+
+$primary-inverse-hover-color: rgb(var(--#{$prefix}primary-inverse-rgb), .08);
+$primary-inverse-active-color: rgb(var(--#{$prefix}primary-inverse-rgb), .1);
+
+.snackbar {
+    display: flex;
+    min-height: 48px;
+    min-width: min(360px, 100%);
+    overflow: hidden;
+    background-color: $surface-inverse-color;
+    color: $on-surface-inverse-color;
+    box-shadow: var(--#{$prefix}shadow-l3);
+    border-radius: $corner-xs;
+    padding: 8px 16px;
+    gap: 12px;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+    pointer-events: auto;
+    cursor: default;
+
+    &:hover {
+        background-image: linear-gradient($primary-inverse-hover-color, $primary-inverse-hover-color);
+    }
+
+    &:is(:active, :focus-within) {
+        background-image: linear-gradient($primary-inverse-active-color, $primary-inverse-active-color);
+    }
+
+    .btn {
+        --#{$prefix}btn-hover-color: #{$primary-inverse-color};
+        --#{$prefix}btn-active-color: #{$primary-inverse-color};
+        color: $primary-inverse-color;
+        font-size: inherit;
+        font-weight: 500;
+        flex: 0 0 auto;
+    }
+
+    &:has(.btn-close) {
+        padding-inline: 16px 12px;
+    }
+
+    &.fade {
+        @include transition(var(--#{$transition-prefix}fade));
+
+        &.showing {
+            opacity: 0;
+        }
+
+        &:not(.show) {
+            display: none;
+        }
+    }
+}

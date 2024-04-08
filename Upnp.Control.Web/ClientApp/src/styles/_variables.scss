@@ -5,18 +5,31 @@ $primary: #6750A4;
 $on-primary: #FFFFFF;
 $primary-container: #EADDFF;
 $on-primary-container: #21005D;
+$primary-fixed: #EADDFF;
+$on-primary-fixed: #21005D;
+$primary-fixed-dim: #D0BCFF;
+$on-primary-fixed-variant: #4F378B;
+$primary-inverse: #D0BCFF;
 
 // Secondary colors
 $secondary: #625B71;
 $on-secondary: #FFFFFF;
 $secondary-container: #E8DEF8;
 $on-secondary-container: #1D192B;
+$secondary-fixed: #E8DEF8;
+$secondary-fixed-dim: #CCC2DC;
+$on-secondary-fixed: #1D192B;
+$on-secondary-fixed-variant: #4A4458;
 
 // Tertiary colors
 $tertiary: #7D5260;
 $on-tertiary: #FFFFFF;
 $tertiary-container: #FFD8E4;
 $on-tertiary-container: #31111D;
+$tertiary-fixed: #FFD8E4;
+$tertiary-fixed-dim: #EFB8C8;
+$on-tertiary-fixed: #31111D;
+$on-tertiary-fixed-variant: #633B48;
 
 // Error colors
 $error: #B3261E;
@@ -47,18 +60,31 @@ $primary-dark: #D0BCFF;
 $on-primary-dark: #381E72;
 $primary-container-dark: #4F378B;
 $on-primary-container-dark: #EADDFF;
+$primary-fixed-dark: #EADDFF;
+$on-primary-fixed-dark: #21005D;
+$primary-fixed-dim-dark: #D0BCFF;
+$on-primary-fixed-variant-dark: #4F378B;
+$primary-inverse-dark: #6750A4;
 
 // Secondary dark colors
 $secondary-dark: #CCC2DC;
 $on-secondary-dark: #332D41;
 $secondary-container-dark: #4A4458;
 $on-secondary-container-dark: #E8DEF8;
+$secondary-fixed-dark: #E8DEF8;
+$secondary-fixed-dim-dark: #CCC2DC;
+$on-secondary-fixed-dark: #1D192B;
+$on-secondary-fixed-variant-dark: #4A4458;
 
 // Tertiary dark colors
 $tertiary-dark: #EFB8C8;
 $on-tertiary-dark: #492532;
 $tertiary-container-dark: #633B48;
 $on-tertiary-container-dark: #FFD8E4;
+$tertiary-fixed-dark: #FFD8E4;
+$tertiary-fixed-dim-dark: #EFB8C8;
+$on-tertiary-fixed-dark: #31111D;
+$on-tertiary-fixed-variant-dark: #633B48;
 
 // Error dark colors
 $error-dark: #F2B8B5;
@@ -88,6 +114,7 @@ $primary-color: var(--#{$prefix}primary);
 $on-primary-color: var(--#{$prefix}on-primary);
 $primary-container-color: var(--#{$prefix}primary-cntr);
 $on-primary-container-color: var(--#{$prefix}on-primary-cntr);
+$primary-inverse-color: var(--#{$prefix}primary-inverse);
 $secondary-color: var(--#{$prefix}secondary);
 $on-secondary-color: var(--#{$prefix}on-secondary);
 $secondary-container-color: var(--#{$prefix}secondary-cntr);
@@ -98,6 +125,7 @@ $surface-container-color: var(--#{$prefix}surface-cntr);
 $surface-inverse-color: var(--#{$prefix}surface-inverse);
 $surface-variant-color: var(--#{$prefix}surface-variant);
 $on-surface-variant-color: var(--#{$prefix}on-surface-variant);
+$on-surface-inverse-color: var(--#{$prefix}on-surface-inverse);
 $surface-container-highest-color: var(--#{$prefix}surface-cntr-highest);
 $surface-container-high-color: var(--#{$prefix}surface-cntr-high);
 $surface-container-low-color: var(--#{$prefix}surface-cntr-low);

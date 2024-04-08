@@ -46,7 +46,7 @@ $breadcrumb-active-color: $surface-inverse-color;
 @import "forms";
 @import "bootstrap/scss/breadcrumb";
 @import "bootstrap/scss/badge";
-@import "bootstrap/scss/toasts";
+@import "snackbar";
 
 @import "bootstrap/scss/placeholders";
 @import "dropdown";
@@ -101,28 +101,6 @@ $breadcrumb-active-color: $surface-inverse-color;
 
 a:not(.btn):focus-visible {
     border-radius: var(--#{$prefix}border-radius-sm);
-}
-
-.nt-host {
-    display: flex;
-    flex-flow: row-reverse wrap-reverse;
-    gap: map-get($spacers, 3);
-    margin: map-get($spacers, 3);
-    inset: 0 0 auto 0;
-    position: absolute;
-    z-index: $zindex-fixed;
-    overflow: visible auto;
-    scroll-snap-type: y proximity;
-    container-type: inline-size;
-
-    > * {
-        scroll-snap-align: end;
-        flex: 0 1 40ch;
-
-        @container (inline-size <=576px) {
-            flex: 100%;
-        }
-    }
 }
 
 @include any-pointer {

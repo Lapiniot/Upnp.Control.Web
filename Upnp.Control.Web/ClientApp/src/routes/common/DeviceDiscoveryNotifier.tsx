@@ -1,6 +1,7 @@
 import { forwardRef, useMemo, useRef } from "react";
 import NotificationsHostCore, { INotificationHost } from "../../components/NotificationsHost";
 import { useSignalR } from "../../hooks/SignalR";
+import { useNavigate } from "react-router-dom";
 
 const NotificationsHost = forwardRef(NotificationsHostCore)
 
@@ -10,20 +11,22 @@ type DiscoveryMessage = { type: NotificationType, device: Upnp.Device }
 
 export function DeviceDiscoveryNotifier({ callback }: { callback?: DiscoveryCallback }) {
     const ref = useRef<INotificationHost>(null);
+    const navigate = useNavigate();
 
     const handlers = useMemo(() => ({
         "SsdpDiscoveryEvent": (device: string, msg: DiscoveryMessage) => {
-            const { device: { name, description }, type } = msg;
+            const { device: { description, udn }, type } = msg;
             if (callback?.(type, msg.device) !== false) {
-                ref.current?.push({
-                    id: device, title: name, color: type === "appeared" ? "primary" : "secondary", delay: 120000,
-                    message: <>
-                        <b>&laquo;{description}&raquo;</b> has {type === "appeared" ? "appeared on" : "disappeared from"} the network
-                    </>
+                ref.current?.push(type === "appeared" ? {
+                    id: device, action: { text: "View", handler() { navigate(`/upnp/${udn}`); } },
+                    message: `\xAB${description}\xBB has appeared on the network`
+                } : {
+                    id: device, autohide: 10000,
+                    message: `\xAB${description}\xBB has disappeared from the network`
                 });
             }
         }
-    }), [callback]);
+    }), [callback, navigate]);
 
     useSignalR(handlers);
 
