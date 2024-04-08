@@ -22,22 +22,22 @@
     // Prohibit shrinking in flex layout
     flex-shrink: 0;
     box-shadow: var(--#{$prefix}btn-box-shadow);
-    @include gradient-bg-img(var(--#{$prefix}btn-bg-img));
+    background-image: var(--#{$prefix}btn-bg-img);
 
     &:hover {
-        @include gradient-bg-img(var(--#{$prefix}hover-layer-cc));
+        background-image: var(--#{$prefix}hover-layer-cc);
         box-shadow: var(--#{$prefix}btn-hover-box-shadow, var(--#{$prefix}btn-box-shadow));
     }
 
     &:focus-visible {
-        @include gradient-bg-img(var(--#{$prefix}focus-layer-cc));
+        background-image: var(--#{$prefix}focus-layer-cc);
         outline: var(--#{$prefix}focus-ring);
         outline-offset: #{$focus-ring-offset};
         box-shadow: var(--#{$prefix}btn-focus-box-shadow, var(--#{$prefix}btn-box-shadow));
     }
 
     &:is(:active, .active, [data-anchor-active]) {
-        @include gradient-bg-img(var(--#{$prefix}focus-layer-cc));
+        background-image: var(--#{$prefix}focus-layer-cc);
     }
 
     &:active {
@@ -67,6 +67,35 @@
     --#{$prefix}btn-active-color: var(--#{$prefix}on-surface-variant);
     --#{$prefix}btn-icon-font-size: 24px;
     aspect-ratio: 1;
+}
+
+.btn-close {
+    width: 24px;
+    aspect-ratio: 1;
+    color: inherit;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    flex: 0 0 auto;
+
+    &::after {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-color: currentColor;
+        mask: no-repeat #{escape-svg($close-icon)} center / 100%;
+    }
+
+    &:hover {
+        background-image: var(--#{$prefix}hover-layer-cc);
+    }
+
+    &:is(:active, :focus-visible) {
+        background-image: var(--#{$prefix}focus-layer-cc);
+        outline: none;
+        box-shadow: none;
+    }
 }
 
 .btn-elevate {
@@ -116,6 +145,7 @@
 
 %text-button {
     --#{$prefix}btn-padding-x: 24px;
+
     &:has(:where(svg:first-child, img:first-child)) {
         padding-inline: 16px 24px;
     }
