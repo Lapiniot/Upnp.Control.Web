@@ -13,7 +13,6 @@ import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { CellTemplate, CellTemplateProps } from "./BrowserView";
 import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
 import ItemInfoDialog from "./ItemInfoDialog";
-import Pagination from "./Pagination";
 import $s from "./Settings";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 
@@ -194,23 +193,20 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
     }
 
     render() {
-        const { dataContext: data, p: page, s: size, displayMode } = this.props;
+        const { dataContext: data, displayMode } = this.props;
         const parents = data?.source.parents ?? [];
         return <>
             <RowStateProvider items={data?.source.items}>
-                <BrowserCore mainCellTemplate={Template} mainCellContext={this.getCellContext()} withPagination={false} useCheckboxes multiSelect
+                <BrowserCore mainCellTemplate={Template} mainCellContext={this.getCellContext()} useCheckboxes multiSelect
                     {...this.props} fetching={this.state.fetching || this.props.fetching} openHandler={this.openHandler} hotKeyHandler={this.hotKeyHandler}
                     renderActionMenu={this.renderActionMenu}>
                     <Menu className="drop-left" render={this.renderItemActionMenuItems} onSelected={this.itemMenuSelectedHandler} />
                 </BrowserCore>
             </RowStateProvider>
-            <div className="sticky-bottom">
+            {displayMode === "table" && parents.length > 1 &&
                 <BottomBar className="flex-wrap-reverse border-top">
-                    {displayMode === "table" && parents.length > 1 && <Breadcrumb className="me-auto" items={parents} />}
-                    <Pagination total={data?.source.total ?? 0} current={typeof page === "string" ? parseInt(page) : 1}
-                        pageSize={typeof size === "string" ? parseInt(size) : $s.get("pageSize")} />
-                </BottomBar>
-            </div>
+                    <Breadcrumb className="me-auto" items={parents} />
+                </BottomBar>}
             <DialogHost ref={this.dialogHostRef} />
         </>
     }

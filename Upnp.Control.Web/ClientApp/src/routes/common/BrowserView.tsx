@@ -268,7 +268,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
 
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
             useCheckboxes, useLevelUpRow, stickyCaption, stickyHeaders, displayMode, navigationMode, editMode, nodeRef,
-            renderCaption, renderFooter, children } = this.props;
+            renderCaption, renderFooter, children, fetching } = this.props;
 
         const { source: { items = [], parents = [] } = {} } = this.props.dataContext || {};
 
@@ -276,7 +276,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         const headerClass = tableMode ? (stickyHeaders ? "sticky-top" : "") : "d-none";
 
         return <div ref={nodeRef} className={`browser-view vstack overflow-auto${className ? ` ${className}` : ""}`}
-            onPointerDown={this.pointerDownHandler}
+            inert={fetching ? "" : undefined} onPointerDown={this.pointerDownHandler}
             onPointerUp={navigationMode !== "dbl-click" && !editMode ? this.navigateHandler : undefined}
             onDoubleClick={navigationMode === "dbl-click" && !editMode ? this.navigateHandler : undefined}>
             <div className="table table-material user-select-none" ref={this.ref} onFocus={this.focusHandler}>
