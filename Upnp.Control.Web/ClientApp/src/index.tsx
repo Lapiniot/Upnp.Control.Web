@@ -45,7 +45,7 @@ root.render(
                     </div>
                 </div>
                 <main>
-                    <div id="notifications-root" className="nt-host" />
+                    <div id="notifications-root" className="snackbar-host" />
                     <SignalRConnection url="/upnpevents">
                         <DeviceDiscoveryNotifier callback={shouldShowDiscoveryNotifications} />
                         <PlaybackStateNotifier callback={shouldShowPlaybackStateNotification} />
