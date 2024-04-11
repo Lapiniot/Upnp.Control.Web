@@ -1,4 +1,4 @@
-import { ComponentProps, ComponentPropsWithRef, ComponentType, createRef, HTMLAttributes, PureComponent, ReactElement, UIEventHandler, useCallback, useContext, useMemo, useRef } from "react";
+import { ComponentProps, ComponentPropsWithRef, ComponentType, createRef, HTMLAttributes, PureComponent, ReactElement, UIEventHandler, useCallback, useContext, useMemo } from "react";
 import { BottomBar } from "../../../components/BottomBar";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Dialog from "../../../components/Dialog";
@@ -378,7 +378,7 @@ function Browser({ device, deviceName, getUrlHook, className, children, ...props
             {scrollTracker}
             {children}
         </BrowserView>
-        <Progress className={`br-area-main place-self-start-stretch sticky-top p-0 m-0${progress === 1 ? " d-none" : ""}`}
+        <Progress className={`br-area-main place-self-start-stretch sticky-top m-0${progress === 1 ? " d-none" : ""}`}
             value={progress} infinite={fetching} />
     </>
 }

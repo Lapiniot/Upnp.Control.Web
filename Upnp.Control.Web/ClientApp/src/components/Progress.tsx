@@ -1,31 +1,32 @@
 import { CSSProperties, HTMLProps } from "react";
 
-export type ProgressCSSProperties = CSSProperties & {
-    "--slider-progress"?: number;
-    "--slider-animation"?: string;
-    "--slider-animation-duration"?: string | number;
-    "--slider-animation-name"?: string;
-};
-
-export type ProgressProps = {
-    value?: number;
-    infinite?: boolean;
+type CustomProps = {
+    "value"?: number;
+    "infinite"?: " " | "initial";
+    "animation"?: string;
+    "animation-duration"?: string;
+    "animation-name"?: string;
 }
 
-export default function Progress({ className, value, infinite, style = {}, ...other }: HTMLProps<HTMLDivElement> & ProgressProps) {
-    const progressStyle: ProgressCSSProperties = {};
+type ProgressCSSProperties = CSSProperties &
+    { [K in keyof CustomProps as `--bs-progress-${K}`]: CustomProps[K] }
 
+interface ProgressProps extends Omit<HTMLProps<HTMLDivElement>, "value"> {
+    value?: number;
+    infinite?: boolean;
+    style?: ProgressCSSProperties;
+}
+
+export default function Progress({ className, value, infinite, style = {}, ...other }: ProgressProps) {
+    const progressStyle = { ...style };
     if (infinite) {
-        progressStyle["--slider-animation"] = "2s ease-in-out infinite slider-run-infinite";
-    }
-    else {
-        progressStyle["--slider-progress"] = value;
+        progressStyle["--bs-progress-infinite"] = "initial";
+    } else {
+        progressStyle["--bs-progress-value"] = value ? Math.round(value * 100) / 100 : 0;
     }
 
-    return <div {...other} role="progressbar" style={{ ...style, ...progressStyle }}
-        className={`progress${className ? ` ${className}` : ""}`}>
-        <div className="progress-track">
-            <div className="progress-indicator" />
-        </div>
-    </div>;
+    return <div {...other} role="progressbar" style={progressStyle}
+        className={`progress${className ? ` ${className}` : ""}`}
+        title={infinite ? undefined : `${((value ?? 0) * 100).toFixed()}%`} >
+    </div>
 }

@@ -33,7 +33,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
             {scrollTracker}
             {children}
         </BrowserView>
-        <Progress className={`br-area-main place-self-start-stretch sticky-top p-0 m-0${progress === 1 ? " d-none" : ""}`}
+        <Progress className={`br-area-main place-self-start-stretch sticky-top m-0${progress === 1 ? " d-none" : ""}`}
             value={progress} infinite={fetching} />
         {data?.source.items?.length === 0 &&
             <div className="br-area-main d-flex align-items-center justify-content-center">

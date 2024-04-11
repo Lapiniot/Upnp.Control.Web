@@ -20,8 +20,7 @@
     }
 }
 
-.slider,
-.progress {
+.slider {
     --slider-color: var(--#{$prefix}link-color);
     --slider-hover-color: var(--#{$prefix}link-hover-color);
     --slider-size: 0.15rem;
@@ -49,19 +48,15 @@
     }
 }
 
-.progress-track {
-    overflow: hidden;
-}
-
-.slider-track,
-.progress-track {
+.slider-track
+{
     height: var(--slider-size);
     position: relative;
     background-color: var(--slider-bg-color);
 }
 
-.slider-indicator,
-.progress-indicator {
+.slider-indicator
+{
     position: absolute;
     background-color: var(--slider-color);
     width: 100%;

@@ -1,0 +1,67 @@
+@keyframes run-infinite {
+    0% {
+        transform-origin: left top;
+        translate: 0;
+        scale: 0 1 1;
+        opacity: .25;
+    }
+
+    25%{
+        scale: 1;
+        opacity: 1;
+    }
+
+    75%{
+        scale: 1;
+        opacity: 1;
+    }
+
+    100% {
+        transform-origin: right top;
+        translate: calc((1 / var(--#{$prefix}progress-value) - 1) * 100%) 0 0;
+        scale: 0 1 1;
+        opacity: .25
+    }
+}
+
+@property --#{$prefix}progress-value{
+    syntax: '<number>';
+    inherits: true;
+    initial-value: .0;
+}
+
+.progress {
+    --#{$prefix}progress-infinite: ;
+    --#{$prefix}progress-track-thickness: 4px;
+    --#{$prefix}progress-track-length-infinite: 25%;
+    --#{$prefix}progress-track-color: #{$secondary-container-color};
+    --#{$prefix}progress-indicator-color: #{$primary-color};
+    --#{$prefix}progress-animation: var(--#{$prefix}progress-animation-name, run-infinite) var(--#{$prefix}progress-animation-duration, var(--#{$animation-prefix}duration-3)) ease-in-out infinite;
+    --#{$prefix}progress-value: .25;
+    display: flex;
+    overflow: hidden;
+    gap: clamp(0px, calc(var(--#{$prefix}progress-value) * 9999px), 4px);
+    height: var(--#{$prefix}progress-track-thickness);
+    margin-block: 6px;
+    color: var(--#{$prefix}progress-indicator-color);
+    background-color: var(--#{$prefix}progress-infinite, var(--#{$prefix}progress-track-color));
+
+    &::before {
+        content: '';
+        height: 100%;
+        flex: 0 0 auto;
+        width: clamp(0%, calc(var(--#{$prefix}progress-value) * 100%), 100%);
+        background-color: currentColor;
+        border-radius: var(--#{$prefix}progress-track-thickness);
+        animation: var(--#{$prefix}progress-infinite, var(--#{$prefix}progress-animation));
+    }
+
+    &::after {
+        content: '';
+        height: 100%;
+        flex: 1 1 0;
+        display: var(--#{$prefix}progress-infinite, none);
+        background: var(--#{$prefix}progress-track-color) no-repeat var(--#{$prefix}circle-icon) center right / contain;
+        border-radius: var(--#{$prefix}progress-track-thickness);
+    }
+}

@@ -1,23 +1,21 @@
-import React, { HTMLProps, KeyboardEvent } from "react";
+import { CSSProperties, Component, HTMLProps, KeyboardEvent } from "react";
 import { SlideGestureRecognizer, SlideParams } from "../services/gestures/SlideGestureRecognizer";
-import { ProgressCSSProperties, ProgressProps } from "./Progress";
 
 function clamp(value: number, min: number, max: number) {
     return Math.min(Math.max(value, min), max);
 }
 
-export type SliderChangeHandler = (position: number) => boolean | void;
+type SliderChangeHandler = (position: number) => boolean | void;
 
-type SliderProps = Omit<HTMLProps<HTMLDivElement>, "onChange">
-    & Omit<ProgressProps, "infinite">
-    & {
-        onChangeRequested?: SliderChangeHandler;
-        onChange?: SliderChangeHandler;
-        reportMode?: "immediate" | "release";
-        step?: number;
-    }
+interface SliderProps extends Omit<HTMLProps<HTMLDivElement>, "value" | "onChange"> {
+    value?: number;
+    reportMode?: "immediate" | "release";
+    step?: number;
+    onChangeRequested?: SliderChangeHandler;
+    onChange?: SliderChangeHandler;
+}
 
-export default class Slider extends React.Component<SliderProps> {
+export default class Slider extends Component<SliderProps> {
     updatePending: boolean = false;
     slideGestureRecognizer: SlideGestureRecognizer;
     static defaultProps: Partial<SliderProps> = { reportMode: "release", value: 0, step: 0.01 };
@@ -123,7 +121,7 @@ export default class Slider extends React.Component<SliderProps> {
         const { className, value, reportMode: updateMode, style = {}, onChange, onChangeRequested, readOnly, ...other } = this.props;
 
         return <div tabIndex={0} {...other} role="slider" ref={this.refCallback} className={`slider${className ? ` ${className}` : ""}`}
-            style={{ ...style, "--slider-progress": value } as ProgressCSSProperties} onKeyUp={this.keyUpHandler}>
+            style={{ ...style, "--slider-progress": value } as CSSProperties} onKeyUp={this.keyUpHandler}>
             <div className="slider-track"  >
                 <div className="slider-indicator" />
                 <div className="slider-thumb-overlay">

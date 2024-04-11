@@ -1,21 +1,21 @@
-import React, { HTMLAttributes } from "react";
-import { formatTime } from "../../services/Extensions";
+import React, { ComponentProps, HTMLAttributes } from "react";
+import Progress from "../../components/Progress";
+import Slider from "../../components/Slider";
 import Timer from "../../components/Timer";
-import Slider, { SliderChangeHandler } from "../../components/Slider";
-import Progress, { ProgressCSSProperties } from "../../components/Progress";
+import { formatTime } from "../../services/Extensions";
 
 type PositionProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> & {
     time: number;
     duration: number;
     running: boolean;
-    onChange?: SliderChangeHandler
+    onChange?: ComponentProps<typeof Slider>["onChange"]
 };
 
 export default class SeekBar extends React.Component<PositionProps> {
 
     spin = 0;
 
-    getSliderStyle(running: boolean, current: number, total: number): ProgressCSSProperties {
+    getSliderStyle(running: boolean, current: number, total: number): any {
 
         // we constantly switch between animations with same settings, but different names 'slider-run0' and
         // 'slider-run1' e.g. - this is a trick in order to apply new animation resetting running one
