@@ -1,4 +1,4 @@
-﻿import "bootstrap/js/dist/collapse";
+import "bootstrap/js/dist/collapse";
 import React, {
     ComponentType, DetailsHTMLAttributes, HTMLAttributes, SyntheticEvent,
     useCallback, useMemo, useRef, useState, useSyncExternalStore
@@ -45,7 +45,11 @@ function Bookmarks<TKey extends (string | string[]), TProps>({ store, caption, i
     </>), [count, caption, icon]);
     const toggleEditModeHandler = useCallback(() => setEditMode(value => !value), []);
     const deleteHandler = useCallback((_: number, key?: string) => {
-        if (key) store.remove(key.split(":") as TKey);
+        if (key) {
+            const index = key.indexOf("/");
+            const keys = [key.substring(0, index), key.substring(index + 1)];
+            store.remove(keys as TKey);
+        }
     }, [store]);
     const deleteAllHandler = useCallback(() => {
         if (group) {
@@ -90,9 +94,9 @@ function ItemContainer({ children, className, ...other }: HTMLAttributes<HTMLDiv
 }
 
 function genDeviceKey({ category, device }: { category: string; device: string }): string {
-    return category + ":" + device;
+    return category + "/" + device;
 }
 
 function genItemKey({ device, id }: { device: string; id: string }): string {
-    return device + ":" + id;
+    return device + "/" + id;
 }
