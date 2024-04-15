@@ -1,133 +1,106 @@
-import { CSSProperties, Component, HTMLProps, KeyboardEvent } from "react";
-import { SlideGestureRecognizer, SlideParams } from "../services/gestures/SlideGestureRecognizer";
-
-function clamp(value: number, min: number, max: number) {
-    return Math.min(Math.max(value, min), max);
-}
+import { CSSProperties, HTMLProps, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useSlideGesture } from "../hooks/Gestures";
+import { SlideParams } from "../services/gestures/SlideGestureRecognizer";
+import { useDebounce } from "../hooks/Debounce";
+import { clamp } from "../services/Extensions";
 
 type SliderChangeHandler = (position: number) => boolean | void;
 
-interface SliderProps extends Omit<HTMLProps<HTMLDivElement>, "value" | "onChange"> {
+type SpaceToggleValue = "initial" | " ";
+
+type CustomProps = {
+    "update-pending"?: SpaceToggleValue,
+    "animation-running"?: SpaceToggleValue,
+    "animation-name"?: string,
+    "animation-duration"?: string
+}
+
+interface SliderProps extends Omit<HTMLProps<HTMLDivElement>, "value" | "onChange" | "style"> {
     value?: number;
     reportMode?: "immediate" | "release";
     step?: number;
-    onChangeRequested?: SliderChangeHandler;
     onChange?: SliderChangeHandler;
+    style?: CSSProperties & { [K in keyof CustomProps as `--bs-slider-${K}`]: CustomProps[K] };
 }
 
-export default class Slider extends Component<SliderProps> {
-    updatePending: boolean = false;
-    slideGestureRecognizer: SlideGestureRecognizer;
-    static defaultProps: Partial<SliderProps> = { reportMode: "release", value: 0, step: 0.01 };
-    increment: number = 0;
-    element: HTMLDivElement | null = null;
+export default function Slider(props: SliderProps) {
+    const { className, value: initial = 0, reportMode, style = {}, onChange, readOnly, step = 0.05, ...other } = props;
+    const [value, setValue] = useState(initial);
+    const [updatePending, setUpdatePending] = useState(false);
+    const elementRef = useRef<HTMLDivElement>(null);
+    const crRef = useRef<DOMRect>();
+    const valueRef = useRef(value);
+    const onChangeDebounced = useDebounce(onChange, 200);
 
-    constructor(props: SliderProps | Readonly<SliderProps>) {
-        super(props);
-        this.slideGestureRecognizer = new SlideGestureRecognizer(this.slideGestureHandler);
-    }
+    useEffect(() => setValue(initial), [initial]);
 
-    get progress() {
-        const value = this.element?.style.getPropertyValue("--slider-progress");
-        return value ? parseFloat(value) : 0.0;
-    }
-
-    set progress(value: number) {
-        this.element?.style.setProperty("--slider-progress", value.toString());
-    }
-
-    private refCallback = (element: HTMLDivElement) => {
-        if (element) {
-            this.element = element;
-            this.slideGestureRecognizer.bind(element);
-        } else {
-            this.element = null;
-            this.slideGestureRecognizer.unbind();
+    useEffect(() => {
+        if (updatePending && onChange) {
+            return () => { onChange(valueRef.current); }
         }
-    }
+    }, [updatePending, onChange]);
 
-    private slideGestureHandler = (_target: unknown, _gesture: "slide", { phase, x }: SlideParams) => {
-        if (this.props.readOnly || !this.element) return;
+    useEffect(() => {
+        valueRef.current = value;
+        if (reportMode === "immediate" && onChangeDebounced) {
+            onChangeDebounced(value);
+        }
+    }, [value, reportMode, onChangeDebounced]);
+
+    const slideGestureCallback = useCallback((_target: unknown, _gesture: unknown, { phase, x }: SlideParams) => {
+        if (readOnly) return;
+        const element = elementRef.current!;
 
         if (phase === "start") {
-            // Disable potentially running animation of slider progress 
-            // which could interfere with manipulation
-            this.element.style.setProperty("--slider-animation-duration", "0");
-            this.element.style.setProperty("--slider-animation-name", "none");
-            this.element.dataset.manipulated = "1";
-        } else if (phase === "end") {
-            this.element.dataset.manipulated = undefined;
+            crRef.current = element.getBoundingClientRect();
+            setUpdatePending(true);
         }
 
-        const r = this.element.getBoundingClientRect();
-        this.tryUpdateProgress(clamp((x - r.x) / r.width, 0.0, 1.0), phase === "end");
-    }
+        const cr = crRef.current!;
+        const value = clamp(0.0, ((x - cr.x) / cr.width), 1.0);
+        setValue(value);
 
-    private keyUpHandler = (e: KeyboardEvent<HTMLDivElement>) => {
+        if (phase === "end") {
+            setUpdatePending(false);
+        }
+    }, [readOnly]);
+
+    const keyboardHandler = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
         switch (e.key) {
-            case "ArrowLeft":
+            case "ArrowLeft": {
                 e.preventDefault();
-                this.increment = -(this.props.step ?? 0.05);
-                this.scheduleUpdate();
+                if (e.type === "keydown") {
+                    setValue(current => clamp(0.0, current - step, 1.0));
+                    setUpdatePending(true);
+                } else {
+                    setUpdatePending(false)
+                }
                 break;
-            case "ArrowRight":
+            }
+            case "ArrowRight": {
                 e.preventDefault();
-                this.increment = this.props.step ?? 0.05;
-                this.scheduleUpdate();
+                if (e.type === "keydown") {
+                    setValue(current => clamp(0.0, current + step, 1.0))
+                    setUpdatePending(true);
+                } else {
+                    setUpdatePending(false);
+                }
                 break;
-        }
-    }
-
-    private scheduleUpdate = () => {
-        if (this.updatePending)
-            return;
-        this.updatePending = true;
-
-        requestAnimationFrame(this.update);
-    }
-
-    private update = () => {
-        if (!this.updatePending) return;
-        try {
-            this.tryUpdateProgress(clamp(this.progress + this.increment, 0.0, 1.0), true);
-        } finally {
-            this.increment = 0;
-            this.updatePending = false;
-        }
-    }
-
-    private tryUpdateProgress(progress: number, released: boolean) {
-        const { onChange, onChangeRequested, reportMode, value: propsValue = 0 } = this.props;
-
-        // update UI state automaticaly without React's component state update only when
-        // user provided onChangeRequested callback (if provided) returns value other than False 
-        // (this basically means that user takes responsibility for state update 
-        // and prevents our default behavior)
-        if (onChangeRequested?.(progress) !== false) {
-            this.progress = progress;
-        }
-
-        // If provided onChange handler returns boolean value False, this means user
-        // rejects proposed value, so reset UI state back to original props.value
-        if ((reportMode === "immediate" || released)) {
-            const result = onChange?.(progress);
-            if (result === false) {
-                this.progress = propsValue;
             }
         }
-    }
+    }, [step]);
 
-    render() {
-        const { className, value, reportMode: updateMode, style = {}, onChange, onChangeRequested, readOnly, ...other } = this.props;
+    useSlideGesture(elementRef, slideGestureCallback);
 
-        return <div tabIndex={0} {...other} role="slider" ref={this.refCallback} className={`slider${className ? ` ${className}` : ""}`}
-            style={{ ...style, "--slider-progress": value } as CSSProperties} onKeyUp={this.keyUpHandler}>
-            <div className="slider-track"  >
-                <div className="slider-indicator" />
-                <div className="slider-thumb-overlay">
-                    <div className="slider-thumb" />
-                </div>
-            </div>
-        </div>;
-    }
+    return <div tabIndex={0} {...other} role="slider" ref={elementRef} data-value={value}
+        onKeyDown={keyboardHandler} onKeyUp={keyboardHandler}
+        className={`slider${className ? ` ${className}` : ""}`}
+        style={{
+            ...style,
+            "--bs-slider-value": value,
+            "--bs-slider-update-pending": updatePending ? "initial" : " "
+        } as CSSProperties}>
+        <div className="slider-track" />
+        <div className="slider-thumb" />
+    </div>
 }

@@ -1,92 +1,93 @@
-@mixin slider-run-animation($suffix) {
-    @keyframes slider-run#{$suffix} {
-        to {
-            transform: none;
-        }
+@keyframes indicator-run {
+    100% {
+        scale: 1;
     }
 }
 
-@include slider-run-animation("");
-@include slider-run-animation("0");
-@include slider-run-animation("1");
-
-@keyframes slider-run-infinite {
-    0% {
-        transform: scale3d(var(--slider-progress-infinite), 1, 1) translate3d(-100%, 0, 0);
-    }
-
+@keyframes thumb-run {
     100% {
-        transform: scale3d(var(--slider-progress-infinite), 1, 1) translate3d(calc((1 / var(--slider-progress-infinite)) * 100%), 0, 0);
+        translate: 100cqi 0 0;
     }
 }
 
 .slider {
-    --slider-color: var(--#{$prefix}link-color);
-    --slider-hover-color: var(--#{$prefix}link-hover-color);
-    --slider-size: 0.15rem;
-    --slider-ticker-size: calc(6 * var(--slider-size));
-    --slider-ticker-scale-factor: 1.25;
-    --slider-progress: 0;
-    --slider-progress-infinite: 0.5;
-    --slider-animation-duration: 0;
-    --slider-animation-name: none;
-    --slider-animation: var(--slider-animation-name) var(--slider-animation-duration) linear forwards;
+    --#{$prefix}slider-track-color: #{$secondary-container-color};
+    --#{$prefix}slider-track-thickness: 4px;
+    --#{$prefix}slider-indicator-color: #{$primary-color};
+    --#{$prefix}slider-thumb-size: 16px;
+    --#{$prefix}slider-update-pending: ; //OFF
+    --#{$prefix}slider-animation-running: ; //OFF
 
+    display: grid;
+    grid-auto-flow: row;
+    align-items: center;
+    color: var(--#{$prefix}slider-indicator-color);
+    container-type: inline-size;
     touch-action: none;
     user-select: none;
-    padding: calc((var(--slider-ticker-size) * var(--slider-ticker-scale-factor) - var(--slider-size)) / 2) 0;
-    border-radius: var(--#{$prefix}border-radius-sm);
 
-    &:hover,
-    &[data-manipulated="1"],
+    & > .slider-track {
+        grid-area: 1 / 1;
+        height: var(--#{$prefix}slider-track-thickness);
+        border-radius: var(--#{$prefix}slider-track-thickness);
+        overflow: clip;
+        background-color: var(--#{$prefix}slider-track-color);
+
+        &::before {
+            content: '';
+            height: 100%;
+            display: block;
+            background-color: currentColor;
+            transform-origin: left center;
+            scale: var(--#{$prefix}slider-value) 1 1;
+            animation-name: var(--#{$prefix}slider-update-pending) var(--#{$prefix}slider-animation-running, indicator-run);
+            animation-timing-function: linear;
+            animation-duration: var(--#{$prefix}slider-animation-duration);
+            animation-fill-mode: forwards;
+        }
+    }
+
+    & > .slider-thumb {
+        width: var(--#{$prefix}slider-thumb-size);
+        height: var(--#{$prefix}slider-thumb-size);
+        margin-inline-start: calc(var(--#{$prefix}slider-thumb-size) / -2);
+        grid-area: 1 / 1;
+        border-radius: var(--#{$prefix}slider-thumb-size);
+        background-color: currentColor;
+        translate: calc(var(--#{$prefix}slider-value) * 100cqi) 0 0;
+        animation-name: var(--#{$prefix}slider-update-pending) var(--#{$prefix}slider-animation-running, thumb-run);
+        animation-timing-function: linear;
+        animation-duration: var(--#{$prefix}slider-animation-duration);
+        animation-fill-mode: forwards;
+
+        &::before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 100%;
+            opacity: 0;
+            box-shadow: 0 0 0 8px currentColor;
+            @include transition(opacity var(--#{$animation-prefix}duration-1) linear);
+        }
+
+        &:hover::before {
+            opacity: .1;
+        }
+
+        &:active::before {
+            box-shadow: 0 0 0 12px currentColor;
+            opacity: .12;
+        }
+    }
+
     &:focus-visible {
-        --slider-color: var(--slider-hover-color);
-    }
+        outline: none;
+        box-shadow: none;
 
-    &[data-manipulated="1"] .slider-thumb {
-        transform: scale3d(var(--slider-ticker-scale-factor), var(--slider-ticker-scale-factor), 1);
-    }
-}
-
-.slider-track
-{
-    height: var(--slider-size);
-    position: relative;
-    background-color: var(--slider-bg-color);
-}
-
-.slider-indicator
-{
-    position: absolute;
-    background-color: var(--slider-color);
-    width: 100%;
-    height: 100%;
-    transform-origin: left top;
-    transform: scale3d(var(--slider-progress), 1, 1);
-    animation: var(--slider-animation);
-}
-
-.slider-thumb-overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transform: translate3d(calc((var(--slider-progress) - 1) * 100%), 0, 0);
-    animation: var(--slider-animation-name) var(--slider-animation-duration) linear forwards;
-    pointer-events: none;
-}
-
-.slider-thumb {
-    position: absolute;
-    width: var(--slider-ticker-size);
-    height: var(--slider-ticker-size);
-    right: calc(var(--slider-ticker-size) / -2);
-    top: calc((var(--slider-size) - var(--slider-ticker-size)) / 2);
-    background-color: var(--slider-color);
-    clip-path: circle(48%);
-    transition: transform 250ms ease-in-out;
-    pointer-events: auto;
-
-    &:hover {
-        transform: scale3d(var(--slider-ticker-scale-factor), var(--slider-ticker-scale-factor), 1);
+        & > .slider-thumb::before {
+            box-shadow: 0 0 0 12px currentColor;
+            opacity: .12;
+        }
     }
 }

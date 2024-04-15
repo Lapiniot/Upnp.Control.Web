@@ -49,11 +49,12 @@ export function fromBase64(str: string): Uint8Array {
     return array;
 }
 
-export function debounce(fn: (...args: unknown[]) => unknown, delay: number = 500) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function debounce<F extends (...args: any[]) => any>(fn: F, delay: number = 500) {
     let timeout: number;
-    return function (this: unknown, ...args: unknown[]) {
+    return function (this: unknown, ...args: Parameters<F>) {
         clearTimeout(timeout);
-        timeout = window.setTimeout((args: unknown[]) => fn.apply(this, args), delay, args);
+        timeout = window.setTimeout((args: Parameters<F>) => fn.apply(this, args), delay, args);
     }
 }
 
@@ -61,4 +62,8 @@ export async function animate(element: HTMLElement, completion: (element: HTMLEl
     element.classList.add(...classTokens);
     await completion(element);
     element.classList.remove(...classTokens);
+}
+
+export function clamp(min: number, value: number, max: number) {
+    return Math.min(Math.max(min, value), max);
 }
