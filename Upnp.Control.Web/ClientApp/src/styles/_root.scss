@@ -3,7 +3,7 @@
     // Note: Custom variable values only support SassScript inside `#{}`.
 
     @each $color, $value in map-merge(map-merge($role-colors, $role-colors-on),
-        (outline: $outline, outline-variant: $outline-variant, surface-tint: $surface-tint)) {
+        (outline: $outline, outline-variant: $outline-variant)) {
         --#{$prefix}#{$color}: #{$value};
     }
 
@@ -102,9 +102,6 @@
     --#{$prefix}shadow-l5: 0px 4px 4px 0px rgba(0, 0, 0, 0.3),
     0px 8px 12px 6px rgba(0, 0, 0, 0.15);
 
-    --#{$prefix}hover-layer: linear-gradient(#{$hover-layer-color}, #{$hover-layer-color});
-    --#{$prefix}focus-layer: linear-gradient(#{$focus-layer-color}, #{$focus-layer-color});
-
     --#{$prefix}hover-layer-cc: linear-gradient(color-mix(in srgb, currentColor #{$hover-state-opacity*100%}, transparent),
         color-mix(in srgb, currentColor #{$hover-state-opacity*100%}, transparent));
     --#{$prefix}focus-layer-cc: linear-gradient(color-mix(in srgb, currentColor #{$focus-state-opacity*100%}, transparent),
@@ -127,7 +124,7 @@
         color-scheme: dark;
 
         @each $color, $value in map-merge(map-merge($role-colors-dark, $role-colors-on-dark),
-            (outline: $outline-dark, outline-variant: $outline-variant-dark, surface-tint: $surface-tint-dark)) {
+            (outline: $outline-dark, outline-variant: $outline-variant-dark)) {
             --#{$prefix}#{$color}: #{$value};
         }
 
@@ -158,9 +155,6 @@
 
         --#{$prefix}border-color: #{$border-color-dark};
         --#{$prefix}border-color-translucent: #{$border-color-translucent-dark};
-
-        --#{$prefix}hover-layer: linear-gradient(#{$hover-layer-color-dark}, #{$hover-layer-color-dark});
-        --#{$prefix}focus-layer: linear-gradient(#{$focus-layer-color-dark}, #{$focus-layer-color-dark});
 
         --#{$prefix}form-valid-icon: #{escape-svg($form-feedback-icon-valid-dark)};
         --#{$prefix}form-invalid-icon: #{escape-svg($form-feedback-icon-invalid-dark)};

@@ -42,11 +42,11 @@
                 }
 
                 &:hover > svg {
-                    background-image: var(--#{$prefix}hover-layer);
+                    background-image: linear-gradient(#{$hover-layer-color}, #{$hover-layer-color});
                 }
 
                 &:is(:active, :focus-visible) > svg {
-                    background-image: var(--#{$prefix}focus-layer);
+                    background-image: linear-gradient(#{$focus-layer-color}, #{$focus-layer-color});
                 }
             }
         }
@@ -111,11 +111,11 @@
                     }
 
                     &:hover {
-                        background-image: var(--#{$prefix}hover-layer);
+                        background-image: linear-gradient(#{$hover-layer-color}, #{$hover-layer-color});
                     }
 
                     &:is(:focus-visible, :active) {
-                        background-image: var(--#{$prefix}focus-layer);
+                        background-image: linear-gradient(#{$focus-layer-color}, #{$focus-layer-color});
                     }
 
                     & > svg {

@@ -44,7 +44,6 @@ $surface-variant: #E7E0EC;
 $on-surface-variant: #49454F;
 $surface-inverse: #322F35;
 $on-surface-inverse: #F5EFF7;
-$surface-tint: #6750A4;
 $surface-container-highest: #E6E0E9;
 $surface-container-high: #ECE6F0;
 $surface-container: #F3EDF7;
@@ -99,7 +98,6 @@ $surface-variant-dark: #49454F;
 $on-surface-variant-dark: #CAC4D0;
 $surface-inverse-dark: #E6E0E9;
 $on-surface-inverse-dark: #322F35;
-$surface-tint-dark: #D0BCFF;
 $surface-container-highest-dark: #36343B;
 $surface-container-high-dark: #2B2930;
 $surface-container-dark: #211F26;
@@ -156,11 +154,8 @@ $btn-disabled-opacity: 1;
 $btn-box-shadow: none;
 $btn-focus-box-shadow: none;
 
-$hover-layer-color: rgba($on-surface, $hover-state-opacity);
-$focus-layer-color: rgba($on-surface, $focus-state-opacity);
-
-$hover-layer-color-dark: rgba($on-surface-dark, $hover-state-opacity);
-$focus-layer-color-dark: rgba($on-surface-dark, $focus-state-opacity);
+$hover-layer-color: rgba(var(--#{$prefix}on-surface-rgb), $hover-state-opacity);
+$focus-layer-color: rgba(var(--#{$prefix}on-surface-rgb), $focus-state-opacity);
 
 $expand-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$on-surface}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
 $expand-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='#{$on-surface-dark}' height='24' viewBox='0 -960 960 960' width='24'><path d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/></svg>");
