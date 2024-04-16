@@ -15,19 +15,10 @@
         --#{$prefix}#{$color}-rgb: #{$value};
     }
 
-    // Fonts
-
     // Note: Use `inspect` for lists so that quoted items keep the quotes.
     // See https://github.com/sass/sass/issues/2383#issuecomment-336349172
     --#{$prefix}font-sans-serif: #{inspect($font-family-sans-serif)};
     --#{$prefix}font-monospace: #{inspect($font-family-monospace)};
-    --#{$prefix}gradient: #{$gradient};
-
-    // Root and body
-    // scss-docs-start root-body-variables
-    @if $font-size-root !=null {
-        --#{$prefix}root-font-size: #{$font-size-root};
-    }
 
     --#{$prefix}body-font-family: #{inspect($font-family-base)};
     @include rfs($font-size-base, --#{$prefix}body-font-size);
@@ -39,10 +30,7 @@
     }
 
     --#{$prefix}body-color: #{$body-color};
-    --#{$prefix}body-color-rgb: #{to-rgb($body-color)};
     --#{$prefix}body-bg: #{$body-bg};
-    --#{$prefix}body-bg-rgb: #{to-rgb($body-bg)};
-    // scss-docs-end root-body-variables
 
     --#{$prefix}heading-color: #{$headings-color};
 
@@ -53,36 +41,18 @@
     --#{$prefix}link-hover-color: #{$link-hover-color};
     --#{$prefix}link-hover-color-rgb: #{to-rgb($link-hover-color)};
 
-    @if $link-hover-decoration !=null {
-        --#{$prefix}link-hover-decoration: #{$link-hover-decoration};
-    }
-
     --#{$prefix}code-color: #{$code-color};
     --#{$prefix}highlight-color: #{$mark-color};
     --#{$prefix}highlight-bg: #{$mark-bg};
 
-    // scss-docs-start root-border-var
     --#{$prefix}border-width: #{$border-width};
     --#{$prefix}border-style: #{$border-style};
     --#{$prefix}border-color: #{$border-color};
-    --#{$prefix}border-color-translucent: #{$border-color-translucent};
 
-    --#{$prefix}border-radius: #{$border-radius};
-    --#{$prefix}border-radius-sm: #{$border-radius-sm};
-    --#{$prefix}border-radius-lg: #{$border-radius-lg};
-    --#{$prefix}border-radius-xl: #{$border-radius-xl};
-    --#{$prefix}border-radius-xxl: #{$border-radius-xxl};
-    --#{$prefix}border-radius-2xl: var(--#{$prefix}border-radius-xxl); // Deprecated in v5.3.0 for consistency
-    --#{$prefix}border-radius-pill: #{$border-radius-pill};
-    // scss-docs-end root-border-var
-
-    // Focus styles
-    // scss-docs-start root-focus-variables
     --#{$prefix}focus-ring-width: #{$focus-ring-width};
     --#{$prefix}focus-ring-offset: #{$focus-ring-offset};
-    --#{$prefix}focus-ring-opacity: #{$focus-ring-opacity};
     --#{$prefix}focus-ring-color: #{$focus-ring-color};
-    // scss-docs-end root-focus-variables
+    --#{$prefix}focus-ring: solid var(--#{$prefix}focus-ring-color) var(--#{$prefix}focus-ring-width);
 
     --#{$prefix}shadow-l0: 0px 0px 0px 0px rgba(0, 0, 0, 0.3),
     0px 0px 0px 0px rgba(0, 0, 0, 0.15);
@@ -101,8 +71,6 @@
         color-mix(in srgb, currentColor #{$hover-state-opacity*100%}, transparent));
     --#{$prefix}focus-layer-cc: linear-gradient(color-mix(in srgb, currentColor #{$focus-state-opacity*100%}, transparent),
         color-mix(in srgb, currentColor #{$focus-state-opacity*100%}, transparent));
-
-    --#{$prefix}focus-ring: solid var(--#{$prefix}secondary) #{$focus-ring-width};
 
     --#{$prefix}form-valid-icon: #{escape-svg($form-feedback-icon-valid)};
     --#{$prefix}form-invalid-icon: #{escape-svg($form-feedback-icon-invalid)};
@@ -131,11 +99,8 @@
             --#{$prefix}#{$color}-rgb: #{$value};
         }
 
-        // scss-docs-start root-dark-mode-vars
         --#{$prefix}body-color: #{$body-color-dark};
-        --#{$prefix}body-color-rgb: #{to-rgb($body-color-dark)};
         --#{$prefix}body-bg: #{$body-bg-dark};
-        --#{$prefix}body-bg-rgb: #{to-rgb($body-bg-dark)};
 
         --#{$prefix}heading-color: #{$headings-color-dark};
 
@@ -149,7 +114,6 @@
         --#{$prefix}highlight-bg: #{$mark-bg-dark};
 
         --#{$prefix}border-color: #{$border-color-dark};
-        --#{$prefix}border-color-translucent: #{$border-color-translucent-dark};
 
         --#{$prefix}form-valid-icon: #{escape-svg($form-feedback-icon-valid-dark)};
         --#{$prefix}form-invalid-icon: #{escape-svg($form-feedback-icon-invalid-dark)};

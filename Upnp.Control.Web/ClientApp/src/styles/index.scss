@@ -96,8 +96,7 @@ $breadcrumb-active-color: $surface-inverse-color;
 }
 
 :focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 var(--#{$prefix}focus-ring-width) var(--#{$prefix}focus-ring-color);
+    outline: var(--#{$prefix}focus-ring);
 }
 
 @include any-pointer {

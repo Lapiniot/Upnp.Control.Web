@@ -5,7 +5,7 @@ $utilities: map-remove($utilities,
         "font-weight", "font-family", "font-size", "font-style", "text-opacity",
         "link-opacity", "link-offset", "link-underline", "link-underline-opacity",
         "rounded-top", "rounded-end", "rounded-bottom", "rounded-start",
-        "visibility", "row-gap", "column-gap");
+        "visibility", "row-gap", "column-gap", "gradient", "focus-ring");
 
 $utilities: map-merge($utilities,
         ("display": map-merge(map-get($utilities, "display"), (values: block inline grid flex inline-flex none)),
@@ -34,7 +34,7 @@ $utilities: map-merge($utilities,
             "padding-bottom": map-merge(map-get($utilities, "padding-bottom"), (responsive: false)),
             "padding-start": map-merge(map-get($utilities, "padding-start"), (responsive: false)),
             "padding-end": map-merge(map-get($utilities, "padding-end"), (responsive: false)),
-            "rounded": map-merge(map-get($utilities, "rounded"), (values: map-merge(map-get($utilities, "rounded", values), (auto:inherit)))),
+            "rounded": map-merge(map-get($utilities, "rounded"), (values: (0: 0, 1: $corner-xs, circle: 50%, pill: 50rem, auto: inherit))),
             "gap": map-merge(map-get($utilities, "gap"), (responsive: false, class: "g", values:map-remove($spacers, 4, 5))),
             "flex": map-merge(map-get($utilities, "flex"), (responsive:false, values: map-merge(map-get($utilities, "flex", "values"), (1:1)))),
             "overflow": map-merge(map-get($utilities, "overflow"), (values: append(map-get($utilities, "overflow", "values"), (clip)))),
