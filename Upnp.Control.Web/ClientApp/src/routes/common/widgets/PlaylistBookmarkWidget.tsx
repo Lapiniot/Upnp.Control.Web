@@ -15,16 +15,15 @@ export type PlaylistBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
 
 export default function ({ device, id, title, icon, deviceName }: PlaylistBookmarkWidgetProps) {
     const clickHandler = useCallback(() => WebApi.control(device).playUri(`x-mi://sys/playlist?id=${id.substring(3)}#play`).fetch(), [device, id]);
-    return <div className="hstack flex-1 rounded-auto overflow-clip">
-        <button type="button" className={`btn btn-stack m-2 me-1`}
+    return <div className="card-horizontal">
+        <button type="button" className="btn btn-stack"
             title={`Play \u00AB${title}\u00BB on ${deviceName}`} onClick={clickHandler}>
-            <AlbumArt className="icon-3x" albumArts={icon ? [icon] : undefined} itemClass="object.container.playlistContainer" hint="player" />
-            <svg className="album-art icon-3x hover-show fade-in-out text-bg-primary bg-opacity-50"><use href="symbols.svg#play_circle" /></svg>
+            <AlbumArt className="icon-56" albumArts={icon ? [icon] : undefined} itemClass="object.container.playlistContainer" hint="player" />
+            <svg className="album-art icon-56 hover-show fade-in-out text-bg-primary bg-opacity-50"><use href="symbols.svg#play_circle" /></svg>
         </button>
-        <RouteLink to={`/umi/${device}/playlists/${id}`} title={`${title} on ${deviceName}`}
-            className="m-1 p-1 flex-1 text-decoration-none overflow-clip rounded-auto">
+        <RouteLink className="text-decoration-none" to={`/umi/${device}/playlists/${id}`} title={`${title} on \xab${deviceName}\xbb`}>
             <h6 className="mb-0 text-truncate">{title}</h6>
-            <p className="mb-0 small text-truncate">[{deviceName}]</p>
+            <p className="mb-0 small text-truncate">{deviceName}</p>
         </RouteLink>
     </div>
 }

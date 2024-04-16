@@ -1,10 +1,10 @@
 /*********** Spoiler component general styles **********/
 $spoiler-border-radius: $corner-sm;
-$spoiler-border-width: var(--#{$prefix}border-width) !default;
-$spoiler-color: var(--#{$prefix}body-color) !default;
-$spoiler-border-color: var(--#{$prefix}border-color-translucent) !default;
-$spoiler-padding-x: map-get($spacers, 3) !default;
-$spoiler-padding-y: map-get($spacers, 2) !default;
+$spoiler-border-width: var(--#{$prefix}border-width);
+$spoiler-color: var(--#{$prefix}body-color);
+$spoiler-border-color: transparent;
+$spoiler-padding-x: map-get($spacers, 3);
+$spoiler-padding-y: map-get($spacers, 2);
 
 .spoiler {
     --#{$prefix}spoiler-border-radius: #{$spoiler-border-radius};

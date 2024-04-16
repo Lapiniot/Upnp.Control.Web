@@ -77,3 +77,35 @@ $value: map-get($grid-breakpoints, sm);
         @include card-stripped();
     }
 }
+
+.card-horizontal {
+    display: grid;
+    grid: minmax(56px, 1fr) / auto 1fr;
+    gap: 4px;
+    flex: 1;
+    border-radius: $corner-sm;
+    background-color: $card-bg;
+    text-decoration: none;
+    color: $primary-color;
+
+    & > :nth-child(1) {
+        height: 100%;
+        aspect-ratio: 1;
+        border-radius: inherit;
+        background-color: color-mix(in srgb, currentColor 10%, transparent);
+    }
+
+    & > :nth-child(2) {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: inherit;
+        padding: 8px;
+    }
+
+    &:hover{
+        background-image: var(--#{$prefix}hover-layer-cc);
+        box-shadow: var(--#{$prefix}shadow-l1);
+    }
+}

@@ -100,10 +100,6 @@ $breadcrumb-active-color: $surface-inverse-color;
     box-shadow: 0 0 0 var(--#{$prefix}focus-ring-width) var(--#{$prefix}focus-ring-color);
 }
 
-a:not(.btn):focus-visible {
-    border-radius: var(--#{$prefix}border-radius-sm);
-}
-
 @include any-pointer {
     .dropdown-item {
         padding-block: map-get($spacers, 3);

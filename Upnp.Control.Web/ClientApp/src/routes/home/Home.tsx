@@ -1,4 +1,4 @@
-import "bootstrap/js/dist/collapse";
+﻿import "bootstrap/js/dist/collapse";
 import React, {
     ComponentType, DetailsHTMLAttributes, HTMLAttributes, SyntheticEvent,
     useCallback, useMemo, useRef, useState, useSyncExternalStore
@@ -68,9 +68,8 @@ function Bookmarks<TKey extends (string | string[]), TProps>({ store, caption, i
         caption={captionElement} {...other}>
         {bookmarks && bookmarks.length > 0 ?
             <div className="d-flex flex-nowrap align-items-center">
-                <DataList className="grid-auto-m15 overflow-clip" template={ItemContainer}
-                    editable editMode={editMode} onToggleModeRequested={toggleEditModeHandler}
-                    onDeleteRequested={deleteHandler}>
+                <DataList className="grid-auto-m15 overflow-clip" editable editMode={editMode}
+                    onToggleModeRequested={toggleEditModeHandler} onDeleteRequested={deleteHandler}>
                     {bookmarks.map(({ widget, props }) => React.createElement(
                         Widgets[widget as KnownWidgets] as ComponentType,
                         { ...props, key: keygen(props) }))}
@@ -85,12 +84,6 @@ function Bookmarks<TKey extends (string | string[]), TProps>({ store, caption, i
             <div className="p-3 text-center">[No items bookmarked yet]</div>}
         <DialogHost ref={dialogHostRef} />
     </Spoiler>
-}
-
-function ItemContainer({ children, className, ...other }: HTMLAttributes<HTMLDivElement>) {
-    return <div className={`${className ? `${className} ` : ""}rounded-3 text-bg-primary-cntr`} {...other}>
-        {children}
-    </div>
 }
 
 function genDeviceKey({ category, device }: { category: string; device: string }): string {
