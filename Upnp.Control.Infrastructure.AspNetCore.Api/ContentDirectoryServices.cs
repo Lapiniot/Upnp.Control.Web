@@ -1,11 +1,12 @@
 using IoT.Protocol.Soap;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
 internal static class ContentDirectoryServices
 {
     /// <summary>
-    /// Provides directory content at the specified <paramref name="path" /> on the device with <paramref name="deviceId" />.
+    /// Provides directory content at the specified <paramref name="path" /> from device with <paramref name="deviceId" />.
     /// </summary>
     /// <param name="handler">Query handler.</param>
     /// <param name="deviceId">Device ID.</param>
@@ -14,7 +15,7 @@ internal static class ContentDirectoryServices
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns><see cref="Task{IResult}" /> containing directory content or error response.</returns>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(GetContentOptions))]
-    public static async Task<Results<Ok<CDContent>, NotFound, BadRequest>> BrowseAsync(
+    public static async Task<Results<Ok<CDContent>, NotFound, ProblemHttpResult>> BrowseAsync(
         IAsyncQueryHandler<CDGetContentQuery, CDContent> handler,
         string deviceId, string? path, [AsParameters] GetContentOptions options,
         CancellationToken cancellationToken)
@@ -25,13 +26,18 @@ internal static class ContentDirectoryServices
             var value = await handler.ExecuteAsync(new(deviceId, path, options), cancellationToken).ConfigureAwait(false);
             return Ok(value);
         }
-        catch (SoapException se) when (se.Code == 701)
+        catch (SoapException se)
         {
-            return NotFound();
+            return Problem(
+                title: se.Message,
+                detail: se.Description,
+                type: se.GetType().Name,
+                statusCode: se.Code == 701 ? Status404NotFound : Status400BadRequest,
+                extensions: new Dictionary<string, object?> { { "code", se.Code } });
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 }

@@ -21,7 +21,7 @@ internal static class DeviceServices
     /// <param name="id">Device ID.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns><see cref="Task{IResult}" /> containing device information or error response.</returns>
-    public static async Task<Results<Ok<UpnpDevice>, NotFound, BadRequest>> GetAsync(
+    public static async Task<Results<Ok<UpnpDevice>, NotFound, ProblemHttpResult>> GetAsync(
         IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
         string id, CancellationToken cancellationToken)
     {
@@ -34,9 +34,9 @@ internal static class DeviceServices
                 _ => NotFound()
             };
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 }

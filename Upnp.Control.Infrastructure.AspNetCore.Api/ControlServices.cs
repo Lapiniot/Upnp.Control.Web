@@ -4,7 +4,7 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
 internal static class ControlServices
 {
-    public static async Task<Results<Ok<AVState>, NotFound, BadRequest>> GetStateAsync(
+    public static async Task<Results<Ok<AVState>, NotFound, ProblemHttpResult>> GetStateAsync(
         IAsyncQueryHandler<AVGetStateQuery, AVState> handler,
         string deviceId, bool detailed = false, CancellationToken cancellationToken = default)
     {
@@ -16,14 +16,14 @@ internal static class ControlServices
         {
             return NotFound();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(AVStateParams))]
-    public static async Task<Results<NoContent, NotFound, BadRequest>> SetStateAsync(
+    public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> SetStateAsync(
         IAsyncCommandHandler<AVSetStateCommand> handler,
         string deviceId, AVStateParams stateParams, CancellationToken cancellationToken)
     {
@@ -36,13 +36,13 @@ internal static class ControlServices
         {
             return NotFound();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
-    public static async Task<Results<Ok<AVPosition>, NotFound, BadRequest>> GetPositionAsync(
+    public static async Task<Results<Ok<AVPosition>, NotFound, ProblemHttpResult>> GetPositionAsync(
         IAsyncQueryHandler<AVGetPositionQuery, AVPosition> handler,
         string deviceId, bool detailed = false, CancellationToken cancellationToken = default)
     {
@@ -54,14 +54,14 @@ internal static class ControlServices
         {
             return NotFound();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(AVPositionParams))]
-    public static async Task<Results<NoContent, NotFound, BadRequest>> SeekAsync(
+    public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> SeekAsync(
         IAsyncCommandHandler<AVSetPositionCommand> handler,
         string deviceId, AVPositionParams positionParams, CancellationToken cancellationToken)
     {
@@ -74,13 +74,13 @@ internal static class ControlServices
         {
             return NotFound();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
-    public static async Task<Results<Ok<string>, NotFound, BadRequest>> GetPlayModeAsync(
+    public static async Task<Results<Ok<string>, NotFound, ProblemHttpResult>> GetPlayModeAsync(
         IAsyncQueryHandler<AVGetPlayModeQuery, string> handler,
         string deviceId, CancellationToken cancellationToken)
     {
@@ -92,13 +92,13 @@ internal static class ControlServices
         {
             return NotFound();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
-    public static async Task<Results<NoContent, NotFound, BadRequest>> SetPlayModeAsync(
+    public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> SetPlayModeAsync(
         IAsyncCommandHandler<AVSetPlayModeCommand> handler,
         string deviceId, [FromBody] string mode, CancellationToken cancellationToken)
     {
@@ -111,13 +111,13 @@ internal static class ControlServices
         {
             return NotFound();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
-    public static async Task<Results<Ok<RCVolumeState>, NotFound, BadRequest>> GetVolumeAsync(
+    public static async Task<Results<Ok<RCVolumeState>, NotFound, ProblemHttpResult>> GetVolumeAsync(
         IAsyncQueryHandler<RCGetVolumeQuery, RCVolumeState> handler,
         string deviceId, bool detailed = false, CancellationToken cancellationToken = default)
     {
@@ -129,13 +129,13 @@ internal static class ControlServices
         {
             return NotFound();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
-    public static async Task<Results<NoContent, NotFound, BadRequest>> SetVolumeAsync(
+    public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> SetVolumeAsync(
         IAsyncCommandHandler<RCSetVolumeCommand> handler,
         string deviceId, [FromBody] uint volume, CancellationToken cancellationToken)
     {
@@ -148,13 +148,13 @@ internal static class ControlServices
         {
             return NotFound();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
-    public static async Task<Results<Ok<bool?>, NotFound, BadRequest>> GetMuteAsync(
+    public static async Task<Results<Ok<bool?>, NotFound, ProblemHttpResult>> GetMuteAsync(
         IAsyncQueryHandler<RCGetMuteQuery, bool?> handler,
         string deviceId, CancellationToken cancellationToken)
     {
@@ -166,13 +166,13 @@ internal static class ControlServices
         {
             return NotFound();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
-    public static async Task<Results<NoContent, NotFound, BadRequest>> SetMuteAsync(
+    public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> SetMuteAsync(
         IAsyncCommandHandler<RCSetMuteCommand> handler,
         string deviceId, [FromBody] bool muted, CancellationToken cancellationToken)
     {
@@ -185,9 +185,9 @@ internal static class ControlServices
         {
             return NotFound();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 }

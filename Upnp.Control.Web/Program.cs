@@ -78,6 +78,8 @@ builder.Services.ConfigureHttpJsonOptions(static options =>
     options.SerializerOptions.TypeInfoResolverChain.Add(JsonContext.Default);
 });
 
+builder.Services.AddProblemDetails();
+
 #endregion
 
 #region SignalR configuration
@@ -137,6 +139,13 @@ if (builder.Environment.IsDevelopment() && builder.Configuration[WebHostDefaults
 var app = builder.Build();
 
 #region WebApplication specific configuration
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
 
 app.UseStaticFiles();
 app.UseResponseCaching();

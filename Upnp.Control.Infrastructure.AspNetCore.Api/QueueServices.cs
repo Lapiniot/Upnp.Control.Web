@@ -3,7 +3,7 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 internal static class QueueServices
 {
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(MediaSourceParams))]
-    public static async Task<Results<NoContent, NotFound, BadRequest>> AddAsync(
+    public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> AddAsync(
         IAsyncCommandHandler<QAddItemsCommand> handler,
         string deviceId, string queueId, MediaSourceParams source,
         CancellationToken cancellationToken)
@@ -17,13 +17,13 @@ internal static class QueueServices
         {
             return NotFound();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
-    public static async Task<Results<NoContent, NotFound, BadRequest>> RemoveAllAsync(
+    public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> RemoveAllAsync(
         IAsyncCommandHandler<QClearCommand> handler,
         string deviceId, string queueId, CancellationToken cancellationToken)
     {
@@ -36,9 +36,9 @@ internal static class QueueServices
         {
             return NotFound();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 }

@@ -6,7 +6,7 @@ public record struct PushSubscriptionState(NotificationType Type, DateTimeOffset
 
 internal static class PushNotificationSubscriptionServices
 {
-    public static async Task<Results<Ok<PushSubscriptionState>, NotFound, BadRequest>> GetStateAsync(
+    public static async Task<Results<Ok<PushSubscriptionState>, NotFound, ProblemHttpResult>> GetStateAsync(
         IAsyncQueryHandler<PSGetQuery, PushNotificationSubscription> handler,
         Uri endpoint, CancellationToken cancellationToken)
     {
@@ -22,14 +22,14 @@ internal static class PushNotificationSubscriptionServices
                 return NotFound();
             }
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(PushSubscriptionRequest))]
-    public static async Task<Results<NoContent, BadRequest>> SubscribeAsync(
+    public static async Task<Results<NoContent, ProblemHttpResult>> SubscribeAsync(
         IAsyncCommandHandler<PSAddCommand> handler, IBase64UrlDecoder decoder,
         PushSubscriptionRequest subscription, CancellationToken cancellationToken)
     {
@@ -40,13 +40,13 @@ internal static class PushNotificationSubscriptionServices
                 cancellationToken).ConfigureAwait(false);
             return NoContent();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
-    public static async Task<Results<NoContent, BadRequest>> UnsubscribeAsync(
+    public static async Task<Results<NoContent, ProblemHttpResult>> UnsubscribeAsync(
         IAsyncCommandHandler<PSRemoveCommand> handler,
         string endpoint, NotificationType type, CancellationToken cancellationToken)
     {
@@ -55,13 +55,13 @@ internal static class PushNotificationSubscriptionServices
             await handler.ExecuteAsync(new(type, new(endpoint)), cancellationToken).ConfigureAwait(false);
             return NoContent();
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 
-    public static async Task<Results<FileContentHttpResult, BadRequest>> GetServerKeyAsync(
+    public static async Task<Results<FileContentHttpResult, ProblemHttpResult>> GetServerKeyAsync(
         IAsyncQueryHandler<PSGetServerKeyQuery, byte[]> handler, CancellationToken cancellationToken)
     {
         try
@@ -69,9 +69,9 @@ internal static class PushNotificationSubscriptionServices
             var contents = await handler.ExecuteAsync(PSGetServerKeyQuery.Instance, cancellationToken).ConfigureAwait(false);
             return Bytes(contents, MediaTypeNames.Application.Octet);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest();
+            return Problem(title: ex.Message, type: ex.GetType().FullName);
         }
     }
 }
