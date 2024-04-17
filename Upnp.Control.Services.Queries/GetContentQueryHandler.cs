@@ -6,7 +6,8 @@ namespace Upnp.Control.Services.Queries;
 internal sealed partial class GetContentQueryHandler(IUpnpServiceFactory factory,
     IAsyncQueryHandler<GetDeviceDescriptionQuery, DeviceDescription> queryHandler,
     ILogger<GetContentQueryHandler> logger) :
-    IAsyncQueryHandler<CDGetContentQuery, CDContent>
+    IAsyncQueryHandler<CDGetContentQuery, CDContent>,
+    IAsyncQueryHandler<CDSearchContentQuery, CDContent>
 {
 #pragma warning disable CA1823 // Avoid unused private fields
     private readonly ILogger<GetContentQueryHandler> logger = logger;
@@ -14,49 +15,86 @@ internal sealed partial class GetContentQueryHandler(IUpnpServiceFactory factory
 
     public async Task<CDContent> ExecuteAsync(CDGetContentQuery query, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(query);
-
-        var (deviceId, path, (withChildren, withParents, withResource, withVendor, withMetadata, withDevice, take, skip)) = query;
+        var (deviceId, path, options) = query;
         path ??= "0";
 
         var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false);
 
-        var descriptionTask = withDevice
+        var childrenTask = options.WithChildren
+            ? GetChildrenAsync(service, path, options, cancellationToken)
+            : Task.FromResult<(IEnumerable<Item> items, int total)>(default);
+
+        var descriptionTask = options.WithDevice
             ? queryHandler.ExecuteAsync(new(deviceId), cancellationToken)
             : Task.FromResult<DeviceDescription>(null);
 
-        var childrenTask = withChildren
-            ? GetChildrenAsync(service, path, withResource, withVendor, take, skip, cancellationToken)
-            : Task.FromResult<(IEnumerable<Item> items, int total)>(default);
+        var metadataTask = GetMetadataAsync(service, path, query.Options, cancellationToken);
 
-        var metadataTask = withMetadata
-            ? GetMetadataAsync(service, path, withResource, withVendor, cancellationToken)
-            : Task.FromResult<Item>(null);
+        await Task.WhenAll(descriptionTask, childrenTask, metadataTask).ConfigureAwait(false);
 
-        var parentsTask = withParents
-            ? GetParentsAsync(service, path, "id,title,parentId,res", withResource, withVendor, cancellationToken)
-            : Task.FromResult<List<Item>>(null);
-
-        await Task.WhenAll([descriptionTask, childrenTask, metadataTask, parentsTask]).ConfigureAwait(false);
-
-        var description = descriptionTask.GetAwaiter().GetResult();
-        var metadata = metadataTask.GetAwaiter().GetResult();
-        var parents = parentsTask.GetAwaiter().GetResult();
         (var items, var total) = childrenTask.GetAwaiter().GetResult();
+        (var metadata, var parents) = metadataTask.GetAwaiter().GetResult();
+        var description = descriptionTask.GetAwaiter().GetResult();
 
         return new(total, description, metadata, items, parents);
     }
 
-    private static async Task<(IEnumerable<Item>, int)> GetChildrenAsync(ContentDirectoryService service, string path,
-        bool withResource, bool withVendor, uint take, uint skip, CancellationToken cancellationToken)
+    public async Task<CDContent> ExecuteAsync(CDSearchContentQuery query, CancellationToken cancellationToken)
     {
-        var mr = await service.BrowseAsync(path, index: skip, count: take, cancellationToken: cancellationToken).ConfigureAwait(false);
-        var items = DIDLXmlReader.Read(mr["Result"], withResource, withVendor).ToArray();
+        var (deviceId, path, criteria, options) = query;
+        path ??= "0";
+
+        var service = await factory.GetServiceAsync<ContentDirectoryService>(deviceId, cancellationToken).ConfigureAwait(false);
+
+        var childrenTask = SearchAsync(service, path, criteria, options, cancellationToken);
+
+        var descriptionTask = options.WithDevice
+            ? queryHandler.ExecuteAsync(new(deviceId), cancellationToken)
+            : Task.FromResult<DeviceDescription>(null);
+
+        var metadataTask = GetMetadataAsync(service, path, query.Options, cancellationToken);
+
+        await Task.WhenAll(descriptionTask, childrenTask, metadataTask).ConfigureAwait(false);
+
+        (var items, var total) = childrenTask.GetAwaiter().GetResult();
+        (var metadata, var parents) = metadataTask.GetAwaiter().GetResult();
+        var description = descriptionTask.GetAwaiter().GetResult();
+
+        return new(total, description, metadata, items, parents);
+    }
+
+    private async Task<(Item Metadata, List<Item> Parents)> GetMetadataAsync(ContentDirectoryService service,
+        string path, GetContentOptions options, CancellationToken cancellationToken)
+    {
+        var metadataTask = options.WithMetadata
+            ? GetItemMetadataAsync(service, path, options.WithResourceProps, options.WithVendorProps, cancellationToken)
+            : Task.FromResult<Item>(null);
+        var parentsTask = options.WithParents
+            ? GetParentsAsync(service, path, "id,title,parentId,res", options.WithResourceProps, options.WithVendorProps, cancellationToken)
+            : Task.FromResult<List<Item>>(null);
+        await Task.WhenAll(metadataTask, parentsTask).ConfigureAwait(false);
+        return (metadataTask.GetAwaiter().GetResult(), parentsTask.GetAwaiter().GetResult());
+    }
+
+    private static async Task<(IEnumerable<Item>, int)> GetChildrenAsync(ContentDirectoryService service,
+        string path, GetContentOptions options, CancellationToken cancellationToken)
+    {
+        var mr = await service.BrowseAsync(path, index: options.Skip, count: options.Take, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var items = DIDLXmlReader.Read(mr["Result"], options.WithResourceProps, options.WithVendorProps).ToArray();
         var total = int.Parse(mr["TotalMatches"], InvariantCulture);
         return (items, total);
     }
 
-    private static async Task<Item> GetMetadataAsync(ContentDirectoryService service, string path,
+    private static async Task<(IEnumerable<Item>, int)> SearchAsync(ContentDirectoryService service,
+        string path, string criteria, GetContentOptions options, CancellationToken cancellationToken)
+    {
+        var mr = await service.SearchAsync(path, criteria, index: options.Skip, count: options.Take, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var items = DIDLXmlReader.Read(mr["Result"], options.WithResourceProps, options.WithVendorProps).ToArray();
+        var total = int.Parse(mr["TotalMatches"], InvariantCulture);
+        return (items, total);
+    }
+
+    private static async Task<Item> GetItemMetadataAsync(ContentDirectoryService service, string path,
         bool withResource, bool withVendor, CancellationToken cancellationToken)
     {
         var mr = await service.BrowseAsync(path, mode: BrowseMetadata, cancellationToken: cancellationToken).ConfigureAwait(false);

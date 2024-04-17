@@ -22,7 +22,8 @@ public static class RegisterQueriesExtensions
         .AddQuery<SysPropsGetPlaylistStateQuery, string, SysPropsGetPlaylistStateQueryHandler>();
 
     public static IServiceCollection AddContentDirectoryQueries(this IServiceCollection services) => services
-        .AddQuery<CDGetContentQuery, CDContent, GetContentQueryHandler>();
+        .AddQuery<CDGetContentQuery, CDContent, GetContentQueryHandler>()
+        .AddQuery<CDSearchContentQuery, CDContent, GetContentQueryHandler>();
 
     public static IServiceCollection AddConnectionManagerQueries(this IServiceCollection services) => services
         .AddQuery<CMGetProtocolInfoQuery, CMProtocolInfo, CMGetProtocolInfoQueryHandler>()

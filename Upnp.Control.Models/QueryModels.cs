@@ -15,6 +15,7 @@ public record struct GetDeviceDescriptionQuery(string DeviceId);
 #region ContentDirectory queries
 
 public record struct CDGetContentQuery(string DeviceId, string Path, GetContentOptions Options);
+public record struct CDSearchContentQuery(string DeviceId, string Path, string Criteria, GetContentOptions Options);
 
 #endregion
 
