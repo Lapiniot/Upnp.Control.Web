@@ -11,8 +11,7 @@
         flex-direction: column;
         font-size: 12px;
         line-height: 16px;
-        container-type: inline-size;
-        container: navbar / size;
+        container: navbar / inline-size;
 
         .navbar-brand {
             padding: 16px;
@@ -67,6 +66,7 @@
 
         & > .navbar {
             justify-content: center;
+            padding-block: 16px;
 
             & > nav {
                 flex-direction: column;
@@ -86,7 +86,7 @@
     }
 
     @media (width >map-get($grid-breakpoints, md)) {
-        grid-template: "navbar main" 1fr / 240px 1fr;
+        grid-template: "navbar main" 1fr / 160px 1fr;
 
         & > .navbar {
             --#{$prefix}navbar-padding-x: 8px;
@@ -132,5 +132,9 @@
                 }
             }
         }
+    }
+
+    @media (width >map-get($grid-breakpoints, lg)) {
+        grid-template: "navbar main" 1fr / 240px 1fr;
     }
 }

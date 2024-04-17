@@ -1,0 +1,33 @@
+.theme-switch-responsive {
+    & > :nth-child(n) {
+        display: none;
+    }
+
+    @media (height < 480px){
+        display: none;
+    }
+
+    @container (inline-size >=56px) {
+        & > :nth-child(1) {
+            display: inline-flex;
+        }
+    }
+
+    @container (inline-size >=160px) {
+        & > :nth-child(1) {
+            display: none;
+        }
+
+        & > :nth-child(2) {
+            display: inline-flex;
+
+            & > .btn {
+                padding-inline: 16px;
+
+                & > span {
+                    display: none;
+                }
+            }
+        }
+    }
+}
