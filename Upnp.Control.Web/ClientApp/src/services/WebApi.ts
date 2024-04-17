@@ -1,10 +1,11 @@
+import { BrowseFetch } from "./BrowseFetch";
 import { toBase64 } from "./Extensions";
-import { HttpFetch, JsonHttpFetch, RequestQuery, HttpPostFetch, HttpPutFetch, HttpDeleteFetch } from "./HttpFetch";
+import { HttpFetch, JsonHttpFetch, HttpPostFetch, HttpPutFetch, HttpDeleteFetch } from "./HttpFetch";
 
 const baseUri = "/api";
 const devicesBaseUri = baseUri + "/devices";
 
-type BrowseOptionFlags = "withChildren" | "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata" | "withDevice"
+export type BrowseOptionFlags = "withChildren" | "withParents" | "withResourceProps" | "withVendorProps" | "withMetadata" | "withDevice"
 export type BrowseOptions = Partial<Record<BrowseOptionFlags, boolean>>
 export type ApplicationInfo = {
     build: { version?: string, date?: string },
@@ -49,6 +50,7 @@ export interface PlaylistApiClient {
 export interface BrowseApiClient {
     readonly deviceId: string;
     get(id?: string): BrowseFetch;
+    search(id?: string, criteria?: string): BrowseFetch;
 }
 
 export interface QueueApiClient {
@@ -89,7 +91,8 @@ export default class WebApi {
     public static browse(deviceId: string): BrowseApiClient {
         return {
             get deviceId() { return deviceId },
-            get(id = "") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${encodeURIComponent(id)}`) }
+            get(id = "") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${encodeURIComponent(id)}`) },
+            search(id = "", criteria = "*") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/search/${encodeURIComponent(id)}`, { criteria }) }
         }
     }
 
@@ -187,33 +190,6 @@ const pushSubscriber = {
     },
     state(endpoint: string) { return new JsonHttpFetch<PushNotificationSubscriptionState>(`${baseUri}/push-subscriptions`, { endpoint }) },
     serverKey() { return new HttpFetch(`${baseUri}/push-subscriptions/server-key`) }
-}
-
-export class BrowseFetch extends JsonHttpFetch<Upnp.BrowseFetchResult> {
-    constructor(path: string, query?: RequestQuery) {
-        super(path, query);
-    }
-
-    withParents() { return new BrowseFetch(this.path, { ...this.query, withParents: "true" }) }
-
-    withResource() { return new BrowseFetch(this.path, { ...this.query, withResourceProps: "true" }) }
-
-    withVendor() { return new BrowseFetch(this.path, { ...this.query, withVendorProps: "true" }) }
-
-    withMetadata() { return new BrowseFetch(this.path, { ...this.query, withMetadata: "true" }) }
-
-    withDevice() { return new BrowseFetch(this.path, { ...this.query, withDevice: "true" }) }
-
-    withOptions(options: BrowseOptions) {
-        const query = { ...this.query };
-        for (const key in options)
-            query[key] = String(options[key as BrowseOptionFlags]);
-        return new BrowseFetch(this.path, query)
-    }
-
-    take(count: number) { return new BrowseFetch(this.path, { ...this.query, take: count.toString() }) }
-
-    skip(count: number) { return new BrowseFetch(this.path, { ...this.query, skip: count.toString() }) }
 }
 
 function createFormData(files: Iterable<File>, useProxy?: boolean) {
