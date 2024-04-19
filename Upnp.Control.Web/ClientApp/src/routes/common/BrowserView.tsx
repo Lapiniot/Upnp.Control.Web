@@ -147,7 +147,13 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
     }
 
     private keydownListener = (event: KeyboardEvent) => {
-        if (event.defaultPrevented || !this.context.enabled) return;
+        if (event.defaultPrevented || !this.context.enabled) {
+            return;
+        }
+
+        if (event.target instanceof HTMLInputElement && !this.ref.current?.contains(event.target)) {
+            return;
+        }
 
         if (document.body.dataset["modalOpen"] === "1" && !this.dialogMode) {
             // There is currently modal <dialog> element trapping focus and current component is not rendered "in-dialog" mode.
@@ -183,7 +189,6 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
                         if (item) this.props.openHandler(item, index);
                     }
                 }
-
                 break;
             case "Backspace":
             case "ArrowLeft":
@@ -191,7 +196,6 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
                     const parents = this.props.dataContext?.source.parents;
                     this.props.navigate(`../${parents?.[1]?.id ?? "-1"}`);
                 }
-
                 break;
             case "KeyA":
                 if (this.props.multiSelect && (event.metaKey || event.ctrlKey)) {
