@@ -34,7 +34,7 @@ $input-trailing-icon-offset: calc($input-trailing-icon-margin-start + $input-tra
 
 //@import "bootstrap/scss/forms/labels";
 @import "bootstrap/scss/forms/form-text";
-@import "bootstrap/scss/forms/form-control";
+//@import "bootstrap/scss/forms/form-control";
 //@import "bootstrap/scss/forms/form-select";
 //@import "bootstrap/scss/forms/form-check";
 //@import "bootstrap/scss/forms/form-range";
@@ -101,6 +101,21 @@ input {
         }
     }
 
+    &[type="search"] {
+        --#{$prefix}input-icon-image: no-repeat padding-box var(--#{$prefix}search-icon) center left #{$input-trailing-icon-margin-end} / #{$input-trailing-icon-size};
+        padding-inline-start: $input-trailing-icon-offset;
+        padding-inline-end: $input-trailing-icon-margin-end;
+
+        &::-webkit-search-cancel-button {
+            appearance: none;
+            width: $input-trailing-icon-size;
+            height: $input-trailing-icon-size;
+            margin: 0 0 0 $input-trailing-icon-margin-start;
+            background-color: $on-surface-variant-color;
+            mask: no-repeat var(--#{$prefix}close-icon-mask) center / 100%;
+        }
+    }
+
     &.form-control-fill {
         --#{$prefix}indicator-color: #{$on-surface-variant-color};
         --#{$prefix}indicator-width: 1px;
@@ -124,6 +139,10 @@ input {
             --#{$prefix}indicator-color: #{$input-disabled-color};
             background-color: rgb(var(--#{$prefix}on-surface-rgb), .04);
         }
+    }
+
+    &.form-control-sm {
+        min-block-size: unset;
     }
 }
 

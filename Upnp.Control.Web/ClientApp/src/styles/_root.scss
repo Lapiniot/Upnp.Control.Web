@@ -80,6 +80,8 @@
     --#{$prefix}form-switch-bg-image: #{escape-svg($form-switch-checked-bg-image)};
     --#{$prefix}form-switch-disabled-bg-image: #{escape-svg($form-switch-checked-disabled-bg-image)};
     --#{$prefix}circle-icon: #{escape-svg($circle-icon)};
+    --#{$prefix}close-icon-mask: #{escape-svg($close-icon)};
+    --#{$prefix}search-icon: #{escape-svg($search-icon)};
 }
 
 @if $enable-dark-mode {
@@ -123,5 +125,6 @@
         --#{$prefix}form-switch-bg-image: #{escape-svg($form-switch-checked-bg-image-dark)};
         --#{$prefix}form-switch-disabled-bg-image: #{escape-svg($form-switch-checked-disabled-bg-image-dark)};
         --#{$prefix}circle-icon: #{escape-svg($circle-icon-dark)};
+        --#{$prefix}search-icon: #{escape-svg($search-icon-dark)};
     }
 }
