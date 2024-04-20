@@ -13,6 +13,7 @@ export default function () {
         <Route path=":device">
             <Route index element={<DevicePage category={category} itemTemplate={DeviceTemplate} viewMode={viewMode} />} />
             <Route path="browse/*">
+                <Route path=":id" element={<BrowserPage />} />
                 <Route path="*" element={<BrowserPage />} />
                 <Route path="-1" element={<Navigate to="../../.." />} />
             </Route>

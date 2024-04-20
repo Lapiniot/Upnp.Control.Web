@@ -1,7 +1,10 @@
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { Form } from "../../components/Form";
 import { Menu, MenuItem } from "../../components/Menu";
-import Toolbar from "../../components/Toolbar";
-import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
 import { useRowStates } from "../../components/RowStateContext";
+import Toolbar from "../../components/Toolbar";
+import { useSearchParams } from "../../hooks/Navigator";
+import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
 
 export function renderActionMenuItem(udn: string, action: string, name: string) {
     return <MenuItem key={`${action}.${udn}`} action={`${action}.${udn}`} data-udn={udn}>&laquo;{name}&raquo;</MenuItem>;
@@ -13,7 +16,7 @@ type BrowserActionMenuProps = {
     onSelected?: (action: string, udn: string, selection: Upnp.DIDL.Item[]) => void;
 };
 
-export function BrowserActionMenu({ umis, renderers, onSelected }: BrowserActionMenuProps) {
+export function BrowserActions({ umis, renderers, onSelected }: BrowserActionMenuProps) {
     const { selection, dispatch } = useRowStates();
 
     const umiAcceptable = selection.some(i => isContainer(i) || isMusicTrack(i));
@@ -26,6 +29,7 @@ export function BrowserActionMenu({ umis, renderers, onSelected }: BrowserAction
     }
 
     return <>
+        <SearchForm />
         <Toolbar.Button icon="symbols.svg#more_vert" popovertarget="browser-actions"
             className="btn-icon ms-auto" disabled={!enabled} />
         {enabled && <Menu id="browser-actions" activation="explicit" className="drop-bottom" onSelected={onSelectedHandler}>
@@ -40,4 +44,16 @@ export function BrowserActionMenu({ umis, renderers, onSelected }: BrowserAction
             </>}
         </Menu>}
     </>
+}
+
+function SearchForm() {
+    const [params] = useSearchParams();
+    const query = params.get("q") ?? "";
+    const [value, setValue] = useState(query);
+    useEffect(() => setValue(query), [query]);
+    const onChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => setValue(value), []);
+    return <Form method="GET">
+        <input type="search" name="q" className="form-control form-control-sm" placeholder="Search"
+            value={value} onChange={onChange} />
+    </Form>
 }

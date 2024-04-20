@@ -7,10 +7,10 @@ import BrowserView, { BrowserViewProps } from "./BrowserView";
 
 export type BrowserCoreProps<TContext> =
     BrowserViewProps<TContext> &
-    { renderActionMenu?: () => ReactNode };
+    { renderActions?: () => ReactNode };
 
 export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>) {
-    const { dataContext: data, fetching, navigate, renderActionMenu, children } = props;
+    const { dataContext: data, fetching, navigate, renderActions, children } = props;
     const { className, ...forwardProps } = props;
     const { source: { parents = undefined, device: dev = undefined } = {} } = data || {};
 
@@ -23,17 +23,17 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
     return <div className={`browser-shell flex-fill overflow-hidden${className ? ` ${className}` : ""}`}>
         <Toolbar className="overflow-hidden px-2 py-1 flex-nowrap bg-surface-cntr">
             <Toolbar.Button icon="symbols.svg#arrow_back_ios_new" onClick={navBackHandler} />
-            <div className="vstack align-items-stretch overflow-hidden text-center text-md-start">
+            <div className="vstack overflow-hidden justify-content-center align-items-stretch text-center text-md-start">
                 <h6 className="mb-0 text-truncate">{parents?.[0]?.title ?? ""}</h6>
                 <small className="text-truncate">{dev?.name ?? ""}</small>
             </div>
-            {renderActionMenu?.()}
+            {renderActions?.()}
         </Toolbar>
         <BrowserView className="br-area-main mt-1" {...forwardProps}>
             {scrollTracker}
             {children}
         </BrowserView>
-        <Progress className={`br-area-main place-self-start-stretch sticky-top m-0${progress === 1 ? " d-none" : ""}`}
+        <Progress className={`br-area-main place-self-start-stretch sticky-top m-0${progress === 1 && !fetching ? " d-none" : ""}`}
             value={progress} infinite={fetching} />
         {data?.source.items?.length === 0 &&
             <div className="br-area-main d-flex align-items-center justify-content-center">

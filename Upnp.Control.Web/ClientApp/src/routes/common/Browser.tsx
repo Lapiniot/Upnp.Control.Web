@@ -8,7 +8,7 @@ import { itemBookmarks } from "../../services/BookmarkService";
 import { HotKey, HotKeys } from "../../services/HotKey";
 import WebApi from "../../services/WebApi";
 import { createBookmarkButton } from "./BookmarkButton";
-import { BrowserActionMenu, renderActionMenuItem } from "./BrowserActionMenu";
+import { BrowserActions, renderActionMenuItem } from "./BrowserActionMenu";
 import BrowserCore, { BrowserCoreProps } from "./BrowserCore";
 import { CellTemplate, CellTemplateProps } from "./BrowserView";
 import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
@@ -127,8 +127,8 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
         }
     }
 
-    renderActionMenu = () => {
-        return <BrowserActionMenu umis={this.state.umis} renderers={this.state.renderers} onSelected={this.actionMenuSelectedHandler} />
+    renderActions = () => {
+        return <BrowserActions umis={this.state.umis} renderers={this.state.renderers} onSelected={this.actionMenuSelectedHandler} />
     }
 
     renderItemActionMenuItems = (anchor?: HTMLElement | null) => {
@@ -199,7 +199,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
             <RowStateProvider items={data?.source.items}>
                 <BrowserCore mainCellTemplate={Template} mainCellContext={this.getCellContext()} useCheckboxes multiSelect
                     {...this.props} fetching={this.state.fetching || this.props.fetching} openHandler={this.openHandler} hotKeyHandler={this.hotKeyHandler}
-                    renderActionMenu={this.renderActionMenu}>
+                    renderActions={this.renderActions}>
                     <Menu className="drop-left" render={this.renderItemActionMenuItems} onSelected={this.itemMenuSelectedHandler} />
                 </BrowserCore>
             </RowStateProvider>
