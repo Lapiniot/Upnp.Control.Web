@@ -1,5 +1,5 @@
 import { createContext, MouseEvent, useCallback, useContext, useRef } from "react";
-import { useNavigate, useParams, useResolvedPath, useSearchParams } from "react-router-dom";
+import * as ReactRouter from "react-router-dom";
 
 export type Path = {
     pathname: string;
@@ -7,29 +7,33 @@ export type Path = {
     hash: string;
 }
 
-export interface NavigateFunction {
-    (to: string | Partial<Path>): void;
-}
+export interface NavigateFunction { (to: string | Partial<Path>): void }
 
-type Params<TKey extends string = string> = { readonly [K in TKey]: string | undefined };
+type Params<TKey extends string = string> = { readonly [K in TKey]: string | undefined }
 
 interface NavigationContextHooks {
-    useNavigate(): NavigateFunction;
-    useParams(): Readonly<Params<string>>;
-    useSearchParams(): readonly [URLSearchParams, (nextInit: URLSearchParams) => void];
-    useResolvedPath(to: string | Partial<Path>): Path;
+    useNavigateImpl(): NavigateFunction;
+    useParamsImpl(): Readonly<Params<string>>;
+    useSearchParamsImpl(): readonly [URLSearchParams, (nextInit: URLSearchParams) => void];
+    useResolvedPathImpl(to: string | Partial<Path>): Path;
 }
 
-const NavigationContext = createContext<NavigationContextHooks>({ useNavigate, useParams, useSearchParams, useResolvedPath })
+// Initialize context defaults to "react-router-dom" provided implementations
+const NavigationContext = createContext<NavigationContextHooks>({
+    useNavigateImpl: ReactRouter.useNavigate,
+    useParamsImpl: ReactRouter.useParams,
+    useSearchParamsImpl: ReactRouter.useSearchParams,
+    useResolvedPathImpl: ReactRouter.useResolvedPath
+})
 
-export { NavigationContext };
+export { NavigationContext }
 
 export function useNavigator<TKey extends string = string>() {
-    const { useNavigate, useParams, useSearchParams } = useContext(NavigationContext);
+    const { useNavigateImpl, useParamsImpl, useSearchParamsImpl } = useContext(NavigationContext);
 
-    const navigate = useNavigate();
-    const params = useParams();
-    const [search] = useSearchParams();
+    const navigate = useNavigateImpl();
+    const params = useParamsImpl();
+    const [search] = useSearchParamsImpl();
 
     const merged = { ...params };
     search.forEach((value, key) => merged[key] = value);
@@ -38,13 +42,13 @@ export function useNavigator<TKey extends string = string>() {
 }
 
 export function useNavigatorResolvedPath(to: string) {
-    const { useResolvedPath } = useContext(NavigationContext);
-    return useResolvedPath(to);
+    const { useResolvedPathImpl } = useContext(NavigationContext);
+    return useResolvedPathImpl(to);
 }
 
 export function useNavigatorClickHandler() {
-    const { useNavigate } = useContext(NavigationContext);
-    const navigate = useNavigate();
+    const { useNavigateImpl } = useContext(NavigationContext);
+    const navigate = useNavigateImpl();
     const ref = useRef(navigate);
     ref.current = navigate;
     return useCallback((event: MouseEvent<HTMLAnchorElement>) => {
@@ -59,4 +63,9 @@ export function createSearchParams(init: { [K in string]: string }) {
     const search = new URLSearchParams();
     for (const key in init) search.set(key, init[key]);
     return search;
+}
+
+export function useSearchParams() {
+    const { useSearchParamsImpl } = useContext(NavigationContext);
+    return useSearchParamsImpl();
 }

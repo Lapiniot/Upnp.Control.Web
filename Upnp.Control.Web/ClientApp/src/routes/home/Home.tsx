@@ -1,6 +1,6 @@
 ﻿import "bootstrap/js/dist/collapse";
 import React, {
-    ComponentType, DetailsHTMLAttributes, HTMLAttributes, SyntheticEvent,
+    ComponentType, DetailsHTMLAttributes, SyntheticEvent,
     useCallback, useMemo, useRef, useState, useSyncExternalStore
 } from "react";
 import { DataList } from "../../components/DataList";

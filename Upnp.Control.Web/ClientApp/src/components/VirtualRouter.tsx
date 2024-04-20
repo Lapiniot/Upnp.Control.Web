@@ -1,4 +1,7 @@
-import { Children, createContext, PropsWithChildren, ReactElement, ReactNode, useCallback, useContext, useRef, useState } from "react";
+import {
+    Children, ContextType, createContext, PropsWithChildren,
+    ReactElement, ReactNode, useCallback, useContext, useRef, useState
+} from "react";
 import { matchRoutes, resolvePath, RouteMatch, RouteObject } from "react-router-dom";
 import { NavigateFunction, NavigationContext, Path } from "../hooks/Navigator";
 
@@ -139,7 +142,12 @@ function useResolvedPath(to: string | Partial<Path>) {
     return resolvePathMatches(to, getEffectivePathnames(matches ?? []), pathname);
 }
 
-const hooks = { useNavigate, useParams, useSearchParams, useResolvedPath }
+const hooks: ContextType<typeof NavigationContext> = {
+    useNavigateImpl: useNavigate,
+    useParamsImpl: useParams,
+    useSearchParamsImpl: useSearchParams,
+    useResolvedPathImpl: useResolvedPath
+}
 
 export function VirtualRouter({ children, initialPath }: PropsWithChildren<VirtualRouterProps>) {
     const [location, setLocation] = useState(() => new URL(initialPath, window.location.origin));
