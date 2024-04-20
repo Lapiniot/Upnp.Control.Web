@@ -169,6 +169,7 @@ var api = app.MapGroup("api/devices").WithGroupName("v1");
 api.MapDevicesApi("");
 api.MapBrowseContentApi("{deviceId}/items/{*path}");
 api.MapSearchContentApi("{deviceId}/search/{*path}");
+api.MapSearchCapabilitiesApi("{deviceId}/search-capabilities");
 api.MapPlaylistApi("{deviceId}/playlists");
 api.MapQueueApi("{deviceId}/queues/{queueId}/items");
 api.MapControlApi("{deviceId}");

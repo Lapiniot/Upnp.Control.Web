@@ -79,4 +79,18 @@ internal static class ContentDirectoryServices
             return Problem(title: e.Message, type: e.GetType().Name);
         }
     }
+
+    public static async Task<Results<Ok<string[]>, ProblemHttpResult>> GetSearchCapabilitiesAsync(
+        IAsyncQueryHandler<CDSearchCapabilitiesQuery, string[]> handler, string deviceId,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false));
+        }
+        catch (Exception e)
+        {
+            return Problem(title: e.Message, type: e.GetType().Name);
+        }
+    }
 }

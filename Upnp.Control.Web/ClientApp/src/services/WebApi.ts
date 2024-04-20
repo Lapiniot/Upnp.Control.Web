@@ -51,6 +51,7 @@ export interface BrowseApiClient {
     readonly deviceId: string;
     get(id?: string): BrowseFetch;
     search(id?: string, criteria?: string): BrowseFetch;
+    searchCapabilities(): JsonHttpFetch<string[]>;
 }
 
 export interface QueueApiClient {
@@ -92,7 +93,8 @@ export default class WebApi {
         return {
             get deviceId() { return deviceId },
             get(id = "") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/items/${encodeURIComponent(id)}`) },
-            search(id = "", criteria = "*") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/search/${encodeURIComponent(id)}`, { criteria }) }
+            search(id = "", criteria = "*") { return new BrowseFetch(`${devicesBaseUri}/${deviceId}/search/${encodeURIComponent(id)}`, { criteria }) },
+            searchCapabilities() { return new JsonHttpFetch<string[]>(`${devicesBaseUri}/${deviceId}/search-capabilities`); }
         }
     }
 

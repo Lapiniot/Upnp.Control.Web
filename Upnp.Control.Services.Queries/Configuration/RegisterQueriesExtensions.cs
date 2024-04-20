@@ -23,7 +23,8 @@ public static class RegisterQueriesExtensions
 
     public static IServiceCollection AddContentDirectoryQueries(this IServiceCollection services) => services
         .AddQuery<CDGetContentQuery, CDContent, GetContentQueryHandler>()
-        .AddQuery<CDSearchContentQuery, CDContent, GetContentQueryHandler>();
+        .AddQuery<CDSearchContentQuery, CDContent, GetContentQueryHandler>()
+        .AddQuery<CDSearchCapabilitiesQuery, string[], GetSearchCapabilitiesQueryHandler>();
 
     public static IServiceCollection AddConnectionManagerQueries(this IServiceCollection services) => services
         .AddQuery<CMGetProtocolInfoQuery, CMProtocolInfo, CMGetProtocolInfoQueryHandler>()
