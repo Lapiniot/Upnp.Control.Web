@@ -1,0 +1,23 @@
+.topbar {
+    flex-wrap: wrap;
+    background-color: $surface-container-color;
+    padding: 8px;
+    gap: 16px;
+
+    .topbar-search {
+        display: flex;
+        justify-content: center;
+    }
+
+    @media (width < #{map-get($grid-breakpoints, sm)}) {
+        .topbar-search {
+            order: 1;
+            flex: 1 1 100%;
+            padding-inline: 16px;
+        }
+
+        .search-toggle[value=false] ~ .topbar-search {
+            display: none;
+        }
+    }
+}

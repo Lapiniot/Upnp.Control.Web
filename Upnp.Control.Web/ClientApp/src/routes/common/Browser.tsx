@@ -128,7 +128,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
     }
 
     renderActions = () => {
-        return <BrowserActions umis={this.state.umis} renderers={this.state.renderers} onSelected={this.actionMenuSelectedHandler} />
+        return <BrowserActions device={this.props.device} umis={this.state.umis} renderers={this.state.renderers} onSelected={this.actionMenuSelectedHandler} />
     }
 
     renderItemActionMenuItems = (anchor?: HTMLElement | null) => {

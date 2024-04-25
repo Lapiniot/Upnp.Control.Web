@@ -21,9 +21,9 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
     const progress = (data?.source.items?.length ?? 0) / (data?.source.total ?? 1);
 
     return <div className={`browser-shell flex-fill overflow-hidden${className ? ` ${className}` : ""}`}>
-        <Toolbar className="overflow-hidden px-2 py-1 flex-nowrap bg-surface-cntr">
+        <Toolbar className="topbar">
             <Toolbar.Button icon="symbols.svg#arrow_back_ios_new" onClick={navBackHandler} />
-            <div className="vstack overflow-hidden justify-content-center align-items-stretch text-center text-md-start">
+            <div className="vstack flex-1 overflow-hidden justify-content-center align-items-stretch text-center text-md-start">
                 <h6 className="mb-0 text-truncate">{parents?.[0]?.title ?? ""}</h6>
                 <small className="text-truncate">{dev?.name ?? ""}</small>
             </div>
