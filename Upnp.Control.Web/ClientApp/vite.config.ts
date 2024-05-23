@@ -26,10 +26,13 @@ export default defineConfig(({ mode }) => {
         server: {
             host: true,
             port: parseInt(env.PORT) ?? 8082,
-            https: {
+            https: (env.SSL_PFX_FILE) ? {
+                pfx: fs.readFileSync(env.SSL_PFX_FILE),
+                passphrase: ""
+            } : (env.SSL_CRT_FILE && env.SSL_KEY_FILE) ? {
                 cert: fs.readFileSync(env.SSL_CRT_FILE),
                 key: fs.readFileSync(env.SSL_KEY_FILE),
-            },
+            } : undefined,
             strictPort: true,
             proxy: {
                 "/api": options,
