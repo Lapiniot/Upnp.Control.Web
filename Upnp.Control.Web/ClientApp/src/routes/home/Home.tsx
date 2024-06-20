@@ -68,7 +68,7 @@ function Bookmarks<TKey extends (string | string[]), TProps>({ store, caption, i
         caption={captionElement} {...other}>
         {bookmarks && bookmarks.length > 0 ?
             <div className="d-flex flex-nowrap align-items-center">
-                <DataList className="grid-auto-m15 overflow-clip" editable editMode={editMode}
+                <DataList className="grid-auto-m15" editable editMode={editMode}
                     onToggleModeRequested={toggleEditModeHandler} onDeleteRequested={deleteHandler}>
                     {bookmarks.map(({ widget, props }) => React.createElement(
                         Widgets[widget as KnownWidgets] as ComponentType,

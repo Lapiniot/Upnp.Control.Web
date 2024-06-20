@@ -36,10 +36,7 @@ $utilities: map-merge($utilities,
             "padding-end": map-merge(map-get($utilities, "padding-end"), (responsive: false)),
             "rounded": map-merge(map-get($utilities, "rounded"), (values: (0: 0, 1: $corner-xs, circle: 50%, pill: 50rem, auto: inherit))),
             "gap": map-merge(map-get($utilities, "gap"), (responsive: false, class: "g", values:map-remove($spacers, 4, 5))),
-            "flex": map-merge(map-get($utilities, "flex"), (responsive:false, values: map-merge(map-get($utilities, "flex", "values"), (1:1)))),
-            "overflow": map-merge(map-get($utilities, "overflow"), (values: append(map-get($utilities, "overflow", "values"), (clip)))),
-            "overflow-x": map-merge(map-get($utilities, "overflow-x"), (values: append(map-get($utilities, "overflow-x", "values"), (clip)))),
-            "overflow-y": map-merge(map-get($utilities, "overflow-y"), (values: append(map-get($utilities, "overflow-y", "values"), (clip))))));
+            "flex": map-merge(map-get($utilities, "flex"), (responsive:false, values: map-merge(map-get($utilities, "flex", "values"), (1:1))))));
 
 $utilities : map-merge($utilities,
     ("cursor":(property:"cursor", values:default),
