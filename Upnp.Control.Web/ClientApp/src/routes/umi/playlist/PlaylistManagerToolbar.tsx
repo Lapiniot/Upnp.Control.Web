@@ -25,6 +25,13 @@ export function PlaylistManagerToolbar({ className, editMode, compact, rootLevel
     const { selection, dispatch } = useRowStates();
     const ref = useRef(initial);
     useEffect(() => { ref.current = { selection, dispatch } });
+    useEffect(() => {
+        if (editMode && "CloseWatcher" in window) {
+            const watcher = new CloseWatcher();
+            watcher.addEventListener("close", () => service.toggleEditMode(), { once: true });
+            return () => watcher.destroy();
+        }
+    }, [editMode, service]);
     const handlers = useMemo(() => ({
         create: service.create,
         deletePlaylists: () => service.deletePlaylists(ref.current.selection),
