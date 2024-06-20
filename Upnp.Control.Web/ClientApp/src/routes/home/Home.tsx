@@ -1,7 +1,7 @@
 ﻿import "bootstrap/js/dist/collapse";
 import React, {
     ComponentType, DetailsHTMLAttributes, SyntheticEvent,
-    useCallback, useMemo, useRef, useState, useSyncExternalStore
+    useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 } from "react";
 import { DataList } from "../../components/DataList";
 import ConfirmDialog from "../../components/Dialog.Confirmation";
@@ -62,6 +62,14 @@ function Bookmarks<TKey extends (string | string[]), TProps>({ store, caption, i
             )
         }
     }, [caption, group, store]);
+
+    useEffect(() => {
+        if (editMode && "CloseWatcher" in window) {
+            const watcher = new CloseWatcher();
+            watcher.addEventListener("close", () => setEditMode(value => !value), { once: true });
+            return () => watcher.destroy();
+        }
+    }, [editMode]);
 
     return <Spoiler name="accordion" className="border-0 bg-surface-cntr-low"
         open={profile.home.get(`expand.${group as BookmarkGroup}`)} onToggle={toggleHandler}
