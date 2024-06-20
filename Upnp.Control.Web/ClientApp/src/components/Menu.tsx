@@ -1,5 +1,4 @@
 import { ButtonHTMLAttributes, HTMLAttributes, PureComponent, ReactNode, createRef } from "react";
-import { NavigationBackObserver } from "../services/NavigationBackObserver";
 import { PopoverAnchorStrategy, PopupPlacementStrategy } from "../services/PopoverPlacementStrategy";
 import { SlideGestureRecognizer, SlideParams } from "../services/gestures/SlideGestureRecognizer";
 import { SwipeGestureRecognizer, SwipeGestures } from "../services/gestures/SwipeGestureRecognizer";
@@ -40,7 +39,6 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
     private readonly swipeRecognizer: SwipeGestureRecognizer;
     private readonly slideRecognizer: SlideGestureRecognizer;
     private readonly resizeObserver: ResizeObserver;
-    private readonly navBackObserver: NavigationBackObserver;
     private readonly strategy: PopupPlacementStrategy;
     state: MenuState = { show: false, anchor: undefined };
     captureY = 0;
@@ -51,7 +49,6 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
         super(props);
         this.strategy = new PopoverAnchorStrategy("auto");
         this.resizeObserver = new ResizeObserver(this.resizeCallback);
-        this.navBackObserver = new NavigationBackObserver(this.navigationBackCallback);
         this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler, 50);
         this.slideRecognizer = new SlideGestureRecognizer(this.slideHandler);
     }
@@ -96,11 +93,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
                 this.slideRecognizer.bind(popover);
                 this.swipeRecognizer.bind(popover);
             }
-
-            this.navBackObserver.observe();
         } else {
-            this.navBackObserver.disconnect();
-
             this.swipeRecognizer.unbind();
             this.slideRecognizer.unbind();
             this.unsubscribe();
@@ -122,7 +115,6 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
         this.swipeRecognizer.unbind();
         this.slideRecognizer.unbind();
         this.resizeObserver.disconnect();
-        this.navBackObserver.disconnect();
     }
 
     public show(anchor: HTMLElement) {
@@ -297,14 +289,6 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
             default:
                 if (y - this.captureY > this.intrinsicHeight / 2)
                     this.hide();
-        }
-    }
-
-    private navigationBackCallback = () => {
-        if (this.state.show) {
-            this.hide();
-            // prevent default handling for navigation back
-            return false;
         }
     }
 
