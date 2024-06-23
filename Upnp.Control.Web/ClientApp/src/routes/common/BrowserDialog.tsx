@@ -64,7 +64,7 @@ function ConfirmButton({ confirmContent = "Open", onConfirmed, device }: Confirm
     </Dialog.Button>)
 }
 
-function Browser({ confirmContent, onConfirmed, mapper, ...props }: BrowserProps<unknown> & { mapper?: RowStateMapperFunction } & ConfirmProps) {
+function Browser({ confirmContent, onConfirmed, mapper, ...props }: Partial<ComponentPropsWithRef<typeof BrowserCore>> & { mapper?: RowStateMapperFunction } & ConfirmProps) {
     const { params, ...other } = useContentBrowser();
     const largeScreen = useMediaQuery(MediaQueries.largeScreen);
     const touchScreen = useMediaQuery(MediaQueries.touchDevice);
@@ -81,6 +81,9 @@ export default function BrowserDialog(props: BrowserDialogProps) {
         <Dialog.Button autoFocus>Cancel</Dialog.Button>
     </div>, []);
 
+    const dialog = useMemo(() => <Browser {...browserProps} mapper={rowStateMapper} confirmContent={confirmContent} onConfirmed={onConfirmed} />,
+        [browserProps, confirmContent, rowStateMapper, onConfirmed]);
+
     return <Dialog className={`h-100 dialog-scrollable dialog-lg dialog-fullscreen-sm-down${className ? ` ${className}` : ""}`}
         caption={title} {...other} actions={actions}>
         <div className="vstack p-0 position-relative overflow-hidden">
@@ -89,8 +92,8 @@ export default function BrowserDialog(props: BrowserDialogProps) {
                     <Route path="upnp">
                         <Route index element={<MediaSourceList />} />
                         <Route path=":device/browse/*">
-                            <Route path="*" element={<Browser {...browserProps} mapper={rowStateMapper}
-                                confirmContent={confirmContent} onConfirmed={onConfirmed} />} />
+                            <Route path=":id" element={dialog} />
+                            <Route path="*" element={dialog} />
                             <Route path="-1" element={<MediaSourceList />} />
                         </Route>
                     </Route>
