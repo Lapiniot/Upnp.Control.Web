@@ -11,13 +11,14 @@ export function BrowseContentAction({ device, category, className, ...other }: D
     const isMediaServer = device && UDT.isMediaServer(device);
     const url = isMediaServer ? `/${category}/${device.udn}/browse` : undefined;
     return <RouteLink to={url} icon="symbols.svg#folder_open"
-        className={`text-decoration-none${className ? ` ${className}` : ""}`} {...other}>
+        className={`btn-icon-link${className ? ` ${className}` : ""}`} {...other}>
         <span className="ms-1">Browse</span>
     </RouteLink>
 }
 
-export function DownloadMetadataAction({ device, category, ...other }: DeviceActionProps) {
-    return <Link to={device?.url} icon="symbols.svg#file_download" {...other}>
+export function DownloadMetadataAction({ device, category, className, ...other }: DeviceActionProps) {
+    return <Link to={device?.url} icon="symbols.svg#file_download"
+        className={`btn-icon-link${className ? ` ${className}` : ""}`}  {...other}>
         <span className="ms-1">Metadata</span>
     </Link>;
 }

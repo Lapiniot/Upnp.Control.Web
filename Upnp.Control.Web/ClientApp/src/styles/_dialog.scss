@@ -116,12 +116,6 @@ $modal-body-padding-y: map-get($spacers, 3) map-get($spacers, 4);
     color: $on-surface-variant-color;
 }
 
-.dialog-body-flush {
-    .dialog-body {
-        padding: 0;
-    }
-}
-
 .dialog-header {
     grid-area: header;
     display: flex;
@@ -173,6 +167,7 @@ $fullscreen-sizes: null sm;
     --#{$prefix}dialog-border-radius: 0;
     --#{$prefix}dialog-header-padding-y: 0;
     --#{$prefix}dialog-header-padding-x: 16px 0;
+    --#{$prefix}dialog-body-padding-x: 16px;
     max-width: unset;
     max-height: unset;
     height: auto;

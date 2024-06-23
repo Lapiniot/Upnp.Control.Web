@@ -157,6 +157,7 @@
 }
 
 .btn-icon,
+.btn-icon-link,
 .toolbar .btn {
     --#{$prefix}btn-padding-x: 8px;
     padding: var(--#{$prefix}btn-padding-x);
@@ -255,4 +256,8 @@ $configurations: (
     --#{$prefix}btn-font-weight: 500;
     --#{$prefix}btn-icon-font-size: 24px;
     min-width: 80px;
+}
+
+.btn-icon-link {
+    text-decoration: none;
 }

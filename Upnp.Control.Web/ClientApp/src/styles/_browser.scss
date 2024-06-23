@@ -1,6 +1,8 @@
 .browser-shell {
     display: grid;
     grid: "top" auto "main" 1fr "bottom" auto / 100%;
+    place-items: stretch;
+    background-color: #{$surface-color};
 }
 
 .br-area-top {

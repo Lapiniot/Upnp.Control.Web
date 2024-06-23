@@ -81,9 +81,9 @@ export default function BrowserDialog(props: BrowserDialogProps) {
         <Dialog.Button autoFocus>Cancel</Dialog.Button>
     </div>, []);
 
-    return <Dialog className={`h-100 dialog-scrollable dialog-lg dialog-fullscreen-sm-down dialog-body-flush${className ? ` ${className}` : ""}`}
+    return <Dialog className={`h-100 dialog-scrollable dialog-lg dialog-fullscreen-sm-down${className ? ` ${className}` : ""}`}
         caption={title} {...other} actions={actions}>
-        <div className="vstack p-0 position-relative overflow-hidden my-3">
+        <div className="vstack p-0 position-relative overflow-hidden">
             <VirtualRouter initialPath="/upnp">
                 <Routes>
                     <Route path="upnp">
