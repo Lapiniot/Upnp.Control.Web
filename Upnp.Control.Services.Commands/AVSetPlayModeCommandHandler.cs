@@ -13,8 +13,6 @@ internal sealed class AVSetPlayModeCommandHandler : IAsyncCommandHandler<AVSetPl
 
     public async Task ExecuteAsync(AVSetPlayModeCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var avt = await factory.GetServiceAsync<AVTransportService>(command.DeviceId, cancellationToken).ConfigureAwait(false);
         await avt.SetPlayModeAsync(0, command.PlayMode, cancellationToken).ConfigureAwait(false);
     }

@@ -13,8 +13,6 @@ internal sealed class AVGetPositionQueryHandler : IAsyncQueryHandler<AVGetPositi
 
     public async Task<AVPosition> ExecuteAsync(AVGetPositionQuery query, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(query);
-
         var (deviceId, detailed) = query;
         var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
         var info = await avt.GetPositionInfoAsync(0, cancellationToken).ConfigureAwait(false);

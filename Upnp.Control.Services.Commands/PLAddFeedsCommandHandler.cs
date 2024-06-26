@@ -10,7 +10,6 @@ internal sealed class PLAddFeedsCommandHandler(IUpnpServiceFactory serviceFactor
 
     Task IAsyncCommandHandler<PLAddPlaylistFilesCommand>.ExecuteAsync(PLAddPlaylistFilesCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
         ArgumentNullException.ThrowIfNull(command.Files);
         ArgumentException.ThrowIfNullOrEmpty(command.DeviceId);
         ArgumentException.ThrowIfNullOrEmpty(command.PlaylistId);
@@ -26,8 +25,6 @@ internal sealed class PLAddFeedsCommandHandler(IUpnpServiceFactory serviceFactor
 
     Task IAsyncCommandHandler<PLAddFeedUrlCommand>.ExecuteAsync(PLAddFeedUrlCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-        ArgumentNullException.ThrowIfNull(command.Source);
         ArgumentNullException.ThrowIfNull(command.Source.Url);
         ArgumentException.ThrowIfNullOrEmpty(command.DeviceId);
         ArgumentException.ThrowIfNullOrEmpty(command.PlaylistId);

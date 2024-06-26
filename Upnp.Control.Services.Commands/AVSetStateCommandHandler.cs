@@ -15,8 +15,6 @@ internal sealed class AVSetStateCommandHandler : IAsyncCommandHandler<AVSetState
 
     public async Task ExecuteAsync(AVSetStateCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var (deviceId, state) = command;
         var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
 

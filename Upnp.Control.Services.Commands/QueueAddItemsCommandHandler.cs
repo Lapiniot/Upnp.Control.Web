@@ -18,8 +18,6 @@ internal sealed class QueueAddItemsCommandHandler : IAsyncCommandHandler<QAddIte
 
     public async Task ExecuteAsync(QAddItemsCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var (deviceId, queueId, source) = command;
 
         var sourceCds = await factory.GetServiceAsync<ContentDirectoryService>(source.DeviceId, cancellationToken).ConfigureAwait(false);

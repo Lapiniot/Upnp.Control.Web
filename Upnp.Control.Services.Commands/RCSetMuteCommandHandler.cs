@@ -13,8 +13,6 @@ internal sealed class RCSetMuteCommandHandler : IAsyncCommandHandler<RCSetMuteCo
 
     public async Task ExecuteAsync(RCSetMuteCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var (deviceId, mute) = command;
         var service = await factory.GetServiceAsync<RenderingControlService>(deviceId, cancellationToken).ConfigureAwait(false);
         await service.SetMuteAsync(0, mute, cancellationToken).ConfigureAwait(false);

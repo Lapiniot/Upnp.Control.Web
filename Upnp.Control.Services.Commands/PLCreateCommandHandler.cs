@@ -13,8 +13,6 @@ internal sealed class PLCreateCommandHandler : IAsyncCommandHandler<PLCreateComm
 
     public async Task ExecuteAsync(PLCreateCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var service = await factory.GetServiceAsync<PlaylistService>(command.DeviceId, cancellationToken).ConfigureAwait(false);
         await service.CreateAsync(title: command.Title, cancellationToken: cancellationToken).ConfigureAwait(false);
     }

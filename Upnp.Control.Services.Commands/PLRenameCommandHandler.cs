@@ -13,8 +13,6 @@ internal sealed class PLRenameCommandHandler : IAsyncCommandHandler<PLRenameComm
 
     public async Task ExecuteAsync(PLRenameCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var (deviceId, playlistId, title) = command;
         var service = await factory.GetServiceAsync<PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
         var result = await service.RenameAsync(objectId: playlistId, title: title, cancellationToken: cancellationToken).ConfigureAwait(false);

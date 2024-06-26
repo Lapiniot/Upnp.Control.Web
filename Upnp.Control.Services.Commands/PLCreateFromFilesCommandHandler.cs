@@ -33,7 +33,6 @@ internal sealed class PLCreateFromFilesCommandHandler(IUpnpServiceFactory servic
 
     public Task ExecuteAsync(PLCreateFromFilesCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
         ArgumentNullException.ThrowIfNull(command.Files);
         ArgumentException.ThrowIfNullOrEmpty(command.DeviceId);
 

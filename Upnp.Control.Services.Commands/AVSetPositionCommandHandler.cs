@@ -15,8 +15,6 @@ internal sealed class AVSetPositionCommandHandler : IAsyncCommandHandler<AVSetPo
 
     public async Task ExecuteAsync(AVSetPositionCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var (deviceId, (position, time)) = command;
         var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
 

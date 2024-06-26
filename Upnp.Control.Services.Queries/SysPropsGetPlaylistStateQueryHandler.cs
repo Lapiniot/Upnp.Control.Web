@@ -13,8 +13,6 @@ internal sealed class SysPropsGetPlaylistStateQueryHandler : IAsyncQueryHandler<
 
     public async Task<string> ExecuteAsync(SysPropsGetPlaylistStateQuery query, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(query);
-
         var sps = await factory.GetServiceAsync<SystemPropertiesService>(query.DeviceId, cancellationToken).ConfigureAwait(false);
         return await sps.GetStringAsync("fastCall?command=state_playlists", cancellationToken).ConfigureAwait(false);
     }

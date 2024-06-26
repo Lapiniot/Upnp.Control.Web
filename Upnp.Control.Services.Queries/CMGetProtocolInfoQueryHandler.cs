@@ -15,8 +15,6 @@ internal sealed class CMGetProtocolInfoQueryHandler : IAsyncQueryHandler<CMGetPr
 
     public async Task<CMProtocolInfo> ExecuteAsync(CMGetProtocolInfoQuery query, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(query);
-
         var service = await factory.GetServiceAsync<ConnectionManagerService>(query.DeviceId, cancellationToken).ConfigureAwait(false);
         var result = await service.GetProtocolInfoAsync(cancellationToken).ConfigureAwait(false);
         return new(

@@ -13,8 +13,6 @@ internal sealed class RCSetVolumeCommandHandler : IAsyncCommandHandler<RCSetVolu
 
     public async Task ExecuteAsync(RCSetVolumeCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var (deviceId, volume) = command;
         var service = await factory.GetServiceAsync<RenderingControlService>(deviceId, cancellationToken).ConfigureAwait(false);
         await service.SetVolumeAsync(0, volume, cancellationToken).ConfigureAwait(false);

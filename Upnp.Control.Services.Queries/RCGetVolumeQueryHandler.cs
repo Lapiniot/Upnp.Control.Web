@@ -13,8 +13,6 @@ internal sealed class RCGetVolumeQueryHandler : IAsyncQueryHandler<RCGetVolumeQu
 
     public async Task<RCVolumeState> ExecuteAsync(RCGetVolumeQuery query, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(query);
-
         var (deviceId, detailed) = query;
         var service = await factory.GetServiceAsync<RenderingControlService>(deviceId, cancellationToken).ConfigureAwait(false);
         var volumeResult = await service.GetVolumeAsync(0, cancellationToken).ConfigureAwait(false);

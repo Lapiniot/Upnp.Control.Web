@@ -15,8 +15,6 @@ internal sealed class PLCopyCommandHandler : IAsyncCommandHandler<PLCopyCommand>
 
     public async Task ExecuteAsync(PLCopyCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var (deviceId, playlistId, title) = command;
         var (cdService, plService) = await factory.GetServicesAsync<ContentDirectoryService, PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);
 

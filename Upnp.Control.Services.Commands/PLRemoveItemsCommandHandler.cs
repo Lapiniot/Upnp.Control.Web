@@ -4,8 +4,6 @@ internal sealed class PLRemoveItemsCommandHandler(IUpnpServiceFactory factory) :
 {
     public async Task ExecuteAsync(PLRemoveItemsCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var (deviceId, playlistId, items) = command;
 
         var pls = await GetServiceAsync<PlaylistService>(deviceId, cancellationToken).ConfigureAwait(false);

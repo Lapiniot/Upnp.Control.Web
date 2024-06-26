@@ -15,8 +15,6 @@ internal sealed class PLAddItemsCommandHandler : PLCommandBase, IAsyncCommandHan
 
     public Task ExecuteAsync(PLAddItemsCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-        ArgumentNullException.ThrowIfNull(command.Source);
         ArgumentNullException.ThrowIfNull(command.Source.Items);
         ArgumentException.ThrowIfNullOrEmpty(command.DeviceId);
         ArgumentException.ThrowIfNullOrEmpty(command.PlaylistId);

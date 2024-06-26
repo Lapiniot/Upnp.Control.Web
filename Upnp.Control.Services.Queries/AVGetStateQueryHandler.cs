@@ -13,8 +13,6 @@ internal sealed class AVGetStateQueryHandler : IAsyncQueryHandler<AVGetStateQuer
 
     public async Task<AVState> ExecuteAsync(AVGetStateQuery query, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(query);
-
         var (deviceId, detailed) = query;
         var avt = await factory.GetServiceAsync<AVTransportService>(deviceId, cancellationToken).ConfigureAwait(false);
         var actions = await avt.GetCurrentTransportActionsAsync(0, cancellationToken).ConfigureAwait(false);

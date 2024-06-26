@@ -16,8 +16,6 @@ internal sealed class PLCreateFromItemsCommandHandler : PLCommandBase, IAsyncCom
 
     public async Task ExecuteAsync(PLCreateFromItemsCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var (deviceId, (title, (sourceDeviceId, ids, depth))) = command;
         var maxDepth = depth ?? options.Value.MaxContainerScanDepth;
 
