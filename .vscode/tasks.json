@@ -53,6 +53,7 @@
                 "publish",
                 "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
                 "--runtime=${input:rid}",
+                "--framework=${input:fw}",
                 "--self-contained",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
@@ -70,6 +71,7 @@
                 "-t:PublishAllImages",
                 "-p:Configuration=Release",
                 "-p:PublishProfile=DefaultContainer",
+                "-p:TargetFramework=${input:fw}",
                 "-p:RuntimeIdentifiers=\"${input:container_rids}\"",
                 "-p:ContainerRepository=\"${input:container_repository}\"",
                 "-p:ContainerRegistry=\"${input:container_registry}\"",
@@ -84,7 +86,7 @@
                 ".NET: publish (sc-trimmed)"
             ],
             "type": "shell",
-            "command": "du -shA \"${workspaceFolder}/artifacts/publish/Upnp.Control.Web/release_${input:rid}/\"",
+            "command": "du -shA \"${workspaceFolder}/artifacts/publish/Upnp.Control.Web/release_${input:fw}_${input:rid}/\"",
             "problemMatcher": []
         },
         {
@@ -180,6 +182,16 @@
             "default": "osx-x64"
         },
         {
+            "id": "fw",
+            "description": "Target framework to publish",
+            "type": "pickString",
+            "options": [
+                "net8.0",
+                "net9.0"
+            ],
+            "default": "net9.0"
+        },
+        {
             "id": "container_rids",
             "description": "Runtime Identifiers To Publish",
             "type": "promptString",
@@ -187,13 +199,13 @@
         },
         {
             "id": "container_repository",
-            "description": "Container Registry",
+            "description": "Container Repository",
             "type": "promptString",
             "default": "<username>/upnp-dashboard"
         },
         {
             "id": "container_registry",
-            "description": "Container Registry",
+            "description": "Container Registry (set empty to push to the local Docker registry)",
             "type": "promptString",
             "default": "docker.io"
         }

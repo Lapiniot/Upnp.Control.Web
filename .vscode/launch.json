@@ -9,11 +9,10 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": ".NET: build",
-            "program": "${workspaceFolder}/artifacts/bin/Upnp.Control.Web/debug/Upnp.Control.Web.dll",
+            "program": "${workspaceFolder}/artifacts/bin/Upnp.Control.Web/debug_net9.0/Upnp.Control.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Upnp.Control.Web",
             "stopAtEntry": false,
-            "allowFastEvaluate": true,
             "logging": {
                 "moduleLoad": false,
                 "threadExit": false,
