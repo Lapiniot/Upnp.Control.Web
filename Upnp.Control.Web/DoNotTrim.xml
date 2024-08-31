@@ -1,4 +1,12 @@
 <linker>
+  <assembly fullname="Microsoft.EntityFrameworkCore">
+    <type fullname="Microsoft.EntityFrameworkCore.ChangeTracking.EntryCurrentValueComparer`1">
+      <method name=".ctor" />
+    </type>
+    <type fullname="Microsoft.EntityFrameworkCore.ChangeTracking.Internal.NullableClassCurrentProviderValueComparer`2">
+      <method name=".ctor" />
+    </type>
+  </assembly>
   <assembly fullname="Upnp.Control.DataAccess" />
   <assembly fullname="Swashbuckle.AspNetCore.SwaggerGen">
     <type fullname="Swashbuckle.AspNetCore.SwaggerGen.XmlCommentsParameterFilter">
