@@ -149,8 +149,7 @@
             "path": "Upnp.Control.Web/ClientApp",
             "group": "build",
             "problemMatcher": [],
-            "label": "npm: build - Upnp.Control.Web/ClientApp",
-            "detail": "tsc && vite build"
+            "label": "npm: build"
         },
         {
             "type": "npm",
@@ -159,8 +158,7 @@
             "problemMatcher": [
                 "$eslint-compact"
             ],
-            "label": "npm: lint - Upnp.Control.Web/ClientApp",
-            "detail": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+            "label": "npm: lint"
         }
     ],
     "inputs": [

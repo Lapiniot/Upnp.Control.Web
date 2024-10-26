@@ -26,6 +26,7 @@ export function Snackbar({ children, actionText, onAction, className, dismissSig
         if (dismissSignal?.aborted !== true) {
             const target = elementRef.current!;
             target.classList.add("show", "showing");
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             target.offsetHeight;
             target.classList.remove("showing");
         } else {

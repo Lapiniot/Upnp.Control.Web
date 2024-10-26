@@ -10,7 +10,6 @@ export class Database {
 
     private constructor(database: IDBDatabase) {
         this.db = database;
-        this.db.transaction
     }
 
     static open(name: string, version: number, upgradeHandler?: (this: IDBOpenDBRequest, ev: IDBVersionChangeEvent) => unknown) {
