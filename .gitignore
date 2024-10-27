@@ -14,7 +14,7 @@ Upnp.Control.Web/config/*
 *.css
 Upnp.Control.Web/ClientApp/public/service-worker.js
 Upnp.Control.Web/ClientApp/public/service-worker.js.map
-tsconfig.node.tsbuildinfo
+*.tsbuildinfo
 vite.config.js
 Upnp.Control.Web/ClientApp/dist
 artifacts

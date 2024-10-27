@@ -23,14 +23,14 @@ export default function generateSW(config: GenerateSWConfig): Plugin {
     const { manifestExtraFiles, filter, manifestPlaceholder, ...options } = {
         ...defaults, ...config, build: {
             ...defaults.build, ...config.build,
-            rollupOptions: { ...defaults.build.rollupOptions, ...config.build.rollupOptions }
+            rollupOptions: { ...defaults.build!.rollupOptions, ...config.build!.rollupOptions }
         }
     };
     return {
         name: "vite-plugin-generate-service-worker",
         enforce: "post",
         async generateBundle(_, bundle) {
-            const names = Object.getOwnPropertyNames(bundle).concat(manifestExtraFiles).filter(filter);
+            const names = Object.getOwnPropertyNames(bundle).concat(manifestExtraFiles!).filter(filter!);
             const { output } = await viteBuild({
                 ...options,
                 configFile: false,
@@ -51,7 +51,7 @@ export default function generateSW(config: GenerateSWConfig): Plugin {
                                     const chunkOrAsset = bundle[name];
                                     if (isChunk(chunkOrAsset)) {
                                         chunkOrAsset.code = chunkOrAsset.code
-                                            .replaceAll(manifestPlaceholder, JSON.stringify(names))
+                                            .replaceAll(manifestPlaceholder!, JSON.stringify(names))
                                             .replaceAll("self.__BUILD_HASH", `\"${getRandomHash()}\"`)
                                     }
                                 }
