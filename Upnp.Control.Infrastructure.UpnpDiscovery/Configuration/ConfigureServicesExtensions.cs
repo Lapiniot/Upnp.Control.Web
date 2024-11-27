@@ -45,8 +45,16 @@ public static partial class ConfigureServicesExtensions
                 socket.ConfigureMulticastOptions(mcintAddress, options.MulticastTTL).JoinMulticastGroup(groupEndPoint, mcintAddress);
 
                 // Query MulticastInterface option from the configured socket directly to get effectively applied value
-                var mcint = (int)socket.GetSocketOption(socket.AddressFamily is AddressFamily.InterNetwork ? SocketOptionLevel.IP : SocketOptionLevel.IPv6, SocketOptionName.MulticastInterface);
-                LogMulticastConfiguration(logger, groupEndPoint, new IPAddress(mcint));
+                var isIPv4 = socket.AddressFamily is AddressFamily.InterNetwork;
+                var mcint = (uint)(int)socket.GetSocketOption(isIPv4 ? SocketOptionLevel.IP : SocketOptionLevel.IPv6, SocketOptionName.MulticastInterface);
+                mcintAddress = isIPv4
+                    ? new IPAddress(mcint)
+                    : NetworkInterface.GetAllNetworkInterfaces()
+                        .Select(iface => iface.GetIPProperties())
+                        .First(ipp => ipp.GetIPv6Properties().Index == mcint).UnicastAddresses
+                            .First(ua => ua.Address.AddressFamily is AddressFamily.InterNetworkV6).Address;
+
+                LogMulticastConfiguration(logger, groupEndPoint, mcintAddress);
             },
             new RepeatPolicyBuilder()
                 .WithExponentialInterval(2, options.SearchIntervalSeconds)
