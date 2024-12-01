@@ -32,8 +32,11 @@ public static partial class ConfigureServicesExtensions
         var options = serviceProvider.GetRequiredService<IOptions<SsdpOptions>>().Value;
         var logger = serviceProvider.GetRequiredService<ILogger<UpnpDiscoveryService>>();
 
-        return new SsdpSearchEnumerator(UpnpServices.RootDevice,
-            (socket, groupEndPoint) =>
+        return new SsdpSearchEnumerator(
+            searchTarget: UpnpServices.RootDevice,
+            groupEndPoint: options.ForceIPv6 ? SocketBuilderExtensions.GetIPv6SSDPGroup() : SocketBuilderExtensions.GetIPv4SSDPGroup(),
+            userAgent: null,
+            configureSocket: (socket, groupEndPoint) =>
             {
                 var mcintAddress = (options.MulticastInterface switch
                 {
@@ -56,7 +59,7 @@ public static partial class ConfigureServicesExtensions
 
                 LogMulticastConfiguration(logger, groupEndPoint, mcintAddress);
             },
-            new RepeatPolicyBuilder()
+            searchRepeatPolicy: new RepeatPolicyBuilder()
                 .WithExponentialInterval(2, options.SearchIntervalSeconds)
                 .WithJitter(500, 1000)
                 .Build());

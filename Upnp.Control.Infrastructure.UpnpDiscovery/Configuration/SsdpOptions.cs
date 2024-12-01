@@ -12,6 +12,8 @@ public class SsdpOptions
 
     [Range(1, byte.MaxValue)]
     public byte MulticastTTL { get; set; } = 1;
+
+    public bool ForceIPv6 { get; set; }
 }
 
 [OptionsValidator]
