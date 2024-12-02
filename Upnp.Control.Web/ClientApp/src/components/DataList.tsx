@@ -11,15 +11,14 @@ type DataListProps<T> = HTMLAttributes<HTMLDivElement> & {
 }
 
 export function DataList<T extends string | number | object>({
-    children, className, editable, editMode, template, context,
+    children, className, editable = false, editMode, template: Container = "div", context,
     onToggleModeRequested, onDeleteRequested, ...other }: DataListProps<T>) {
+
     const toggleHandler = useCallback(() => onToggleModeRequested?.(context), [onToggleModeRequested, context]);
     const deleteHandler = useCallback<MouseEventHandler<HTMLButtonElement>>(
         ({ currentTarget: { dataset: { index, key } } }) =>
             onDeleteRequested?.(parseInt(index ?? ""), key, context), [onDeleteRequested, context]);
-    const ref = useRefWithPressHoldGesture<HTMLDivElement>(toggleHandler, editable ?? false);
-
-    const Container: ElementType = template ?? "div";
+    const ref = useRefWithPressHoldGesture<HTMLDivElement>(toggleHandler, editable);
 
     return <div role="list" {...other} className={`d-grid grid-list flex-1 g-3 p-3${className ? ` ${className}` : ""}`} ref={ref}>
         {React.Children.map(children, (child, index) =>
@@ -31,9 +30,4 @@ export function DataList<T extends string | number | object>({
                 </button>}
             </Container>)}
     </div>
-}
-
-DataList.defaultProps = {
-    template: "div",
-    editable: false
 }

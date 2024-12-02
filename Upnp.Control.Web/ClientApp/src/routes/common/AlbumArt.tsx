@@ -27,9 +27,7 @@ const playerMap: IconMap = {
 
 type AlbumArtProps = HTMLAttributes<HTMLOrSVGElement> & { itemClass: string, albumArts?: string[], hint?: "browser" | "player" };
 
-AlbumArt.defaultProps = { itemClass: "object.item" }
-
-export default function AlbumArt({ itemClass, albumArts, className, hint, ...other }: AlbumArtProps) {
+export default function AlbumArt({ itemClass = "object.item", albumArts, className, hint, ...other }: AlbumArtProps) {
     itemClass = itemClass.substring(7);
     const map = hint === "player" ? playerMap : classicMap;
     return albumArts?.length
