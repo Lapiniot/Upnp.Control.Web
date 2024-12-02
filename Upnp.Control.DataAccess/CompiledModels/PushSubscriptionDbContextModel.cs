@@ -34,7 +34,7 @@ namespace Upnp.Control.DataAccess.CompiledModels
             }
 
             model.Customize();
-            _instance = model;
+            _instance = (PushSubscriptionDbContextModel)model.FinalizeModel();
         }
 
         private static PushSubscriptionDbContextModel _instance;

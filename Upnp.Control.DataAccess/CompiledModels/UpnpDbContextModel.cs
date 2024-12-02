@@ -34,7 +34,7 @@ namespace Upnp.Control.DataAccess.CompiledModels
             }
 
             model.Customize();
-            _instance = model;
+            _instance = (UpnpDbContextModel)model.FinalizeModel();
         }
 
         private static UpnpDbContextModel _instance;
