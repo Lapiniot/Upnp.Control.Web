@@ -4,7 +4,7 @@ namespace Upnp.Control.Models;
 
 public sealed record DeviceDescription(string Udn, string Name, string Description);
 
-public record struct GetContentOptions(
+public sealed record GetContentOptions(
     bool WithChildren = true, bool WithParents = true,
     bool WithResourceProps = false, bool WithVendorProps = false,
     bool WithMetadata = false, bool WithDevice = true,

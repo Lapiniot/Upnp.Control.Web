@@ -11,10 +11,11 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnablePreviewFeatures>true</EnablePreviewFeatures>
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.Http.Generated</InterceptorsNamespaces>
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
-    <EnableRequestDelegateGenerator>false</EnableRequestDelegateGenerator>
+    <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 </Project>
