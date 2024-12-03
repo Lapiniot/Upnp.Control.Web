@@ -28,7 +28,7 @@ const themeStorage: ThemeStorage = {
 
 root.render(
     <ThemeProvider storage={themeStorage}>
-        <BrowserRouter basename={baseUrl} future={{ v7_relativeSplatPath: true }}>
+        <BrowserRouter basename={baseUrl}>
             <div className="shell">
                 <div className="navbar">
                     <a className="navbar-brand d-none d-lg-inline" href="/">UPnP Dashboard</a>
