@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useDataFetch } from "../../hooks/DataFetch";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
 import WebApi from "../../services/WebApi";

@@ -2,7 +2,7 @@ import {
     Children, ContextType, createContext, PropsWithChildren,
     ReactElement, ReactNode, useCallback, useContext, useRef, useState
 } from "react";
-import { matchRoutes, resolvePath, RouteMatch, RouteObject } from "react-router-dom";
+import { matchRoutes, resolvePath, RouteMatch, RouteObject } from "react-router";
 import { NavigateFunction, NavigationContext, Path } from "../hooks/Navigator";
 
 interface VirtualRouterProps {

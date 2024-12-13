@@ -1,5 +1,5 @@
 import { createContext, MouseEvent, useCallback, useContext, useRef } from "react";
-import * as ReactRouter from "react-router-dom";
+import * as ReactRouter from "react-router";
 
 export type Path = {
     pathname: string;
@@ -18,7 +18,7 @@ interface NavigationContextHooks {
     useResolvedPathImpl(to: string | Partial<Path>): Path;
 }
 
-// Initialize context defaults to "react-router-dom" provided implementations
+// Initialize context defaults to "react-router" provided implementations
 const NavigationContext = createContext<NavigationContextHooks>({
     useNavigateImpl: ReactRouter.useNavigate,
     useParamsImpl: ReactRouter.useParams,

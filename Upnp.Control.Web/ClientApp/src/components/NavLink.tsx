@@ -1,5 +1,5 @@
 import { AnchorHTMLAttributes } from "react";
-import { NavLink, NavLinkProps } from "react-router-dom";
+import { NavLink, NavLinkProps } from "react-router";
 import { useNavigatorClickHandler, useNavigatorResolvedPath } from "../hooks/Navigator";
 
 export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {

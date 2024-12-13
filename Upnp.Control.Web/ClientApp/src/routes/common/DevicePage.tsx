@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useDataFetch } from "../../hooks/DataFetch";
 import { GridViewMode } from "../../components/GridView";
 import WebApi from "../../services/WebApi";

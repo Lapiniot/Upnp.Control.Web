@@ -1,7 +1,7 @@
 import { forwardRef, useMemo, useRef } from "react";
 import NotificationsHostCore, { INotificationHost } from "../../components/NotificationsHost";
 import { useSignalR } from "../../hooks/SignalR";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const NotificationsHost = forwardRef(NotificationsHostCore)
 

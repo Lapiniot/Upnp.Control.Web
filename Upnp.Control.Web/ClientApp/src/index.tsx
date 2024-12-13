@@ -1,6 +1,6 @@
 import "./styles/index.scss";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router";
 import "./GlobalConfig";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalRConnection";
@@ -33,7 +33,7 @@ root.render(
                 <div className="navbar">
                     <a className="navbar-brand d-none d-lg-inline" href="/">UPnP Dashboard</a>
                     <nav>
-                        <RouteLink to="/" end icon="symbols.svg#home_work" className="nav-link">Home</RouteLink>
+                        <RouteLink end to="/" icon="symbols.svg#home_work" className="nav-link">Home</RouteLink>
                         <RouteLink to="/upnp" icon="symbols.svg#devices" className="nav-link"><span><span className="d-none d-lg-inline">UPnP&nbsp;</span>Devices</span></RouteLink>
                         <RouteLink to="/renderers" icon="symbols.svg#connected_tv" className="nav-link"><span><span className="d-none d-lg-inline">Network&nbsp;</span>Players</span></RouteLink>
                         <RouteLink to="/umi" icon="symbols.svg#speaker" className="nav-link"><span><span className="d-none d-lg-inline">Xiaomi&nbsp;</span>Speakers</span></RouteLink>
