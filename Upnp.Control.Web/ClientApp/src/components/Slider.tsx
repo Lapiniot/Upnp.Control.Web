@@ -1,6 +1,5 @@
 import { CSSProperties, HTMLProps, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
-import { useSlideGesture } from "../hooks/Gestures";
-import { SlideParams } from "../services/gestures/SlideGestureRecognizer";
+import { SlideGestureRecognizer, SlideParams } from "../services/gestures/SlideGestureRecognizer";
 import { useDebounce } from "../hooks/Debounce";
 import { clamp } from "../services/Extensions";
 
@@ -27,7 +26,6 @@ export default function Slider(props: SliderProps) {
     const { className, value: initial = 0, reportMode, style = {}, onChange, readOnly, step = 0.05, ...other } = props;
     const [value, setValue] = useState(initial);
     const [updatePending, setUpdatePending] = useState(false);
-    const elementRef = useRef<HTMLDivElement>(null);
     const crRef = useRef<DOMRect>(null);
     const valueRef = useRef(value);
     const onChangeDebounced = useDebounce(onChange, 200);
@@ -46,24 +44,6 @@ export default function Slider(props: SliderProps) {
             onChangeDebounced(value);
         }
     }, [value, reportMode, onChangeDebounced]);
-
-    const slideGestureCallback = useCallback((_target: unknown, _gesture: unknown, { phase, x }: SlideParams) => {
-        if (readOnly) return;
-        const element = elementRef.current!;
-
-        if (phase === "start") {
-            crRef.current = element.getBoundingClientRect();
-            setUpdatePending(true);
-        }
-
-        const cr = crRef.current!;
-        const value = clamp(0.0, ((x - cr.x) / cr.width), 1.0);
-        setValue(value);
-
-        if (phase === "end") {
-            setUpdatePending(false);
-        }
-    }, [readOnly]);
 
     const keyboardHandler = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
         switch (e.key) {
@@ -90,9 +70,32 @@ export default function Slider(props: SliderProps) {
         }
     }, [step]);
 
-    useSlideGesture(elementRef, slideGestureCallback);
+    //useSlideGesture(elementRef, slideGestureCallback);
+    const refCallback = useCallback((element: HTMLDivElement) => {
+        const recognizer = new SlideGestureRecognizer((_, __, { phase, x }: SlideParams) => {
+            if (readOnly) return;
 
-    return <div tabIndex={0} {...other} role="slider" ref={elementRef} data-value={value}
+            if (phase === "start") {
+                crRef.current = element.getBoundingClientRect();
+                setUpdatePending(true);
+            }
+
+            const cr = crRef.current!;
+            const value = clamp(0.0, ((x - cr.x) / cr.width), 1.0);
+            setValue(value);
+
+            if (phase === "end") {
+                setUpdatePending(false);
+            }
+        });
+
+        recognizer.bind(element);
+        return () => {
+            recognizer.unbind();
+        };
+    }, [readOnly]);
+
+    return <div tabIndex={0} {...other} role="slider" ref={refCallback} data-value={value}
         onKeyDown={keyboardHandler} onKeyUp={keyboardHandler}
         className={`slider${className ? ` ${className}` : ""}`}
         style={{

@@ -1,5 +1,5 @@
-import React, { ElementType, HTMLAttributes, MouseEventHandler, useCallback } from "react";
-import { useRefWithPressHoldGesture } from "../hooks/Gestures";
+import React, { ElementType, HTMLAttributes, MouseEventHandler, useCallback, useEffect, useRef } from "react";
+import { PressHoldGestureRecognizer } from "../services/gestures/PressHoldGestureRecognizer";
 
 type DataListProps<T> = HTMLAttributes<HTMLDivElement> & {
     context?: T;
@@ -14,11 +14,20 @@ export function DataList<T extends string | number | object>({
     children, className, editable = false, editMode, template: Container = "div", context,
     onToggleModeRequested, onDeleteRequested, ...other }: DataListProps<T>) {
 
-    const toggleHandler = useCallback(() => onToggleModeRequested?.(context), [onToggleModeRequested, context]);
+    const ref = useRef<HTMLDivElement>(null);
     const deleteHandler = useCallback<MouseEventHandler<HTMLButtonElement>>(
         ({ currentTarget: { dataset: { index, key } } }) =>
             onDeleteRequested?.(parseInt(index ?? ""), key, context), [onDeleteRequested, context]);
-    const ref = useRefWithPressHoldGesture<HTMLDivElement>(toggleHandler, editable);
+
+    useEffect(() => {
+        if (ref.current && editable) {
+            const recognizer = new PressHoldGestureRecognizer(() => onToggleModeRequested?.(context));
+            recognizer.bind(ref.current);
+            return () => {
+                return recognizer.unbind();
+            };
+        }
+    }, [context, editable, onToggleModeRequested]);
 
     return <div role="list" {...other} className={`d-grid grid-list flex-1 g-3 p-3${className ? ` ${className}` : ""}`} ref={ref}>
         {React.Children.map(children, (child, index) =>
