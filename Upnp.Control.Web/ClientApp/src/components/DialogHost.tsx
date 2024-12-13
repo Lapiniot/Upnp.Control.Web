@@ -1,7 +1,4 @@
-import {
-    cloneElement, ComponentPropsWithRef, ForwardedRef, forwardRef,
-    ReactElement, ReactNode, useImperativeHandle, useState
-} from "react";
+import { cloneElement, ComponentPropsWithRef, ReactElement, ReactNode, Ref, useImperativeHandle, useState } from "react";
 import Dialog from "./Dialog";
 import { Portal } from "./Portal";
 
@@ -11,7 +8,7 @@ export interface IDialogHost {
     show(dialog: DialogElement): void;
 }
 
-function DialogHostCore(_: unknown, ref: ForwardedRef<IDialogHost | undefined>) {
+export function DialogHost({ ref }: { ref: Ref<IDialogHost> }) {
     useImperativeHandle(ref, () => ({
         show(dialog: DialogElement) {
             const onDismissed = dialog.props.onDismissed;
@@ -30,5 +27,3 @@ function DialogHostCore(_: unknown, ref: ForwardedRef<IDialogHost | undefined>) 
     const [state, setState] = useState<ReactNode>();
     return <Portal selector="#modal-root">{state}</Portal>;
 }
-
-export const DialogHost = forwardRef(DialogHostCore);

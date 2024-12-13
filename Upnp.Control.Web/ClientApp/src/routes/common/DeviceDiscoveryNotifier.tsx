@@ -1,12 +1,9 @@
-import { forwardRef, useMemo, useRef } from "react";
-import NotificationsHostCore, { INotificationHost } from "../../components/NotificationsHost";
-import { useSignalR } from "../../hooks/SignalR";
+import { useMemo, useRef } from "react";
 import { useNavigate } from "react-router";
-
-const NotificationsHost = forwardRef(NotificationsHostCore)
+import NotificationsHost, { INotificationHost } from "../../components/NotificationsHost";
+import { useSignalR } from "../../hooks/SignalR";
 
 type DiscoveryCallback = (type: string, device: Upnp.Device) => void | boolean
-
 type DiscoveryMessage = { type: NotificationType, device: Upnp.Device }
 
 export function DeviceDiscoveryNotifier({ callback }: { callback?: DiscoveryCallback }) {

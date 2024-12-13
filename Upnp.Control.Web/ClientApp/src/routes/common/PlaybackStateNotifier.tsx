@@ -1,9 +1,8 @@
-import { forwardRef, useMemo, useRef } from "react";
-import NotificationsHostCore, { INotificationHost } from "../../components/NotificationsHost";
+import { useMemo, useRef } from "react";
+import NotificationsHost, { INotificationHost } from "../../components/NotificationsHost";
 import { useSignalR } from "../../hooks/SignalR";
 import { TrackInfoLine } from "./TrackInfoLine";
 
-const NotificationsHost = forwardRef(NotificationsHostCore);
 type PlaybackStateChangedCallback = (state: Upnp.AVState, vendor: Record<string, string>) => void | boolean;
 
 export function PlaybackStateNotifier({ callback }: { callback?: PlaybackStateChangedCallback; }) {

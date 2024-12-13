@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { Ref, useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { Portal } from "./Portal";
 import { Snackbar } from "./Snackbar";
 
@@ -13,15 +13,15 @@ export interface INotificationHost {
 
 function initializer() { return { map: new Map<string, Notification>() } }
 
-export default function (_: unknown, ref: React.Ref<INotificationHost>) {
-    const [{ map }, setState] = React.useState(initializer);
+export default function ({ ref }: { ref: Ref<INotificationHost> }) {
+    const [{ map }, setState] = useState(initializer);
     const { done, value } = map.entries().next();
 
-    const handler = React.useCallback(({ dataset: { id: key } }: HTMLDivElement) => {
+    const handler = useCallback(({ dataset: { id: key } }: HTMLDivElement) => {
         setState(({ map }) => { map.delete(key!); return { map } })
     }, []);
 
-    React.useImperativeHandle(ref, () => ({
+    useImperativeHandle(ref, () => ({
         push(notification) {
             setState(({ map }) => { map.set(notification.id, notification); return { map }; })
         }
