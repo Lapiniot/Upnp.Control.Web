@@ -1,12 +1,5 @@
 declare module "react" {
-    interface HTMLAttributes {
-        inert?: "";
-        popover?: "auto" | "manual" | "";
-        popovertarget?: string;
-        popovertargetaction?: "hide" | "show" | "toggle";
-    }
-
-    interface NativeFormEvent {
+    interface NativeFormEvent extends Event {
         submitter: Nullable<HTMLInputElement | HTMLButtonElement>;
     }
 

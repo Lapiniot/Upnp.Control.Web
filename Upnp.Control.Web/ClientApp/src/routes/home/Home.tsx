@@ -32,7 +32,7 @@ type BoormarksProps<TKey extends (string | string[]), TProps> = {
 } & DetailsHTMLAttributes<HTMLDetailsElement>
 
 function Bookmarks<TKey extends (string | string[]), TProps>({ store, caption, icon, keygen, group, ...other }: BoormarksProps<TKey, TProps>) {
-    const dialogHostRef = useRef<IDialogHost>();
+    const dialogHostRef = useRef<IDialogHost>(null);
     const bookmarks = useSyncExternalStore(store.subscribe, store.getSnapshot);
     const count = bookmarks?.length ?? 0;
     const [editMode, setEditMode] = useState(false);

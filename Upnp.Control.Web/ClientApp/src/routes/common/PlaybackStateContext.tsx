@@ -55,7 +55,7 @@ type PlaybackStateProviderProps = PropsWithChildren<{
     fetchVendorState?(deviceId: string): Promise<Record<string, string>>
 } & FetchStateFlags>
 
-function reducer(state: InternalState, action: StateAction | MediaAction) {
+function reducer(state: InternalState, action: StateAction | MediaAction): InternalState {
     switch (action.type) {
         case "BEGIN_INIT": {
             const { device, dispatch, fetch } = action;
@@ -133,7 +133,7 @@ function createFetch(fetchState: boolean, fetchPosition: boolean, fetchVolume: b
     }
 }
 
-const initialState = {};
+const initialState: InternalState = {};
 
 export function PlaybackStateProvider({ device, trackState = true, trackPosition = false, trackVolume = false, fetchVendorState, ...other }: PlaybackStateProviderProps) {
     const [state, dispatch] = useReducer(reducer, initialState);

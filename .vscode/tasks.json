@@ -150,7 +150,13 @@
             "script": "build",
             "path": "Upnp.Control.Web/ClientApp",
             "group": "build",
-            "problemMatcher": [],
+            "problemMatcher": {
+                "base": "$tsc",
+                "fileLocation":[
+                    "relative",
+                    "${workspaceFolder}/Upnp.Control.Web/ClientApp"
+                ]
+            },
             "label": "npm: build"
         },
         {

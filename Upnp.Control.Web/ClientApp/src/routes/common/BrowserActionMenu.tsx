@@ -37,7 +37,7 @@ export function BrowserActions({ umis, renderers, device, onSelected }: BrowserA
 
     return <>
         {searchSupported ? <SearchView className="topbar-search" /> : undefined}
-        <Toolbar.Button icon="symbols.svg#more_vert" popovertarget="browser-actions"
+        <Toolbar.Button icon="symbols.svg#more_vert" popoverTarget="browser-actions"
             className="btn-icon" disabled={!enabled} />
         {enabled && <Menu id="browser-actions" activation="explicit" className="drop-bottom" onSelected={onSelectedHandler}>
             {umiAcceptable && <>

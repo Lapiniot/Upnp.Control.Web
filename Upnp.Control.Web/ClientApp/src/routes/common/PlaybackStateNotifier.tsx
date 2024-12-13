@@ -8,7 +8,7 @@ type PlaybackStateChangedCallback = (state: Upnp.AVState, vendor: Record<string,
 
 export function PlaybackStateNotifier({ callback }: { callback?: PlaybackStateChangedCallback; }) {
     const ntRef = useRef<INotificationHost>(null);
-    const idRef = useRef<string>();
+    const idRef = useRef<string>(null);
 
     const handlers = useMemo(() => ({
         "AVTransportEvent": (_: string, { device, state, vendorProps = {} }: { device: Upnp.DeviceDescription, state: Upnp.AVState; vendorProps: Record<string, string> }) => {

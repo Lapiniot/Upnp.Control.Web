@@ -1,7 +1,7 @@
 import { RefObject, useLayoutEffect, useRef } from "react";
 
 export function useMutationObserver(ref: RefObject<Element>, callback: MutationCallback, attributes = true, childList = false, subtree = false) {
-    const observerRef = useRef<MutationObserver>();
+    const observerRef = useRef<MutationObserver>(null);
 
     useLayoutEffect(() => {
         observerRef.current?.disconnect();

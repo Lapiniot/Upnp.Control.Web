@@ -35,8 +35,7 @@ export default ({ caption, children, className, disabled, context, renderCaption
         }
     }, []);
 
-    return <details ref={ref} className={`spoiler${className ? ` ${className}` : ""}`}
-        {...other} inert={disabled ? "" : undefined}>
+    return <details ref={ref} className={`spoiler${className ? ` ${className}` : ""}`} {...other} inert={disabled}>
         <summary onClick={handler}>
             <div>{typeof renderCaption === "function" ? renderCaption(caption, context) : caption}</div>
         </summary>

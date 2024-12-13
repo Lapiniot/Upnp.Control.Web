@@ -13,7 +13,7 @@ type OpenActionProps = DeviceActionProps & {
 }
 
 export function OpenAction({ children, className, browserProps, device, category, rowStateMapper, ...other }: OpenActionProps) {
-    const dialogHostRef = useRef<IDialogHost>();
+    const dialogHostRef = useRef<IDialogHost>(null);
     const deviceId = device?.udn;
     const playHandler = useCallback((data: BrowseResult) => {
         const { keys: { 0: objectId }, device: source } = data;

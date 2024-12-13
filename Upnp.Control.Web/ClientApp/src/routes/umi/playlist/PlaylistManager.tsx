@@ -309,7 +309,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                 <PlaylistRowStateProvider items={data?.source.items} getActiveTrackIndexHook={data?.source.items && this.getActiveTrackIndex}>
                     <PlaylistManagerToolbar className="br-area-top" service={this.service} editMode={this.state.editMode} compact={!largeScreen} rootLevel={isRootLevel}
                         fetching={fetching} title={data?.source.parents?.[0]?.title} subtitle={data?.source.device?.name} />
-                    <Browser inert={fetching ? "" : undefined} nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
+                    <Browser inert={fetching} nodeRef={this.browserNodeRef} dataContext={data} fetching={fetching} error={error}
                         className="br-area-main flex-fill pb-6"
                         device={device} deviceName={this.props.dataContext?.source.device?.name} getUrlHook={this.getPlayUrl}
                         navigate={navigate} hotKeyHandler={this.hotKeyHandler}

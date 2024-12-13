@@ -14,7 +14,12 @@ export function Form({ onSubmit, method, action, ...props }: FormHTMLAttributes<
                     params.append(name, value);
                 }
             });
-            navigate({ pathname: action, search: params.toString() });
+            if (typeof action === "function") {
+                action(data);
+            }
+            else {
+                navigate({ pathname: action, search: params.toString() });
+            }
         }
     }, [onSubmit, method, action, navigate]);
     return <form {...props} method={method} onSubmit={submit} />

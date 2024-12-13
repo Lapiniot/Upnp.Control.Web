@@ -3,7 +3,7 @@ import { SignalRContext } from "../components/SignalRConnection";
 
 export function useSignalR<T extends unknown[]>(callbacks: Record<string, (...args: T)=> void>) {
     const connection = useContext(SignalRContext);
-    const prevRef = useRef<{ connection: typeof connection, callbacks: typeof callbacks }>();
+    const prevRef = useRef<{ connection: typeof connection, callbacks: typeof callbacks }>(null);
 
     useEffect(function () {
         cleanup();

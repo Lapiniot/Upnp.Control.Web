@@ -73,7 +73,7 @@ function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonE
     const volumeStr = muted ? "Muted" : `${volume}%`;
     const volumeIcon = muted ? "volume_off" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
     return <>
-        <Button {...other} popovertarget={id} title={volumeStr} className={`pl-volume-btn${className ? ` ${className}` : ""}`} icon={`symbols.svg#${volumeIcon}`} />
+        <Button {...other} popoverTarget={id} title={volumeStr} className={`pl-volume-btn${className ? ` ${className}` : ""}`} icon={`symbols.svg#${volumeIcon}`} />
         <Menu id={id} activation="explicit" className="volume-ctrl drop-left-center">
             <li className="hstack">
                 <button type="button" className="btn btn-icon ms-1" onClick={toggleMute}>

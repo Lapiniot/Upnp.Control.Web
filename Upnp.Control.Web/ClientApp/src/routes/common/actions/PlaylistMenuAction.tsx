@@ -21,7 +21,7 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
     return <div className={className} {...other}>
         {!fetching
             ? <>
-                <button type="button" disabled={!items} className="btn btn-icon" popovertarget={id} aria-expanded="false" title="Quick switch playlists">
+                <button type="button" disabled={!items} className="btn btn-icon" popoverTarget={id} aria-expanded="false" title="Quick switch playlists">
                     <svg><use href="symbols.svg#playlist_play" /></svg>
                 </button>
                 {device && <Menu id={id} activation="explicit" className="action-sheet-sm" data-device={device.udn}>

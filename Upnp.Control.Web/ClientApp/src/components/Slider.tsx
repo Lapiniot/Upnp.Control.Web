@@ -28,7 +28,7 @@ export default function Slider(props: SliderProps) {
     const [value, setValue] = useState(initial);
     const [updatePending, setUpdatePending] = useState(false);
     const elementRef = useRef<HTMLDivElement>(null);
-    const crRef = useRef<DOMRect>();
+    const crRef = useRef<DOMRect>(null);
     const valueRef = useRef(value);
     const onChangeDebounced = useDebounce(onChange, 200);
 

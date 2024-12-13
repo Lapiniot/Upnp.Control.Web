@@ -295,7 +295,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
     render() {
         const { className, children, render, onSelected, ...other } = this.props;
         const { show, anchor } = this.state;
-        return <div popover="" ref={this.popoverRef} inert={show ? undefined : ""}
+        return <div popover="" ref={this.popoverRef} inert={!show}
             className={`dropdown-menu user-select-none fade overflow-y-hidden touch-none${className ? ` ${className}` : ""}`} {...other}
             onClick={this.popoverClickHandler} onBlur={this.focusOutHandler}>
             <ul role="menu" className="touch-auto overflow-y-auto">

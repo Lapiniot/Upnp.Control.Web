@@ -23,7 +23,7 @@ export function DeviceView({ itemTemplate: Item, dataContext, category, fetching
 type DeviceListViewProps = DeviceViewProps & DataFetchProps<Upnp.Device[]>;
 
 export function DeviceListView({ dataContext, fetching, category, viewMode = "grid", itemTemplate: Item }: DeviceListViewProps) {
-    const dataContextRef = useRef<typeof dataContext>();
+    const dataContextRef = useRef<typeof dataContext>(null);
     const handlers = useMemo(() => ({ "SsdpDiscoveryEvent": () => dataContextRef.current?.reload() }), []);
     useEffect(() => { dataContextRef.current = dataContext }, [dataContext]);
     useSignalR(handlers);

@@ -33,7 +33,7 @@ export type BrowserProps<TContext> = {
     displayMode?: DisplayMode,
     navigationMode?: NavigationMode,
     editMode?: boolean,
-    nodeRef?: RefObject<HTMLDivElement>,
+    nodeRef?: RefObject<HTMLDivElement | null>,
     renderCaption?(): ReactNode,
     renderFooter?(): ReactNode
 } & { [K in ModeFlags]?: boolean }
@@ -280,7 +280,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         const headerClass = tableMode ? (stickyHeaders ? "sticky-top" : "") : "d-none";
 
         return <div ref={nodeRef} className={`browser-view vstack overflow-auto${className ? ` ${className}` : ""}`}
-            inert={fetching ? "" : undefined} onPointerDown={this.pointerDownHandler}
+            inert={fetching} onPointerDown={this.pointerDownHandler}
             onPointerUp={navigationMode !== "dbl-click" && !editMode ? this.navigateHandler : undefined}
             onDoubleClick={navigationMode === "dbl-click" && !editMode ? this.navigateHandler : undefined}>
             <div className="table table-material user-select-none" ref={this.ref} onFocus={this.focusHandler}>
