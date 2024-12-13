@@ -25,9 +25,7 @@ export function ThemeProvider({ children, storage }: PropsWithChildren & { stora
         setColorMode(theme);
     }, [theme, storage]);
 
-    return <ThemeContext.Provider value={value}>
-        {children}
-    </ThemeContext.Provider>
+    return <ThemeContext value={value}>{children}</ThemeContext>
 }
 
 function setColorMode(theme: Exclude<UI.Theme, "auto">) {

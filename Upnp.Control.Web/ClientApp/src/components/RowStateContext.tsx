@@ -299,7 +299,7 @@ export function RowStateProvider({ items, mapper = getRowState, enabled = true, 
         dispatch({ type: "INIT", initial: { items, mapper } });
     }
 
-    return <RowStateContext.Provider {...other} value={value} />;
+    return <RowStateContext {...other} value={value} />;
 }
 
 export function useRowStates() {

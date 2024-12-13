@@ -158,11 +158,11 @@ export function VirtualRouter({ children, initialPath }: PropsWithChildren<Virtu
         setLocation(new URL(initialPath, window.location.origin));
     }
 
-    return <NavigationContext.Provider value={hooks}>
-        <RouterLocationContext.Provider value={{ location, setLocation }}>
+    return <NavigationContext value={hooks}>
+        <RouterLocationContext value={{ location, setLocation }}>
             {children}
-        </RouterLocationContext.Provider>
-    </NavigationContext.Provider>
+        </RouterLocationContext>
+    </NavigationContext>
 }
 
 export function Routes({ children }: { children: ReactElement | Iterable<ReactNode> }) {
@@ -177,9 +177,9 @@ export function Routes({ children }: { children: ReactElement | Iterable<ReactNo
 
     const merged = parentMatches?.length ? [...parentMatches, ...matches] : matches;
 
-    return <RouterMatchContext.Provider value={{ matches: merged, level: level + 1 }}>
+    return <RouterMatchContext value={{ matches: merged, level: level + 1 }}>
         {matches[0].route.element ?? <Outlet />}
-    </RouterMatchContext.Provider>
+    </RouterMatchContext>
 }
 
 export function Route(_: RouteProps): never {
@@ -190,8 +190,8 @@ export function Outlet() {
     const { matches, level } = useContext(RouterMatchContext);
     const next = level + 1;
     return (matches && next < matches.length)
-        ? <RouterMatchContext.Provider value={{ matches, level: next }}>
+        ? <RouterMatchContext value={{ matches, level: next }}>
             {matches[next].route.element ?? <Outlet />}
-        </RouterMatchContext.Provider>
+        </RouterMatchContext>
         : null
 }

@@ -176,7 +176,7 @@ export function PlaybackStateProvider({ device, trackState = true, trackPosition
 
     const value = useMemo(() => ({ state: state.media ?? {}, dispatch }), [state.media]);
 
-    return <PlaybackStateContext.Provider {...other} value={value} />;
+    return <PlaybackStateContext {...other} value={value} />;
 }
 
 export function usePlaybackEventHandlers(dispatch: Dispatch<MediaAction>) {
