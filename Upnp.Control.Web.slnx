@@ -1,0 +1,34 @@
+<Solution>
+  <Folder Name="/IoT.Device/">
+    <Project Path="IoT.Device/IoT.Device.Upnp.Umi/IoT.Device.Upnp.Umi.csproj" />
+    <Project Path="IoT.Device/IoT.Device.Upnp/IoT.Device.Upnp.csproj" />
+    <Project Path="IoT.Device/IoT.Device/IoT.Device.csproj" />
+  </Folder>
+  <Folder Name="/IoT.Device/IoT.Protocol/">
+    <Project Path="IoT.Device/IoT.Protocol/IoT.Protocol.Soap/IoT.Protocol.Soap.csproj" />
+    <Project Path="IoT.Device/IoT.Protocol/IoT.Protocol.Upnp/IoT.Protocol.Upnp.csproj" />
+    <Project Path="IoT.Device/IoT.Protocol/IoT.Protocol/IoT.Protocol.csproj" />
+  </Folder>
+  <Folder Name="/IoT.Device/IoT.Protocol/OOs.Common/">
+    <Project Path="IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Net.Http/OOs.Common.Net.Http.csproj" />
+    <Project Path="IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Net/OOs.Common.Net.csproj" />
+    <Project Path="IoT.Device/IoT.Protocol/OOs.Common/OOs.Common/OOs.Common.csproj" />
+    <Project Path="IoT.Device/IoT.Protocol/OOs.Common/OOs.Extensions.Hosting/OOs.Extensions.Hosting.csproj" />
+  </Folder>
+  <Project Path="Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
+  <Project Path="Upnp.Control.DataAccess/Upnp.Control.DataAccess.csproj" />
+  <Project Path="Upnp.Control.Extensions/Upnp.Control.Extensions.csproj" />
+  <Project Path="Upnp.Control.Infrastructure.AspNetCore.Api/Upnp.Control.Infrastructure.AspNetCore.Api.csproj" />
+  <Project Path="Upnp.Control.Infrastructure.AspNetCore/Upnp.Control.Infrastructure.AspNetCore.csproj" />
+  <Project Path="Upnp.Control.Infrastructure.PushNotifications/Upnp.Control.Infrastructure.PushNotifications.csproj" />
+  <Project Path="Upnp.Control.Infrastructure.SignalR/Upnp.Control.Infrastructure.SignalR.csproj" />
+  <Project Path="Upnp.Control.Infrastructure.Upnp/Upnp.Control.Infrastructure.Upnp.csproj" />
+  <Project Path="Upnp.Control.Infrastructure.UpnpDiscovery/Upnp.Control.Infrastructure.UpnpDiscovery.csproj" />
+  <Project Path="Upnp.Control.Infrastructure.UpnpEvents/Upnp.Control.Infrastructure.UpnpEvents.csproj" />
+  <Project Path="Upnp.Control.Infrastructure/Upnp.Control.Infrastructure.csproj" />
+  <Project Path="Upnp.Control.Models.PushNotifications/Upnp.Control.Models.PushNotifications.csproj" />
+  <Project Path="Upnp.Control.Models/Upnp.Control.Models.csproj" />
+  <Project Path="Upnp.Control.Services.Commands/Upnp.Control.Services.Commands.csproj" />
+  <Project Path="Upnp.Control.Services.Queries/Upnp.Control.Services.Queries.csproj" />
+  <Project Path="Upnp.Control.Web/Upnp.Control.Web.csproj" />
+</Solution>

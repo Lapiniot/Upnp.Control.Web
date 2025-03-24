@@ -13,7 +13,6 @@
         "**/node_modules": true,
         "**/*.user": true,
         "*/**/.vscode": true,
-        "**/*.sln": true,
         "**/.gitmodules": true,
         "IoT.Device/IoT.Device.Generators": true,
         "IoT.Device/IoT.Device.Lumi": true,
@@ -40,7 +39,7 @@
     "css.customData": [
         "Upnp.Control.Web/ClientApp/css-data.json"
     ],
-    "dotnet.defaultSolution": "Upnp.Control.Web.sln",
+    "dotnet.defaultSolution": "Upnp.Control.Web.slnx",
     "material-icon-theme.activeIconPack": "react",
     "material-icon-theme.folders.theme": "specific",
     "css.styleSheets": [
