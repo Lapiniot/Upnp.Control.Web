@@ -31,6 +31,7 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
     private dialogRef;
     private formRef;
     private observer: MutationObserver;
+    private static closedBySupported = "closedBy" in document.createElement('dialog');
 
     constructor(props: DialogProps) {
         super(props);
@@ -40,7 +41,6 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
     }
 
     public static Button = Button;
-
 
     get open() { return this.dialogRef.current?.open ?? false }
 
@@ -113,10 +113,8 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
 
     private onClick = (event: MouseEvent<HTMLDialogElement>) => {
         this.props.onClick?.(event);
-        if (!event.defaultPrevented) {
-            if (event.target === this.dialogRef.current) {
-                this.close();
-            }
+        if (event.target === this.dialogRef.current) {
+            this.close();
         }
     }
 
@@ -135,10 +133,13 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
     }
 
     render() {
-        const { caption, icon, children, actions, onDismissed, onOpen,
+        const { caption, icon, children, actions, onDismissed, onOpen, onClick,
             className, immediate, ...other } = this.props;
+        const extra = Dialog.closedBySupported
+            ? { closedBy: "any", onClick }
+            : { onClick: this.onClick };
         return <dialog role="dialog" ref={this.dialogRef} className={`dialog${className ? ` ${className}` : ""}`}
-            {...other} onClose={this.onClose} onClick={this.onClick}>
+            {...other} {...extra} onClose={this.onClose}>
             <form ref={this.formRef} method="dialog" noValidate onSubmit={this.onSubmit}>
                 <Header>{icon && <svg><use href={icon} /></svg>}<h5 className="dialog-title">{caption}</h5></Header>
                 <Body>{children}</Body>
