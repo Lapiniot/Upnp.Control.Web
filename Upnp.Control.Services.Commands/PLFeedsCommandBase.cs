@@ -7,7 +7,9 @@ namespace Upnp.Control.Services.Commands;
 internal abstract partial class PLFeedsCommandBase : PLCommandBase
 {
     private readonly HttpClient client;
+#pragma warning disable IDE0052 // Remove unread private members
     private readonly ILogger<PLFeedsCommandBase> logger;
+#pragma warning restore IDE0052 // Remove unread private members
     private readonly IOptionsSnapshot<PlaylistOptions> options;
 
     protected PLFeedsCommandBase(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
@@ -39,15 +41,17 @@ internal abstract partial class PLFeedsCommandBase : PLCommandBase
         await using (stream.ConfigureAwait(false))
         {
             var reader = PipeReader.Create(stream);
-            var encoding = Path.GetExtension(file.FileName) == ".m3u8" ? Encoding.UTF8 : Encoding.GetEncoding(options.Value.DefaultEncoding);
-            await foreach (var (path, info, _) in new M3UTrackReader(reader, encoding).WithCancellation(cancellationToken).ConfigureAwait(false))
-            {
-                await AppendFeedItemAsync(writer, new(path), info, useProxy, cancellationToken).ConfigureAwait(false);
-            }
+            var encoding = Path.GetExtension(file.FileName) == ".m3u8"
+                ? Encoding.UTF8
+                : Encoding.GetEncoding(options.Value.DefaultEncoding);
+
+            await Parallel.ForEachAsync(new M3UTrackReader(reader, encoding), cancellationToken,
+                    (track, token) => AppendFeedItemAsync(writer, new(track.Path), track.Info, useProxy, token))
+                .ConfigureAwait(false);
         }
     }
 
-    protected async Task AppendFeedItemAsync(XmlWriter writer, Uri mediaUri, string title, bool useProxy, CancellationToken cancellationToken)
+    protected async ValueTask AppendFeedItemAsync(XmlWriter writer, Uri mediaUri, string title, bool useProxy, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(mediaUri);
 
