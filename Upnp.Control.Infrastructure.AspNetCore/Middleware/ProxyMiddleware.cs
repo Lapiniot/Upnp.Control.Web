@@ -110,12 +110,12 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
         foreach (var (key, value) in responseMessage.Headers)
         {
-            headers[key] = new(value.ToArray());
+            headers[key] = new([.. value]);
         }
 
         foreach (var (key, value) in responseMessage.Content.Headers)
         {
-            headers[key] = new(value.ToArray());
+            headers[key] = new([.. value]);
         }
     }
 

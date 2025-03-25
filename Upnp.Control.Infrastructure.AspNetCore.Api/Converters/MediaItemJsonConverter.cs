@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using IoT.Protocol.Upnp.DIDL;
@@ -21,7 +22,7 @@ public sealed class MediaItemJsonConverter : JsonConverter<MediaItem>
         WriteCoreProps(writer, value);
         if (value.Creator != null) writer.WriteString("creator", value.Creator);
         if (value.Album != null) writer.WriteString("album", value.Album);
-        if (value.Date != null) writer.WriteString("date", value.Date.ToString());
+        if (value.Date != null) writer.WriteString("date", value.Date.Value.ToString(CultureInfo.InvariantCulture));
         if (value.Genre != null) writer.WriteString("genre", value.Genre);
         if (value.Description != null) writer.WriteString("description", value.Description);
         if (value.TrackNumber is { } track) writer.WriteNumber("track", track);

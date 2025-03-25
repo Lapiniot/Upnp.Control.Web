@@ -16,7 +16,7 @@ internal sealed class InMemoryEventSubscriptionStore : IEventSubscriptionStore
             }
             else
             {
-                storage[udn] = new(sessions);
+                storage[udn] = [.. sessions];
             }
         }
     }
@@ -41,7 +41,7 @@ internal sealed class InMemoryEventSubscriptionStore : IEventSubscriptionStore
     {
         lock (storage)
         {
-            return storage.Values.SelectMany(v => v).ToList();
+            return [.. storage.Values.SelectMany(v => v)];
         }
     }
 
