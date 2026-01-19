@@ -13,11 +13,8 @@ public static class ConfigureServicesExtensions
     extension(IServiceCollection services)
     {
         public IServiceCollection AddUpnpDeviceSqliteDatabase(string connectionString) => services
-            .AddSqliteDatabase<UpnpDbContext>(connectionString
-#if NET9_0
-                , builder => builder.UseModel(CompiledModels.UpnpDbContextModel.Instance)
-#endif
-            )
+            .AddSqliteDatabase<UpnpDbContext>(connectionString,
+                builder => builder.UseModel(CompiledModels.UpnpDbContextModel.Instance))
             .AddQuery<GetDeviceQuery, UpnpDevice, GetDeviceQueryHandler>()
             .AddQuery<GetDeviceDescriptionQuery, DeviceDescription, GetDeviceQueryHandler>()
             .AddEnumerableQuery<GetDevicesQuery, UpnpDevice, GetDeviceQueryHandler>()
@@ -26,11 +23,8 @@ public static class ConfigureServicesExtensions
             .AddCommand<UpdateDeviceExpirationCommand, UpdateDeviceExpirationCommandHandler>();
 
         public IServiceCollection AddPushSubscriptionSqliteDatabase(string connectionString) => services
-            .AddSqliteDatabase<PushSubscriptionDbContext>(connectionString
-#if NET9_0
-                , builder => builder.UseModel(CompiledModels.PushSubscriptionDbContextModel.Instance)
-#endif
-            )
+            .AddSqliteDatabase<PushSubscriptionDbContext>(connectionString,
+                builder => builder.UseModel(CompiledModels.PushSubscriptionDbContextModel.Instance))
             .AddQuery<PSGetQuery, PushNotificationSubscription, PSGetQueryHandler>()
             .AddEnumerableQuery<PSEnumerateQuery, PushNotificationSubscription, PSEnumerateQueryHandler>()
             .AddCommand<PSAddCommand, PSAddCommandHandler>()
