@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="CompiledModels/**" />
+    <Compile Include="CompiledModels/*.net$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)', 1)).cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes" Static="true" />
     <Using Include="Upnp.Control.Abstractions" />

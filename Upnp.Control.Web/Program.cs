@@ -1,8 +1,8 @@
 #region usings
 
-using OOs.Extensions.Hosting;
 using System.Reflection;
 using System.Text;
+using OOs.Extensions.Hosting;
 using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore;
 using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
@@ -19,9 +19,8 @@ using Upnp.Control.Services.Queries.Configuration;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-var builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions() { Args = args, ApplicationName = "upnp-dashboard" });
+var builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions() { Args = args });
 
-var dataDirectory = builder.Environment.GetAppDataPath();
 var configDirectory = builder.Environment.GetAppConfigPath();
 
 #region Application configuration
@@ -49,13 +48,20 @@ else if (OperatingSystem.IsWindows())
 
 #region Services configuration
 
-builder.Services.AddServicesInit()
+var appDbConnectionString = builder.Configuration.GetConnectionString("UpnpDeviceDb")
+    ?? throw new InvalidOperationException("Connection string 'UpnpDeviceDb' not found.");
+
+var pushSubscriptionDbConnectionString = builder.Configuration.GetConnectionString("PushSubscriptionDb")
+    ?? throw new InvalidOperationException("Connection string 'PushSubscriptionDb' not found.");
+
+builder.Services
+    .AddServicesInit()
     .AddCertificateGenInitializer()
     .AddWebPushSender()
     .AddUpnpEventsSubscription(o => o.MapRenderingControl("api/events/{0}/rc").MapAVTransport("api/events/{0}/avt"))
     .AddUpnpDiscovery()
-    .AddUpnpDeviceSqliteDatabase(Path.Combine(dataDirectory, "upnp.db3"))
-    .AddPushSubscriptionSqliteDatabase(Path.Combine(dataDirectory, "subscriptions.db3"))
+    .AddUpnpDeviceSqliteDatabase(appDbConnectionString)
+    .AddPushSubscriptionSqliteDatabase(pushSubscriptionDbConnectionString)
     .AddSignalRUpnpDiscoveryNotifications()
     .AddSignalRUpnpEventNotifications()
     .AddBase64Encoders()
