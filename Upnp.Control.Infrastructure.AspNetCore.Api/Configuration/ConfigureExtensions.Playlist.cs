@@ -16,8 +16,7 @@ public static partial class ConfigureExtensions
             .WithTags("Playlists Management")
             .DisableAntiforgery();
         group.MapGet("state", PlaylistServices.GetPlaylistStateAsync)
-            .Produces(StatusCodes.Status200OK, contentType: MediaTypeNames.Application.Json)
-            .WithOpenApi();
+            .Produces(StatusCodes.Status200OK, contentType: MediaTypeNames.Application.Json);
         group.MapPost("", PlaylistServices.CreateAsync);
         group.MapPost("items", PlaylistServices.CreateFromItemsAsync);
         group.MapPost("files", PlaylistServices.CreateFromFilesAsync);

@@ -17,8 +17,7 @@ public static partial class ConfigureExtensions
         group.MapPost("", PushNotificationSubscriptionServices.SubscribeAsync);
         group.MapDelete("", PushNotificationSubscriptionServices.UnsubscribeAsync);
         group.MapGet("server-key", PushNotificationSubscriptionServices.GetServerKeyAsync)
-            .Produces(StatusCodes.Status200OK, contentType: MediaTypeNames.Application.Octet)
-            .WithOpenApi();
+            .Produces(StatusCodes.Status200OK, contentType: MediaTypeNames.Application.Octet);
         return group;
     }
 }

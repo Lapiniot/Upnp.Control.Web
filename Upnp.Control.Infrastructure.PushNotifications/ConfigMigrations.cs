@@ -59,7 +59,7 @@ internal static class ConfigMigrations
     private static void WriteKeysObject(Utf8JsonWriter writer, byte[] publicKey, byte[] privateKey, IBase64UrlEncoder base64Encoder)
     {
         var maxLength = base64Encoder.GetMaxEncodedToUtf8Length(Math.Max(publicKey.Length, privateKey.Length));
-        Span<byte> buffer = maxLength <= MaxAllowedOnStack
+        var buffer = maxLength <= MaxAllowedOnStack
             ? stackalloc byte[MaxAllowedOnStack]
             : new byte[maxLength];
         writer.WriteStartObject("VAPID"u8);

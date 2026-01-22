@@ -30,7 +30,7 @@ public static class ConfigureServicesExtensions
             .AddCommand<PSAddCommand, PSAddCommandHandler>()
             .AddCommand<PSRemoveCommand, PSRemoveCommandHandler>();
 
-        public IServiceCollection AddSqliteDatabase<[DynamicallyAccessedMembers(All)] TContext>(
+        public IServiceCollection AddSqliteDatabase<[DynamicallyAccessedMembers(PublicConstructors | NonPublicConstructors | PublicProperties)] TContext>(
             string connectionString, Action<DbContextOptionsBuilder> optionsAction = null)
             where TContext : DbContext => services
             .AddDbContext<TContext>(builder =>

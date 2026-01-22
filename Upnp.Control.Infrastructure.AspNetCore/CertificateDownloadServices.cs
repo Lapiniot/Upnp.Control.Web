@@ -26,7 +26,11 @@ public static class CertificateDownloadServices
             var entryName = cert.GetNameInfo(X509NameType.SimpleName, false);
             var bytes = cert.Export(X509ContentType.Cert);
             var entry = archive.CreateEntry(GetSafeFileName(entryName) + ".crt", CompressionLevel.Optimal);
+#if NET10_0_OR_GREATER
+            var stream = await entry.OpenAsync(cancellationToken).ConfigureAwait(false);
+#else
             var stream = entry.Open();
+#endif
 
             await using (stream.ConfigureAwait(false))
             {

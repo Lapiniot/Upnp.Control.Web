@@ -70,8 +70,7 @@ public static class ConfigureServicesExtensions
             .Produces(StatusCodes.Status200OK, contentType: MediaTypeNames.Application.Zip)
             .WithTags("SSL Certificate Download")
             .WithDisplayName("SSLCertificateDownload")
-            .WithDescription("SSL Certificate Download")
-            .WithOpenApi();
+            .WithDescription("SSL Certificate Download");
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicMethods, typeof(ApplicationInfoServices))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ApplicationInfo))]
