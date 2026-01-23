@@ -7,7 +7,7 @@ type SignalRConnectionProps = { url: string }
 type SignalRConnectionState = { connected: boolean; error: Error | string | null }
 
 export class SignalRConnection extends React.Component<PropsWithChildren<SignalRConnectionProps>, SignalRConnectionState> {
-    hub: signalR.HubConnection;
+    hub: HubConnection;
 
     constructor(props: SignalRConnectionProps) {
         super(props);

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@microsoft/signalr": "^9.0.6",
+    "@microsoft/signalr": "^10.0.0",
     "bootstrap": "^5.3.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
