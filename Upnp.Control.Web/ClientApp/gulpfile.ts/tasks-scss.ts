@@ -10,7 +10,7 @@ const destination = "src/css";
 
 gulp.task("scss", cb => {
     gulp.src(sources)
-        .pipe(sass({ includePaths }).on('error', sass.logError))
+        .pipe(sass({ loadPaths : includePaths }).on('error', sass.logError))
         .pipe(gulp.dest(destination));
     cb();
 });
