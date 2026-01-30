@@ -70,7 +70,6 @@
                 "build",
                 "-t:PublishAllImages",
                 "-p:Configuration=Release",
-                "-p:PublishProfile=DefaultContainer",
                 "-p:TargetFramework=${input:fw}",
                 "-p:RuntimeIdentifiers=\"${input:container_rids}\"",
                 "-p:ContainerRepository=\"${input:container_repository}\"",
