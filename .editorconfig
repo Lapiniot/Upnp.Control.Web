@@ -9,7 +9,6 @@ insert_final_newline = false
 trim_trailing_whitespace = true
 charset = utf-8
 
-# JSON files
 [*.json]
 indent_size = 2
 
@@ -21,6 +20,9 @@ indent_size = 2
 indent_size = 2
 
 [*.{scss}]
+indent_size = 2
+
+[*.{yaml,yml}]
 indent_size = 2
 
 [*.{cs,vb}]

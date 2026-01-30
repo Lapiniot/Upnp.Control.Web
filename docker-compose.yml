@@ -1,5 +1,3 @@
-version: '3.4'
-
 services:
   upnp-dashboard:
     image: upnp-dashboard
@@ -8,9 +6,17 @@ services:
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ASPNETCORE_GENERATE_SSL_CERTIFICATE=1 #optional, whether self-signed SSL certificate (~/.config/upnp-dashboard/upnp-dashboard.pfx) should be generated on startup if missing
-      - ASPNETCORE_SSL_CERTIFICATE_HOSTNAME=hostname #optional, hostname to be added as DNS alternate name to the generated SSL certificate
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/home/app/.config/upnp-dashboard/upnp-dashboard.pfx #optional, path to SSL certificate
+      # path to the Sqlite database file for devices db
+      - ConnectionStrings__UpnpDeviceDb=Data Source=/home/app/.local/share/upnp-dashboard/upnp.db3;Cache=Shared;
+      # path to the Sqlite database file for subscriptions db
+      - ConnectionStrings__PushSubscriptionDb=Data Source=/home/app/.local/share/upnp-dashboard/subscriptions.db3;Cache=Shared;
+      # optional, whether self-signed SSL certificate (~/.config/upnp-dashboard/upnp-dashboard.pfx)
+      # should be generated on startup if missing
+      #- ASPNETCORE_GENERATE_SSL_CERTIFICATE=1
+      # optional, hostname to be added as DNS alternate name to the generated SSL certificate
+      #- ASPNETCORE_SSL_CERTIFICATE_HOSTNAME=localhost
+      # optional, path to SSL certificate
+      #- ASPNETCORE_Kestrel__Certificates__Default__Path=/home/app/.config/upnp-dashboard/upnp-dashboard.pfx
     volumes:
       - /path/to/config:/home/app/.config/upnp-dashboard # app configuration is stored here
       - /path/to/data:/home/app/.local/share/upnp-dashboard # app data is stored here
