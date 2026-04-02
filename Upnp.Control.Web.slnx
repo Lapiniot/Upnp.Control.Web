@@ -12,6 +12,8 @@
   <Folder Name="/IoT.Device/IoT.Protocol/OOs.Common/">
     <Project Path="IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Net.Http/OOs.Common.Net.Http.csproj" />
     <Project Path="IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Net/OOs.Common.Net.csproj" />
+    <Project Path="IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Resilience/OOs.Common.Resilience.csproj" />
+    <Project Path="IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Threading/OOs.Common.Threading.csproj" />
     <Project Path="IoT.Device/IoT.Protocol/OOs.Common/OOs.Common/OOs.Common.csproj" />
     <Project Path="IoT.Device/IoT.Protocol/OOs.Common/OOs.Extensions.Hosting/OOs.Extensions.Hosting.csproj" />
   </Folder>

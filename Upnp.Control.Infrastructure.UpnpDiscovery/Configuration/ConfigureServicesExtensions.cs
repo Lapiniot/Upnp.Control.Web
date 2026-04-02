@@ -4,7 +4,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using IoT.Protocol.Upnp;
 using OOs.Net.Sockets;
-using OOs.Policies;
+using OOs.Resilience;
 using static OOs.Net.NetworkInterfaceExtensions;
 
 namespace Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;

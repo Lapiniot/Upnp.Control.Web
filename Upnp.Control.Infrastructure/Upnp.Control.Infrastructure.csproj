@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../IoT.Device/IoT.Protocol/OOs.Common/OOs.Common.Threading/OOs.Common.Threading.csproj" />
     <ProjectReference Include="../Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
   </ItemGroup>
 
