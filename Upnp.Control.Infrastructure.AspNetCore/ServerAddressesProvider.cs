@@ -1,9 +1,8 @@
 using System.Net;
-using System.Net.Sockets;
 using System.Net.NetworkInformation;
-
-using static System.Net.Sockets.AddressFamily;
+using System.Net.Sockets;
 using static System.Net.IPAddress;
+using static System.Net.Sockets.AddressFamily;
 
 namespace Upnp.Control.Infrastructure.AspNetCore;
 
@@ -49,7 +48,7 @@ internal sealed class ServerAddressesProvider(IServer server) : IServerAddresses
         return new($"{scheme}://{address}:{port}");
     }
 
-    public static IPAddress GetExternalIPAddress(AddressFamily family)
+    public static IPAddress? GetExternalIPAddress(AddressFamily family)
     {
         var interfaces = NetworkInterface.GetAllNetworkInterfaces().GetActiveExternalInterfaces();
         return family == InterNetworkV6 ? interfaces.FindExternalIPv6Address() : interfaces.FindExternalIPv4Address();
