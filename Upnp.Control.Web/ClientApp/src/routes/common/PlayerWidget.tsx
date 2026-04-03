@@ -30,7 +30,7 @@ function PlayerCore({ udn }: { udn: string | undefined }) {
             case "swipe-left": dispatch({ type: "NEXT" }); break;
             case "swipe-right": dispatch({ type: "PREV" }); break;
         }
-    }), []); // eslint-disable-line
+    }), [dispatch]);
 
     const refCallback = useCallback((e: HTMLDivElement) => { if (e) { sgr.bind(e) } else { sgr.unbind() } }, []); // eslint-disable-line
 

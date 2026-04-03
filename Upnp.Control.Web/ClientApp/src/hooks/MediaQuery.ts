@@ -11,7 +11,6 @@ function useMediaQuery(query: MediaQueryList, enabled: boolean = true) {
 
         if (enabled) {
             query.addEventListener("change", listener);
-            setMatches(query.matches);
         }
 
         return () => {

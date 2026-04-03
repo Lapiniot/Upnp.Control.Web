@@ -1,4 +1,4 @@
-import { ChangeEvent, FormHTMLAttributes, useCallback, useEffect, useState } from "react";
+import { FormHTMLAttributes, useEffect, useState } from "react";
 import { Form } from "../../components/Form";
 import { Menu, MenuItem } from "../../components/Menu";
 import { useRowStates } from "../../components/RowStateContext";
@@ -56,14 +56,11 @@ export function BrowserActions({ umis, renderers, device, onSelected }: BrowserA
 function SearchView({ children, ...props }: FormHTMLAttributes<Omit<HTMLFormElement, "method">>) {
     const [params] = useSearchParams();
     const query = params.get("q") ?? "";
-    const [value, setValue] = useState(query);
-    useEffect(() => setValue(query), [query]);
-    const onChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => setValue(value), []);
     return <>
         <Toolbar.ToggleButton icon="symbols.svg#search" active={query !== ""} className="search-toggle d-flex d-sm-none" />
         <Form {...props} method="GET">
             <input type="search" name="q" className="form-control form-control-sm flex-1 rounded-pill" placeholder="Search"
-                value={value} onChange={onChange} />
+                defaultValue={query} />
             {children}
         </Form>
     </>

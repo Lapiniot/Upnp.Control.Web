@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { RefObject, useEffect } from "react";
 
-export function useIntersectionObserver(target: HTMLElement | null | undefined,
+export function useIntersectionObserver(targetRef: RefObject<HTMLElement | null>,
     callback: IntersectionObserverCallback, enabled: boolean = true,
     root?: Document | Element | null, rootMargin?: string, threshold?: number | number[]) {
     useEffect(() => {
+        const target = targetRef.current;
         if (target && enabled) {
             const observer = new IntersectionObserver(callback, { rootMargin, root, threshold });
             observer.observe(target);
@@ -11,5 +12,5 @@ export function useIntersectionObserver(target: HTMLElement | null | undefined,
                 observer.disconnect();
             };
         }
-    }, [target, callback, enabled, root, rootMargin, threshold]);
+    }, [targetRef, callback, enabled, root, rootMargin, threshold]);
 }

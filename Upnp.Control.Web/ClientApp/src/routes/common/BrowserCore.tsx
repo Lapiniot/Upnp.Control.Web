@@ -17,7 +17,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
     const navBackHandler = useCallback(() => navigate(`../${parents?.[1]?.id ?? "-1"}`), [navigate, parents]);
     useRowStates();
 
-    const scrollTracker = useInfiniteScroll(data?.next, undefined, "0px 0px 50px 0px");
+    const scrollTrackerRef = useInfiniteScroll(data?.next, undefined, "0px 0px 50px 0px");
     const progress = (data?.source.items?.length ?? 0) / (data?.source.total ?? 1);
 
     return <div className={`browser-shell flex-fill overflow-hidden${className ? ` ${className}` : ""}`}>
@@ -30,7 +30,7 @@ export default function BrowserCore<TContext>(props: BrowserCoreProps<TContext>)
             {renderActions?.()}
         </Toolbar>
         <BrowserView className="br-area-main mt-1" {...forwardProps}>
-            {scrollTracker}
+            <div ref={scrollTrackerRef} className="pe-none" />
             {children}
         </BrowserView>
         <Progress className={`br-area-main place-self-start-stretch sticky-top m-0${progress === 1 && !fetching ? " d-none" : ""}`}

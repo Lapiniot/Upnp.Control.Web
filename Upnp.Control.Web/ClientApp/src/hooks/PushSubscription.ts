@@ -18,7 +18,7 @@ type PushSubscriptionState = {
     reset(): void
 }
 
-const initialState = { types: PushNotificationType.None, valid: true, loading: false }
+const initialState = { types: PushNotificationType.None, valid: true, loading: true }
 
 export function usePushSubscription(): PushSubscriptionState {
     const [{ types, valid, loading, }, setState] = useState(initialState);
@@ -45,7 +45,6 @@ export function usePushSubscription(): PushSubscriptionState {
     }, [types]);
 
     useEffect(() => {
-        setState(current => ({ ...current, loading: true }));
         fetchPushSubState().then(
             ([types, valid]) => setState(current => ({ ...current, types, valid, loading: false })),
             () => setState(current => ({ ...current, loading: false })));

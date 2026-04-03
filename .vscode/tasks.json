@@ -163,7 +163,7 @@
             "script": "lint",
             "path": "Upnp.Control.Web/ClientApp",
             "problemMatcher": [
-                "$eslint-compact"
+                "$eslint-stylish"
             ],
             "label": "npm: lint"
         }

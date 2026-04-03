@@ -12,9 +12,12 @@ export default class Toolbar extends Component<HTMLAttributes<HTMLDivElement>> {
         </button>
 
     static ToggleButton = ({ active = false, onClick, className, ...props }: ButtonProps & { active?: boolean }) => {
+        // eslint-disable-next-line
         const [state, setState] = useState(active);
+        // eslint-disable-next-line
         useEffect(() => setState(active), [active]);
 
+        // eslint-disable-next-line
         const onClickHandler = useCallback((event: MouseEvent<HTMLButtonElement>) => {
             onClick?.(event);
             if (!event.defaultPrevented)

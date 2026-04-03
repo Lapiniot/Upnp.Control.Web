@@ -361,21 +361,19 @@ function Browser({ device, deviceName, getUrlHook, className, children, ...props
         pause: () => dispatch({ type: "PAUSE" }),
         playItem: ({ currentTarget: { dataset: { index } } }) => dispatch({ type: "PLAY_URL", url: getUrlHook(parseInt(index!)) ?? "" }),
         state, device, deviceName
-    }), [getUrlHook, state, device, deviceName]); // eslint-disable-line
+    }), [dispatch, getUrlHook, state, device, deviceName]);
 
     const openCallback = useCallback((_: unknown, index: number) => {
         const url = getUrlHook(index);
         if (url) dispatch({ type: "PLAY_URL", url })
-    }, [getUrlHook]); // eslint-disable-line
+    }, [dispatch, getUrlHook]);
 
-
-    const scrollTracker = useInfiniteScroll(data?.next, undefined, "0px 0px 150px 0px");
-
+    const scrollTrackerRef = useInfiniteScroll(data?.next, undefined, "0px 0px 150px 0px");
     const progress = (data?.source.items?.length ?? 0) / (data?.source.total ?? 1);
 
     return <>
         <BrowserView {...props} className={`mt-1${className ? ` ${className}` : ""}`} useLevelUpRow={false} mainCellTemplate={MainCell} mainCellContext={context} openHandler={openCallback}>
-            {scrollTracker}
+            <div ref={scrollTrackerRef} className="pe-none" />
             {children}
         </BrowserView>
         <Progress className={`br-area-main place-self-start-stretch sticky-top m-0${progress === 1 ? " d-none" : ""}`}

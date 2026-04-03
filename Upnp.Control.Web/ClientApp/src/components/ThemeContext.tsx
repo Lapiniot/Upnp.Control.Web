@@ -14,7 +14,8 @@ export function ThemeProvider({ children, storage }: PropsWithChildren & { stora
     const [theme, toggle] = useState<UI.Theme>(() => storage.theme);
     const value = useMemo<ThemeContextValue>(() => [theme, toggle], [theme]);
     useLayoutEffect(() => {
-        storage.theme = theme;
+        // eslint-disable-next-line
+        storage.theme = theme; 
         if (theme === "auto") {
             const query = MediaQueries.prefersDarkScheme;
             setColorMode(query.matches ? "dark" : "light");

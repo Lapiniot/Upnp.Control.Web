@@ -109,7 +109,6 @@ function useNavigate() {
     const { matches } = useContext(RouterMatchContext);
     const ctx = { location, setLocation, matches };
     const ref = useRef(ctx);
-    ref.current = ctx;
     const navigate = useCallback<NavigateFunction>((to) => {
         const { matches, location: { pathname, origin }, setLocation } = ref.current!;
         const pathnames = getEffectivePathnames(matches ?? []);
@@ -151,12 +150,6 @@ const hooks: ContextType<typeof NavigationContext> = {
 
 export function VirtualRouter({ children, initialPath }: PropsWithChildren<VirtualRouterProps>) {
     const [location, setLocation] = useState(() => new URL(initialPath, window.location.origin));
-    const ref = useRef(initialPath);
-
-    if (initialPath !== ref.current) {
-        ref.current = initialPath;
-        setLocation(new URL(initialPath, window.location.origin));
-    }
 
     return <NavigationContext value={hooks}>
         <RouterLocationContext value={{ location, setLocation }}>

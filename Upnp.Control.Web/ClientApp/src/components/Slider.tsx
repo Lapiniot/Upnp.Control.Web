@@ -1,7 +1,7 @@
 import { CSSProperties, HTMLProps, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
-import { SlideGestureRecognizer, SlideParams } from "../services/gestures/SlideGestureRecognizer";
 import { useDebounce } from "../hooks/Debounce";
 import { clamp } from "../services/Extensions";
+import { SlideGestureRecognizer, SlideParams } from "../services/gestures/SlideGestureRecognizer";
 
 type SliderChangeHandler = (position: number) => boolean | void;
 
@@ -29,8 +29,6 @@ export default function Slider(props: SliderProps) {
     const crRef = useRef<DOMRect>(null);
     const valueRef = useRef(value);
     const onChangeDebounced = useDebounce(onChange, 200);
-
-    useEffect(() => setValue(initial), [initial]);
 
     useEffect(() => {
         if (updatePending && onChange) {

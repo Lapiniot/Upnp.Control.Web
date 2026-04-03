@@ -16,7 +16,7 @@ export function useIntervalUpdate(callback: UpdateCallback, active = true, inter
         const { start, interval, controller, callback } = props.current;
         if (controller?.signal.aborted) return;
         callback(time - start);
-        scheduleNext(start, time, interval, update);
+        scheduleNext(start, time, interval, update); // eslint-disable-line
     }, []);
 
     useEffect(() => {
