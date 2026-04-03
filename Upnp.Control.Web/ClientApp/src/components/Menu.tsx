@@ -197,7 +197,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
         } else if (oldState === "closed" && newState === "open") {
             // Explicit activation via PopoverInvokerElement
             if (this.state.show === false && this.props.id) {
-                const anchor = (document.activeElement as unknown as PopoverInvokerElement).popoverTargetElement === this.popoverRef.current
+                const anchor = (document.activeElement as unknown as PopoverTargetAttributes).popoverTargetElement === this.popoverRef.current
                     // Chrome: popover invoker stays focused active element at this moment, no need to scan entire document and we know for sure who invoked our popover!
                     ? document.activeElement as HTMLInputElement
                     // Safari: drops focus at <BODY> element, we need to proactively look for invoker by selector :(
