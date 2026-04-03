@@ -1,6 +1,6 @@
-﻿import { ChangeEventHandler, Component, ComponentType, createRef, FocusEvent, HTMLAttributes, PointerEvent, ReactNode, RefObject, UIEvent } from "react";
+﻿import { type ChangeEventHandler, Component, type ComponentType, createRef, type FocusEvent, type HTMLAttributes, type PointerEvent, type ReactNode, type RefObject, type UIEvent } from "react";
 import RowStateContext, { RowState } from "../../components/RowStateContext";
-import { DataFetchProps } from "../../hooks/DataFetch";
+import type { DataFetchProps } from "../../hooks/DataFetch";
 import { HotKey } from "../../services/HotKey";
 import AlbumArt from "./AlbumArt";
 import { formatMediaInfo, formatSize, formatTime, getDisplayName } from "./DIDLTools";

@@ -1,4 +1,4 @@
-import WebApi, { PushNotificationSubscriptionState, PushNotificationType } from "./WebApi";
+import WebApi, { type PushNotificationSubscriptionState, PushNotificationType } from "./WebApi";
 
 async function getPushManager() {
     return (await navigator.serviceWorker.ready)?.pushManager;

@@ -1,4 +1,4 @@
-import { HTMLAttributes, useCallback, useEffect, useRef } from "react";
+import { type HTMLAttributes, useCallback, useEffect, useRef } from "react";
 
 type SnackbarProps = HTMLAttributes<HTMLDivElement> & { onDismissed?: (element: HTMLDivElement) => void } & (
     { dismissSignal?: undefined; actionText: string; onAction: () => void } |

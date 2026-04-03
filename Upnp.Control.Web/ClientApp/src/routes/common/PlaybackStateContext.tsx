@@ -1,6 +1,6 @@
-import { createContext, Dispatch, PropsWithChildren, useEffect, useMemo, useReducer } from "react";
+import { createContext, type Dispatch, type PropsWithChildren, useEffect, useMemo, useReducer } from "react";
 import { useSignalR } from "../../hooks/SignalR";
-import $api, { ControlApiClient } from "../../services/WebApi";
+import $api, { type ControlApiClient } from "../../services/WebApi";
 import $s from "./Settings";
 
 type MediaState = Partial<Upnp.AVState & Upnp.AVPosition & Upnp.RCState & { vendor: Record<string, string> }>

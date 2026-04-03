@@ -1,6 +1,6 @@
-import { ButtonHTMLAttributes, MouseEventHandler, useCallback, useEffect, useState } from "react";
-import { IBookmarkStore } from "../../services/BookmarkService";
-import { KnownWidgets } from "./widgets/Widgets";
+import { type ButtonHTMLAttributes, type MouseEventHandler, useCallback, useEffect, useState } from "react";
+import type { IBookmarkStore } from "../../services/BookmarkService";
+import type { KnownWidgets } from "./widgets/Widgets";
 
 type BookmarkButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     device: string;

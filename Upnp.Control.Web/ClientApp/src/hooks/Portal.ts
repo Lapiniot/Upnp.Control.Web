@@ -1,4 +1,4 @@
-import { ReactNode, ReactPortal } from "react";
+import { type ReactNode, type ReactPortal } from "react";
 import { createPortal } from "react-dom";
 
 type RenderFunc = (children: ReactNode, key?: string) => ReactPortal | null;

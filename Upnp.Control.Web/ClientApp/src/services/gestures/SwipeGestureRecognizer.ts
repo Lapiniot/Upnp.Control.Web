@@ -1,4 +1,4 @@
-import { GestureHandler, GestureRecognizer } from "./GestureRecognizer";
+import { type GestureHandler, GestureRecognizer } from "./GestureRecognizer";
 
 export type { GestureHandler };
 

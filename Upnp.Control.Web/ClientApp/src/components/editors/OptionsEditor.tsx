@@ -1,4 +1,4 @@
-import { ChangeEventHandler, SelectHTMLAttributes, useCallback, useState } from "react";
+import { type ChangeEventHandler, type SelectHTMLAttributes, useCallback, useState } from "react";
 
 type OptionsEditor = SelectHTMLAttributes<HTMLSelectElement> & {
     options: (string | number | undefined)[];

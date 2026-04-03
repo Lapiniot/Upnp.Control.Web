@@ -1,4 +1,4 @@
-import { UIEventHandler } from "react";
+import type { UIEventHandler } from "react";
 
 export interface PlaylistMenuActionHandlers {
     addItems: UIEventHandler<HTMLElement>;

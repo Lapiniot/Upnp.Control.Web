@@ -1,4 +1,4 @@
-import { ComponentPropsWithRef, useCallback, useMemo } from "react";
+import { type ComponentPropsWithRef, useCallback, useMemo } from "react";
 import Dialog from "./Dialog";
 
 type TextValueEditDialogProps = ComponentPropsWithRef<typeof Dialog> & {

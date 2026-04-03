@@ -1,4 +1,7 @@
-import { cloneElement, ComponentPropsWithRef, ReactElement, ReactNode, Ref, useImperativeHandle, useState } from "react";
+import {
+    cloneElement, type ComponentPropsWithRef, type ReactElement,
+    type ReactNode, type Ref, useImperativeHandle, useState
+} from "react";
 import Dialog from "./Dialog";
 import { Portal } from "./Portal";
 

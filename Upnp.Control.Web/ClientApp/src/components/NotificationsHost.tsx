@@ -1,4 +1,4 @@
-import { Ref, useCallback, useImperativeHandle, useMemo, useState } from "react";
+import { type Ref, useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { Portal } from "./Portal";
 import { Snackbar } from "./Snackbar";
 

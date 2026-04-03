@@ -1,4 +1,4 @@
-import { HTMLAttributes, useCallback, useRef } from "react";
+import { type HTMLAttributes, useCallback, useRef } from "react";
 import { formatTime } from "../services/Extensions";
 import { useIntervalUpdate } from "../hooks/IntervalUpdate";
 

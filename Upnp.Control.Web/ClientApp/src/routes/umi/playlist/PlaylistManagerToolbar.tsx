@@ -1,8 +1,8 @@
-import { HTMLAttributes, PropsWithChildren, useEffect, useMemo, useRef } from "react";
+import { type HTMLAttributes, type PropsWithChildren, useEffect, useMemo, useRef } from "react";
 import { HotKeys } from "../../../services/HotKey";
 import Toolbar from "../../../components/Toolbar";
-import { RowStateAction, useRowStates } from "../../../components/RowStateContext";
-import { PlaylistManagerService } from "./PlaylistManagerService";
+import { type RowStateAction, useRowStates } from "../../../components/RowStateContext";
+import type { PlaylistManagerService } from "./PlaylistManagerService";
 
 type PlaylistManagetToolbarProps = {
     editMode: boolean,

@@ -1,4 +1,4 @@
-import { createContext, MouseEvent, useCallback, useContext, useRef } from "react";
+import { createContext, type MouseEvent, useCallback, useContext, useRef } from "react";
 import * as ReactRouter from "react-router";
 
 export type Path = {

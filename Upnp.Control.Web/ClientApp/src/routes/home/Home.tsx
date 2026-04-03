@@ -1,16 +1,16 @@
 ﻿import "bootstrap/js/dist/collapse";
 import React, {
-    ComponentType, DetailsHTMLAttributes, SyntheticEvent,
+    type ComponentType, type DetailsHTMLAttributes, type SyntheticEvent,
     useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 } from "react";
 import { DataList } from "../../components/DataList";
 import ConfirmDialog from "../../components/Dialog.Confirmation";
-import { DialogHost, IDialogHost } from "../../components/DialogHost";
+import { DialogHost, type IDialogHost } from "../../components/DialogHost";
 import Spoiler from "../../components/Spoiler";
 import Toolbar from "../../components/Toolbar";
 import { BookmarkService, deviceBookmarks, itemBookmarks, playlistBookmarks } from "../../services/BookmarkService";
-import { BookmarkGroup, profile } from "../common/Settings";
-import { KnownWidgets, Widgets } from "../common/widgets/Widgets";
+import { type BookmarkGroup, profile } from "../common/Settings";
+import { type KnownWidgets, Widgets } from "../common/widgets/Widgets";
 
 export default function () {
     return <div className="d-grid p-3 pb-7 g-3 overflow-auto">

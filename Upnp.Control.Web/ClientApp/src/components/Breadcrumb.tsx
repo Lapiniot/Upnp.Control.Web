@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { type HTMLAttributes } from "react";
 import { reversemap } from "../services/Extensions";
 import { NavigatorLink } from "./NavLink";
 

@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { HTMLAttributes } from "react";
+import { type HTMLAttributes } from "react";
 
 export class MicroLoader extends React.Component {
 

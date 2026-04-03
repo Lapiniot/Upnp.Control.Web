@@ -1,7 +1,7 @@
 ﻿import { useEffect, useMemo, useRef } from "react";
-import { GridView, GridViewMode } from "../../components/GridView";
+import { GridView, type GridViewMode } from "../../components/GridView";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { DataFetchProps } from "../../hooks/DataFetch";
+import { type DataFetchProps } from "../../hooks/DataFetch";
 import { useLocalStorage } from "../../hooks/LocalStorage";
 import { useSignalR } from "../../hooks/SignalR";
 

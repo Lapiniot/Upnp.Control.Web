@@ -1,4 +1,4 @@
-import { EventHandler, SyntheticEvent } from "react";
+import { type EventHandler, type SyntheticEvent } from "react";
 
 export function reversemap<T, R>(array: T[], fn: (currentValue: T, index: number) => R): R[] {
     return array.reduceRight((acc, element, index) => {

@@ -1,4 +1,4 @@
-import { DetailsHTMLAttributes, useCallback, useRef, MouseEvent, ReactNode } from "react";
+import { type DetailsHTMLAttributes, useCallback, useRef, type MouseEvent, type ReactNode } from "react";
 import { animate } from "../services/Extensions";
 
 type SpoilerProps = DetailsHTMLAttributes<HTMLDetailsElement> & {

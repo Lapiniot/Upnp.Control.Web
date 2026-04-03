@@ -1,21 +1,21 @@
-import { ComponentProps, ComponentPropsWithRef, ComponentType, createRef, HTMLAttributes, PureComponent, ReactElement, UIEventHandler, useCallback, useContext, useMemo } from "react";
+import { type ComponentProps, type ComponentPropsWithRef, type ComponentType, createRef, type HTMLAttributes, PureComponent, type ReactElement, type UIEventHandler, useCallback, useContext, useMemo } from "react";
 import { BottomBar } from "../../../components/BottomBar";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Dialog from "../../../components/Dialog";
 import PromptDialog from "../../../components/Dialog.Prompt";
-import { DialogHost, IDialogHost } from "../../../components/DialogHost";
+import { DialogHost, type IDialogHost } from "../../../components/DialogHost";
 import { DropTarget } from "../../../components/DropTarget";
 import { Menu, MenuItem } from "../../../components/Menu";
 import Progress from "../../../components/Progress";
 import RowStateContext, { RowState } from "../../../components/RowStateContext";
-import { DataFetchProps } from "../../../hooks/DataFetch";
+import type { DataFetchProps } from "../../../hooks/DataFetch";
 import { useInfiniteScroll } from "../../../hooks/InfiniteScroll";
 import { PressHoldGestureRecognizer } from "../../../services/gestures/PressHoldGestureRecognizer";
 import { HotKey, HotKeys } from "../../../services/HotKey";
 import { MediaQueries } from "../../../services/MediaQueries";
 import $api from "../../../services/WebApi";
 import { useContentBrowser } from "../../common/BrowserUtils";
-import BrowserView, { CellTemplateProps } from "../../common/BrowserView";
+import BrowserView, { type CellTemplateProps } from "../../common/BrowserView";
 import { isMusicTrack } from "../../common/DIDLTools";
 import ItemInfoDialog from "../../common/ItemInfoDialog";
 import { PlaybackStateContext, PlaybackStateProvider } from "../../common/PlaybackStateContext";
@@ -26,9 +26,9 @@ import AddUrlDialog from "./dialogs/AddUrlDialog";
 import RemoveItemsDialog from "./dialogs/RemoveItemsDialog";
 import UploadPlaylistDialog from "./dialogs/UploadPlaylistDialog";
 import { PlaylistItemActionMenu } from "./PlaylistItemActionMenu";
-import { PlaylistManagerService } from "./PlaylistManagerService";
+import type { PlaylistManagerService } from "./PlaylistManagerService";
 import { PlaylistManagerToolbar } from "./PlaylistManagerToolbar";
-import { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
+import type { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
 import { PlaylistRowStateProvider } from "./PlaylistRowStateProvider";
 
 type PlaylistManagerProps = HTMLAttributes<HTMLDivElement> &

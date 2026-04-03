@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { type HTMLAttributes } from "react";
 import { formatTrackInfoLine } from "../../services/Extensions";
 
 type TrackInfoLineProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {

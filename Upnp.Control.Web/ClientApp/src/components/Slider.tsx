@@ -1,7 +1,7 @@
-import { CSSProperties, HTMLProps, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type HTMLProps, type KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useDebounce } from "../hooks/Debounce";
 import { clamp } from "../services/Extensions";
-import { SlideGestureRecognizer, SlideParams } from "../services/gestures/SlideGestureRecognizer";
+import { SlideGestureRecognizer, type SlideParams } from "../services/gestures/SlideGestureRecognizer";
 
 type SliderChangeHandler = (position: number) => boolean | void;
 

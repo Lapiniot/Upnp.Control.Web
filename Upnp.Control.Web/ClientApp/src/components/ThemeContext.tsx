@@ -1,4 +1,4 @@
-import { PropsWithChildren, createContext, useLayoutEffect, useMemo, useState } from "react";
+import { type PropsWithChildren, createContext, useLayoutEffect, useMemo, useState } from "react";
 import { MediaQueries } from "../hooks/MediaQuery";
 
 type ThemeContextValue = [UI.Theme, (theme: UI.Theme) => void];

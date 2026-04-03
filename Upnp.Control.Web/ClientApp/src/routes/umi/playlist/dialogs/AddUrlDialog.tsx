@@ -1,4 +1,4 @@
-import { ComponentPropsWithRef, useCallback, useMemo } from "react";
+import { type ComponentPropsWithRef, useCallback, useMemo } from "react";
 import Dialog from "../../../../components/Dialog";
 
 type AddUrlDialogProps = ComponentPropsWithRef<typeof Dialog> & {

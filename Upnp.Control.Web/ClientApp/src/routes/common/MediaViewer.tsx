@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { type HTMLAttributes } from "react";
 import { isMusicTrack } from "./DIDLTools";
 
 export function MediaViewer({ item, className, ...other }: HTMLAttributes<HTMLDivElement> & { item: Upnp.DIDL.Item }) {

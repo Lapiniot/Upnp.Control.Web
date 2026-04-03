@@ -1,7 +1,7 @@
 import PlayerWidget from "../common/PlayerWidget";
 import { BrowseContentAction } from "../common/actions/Actions";
 import { OpenAudioAction } from "../common/actions/OpenMediaAction";
-import { ActionDescriptor, DeviceCard } from "../common/DeviceCard";
+import { type ActionDescriptor, DeviceCard } from "../common/DeviceCard";
 import { ManagePlaylistsAction } from "../common/actions/ManagePlaylistsAction";
 import { PlaylistMenuAction } from "../common/actions/PlaylistMenuAction";
 

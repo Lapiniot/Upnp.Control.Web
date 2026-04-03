@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React, { type PropsWithChildren } from "react";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
 export const SignalRContext = React.createContext<HubConnection | null>(null);

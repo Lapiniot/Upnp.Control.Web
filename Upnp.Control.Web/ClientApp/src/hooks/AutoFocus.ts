@@ -1,4 +1,4 @@
-import { RefObject, useLayoutEffect, useRef } from "react";
+import { type RefObject, useLayoutEffect, useRef } from "react";
 
 export function useAutoFocusRef<T extends HTMLElement>(autoFocus: boolean | undefined = true) {
     const ref = useRef<T>(null);

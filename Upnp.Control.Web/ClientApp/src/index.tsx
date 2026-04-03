@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import "./GlobalConfig";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalRConnection";
-import { ThemeProvider, ThemeStorage } from "./components/ThemeContext";
+import { ThemeProvider, type ThemeStorage } from "./components/ThemeContext";
 import { AppInfo } from "./routes/common/AppInfo";
 import HomePage from "./routes/home/Home";
 import RendererDevicesPage from "./routes/renderers/Router";

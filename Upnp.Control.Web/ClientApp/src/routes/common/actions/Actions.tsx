@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { type HTMLAttributes } from "react";
 import { Link, RouteLink } from "../../../components/NavLink";
 import { UpnpDeviceTools as UDT } from "../UpnpDeviceTools";
 

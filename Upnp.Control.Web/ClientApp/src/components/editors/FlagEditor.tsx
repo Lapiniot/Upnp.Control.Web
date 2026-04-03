@@ -1,4 +1,4 @@
-import { ChangeEventHandler, InputHTMLAttributes, useCallback, useId, useState } from "react";
+import { type ChangeEventHandler, type InputHTMLAttributes, useCallback, useId, useState } from "react";
 
 export type FlagEditorProps<TContext> = InputHTMLAttributes<HTMLInputElement> & {
     callback: (value: boolean, context: TContext) => void | boolean,

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { deviceBookmarks as bookmarks } from "../../../services/BookmarkService";
 import { BookmarkButton } from "../BookmarkButton";
 import { UpnpDeviceTools as UDT } from "../UpnpDeviceTools";
-import { DeviceActionProps } from "./Actions";
+import { type DeviceActionProps } from "./Actions";
 
 export function AddBookmarkAction({ device, category = "upnp", ...other }: DeviceActionProps) {
     const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);

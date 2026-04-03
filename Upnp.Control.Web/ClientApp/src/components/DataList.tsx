@@ -1,4 +1,4 @@
-import React, { ElementType, HTMLAttributes, MouseEventHandler, useCallback, useEffect, useRef } from "react";
+import React, { type ElementType, type HTMLAttributes, type MouseEventHandler, useCallback, useEffect, useRef } from "react";
 import { PressHoldGestureRecognizer } from "../services/gestures/PressHoldGestureRecognizer";
 
 type DataListProps<T> = HTMLAttributes<HTMLDivElement> & {

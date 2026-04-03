@@ -1,6 +1,6 @@
-import { ChangeEvent, HTMLProps, useCallback, useRef } from "react";
+import { type ChangeEvent, type HTMLProps, useCallback, useRef } from "react";
 import { createSearchParams, useNavigator } from "../../hooks/Navigator";
-import { LinkProps, NavigatorLink } from "../../components/NavLink";
+import { type LinkProps, NavigatorLink } from "../../components/NavLink";
 import $s from "./Settings";
 
 type PaginationProps = HTMLProps<HTMLHtmlElement> & {

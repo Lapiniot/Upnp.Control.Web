@@ -3,7 +3,7 @@ import { Menu, MenuItem } from "../../../components/Menu";
 import { MicroLoader } from "../../../components/LoadIndicator";
 import WebApi from "../../../services/WebApi";
 import AlbumArt from "../AlbumArt";
-import { DeviceActionProps } from "./Actions";
+import { type DeviceActionProps } from "./Actions";
 import { useId } from "react";
 
 function playUrlHandler(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {

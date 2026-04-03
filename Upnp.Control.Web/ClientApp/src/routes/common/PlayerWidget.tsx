@@ -1,8 +1,8 @@
-import { ButtonHTMLAttributes, useCallback, useContext, useId, useMemo } from "react";
+import { type ButtonHTMLAttributes, useCallback, useContext, useId, useMemo } from "react";
 import { Menu } from "../../components/Menu";
 import Slider from "../../components/Slider";
 import { parseMilliseconds } from "../../services/Extensions";
-import { SwipeGestureRecognizer, SwipeGestures } from "../../services/gestures/SwipeGestureRecognizer";
+import { SwipeGestureRecognizer, type SwipeGestures } from "../../services/gestures/SwipeGestureRecognizer";
 import AlbumArt from "./AlbumArt";
 import { PlaybackStateContext, PlaybackStateProvider, usePlaybackEventHandlers } from "./PlaybackStateContext";
 import SeekBar from "./SeekBar";

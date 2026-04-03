@@ -1,4 +1,4 @@
-import { HTMLAttributes, useCallback } from "react";
+import { type HTMLAttributes, useCallback } from "react";
 import { RouteLink } from "../../../components/NavLink";
 import WebApi from "../../../services/WebApi";
 import AlbumArt from "../AlbumArt";

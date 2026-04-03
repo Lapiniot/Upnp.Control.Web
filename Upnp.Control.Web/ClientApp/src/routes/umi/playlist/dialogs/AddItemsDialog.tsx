@@ -1,5 +1,5 @@
-import { JSX } from "react";
-import BrowserDialog, { BrowserDialogProps } from "../../../common/BrowserDialog";
+import type { JSX } from "react";
+import BrowserDialog, { type BrowserDialogProps } from "../../../common/BrowserDialog";
 
 function renderConfirmButton({ length }: Upnp.DIDL.Item[]): JSX.Element {
     return <>

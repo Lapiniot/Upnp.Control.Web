@@ -1,5 +1,5 @@
 import React from "react";
-import { DragEvent, HTMLAttributes } from "react";
+import type { DragEvent, HTMLAttributes } from "react";
 
 type DropTargetProps = Omit<HTMLAttributes<HTMLDivElement>, "onDrop"> & {
     acceptedTypes?: string[];

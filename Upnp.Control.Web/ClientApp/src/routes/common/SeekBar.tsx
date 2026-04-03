@@ -1,4 +1,4 @@
-import { ComponentProps, HTMLAttributes } from "react";
+import { type ComponentProps, type HTMLAttributes } from "react";
 import Progress from "../../components/Progress";
 import Slider from "../../components/Slider";
 import Timer from "../../components/Timer";

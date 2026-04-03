@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { type JSX } from "react";
 import AlbumArt from "./AlbumArt";
 import { formatBitrate, formatChannels, formatSampleFrequency, formatSize, formatSizeFull, formatTime, getContentType, getDisplayName, getYear } from "./DIDLTools";
 

@@ -1,6 +1,6 @@
 import { useMemo, useRef } from "react";
 import { useNavigate } from "react-router";
-import NotificationsHost, { INotificationHost } from "../../components/NotificationsHost";
+import NotificationsHost, { type INotificationHost } from "../../components/NotificationsHost";
 import { useSignalR } from "../../hooks/SignalR";
 
 type DiscoveryCallback = (type: string, device: Upnp.Device) => void | boolean

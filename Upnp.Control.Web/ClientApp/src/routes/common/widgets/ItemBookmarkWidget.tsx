@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { type HTMLAttributes } from "react";
 import { RouteLink } from "../../../components/NavLink";
 import AlbumArt from "../AlbumArt";
 

@@ -1,7 +1,7 @@
 import DeviceInfo from "../common/DeviceInfo";
 import ServicesList from "../common/DeviceServiceList";
 import { DownloadMetadataAction, BrowseContentAction } from "../common/actions/Actions";
-import { ActionDescriptor, DeviceCard } from "../common/DeviceCard";
+import { type ActionDescriptor, DeviceCard } from "../common/DeviceCard";
 
 const upnpActions: ActionDescriptor[] = [
     ["browse", BrowseContentAction],

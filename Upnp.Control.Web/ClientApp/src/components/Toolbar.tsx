@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, Component, HTMLAttributes, MouseEvent, useCallback, useEffect, useState } from "react";
+import { type ButtonHTMLAttributes, Component, type HTMLAttributes, type MouseEvent, useCallback, useEffect, useState } from "react";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { icon?: string; visible?: boolean }
 

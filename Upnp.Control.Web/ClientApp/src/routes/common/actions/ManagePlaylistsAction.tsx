@@ -1,4 +1,4 @@
-import { DeviceActionProps } from "./Actions";
+import { type DeviceActionProps } from "./Actions";
 import { RouteLink } from "../../../components/NavLink";
 
 export function ManagePlaylistsAction({ device, category, className, ...other }: DeviceActionProps) {

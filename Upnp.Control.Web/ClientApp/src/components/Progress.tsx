@@ -1,4 +1,4 @@
-import { CSSProperties, HTMLProps } from "react";
+import { type CSSProperties, type HTMLProps } from "react";
 
 type CustomProps = {
     "value"?: number;

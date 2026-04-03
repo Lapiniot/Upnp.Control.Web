@@ -1,4 +1,4 @@
-import { RefObject, useLayoutEffect, useRef } from "react";
+import { type RefObject, useLayoutEffect, useRef } from "react";
 
 export function useMutationObserver(ref: RefObject<Element>, callback: MutationCallback, attributes = true, childList = false, subtree = false) {
     const observerRef = useRef<MutationObserver>(null);

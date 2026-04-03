@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { type HTMLAttributes } from "react";
 import { viaProxy } from "../../../services/Extensions";
 import { RouteLink } from "../../../components/NavLink";
 

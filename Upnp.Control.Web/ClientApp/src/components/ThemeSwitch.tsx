@@ -1,5 +1,5 @@
 import { ThemeContext } from "./ThemeContext";
-import { HTMLAttributes, useCallback, useContext } from "react";
+import { type HTMLAttributes, useCallback, useContext } from "react";
 
 type ThemeSwitchProps = {
     mode?: "full" | "compact" | "icon" | "responsive"

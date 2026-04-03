@@ -1,4 +1,4 @@
-import { FormHTMLAttributes, useEffect, useState } from "react";
+import { type FormHTMLAttributes, useEffect, useState } from "react";
 import { Form } from "../../components/Form";
 import { Menu, MenuItem } from "../../components/Menu";
 import { useRowStates } from "../../components/RowStateContext";

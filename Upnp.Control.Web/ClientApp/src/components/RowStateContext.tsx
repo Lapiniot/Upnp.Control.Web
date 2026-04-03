@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext, useMemo, useReducer } from "react";
+import { createContext, type PropsWithChildren, useContext, useMemo, useReducer } from "react";
 
 const IndexOutOfRangeError = "'index' parameter value is out of range"
 const InvalidDispatchActionError = "invalid dispatch action"

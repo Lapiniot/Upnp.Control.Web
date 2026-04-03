@@ -1,6 +1,6 @@
 import {
-    ButtonHTMLAttributes, Component, createRef, DialogHTMLAttributes,
-    FormEvent, HTMLAttributes, MouseEvent, ReactNode, SyntheticEvent, useRef
+    type ButtonHTMLAttributes, Component, createRef, type DialogHTMLAttributes,
+    type FormEvent, type HTMLAttributes, type MouseEvent, type ReactNode, type SyntheticEvent, useRef
 } from "react";
 
 interface DialogEventProps {

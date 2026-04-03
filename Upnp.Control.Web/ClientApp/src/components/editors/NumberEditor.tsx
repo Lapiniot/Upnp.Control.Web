@@ -1,4 +1,4 @@
-import { ChangeEventHandler, InputHTMLAttributes, useCallback, useState } from "react";
+import { type ChangeEventHandler, type InputHTMLAttributes, useCallback, useState } from "react";
 
 type NumberEditorProps = InputHTMLAttributes<HTMLInputElement> & {
     callback: (value: number) => void | boolean;

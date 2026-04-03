@@ -1,4 +1,4 @@
-import { ImgHTMLAttributes, SVGProps } from "react";
+import { type ImgHTMLAttributes, type SVGProps } from "react";
 import { viaProxy } from "../../services/Extensions";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 

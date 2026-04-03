@@ -1,7 +1,7 @@
-import { ComponentPropsWithRef, HTMLAttributes, ReactNode, useCallback, useMemo } from "react";
+import { type ComponentPropsWithRef, type HTMLAttributes, type ReactNode, useCallback, useMemo } from "react";
 import Dialog from "../../components/Dialog";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { RowStateMapperFunction, RowStateProvider, useRowStates } from "../../components/RowStateContext";
+import { type RowStateMapperFunction, RowStateProvider, useRowStates } from "../../components/RowStateContext";
 import { Route, Routes, VirtualRouter } from "../../components/VirtualRouter";
 import { useDataFetch } from "../../hooks/DataFetch";
 import { MediaQueries, useMediaQuery } from "../../hooks/MediaQuery";
@@ -11,7 +11,7 @@ import $api from "../../services/WebApi";
 import DeviceIcon from "../common/DeviceIcon";
 import BrowserCore from "./BrowserCore";
 import { useContentBrowser } from "./BrowserUtils";
-import { BrowserProps } from "./BrowserView";
+import type { BrowserProps } from "./BrowserView";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;

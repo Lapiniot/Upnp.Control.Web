@@ -1,6 +1,6 @@
-import { ComponentType, HTMLAttributes } from "react";
+import { type ComponentType, type HTMLAttributes } from "react";
 import { Link } from "../../components/NavLink";
-import { DeviceActionProps } from "./actions/Actions";
+import { type DeviceActionProps } from "./actions/Actions";
 import { AddBookmarkAction } from "./actions/AddBookmarkAction";
 import DeviceIcon from "./DeviceIcon";
 
