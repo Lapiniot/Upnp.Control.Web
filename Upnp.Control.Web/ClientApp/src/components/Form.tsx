@@ -1,9 +1,9 @@
-import { FormEvent, FormHTMLAttributes, useCallback } from "react";
+import { SubmitEvent, FormHTMLAttributes, useCallback } from "react";
 import { useNavigator } from "../hooks/Navigator";
 
 export function Form({ onSubmit, method, action, ...props }: FormHTMLAttributes<HTMLFormElement>) {
     const { navigate } = useNavigator();
-    const submit = useCallback((event: FormEvent<HTMLFormElement>) => {
+    const submit = useCallback((event: SubmitEvent<HTMLFormElement>) => {
         onSubmit?.(event);
         if (method?.toLowerCase() === "get" && !event.defaultPrevented) {
             event.preventDefault();

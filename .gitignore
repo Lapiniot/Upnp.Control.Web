@@ -6,7 +6,6 @@ obj/
 _ReSharper.Caches/
 *.csproj.user
 *.user
-package-lock.json
 *.crt
 *.key
 Upnp.Control.Web/data/*
