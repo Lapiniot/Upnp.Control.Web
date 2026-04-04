@@ -1,42 +1,41 @@
-import { type ButtonHTMLAttributes, Component, type HTMLAttributes, type MouseEvent, useCallback, useEffect, useState } from "react";
+import { type ButtonHTMLAttributes, type HTMLAttributes, type MouseEvent, useCallback, useState } from "react";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { icon?: string; visible?: boolean }
 
-export default class Toolbar extends Component<HTMLAttributes<HTMLDivElement>> {
+function Button({ className, icon, children, visible, ...other }: ButtonProps) {
+    return <button type="button" className={`btn${className ? ` ${className}` : ""}${visible === false ? " d-none" : ""}`} {...other}>
+        {icon && <svg><use href={icon} /></svg>}{children}
+    </button>
+}
 
-    displayName = Toolbar.name;
+function ToggleButton({ active: initialState = false, onClick, className, ...props }: ButtonProps & { active?: boolean }) {
+    const [state, setState] = useState(initialState);
+    const onClickHandler = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        onClick?.(event);
+        if (!event.defaultPrevented)
+            setState(state => !state);
+    }, [onClick]);
 
-    static Button = ({ className, icon, children, visible, ...other }: ButtonProps) =>
-        <button type="button" className={`btn${className ? ` ${className}` : ""}${visible === false ? " d-none" : ""}`} {...other}>
-            {icon && <svg><use href={icon} /></svg>}{children}
-        </button>
+    return <Toolbar.Button className={`${className}${state ? `${className ? " " : ""}active` : ""}`}
+        onClick={onClickHandler} value={state.toString()} {...props} />
+}
 
-    static ToggleButton = ({ active = false, onClick, className, ...props }: ButtonProps & { active?: boolean }) => {
-        // eslint-disable-next-line
-        const [state, setState] = useState(active);
-        // eslint-disable-next-line
-        useEffect(() => setState(active), [active]);
+function Group({ className, children, visible, ...other }: HTMLAttributes<HTMLDivElement> & { visible?: boolean }) {
+    return <div className={`d-inline-flex align-items-center${className ? ` ${className}` : ""} ${visible === false ? " d-none" : ""}`} role="group" {...other}>
+        {children}
+    </div>
+}
 
-        // eslint-disable-next-line
-        const onClickHandler = useCallback((event: MouseEvent<HTMLButtonElement>) => {
-            onClick?.(event);
-            if (!event.defaultPrevented)
-                setState(state => !state);
-        }, [onClick]);
-
-        return <Toolbar.Button className={`${className}${state ? `${className ? " " : ""}active` : ""}`}
-            onClick={onClickHandler} value={state.toString()} {...props} />
-    }
-
-    static Group = ({ className, children, visible, ...other }: HTMLAttributes<HTMLDivElement> & { visible?: boolean }) =>
-        <div className={`d-inline-flex align-items-center${className ? ` ${className}` : ""} ${visible === false ? " d-none" : ""}`} role="group" {...other}>
-            {children}
-        </div>
-
-    render() {
-        const { className, children, ...other } = this.props;
+const Toolbar = Object.assign(
+    function ({ className, children, ...other }: HTMLAttributes<HTMLDivElement>) {
         return <div className={`toolbar${className ? ` ${className}` : ""}`} role="toolbar" {...other}>
             {children}
-        </div>
-    }
-}
+        </div>;
+    },
+    {
+        Button,
+        ToggleButton,
+        Group
+    });
+
+export default Toolbar;
