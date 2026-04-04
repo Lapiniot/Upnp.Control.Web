@@ -40,13 +40,13 @@ public abstract partial class ProxyMiddleware : IMiddleware
                 LogUnsupportedMethod(id, method);
 
                 context.Response.StatusCode = 405;
-                await context.Response.CompleteAsync().ConfigureAwait(false);
+                await context.Response.CompleteAsync();
                 return;
             }
 
             using var requestMessage = CreateRequestMessage(context, requestUri, method == "GET" ? HttpMethod.Get : HttpMethod.Head);
 
-            using var responseMessage = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            using var responseMessage = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             context.Response.StatusCode = (int)responseMessage.StatusCode;
 
@@ -54,10 +54,10 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
             if (method == "GET")
             {
-                await CopyContentAsync(responseMessage, context, cancellationToken).ConfigureAwait(false);
+                await CopyContentAsync(responseMessage, context, cancellationToken);
             }
 
-            await context.Response.CompleteAsync().ConfigureAwait(false);
+            await context.Response.CompleteAsync();
 
             LogCompleted(id);
         }
@@ -65,15 +65,27 @@ public abstract partial class ProxyMiddleware : IMiddleware
         {
             LogAborted(id);
         }
-        catch (InvalidDataException ide)
+        catch (Exception ex) when (ex is HttpRequestException or InvalidDataException)
         {
-            LogError(id, ide);
             context.Response.StatusCode = StatusCodes.Status502BadGateway;
-            await context.Response.CompleteAsync().ConfigureAwait(false);
+            if (!(context.RequestServices.GetService<IProblemDetailsService>() is { } problemDetailsService)
+                || !await problemDetailsService.TryWriteAsync(new()
+                {
+                    HttpContext = context,
+                    Exception = ex,
+                    ProblemDetails = new()
+                    {
+                        Detail = ex.Message
+                    }
+                }))
+            {
+                LogError(id, ex);
+                throw;
+            }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            LogError(id, e);
+            LogError(id, ex);
             throw;
         }
     }
@@ -97,7 +109,11 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
         foreach (var (name, values) in context.Request.Headers)
         {
-            if (name == HeaderNames.Host || name == HeaderNames.Cookie) continue;
+            if (name == HeaderNames.Host || name == HeaderNames.Cookie)
+            {
+                continue;
+            }
+
             requestMessage.Headers.TryAddWithoutValidation(name, (IEnumerable<string>)values);
         }
 
@@ -123,12 +139,14 @@ public abstract partial class ProxyMiddleware : IMiddleware
     {
         if (!context.Response.HasStarted)
         {
-            await context.Response.StartAsync(cancellationToken).ConfigureAwait(false);
+            await context.Response.StartAsync(cancellationToken);
         }
 
-        var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        await using (stream.ConfigureAwait(false))
-            await CopyContentAsync(stream, context, BufferSize, cancellationToken).ConfigureAwait(false);
+        var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken);
+        await using (stream)
+        {
+            await CopyContentAsync(stream, context, BufferSize, cancellationToken);
+        }
     }
 
     protected async Task CopyContentAsync(Stream source, HttpContext context, int bufferSize, CancellationToken cancellationToken)
@@ -143,8 +161,12 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
             while (available < bufferSize)
             {
-                var bytes = await source.ReadAsync(buffer[available..], cancellationToken).ConfigureAwait(false);
-                if (bytes == 0) break;
+                var bytes = await source.ReadAsync(buffer[available..], cancellationToken);
+                if (bytes == 0)
+                {
+                    break;
+                }
+
                 available += bytes;
             }
 
@@ -152,11 +174,14 @@ public abstract partial class ProxyMiddleware : IMiddleware
 
             LogBuffered(id, available);
 
-            await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
+            await writer.FlushAsync(cancellationToken);
 
             LogFlushed(id, available);
 
-            if (available < bufferSize) break;
+            if (available < bufferSize)
+            {
+                break;
+            }
         }
 
         LogDone(id);
