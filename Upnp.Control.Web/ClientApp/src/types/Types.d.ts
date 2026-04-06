@@ -24,8 +24,8 @@ declare namespace Configuration {
 
 declare var $cfg: Configuration.Config
 
-interface IExternalStore<T extends object> {
-    getSnapshot(): T | undefined;
+interface ExternalStore<T> {
+    getSnapshot(): T;
     subscribe(onStoreChange: () => void): () => void;
 }
 

@@ -8,9 +8,9 @@ import ConfirmDialog from "../../components/Dialog.Confirmation";
 import { DialogHost, type IDialogHost } from "../../components/DialogHost";
 import Spoiler from "../../components/Spoiler";
 import Toolbar from "../../components/Toolbar";
-import { BookmarkService, deviceBookmarks, itemBookmarks, playlistBookmarks } from "../../services/BookmarkService";
 import { type BookmarkGroup, profile } from "../common/Settings";
 import { type KnownWidgets, Widgets } from "../common/widgets/Widgets";
+import { deviceBookmarks, itemBookmarks, playlistBookmarks, type BookmarkStore } from "../common/IndexedDBBookmarkStore";
 
 export default function () {
     return <div className="d-grid p-3 pb-7 g-3 overflow-auto">
@@ -24,7 +24,7 @@ export default function () {
 }
 
 type BoormarksProps<TKey extends (string | string[]), TProps> = {
-    store: BookmarkService<TKey, TProps>;
+    store: BookmarkStore<TKey, TProps>;
     keygen(props: Partial<TProps>): string;
     caption: string;
     icon: string;

@@ -1,9 +1,9 @@
 import { type EventHandler, type UIEvent } from "react";
 import { RowState } from "../../../components/RowStateContext";
-import { playlistBookmarks } from "../../../services/BookmarkService";
 import AlbumArt from "../../common/AlbumArt";
 import { createBookmarkButton } from "../../common/BookmarkButton";
 import { type CellTemplateProps } from "../../common/BrowserView";
+import { playlistBookmarks } from "../../common/IndexedDBBookmarkStore";
 import { TrackInfoLine } from "../../common/TrackInfoLine";
 
 type CellContext = {
