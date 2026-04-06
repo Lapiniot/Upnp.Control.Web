@@ -1,4 +1,4 @@
-import { Plugin, build as viteBuild, Rollup as R, InlineConfig } from "vite"
+import { Plugin, build as viteBuild, Rolldown as RD, InlineConfig } from "vite";
 import crypto from "node:crypto";
 
 interface GenerateSWConfig extends InlineConfig {
@@ -9,7 +9,7 @@ interface GenerateSWConfig extends InlineConfig {
 
 const defaults: GenerateSWConfig = {
     build: {
-        rollupOptions: {
+        rolldownOptions: {
             input: { "service-worker": "./src/service-worker.js" },
             output: { entryFileNames: () => "[name].js" },
         }
@@ -23,9 +23,10 @@ export default function generateSW(config: GenerateSWConfig): Plugin {
     const { manifestExtraFiles, filter, manifestPlaceholder, ...options } = {
         ...defaults, ...config, build: {
             ...defaults.build, ...config.build,
-            rollupOptions: { ...defaults.build!.rollupOptions, ...config.build!.rollupOptions }
+            rolldownOptions: { ...defaults.build!.rolldownOptions, ...config.build!.rolldownOptions }
         }
     };
+
     return {
         name: "vite-plugin-generate-service-worker",
         enforce: "post",
@@ -42,8 +43,8 @@ export default function generateSW(config: GenerateSWConfig): Plugin {
                     cssMinify: false,
                     write: false,
                     reportCompressedSize: false,
-                    rollupOptions: {
-                        ...options.build.rollupOptions,
+                    rolldownOptions: {
+                        ...options.build.rolldownOptions,
                         plugins: [{
                             name: "vite-plugin-postprocess-service-worker",
                             generateBundle(_, bundle) {
@@ -59,7 +60,7 @@ export default function generateSW(config: GenerateSWConfig): Plugin {
                         }]
                     }
                 }
-            }) as R.RollupOutput;
+            }) as RD.RolldownOutput;
 
             // merge into the outer bundle
             for (const i in output) {
@@ -74,7 +75,7 @@ export default function generateSW(config: GenerateSWConfig): Plugin {
     }
 }
 
-function isChunk(item: R.OutputAsset | R.OutputChunk): item is R.OutputChunk {
+function isChunk(item: RD.OutputAsset | RD.OutputChunk): item is RD.OutputChunk {
     return item.type === "chunk";
 }
 
