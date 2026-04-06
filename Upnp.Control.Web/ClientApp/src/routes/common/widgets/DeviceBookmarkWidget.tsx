@@ -10,7 +10,7 @@ type DeviceBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
     icon: string;
 };
 
-export default function ({ category, device, name, description, icon }: DeviceBookmarkWidgetProps) {
+export default function DeviceBookmarkWidget({ category, device, name, description, icon }: DeviceBookmarkWidgetProps) {
     const iconUrl = icon.startsWith("http") ? viaProxy(icon) : icon;
     return <RouteLink to={`/${category}/${device}`} className="card-horizontal"
         title={`${name}\r\n\xab${description}\xbb`}>

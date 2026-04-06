@@ -1,4 +1,4 @@
-import { type ThemeStorage } from "../../components/ThemeContext";
+import { type ThemeStorage } from "../../components/ThemeProvider";
 import { ExternalStoreBase } from "../../services/ExternalStoreBase";
 import settings from "./Settings";
 

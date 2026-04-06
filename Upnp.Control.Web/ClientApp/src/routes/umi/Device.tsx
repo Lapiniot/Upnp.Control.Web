@@ -12,7 +12,7 @@ const umiActions: ActionDescriptor[] = [
     ["open", OpenAudioAction, { className: "m-0" }]
 ]
 
-export default function ({ dataSource: d, ...props }: DataSourceProps<Upnp.Device> & UI.CategoryRouteParams) {
+export default function Device({ dataSource: d, ...props }: DataSourceProps<Upnp.Device> & UI.CategoryRouteParams) {
     return <DeviceCard {...props} dataSource={d} actions={umiActions} className="container-inline card-stripped-sm">
         <PlayerWidget udn={d?.udn} />
     </DeviceCard>

@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import "./GlobalConfig";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalRConnection";
-import { ThemeProvider } from "./components/ThemeContext";
+import { ThemeProvider } from "./components/ThemeProvider";
 import { ThemeSwitch } from "./components/ThemeSwitch";
 import { AppInfo } from "./routes/common/AppInfo";
 import { DeviceDiscoveryNotifier } from "./routes/common/DeviceDiscoveryNotifier";

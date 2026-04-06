@@ -34,7 +34,7 @@ function setShowPlaybackNotifications(value: boolean) {
     $s.set("showPlaybackNotifications", value);
 }
 
-export default () => {
+export default function Settings() {
     return <div className="overflow-auto">
         <ul className="list-group list-group-flush container-max-md no-font-boost">
             <li className="list-group-item">

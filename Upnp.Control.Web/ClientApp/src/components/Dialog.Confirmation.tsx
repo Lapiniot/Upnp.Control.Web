@@ -7,7 +7,7 @@ type ConfirmationDialogProps = ComponentPropsWithRef<typeof Dialog> & {
     onConfirmed(): void;
 }
 
-export default function ({ confirmText = "OK", dismissText = "Cancel",
+export default function Confirm({ confirmText = "OK", dismissText = "Cancel",
     onDismissed, onConfirmed, children, ...other }: ConfirmationDialogProps) {
     const onDismissedHandler = useCallback((action: string, data: FormData | undefined) => {
         if (action === "confirm") {

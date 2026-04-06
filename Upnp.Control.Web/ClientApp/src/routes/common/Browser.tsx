@@ -3,17 +3,18 @@ import { BottomBar } from "../../components/BottomBar";
 import Breadcrumb from "../../components/Breadcrumb";
 import { DialogHost, type IDialogHost } from "../../components/DialogHost";
 import { Menu, MenuItem, MenuItemSeparator } from "../../components/Menu";
-import { RowStateProvider } from "../../components/RowStateContext";
+import { RowStateProvider } from "../../components/RowStateProvider";
 import { HotKey, HotKeys } from "../../services/HotKey";
 import WebApi from "../../services/WebApi";
-import { createBookmarkButton } from "./BookmarkButton";
-import { BrowserActions, renderActionMenuItem } from "./BrowserActionMenu";
+import renderActionItem from "./ActionMenuItem";
+import { BrowserActions } from "./BrowserActionMenu";
 import BrowserCore, { type BrowserCoreProps } from "./BrowserCore";
 import { CellTemplate, type CellTemplateProps } from "./BrowserView";
 import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
 import { itemBookmarks } from "./IndexedDBBookmarkStore";
 import ItemInfoDialog from "./ItemInfoDialog";
 import $s from "./Settings";
+import { createBookmarkButton } from "./ToggleBookmarkButton";
 import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
@@ -182,12 +183,12 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
         return <>
             {umiAcceptable && <>
                 <li><h6 className="dropdown-header">Send as Playlist to</h6></li>
-                {umis.map(({ udn, name }) => renderActionMenuItem(udn, "send", name))}
+                {umis.map(({ udn, name }) => renderActionItem(udn, "send", name))}
             </>}
             {(umiAcceptable || rendererAcceptable) && <>
                 <li><h6 className="dropdown-header">Play on</h6></li>
-                {umiAcceptable && umis.map(({ udn, name }) => renderActionMenuItem(udn, "play", name))}
-                {rendererAcceptable && renderers.map(({ udn, name }) => renderActionMenuItem(udn, "play", name))}
+                {umiAcceptable && umis.map(({ udn, name }) => renderActionItem(udn, "play", name))}
+                {rendererAcceptable && renderers.map(({ udn, name }) => renderActionItem(udn, "play", name))}
             </>}
         </>;
     }

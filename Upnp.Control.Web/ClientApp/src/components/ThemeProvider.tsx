@@ -1,18 +1,15 @@
-import { type PropsWithChildren, createContext, useLayoutEffect, useMemo, useSyncExternalStore } from "react";
+import { useLayoutEffect, useMemo, useSyncExternalStore, type ContextType, type PropsWithChildren } from "react";
 import { MediaQueries } from "../hooks/MediaQuery";
-
-type ThemeContextValue = [UI.Theme, (theme: UI.Theme) => void];
+import { ThemeContext } from "./ThemeContext";
 
 export interface ThemeStorage {
     get(): UI.Theme;
     set(theme: UI.Theme): void;
 }
 
-export const ThemeContext = createContext<ThemeContextValue>(["auto", () => { }]);
-
 export function ThemeProvider({ children, storage }: PropsWithChildren & { storage: ThemeStorage & ExternalStore<UI.Theme> }) {
     const theme = useSyncExternalStore(storage.subscribe, storage.getSnapshot);
-    const value = useMemo<ThemeContextValue>(() => [theme, storage.set], [theme, storage.set]);
+    const value = useMemo<ContextType<typeof ThemeContext>>(() => [theme, storage.set], [theme, storage.set]);
 
     useLayoutEffect(() => {
         if (theme === "auto") {

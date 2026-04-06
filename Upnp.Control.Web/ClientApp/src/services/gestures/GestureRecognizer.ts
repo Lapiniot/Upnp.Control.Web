@@ -53,11 +53,11 @@ export abstract class GestureRecognizer<TElement extends HTMLElement, TGesture e
         this.startTime = event.timeStamp;
     }
 
-    protected onPointerUp(_event: PointerEvent) {
+    protected onPointerUp(_: PointerEvent) {
         this.stopTracking();
     }
 
-    protected onPointerCancel(_event: PointerEvent) {
+    protected onPointerCancel(_: PointerEvent) {
         this.stopTracking();
     }
 

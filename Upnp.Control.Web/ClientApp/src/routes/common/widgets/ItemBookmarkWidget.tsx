@@ -11,7 +11,7 @@ type ItemBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
     itemClass: string;
 };
 
-export default function ({ device, id, title, icon, itemClass, deviceName }: ItemBookmarkWidgetProps) {
+export default function ItemBookmarkWidget({ device, id, title, icon, itemClass, deviceName }: ItemBookmarkWidgetProps) {
     return <RouteLink to={`/upnp/${device}/browse/${id}`} className="card-horizontal"
         title={`${title} on \xab${deviceName}\xbb`}>
         <AlbumArt albumArts={icon ? [icon] : undefined} itemClass={itemClass} />

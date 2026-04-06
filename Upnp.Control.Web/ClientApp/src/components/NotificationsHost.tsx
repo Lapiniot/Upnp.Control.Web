@@ -13,7 +13,7 @@ export interface INotificationHost {
 
 function initializer() { return { map: new Map<string, Notification>() } }
 
-export default function ({ ref }: { ref: Ref<INotificationHost> }) {
+export default function NotificationHost({ ref }: { ref: Ref<INotificationHost> }) {
     const [{ map }, setState] = useState(initializer);
     const { done, value } = map.entries().next();
 

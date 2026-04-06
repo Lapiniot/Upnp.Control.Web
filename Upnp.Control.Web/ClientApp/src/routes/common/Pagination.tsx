@@ -1,6 +1,6 @@
-import { type ChangeEvent, type HTMLProps, useCallback, useRef } from "react";
-import { createSearchParams, useNavigator } from "../../hooks/Navigator";
+import { type ChangeEvent, type HTMLProps, useCallback } from "react";
 import { type LinkProps, NavigatorLink } from "../../components/NavLink";
+import { createSearchParams, useNavigator } from "../../hooks/Navigator";
 import $s from "./Settings";
 
 type PaginationProps = HTMLProps<HTMLHtmlElement> & {
@@ -17,19 +17,16 @@ function PageLink({ title, to, label, children, className, ...other }: LinkProps
     </NavigatorLink>;
 }
 
-export default function (props: PaginationProps & { pageSizes?: number[] }) {
+export default function Pagination(props: PaginationProps & { pageSizes?: number[] }) {
     const { navigate, search } = useNavigator();
-    const ref = useRef({ navigate, search });
-    ref.current = { navigate, search };
-
     const changeHandler = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
         const pageSize = parseInt(event.target.value);
         $s.set("pageSize", pageSize);
-        const search = new URLSearchParams(ref.current.search);
-        search.set("s", pageSize.toString());
-        search.delete("p");
-        ref.current.navigate({ search: search.toString() });
-    }, []);
+        const usp = new URLSearchParams(search);
+        usp.set("s", pageSize.toString());
+        usp.delete("p");
+        navigate({ search: usp.toString() });
+    }, [navigate, search]);
 
     const { total, current, pageSize = $s.get("pageSize"), className, pageSizes = $s.get("pageSizes"), ...other } = props;
     const pages = Math.ceil(total / pageSize);

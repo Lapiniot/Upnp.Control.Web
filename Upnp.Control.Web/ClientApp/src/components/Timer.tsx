@@ -4,7 +4,7 @@ import { useIntervalUpdate } from "../hooks/IntervalUpdate";
 
 type TimerProps = { running: boolean; current: number; interval?: number }
 
-export default function ({ current, running, interval, ...other }: TimerProps & HTMLAttributes<HTMLTimeElement>) {
+export default function Timer({ current, running, interval, ...other }: TimerProps & HTMLAttributes<HTMLTimeElement>) {
     const ref = useRef<HTMLTimeElement>(null);
     const callback = useCallback((ellapsed: number) => {
         if (ref?.current) {

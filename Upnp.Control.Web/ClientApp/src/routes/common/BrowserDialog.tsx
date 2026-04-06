@@ -1,7 +1,8 @@
 import { type ComponentPropsWithRef, type HTMLAttributes, type ReactNode, useCallback, useMemo } from "react";
 import Dialog from "../../components/Dialog";
 import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { type RowStateMapperFunction, RowStateProvider, useRowStates } from "../../components/RowStateContext";
+import { type RowStateMapperFunction, useRowStates } from "../../components/RowStateContext";
+import { RowStateProvider } from "../../components/RowStateProvider";
 import { Route, Routes, VirtualRouter } from "../../components/VirtualRouter";
 import { useDataFetch } from "../../hooks/DataFetch";
 import { MediaQueries, useMediaQuery } from "../../hooks/MediaQuery";

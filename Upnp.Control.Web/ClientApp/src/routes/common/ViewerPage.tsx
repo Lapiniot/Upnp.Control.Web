@@ -9,7 +9,7 @@ const options = { withChildren: false, withParents: true, withMetadata: true, wi
 
 const fetchItemAsync = (device: string, id: string) => WebApi.browse(device).get(id).withOptions(options).json()
 
-export default function (props: HTMLAttributes<HTMLDivElement>) {
+export default function ViewerPage(props: HTMLAttributes<HTMLDivElement>) {
     const { device, id, "*": path } = useParams<"device" | "id" | "*">();
     const itemId = id ?? path;
 

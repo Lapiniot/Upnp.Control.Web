@@ -12,7 +12,7 @@ import { type BookmarkGroup, profile } from "../common/Settings";
 import { type KnownWidgets, Widgets } from "../common/widgets/Widgets";
 import { deviceBookmarks, itemBookmarks, playlistBookmarks, type BookmarkStore } from "../common/IndexedDBBookmarkStore";
 
-export default function () {
+export default function Home() {
     return <div className="d-grid p-3 pb-7 g-3 overflow-auto">
         <Bookmarks group="devices" name="accordion" store={deviceBookmarks} caption="Favourite devices" icon="important_devices"
             keygen={genDeviceKey} />

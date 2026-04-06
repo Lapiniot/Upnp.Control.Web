@@ -1,7 +1,7 @@
 import { type EventHandler, type UIEvent } from "react";
 import { RowState } from "../../../components/RowStateContext";
 import AlbumArt from "../../common/AlbumArt";
-import { createBookmarkButton } from "../../common/BookmarkButton";
+import { createBookmarkButton } from "../../common/ToggleBookmarkButton";
 import { type CellTemplateProps } from "../../common/BrowserView";
 import { playlistBookmarks } from "../../common/IndexedDBBookmarkStore";
 import { TrackInfoLine } from "../../common/TrackInfoLine";
@@ -17,7 +17,7 @@ type CellContext = {
 
 const BookmarkItemButton = createBookmarkButton("PlaylistBookmarkWidget", playlistBookmarks, ["symbols.svg#favorite_fill1", "symbols.svg#favorite"]);
 
-export default function ({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
+export default function Router({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
     const active = !!(rowState & RowState.Active);
     const playing = ctx?.state === "PLAYING";
     return <div className="hstack g-3">

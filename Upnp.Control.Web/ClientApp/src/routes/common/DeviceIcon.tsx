@@ -7,7 +7,7 @@ type Common<K, V> = { [P in CommonKeys<K, V>]: K[P] }
 type ImgOrSvgCommonProps = Partial<Common<ImgHTMLAttributes<HTMLImageElement>, SVGProps<SVGElement>>>
 type DeviceIconProps = ImgOrSvgCommonProps & { device: Upnp.Device | null | undefined }
 
-export default ({ device, className, ...props }: DeviceIconProps) => {
+export default function DeviceIcon({ device, className, ...props }: DeviceIconProps) {
     const { icons, type } = device ?? {};
     const icon = icons && UDT.getOptimalIcon(icons);
     const iconClass = `icon-3x me-2${className ? ` ${className}` : ""}`;

@@ -8,11 +8,11 @@ type ItemProps = DataSourceProps<Upnp.Device> & UI.CategoryRouteParams
 
 type DevicePageParams = TemplatedDataComponentProps<ItemProps> & { viewMode: GridViewMode } & UI.CategoryRouteParams
 
-const fetchDeviceAsync = (category: string, device: string) => WebApi.devices(category, device).json()
+const fetchDeviceAsync = (category: string, device: string | undefined) =>
+    device ? WebApi.devices(category, device).json() : null
 
-export default function ({ category, ...props }: DevicePageParams) {
+export default function DevicePage({ category, ...props }: DevicePageParams) {
     const { device } = useParams<"category" | "device">();
-    if (!device) return null;
     const data = useDataFetch(fetchDeviceAsync, category, device);
     return <DeviceView {...props} {...data} category={category} />
 }

@@ -5,7 +5,7 @@ import DevicePage from "../common/DevicePage";
 import ViewerPage from "../common/ViewerPage";
 import DeviceTemplate from "./Device";
 
-export default function () {
+export default function Router() {
     const category = "upnp";
     const viewMode = "grid";
     return <Routes>

@@ -5,7 +5,7 @@ const cntrClass = "grid-form grid-form-dense mb-2 text-wrap no-font-boost";
 
 type DeviceInfoProps = HTMLAttributes<HTMLDivElement> & DataSourceProps<Upnp.Device>;
 
-export default function ({ dataSource: device, className, ...props }: DeviceInfoProps) {
+export default function DeviceInfo({ dataSource: device, className, ...props }: DeviceInfoProps) {
     const { udn, type, maker, makerUrl, model, modelUrl, modelNumber } = device ?? {};
     const cls = `${cntrClass}${className ? ` ${className}` : ""}`;
     return device ? <div className={cls} {...props}>

@@ -6,7 +6,7 @@ import ViewerPage from "../common/ViewerPage";
 import DeviceTemplate from "./Device";
 import PlaylistManager from "./playlist/PlaylistManager";
 
-export default function () {
+export default function Router() {
     const category = "umi";
     const viewMode = "auto";
     return <Routes>

@@ -14,7 +14,7 @@ function TemplateSelector({ dataSource: d, ...props }: DataSourceProps<Upnp.Devi
         return <RendererDeviceCard {...props} dataSource={d} />
 }
 
-export default function () {
+export default function Router() {
     const category = "renderers";
     const viewMode = "auto";
     return <Routes>

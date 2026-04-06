@@ -4,7 +4,8 @@ import Slider from "../../components/Slider";
 import { parseMilliseconds } from "../../services/Extensions";
 import { SwipeGestureRecognizer, type SwipeGestures } from "../../services/gestures/SwipeGestureRecognizer";
 import AlbumArt from "./AlbumArt";
-import { PlaybackStateContext, PlaybackStateProvider, usePlaybackEventHandlers } from "./PlaybackStateContext";
+import { PlaybackStateContext, usePlaybackEventHandlers } from "./PlaybackStateContext";
+import { PlaybackStateProvider } from "./PlaybackStateProvider";
 import SeekBar from "./SeekBar";
 
 function formatAlbumTitle(creator: string | undefined, album: string | undefined) {
@@ -85,7 +86,7 @@ function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonE
     </>
 }
 
-export default function ({ udn }: { udn: string | undefined }) {
+export default function PlayerWidget({ udn }: { udn: string | undefined }) {
     return <PlaybackStateProvider device={udn} trackPosition>
         <PlayerCore udn={udn} />
     </PlaybackStateProvider>

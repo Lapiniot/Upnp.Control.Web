@@ -8,7 +8,7 @@ type SpoilerProps = DetailsHTMLAttributes<HTMLDetailsElement> & {
     renderCaption?(caption: ReactNode, context: unknown): ReactNode
 }
 
-export default ({ caption, children, className, disabled, context, renderCaption, ...other }: SpoilerProps) => {
+export default function Spoiler({ caption, children, className, disabled, context, renderCaption, ...other }: SpoilerProps) {
     const ref = useRef<HTMLDetailsElement>(null);
     const handler = useCallback(async (event: MouseEvent<HTMLElement>) => {
         event.preventDefault();

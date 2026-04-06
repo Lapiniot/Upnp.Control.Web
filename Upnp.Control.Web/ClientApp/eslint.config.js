@@ -18,26 +18,28 @@ export default defineConfig(
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      }
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'off',
-        { allowConstantExport: true }
-      ],
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
-          "args": "all",
           "argsIgnorePattern": "^_",
-          "caughtErrors": "all",
-          "caughtErrorsIgnorePattern": "^_",
-          "destructuredArrayIgnorePattern": "^_",
           "varsIgnorePattern": "^_",
           "ignoreRestSiblings": true
         }
       ],
-      "no-var": "off"
+      "no-var": "off",
+      "no-restricted-syntax": [
+        "error",
+        {
+          "selector": "VariableDeclaration[kind='var'][declare!=true]",
+          "message": "Unexpected var, use let or const instead."
+        }
+      ]
     }
   }
 )

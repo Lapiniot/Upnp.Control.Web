@@ -7,7 +7,7 @@ type BreadcrumbParams = {
     disabled?: boolean;
 };
 
-export default function ({ items = [], disabled, ...other }: BreadcrumbParams & HTMLAttributes<HTMLDivElement>) {
+export default function Breadcrumb({ items = [], disabled, ...other }: BreadcrumbParams & HTMLAttributes<HTMLDivElement>) {
     return <nav aria-label="breadcrumb" {...other}>
         <ol className="breadcrumb my-0 p-1 px-2">
             {reversemap(items, ({ title, id }, i) => disabled || i === 0

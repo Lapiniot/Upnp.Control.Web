@@ -1,6 +1,6 @@
 import { type PropsWithChildren, useContext, useMemo } from "react";
 import { PlaybackStateContext } from "../../common/PlaybackStateContext";
-import { RowState, RowStateProvider } from "../../../components/RowStateContext";
+import { RowStateProvider, RowState } from "../../../components/RowStateProvider";
 
 type TrackIndexCallback = (playlist: string | undefined | null, track: string | undefined | null) => number;
 

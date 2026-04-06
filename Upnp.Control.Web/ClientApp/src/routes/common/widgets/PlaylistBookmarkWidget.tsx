@@ -13,7 +13,7 @@ export type PlaylistBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
 
 // TODO: consider merge of album-art and generic icon styles
 
-export default function ({ device, id, title, icon, deviceName }: PlaylistBookmarkWidgetProps) {
+export default function PlaylistBookmarkWidget({ device, id, title, icon, deviceName }: PlaylistBookmarkWidgetProps) {
     const clickHandler = useCallback(() => WebApi.control(device).playUri(`x-mi://sys/playlist?id=${id.substring(3)}#play`).fetch(), [device, id]);
     return <div className="card-horizontal">
         <button type="button" className="btn btn-stack"
