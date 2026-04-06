@@ -1,30 +1,27 @@
-import "./styles/index.scss";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./GlobalConfig";
 import { RouteLink } from "./components/NavLink";
 import { SignalRConnection } from "./components/SignalRConnection";
-import { ThemeProvider, type ThemeStorage } from "./components/ThemeContext";
+import { ThemeProvider } from "./components/ThemeContext";
+import { ThemeSwitch } from "./components/ThemeSwitch";
 import { AppInfo } from "./routes/common/AppInfo";
+import { DeviceDiscoveryNotifier } from "./routes/common/DeviceDiscoveryNotifier";
+import { PlaybackStateNotifier } from "./routes/common/PlaybackStateNotifier";
+import $s from "./routes/common/Settings";
+import SettingsThemeStorage from "./routes/common/SettingsThemeStorage";
 import HomePage from "./routes/home/Home";
 import RendererDevicesPage from "./routes/renderers/Router";
 import SettingsPage from "./routes/settings/Settings";
 import UmiDevicesPage from "./routes/umi/Router";
 import UpnpDevicesPage from "./routes/upnp/Router";
 import * as SW from "./serviceWorkerRegistration";
-import { DeviceDiscoveryNotifier } from "./routes/common/DeviceDiscoveryNotifier";
-import $s from "./routes/common/Settings";
-import { PlaybackStateNotifier } from "./routes/common/PlaybackStateNotifier";
-import { ThemeSwitch } from "./components/ThemeSwitch";
+import "./styles/index.scss";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href")!;
 const container = document.getElementById("main-root")!;
 const root = createRoot(container);
-
-const themeStorage: ThemeStorage = {
-    get theme() { return $s.get("theme") },
-    set theme(theme: UI.Theme) { $s.set("theme", theme) }
-}
+const themeStorage = SettingsThemeStorage.getInstance();
 
 root.render(
     <ThemeProvider storage={themeStorage}>
