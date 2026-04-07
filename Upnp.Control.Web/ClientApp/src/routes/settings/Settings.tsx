@@ -75,7 +75,7 @@ export default function Settings() {
             <li className="list-group-item">
                 <small>Tools</small>
                 <div className="vstack mt-2">
-                    <a href="api/swagger" target="_blank" rel="noopener noreferrer">Open SwaggerUI</a>
+                    <a href="api/scalar/v1" target="_blank" rel="noopener noreferrer">Open ScalarUI</a>
                     <small className="form-text">Offers a web-based UI that provides information about the service, using the generated OpenAPI specification</small>
                     <a className="mt-1" href="api/cert">Download Certificate(s)</a>
                     <small className="form-text">You can obtain a copy of SSL certificate used by this site - this is especially useful if you need to add it manually to the trusted store on your device</small>

@@ -2,7 +2,9 @@
 
 using System.Reflection;
 using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
 using OOs.Extensions.Hosting;
+using Scalar.AspNetCore;
 using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore;
 using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
@@ -105,15 +107,11 @@ builder.Services
 
 #endregion
 
-#region Swagger configuration
+#region OpenAPI configuration
 
 builder.Services
     .AddEndpointsApiExplorer()
-    .AddSwaggerGen(options =>
-    {
-        options.SwaggerDoc("v1", new() { Version = "v1", Title = "UPnP Control Dashboard" });
-        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(ConfigureExtensions).Assembly.GetName().Name}.xml"));
-    });
+    .AddOpenApi();
 
 #endregion
 
@@ -148,44 +146,56 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+
 if (builder.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+
+    // This is technically a workaround to make tools like Scalar working 
+    // and correctly display API endpoints for requests coming 
+    // through proxy (Vite's development server proxy for SPA e.g.)
+    app.UseForwardedHeaders(new()
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto
+    });
 }
 
 app.UseStaticFiles();
 app.UseResponseCaching();
-app.UseSwaggerUI(options =>
-{
-    options.RoutePrefix = "api/swagger";
-    options.SwaggerEndpoint("/api/swagger/v1/swagger.json", "UPnP Control Dashboard API v1");
-});
 
 // Custom middleware endpoints
 app.MapUpnpEventsHub("upnpevents");
 app.MapImageLoaderProxy("proxy/{*url}");
 app.MapContentProxy("dlna-proxy/{*url}");
+
+var api = app.MapGroup("api");
 // Custom services endpoints
-app.MapCertificateDownload("api/cert");
+api.MapCertificateDownload("cert").ExcludeFromDescription();
 // Health checks
-app.MapHealthChecks("api/health");
+api.MapHealthChecks("health").ExcludeFromDescription();
+// OpenAPI endpoint
+api.MapOpenApi();
+// ScalarUI endpoint
+api.MapScalarApiReference(options => options
+    .WithTitle($"{app.Environment.ApplicationName} Server API")
+    .WithOpenApiRoutePattern("api/openapi/v1.json")
+    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
+    .DisableMcp());
 
 // API routes
-var api = app.MapGroup("api/devices").WithGroupName("v1");
-api.MapDevicesApi("");
-api.MapBrowseContentApi("{deviceId}/items/{*path}");
-api.MapSearchContentApi("{deviceId}/search/{*path}");
-api.MapSearchCapabilitiesApi("{deviceId}/search-capabilities");
-api.MapPlaylistApi("{deviceId}/playlists");
-api.MapQueueApi("{deviceId}/queues/{queueId}/items");
-api.MapControlApi("{deviceId}");
-api.MapConnectionsApi("{deviceId}");
+var devicesApi = api.MapGroup("devices");
+devicesApi.MapDevicesApi("");
+devicesApi.MapBrowseContentApi("{deviceId}/items/{*path}");
+devicesApi.MapSearchContentApi("{deviceId}/search/{*path}");
+devicesApi.MapSearchCapabilitiesApi("{deviceId}/search-capabilities");
+devicesApi.MapPlaylistApi("{deviceId}/playlists");
+devicesApi.MapQueueApi("{deviceId}/queues/{queueId}/items");
+devicesApi.MapControlApi("{deviceId}");
+devicesApi.MapConnectionsApi("{deviceId}");
 
-app.MapUpnpEventCallbacks("api/events/{deviceId}");
-app.MapPushNotificationSubscriptionApi("api/push-subscriptions");
-app.MapAppInfo("api/info");
-// Swagger
-app.MapSwagger("api/swagger/{documentName}/swagger.json");
+api.MapUpnpEventCallbacks("events/{deviceId}");
+api.MapPushNotificationSubscriptionApi("push-subscriptions");
+api.MapAppInfo("info");
 
 // Fallback route
 app.MapFallbackToFile("index.html");
