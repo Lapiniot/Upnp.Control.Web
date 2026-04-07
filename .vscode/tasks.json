@@ -52,12 +52,10 @@
             "args": [
                 "publish",
                 "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
-                "--runtime=${input:rid}",
-                "--framework=${input:fw}",
-                "--self-contained",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary",
-                "/property:PublishTrimmed=true",
+                "/p:TargetFramework=${input:fw}",
+                "/p:RuntimeIdentifier=${input:rid}",
+                "/p:SelfContained=true",
+                "/p:PublishTrimmed=true",
                 "--tl"
             ]
         },
@@ -68,15 +66,16 @@
             "command": "dotnet",
             "args": [
                 "build",
-                "-t:PublishAllImages",
-                "-p:Configuration=Release",
-                "-p:TargetFramework=${input:fw}",
-                "-p:RuntimeIdentifiers=\"${input:container_rids}\"",
-                "-p:ContainerRepository=\"${input:container_repository}\"",
-                "-p:ContainerRegistry=\"${input:container_registry}\"",
-                "-p:SelfContained=true",
-                "-p:PublishTrimmed=true",
-                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj"
+                "${workspaceFolder}/Upnp.Control.Web/Upnp.Control.Web.csproj",
+                "/t:PublishContainer",
+                "/p:Configuration=Release",
+                "/p:TargetFramework=${input:fw}",
+                "/p:RuntimeIdentifiers=\"${input:container_rids}\"",
+                "/p:ContainerRepository=\"${input:container_repository}\"",
+                "/p:ContainerRegistry=\"${input:container_registry}\"",
+                "/p:SelfContained=true",
+                "/p:PublishTrimmed=true",
+                "/p:SuppressTrimAnalysisWarnings=true"
             ]
         },
         {
@@ -151,7 +150,7 @@
             "group": "build",
             "problemMatcher": {
                 "base": "$tsc",
-                "fileLocation":[
+                "fileLocation": [
                     "relative",
                     "${workspaceFolder}/Upnp.Control.Web/ClientApp"
                 ]

@@ -1,5 +1,0 @@
-<Project>
-
-<Import Project="./IoT.Device/IoT.Protocol/OOs.Common/targets/PublishContainers.targets" />
-
-</Project>

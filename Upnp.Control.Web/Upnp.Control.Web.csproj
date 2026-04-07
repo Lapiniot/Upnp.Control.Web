@@ -31,12 +31,14 @@
     <UseSystemResourceKeys>false</UseSystemResourceKeys>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <ContainerRepository>upnp-dashboard</ContainerRepository>
-    <ContainerFamily>noble-chiseled</ContainerFamily>
-    <ContainerFamily Condition="$(RuntimeIdentifier.StartsWith('linux-musl'))">alpine</ContainerFamily>
-    <ContainerImageTags Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</ContainerImageTags>
-  </PropertyGroup>
+  <ItemGroup>
+    <ContainerEnvironmentVariable Include="ASPNETCORE_HTTP_PORTS" Value="8080" />
+    <ContainerEnvironmentVariable Include="ConnectionStrings__UpnpDeviceDb"
+      Value="Data Source=/home/app/.local/share/$(AssemblyName)/upnp.db3;Cache=Shared;" />
+    <ContainerEnvironmentVariable Include="ConnectionStrings__PushSubscriptionDb"
+      Value="Data Source=/home/app/.local/share/$(AssemblyName)/subscriptions.db3;Cache=Shared;" />
+    <ContainerEnvironmentVariable Include="Logging__LogLevel__Default" Value="Warning" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Text.Encoding.CodePages" />
@@ -99,4 +101,26 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="_UnsetRuntimeIdentifierForMultiRID" BeforeTargets="ComputeContainerBaseImage">
+    <PropertyGroup Condition="'$(RuntimeIdentifiers)' != ''">
+      <RuntimeIdentifier></RuntimeIdentifier>
+      <ContainerRuntimeIdentifier></ContainerRuntimeIdentifier>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_EscapeProblematicChars" BeforeTargets="_PublishMultiArchContainers">
+    <ItemGroup>
+      <ContainerEnvironmentVariable Update="@(ContainerEnvironmentVariable)">
+        <Value>$([System.String]::Copy('%(Value)').Replace('=', '%253D').Replace(';', '%253B'))</Value>
+      </ContainerEnvironmentVariable>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_UnescapeProblematicChars" AfterTargets="_ParseItemsForPublishingSingleContainer">
+    <ItemGroup>
+      <ContainerEnvironmentVariables Update="@(ContainerEnvironmentVariables)">
+        <Value>$([MSBuild]::Unescape('%(Value)'))</Value>
+      </ContainerEnvironmentVariables>
+    </ItemGroup>
+  </Target>
 </Project>
