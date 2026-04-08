@@ -35,12 +35,11 @@ public static class DeviceServices
     {
         try
         {
-            var value = await handler.ExecuteAsync(new(id), cancellationToken).ConfigureAwait(false);
-            return value switch
-            {
-                not null => Ok(value),
-                _ => NotFound()
-            };
+            return Ok(await handler.ExecuteAsync(new(id), cancellationToken).ConfigureAwait(false));
+        }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
         }
         catch (Exception ex)
         {

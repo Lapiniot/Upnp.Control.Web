@@ -49,6 +49,10 @@ public static class ContentDirectoryServices
                 statusCode: Status400BadRequest,
                 extensions: new Dictionary<string, object?> { { "code", se.Code } });
         }
+        catch (DeviceNotFoundException)
+        {
+            return NotFound();
+        }
         catch (Exception ex)
         {
             return Problem(title: ex.Message, type: ex.GetType().Name);
@@ -96,9 +100,13 @@ public static class ContentDirectoryServices
                 statusCode: Status400BadRequest,
                 extensions: new Dictionary<string, object?> { { "code", se.Code } });
         }
-        catch (Exception e)
+        catch (DeviceNotFoundException)
         {
-            return Problem(title: e.Message, type: e.GetType().Name);
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            return Problem(title: ex.Message, type: ex.GetType().Name);
         }
     }
 
@@ -111,8 +119,9 @@ public static class ContentDirectoryServices
     /// <returns>A result containing an array of search capabilities strings.</returns>
     /// <exception cref="Exception">General exception handling for unexpected errors.</exception>
     /// <response code="200">Returns requested content.</response>
+    /// <response code="404">If requested item was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
-    public static async Task<Results<Ok<string[]>, ProblemHttpResult>> GetSearchCapabilitiesAsync(
+    public static async Task<Results<Ok<string[]>, NotFound, ProblemHttpResult>> GetSearchCapabilitiesAsync(
         IAsyncQueryHandler<CDSearchCapabilitiesQuery, string[]> handler, string deviceId,
         CancellationToken cancellationToken)
     {
@@ -120,9 +129,13 @@ public static class ContentDirectoryServices
         {
             return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false));
         }
-        catch (Exception e)
+        catch (DeviceNotFoundException)
         {
-            return Problem(title: e.Message, type: e.GetType().Name);
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            return Problem(title: ex.Message, type: ex.GetType().Name);
         }
     }
 }

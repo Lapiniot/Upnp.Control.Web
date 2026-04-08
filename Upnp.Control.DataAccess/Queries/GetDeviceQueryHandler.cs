@@ -1,7 +1,8 @@
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using static IoT.Protocol.Upnp.UpnpServices;
+using Upnp.Control.Abstractions.Exceptions;
 using static System.DateTime;
+using static IoT.Protocol.Upnp.UpnpServices;
 
 namespace Upnp.Control.DataAccess.Queries;
 
@@ -50,11 +51,27 @@ internal sealed class GetDeviceQueryHandler(UpnpDbContext context) :
         }
     }
 
-    public async Task<UpnpDevice> ExecuteAsync(GetDeviceQuery query, CancellationToken cancellationToken) =>
-        await GetDeviceByUdnQuery(context, query.DeviceId, cancellationToken).ConfigureAwait(false);
+    public async Task<UpnpDevice> ExecuteAsync(GetDeviceQuery query, CancellationToken cancellationToken)
+    {
+        var upnpDevice = await GetDeviceByUdnQuery(context, query.DeviceId, cancellationToken).ConfigureAwait(false);
+        if (upnpDevice is null)
+        {
+            DeviceNotFoundException.Throw(query.DeviceId);
+        }
 
-    public async Task<DeviceDescription> ExecuteAsync(GetDeviceDescriptionQuery query, CancellationToken cancellationToken) =>
-        await GetDeviceDescriptionByUdnQuery(context, query.DeviceId, cancellationToken).ConfigureAwait(false);
+        return upnpDevice;
+    }
+
+    public async Task<DeviceDescription> ExecuteAsync(GetDeviceDescriptionQuery query, CancellationToken cancellationToken)
+    {
+        var deviceDescription = await GetDeviceDescriptionByUdnQuery(context, query.DeviceId, cancellationToken).ConfigureAwait(false);
+        if (deviceDescription is null)
+        {
+            DeviceNotFoundException.Throw(query.DeviceId);
+        }
+
+        return deviceDescription;
+    }
 
     [DoesNotReturn]
     private static void ThrowInvalidCategory(string category) =>
