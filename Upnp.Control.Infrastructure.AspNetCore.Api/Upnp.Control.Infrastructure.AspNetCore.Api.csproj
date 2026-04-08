@@ -30,4 +30,10 @@
     <Using Include="Microsoft.AspNetCore.Http.TypedResults" Static="true" />
   </ItemGroup>
 
+  <Target Name="RemoveOpenApiSourceGenerators" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" Condition="'%(Filename)' == 'Microsoft.AspNetCore.OpenApi.SourceGenerators'" />
+    </ItemGroup>
+  </Target>
+
 </Project>
