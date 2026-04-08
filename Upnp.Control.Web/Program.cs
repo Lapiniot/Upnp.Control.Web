@@ -72,7 +72,7 @@ builder.Services
     .AddQueries()
     .AddCommands();
 
-builder.Services.ConfigureWebPushJsonOptions(static options => options.SerializerOptions.ConfigureDefaults());
+builder.Services.ConfigureWebPushJsonOptions(static options => options.SerializerOptions.ConfigureApiDefaults());
 
 #endregion
 
@@ -82,7 +82,7 @@ builder.WebHost.UseKestrelHttpsConfiguration();
 
 builder.Services.ConfigureHttpJsonOptions(static options =>
 {
-    options.SerializerOptions.ConfigureDefaults();
+    options.SerializerOptions.ConfigureApiDefaults();
     options.SerializerOptions.TypeInfoResolverChain.Add(JsonContext.Default);
 });
 
@@ -93,7 +93,7 @@ builder.Services.AddProblemDetails();
 #region SignalR configuration
 
 #pragma warning disable IL2026
-builder.Services.AddSignalR().AddJsonProtocol(static options => options.PayloadSerializerOptions.ConfigureDefaults());
+builder.Services.AddSignalR().AddJsonProtocol(static options => options.PayloadSerializerOptions.ConfigureApiDefaults());
 #pragma warning restore IL2026
 
 #endregion

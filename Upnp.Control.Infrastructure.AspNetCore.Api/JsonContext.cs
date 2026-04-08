@@ -26,10 +26,13 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 [JsonSerializable(typeof(FeedUrlSourceParams))]
 [JsonSerializable(typeof(AVStateParams))]
 [JsonSerializable(typeof(AVPositionParams))]
+[JsonSerializable(typeof(CMProtocolInfo))]
+[JsonSerializable(typeof(CMConnectionInfo))]
 [JsonSerializable(typeof(CDContent))]
 [JsonSerializable(typeof(MediaItem))]
 [JsonSerializable(typeof(Container))]
 [JsonSerializable(typeof(IAsyncEnumerable<UpnpDevice>))]
 [JsonSerializable(typeof(PushSubscriptionRequest))]
 [JsonSerializable(typeof(PushSubscriptionState))]
-public partial class JsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(IFormFileCollection))]
+internal sealed partial class JsonContext : JsonSerializerContext { }

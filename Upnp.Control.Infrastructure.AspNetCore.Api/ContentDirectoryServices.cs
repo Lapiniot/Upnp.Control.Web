@@ -4,17 +4,26 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Api;
 
-internal static class ContentDirectoryServices
+/// <summary>
+/// Provides content directory services for UPnP devices, handling browsing and searching of media content.
+/// </summary>
+public static class ContentDirectoryServices
 {
     /// <summary>
-    /// Provides directory content at the specified <paramref name="path" /> from device with <paramref name="deviceId" />.
+    /// Browses content based on the provided device ID and path.
     /// </summary>
-    /// <param name="handler">Query handler.</param>
-    /// <param name="deviceId">Device ID.</param>
-    /// <param name="path">Directory path.</param>
-    /// <param name="options">Browse optiions.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns><see cref="Task{IResult}" /> containing directory content or error response.</returns>
+    /// <param name="handler">The query handler to execute the browse operation.</param>
+    /// <param name="deviceId">The identifier of the UPnP device.</param>
+    /// <param name="path">The path to browse content from. If null, the root path is used.</param>
+    /// <param name="options">Options for getting content, such as media type or other filters.</param>
+    /// <param name="cancellationToken">Token to cancel the operation if needed.</param>
+    /// <returns>A result that can be Ok with CDContent, NotFound if content is not found, or ProblemHttpResult for other errors.</returns>
+    /// <exception cref="SoapException">Thrown when a SOAP error occurs, handled to return NotFound or ProblemHttpResult.</exception>
+    /// <exception cref="Exception">General exception handling for unexpected errors.</exception>
+    /// <response code="200">Returns requested content.</response>
+    /// <response code="404">If requested item was not found.</response>
+    /// <response code="400">If SOAP error reported by destination.</response>
+    /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(GetContentOptions))]
     public static async Task<Results<Ok<CDContent>, NotFound, ProblemHttpResult>> BrowseAsync(
         IAsyncQueryHandler<CDGetContentQuery, CDContent> handler,
@@ -27,13 +36,17 @@ internal static class ContentDirectoryServices
             var value = await handler.ExecuteAsync(new(deviceId, path, options), cancellationToken).ConfigureAwait(false);
             return Ok(value);
         }
+        catch (SoapException se) when (se.Code == 701)
+        {
+            return NotFound();
+        }
         catch (SoapException se)
         {
             return Problem(
                 title: se.Message,
                 detail: se.Description,
                 type: se.GetType().Name,
-                statusCode: se.Code == 701 ? Status404NotFound : Status400BadRequest,
+                statusCode: Status400BadRequest,
                 extensions: new Dictionary<string, object?> { { "code", se.Code } });
         }
         catch (Exception ex)
@@ -43,16 +56,21 @@ internal static class ContentDirectoryServices
     }
 
     /// <summary>
-    /// Provides directory content at the specified <paramref name="path" /> from device with <paramref name="deviceId" />
-    /// that matche <paramref name="criteria"/>.
+    /// Searches content based on criteria, device ID, and path.
     /// </summary>
-    /// <param name="handler">Query handler.</param>
-    /// <param name="deviceId">Device ID.</param>
-    /// <param name="path">Directory path.</param>
-    /// <param name="criteria">Search query to match.</param>
-    /// <param name="options">Browse optiions.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns><see cref="Task{IResult}" /> containing directory content or error response.</returns>
+    /// <param name="handler">The query handler to execute the search operation.</param>
+    /// <param name="deviceId">The identifier of the UPnP device.</param>
+    /// <param name="path">The path to search content from. If null, the root path is used.</param>
+    /// <param name="criteria">Search criteria (e.g., media type, title keywords).</param>
+    /// <param name="options">Options for getting content, such as media type or other filters.</param>
+    /// <param name="cancellationToken">Token to cancel the operation if needed.</param>
+    /// <returns>A result that can be Ok with CDContent, NotFound if content is not found, or ProblemHttpResult for errors.</returns>
+    /// <exception cref="SoapException">Thrown when a SOAP error occurs, handled to return NotFound or ProblemHttpResult.</exception>
+    /// <exception cref="Exception">General exception handling for unexpected errors.</exception>
+    /// <response code="200">Returns requested content.</response>
+    /// <response code="404">If requested item was not found.</response>
+    /// <response code="400">If SOAP error reported by destination.</response>
+    /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(GetContentOptions))]
     public static async Task<Results<Ok<CDContent>, NotFound, ProblemHttpResult>> SearchAsync(
         IAsyncQueryHandler<CDSearchContentQuery, CDContent> handler,
@@ -65,13 +83,17 @@ internal static class ContentDirectoryServices
             var value = await handler.ExecuteAsync(new(deviceId, path, criteria, options), cancellationToken).ConfigureAwait(false);
             return Ok(value);
         }
+        catch (SoapException se) when (se.Code == 710)
+        {
+            return NotFound();
+        }
         catch (SoapException se)
         {
             return Problem(
                 title: se.Message,
                 detail: se.Description,
                 type: se.GetType().Name,
-                statusCode: se.Code == 710 ? Status404NotFound : Status400BadRequest,
+                statusCode: Status400BadRequest,
                 extensions: new Dictionary<string, object?> { { "code", se.Code } });
         }
         catch (Exception e)
@@ -80,6 +102,16 @@ internal static class ContentDirectoryServices
         }
     }
 
+    /// <summary>
+    /// Retrieves the available search capabilities for the specified device.
+    /// </summary>
+    /// <param name="handler">The query handler to execute the search capabilities query.</param>
+    /// <param name="deviceId">The identifier of the UPnP device.</param>
+    /// <param name="cancellationToken">Token to cancel the operation if needed.</param>
+    /// <returns>A result containing an array of search capabilities strings.</returns>
+    /// <exception cref="Exception">General exception handling for unexpected errors.</exception>
+    /// <response code="200">Returns requested content.</response>
+    /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<string[]>, ProblemHttpResult>> GetSearchCapabilitiesAsync(
         IAsyncQueryHandler<CDSearchCapabilitiesQuery, string[]> handler, string deviceId,
         CancellationToken cancellationToken)

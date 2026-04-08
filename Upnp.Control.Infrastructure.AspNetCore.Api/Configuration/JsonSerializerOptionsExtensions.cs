@@ -5,21 +5,24 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
 
 public static class JsonSerializerOptionsExtensions
 {
-    public static void ConfigureDefaults(this JsonSerializerOptions options)
+    extension(JsonSerializerOptions options)
     {
-        ArgumentNullException.ThrowIfNull(options);
-
-        options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-        options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-        options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-        options.IgnoreReadOnlyProperties = true;
-        options.IgnoreReadOnlyFields = true;
-
-        options.TypeInfoResolver = JsonContext.Default;
-
-        foreach (var converter in JsonContext.Default.Options.Converters)
+        public void ConfigureApiDefaults()
         {
-            options.Converters.Add(converter);
+            ArgumentNullException.ThrowIfNull(options);
+
+            options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            options.IgnoreReadOnlyProperties = true;
+            options.IgnoreReadOnlyFields = true;
+
+            options.TypeInfoResolver = JsonContext.Default;
+
+            foreach (var converter in JsonContext.Default.Options.Converters)
+            {
+                options.Converters.Add(converter);
+            }
         }
     }
 }
