@@ -34,6 +34,10 @@ public record struct RCSetVolumeCommand(string DeviceId, uint Volume);
 
 public record struct RCSetMuteCommand(string DeviceId, bool Muted);
 
+public record struct AVStateParams(string State, string ObjectId, string SourceDevice, Uri CurrentUri);
+
+public record struct AVPositionParams(double? Position, TimeSpan? RelTime);
+
 #endregion
 
 #region Playlist management commands
@@ -57,6 +61,18 @@ public record struct PLAddFeedUrlCommand(string DeviceId, string PlaylistId, Fee
 public record struct PLAddPlaylistFilesCommand(string DeviceId, string PlaylistId, IEnumerable<FileSource> Files, bool UseProxy);
 
 public record struct PLRemoveItemsCommand(string DeviceId, string PlaylistId, IEnumerable<string> ItemIds);
+
+public record struct CreatePlaylistParams(string Title, MediaSourceParams Source);
+
+public record struct MediaSourceParams(string DeviceId, IEnumerable<string> Items, int? MaxDepth);
+
+public record struct FeedUrlSourceParams(Uri Url, string Title, bool UseProxy);
+
+public abstract class FileSource
+{
+    public abstract string FileName { get; }
+    public abstract Stream GetStream();
+}
 
 #endregion
 

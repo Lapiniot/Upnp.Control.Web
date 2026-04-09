@@ -4,12 +4,6 @@ namespace Upnp.Control.Models;
 
 public sealed record DeviceDescription(string Udn, string Name, string Description);
 
-public sealed record GetContentOptions(
-    bool WithChildren = true, bool WithParents = true,
-    bool WithResourceProps = false, bool WithVendorProps = false,
-    bool WithMetadata = false, bool WithDevice = true,
-    uint Take = 50, uint Skip = 0);
-
 public sealed record CDContent(int Total, DeviceDescription Device, Item Metadata, IEnumerable<Item> Items, IEnumerable<Item> Parents);
 
 public sealed record AVState(string State, string Status, int? Tracks, string Medium, string PlayMode)
@@ -28,16 +22,6 @@ public record struct AVPosition(string CurrentTrack, string Duration, string Rel
 
 public record struct RCVolumeState(uint? Volume, bool? Muted);
 
-public record struct AVStateParams(string State, string ObjectId, string SourceDevice, Uri CurrentUri);
-
-public record struct AVPositionParams(double? Position, TimeSpan? RelTime);
-
 public record struct CMProtocolInfo(IEnumerable<string> Source, IEnumerable<string> Sink);
 
 public record struct CMConnectionInfo(string RcsID, string AVTransportID, string PeerConnectionID, string Direction, string Status);
-
-public record struct CreatePlaylistParams(string Title, MediaSourceParams Source);
-
-public record struct MediaSourceParams(string DeviceId, IEnumerable<string> Items, int? MaxDepth);
-
-public record struct FeedUrlSourceParams(Uri Url, string Title, bool UseProxy);
