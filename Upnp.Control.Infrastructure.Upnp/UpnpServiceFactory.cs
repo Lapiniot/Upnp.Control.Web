@@ -4,7 +4,7 @@ using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Infrastructure.Upnp;
 
-public class UpnpServiceFactory(IHttpClientFactory clientFactory, IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> queryHandler) : IUpnpServiceFactory
+public class UpnpServiceFactory(IHttpClientFactory clientFactory, IQueryHandler<GetDeviceQuery, UpnpDevice> queryHandler) : IUpnpServiceFactory
 {
     private static readonly Dictionary<string, string> UmiMappings = new()
     {

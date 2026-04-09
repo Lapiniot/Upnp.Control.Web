@@ -19,7 +19,7 @@ public static class PlaylistServices
     /// <response code="404">The specified device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> CreateAsync(
-        IAsyncCommandHandler<PLCreateCommand> handler,
+        ICommandHandler<PLCreateCommand> handler,
         string deviceId, [FromBody] string title, CancellationToken cancellationToken)
     {
         try
@@ -50,7 +50,7 @@ public static class PlaylistServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreatePlaylistParams))]
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> CreateFromItemsAsync(
-        IAsyncCommandHandler<PLCreateFromItemsCommand> handler,
+        ICommandHandler<PLCreateFromItemsCommand> handler,
         string deviceId, CreatePlaylistParams playlistParams, CancellationToken cancellationToken)
     {
         try
@@ -81,7 +81,7 @@ public static class PlaylistServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreateFromFilesFormParams))]
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> CreateFromFilesAsync(
-        IAsyncCommandHandler<PLCreateFromFilesCommand> handler,
+        ICommandHandler<PLCreateFromFilesCommand> handler,
         string deviceId, [AsParameters] CreateFromFilesFormParams form, CancellationToken cancellationToken)
     {
         try
@@ -114,7 +114,7 @@ public static class PlaylistServices
     /// <response code="404">The specified device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> RenameAsync(
-        IAsyncCommandHandler<PLRenameCommand> handler,
+        ICommandHandler<PLRenameCommand> handler,
         string deviceId, string playlistId, [FromBody] string title,
         CancellationToken cancellationToken)
     {
@@ -146,7 +146,7 @@ public static class PlaylistServices
     /// <response code="404">The specified device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> CopyAsync(
-        IAsyncCommandHandler<PLCopyCommand> handler,
+        ICommandHandler<PLCopyCommand> handler,
         string deviceId, string playlistId, [FromBody] string title,
         CancellationToken cancellationToken)
     {
@@ -177,7 +177,7 @@ public static class PlaylistServices
     /// <response code="404">The specified device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> RemoveAsync(
-        IAsyncCommandHandler<PLRemoveCommand> handler,
+        ICommandHandler<PLRemoveCommand> handler,
         string deviceId, [FromBody] string[] ids, CancellationToken cancellationToken)
     {
         try
@@ -209,7 +209,7 @@ public static class PlaylistServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(MediaSourceParams))]
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> AddItemsAsync(
-        IAsyncCommandHandler<PLAddItemsCommand> handler,
+        ICommandHandler<PLAddItemsCommand> handler,
         string deviceId, string playlistId, MediaSourceParams source,
         CancellationToken cancellationToken)
     {
@@ -242,7 +242,7 @@ public static class PlaylistServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(FeedUrlSourceParams))]
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> AddFromFeedsAsync(
-        IAsyncCommandHandler<PLAddFeedUrlCommand> handler,
+        ICommandHandler<PLAddFeedUrlCommand> handler,
         string deviceId, string playlistId, FeedUrlSourceParams source,
         CancellationToken cancellationToken)
     {
@@ -275,7 +275,7 @@ public static class PlaylistServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CreateFromFilesFormParams))]
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> AddFromFilesAsync(
-        IAsyncCommandHandler<PLAddPlaylistFilesCommand> handler,
+        ICommandHandler<PLAddPlaylistFilesCommand> handler,
         string deviceId, string playlistId, [AsParameters] CreateFromFilesFormParams form,
         CancellationToken cancellationToken)
     {
@@ -308,7 +308,7 @@ public static class PlaylistServices
     /// <response code="404">The specified device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> RemoveItemsAsync(
-        IAsyncCommandHandler<PLRemoveItemsCommand> handler,
+        ICommandHandler<PLRemoveItemsCommand> handler,
         string deviceId, string playlistId, [FromBody] string[] items,
         CancellationToken cancellationToken)
     {
@@ -338,7 +338,7 @@ public static class PlaylistServices
     /// <response code="404">The specified device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<ContentHttpResult, NotFound, ProblemHttpResult>> GetPlaylistStateAsync(
-        IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string> handler,
+        IQueryHandler<SysPropsGetPlaylistStateQuery, string> handler,
         string deviceId, CancellationToken cancellationToken)
     {
         try

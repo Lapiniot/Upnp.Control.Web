@@ -10,24 +10,24 @@ public static class RegisterQueriesExtensions
         .AddConnectionManagerQueries();
 
     public static IServiceCollection AddAVTransportQueries(this IServiceCollection services) => services
-        .AddQuery<AVGetStateQuery, AVState, AVGetStateQueryHandler>()
-        .AddQuery<AVGetPositionQuery, AVPosition, AVGetPositionQueryHandler>()
-        .AddQuery<AVGetPlayModeQuery, string, AVGetPlayModeQueryHandler>();
+        .AddTransient<IQueryHandler<AVGetStateQuery, AVState>, AVGetStateQueryHandler>()
+        .AddTransient<IQueryHandler<AVGetPositionQuery, AVPosition>, AVGetPositionQueryHandler>()
+        .AddTransient<IQueryHandler<AVGetPlayModeQuery, string>, AVGetPlayModeQueryHandler>();
 
     public static IServiceCollection AddRenderingControlQueries(this IServiceCollection services) => services
-        .AddQuery<RCGetVolumeQuery, RCVolumeState, RCGetVolumeQueryHandler>()
-        .AddQuery<RCGetMuteQuery, bool?, RCGetMuteQueryHandler>();
+        .AddTransient<IQueryHandler<RCGetVolumeQuery, RCVolumeState>, RCGetVolumeQueryHandler>()
+        .AddTransient<IQueryHandler<RCGetMuteQuery, bool?>, RCGetMuteQueryHandler>();
 
     public static IServiceCollection AddSystemPropertiesQueries(this IServiceCollection services) => services
-        .AddQuery<SysPropsGetPlaylistStateQuery, string, SysPropsGetPlaylistStateQueryHandler>();
+        .AddTransient<IQueryHandler<SysPropsGetPlaylistStateQuery, string>, SysPropsGetPlaylistStateQueryHandler>();
 
     public static IServiceCollection AddContentDirectoryQueries(this IServiceCollection services) => services
-        .AddQuery<CDGetContentQuery, CDContent, GetContentQueryHandler>()
-        .AddQuery<CDSearchContentQuery, CDContent, GetContentQueryHandler>()
-        .AddQuery<CDSearchCapabilitiesQuery, string[], GetSearchCapabilitiesQueryHandler>();
+        .AddTransient<IQueryHandler<CDGetContentQuery, CDContent>, GetContentQueryHandler>()
+        .AddTransient<IQueryHandler<CDSearchContentQuery, CDContent>, GetContentQueryHandler>()
+        .AddTransient<IQueryHandler<CDSearchCapabilitiesQuery, string[]>, GetSearchCapabilitiesQueryHandler>();
 
     public static IServiceCollection AddConnectionManagerQueries(this IServiceCollection services) => services
-        .AddQuery<CMGetProtocolInfoQuery, CMProtocolInfo, CMGetProtocolInfoQueryHandler>()
-        .AddQuery<CMGetConnectionsQuery, IEnumerable<string>, CMGetConnectionsQueryHandler>()
-        .AddQuery<CMGetConnectionInfoQuery, CMConnectionInfo, CMGetConnectionInfoQueryHandler>();
+        .AddTransient<IQueryHandler<CMGetProtocolInfoQuery, CMProtocolInfo>, CMGetProtocolInfoQueryHandler>()
+        .AddTransient<IQueryHandler<CMGetConnectionsQuery, IEnumerable<string>>, CMGetConnectionsQueryHandler>()
+        .AddTransient<IQueryHandler<CMGetConnectionInfoQuery, CMConnectionInfo>, CMGetConnectionInfoQueryHandler>();
 }

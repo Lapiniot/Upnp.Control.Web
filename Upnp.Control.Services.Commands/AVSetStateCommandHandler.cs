@@ -2,7 +2,7 @@ using static IoT.Device.Upnp.Services.BrowseMode;
 
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class AVSetStateCommandHandler : IAsyncCommandHandler<AVSetStateCommand>
+internal sealed class AVSetStateCommandHandler : ICommandHandler<AVSetStateCommand>
 {
     private readonly IUpnpServiceFactory factory;
 

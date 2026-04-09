@@ -3,7 +3,7 @@ using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.Infrastructure.PushNotifications;
 
-public class PSGetServerKeyQueryHandler : IAsyncQueryHandler<PSGetServerKeyQuery, byte[]>
+public class PSGetServerKeyQueryHandler : IQueryHandler<PSGetServerKeyQuery, byte[]>
 {
     private readonly IOptions<VAPIDSecretOptions> options;
 

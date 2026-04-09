@@ -19,7 +19,6 @@
   </Folder>
   <Project Path="Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
   <Project Path="Upnp.Control.DataAccess/Upnp.Control.DataAccess.csproj" />
-  <Project Path="Upnp.Control.Extensions/Upnp.Control.Extensions.csproj" />
   <Project Path="Upnp.Control.Infrastructure.AspNetCore.Api/Upnp.Control.Infrastructure.AspNetCore.Api.csproj" />
   <Project Path="Upnp.Control.Infrastructure.AspNetCore.SignalR/Upnp.Control.Infrastructure.AspNetCore.SignalR.csproj" />
   <Project Path="Upnp.Control.Infrastructure.AspNetCore/Upnp.Control.Infrastructure.AspNetCore.csproj" />

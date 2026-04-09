@@ -4,7 +4,7 @@ namespace Upnp.Control.Services.Commands;
 
 internal sealed class PLCreateFromFilesCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
     IServerAddressesProvider serverAddressesProvider, IOptionsSnapshot<PlaylistOptions> options,
-    ILogger<PLCreateFromFilesCommandHandler> logger) : PLFeedsCommandBase(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger), IAsyncCommandHandler<PLCreateFromFilesCommand>
+    ILogger<PLCreateFromFilesCommandHandler> logger) : PLFeedsCommandBase(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger), ICommandHandler<PLCreateFromFilesCommand>
 {
     private async Task CreateFromFilesAsync(string deviceId, IEnumerable<FileSource> files, string title, bool useProxy, bool merge, CancellationToken cancellationToken)
     {

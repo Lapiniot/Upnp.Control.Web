@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Queries;
 
-internal sealed class SysPropsGetPlaylistStateQueryHandler : IAsyncQueryHandler<SysPropsGetPlaylistStateQuery, string>
+internal sealed class SysPropsGetPlaylistStateQueryHandler : IQueryHandler<SysPropsGetPlaylistStateQuery, string>
 {
     private readonly IUpnpServiceFactory factory;
 

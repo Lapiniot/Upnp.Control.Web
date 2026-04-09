@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class RCSetVolumeCommandHandler : IAsyncCommandHandler<RCSetVolumeCommand>
+internal sealed class RCSetVolumeCommandHandler : ICommandHandler<RCSetVolumeCommand>
 {
     private readonly IUpnpServiceFactory factory;
 

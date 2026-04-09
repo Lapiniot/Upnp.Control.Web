@@ -1,6 +1,6 @@
 namespace Upnp.Control.DataAccess.Commands;
 
-internal sealed class RemoveDeviceCommandHandler(UpnpDbContext context) : IAsyncCommandHandler<RemoveDeviceCommand>
+internal sealed class RemoveDeviceCommandHandler(UpnpDbContext context) : ICommandHandler<RemoveDeviceCommand>
 {
     public async Task ExecuteAsync(RemoveDeviceCommand command, CancellationToken cancellationToken) =>
         await context.UpnpDevices

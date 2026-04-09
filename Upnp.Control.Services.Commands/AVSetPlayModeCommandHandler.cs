@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class AVSetPlayModeCommandHandler : IAsyncCommandHandler<AVSetPlayModeCommand>
+internal sealed class AVSetPlayModeCommandHandler : ICommandHandler<AVSetPlayModeCommand>
 {
     private readonly IUpnpServiceFactory factory;
 

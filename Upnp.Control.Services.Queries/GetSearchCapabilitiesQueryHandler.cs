@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Queries;
 
-internal sealed class GetSearchCapabilitiesQueryHandler(IUpnpServiceFactory factory) : IAsyncQueryHandler<CDSearchCapabilitiesQuery, string[]>
+internal sealed class GetSearchCapabilitiesQueryHandler(IUpnpServiceFactory factory) : IQueryHandler<CDSearchCapabilitiesQuery, string[]>
 {
     public async Task<string[]> ExecuteAsync(CDSearchCapabilitiesQuery query, CancellationToken cancellationToken)
     {

@@ -2,7 +2,7 @@ using static System.StringSplitOptions;
 
 namespace Upnp.Control.Services.Queries;
 
-internal sealed class CMGetConnectionsQueryHandler : IAsyncQueryHandler<CMGetConnectionsQuery, IEnumerable<string>>
+internal sealed class CMGetConnectionsQueryHandler : IQueryHandler<CMGetConnectionsQuery, IEnumerable<string>>
 {
     private readonly IUpnpServiceFactory factory;
 

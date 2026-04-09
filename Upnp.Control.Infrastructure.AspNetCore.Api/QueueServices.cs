@@ -19,7 +19,7 @@ public static class QueueServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(MediaSourceParams))]
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> AddAsync(
-        IAsyncCommandHandler<QAddItemsCommand> handler,
+        ICommandHandler<QAddItemsCommand> handler,
         string deviceId, string queueId, MediaSourceParams source,
         CancellationToken cancellationToken)
     {
@@ -50,7 +50,7 @@ public static class QueueServices
     /// <response code="404">The specified device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> RemoveAllAsync(
-        IAsyncCommandHandler<QClearCommand> handler,
+        ICommandHandler<QClearCommand> handler,
         string deviceId, string queueId, CancellationToken cancellationToken)
     {
         try

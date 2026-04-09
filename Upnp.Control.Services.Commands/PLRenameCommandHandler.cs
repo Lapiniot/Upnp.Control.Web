@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class PLRenameCommandHandler : IAsyncCommandHandler<PLRenameCommand>
+internal sealed class PLRenameCommandHandler : ICommandHandler<PLRenameCommand>
 {
     private readonly IUpnpServiceFactory factory;
 

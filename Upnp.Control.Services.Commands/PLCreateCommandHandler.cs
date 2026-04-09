@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class PLCreateCommandHandler : IAsyncCommandHandler<PLCreateCommand>
+internal sealed class PLCreateCommandHandler : ICommandHandler<PLCreateCommand>
 {
     private readonly IUpnpServiceFactory factory;
 

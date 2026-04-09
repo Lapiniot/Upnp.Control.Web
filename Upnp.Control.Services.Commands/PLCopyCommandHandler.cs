@@ -2,7 +2,7 @@ using System.Text;
 
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class PLCopyCommandHandler : IAsyncCommandHandler<PLCopyCommand>
+internal sealed class PLCopyCommandHandler : ICommandHandler<PLCopyCommand>
 {
     private readonly IUpnpServiceFactory factory;
 

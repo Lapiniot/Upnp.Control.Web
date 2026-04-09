@@ -2,7 +2,7 @@ using System.Text;
 
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class PLCreateFromItemsCommandHandler : PLCommandBase, IAsyncCommandHandler<PLCreateFromItemsCommand>
+internal sealed class PLCreateFromItemsCommandHandler : PLCommandBase, ICommandHandler<PLCreateFromItemsCommand>
 {
     private readonly IOptionsSnapshot<PlaylistOptions> options;
 

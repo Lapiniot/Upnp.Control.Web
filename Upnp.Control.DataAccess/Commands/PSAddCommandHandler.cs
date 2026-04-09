@@ -2,10 +2,8 @@ using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.DataAccess.Commands;
 
-internal sealed class PSAddCommandHandler(PushSubscriptionDbContext context) :
-    IAsyncCommandHandler<PSAddCommand>
+internal sealed class PSAddCommandHandler(PushSubscriptionDbContext context) : ICommandHandler<PSAddCommand>
 {
-
     public async Task ExecuteAsync(PSAddCommand command, CancellationToken cancellationToken)
     {
         var (type, endpoint, p256dhKey, authKey) = command;

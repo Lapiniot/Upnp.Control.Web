@@ -3,12 +3,12 @@ namespace Upnp.Control.Services.Commands;
 internal sealed class PLAddFeedsCommandHandler(IUpnpServiceFactory serviceFactory, IHttpClientFactory httpClientFactory,
     IServerAddressesProvider serverAddressesProvider, ILogger<PLAddFeedsCommandHandler> logger,
     IOptionsSnapshot<PlaylistOptions> options) : PLFeedsCommandBase(serviceFactory, httpClientFactory, serverAddressesProvider, options, logger),
-    IAsyncCommandHandler<PLAddPlaylistFilesCommand>,
-    IAsyncCommandHandler<PLAddFeedUrlCommand>
+    ICommandHandler<PLAddPlaylistFilesCommand>,
+    ICommandHandler<PLAddFeedUrlCommand>
 {
     #region Implementation of IAsyncCommandHandler<PLAddPlaylistFilesCommand>
 
-    Task IAsyncCommandHandler<PLAddPlaylistFilesCommand>.ExecuteAsync(PLAddPlaylistFilesCommand command, CancellationToken cancellationToken)
+    Task ICommandHandler<PLAddPlaylistFilesCommand>.ExecuteAsync(PLAddPlaylistFilesCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command.Files);
         ArgumentException.ThrowIfNullOrEmpty(command.DeviceId);
@@ -23,7 +23,7 @@ internal sealed class PLAddFeedsCommandHandler(IUpnpServiceFactory serviceFactor
 
     #region Implementation of IAsyncCommandHandler<PLAddFeedUrlCommand>
 
-    Task IAsyncCommandHandler<PLAddFeedUrlCommand>.ExecuteAsync(PLAddFeedUrlCommand command, CancellationToken cancellationToken)
+    Task ICommandHandler<PLAddFeedUrlCommand>.ExecuteAsync(PLAddFeedUrlCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command.Source.Url);
         ArgumentException.ThrowIfNullOrEmpty(command.DeviceId);

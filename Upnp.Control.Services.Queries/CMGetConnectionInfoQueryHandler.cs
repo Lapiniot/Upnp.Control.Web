@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Queries;
 
-internal sealed class CMGetConnectionInfoQueryHandler : IAsyncQueryHandler<CMGetConnectionInfoQuery, CMConnectionInfo>
+internal sealed class CMGetConnectionInfoQueryHandler : IQueryHandler<CMGetConnectionInfoQuery, CMConnectionInfo>
 {
     private readonly IUpnpServiceFactory factory;
 

@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class QueueClearCommandHandler : IAsyncCommandHandler<QClearCommand>
+internal sealed class QueueClearCommandHandler : ICommandHandler<QClearCommand>
 {
     private readonly IUpnpServiceFactory factory;
 

@@ -57,7 +57,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                 {
                     if (stoppingToken.IsCancellationRequested) return;
 
-                    var enumerateHandler = serviceProvider.GetRequiredService<IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
+                    var enumerateHandler = serviceProvider.GetRequiredService<IEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>>();
 
                     await foreach (var (endpoint, type, _, p256dhKey, authKey) in enumerateHandler.ExecuteAsync(new(message.Type), stoppingToken).ConfigureAwait(false))
                     {
@@ -69,7 +69,7 @@ internal sealed partial class WebPushSenderService : BackgroundServiceBase, IObs
                         }
                         catch (HttpRequestException hre) when (hre.StatusCode is HttpStatusCode.Gone or HttpStatusCode.Forbidden)
                         {
-                            var removeHandler = serviceProvider.GetRequiredService<IAsyncCommandHandler<PSRemoveCommand>>();
+                            var removeHandler = serviceProvider.GetRequiredService<ICommandHandler<PSRemoveCommand>>();
                             await removeHandler.ExecuteAsync(PSRemoveCommand.All(endpoint), stoppingToken).ConfigureAwait(false);
                         }
                         catch (Exception ex)

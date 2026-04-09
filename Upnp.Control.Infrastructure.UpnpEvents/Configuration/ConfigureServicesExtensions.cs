@@ -17,8 +17,8 @@ public static class ConfigureServicesExtensions
         services.AddSingleton<IObserver<UpnpDiscoveryEvent>, UpnpEventSubscriptionService>();
         services.AddTransient<IEventSubscriptionStore, InMemoryEventSubscriptionStore>();
         services.AddTransient<IUpnpEventSubscriptionFactory, UpnpEventSubscriptionFactory>();
-        services.AddTransient<IAsyncCommandHandler<AVTPropChangedCommand>, AVTPropChangedEventCommandHandler>();
-        services.AddTransient<IAsyncCommandHandler<RCPropChangedCommand>, RCPropChangedEventCommandHandler>();
+        services.AddTransient<ICommandHandler<AVTPropChangedCommand>, AVTPropChangedEventCommandHandler>();
+        services.AddTransient<ICommandHandler<RCPropChangedCommand>, RCPropChangedEventCommandHandler>();
         services.AddEventSubscribeClient();
         return services;
     }

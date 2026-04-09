@@ -2,8 +2,7 @@ using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.DataAccess.Commands;
 
-internal sealed class PSRemoveCommandHandler(PushSubscriptionDbContext context) :
-    IAsyncCommandHandler<PSRemoveCommand>
+internal sealed class PSRemoveCommandHandler(PushSubscriptionDbContext context) : ICommandHandler<PSRemoveCommand>
 {
     public async Task ExecuteAsync(PSRemoveCommand command, CancellationToken cancellationToken)
     {

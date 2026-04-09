@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../Upnp.Control.Abstractions/Upnp.Control.Abstractions.csproj" />
     <ProjectReference Include="../Upnp.Control.Models.PushNotifications/Upnp.Control.Models.PushNotifications.csproj" />
-    <ProjectReference Include="../Upnp.Control.Extensions/Upnp.Control.Extensions.csproj" />
     <ProjectReference Include="../IoT.Device/IoT.Protocol/OOs.Common/OOs.Extensions.Hosting/OOs.Extensions.Hosting.csproj" />
   </ItemGroup>
 

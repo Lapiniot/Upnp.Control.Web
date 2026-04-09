@@ -24,7 +24,7 @@ public static class ControlServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<AVState>, NotFound, ProblemHttpResult>> GetStateAsync(
-        IAsyncQueryHandler<AVGetStateQuery, AVState> handler,
+        IQueryHandler<AVGetStateQuery, AVState> handler,
         string deviceId, bool detailed = false, CancellationToken cancellationToken = default)
     {
         try
@@ -59,7 +59,7 @@ public static class ControlServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(AVStateParams))]
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> SetStateAsync(
-        IAsyncCommandHandler<AVSetStateCommand> handler,
+        ICommandHandler<AVSetStateCommand> handler,
         string deviceId, AVStateParams stateParams, CancellationToken cancellationToken)
     {
         try
@@ -94,7 +94,7 @@ public static class ControlServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<AVPosition>, NotFound, ProblemHttpResult>> GetPositionAsync(
-        IAsyncQueryHandler<AVGetPositionQuery, AVPosition> handler,
+        IQueryHandler<AVGetPositionQuery, AVPosition> handler,
         string deviceId, bool detailed = false, CancellationToken cancellationToken = default)
     {
         try
@@ -129,7 +129,7 @@ public static class ControlServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(AVPositionParams))]
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> SeekAsync(
-        IAsyncCommandHandler<AVSetPositionCommand> handler,
+        ICommandHandler<AVSetPositionCommand> handler,
         string deviceId, AVPositionParams positionParams, CancellationToken cancellationToken)
     {
         try
@@ -163,7 +163,7 @@ public static class ControlServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<string>, NotFound, ProblemHttpResult>> GetPlayModeAsync(
-        IAsyncQueryHandler<AVGetPlayModeQuery, string> handler,
+        IQueryHandler<AVGetPlayModeQuery, string> handler,
         string deviceId, CancellationToken cancellationToken)
     {
         try
@@ -197,7 +197,7 @@ public static class ControlServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> SetPlayModeAsync(
-        IAsyncCommandHandler<AVSetPlayModeCommand> handler,
+        ICommandHandler<AVSetPlayModeCommand> handler,
         string deviceId, [FromBody] string mode, CancellationToken cancellationToken)
     {
         try
@@ -232,7 +232,7 @@ public static class ControlServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<RCVolumeState>, NotFound, ProblemHttpResult>> GetVolumeAsync(
-        IAsyncQueryHandler<RCGetVolumeQuery, RCVolumeState> handler,
+        IQueryHandler<RCGetVolumeQuery, RCVolumeState> handler,
         string deviceId, bool detailed = false, CancellationToken cancellationToken = default)
     {
         try
@@ -266,7 +266,7 @@ public static class ControlServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> SetVolumeAsync(
-        IAsyncCommandHandler<RCSetVolumeCommand> handler,
+        ICommandHandler<RCSetVolumeCommand> handler,
         string deviceId, [FromBody] uint volume, CancellationToken cancellationToken)
     {
         try
@@ -300,7 +300,7 @@ public static class ControlServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<bool?>, NotFound, ProblemHttpResult>> GetMuteAsync(
-        IAsyncQueryHandler<RCGetMuteQuery, bool?> handler,
+        IQueryHandler<RCGetMuteQuery, bool?> handler,
         string deviceId, CancellationToken cancellationToken)
     {
         try
@@ -334,7 +334,7 @@ public static class ControlServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<NoContent, NotFound, ProblemHttpResult>> SetMuteAsync(
-        IAsyncCommandHandler<RCSetMuteCommand> handler,
+        ICommandHandler<RCSetMuteCommand> handler,
         string deviceId, [FromBody] bool muted, CancellationToken cancellationToken)
     {
         try

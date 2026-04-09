@@ -16,7 +16,7 @@ public static class UpnpEventCallbackServices
     /// <response code="204">The event was successfully processed.</response>
     /// <response code="400">The event data is malformed or invalid.</response>
     public static async Task<Results<NoContent, BadRequest>> NotifyRenderingControlAsync(
-        IAsyncCommandHandler<RCPropChangedCommand> handler,
+        ICommandHandler<RCPropChangedCommand> handler,
         string deviceId, Stream requestBody, CancellationToken cancellationToken)
     {
         try
@@ -41,7 +41,7 @@ public static class UpnpEventCallbackServices
     /// <response code="204">The event was successfully processed.</response>
     /// <response code="400">The event data is malformed or invalid.</response>
     public static async Task<Results<NoContent, BadRequest>> NotifyAVTransportAsync(
-        IAsyncCommandHandler<AVTPropChangedCommand> handler,
+        ICommandHandler<AVTPropChangedCommand> handler,
         string deviceId, Stream requestBody, CancellationToken cancellationToken)
     {
         try

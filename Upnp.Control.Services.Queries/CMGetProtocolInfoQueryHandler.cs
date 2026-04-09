@@ -2,7 +2,7 @@ using static System.StringSplitOptions;
 
 namespace Upnp.Control.Services.Queries;
 
-internal sealed class CMGetProtocolInfoQueryHandler : IAsyncQueryHandler<CMGetProtocolInfoQuery, CMProtocolInfo>
+internal sealed class CMGetProtocolInfoQueryHandler : IQueryHandler<CMGetProtocolInfoQuery, CMProtocolInfo>
 {
     private readonly IUpnpServiceFactory factory;
 

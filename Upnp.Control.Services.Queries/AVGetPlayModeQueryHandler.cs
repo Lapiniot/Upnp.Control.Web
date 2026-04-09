@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Queries;
 
-internal sealed class AVGetPlayModeQueryHandler : IAsyncQueryHandler<AVGetPlayModeQuery, string>
+internal sealed class AVGetPlayModeQueryHandler : IQueryHandler<AVGetPlayModeQuery, string>
 {
     private readonly IUpnpServiceFactory factory;
 

@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Queries;
 
-internal sealed class RCGetVolumeQueryHandler : IAsyncQueryHandler<RCGetVolumeQuery, RCVolumeState>
+internal sealed class RCGetVolumeQueryHandler : IQueryHandler<RCGetVolumeQuery, RCVolumeState>
 {
     private readonly IUpnpServiceFactory factory;
 

@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Queries;
 
-internal sealed class AVGetPositionQueryHandler : IAsyncQueryHandler<AVGetPositionQuery, AVPosition>
+internal sealed class AVGetPositionQueryHandler : IQueryHandler<AVGetPositionQuery, AVPosition>
 {
     private readonly IUpnpServiceFactory factory;
 

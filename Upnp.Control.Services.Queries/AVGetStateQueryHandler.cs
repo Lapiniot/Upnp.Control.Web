@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Queries;
 
-internal sealed class AVGetStateQueryHandler : IAsyncQueryHandler<AVGetStateQuery, AVState>
+internal sealed class AVGetStateQueryHandler : IQueryHandler<AVGetStateQuery, AVState>
 {
     private readonly IUpnpServiceFactory factory;
 

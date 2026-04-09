@@ -21,7 +21,7 @@ public static class ConnectionsServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<CMProtocolInfo>, NotFound, ProblemHttpResult>> GetProtocolInfoAsync(
-        IAsyncQueryHandler<CMGetProtocolInfoQuery, CMProtocolInfo> handler,
+        IQueryHandler<CMGetProtocolInfoQuery, CMProtocolInfo> handler,
         string deviceId, CancellationToken cancellationToken)
     {
         try
@@ -54,7 +54,7 @@ public static class ConnectionsServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<IEnumerable<string>>, NotFound, ProblemHttpResult>> GetConnectionsAsync(
-        IAsyncQueryHandler<CMGetConnectionsQuery, IEnumerable<string>> handler,
+        IQueryHandler<CMGetConnectionsQuery, IEnumerable<string>> handler,
         string deviceId, CancellationToken cancellationToken)
     {
         try
@@ -88,7 +88,7 @@ public static class ConnectionsServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<CMConnectionInfo>, NotFound, ProblemHttpResult>> GetConnectionInfoAsync(
-        IAsyncQueryHandler<CMGetConnectionInfoQuery, CMConnectionInfo> handler,
+        IQueryHandler<CMGetConnectionInfoQuery, CMConnectionInfo> handler,
         string deviceId, string connectionId, CancellationToken cancellationToken)
     {
         try

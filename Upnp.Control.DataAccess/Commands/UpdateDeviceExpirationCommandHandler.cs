@@ -1,6 +1,6 @@
 namespace Upnp.Control.DataAccess.Commands;
 
-internal sealed class UpdateDeviceExpirationCommandHandler(UpnpDbContext context) : IAsyncCommandHandler<UpdateDeviceExpirationCommand>
+internal sealed class UpdateDeviceExpirationCommandHandler(UpnpDbContext context) : ICommandHandler<UpdateDeviceExpirationCommand>
 {
     public async Task ExecuteAsync(UpdateDeviceExpirationCommand command, CancellationToken cancellationToken) =>
         await context.UpnpDevices

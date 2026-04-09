@@ -2,7 +2,7 @@ using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class AVSetPositionCommandHandler : IAsyncCommandHandler<AVSetPositionCommand>
+internal sealed class AVSetPositionCommandHandler : ICommandHandler<AVSetPositionCommand>
 {
     private readonly IUpnpServiceFactory factory;
 

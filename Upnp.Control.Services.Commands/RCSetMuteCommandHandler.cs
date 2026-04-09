@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class RCSetMuteCommandHandler : IAsyncCommandHandler<RCSetMuteCommand>
+internal sealed class RCSetMuteCommandHandler : ICommandHandler<RCSetMuteCommand>
 {
     private readonly IUpnpServiceFactory factory;
 

@@ -4,7 +4,7 @@ using Upnp.Control.Models.PushNotifications;
 namespace Upnp.Control.DataAccess.Queries;
 
 internal sealed class PSEnumerateQueryHandler(PushSubscriptionDbContext context) :
-    IAsyncEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>
+    IEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>
 {
     public async IAsyncEnumerable<PushNotificationSubscription> ExecuteAsync(PSEnumerateQuery query, [EnumeratorCancellation] CancellationToken cancellationToken)
     {

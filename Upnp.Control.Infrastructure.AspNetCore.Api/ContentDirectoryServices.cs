@@ -26,7 +26,7 @@ public static class ContentDirectoryServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(GetContentOptions))]
     public static async Task<Results<Ok<CDContent>, NotFound, ProblemHttpResult>> BrowseAsync(
-        IAsyncQueryHandler<CDGetContentQuery, CDContent> handler,
+        IQueryHandler<CDGetContentQuery, CDContent> handler,
         string deviceId, string? path, [AsParameters] GetContentOptions options,
         CancellationToken cancellationToken)
     {
@@ -77,7 +77,7 @@ public static class ContentDirectoryServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(GetContentOptions))]
     public static async Task<Results<Ok<CDContent>, NotFound, ProblemHttpResult>> SearchAsync(
-        IAsyncQueryHandler<CDSearchContentQuery, CDContent> handler,
+        IQueryHandler<CDSearchContentQuery, CDContent> handler,
         string deviceId, string? path, [FromQuery] string criteria, [AsParameters] GetContentOptions options,
         CancellationToken cancellationToken)
     {
@@ -122,7 +122,7 @@ public static class ContentDirectoryServices
     /// <response code="404">If requested item was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<string[]>, NotFound, ProblemHttpResult>> GetSearchCapabilitiesAsync(
-        IAsyncQueryHandler<CDSearchCapabilitiesQuery, string[]> handler, string deviceId,
+        IQueryHandler<CDSearchCapabilitiesQuery, string[]> handler, string deviceId,
         CancellationToken cancellationToken)
     {
         try

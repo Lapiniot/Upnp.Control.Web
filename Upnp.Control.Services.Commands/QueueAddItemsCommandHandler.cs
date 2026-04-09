@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class QueueAddItemsCommandHandler : IAsyncCommandHandler<QAddItemsCommand>
+internal sealed class QueueAddItemsCommandHandler : ICommandHandler<QAddItemsCommand>
 {
     private readonly IUpnpServiceFactory factory;
     private readonly IOptionsSnapshot<PlaylistOptions> options;

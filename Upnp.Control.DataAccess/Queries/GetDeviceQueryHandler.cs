@@ -7,9 +7,9 @@ using static IoT.Protocol.Upnp.UpnpServices;
 namespace Upnp.Control.DataAccess.Queries;
 
 internal sealed class GetDeviceQueryHandler(UpnpDbContext context) :
-    IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice>,
-    IAsyncQueryHandler<GetDeviceQuery, UpnpDevice>,
-    IAsyncQueryHandler<GetDeviceDescriptionQuery, DeviceDescription>
+    IEnumerableQueryHandler<GetDevicesQuery, UpnpDevice>,
+    IQueryHandler<GetDeviceQuery, UpnpDevice>,
+    IQueryHandler<GetDeviceDescriptionQuery, DeviceDescription>
 {
     private const string UmiPlaylistSchema = "urn:xiaomi-com:service:Playlist:1";
 

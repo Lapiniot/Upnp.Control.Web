@@ -14,7 +14,7 @@ public static class DeviceServices
     /// <param name="cancellationToken">The cancellation token to handle cancellation requests.</param>
     /// <returns>An Ok result containing an asynchronous enumerable of UpnpDevice objects.</returns>
     /// <response code="200">Returns requested device list that match criteria.</response>
-    public static Ok<IAsyncEnumerable<UpnpDevice>> GetAllAsync(IAsyncEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
+    public static Ok<IAsyncEnumerable<UpnpDevice>> GetAllAsync(IEnumerableQueryHandler<GetDevicesQuery, UpnpDevice> handler,
         string category = "upnp", bool withOffline = false, CancellationToken cancellationToken = default) =>
         Ok(handler.ExecuteAsync(new(category, withOffline), cancellationToken));
 
@@ -30,7 +30,7 @@ public static class DeviceServices
     /// <response code="404">If requested device was not found.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<UpnpDevice>, NotFound, ProblemHttpResult>> GetAsync(
-        IAsyncQueryHandler<GetDeviceQuery, UpnpDevice> handler,
+        IQueryHandler<GetDeviceQuery, UpnpDevice> handler,
         string id, CancellationToken cancellationToken)
     {
         try

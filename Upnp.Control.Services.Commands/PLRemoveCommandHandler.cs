@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Commands;
 
-internal sealed class PLRemoveCommandHandler(IUpnpServiceFactory factory) : PLCommandBase(factory), IAsyncCommandHandler<PLRemoveCommand>
+internal sealed class PLRemoveCommandHandler(IUpnpServiceFactory factory) : PLCommandBase(factory), ICommandHandler<PLRemoveCommand>
 {
     public async Task ExecuteAsync(PLRemoveCommand command, CancellationToken cancellationToken)
     {

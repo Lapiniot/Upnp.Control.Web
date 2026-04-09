@@ -1,6 +1,6 @@
 namespace Upnp.Control.Services.Queries;
 
-internal sealed class RCGetMuteQueryHandler : IAsyncQueryHandler<RCGetMuteQuery, bool?>
+internal sealed class RCGetMuteQueryHandler : IQueryHandler<RCGetMuteQuery, bool?>
 {
     private readonly IUpnpServiceFactory factory;
 

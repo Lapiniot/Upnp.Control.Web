@@ -16,7 +16,7 @@ public static class PushNotificationSubscriptionServices
     /// <response code="404">No subscription exists for the specified endpoint.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<PushSubscriptionState>, NotFound, ProblemHttpResult>> GetStateAsync(
-        IAsyncQueryHandler<PSGetQuery, PushNotificationSubscription> handler,
+        IQueryHandler<PSGetQuery, PushNotificationSubscription> handler,
         Uri endpoint, CancellationToken cancellationToken)
     {
         try
@@ -50,7 +50,7 @@ public static class PushNotificationSubscriptionServices
     /// <response code="500">If any other unspecified error occured.</response>
     [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(PushSubscriptionRequest))]
     public static async Task<Results<NoContent, ProblemHttpResult>> SubscribeAsync(
-        IAsyncCommandHandler<PSAddCommand> handler, IBase64UrlDecoder decoder,
+        ICommandHandler<PSAddCommand> handler, IBase64UrlDecoder decoder,
         PushSubscriptionRequest subscription, CancellationToken cancellationToken)
     {
         try
@@ -77,7 +77,7 @@ public static class PushNotificationSubscriptionServices
     /// <response code="204">The unsubscription was successfully processed.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<NoContent, ProblemHttpResult>> UnsubscribeAsync(
-        IAsyncCommandHandler<PSRemoveCommand> handler,
+        ICommandHandler<PSRemoveCommand> handler,
         string endpoint, NotificationType type, CancellationToken cancellationToken)
     {
         try
@@ -100,7 +100,7 @@ public static class PushNotificationSubscriptionServices
     /// <response code="200">The server key was successfully retrieved.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<FileContentHttpResult, ProblemHttpResult>> GetServerKeyAsync(
-        IAsyncQueryHandler<PSGetServerKeyQuery, byte[]> handler, CancellationToken cancellationToken)
+        IQueryHandler<PSGetServerKeyQuery, byte[]> handler, CancellationToken cancellationToken)
     {
         try
         {

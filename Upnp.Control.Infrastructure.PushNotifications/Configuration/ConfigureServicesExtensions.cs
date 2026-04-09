@@ -15,7 +15,7 @@ public static class ConfigureServicesExtensions
             .AddSingleton<WebPushSenderService>()
             .AddSingleton<IObserver<UpnpDiscoveryEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
             .AddSingleton<IObserver<AVTPropChangedEvent>>(sp => sp.GetRequiredService<WebPushSenderService>())
-            .AddTransient<IAsyncQueryHandler<PSGetServerKeyQuery, byte[]>, PSGetServerKeyQueryHandler>()
+            .AddTransient<IQueryHandler<PSGetServerKeyQuery, byte[]>, PSGetServerKeyQueryHandler>()
             .AddWebPushClient();
     }
 

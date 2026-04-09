@@ -4,10 +4,10 @@ using static System.Globalization.CultureInfo;
 namespace Upnp.Control.Services.Queries;
 
 internal sealed partial class GetContentQueryHandler(IUpnpServiceFactory factory,
-    IAsyncQueryHandler<GetDeviceDescriptionQuery, DeviceDescription> queryHandler,
+    IQueryHandler<GetDeviceDescriptionQuery, DeviceDescription> queryHandler,
     ILogger<GetContentQueryHandler> logger) :
-    IAsyncQueryHandler<CDGetContentQuery, CDContent>,
-    IAsyncQueryHandler<CDSearchContentQuery, CDContent>
+    IQueryHandler<CDGetContentQuery, CDContent>,
+    IQueryHandler<CDSearchContentQuery, CDContent>
 {
 #pragma warning disable CA1823 // Avoid unused private fields
     private readonly ILogger<GetContentQueryHandler> logger = logger;
