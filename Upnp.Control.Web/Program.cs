@@ -9,8 +9,8 @@ using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore;
 using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
 using Upnp.Control.Infrastructure.AspNetCore.Configuration;
+using Upnp.Control.Infrastructure.AspNetCore.SignalR.Configuration;
 using Upnp.Control.Infrastructure.PushNotifications.Configuration;
-using Upnp.Control.Infrastructure.SignalR.Configuration;
 using Upnp.Control.Infrastructure.Upnp.Configuration;
 using Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
 using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
@@ -202,4 +202,4 @@ app.MapFallbackToFile("index.html");
 
 #endregion
 
-await app.RunAsync().ConfigureAwait(false);
+await app.RunAsync();

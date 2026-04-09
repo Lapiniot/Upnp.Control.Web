@@ -21,7 +21,7 @@ public static class PushNotificationSubscriptionServices
     {
         try
         {
-            var subscription = await handler.ExecuteAsync(new(endpoint), cancellationToken).ConfigureAwait(false);
+            var subscription = await handler.ExecuteAsync(new(endpoint), cancellationToken);
             if (subscription is not null)
             {
                 return Ok(new PushSubscriptionState(subscription.Type, subscription.Created));
@@ -57,7 +57,7 @@ public static class PushNotificationSubscriptionServices
         {
             await handler.ExecuteAsync(new(subscription.Type, subscription.Endpoint,
                     decoder.FromBase64String(subscription.P256dhKey), decoder.FromBase64String(subscription.AuthKey)),
-                cancellationToken).ConfigureAwait(false);
+                cancellationToken);
             return NoContent();
         }
         catch (Exception ex)
@@ -82,7 +82,7 @@ public static class PushNotificationSubscriptionServices
     {
         try
         {
-            await handler.ExecuteAsync(new(type, new(endpoint)), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(type, new(endpoint)), cancellationToken);
             return NoContent();
         }
         catch (Exception ex)
@@ -104,7 +104,7 @@ public static class PushNotificationSubscriptionServices
     {
         try
         {
-            var contents = await handler.ExecuteAsync(PSGetServerKeyQuery.Instance, cancellationToken).ConfigureAwait(false);
+            var contents = await handler.ExecuteAsync(PSGetServerKeyQuery.Instance, cancellationToken);
             return Bytes(contents, MediaTypeNames.Application.Octet);
         }
         catch (Exception ex)

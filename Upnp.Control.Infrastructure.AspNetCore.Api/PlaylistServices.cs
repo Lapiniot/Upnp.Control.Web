@@ -24,7 +24,7 @@ public static class PlaylistServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, title), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, title), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -55,7 +55,7 @@ public static class PlaylistServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, playlistParams), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, playlistParams), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -88,7 +88,7 @@ public static class PlaylistServices
         {
             var sourceFiles = form.Files.Select(f => new FormFileSource(f));
             var command = new PLCreateFromFilesCommand(deviceId, sourceFiles, form.Title ?? "", form.Merge ?? false, form.UseProxy ?? false);
-            await handler.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(command, cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -120,7 +120,7 @@ public static class PlaylistServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, playlistId, title), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, playlistId, title), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -152,7 +152,7 @@ public static class PlaylistServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, playlistId, title), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, playlistId, title), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -182,7 +182,7 @@ public static class PlaylistServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, ids), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, ids), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -215,7 +215,7 @@ public static class PlaylistServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, playlistId, source), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, playlistId, source), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -248,7 +248,7 @@ public static class PlaylistServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, playlistId, source), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, playlistId, source), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -282,7 +282,7 @@ public static class PlaylistServices
         try
         {
             var sources = form.Files.Select(f => new FormFileSource(f));
-            await handler.ExecuteAsync(new(deviceId, playlistId, sources, form.UseProxy ?? false), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, playlistId, sources, form.UseProxy ?? false), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -314,7 +314,7 @@ public static class PlaylistServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, playlistId, items), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, playlistId, items), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -343,7 +343,7 @@ public static class PlaylistServices
     {
         try
         {
-            var content = await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
+            var content = await handler.ExecuteAsync(new(deviceId), cancellationToken);
             return Text(content, MediaTypeNames.Application.Json);
         }
         catch (DeviceNotFoundException)

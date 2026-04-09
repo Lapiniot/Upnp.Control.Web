@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http.Connections;
 
-namespace Upnp.Control.Infrastructure.SignalR.Configuration;
+namespace Upnp.Control.Infrastructure.AspNetCore.SignalR.Configuration;
 
 public static class ConfigureServicesExtensions
 {

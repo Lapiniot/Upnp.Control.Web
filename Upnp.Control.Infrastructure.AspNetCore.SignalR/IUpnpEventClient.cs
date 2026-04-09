@@ -1,4 +1,4 @@
-namespace Upnp.Control.Infrastructure.SignalR;
+namespace Upnp.Control.Infrastructure.AspNetCore.SignalR;
 
 public interface IUpnpEventClient
 {

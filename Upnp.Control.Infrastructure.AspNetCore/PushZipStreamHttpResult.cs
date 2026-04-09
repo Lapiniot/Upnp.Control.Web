@@ -35,6 +35,6 @@ public sealed class PushZipStreamHttpResult : IResult, IFileHttpResult, IContent
         response.ContentType = MediaTypeNames.Application.Zip;
         response.Headers.Append("Content-Disposition", $"attachment; filename=\"{fileName}\"");
         using var archive = new ZipArchive(response.Body, ZipArchiveMode.Create, true);
-        await zipWriterCallback(archive, httpContext.RequestAborted).ConfigureAwait(false);
+        await zipWriterCallback(archive, httpContext.RequestAborted);
     }
 }

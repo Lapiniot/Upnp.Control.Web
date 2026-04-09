@@ -26,7 +26,7 @@ public static class ConnectionsServices
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken));
         }
         catch (DeviceNotFoundException)
         {
@@ -59,7 +59,7 @@ public static class ConnectionsServices
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken));
         }
         catch (DeviceNotFoundException)
         {
@@ -93,7 +93,7 @@ public static class ConnectionsServices
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(deviceId, connectionId), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId, connectionId), cancellationToken));
         }
         catch (DeviceNotFoundException)
         {

@@ -35,7 +35,7 @@ public static class DeviceServices
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(id), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(id), cancellationToken));
         }
         catch (DeviceNotFoundException)
         {

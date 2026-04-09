@@ -25,7 +25,7 @@ public static class QueueServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, queueId, source), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, queueId, source), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -55,7 +55,7 @@ public static class QueueServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, queueId), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, queueId), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)

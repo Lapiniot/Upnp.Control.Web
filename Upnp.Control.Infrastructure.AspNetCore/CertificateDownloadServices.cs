@@ -26,27 +26,24 @@ public static class CertificateDownloadServices
             var entryName = cert.GetNameInfo(X509NameType.SimpleName, false);
             var bytes = cert.Export(X509ContentType.Cert);
             var entry = archive.CreateEntry(GetSafeFileName(entryName) + ".crt", CompressionLevel.Optimal);
+
 #if NET10_0_OR_GREATER
-            var stream = await entry.OpenAsync(cancellationToken).ConfigureAwait(false);
+            await using var stream = await entry.OpenAsync(cancellationToken);
 #else
-            var stream = entry.Open();
+            await using var stream = entry.Open();
 #endif
-
-            await using (stream.ConfigureAwait(false))
+            var buffer = ArrayPool<byte>.Shared.Rent(Base64.GetMaxEncodedToUtf8Length(bytes.Length) + 55 + bytes.Length / ChunkSize);
+            try
             {
-                var buffer = ArrayPool<byte>.Shared.Rent(Base64.GetMaxEncodedToUtf8Length(bytes.Length) + 55 + bytes.Length / ChunkSize);
-                try
-                {
-                    var size = PemEncode(bytes, buffer);
-                    await stream.WriteAsync(buffer.AsMemory(0, size), cancellationToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(buffer);
-                }
-
-                await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                var size = PemEncode(bytes, buffer);
+                await stream.WriteAsync(buffer.AsMemory(0, size), cancellationToken);
             }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+            }
+
+            await stream.FlushAsync(cancellationToken);
         }
     }
 

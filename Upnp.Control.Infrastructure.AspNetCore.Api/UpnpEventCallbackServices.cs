@@ -21,7 +21,7 @@ public static class UpnpEventCallbackServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, requestBody), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, requestBody), cancellationToken);
             return NoContent();
         }
         catch
@@ -46,7 +46,7 @@ public static class UpnpEventCallbackServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, requestBody), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, requestBody), cancellationToken);
             return NoContent();
         }
         catch

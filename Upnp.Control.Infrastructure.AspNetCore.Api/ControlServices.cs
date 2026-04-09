@@ -29,7 +29,7 @@ public static class ControlServices
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(deviceId, detailed), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId, detailed), cancellationToken));
         }
         catch (DeviceNotFoundException)
         {
@@ -64,7 +64,7 @@ public static class ControlServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, stateParams), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, stateParams), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -99,7 +99,7 @@ public static class ControlServices
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(deviceId, detailed), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId, detailed), cancellationToken));
         }
         catch (DeviceNotFoundException)
         {
@@ -134,7 +134,7 @@ public static class ControlServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, positionParams), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, positionParams), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -168,7 +168,7 @@ public static class ControlServices
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken));
         }
         catch (DeviceNotFoundException)
         {
@@ -202,7 +202,7 @@ public static class ControlServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, mode), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, mode), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -237,7 +237,7 @@ public static class ControlServices
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(deviceId, detailed), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId, detailed), cancellationToken));
         }
         catch (DeviceNotFoundException)
         {
@@ -271,7 +271,7 @@ public static class ControlServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, volume), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, volume), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)
@@ -305,7 +305,7 @@ public static class ControlServices
     {
         try
         {
-            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false));
+            return Ok(await handler.ExecuteAsync(new(deviceId), cancellationToken));
         }
         catch (DeviceNotFoundException)
         {
@@ -339,7 +339,7 @@ public static class ControlServices
     {
         try
         {
-            await handler.ExecuteAsync(new(deviceId, muted), cancellationToken).ConfigureAwait(false);
+            await handler.ExecuteAsync(new(deviceId, muted), cancellationToken);
             return NoContent();
         }
         catch (DeviceNotFoundException)

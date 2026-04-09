@@ -30,7 +30,7 @@ public static class ConfigureServicesExtensions
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {
                 Proxy = null,
-                CookieContainer = null!,
+                CookieContainer = null,
                 UseProxy = false,
                 UseCookies = false,
                 AllowAutoRedirect = false

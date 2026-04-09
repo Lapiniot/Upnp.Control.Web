@@ -20,7 +20,7 @@ internal static class ApplicationInfoServices
     public static async Task<Ok<ApplicationInfo>> GetApplicationInfoAsync(CancellationToken cancellationToken)
     {
         var hostName = Dns.GetHostName();
-        var hostAddresses = await Dns.GetHostAddressesAsync(hostName, InterNetwork, cancellationToken).ConfigureAwait(false);
+        var hostAddresses = await Dns.GetHostAddressesAsync(hostName, InterNetwork, cancellationToken);
         var addresses = hostAddresses.Where(static ip => ip is { AddressFamily: InterNetwork } && !IPAddress.IsLoopback(ip)).Select(ip => ip.ToString());
         return TypedResults.Ok(new ApplicationInfo(Build, Product, hostName, addresses));
     }
