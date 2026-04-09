@@ -1,4 +1,3 @@
-using Upnp.Control.DataAccess.Configuration;
 using Upnp.Control.Models.PushNotifications;
 
 namespace Upnp.Control.DataAccess;
@@ -10,5 +9,5 @@ internal sealed class PushSubscriptionDbContext(DbContextOptions<PushSubscriptio
     public DbSet<PushNotificationSubscription> Subscriptions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
-        modelBuilder.ApplyConfiguration(new PushSubscriptionEntityType());
+        modelBuilder.ApplyConfiguration(new PushSubscriptionEntityTypeConfiguration());
 }

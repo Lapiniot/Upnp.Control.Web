@@ -5,17 +5,16 @@ using System.Text;
 using Microsoft.AspNetCore.HttpOverrides;
 using OOs.Extensions.Hosting;
 using Scalar.AspNetCore;
-using Upnp.Control.DataAccess.Configuration;
+using Upnp.Control.DataAccess;
 using Upnp.Control.Infrastructure.AspNetCore;
-using Upnp.Control.Infrastructure.AspNetCore.Api.Configuration;
-using Upnp.Control.Infrastructure.AspNetCore.Configuration;
-using Upnp.Control.Infrastructure.AspNetCore.SignalR.Configuration;
-using Upnp.Control.Infrastructure.PushNotifications.Configuration;
-using Upnp.Control.Infrastructure.Upnp.Configuration;
-using Upnp.Control.Infrastructure.UpnpDiscovery.Configuration;
-using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
-using Upnp.Control.Services.Commands.Configuration;
-using Upnp.Control.Services.Queries.Configuration;
+using Upnp.Control.Infrastructure.AspNetCore.Api;
+using Upnp.Control.Infrastructure.AspNetCore.SignalR;
+using Upnp.Control.Infrastructure.PushNotifications;
+using Upnp.Control.Infrastructure.Upnp;
+using Upnp.Control.Infrastructure.UpnpDiscovery;
+using Upnp.Control.Infrastructure.UpnpEvents;
+using Upnp.Control.Services.Commands;
+using Upnp.Control.Services.Queries;
 
 #endregion
 

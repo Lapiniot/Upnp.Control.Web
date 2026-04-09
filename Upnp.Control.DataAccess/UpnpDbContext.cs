@@ -1,6 +1,4 @@
-﻿using Upnp.Control.DataAccess.Configuration;
-
-namespace Upnp.Control.DataAccess;
+﻿namespace Upnp.Control.DataAccess;
 
 [method: DynamicDependency(PublicConstructors, typeof(UpnpDbContext))]
 [method: DynamicDependency(PublicConstructors, typeof(Service))]
@@ -11,5 +9,5 @@ internal sealed class UpnpDbContext(DbContextOptions<UpnpDbContext> options) : D
     public DbSet<UpnpDevice> UpnpDevices { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
-        modelBuilder.ApplyConfiguration(new DeviceEntityType());
+        modelBuilder.ApplyConfiguration(new DeviceEntityTypeConfiguration());
 }

@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Headers;
-using Upnp.Control.Infrastructure.AspNetCore.Configuration;
 using static System.StringComparison;
 
 namespace Upnp.Control.Infrastructure.AspNetCore.Middleware;

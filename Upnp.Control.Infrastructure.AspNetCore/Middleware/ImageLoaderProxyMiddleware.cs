@@ -4,9 +4,9 @@ namespace Upnp.Control.Infrastructure.AspNetCore.Middleware;
 
 public sealed class ImageLoaderProxyMiddleware : ProxyMiddleware
 {
-    private readonly IOptions<Configuration.ImageProxyOptions> options;
+    private readonly IOptions<ImageProxyOptions> options;
 
-    public ImageLoaderProxyMiddleware(ImageLoaderProxyClient client, IOptions<Configuration.ImageProxyOptions> options, ILogger<ImageLoaderProxyMiddleware> logger)
+    public ImageLoaderProxyMiddleware(ImageLoaderProxyClient client, IOptions<ImageProxyOptions> options, ILogger<ImageLoaderProxyMiddleware> logger)
         : base(client.Client, logger)
     {
         ArgumentNullException.ThrowIfNull(options);

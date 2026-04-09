@@ -1,5 +1,4 @@
 using IoT.Device.Upnp.Umi.Services;
-using Upnp.Control.Infrastructure.UpnpEvents.Configuration;
 using static System.Globalization.CultureInfo;
 
 namespace Upnp.Control.Infrastructure.UpnpEvents;

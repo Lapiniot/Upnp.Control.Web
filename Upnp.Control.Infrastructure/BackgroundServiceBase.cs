@@ -2,9 +2,6 @@ namespace Upnp.Control.Infrastructure;
 
 public abstract partial class BackgroundServiceBase(ILogger<BackgroundServiceBase> logger) : BackgroundService
 {
-#pragma warning disable CA1823 // Avoid unused private fields
-    private readonly ILogger logger = logger;
-#pragma warning restore CA1823 // Avoid unused private fields
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
         var name = GetType().Name;
