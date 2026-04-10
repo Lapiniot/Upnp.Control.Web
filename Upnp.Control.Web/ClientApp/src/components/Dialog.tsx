@@ -132,7 +132,7 @@ export default class Dialog extends Component<DialogProps> implements NativeDial
         return Promise.allSettled(element.getAnimations().map(a => a.finished));
     }
 
-    render() {
+    override render() {
         const { caption, icon, children, actions, onDismissed, onOpen, onClick,
             className, immediate, ...other } = this.props;
         const extra = Dialog.closedBySupported

@@ -69,7 +69,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
         this.state = { umis: [], renderers: [] };
     }
 
-    async componentDidMount() {
+    override async componentDidMount() {
         try {
             const timeout = $s.get("timeout");
             const devices = await WebApi.devices("renderers").json(timeout);
@@ -193,7 +193,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
         </>;
     }
 
-    render() {
+    override render() {
         const { dataContext: data, displayMode } = this.props;
         const parents = data?.source.parents ?? [];
         return <>

@@ -13,18 +13,18 @@ function apply(callbacks: Record<string, Callback>, action: (methodName: string,
 
 export default class SignalRListener extends React.PureComponent<PropsWithChildren<SignalRListenerProps>> {
 
-    static contextType = SignalRContext;
+    static override contextType = SignalRContext;
     override context: ContextType<typeof SignalRContext> = null;
 
-    componentDidMount() {
+    override componentDidMount() {
         apply(this.props.callbacks, this.subscribe);
     }
 
-    componentWillUnmount() {
+    override componentWillUnmount() {
         apply(this.props.callbacks, this.unsubscribe);
     }
 
-    componentDidUpdate(prevProps: Readonly<SignalRListenerProps>) {
+    override componentDidUpdate(prevProps: Readonly<SignalRListenerProps>) {
         if (prevProps.callbacks !== this.props.callbacks) {
             apply(prevProps.callbacks, this.unsubscribe);
             apply(this.props.callbacks, this.subscribe);
@@ -41,7 +41,7 @@ export default class SignalRListener extends React.PureComponent<PropsWithChildr
         console.info(`Unsubscibed from event '${methodName}'`);
     };
 
-    render() {
+    override render() {
         return this.props.children ?? null;
     }
 }

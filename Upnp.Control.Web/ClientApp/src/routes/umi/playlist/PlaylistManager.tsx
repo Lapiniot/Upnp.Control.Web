@@ -96,13 +96,13 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
         this.pressHoldGestureRecognizer = new PressHoldGestureRecognizer<HTMLElement>(this.service.toggleEditMode);
     }
 
-    async componentDidUpdate(prevProps: PlaylistManagerProps) {
+    override async componentDidUpdate(prevProps: PlaylistManagerProps) {
         if (prevProps.dataContext !== this.props.dataContext) {
             this.pls = $api.playlist(this.props.device);
         }
     }
 
-    async componentDidMount() {
+    override async componentDidMount() {
         MediaQueries.largeScreen.addEventListener("change", this.mediaQueryListChanged);
         MediaQueries.touchDevice.addEventListener("change", this.mediaQueryListChanged);
         if (this.browserNodeRef.current) {
@@ -110,7 +110,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
         }
     }
 
-    componentWillUnmount() {
+    override componentWillUnmount() {
         this.pressHoldGestureRecognizer.unbind();
         MediaQueries.touchDevice.removeEventListener("change", this.mediaQueryListChanged);
         MediaQueries.largeScreen.removeEventListener("change", this.mediaQueryListChanged);
@@ -294,7 +294,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
             : `${parents[0]?.res?.url}#tracknr=${(p ? parseInt(p) - 1 : 0) * (s ? parseInt(s) : $s.get("pageSize")) + index + 1},play`;
     }
 
-    render() {
+    override render() {
 
         const { dataContext: data, navigate, fetching, error, id, device } = this.props;
         const { source: { items = [], parents = [] } = {} } = data || {};

@@ -40,7 +40,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
     private readonly slideRecognizer: SlideGestureRecognizer;
     private readonly resizeObserver: ResizeObserver;
     private readonly strategy: PopupPlacementStrategy;
-    state: MenuState = { show: false, anchor: undefined };
+    override state: MenuState = { show: false, anchor: undefined };
     captureY = 0;
     captureHeight = 0;
     intrinsicHeight = 0;
@@ -53,7 +53,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
         this.slideRecognizer = new SlideGestureRecognizer(this.slideHandler);
     }
 
-    componentDidMount() {
+    override componentDidMount() {
         const popover = this.popoverRef.current;
         if (popover) {
             if (this.props.activation === undefined) {
@@ -107,7 +107,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
         }
     }
 
-    componentWillUnmount() {
+    override componentWillUnmount() {
         this.popoverRef.current!.removeEventListener("toggle", this.popoverToggleListener);
         this.popoverRef.current!.parentElement!.removeEventListener("click", this.containerClickListener);
         this.unsubscribe();
@@ -292,7 +292,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
         }
     }
 
-    render() {
+    override render() {
         const { className, children, render, onSelected, ...other } = this.props;
         const { show, anchor } = this.state;
         return <div popover="" ref={this.popoverRef} inert={!show}

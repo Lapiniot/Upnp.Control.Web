@@ -45,7 +45,7 @@ export type BrowserViewProps<TContext> = HTMLAttributes<HTMLDivElement>
 
 export default class BrowserView<TContext = unknown> extends Component<BrowserViewProps<TContext>> {
 
-    static contextType = RowStateContext;
+    static override contextType = RowStateContext;
     override context: React.ContextType<typeof RowStateContext>;
     private ref;
     private dialogMode = false;
@@ -71,7 +71,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         }
     }
 
-    componentDidUpdate() {
+    override componentDidUpdate() {
         if (this.context.current !== undefined) {
             const row = this.ref.current?.querySelector<HTMLDivElement>(`div[data-index="${this.context.current}"]`);
 
@@ -87,12 +87,12 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         }
     }
 
-    componentDidMount() {
+    override componentDidMount() {
         this.dialogMode = this.ref.current?.closest("dialog") !== null;
         document.addEventListener("keydown", this.keydownListener);
     }
 
-    componentWillUnmount() {
+    override componentWillUnmount() {
         document.removeEventListener("keydown", this.keydownListener);
     }
 
@@ -268,7 +268,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
         }
     }
 
-    render() {
+    override render() {
 
         const { className, mainCellTemplate: MainCellTemplate = CellTemplate, mainCellContext,
             useCheckboxes, useLevelUpRow, stickyCaption, stickyHeaders, displayMode, navigationMode, editMode, nodeRef,

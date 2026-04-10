@@ -13,7 +13,7 @@ type DropTargetState = {
 
 export class DropTarget extends React.Component<DropTargetProps, DropTargetState> {
 
-    state = { dragging: false, acceptable: false };
+    override state = { dragging: false, acceptable: false };
     counter = 0;
 
     private reset() {
@@ -63,7 +63,7 @@ export class DropTarget extends React.Component<DropTargetProps, DropTargetState
         e.preventDefault();
     }
 
-    render() {
+    override render() {
         const { children, acceptedTypes, onDropped, ...other } = this.props;
         const { dragging, acceptable } = this.state;
         const color = acceptable ? "primary" : "error";
