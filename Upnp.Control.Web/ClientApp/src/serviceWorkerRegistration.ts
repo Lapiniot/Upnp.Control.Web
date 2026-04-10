@@ -12,7 +12,7 @@ type Config = {
 };
 
 export function register(config?: Config) {
-    if ('serviceWorker' in navigator && (import.meta.env.PROD || import.meta.env.VITE_REG_DEV_SW === "true")) {
+    if ('serviceWorker' in navigator && (import.meta.env.PROD || import.meta.env["VITE_REG_DEV_SW"] === "true")) {
         const publicUrl = new URL(import.meta.env.BASE_URL, window.location.href);
         if (publicUrl.origin !== window.location.origin) {
             // Our service worker won't work if PUBLIC_URL is on a different origin

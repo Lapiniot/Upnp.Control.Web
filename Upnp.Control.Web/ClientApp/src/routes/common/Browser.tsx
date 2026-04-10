@@ -102,7 +102,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
         const { dataContext, device } = this.props;
 
         if (!action || !anchor || !device || !dataContext?.source?.items) return;
-        const item = dataContext.source.items.find(i => i.id === anchor.dataset.id);
+        const item = dataContext.source.items.find(i => i.id === anchor.dataset["id"]);
         if (!item) return;
 
         if (udn) {
@@ -133,7 +133,7 @@ export class Browser extends PureComponent<BrowserProps, BrowserState> {
     }
 
     renderItemActionMenuItems = (anchor?: HTMLElement | null) => {
-        const id = anchor?.dataset.id;
+        const id = anchor?.dataset["id"];
         if (!id) return;
 
         const { umis, renderers } = this.state;

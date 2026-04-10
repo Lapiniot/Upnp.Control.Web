@@ -66,7 +66,7 @@ root.render(
         </BrowserRouter>
     </ThemeProvider>);
 
-if (import.meta.env.DEV && import.meta.env.VITE_REG_DEV_SW !== "true") {
+if (import.meta.env.DEV && import.meta.env["VITE_REG_DEV_SW"] !== "true") {
     SW.unregister();
 }
 

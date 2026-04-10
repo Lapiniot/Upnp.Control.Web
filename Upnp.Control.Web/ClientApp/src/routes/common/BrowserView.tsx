@@ -102,7 +102,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
 
     onCheckboxChanged: ChangeEventHandler<HTMLInputElement> = e => {
         const checkbox = e.target;
-        const index = checkbox.parentElement?.parentElement?.dataset?.index;
+        const index = checkbox.parentElement?.parentElement?.dataset?.["index"];
         if (!index) return;
         this.context.dispatch({ type: "SET", index: parseInt(index), selected: checkbox.checked });
     };
@@ -177,7 +177,7 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
 
                     const items = this.props.dataContext?.source.items;
                     if (!items) return;
-                    const index = parseInt(focusedRow.dataset.index ?? "");
+                    const index = parseInt(focusedRow.dataset["index"] ?? "");
                     const item = items[index];
                     if (!item) return;
 
@@ -241,8 +241,8 @@ export default class BrowserView<TContext = unknown> extends Component<BrowserVi
     private focusHandler = (event: FocusEvent<HTMLDivElement>) => {
         const row = event.target.matches(DATA_ROW_SELECTOR) && event.target as HTMLDivElement;
         if (row) {
-            if (!row.dataset.index) return;
-            const index = parseInt(row.dataset.index);
+            if (!row.dataset["index"]) return;
+            const index = parseInt(row.dataset["index"]);
             if (index >= 0 && index !== this.context.current) {
                 // last tracked focused item id doesn't match currently focused row -
                 // thus we came here as a result of focus switch via keyboard Tab or Shift+Tab
@@ -353,8 +353,8 @@ export function CellTemplate({ children, data, index, rowState, context, ...othe
 
 function getDataIndex(target: HTMLElement) {
     const row = target.closest<HTMLElement>(DATA_ROW_SELECTOR);
-    if (!row?.dataset.index) return undefined;
-    return parseInt(row.dataset.index);
+    if (!row?.dataset["index"]) return undefined;
+    return parseInt(row.dataset["index"]);
 }
 
 function isInteractive(element: Element) {

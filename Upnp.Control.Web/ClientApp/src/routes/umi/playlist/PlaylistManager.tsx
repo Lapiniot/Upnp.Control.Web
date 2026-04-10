@@ -257,8 +257,8 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
     }
 
     renderItemActionMenu = (anchor?: HTMLElement | null) => {
-        return anchor?.dataset.index
-            ? <PlaylistItemActionMenu index={parseInt(anchor?.dataset.index)} root={this.props.id === "PL:"} getTrackUrlHook={this.getPlayUrl} handlers={this.actionHandlers} />
+        return anchor?.dataset["index"]
+            ? <PlaylistItemActionMenu index={parseInt(anchor?.dataset["index"])} root={this.props.id === "PL:"} getTrackUrlHook={this.getPlayUrl} handlers={this.actionHandlers} />
             : null;
     }
 
