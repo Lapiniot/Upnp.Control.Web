@@ -1,8 +1,8 @@
+import { useSignalR } from "@hooks/SignalR";
+import { PlaybackStateContext, type MediaAction, type MediaState } from "@routes/common/PlaybackStateContext";
+import $s from "@settings";
+import $api, { type ControlApiClient } from "@api";
 import { useEffect, useMemo, useReducer, type Dispatch, type PropsWithChildren } from "react";
-import { useSignalR } from "../../hooks/SignalR";
-import $api, { type ControlApiClient } from "../../services/WebApi";
-import { PlaybackStateContext, type MediaAction, type MediaState } from "./PlaybackStateContext";
-import $s from "./Settings";
 
 type FetchStateFlagKeys = "trackState" | "trackPosition" | "trackVolume"
 

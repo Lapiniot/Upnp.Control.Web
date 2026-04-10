@@ -1,21 +1,21 @@
+import { BottomBar } from "@components/BottomBar";
+import Breadcrumb from "@components/Breadcrumb";
+import { DialogHost, type IDialogHost } from "@components/DialogHost";
+import { Menu, MenuItem, MenuItemSeparator } from "@components/Menu";
+import { RowStateProvider } from "@components/RowStateProvider";
+import renderActionItem from "@routes/common/ActionMenuItem";
+import { BrowserActions } from "@routes/common/BrowserActionMenu";
+import BrowserCore, { type BrowserCoreProps } from "@routes/common/BrowserCore";
+import { CellTemplate, type CellTemplateProps } from "@routes/common/BrowserView";
+import { isContainer, isMediaItem, isMusicTrack } from "@routes/common/DIDLTools";
+import { itemBookmarks } from "@routes/common/IndexedDBBookmarkStore";
+import ItemInfoDialog from "@routes/common/ItemInfoDialog";
+import $s from "@settings";
+import { createBookmarkButton } from "@routes/common/ToggleBookmarkButton";
+import { UpnpDeviceTools as UDT } from "@routes/common/UpnpDeviceTools";
+import { HotKey, HotKeys } from "@services/HotKey";
+import WebApi from "@api";
 import { createRef, PureComponent } from "react";
-import { BottomBar } from "../../components/BottomBar";
-import Breadcrumb from "../../components/Breadcrumb";
-import { DialogHost, type IDialogHost } from "../../components/DialogHost";
-import { Menu, MenuItem, MenuItemSeparator } from "../../components/Menu";
-import { RowStateProvider } from "../../components/RowStateProvider";
-import { HotKey, HotKeys } from "../../services/HotKey";
-import WebApi from "../../services/WebApi";
-import renderActionItem from "./ActionMenuItem";
-import { BrowserActions } from "./BrowserActionMenu";
-import BrowserCore, { type BrowserCoreProps } from "./BrowserCore";
-import { CellTemplate, type CellTemplateProps } from "./BrowserView";
-import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
-import { itemBookmarks } from "./IndexedDBBookmarkStore";
-import ItemInfoDialog from "./ItemInfoDialog";
-import $s from "./Settings";
-import { createBookmarkButton } from "./ToggleBookmarkButton";
-import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 
 async function umiEnqueue(target: string, source: string, items: string[]) {
     const queues = WebApi.queues(target);

@@ -1,4 +1,4 @@
-﻿import Spoiler from "../../components/Spoiler";
+﻿import Spoiler from "@components/Spoiler";
 
 export default function DeviceServiceList({ dataSource: services }: DataSourceProps<Upnp.Service[]>) {
     return <Spoiler caption="Supported services" className="spoiler-flush" disabled={!services}>

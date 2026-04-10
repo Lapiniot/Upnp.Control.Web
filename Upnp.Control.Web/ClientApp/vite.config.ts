@@ -1,7 +1,16 @@
-import react from "@vitejs/plugin-react"
-import fs from "fs"
-import { defineConfig, loadEnv, ProxyOptions } from "vite"
-import generateSW from "./vite-plugin-generate-service-worker"
+import react from "@vitejs/plugin-react";
+import fs from "fs";
+import path from "path";
+import { defineConfig, loadEnv, ProxyOptions } from "vite";
+import tsconfig from "./tsconfig.app.aliases.json" with { type: "json" };
+import generateSW from "./vite-plugin-generate-service-worker";
+
+const tsConfigPaths = Object.fromEntries(
+    Object.entries(tsconfig.compilerOptions.paths)
+        .map(([name, value]) => [
+            name.replace("/*", ""),
+            path.resolve(__dirname, value[0].replace("/*", ""))
+        ]));
 
 // https://vitejs.dev/config/
 
@@ -27,6 +36,9 @@ export default defineConfig(({ mode }) => {
     }
 
     return {
+        resolve: {
+            alias: tsConfigPaths
+        },
         plugins: [react()],
         server: {
             host: true,

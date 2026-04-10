@@ -1,7 +1,7 @@
+import { BookmarkButton } from "@routes/common/BookmarkButton";
+import { type BookmarkStore } from "@routes/common/BookmarkStore";
+import { type KnownWidgets } from "@routes/common/widgets/Widgets";
 import { type ButtonHTMLAttributes, type MouseEventHandler, useCallback, useEffect, useState } from "react";
-import { BookmarkButton } from "./BookmarkButton";
-import { type BookmarkStore } from "./BookmarkStore";
-import { type KnownWidgets } from "./widgets/Widgets";
 
 type BookmarkButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     device: string;

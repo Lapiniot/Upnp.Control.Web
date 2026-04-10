@@ -1,9 +1,9 @@
 ﻿import { Navigate, Route, Routes } from "react-router";
-import BrowserPage from "../common/BrowserPage";
-import DeviceListPage from "../common/DeviceListPage";
-import DevicePage from "../common/DevicePage";
-import ViewerPage from "../common/ViewerPage";
-import DeviceTemplate from "./Device";
+import BrowserPage from "@routes/common/BrowserPage";
+import DeviceListPage from "@routes/common/DeviceListPage";
+import DevicePage from "@routes/common/DevicePage";
+import ViewerPage from "@routes/common/ViewerPage";
+import DeviceTemplate from "@routes/upnp/Device";
 
 export default function Router() {
     const category = "upnp";

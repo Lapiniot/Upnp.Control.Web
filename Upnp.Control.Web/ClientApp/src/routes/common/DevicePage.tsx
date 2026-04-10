@@ -1,8 +1,8 @@
+import { type GridViewMode } from "@components/GridView";
+import { useDataFetch } from "@hooks/DataFetch";
+import { DeviceView } from "@routes/common/DeviceListView";
+import WebApi from "@api";
 import { useParams } from "react-router";
-import { useDataFetch } from "../../hooks/DataFetch";
-import { type GridViewMode } from "../../components/GridView";
-import WebApi from "../../services/WebApi";
-import { DeviceView } from "./DeviceListView";
 
 type ItemProps = DataSourceProps<Upnp.Device> & UI.CategoryRouteParams
 

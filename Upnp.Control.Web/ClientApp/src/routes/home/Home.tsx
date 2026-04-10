@@ -1,16 +1,16 @@
-﻿import "bootstrap/js/dist/collapse";
+﻿import { DataList } from "@components/DataList";
+import ConfirmDialog from "@components/Dialog.Confirmation";
+import { DialogHost, type IDialogHost } from "@components/DialogHost";
+import Spoiler from "@components/Spoiler";
+import Toolbar from "@components/Toolbar";
+import { type BookmarkStore, deviceBookmarks, itemBookmarks, playlistBookmarks } from "@routes/common/IndexedDBBookmarkStore";
+import { type BookmarkGroup, profile } from "@settings";
+import { type KnownWidgets, Widgets } from "@routes/common/widgets/Widgets";
+import "bootstrap/js/dist/collapse";
 import React, {
     type ComponentType, type DetailsHTMLAttributes, type SyntheticEvent,
     useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 } from "react";
-import { DataList } from "../../components/DataList";
-import ConfirmDialog from "../../components/Dialog.Confirmation";
-import { DialogHost, type IDialogHost } from "../../components/DialogHost";
-import Spoiler from "../../components/Spoiler";
-import Toolbar from "../../components/Toolbar";
-import { type BookmarkGroup, profile } from "../common/Settings";
-import { type KnownWidgets, Widgets } from "../common/widgets/Widgets";
-import { deviceBookmarks, itemBookmarks, playlistBookmarks, type BookmarkStore } from "../common/IndexedDBBookmarkStore";
 
 export default function Home() {
     return <div className="d-grid p-3 pb-7 g-3 overflow-auto">

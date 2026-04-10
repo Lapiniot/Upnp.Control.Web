@@ -1,9 +1,9 @@
+import Dialog from "@components/Dialog";
+import { Portal } from "@components/Portal";
 import {
     cloneElement, type ComponentPropsWithRef, type ReactElement,
     type ReactNode, type Ref, useImperativeHandle, useState
 } from "react";
-import Dialog from "./Dialog";
-import { Portal } from "./Portal";
 
 type DialogElement = ReactElement<ComponentPropsWithRef<typeof Dialog>>;
 

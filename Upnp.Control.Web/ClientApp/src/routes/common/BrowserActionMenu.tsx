@@ -1,12 +1,12 @@
+import { Form } from "@components/Form";
+import { Menu } from "@components/Menu";
+import { useRowStates } from "@components/RowStateContext";
+import Toolbar from "@components/Toolbar";
+import { useSearchParams } from "@hooks/Navigator";
+import renderActionItem from "@routes/common/ActionMenuItem";
+import { isContainer, isMediaItem, isMusicTrack } from "@routes/common/DIDLTools";
+import WebApi from "@api";
 import { type FormHTMLAttributes, useEffect, useState } from "react";
-import { Form } from "../../components/Form";
-import { Menu } from "../../components/Menu";
-import { useRowStates } from "../../components/RowStateContext";
-import Toolbar from "../../components/Toolbar";
-import { useSearchParams } from "../../hooks/Navigator";
-import WebApi from "../../services/WebApi";
-import { isContainer, isMediaItem, isMusicTrack } from "./DIDLTools";
-import renderActionItem from "./ActionMenuItem";
 
 type BrowserActionMenuProps = {
     umis: Upnp.Device[];

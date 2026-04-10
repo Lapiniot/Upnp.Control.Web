@@ -1,11 +1,11 @@
-﻿import { Navigate, Route, Routes } from "react-router";
-import BrowserPage from "../common/BrowserPage";
-import DeviceListPage from "../common/DeviceListPage";
-import DevicePage from "../common/DevicePage";
-import { UpnpDeviceTools as UDT } from "../common/UpnpDeviceTools";
-import ViewerPage from "../common/ViewerPage";
-import UmiDeviceCard from "../umi/Device";
-import RendererDeviceCard from "./Device";
+﻿import BrowserPage from "@routes/common/BrowserPage";
+import DeviceListPage from "@routes/common/DeviceListPage";
+import DevicePage from "@routes/common/DevicePage";
+import { UpnpDeviceTools as UDT } from "@routes/common/UpnpDeviceTools";
+import ViewerPage from "@routes/common/ViewerPage";
+import RendererDeviceCard from "@routes/renderers/Device";
+import UmiDeviceCard from "@routes/umi/Device";
+import { Navigate, Route, Routes } from "react-router";
 
 function TemplateSelector({ dataSource: d, ...props }: DataSourceProps<Upnp.Device> & UI.CategoryRouteParams) {
     if (d && UDT.isUmiDevice(d))

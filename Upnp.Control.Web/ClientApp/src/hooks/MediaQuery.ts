@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MediaQueries } from "../services/MediaQueries";
+import { MediaQueries } from "@services/MediaQueries";
 
 function useMediaQuery(query: MediaQueryList, enabled: boolean = true) {
     const [matches, setMatches] = useState(query.matches);

@@ -1,8 +1,8 @@
-import { useDataFetch } from "../../hooks/DataFetch";
-import { useNavigator } from "../../hooks/Navigator";
-import { BrowseFetch } from "../../services/BrowseFetch";
-import WebApi, { type BrowseOptions } from "../../services/WebApi";
-import Settings from "./Settings";
+import { useDataFetch } from "@hooks/DataFetch";
+import { useNavigator } from "@hooks/Navigator";
+import Settings from "@settings";
+import { BrowseFetch } from "@services/BrowseFetch";
+import WebApi, { type BrowseOptions } from "@api";
 
 const fetchOptions = { withParents: true, withResourceProps: true } as BrowseOptions;
 const minimalFetchOptions = { withDevice: false, withParents: false, withMetadata: false } as BrowseOptions;

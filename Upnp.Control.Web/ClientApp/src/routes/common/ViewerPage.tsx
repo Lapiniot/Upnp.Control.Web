@@ -1,9 +1,9 @@
+import { LoadIndicatorOverlay } from "@components/LoadIndicator";
+import { useDataFetch } from "@hooks/DataFetch";
+import { MediaViewer } from "@routes/common/MediaViewer";
+import WebApi from "@api";
 import { type HTMLAttributes } from "react";
 import { useParams } from "react-router";
-import { useDataFetch } from "../../hooks/DataFetch";
-import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import WebApi from "../../services/WebApi";
-import { MediaViewer } from "./MediaViewer";
 
 const options = { withChildren: false, withParents: true, withMetadata: true, withResourceProps: true }
 

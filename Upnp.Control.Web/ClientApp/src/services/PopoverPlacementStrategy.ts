@@ -1,4 +1,4 @@
-import { debounce } from "./Extensions";
+import { debounce } from "@services/Extensions";
 
 export abstract class PopupPlacementStrategy {
     public abstract update(popup: HTMLElement, anchor?: HTMLElement): Promise<void> | void;

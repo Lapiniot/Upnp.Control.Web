@@ -1,6 +1,6 @@
 import { type HTMLAttributes } from "react";
-import { viaProxy } from "../../../services/Extensions";
-import { RouteLink } from "../../../components/NavLink";
+import { viaProxy } from "@services/Extensions";
+import { RouteLink } from "@components/NavLink";
 
 type DeviceBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
     category: string;

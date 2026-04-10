@@ -1,9 +1,9 @@
-import { useDataFetch } from "../../../hooks/DataFetch";
-import { Menu, MenuItem } from "../../../components/Menu";
-import { MicroLoader } from "../../../components/LoadIndicator";
-import WebApi from "../../../services/WebApi";
-import AlbumArt from "../AlbumArt";
-import { type DeviceActionProps } from "./Actions";
+import { useDataFetch } from "@hooks/DataFetch";
+import { Menu, MenuItem } from "@components/Menu";
+import { MicroLoader } from "@components/LoadIndicator";
+import WebApi from "@api";
+import AlbumArt from "@routes/common/AlbumArt";
+import { type DeviceActionProps } from "@routes/common/actions/Actions";
 import { useId } from "react";
 
 function playUrlHandler(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {

@@ -1,6 +1,6 @@
+import { UpnpDeviceTools as UDT } from "@routes/common/UpnpDeviceTools";
+import { viaProxy } from "@services/Extensions";
 import { type ImgHTMLAttributes, type SVGProps } from "react";
-import { viaProxy } from "../../services/Extensions";
-import { UpnpDeviceTools as UDT } from "./UpnpDeviceTools";
 
 type CommonKeys<K, V> = { [P in keyof K & keyof V]: K[P] extends V[P] ? V[P] extends K[P] ? P : never : never }[keyof K & keyof V]
 type Common<K, V> = { [P in CommonKeys<K, V>]: K[P] }

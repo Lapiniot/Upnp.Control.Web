@@ -1,4 +1,4 @@
-import { type GestureHandler, GestureRecognizer } from "./GestureRecognizer";
+import { type GestureHandler, GestureRecognizer } from "@services/gestures/GestureRecognizer";
 
 export type { GestureHandler };
 

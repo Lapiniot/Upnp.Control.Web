@@ -1,6 +1,6 @@
-import { useDataFetch } from "../../hooks/DataFetch";
-import WebApi from "../../services/WebApi";
-import { DeviceListView, type DeviceViewProps } from "./DeviceListView";
+import { useDataFetch } from "@hooks/DataFetch";
+import { DeviceListView, type DeviceViewProps } from "@routes/common/DeviceListView";
+import WebApi from "@api";
 
 const fetchDevicesAsync = (category: string) => WebApi.devices(category).json()
 

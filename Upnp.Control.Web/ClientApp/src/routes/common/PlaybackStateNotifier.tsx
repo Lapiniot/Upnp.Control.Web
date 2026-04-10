@@ -1,7 +1,7 @@
+import NotificationsHost, { type INotificationHost } from "@components/NotificationsHost";
+import { useSignalR } from "@hooks/SignalR";
+import { TrackInfoLine } from "@routes/common/TrackInfoLine";
 import { useMemo, useRef } from "react";
-import NotificationsHost, { type INotificationHost } from "../../components/NotificationsHost";
-import { useSignalR } from "../../hooks/SignalR";
-import { TrackInfoLine } from "./TrackInfoLine";
 
 type PlaybackStateChangedCallback = (state: Upnp.AVState, vendor: Record<string, string>) => void | boolean;
 

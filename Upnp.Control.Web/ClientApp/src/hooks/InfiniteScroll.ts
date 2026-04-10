@@ -1,5 +1,5 @@
+import { useIntersectionObserver } from "@hooks/IntersectionObserver";
 import { useCallback, useRef } from "react";
-import { useIntersectionObserver } from "./IntersectionObserver";
 
 export function useInfiniteScroll(loader: (() => unknown) | undefined,
     root?: Document | Element | null, rootMargin?: string, threshold?: number | number[]) {

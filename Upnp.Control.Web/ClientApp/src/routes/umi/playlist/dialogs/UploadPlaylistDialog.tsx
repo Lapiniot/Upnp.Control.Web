@@ -1,5 +1,5 @@
 import { type ComponentPropsWithRef, useCallback, useMemo } from "react";
-import Dialog from "../../../../components/Dialog";
+import Dialog from "@components/Dialog";
 
 type UploadPlaylistDialogProps = ComponentPropsWithRef<typeof Dialog> & {
     useProxy?: boolean;

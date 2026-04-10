@@ -3,7 +3,7 @@ import {
     type ReactElement, type ReactNode, useCallback, useContext, useRef, useState
 } from "react";
 import { matchRoutes, resolvePath, type RouteMatch, type RouteObject } from "react-router";
-import { type NavigateFunction, NavigationContext, type Path } from "../hooks/Navigator";
+import { type NavigateFunction, NavigationContext, type Path } from "@hooks/Navigator";
 
 interface VirtualRouterProps {
     initialPath: string

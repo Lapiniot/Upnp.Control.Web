@@ -1,5 +1,5 @@
+import RowStateContext, { RowState, type RowStateAction, type RowStateMapperFunction } from "@components/RowStateContext";
 import { useMemo, useReducer, type PropsWithChildren } from "react";
-import RowStateContext, { RowState, type RowStateAction, type RowStateMapperFunction } from "./RowStateContext";
 
 const IndexOutOfRangeError = "'index' parameter value is out of range"
 const InvalidDispatchActionError = "invalid dispatch action"
@@ -255,4 +255,4 @@ export function RowStateProvider({ items, mapper = getRowState, enabled = true, 
     return <RowStateContext {...other} value={value} />;
 }
 
-export { RowState }
+export { RowState };

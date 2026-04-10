@@ -1,8 +1,8 @@
 import { type PropsWithChildren, type UIEvent, useCallback, useContext } from "react";
-import { MenuItem, MenuItemSeparator } from "../../../components/Menu";
-import { PlaybackStateContext } from "../../common/PlaybackStateContext";
-import { RowState, useRowStates } from "../../../components/RowStateContext";
-import type { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
+import { MenuItem, MenuItemSeparator } from "@components/Menu";
+import { PlaybackStateContext } from "@routes/common/PlaybackStateContext";
+import { RowState, useRowStates } from "@components/RowStateContext";
+import type { PlaylistMenuActionHandlers } from "@routes/umi/playlist/PlaylistMenuActionHandlers";
 
 type PlaylistItemActionMenuProps = {
     index: number,

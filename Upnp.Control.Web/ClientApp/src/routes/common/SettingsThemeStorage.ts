@@ -1,6 +1,6 @@
-import { type ThemeStorage } from "../../components/ThemeProvider";
-import { ExternalStoreBase } from "../../services/ExternalStoreBase";
-import settings from "./Settings";
+import { type ThemeStorage } from "@components/ThemeProvider";
+import settings from "@settings";
+import { ExternalStoreBase } from "@services/ExternalStoreBase";
 
 export default class SettingsThemeStorage extends ExternalStoreBase<UI.Theme> implements ThemeStorage {
     private static instance: SettingsThemeStorage;

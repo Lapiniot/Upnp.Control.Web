@@ -1,6 +1,6 @@
+import { Portal } from "@components/Portal";
+import { Snackbar } from "@components/Snackbar";
 import { type Ref, useCallback, useImperativeHandle, useMemo, useState } from "react";
-import { Portal } from "./Portal";
-import { Snackbar } from "./Snackbar";
 
 type Notification = { id: string; message: React.ReactNode } & (
     { autohide?: undefined; action: { text: string, handler: () => void } } |

@@ -1,6 +1,6 @@
 import { type HTMLAttributes, useCallback, useRef } from "react";
-import { formatTime } from "../services/Extensions";
-import { useIntervalUpdate } from "../hooks/IntervalUpdate";
+import { formatTime } from "@services/Extensions";
+import { useIntervalUpdate } from "@hooks/IntervalUpdate";
 
 type TimerProps = { running: boolean; current: number; interval?: number }
 

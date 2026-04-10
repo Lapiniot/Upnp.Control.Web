@@ -1,6 +1,6 @@
 import { type HTMLAttributes } from "react";
-import { RouteLink } from "../../../components/NavLink";
-import AlbumArt from "../AlbumArt";
+import { RouteLink } from "@components/NavLink";
+import AlbumArt from "@routes/common/AlbumArt";
 
 type ItemBookmarkWidgetProps = HTMLAttributes<HTMLDivElement> & {
     device: string;

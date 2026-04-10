@@ -1,5 +1,5 @@
 import { type ComponentPropsWithRef, useCallback, useMemo } from "react";
-import Dialog from "../../../../components/Dialog";
+import Dialog from "@components/Dialog";
 
 type RemoveItemsDialogProps = ComponentPropsWithRef<typeof Dialog> & {
     onRemove(): void;

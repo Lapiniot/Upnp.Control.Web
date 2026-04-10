@@ -1,6 +1,6 @@
-import { MediaQueries, useMediaQuery } from "../../hooks/MediaQuery";
-import { Browser } from "./Browser";
-import { useContentBrowser } from "./BrowserUtils";
+import { MediaQueries, useMediaQuery } from "@hooks/MediaQuery";
+import { Browser } from "@routes/common/Browser";
+import { useContentBrowser } from "@routes/common/BrowserUtils";
 
 export default function ContentBrowser() {
     const { params: { device, ...navParams }, ...other } = useContentBrowser(undefined, { id: "0" });

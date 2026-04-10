@@ -1,18 +1,18 @@
+import Dialog from "@components/Dialog";
+import { LoadIndicatorOverlay } from "@components/LoadIndicator";
+import { type RowStateMapperFunction, useRowStates } from "@components/RowStateContext";
+import { RowStateProvider } from "@components/RowStateProvider";
+import { Route, Routes, VirtualRouter } from "@components/VirtualRouter";
+import { useDataFetch } from "@hooks/DataFetch";
+import { MediaQueries, useMediaQuery } from "@hooks/MediaQuery";
+import { useNavigatorClickHandler } from "@hooks/Navigator";
+import { usePortal } from "@hooks/Portal";
+import BrowserCore from "@routes/common/BrowserCore";
+import { useContentBrowser } from "@routes/common/BrowserUtils";
+import type { BrowserProps } from "@routes/common/BrowserView";
+import DeviceIcon from "@routes/common/DeviceIcon";
+import $api from "@api";
 import { type ComponentPropsWithRef, type HTMLAttributes, type ReactNode, useCallback, useMemo } from "react";
-import Dialog from "../../components/Dialog";
-import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { type RowStateMapperFunction, useRowStates } from "../../components/RowStateContext";
-import { RowStateProvider } from "../../components/RowStateProvider";
-import { Route, Routes, VirtualRouter } from "../../components/VirtualRouter";
-import { useDataFetch } from "../../hooks/DataFetch";
-import { MediaQueries, useMediaQuery } from "../../hooks/MediaQuery";
-import { useNavigatorClickHandler } from "../../hooks/Navigator";
-import { usePortal } from "../../hooks/Portal";
-import $api from "../../services/WebApi";
-import DeviceIcon from "../common/DeviceIcon";
-import BrowserCore from "./BrowserCore";
-import { useContentBrowser } from "./BrowserUtils";
-import type { BrowserProps } from "./BrowserView";
 
 export type BrowserDialogProps<TContext = unknown> = HTMLAttributes<HTMLDivElement> & {
     browserProps?: BrowserProps<TContext>;

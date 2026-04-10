@@ -1,5 +1,5 @@
 import { type ComponentPropsWithRef, useCallback, useMemo } from "react";
-import Dialog from "./Dialog";
+import Dialog from "@components/Dialog";
 
 type TextValueEditDialogProps = ComponentPropsWithRef<typeof Dialog> & {
     confirmText?: string;

@@ -1,9 +1,9 @@
 ﻿import { useEffect, useMemo, useRef } from "react";
-import { GridView, type GridViewMode } from "../../components/GridView";
-import { LoadIndicatorOverlay } from "../../components/LoadIndicator";
-import { type DataFetchProps } from "../../hooks/DataFetch";
-import { useLocalStorage } from "../../hooks/LocalStorage";
-import { useSignalR } from "../../hooks/SignalR";
+import { GridView, type GridViewMode } from "@components/GridView";
+import { LoadIndicatorOverlay } from "@components/LoadIndicator";
+import { type DataFetchProps } from "@hooks/DataFetch";
+import { useLocalStorage } from "@hooks/LocalStorage";
+import { useSignalR } from "@hooks/SignalR";
 
 export type DeviceViewProps = TemplatedDataComponentProps<DataSourceProps<Upnp.Device> & UI.CategoryRouteParams> &
     UI.CategoryRouteParams & { viewMode?: GridViewMode }

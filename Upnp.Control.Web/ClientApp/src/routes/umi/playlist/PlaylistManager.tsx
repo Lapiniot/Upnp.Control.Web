@@ -1,36 +1,39 @@
-import { type ComponentProps, type ComponentPropsWithRef, type ComponentType, createRef, type HTMLAttributes, PureComponent, type ReactElement, type UIEventHandler, useCallback, useContext, useMemo } from "react";
-import { BottomBar } from "../../../components/BottomBar";
-import Breadcrumb from "../../../components/Breadcrumb";
-import Dialog from "../../../components/Dialog";
-import PromptDialog from "../../../components/Dialog.Prompt";
-import { DialogHost, type IDialogHost } from "../../../components/DialogHost";
-import { DropTarget } from "../../../components/DropTarget";
-import { Menu, MenuItem } from "../../../components/Menu";
-import Progress from "../../../components/Progress";
-import RowStateContext, { RowState } from "../../../components/RowStateContext";
-import type { DataFetchProps } from "../../../hooks/DataFetch";
-import { useInfiniteScroll } from "../../../hooks/InfiniteScroll";
-import { PressHoldGestureRecognizer } from "../../../services/gestures/PressHoldGestureRecognizer";
-import { HotKey, HotKeys } from "../../../services/HotKey";
-import { MediaQueries } from "../../../services/MediaQueries";
-import $api from "../../../services/WebApi";
-import { useContentBrowser } from "../../common/BrowserUtils";
-import BrowserView, { type CellTemplateProps } from "../../common/BrowserView";
-import { isMusicTrack } from "../../common/DIDLTools";
-import ItemInfoDialog from "../../common/ItemInfoDialog";
-import { PlaybackStateProvider } from "../../common/PlaybackStateProvider";
-import { PlaybackStateContext } from "../../common/PlaybackStateContext";
-import $s from "../../common/Settings";
-import MainCell from "./CellTemplate";
-import AddItemsDialog from "./dialogs/AddItemsDialog";
-import AddUrlDialog from "./dialogs/AddUrlDialog";
-import RemoveItemsDialog from "./dialogs/RemoveItemsDialog";
-import UploadPlaylistDialog from "./dialogs/UploadPlaylistDialog";
-import { PlaylistItemActionMenu } from "./PlaylistItemActionMenu";
-import type { PlaylistManagerService } from "./PlaylistManagerService";
-import { PlaylistManagerToolbar } from "./PlaylistManagerToolbar";
-import type { PlaylistMenuActionHandlers } from "./PlaylistMenuActionHandlers";
-import { PlaylistRowStateProvider } from "./PlaylistRowStateProvider";
+import { BottomBar } from "@components/BottomBar";
+import Breadcrumb from "@components/Breadcrumb";
+import Dialog from "@components/Dialog";
+import PromptDialog from "@components/Dialog.Prompt";
+import { DialogHost, type IDialogHost } from "@components/DialogHost";
+import { DropTarget } from "@components/DropTarget";
+import { Menu, MenuItem } from "@components/Menu";
+import Progress from "@components/Progress";
+import RowStateContext, { RowState } from "@components/RowStateContext";
+import type { DataFetchProps } from "@hooks/DataFetch";
+import { useInfiniteScroll } from "@hooks/InfiniteScroll";
+import { useContentBrowser } from "@routes/common/BrowserUtils";
+import BrowserView, { type CellTemplateProps } from "@routes/common/BrowserView";
+import { isMusicTrack } from "@routes/common/DIDLTools";
+import ItemInfoDialog from "@routes/common/ItemInfoDialog";
+import { PlaybackStateContext } from "@routes/common/PlaybackStateContext";
+import { PlaybackStateProvider } from "@routes/common/PlaybackStateProvider";
+import $s from "@settings";
+import MainCell from "@routes/umi/playlist/CellTemplate";
+import AddItemsDialog from "@routes/umi/playlist/dialogs/AddItemsDialog";
+import AddUrlDialog from "@routes/umi/playlist/dialogs/AddUrlDialog";
+import RemoveItemsDialog from "@routes/umi/playlist/dialogs/RemoveItemsDialog";
+import UploadPlaylistDialog from "@routes/umi/playlist/dialogs/UploadPlaylistDialog";
+import { PlaylistItemActionMenu } from "@routes/umi/playlist/PlaylistItemActionMenu";
+import type { PlaylistManagerService } from "@routes/umi/playlist/PlaylistManagerService";
+import { PlaylistManagerToolbar } from "@routes/umi/playlist/PlaylistManagerToolbar";
+import type { PlaylistMenuActionHandlers } from "@routes/umi/playlist/PlaylistMenuActionHandlers";
+import { PlaylistRowStateProvider } from "@routes/umi/playlist/PlaylistRowStateProvider";
+import { PressHoldGestureRecognizer } from "@services/gestures/PressHoldGestureRecognizer";
+import { HotKey, HotKeys } from "@services/HotKey";
+import { MediaQueries } from "@services/MediaQueries";
+import $api from "@api";
+import {
+    type ComponentProps, type ComponentPropsWithRef, type ComponentType, createRef, type HTMLAttributes,
+    PureComponent, type ReactElement, type UIEventHandler, useCallback, useContext, useMemo
+} from "react";
 
 type PlaylistManagerProps = HTMLAttributes<HTMLDivElement> &
     Omit<UI.PlaylistRouteParams, "category">

@@ -33,9 +33,6 @@
         "xml",
         "html"
     ],
-    "css.customData": [
-        "Upnp.Control.Web/ClientApp/css-data.json"
-    ],
     "dotnet.defaultSolution": "Upnp.Control.Web.slnx",
     "material-icon-theme.activeIconPack": "react",
     "material-icon-theme.folders.theme": "specific",

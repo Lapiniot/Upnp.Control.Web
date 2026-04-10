@@ -1,6 +1,9 @@
+import AlbumArt from "@routes/common/AlbumArt";
+import {
+    formatBitrate, formatChannels, formatSampleFrequency, formatSize, formatSizeFull,
+    formatTime, getContentType, getDisplayName, getYear
+} from "@routes/common/DIDLTools";
 import { type JSX } from "react";
-import AlbumArt from "./AlbumArt";
-import { formatBitrate, formatChannels, formatSampleFrequency, formatSize, formatSizeFull, formatTime, getContentType, getDisplayName, getYear } from "./DIDLTools";
 
 function join(values: string[]) {
     return values.join(", ");

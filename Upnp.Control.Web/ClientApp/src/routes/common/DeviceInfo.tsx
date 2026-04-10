@@ -1,5 +1,5 @@
 import { type HTMLAttributes } from "react";
-import { Link } from "../../components/NavLink";
+import { Link } from "@components/NavLink";
 
 const cntrClass = "grid-form grid-form-dense mb-2 text-wrap no-font-boost";
 

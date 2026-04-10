@@ -1,5 +1,5 @@
 import { type SubmitEvent, type FormHTMLAttributes, useCallback } from "react";
-import { useNavigator } from "../hooks/Navigator";
+import { useNavigator } from "@hooks/Navigator";
 
 export function Form({ onSubmit, method, action, ...props }: FormHTMLAttributes<HTMLFormElement>) {
     const { navigate } = useNavigator();

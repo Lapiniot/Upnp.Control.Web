@@ -1,7 +1,7 @@
 import { type ButtonHTMLAttributes, type HTMLAttributes, PureComponent, type ReactNode, createRef } from "react";
-import { PopoverAnchorStrategy, PopupPlacementStrategy } from "../services/PopoverPlacementStrategy";
-import { SlideGestureRecognizer, type SlideParams } from "../services/gestures/SlideGestureRecognizer";
-import { SwipeGestureRecognizer, type SwipeGestures } from "../services/gestures/SwipeGestureRecognizer";
+import { PopoverAnchorStrategy, PopupPlacementStrategy } from "@services/PopoverPlacementStrategy";
+import { SlideGestureRecognizer, type SlideParams } from "@services/gestures/SlideGestureRecognizer";
+import { SwipeGestureRecognizer, type SwipeGestures } from "@services/gestures/SwipeGestureRecognizer";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";

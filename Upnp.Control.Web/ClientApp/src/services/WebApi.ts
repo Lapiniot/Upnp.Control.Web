@@ -1,6 +1,6 @@
-import { BrowseFetch } from "./BrowseFetch";
-import { toBase64 } from "./Extensions";
-import { HttpFetch, JsonHttpFetch, HttpPostFetch, HttpPutFetch, HttpDeleteFetch } from "./HttpFetch";
+import { BrowseFetch } from "@services/BrowseFetch";
+import { toBase64 } from "@services/Extensions";
+import { HttpDeleteFetch, HttpFetch, HttpPostFetch, HttpPutFetch, JsonHttpFetch } from "@services/HttpFetch";
 
 const baseUri = "/api";
 const devicesBaseUri = baseUri + "/devices";

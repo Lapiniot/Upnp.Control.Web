@@ -1,6 +1,6 @@
+import { SignalRContext } from "@components/SignalRContext";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { Component, type PropsWithChildren } from "react";
-import { SignalRContext } from "./SignalRContext";
 
 type SignalRConnectionProps = { url: string }
 type SignalRConnectionState = { connected: boolean; error: Error | string | null }

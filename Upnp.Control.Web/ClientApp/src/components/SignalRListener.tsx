@@ -1,5 +1,5 @@
+import { SignalRContext } from "@components/SignalRContext";
 import React, { type ContextType, type PropsWithChildren } from "react";
-import { SignalRContext } from "./SignalRContext";
 
 interface Callback { (...args: unknown[]): void }
 

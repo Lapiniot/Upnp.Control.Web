@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": [
+        "./src"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@services/*": [
+        "./src/services/*"
+      ],
+      "@routes/*": [
+        "./src/routes/*"
+      ],
+      "@api": [
+        "./src/services/WebApi"
+      ],
+      "@settings": [
+        "./src/routes/common/Settings"
+      ]
+    }
+  }
+}

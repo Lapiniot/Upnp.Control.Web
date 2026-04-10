@@ -1,8 +1,8 @@
 /// <reference lib="webworker" />
 
-import { CacheFirstStrategy, CacheOnlyStrategy } from "./services/CachingStrategy";
-import { formatTrackInfoLine, viaProxy } from "./services/Extensions";
-import { UpnpDeviceTools as UDT } from "./routes/common/UpnpDeviceTools";
+import { CacheFirstStrategy, CacheOnlyStrategy } from "@services/CachingStrategy";
+import { formatTrackInfoLine, viaProxy } from "@services/Extensions";
+import { UpnpDeviceTools as UDT } from "@routes/common/UpnpDeviceTools";
 
 declare global {
     export interface WorkerGlobalScope {

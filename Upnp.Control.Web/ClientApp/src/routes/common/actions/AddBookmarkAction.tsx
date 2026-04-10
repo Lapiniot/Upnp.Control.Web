@@ -1,8 +1,8 @@
+import { BookmarkButton } from "@routes/common/BookmarkButton";
+import { deviceBookmarks as bookmarks } from "@routes/common/IndexedDBBookmarkStore";
+import { UpnpDeviceTools as UDT } from "@routes/common/UpnpDeviceTools";
+import { type DeviceActionProps } from "@routes/common/actions/Actions";
 import { useCallback, useEffect, useState } from "react";
-import { deviceBookmarks as bookmarks } from "../IndexedDBBookmarkStore";
-import { BookmarkButton } from "../BookmarkButton";
-import { UpnpDeviceTools as UDT } from "../UpnpDeviceTools";
-import { type DeviceActionProps } from "./Actions";
 
 export function AddBookmarkAction({ device, category = "upnp", ...other }: DeviceActionProps) {
     const [bookmarked, setBookmarked] = useState<boolean | undefined>(undefined);

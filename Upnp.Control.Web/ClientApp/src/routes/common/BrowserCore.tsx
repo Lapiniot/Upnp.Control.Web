@@ -1,9 +1,9 @@
+import Progress from "@components/Progress";
+import { useRowStates } from "@components/RowStateContext";
+import Toolbar from "@components/Toolbar";
+import { useInfiniteScroll } from "@hooks/InfiniteScroll";
+import BrowserView, { type BrowserViewProps } from "@routes/common/BrowserView";
 import { type ReactNode, useCallback } from "react";
-import Progress from "../../components/Progress";
-import { useRowStates } from "../../components/RowStateContext";
-import Toolbar from "../../components/Toolbar";
-import { useInfiniteScroll } from "../../hooks/InfiniteScroll";
-import BrowserView, { type BrowserViewProps } from "./BrowserView";
 
 export type BrowserCoreProps<TContext> =
     BrowserViewProps<TContext> &

@@ -1,9 +1,9 @@
-﻿import { ThemeSwitch } from "../../components/ThemeSwitch";
-import { FlagEditor } from "../../components/editors/FlagEditor";
-import { NumberEditor } from "../../components/editors/NumberEditor";
-import { OptionsEditor } from "../../components/editors/OptionsEditor";
-import $s from "../common/Settings";
-import { PushNotificationsSection } from "./PushNotificationSection";
+﻿import { ThemeSwitch } from "@components/ThemeSwitch";
+import { FlagEditor } from "@components/editors/FlagEditor";
+import { NumberEditor } from "@components/editors/NumberEditor";
+import { OptionsEditor } from "@components/editors/OptionsEditor";
+import $s from "@settings";
+import { PushNotificationsSection } from "@routes/settings/PushNotificationSection";
 
 function setPageSize(value: string) {
     const pageSize = parseInt(value);

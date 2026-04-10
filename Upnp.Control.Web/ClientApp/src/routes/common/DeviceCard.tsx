@@ -1,8 +1,8 @@
+import { Link } from "@components/NavLink";
+import { type DeviceActionProps } from "@routes/common/actions/Actions";
+import { AddBookmarkAction } from "@routes/common/actions/AddBookmarkAction";
+import DeviceIcon from "@routes/common/DeviceIcon";
 import { type ComponentType, type HTMLAttributes } from "react";
-import { Link } from "../../components/NavLink";
-import { type DeviceActionProps } from "./actions/Actions";
-import { AddBookmarkAction } from "./actions/AddBookmarkAction";
-import DeviceIcon from "./DeviceIcon";
 
 type ActionWidgetComponent = ComponentType<DeviceActionProps & HTMLAttributes<HTMLElement>>;
 

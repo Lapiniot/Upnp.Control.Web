@@ -1,5 +1,5 @@
-import { JsonHttpFetch, type RequestQuery } from "./HttpFetch";
-import { type BrowseOptions, type BrowseOptionFlags } from "./WebApi";
+import { JsonHttpFetch, type RequestQuery } from "@services/HttpFetch";
+import { type BrowseOptionFlags, type BrowseOptions } from "@api";
 
 export class BrowseFetch extends JsonHttpFetch<Upnp.BrowseFetchResult> {
     constructor(path: string, query?: RequestQuery) {

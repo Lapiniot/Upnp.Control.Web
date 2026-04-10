@@ -1,6 +1,6 @@
-import DeviceBookmarkWidget from "./DeviceBookmarkWidget";
-import ItemBookmarkWidget from "./ItemBookmarkWidget";
-import PlaylistBookmarkWidget from "./PlaylistBookmarkWidget";
+import DeviceBookmarkWidget from "@routes/common/widgets/DeviceBookmarkWidget";
+import ItemBookmarkWidget from "@routes/common/widgets/ItemBookmarkWidget";
+import PlaylistBookmarkWidget from "@routes/common/widgets/PlaylistBookmarkWidget";
 
 const widgets = {
     "DeviceBookmarkWidget": DeviceBookmarkWidget,

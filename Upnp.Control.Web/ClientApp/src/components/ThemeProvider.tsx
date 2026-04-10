@@ -1,6 +1,6 @@
+import { ThemeContext } from "@components/ThemeContext";
+import { MediaQueries } from "@hooks/MediaQuery";
 import { useLayoutEffect, useMemo, useSyncExternalStore, type ContextType, type PropsWithChildren } from "react";
-import { MediaQueries } from "../hooks/MediaQuery";
-import { ThemeContext } from "./ThemeContext";
 
 export interface ThemeStorage {
     get(): UI.Theme;

@@ -1,6 +1,6 @@
-import { OpenMediaAction } from "../common/actions/OpenMediaAction";
-import { type ActionDescriptor, DeviceCard } from "../common/DeviceCard";
-import PlayerWidget from "../common/PlayerWidget";
+import { OpenMediaAction } from "@routes/common/actions/OpenMediaAction";
+import { type ActionDescriptor, DeviceCard } from "@routes/common/DeviceCard";
+import PlayerWidget from "@routes/common/PlayerWidget";
 
 const rendererActions: ActionDescriptor[] = [["open", OpenMediaAction]];
 

@@ -1,10 +1,10 @@
-﻿import { Navigate, Route, Routes } from "react-router";
-import BrowserPage from "../common/BrowserPage";
-import DeviceListPage from "../common/DeviceListPage";
-import DevicePage from "../common/DevicePage";
-import ViewerPage from "../common/ViewerPage";
-import DeviceTemplate from "./Device";
-import PlaylistManager from "./playlist/PlaylistManager";
+﻿import BrowserPage from "@routes/common/BrowserPage";
+import DeviceListPage from "@routes/common/DeviceListPage";
+import DevicePage from "@routes/common/DevicePage";
+import ViewerPage from "@routes/common/ViewerPage";
+import DeviceTemplate from "@routes/umi/Device";
+import PlaylistManager from "@routes/umi/playlist/PlaylistManager";
+import { Navigate, Route, Routes } from "react-router";
 
 export default function Router() {
     const category = "umi";

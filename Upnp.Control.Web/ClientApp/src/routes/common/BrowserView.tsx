@@ -1,9 +1,12 @@
-﻿import { type ChangeEventHandler, Component, type ComponentType, createRef, type FocusEvent, type HTMLAttributes, type PointerEvent, type ReactNode, type RefObject, type UIEvent } from "react";
-import RowStateContext, { RowState } from "../../components/RowStateContext";
-import type { DataFetchProps } from "../../hooks/DataFetch";
-import { HotKey } from "../../services/HotKey";
-import AlbumArt from "./AlbumArt";
-import { formatMediaInfo, formatSize, formatTime, getDisplayName } from "./DIDLTools";
+﻿import RowStateContext, { RowState } from "@components/RowStateContext";
+import type { DataFetchProps } from "@hooks/DataFetch";
+import AlbumArt from "@routes/common/AlbumArt";
+import { formatMediaInfo, formatSize, formatTime, getDisplayName } from "@routes/common/DIDLTools";
+import { HotKey } from "@services/HotKey";
+import {
+    type ChangeEventHandler, Component, type ComponentType, createRef, type FocusEvent,
+    type HTMLAttributes, type PointerEvent, type ReactNode, type RefObject, type UIEvent
+} from "react";
 
 const DATA_ROW_SELECTOR = "div[data-index]";
 const DATA_ROW_FOCUSED_SELECTOR = "div[data-index]:focus";

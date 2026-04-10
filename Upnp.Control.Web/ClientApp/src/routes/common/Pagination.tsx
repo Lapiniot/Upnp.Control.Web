@@ -1,7 +1,7 @@
+import { type LinkProps, NavigatorLink } from "@components/NavLink";
+import { createSearchParams, useNavigator } from "@hooks/Navigator";
+import $s from "@settings";
 import { type ChangeEvent, type HTMLProps, useCallback } from "react";
-import { type LinkProps, NavigatorLink } from "../../components/NavLink";
-import { createSearchParams, useNavigator } from "../../hooks/Navigator";
-import $s from "./Settings";
 
 type PaginationProps = HTMLProps<HTMLHtmlElement> & {
     total: number;

@@ -1,5 +1,5 @@
-import { type DeviceActionProps } from "./Actions";
-import { RouteLink } from "../../../components/NavLink";
+import { RouteLink } from "@components/NavLink";
+import { type DeviceActionProps } from "@routes/common/actions/Actions";
 
 export function ManagePlaylistsAction({ device, category, className, ...other }: DeviceActionProps) {
     return <RouteLink to={device ? `/umi/${device.udn}/playlists/PL:` : undefined}

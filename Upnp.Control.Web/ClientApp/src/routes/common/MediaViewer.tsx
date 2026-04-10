@@ -1,5 +1,5 @@
+import { isMusicTrack } from "@routes/common/DIDLTools";
 import { type HTMLAttributes } from "react";
-import { isMusicTrack } from "./DIDLTools";
 
 export function MediaViewer({ item, className, ...other }: HTMLAttributes<HTMLDivElement> & { item: Upnp.DIDL.Item }) {
     if (!item.res) return <div>Invalid data</div>;

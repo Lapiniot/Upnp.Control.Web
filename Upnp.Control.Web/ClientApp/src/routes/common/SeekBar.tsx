@@ -1,8 +1,8 @@
 import { type ComponentProps, type HTMLAttributes } from "react";
-import Progress from "../../components/Progress";
-import Slider from "../../components/Slider";
-import Timer from "../../components/Timer";
-import { formatTime } from "../../services/Extensions";
+import Progress from "@components/Progress";
+import Slider from "@components/Slider";
+import Timer from "@components/Timer";
+import { formatTime } from "@services/Extensions";
 
 type PositionProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> & {
     time: number;

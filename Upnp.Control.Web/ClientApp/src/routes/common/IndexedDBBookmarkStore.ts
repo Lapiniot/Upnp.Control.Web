@@ -1,6 +1,6 @@
-import { Database } from "../../services/Database";
-import { ExternalStoreBase } from "../../services/ExternalStoreBase";
-import type { Bookmark, BookmarkKey, BookmarkStore, BookmarkStoreFactory, DeviceBookmark, ItemBookmark } from "./BookmarkStore";
+import type { Bookmark, BookmarkKey, BookmarkStore, BookmarkStoreFactory, DeviceBookmark, ItemBookmark } from "@routes/common/BookmarkStore";
+import { Database } from "@services/Database";
+import { ExternalStoreBase } from "@services/ExternalStoreBase";
 
 const DB_NAME = "bookmarks";
 const DB_VERSION = 1;
@@ -91,4 +91,4 @@ const itemBookmarks: BookmarkStore<[string, string], ItemBookmark> =
 const playlistBookmarks: BookmarkStore<[string, string], ItemBookmark> =
     new IndexedDBBookmarkStore<[string, string], ItemBookmark>("playlists");
 
-export { deviceBookmarks, itemBookmarks, playlistBookmarks, type BookmarkStore }
+export { deviceBookmarks, itemBookmarks, playlistBookmarks, type BookmarkStore };

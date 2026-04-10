@@ -1,7 +1,7 @@
+import Dialog from "@components/Dialog";
+import { isMediaItem } from "@routes/common/DIDLTools";
+import { ItemInfo } from "@routes/common/ItemInfo";
 import { type ComponentPropsWithRef, useCallback, useMemo } from "react";
-import Dialog from "../../components/Dialog";
-import { isMediaItem } from "./DIDLTools";
-import { ItemInfo } from "./ItemInfo";
 
 export default function ItemInfoDialog({ item, ...other }: ComponentPropsWithRef<typeof Dialog> & { item: Upnp.DIDL.Item; }) {
     const clickHandler = useCallback(() => navigator.permissions

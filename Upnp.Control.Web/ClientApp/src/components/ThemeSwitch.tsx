@@ -1,4 +1,4 @@
-import { ThemeContext } from "./ThemeContext";
+import { ThemeContext } from "@components/ThemeContext";
 import { type HTMLAttributes, useCallback, useContext } from "react";
 
 type ThemeSwitchProps = {

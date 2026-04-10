@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
-import { SignalRContext } from "../components/SignalRContext";
+import { SignalRContext } from "@components/SignalRContext";
 
 export function useSignalR<T extends unknown[]>(callbacks: Record<string, (...args: T)=> void>) {
     const connection = useContext(SignalRContext);

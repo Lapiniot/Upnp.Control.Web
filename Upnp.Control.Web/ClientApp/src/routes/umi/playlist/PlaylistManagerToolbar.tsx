@@ -1,8 +1,8 @@
+import { type RowStateAction, useRowStates } from "@components/RowStateContext";
+import Toolbar from "@components/Toolbar";
+import type { PlaylistManagerService } from "@routes/umi/playlist/PlaylistManagerService";
+import { HotKeys } from "@services/HotKey";
 import { type HTMLAttributes, type PropsWithChildren, useEffect, useMemo, useRef } from "react";
-import { HotKeys } from "../../../services/HotKey";
-import Toolbar from "../../../components/Toolbar";
-import { type RowStateAction, useRowStates } from "../../../components/RowStateContext";
-import type { PlaylistManagerService } from "./PlaylistManagerService";
 
 type PlaylistManagetToolbarProps = {
     editMode: boolean,

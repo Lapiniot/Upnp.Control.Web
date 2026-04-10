@@ -1,12 +1,12 @@
+import { Menu } from "@components/Menu";
+import Slider from "@components/Slider";
+import AlbumArt from "@routes/common/AlbumArt";
+import { PlaybackStateContext, usePlaybackEventHandlers } from "@routes/common/PlaybackStateContext";
+import { PlaybackStateProvider } from "@routes/common/PlaybackStateProvider";
+import SeekBar from "@routes/common/SeekBar";
+import { parseMilliseconds } from "@services/Extensions";
+import { SwipeGestureRecognizer, type SwipeGestures } from "@services/gestures/SwipeGestureRecognizer";
 import { type ButtonHTMLAttributes, useCallback, useContext, useId, useMemo } from "react";
-import { Menu } from "../../components/Menu";
-import Slider from "../../components/Slider";
-import { parseMilliseconds } from "../../services/Extensions";
-import { SwipeGestureRecognizer, type SwipeGestures } from "../../services/gestures/SwipeGestureRecognizer";
-import AlbumArt from "./AlbumArt";
-import { PlaybackStateContext, usePlaybackEventHandlers } from "./PlaybackStateContext";
-import { PlaybackStateProvider } from "./PlaybackStateProvider";
-import SeekBar from "./SeekBar";
 
 function formatAlbumTitle(creator: string | undefined, album: string | undefined) {
     if (creator && album)

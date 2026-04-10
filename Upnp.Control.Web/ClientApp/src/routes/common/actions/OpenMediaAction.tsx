@@ -1,11 +1,11 @@
+import { DialogHost, type IDialogHost } from "@components/DialogHost";
+import { RowState, type RowStateMapperFunction } from "@components/RowStateContext";
+import { type DeviceActionProps } from "@routes/common/actions/Actions";
+import BrowserDialog, { type BrowseResult } from "@routes/common/BrowserDialog";
+import type { BrowserProps } from "@routes/common/BrowserView";
+import { isMusicTrack } from "@routes/common/DIDLTools";
+import WebApi from "@api";
 import { useCallback, useRef } from "react";
-import { DialogHost, type IDialogHost } from "../../../components/DialogHost";
-import WebApi from "../../../services/WebApi";
-import BrowserDialog, { type BrowseResult } from "../BrowserDialog";
-import { isMusicTrack } from "../DIDLTools";
-import type { BrowserProps } from "../BrowserView";
-import { RowState, type RowStateMapperFunction } from "../../../components/RowStateContext";
-import { type DeviceActionProps } from "./Actions";
 
 type OpenActionProps = DeviceActionProps & {
     browserProps?: BrowserProps<unknown>,

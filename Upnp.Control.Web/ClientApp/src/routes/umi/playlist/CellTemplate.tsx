@@ -1,10 +1,10 @@
+import { RowState } from "@components/RowStateContext";
+import AlbumArt from "@routes/common/AlbumArt";
+import { type CellTemplateProps } from "@routes/common/BrowserView";
+import { playlistBookmarks } from "@routes/common/IndexedDBBookmarkStore";
+import { createBookmarkButton } from "@routes/common/ToggleBookmarkButton";
+import { TrackInfoLine } from "@routes/common/TrackInfoLine";
 import { type EventHandler, type UIEvent } from "react";
-import { RowState } from "../../../components/RowStateContext";
-import AlbumArt from "../../common/AlbumArt";
-import { createBookmarkButton } from "../../common/ToggleBookmarkButton";
-import { type CellTemplateProps } from "../../common/BrowserView";
-import { playlistBookmarks } from "../../common/IndexedDBBookmarkStore";
-import { TrackInfoLine } from "../../common/TrackInfoLine";
 
 type CellContext = {
     state?: Upnp.PlaybackState;
