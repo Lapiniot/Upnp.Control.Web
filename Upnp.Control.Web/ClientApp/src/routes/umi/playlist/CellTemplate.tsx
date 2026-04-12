@@ -17,7 +17,7 @@ type CellContext = {
 
 const BookmarkItemButton = createBookmarkButton("PlaylistBookmarkWidget", playlistBookmarks, ["symbols.svg#favorite_fill1", "symbols.svg#favorite"]);
 
-export default function Router({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
+export default function Template({ data: d, context: ctx, index, rowState }: CellTemplateProps<CellContext>) {
     const active = !!(rowState & RowState.Active);
     const playing = ctx?.state === "PLAYING";
     return <div className="hstack g-3">

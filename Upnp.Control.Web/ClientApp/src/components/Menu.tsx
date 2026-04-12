@@ -1,7 +1,8 @@
-import { type ButtonHTMLAttributes, type HTMLAttributes, PureComponent, type ReactNode, createRef } from "react";
-import { PopoverAnchorStrategy, PopupPlacementStrategy } from "@services/PopoverPlacementStrategy";
+import { EmulateAnchorPositioningStrategy } from "@services/EmulateAnchorPositioningStrategy";
 import { SlideGestureRecognizer, type SlideParams } from "@services/gestures/SlideGestureRecognizer";
 import { SwipeGestureRecognizer, type SwipeGestures } from "@services/gestures/SwipeGestureRecognizer";
+import type { PopoverPlacementStrategy } from "@services/PopoverPlacementStrategy";
+import { type ButtonHTMLAttributes, type HTMLAttributes, PureComponent, type ReactNode, createRef } from "react";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
@@ -39,7 +40,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
     private readonly swipeRecognizer: SwipeGestureRecognizer;
     private readonly slideRecognizer: SlideGestureRecognizer;
     private readonly resizeObserver: ResizeObserver;
-    private readonly strategy: PopupPlacementStrategy;
+    private readonly strategy: PopoverPlacementStrategy;
     override state: MenuState = { show: false, anchor: undefined };
     captureY = 0;
     captureHeight = 0;
@@ -47,7 +48,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
 
     constructor(props: MenuProps) {
         super(props);
-        this.strategy = new PopoverAnchorStrategy("auto");
+        this.strategy = new EmulateAnchorPositioningStrategy("auto");
         this.resizeObserver = new ResizeObserver(this.resizeCallback);
         this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler, 50);
         this.slideRecognizer = new SlideGestureRecognizer(this.slideHandler);

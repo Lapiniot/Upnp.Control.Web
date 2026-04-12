@@ -332,7 +332,7 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
                                 data-toggle={!isRootLevel ? "dropdown" : undefined}>
                                 <svg><use href="symbols.svg#add" /></svg>
                             </button>
-                            <Menu className="drop-top-center action-sheet-sm" id="main-menu" render={this.renderActionMenu} />
+                            <Menu className="drop-top-center action-sheet-sm" render={this.renderActionMenu} />
                         </div>}
                     <RowStateContext.Consumer>
                         {({ selection: { length: selected } }) =>
