@@ -82,6 +82,8 @@
     --#{$prefix}circle-icon: #{escape-svg($circle-icon)};
     --#{$prefix}close-icon-mask: #{escape-svg($close-icon)};
     --#{$prefix}search-icon: #{escape-svg($search-icon)};
+    --#{$prefix}arrow-up-icon: #{escape-svg($arrow-up-icon)};
+    --#{$prefix}arrow-down-icon: #{escape-svg($arrow-down-icon)};
 }
 
 @if $enable-dark-mode {
@@ -134,5 +136,7 @@
         --#{$prefix}form-switch-disabled-bg-image: #{escape-svg($form-switch-checked-disabled-bg-image-dark)};
         --#{$prefix}circle-icon: #{escape-svg($circle-icon-dark)};
         --#{$prefix}search-icon: #{escape-svg($search-icon-dark)};
+        --#{$prefix}arrow-up-icon: #{escape-svg($arrow-up-icon-dark)};
+        --#{$prefix}arrow-down-icon: #{escape-svg($arrow-down-icon-dark)};
     }
 }

@@ -126,7 +126,7 @@
     --#{$animation-prefix}pop-out: pop-out var(--#{$animation-prefix}duration-2) ease-out;
     --#{$animation-prefix}slide-up: slide-up var(--#{$animation-prefix}duration-2) ease;
     --#{$animation-prefix}slide-pop: slide-pop var(--#{$animation-prefix}duration-2) ease;
-    --#{$transition-prefix}fade: opacity var(--#{$animation-prefix}duration-1) ease;
+    --#{$transition-prefix}fade: opacity var(--#{$animation-prefix}duration-1) linear;
     --#{$transition-prefix}slide: translate var(--#{$animation-prefix}duration-1) ease;
 }
 

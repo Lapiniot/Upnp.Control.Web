@@ -18,6 +18,16 @@ $dropdown-divider-margin-y: 8px;
 $dropdown-min-width: 15ch;
 $dropdown-max-width: 30ch;
 
+@mixin display {
+    display: block;
+    opacity: 0.75;
+
+    @starting-style {
+        opacity: 0;
+        display: block;
+    }
+}
+
 // The dropdown menu
 .dropdown-menu {
     // scss-docs-start dropdown-css-vars
@@ -75,7 +85,7 @@ $dropdown-max-width: 30ch;
     transition-duration: var(--#{$prefix}dropdown-transition-duration);
     overscroll-behavior: contain;
 
-    @if $dropdown-padding-y ==0 {
+    @if $dropdown-padding-y == 0 {
         > .dropdown-item:first-child,
         > li:first-child .dropdown-item {
             @include border-top-radius(var(--#{$prefix}dropdown-inner-border-radius));
@@ -95,11 +105,54 @@ $dropdown-max-width: 30ch;
         }
     }
 
-    & > ul {
+    & > :is(ul, dl, ol):only-child {
         list-style: none;
         margin: 0;
         padding: 0;
+        overflow-y: auto;
         overscroll-behavior: contain;
+
+        @supports (container-type: scroll-state) {
+            container-type: scroll-state;
+
+            &::before,
+            &::after {
+                display: none;
+                position: absolute;
+                padding: map-get($spacers, 1);
+                line-height: 0;
+                justify-self: center;
+                pointer-events: none;
+                user-select: none;
+                background-color: var(--#{$prefix}surface-cntr-highest);
+                border-radius: 100%;
+                opacity: 0;
+                @include transition(var(--#{$transition-prefix}fade), display allow-discrete);
+                transition-duration: var(--#{$animation-prefix}duration-2);
+            }
+
+            &::before {
+                content: var(--bs-arrow-up-icon);
+                inset-block-start: map-get($spacers, 1);
+            }
+
+            &::after {
+                content: var(--bs-arrow-down-icon);
+                inset-block-end: map-get($spacers, 1);
+            }
+
+            @container scroll-state(scrollable: top) {
+                &::before {
+                    @include display;
+                }
+            }
+
+            @container scroll-state(scrollable: bottom) {
+                &::after {
+                    @include display;
+                }
+            }
+        }
     }
 }
 
@@ -112,9 +165,6 @@ $dropdown-max-width: 30ch;
     opacity: 1; // Revisit in v6 to de-dupe styles that conflict with <hr> element
 }
 
-// Links, buttons, and more within the dropdown menu
-//
-// `<button>`-specific styles are denoted with `// For <button>s`
 .dropdown-item {
     display: flex;
     align-items: center;
