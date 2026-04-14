@@ -196,15 +196,13 @@ $fullscreen-sizes: null sm;
 }
 
 @each $size in $fullscreen-sizes {
-    @if($size) {
+    @if ($size) {
         @include media-breakpoint-down($size) {
             .dialog-fullscreen-#{$size}-down {
                 @include dialog-fullscreen;
             }
         }
-    }
-
-    @else {
+    } @else {
         .dialog-fullscreen {
             @include dialog-fullscreen;
         }

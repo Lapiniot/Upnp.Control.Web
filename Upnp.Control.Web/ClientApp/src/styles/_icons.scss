@@ -1,12 +1,6 @@
-$icon-sizes: (
-    null 1.5rem,
-    2x 2rem,
-    3x 3rem,
-    5x 5rem,
-    8x 8rem,
-    56 56px) !default;
+$icon-sizes: (null 1.5rem, 2x 2rem, 3x 3rem, 5x 5rem, 8x 8rem, 56 56px) !default;
 $missing-image-content: "\1F61F" !default;
-$missing-image-bg: url('/stack.svg#mood_bad') !default;
+$missing-image-bg: url("/stack.svg#mood_bad") !default;
 
 // Style all <svg> elements as 1:1 icons, 1em size, by default
 svg,
@@ -30,7 +24,7 @@ a > :is(svg, img) {
     &:after {
         content: $missing-image-content;
 
-        @if($missing-image-content !="") {
+        @if ($missing-image-content != "") {
             display: grid;
             place-content: center;
         }

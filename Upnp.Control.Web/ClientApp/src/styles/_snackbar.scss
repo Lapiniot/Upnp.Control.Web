@@ -12,8 +12,8 @@
     background: transparent;
 }
 
-$primary-inverse-hover-color: rgb(var(--#{$prefix}primary-inverse-rgb), .08);
-$primary-inverse-active-color: rgb(var(--#{$prefix}primary-inverse-rgb), .1);
+$primary-inverse-hover-color: rgb(var(--#{$prefix}primary-inverse-rgb), 0.08);
+$primary-inverse-active-color: rgb(var(--#{$prefix}primary-inverse-rgb), 0.1);
 
 .snackbar {
     display: flex;

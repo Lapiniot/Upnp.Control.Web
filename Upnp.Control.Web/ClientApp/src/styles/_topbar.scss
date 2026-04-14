@@ -16,7 +16,7 @@
             padding-inline: 16px;
         }
 
-        .search-toggle[value=false] ~ .topbar-search {
+        .search-toggle[value="false"] ~ .topbar-search {
             display: none;
         }
     }

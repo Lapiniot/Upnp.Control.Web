@@ -1,6 +1,17 @@
 ﻿/********** Grid Layout utilities **********/
 
-$utilities: map-merge($utilities, ("col-span": (class: "sp", property: "grid-column-end", values: (2: span 2))));
+$utilities: map-merge(
+    $utilities,
+    (
+        "col-span": (
+            class: "sp",
+            property: "grid-column-end",
+            values: (
+                2: span 2,
+            ),
+        ),
+    )
+);
 $grid-responsive-auto-breakpoints: null sm;
 
 @mixin grid-auto-columns($min: 10rem, $max: 30rem, $mode: auto-fit) {
@@ -10,7 +21,7 @@ $grid-responsive-auto-breakpoints: null sm;
 @mixin grid-scroll-snap($type: y proximity, $align: start, $padding: null) {
     scroll-snap-type: $type;
 
-    @if($padding) {
+    @if ($padding) {
         scroll-padding: $padding;
     }
 
@@ -125,7 +136,7 @@ $grid-responsive-auto-breakpoints: null sm;
     @include responsive-class("grid-form-dense", $breakpoint) {
         --#{$prefix}-grid-form-template: auto / auto 1fr;
         --#{$prefix}-grid-form-group-gap: 0;
-        --#{$prefix}-grid-form-gap:#{map-get($spacers, 1)} #{map-get($spacers, 2)};
+        --#{$prefix}-grid-form-gap: #{map-get($spacers, 1)} #{map-get($spacers, 2)};
         --#{$prefix}-grid-form-label-justify: end;
     }
 }

@@ -104,7 +104,7 @@ $value: map-get($grid-breakpoints, sm);
         padding: 8px;
     }
 
-    &:hover{
+    &:hover {
         background-image: var(--#{$prefix}hover-layer-cc);
         box-shadow: var(--#{$prefix}shadow-l1);
     }

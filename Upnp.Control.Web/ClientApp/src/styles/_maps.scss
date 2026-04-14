@@ -15,7 +15,7 @@ $role-colors: (
     "surface-cntr-high": $surface-container-high,
     "surface-cntr": $surface-container,
     "surface-cntr-low": $surface-container-low,
-    "surface-cntr-lowest": $surface-container-lowest
+    "surface-cntr-lowest": $surface-container-lowest,
 );
 
 $role-colors-on: (
@@ -29,7 +29,7 @@ $role-colors-on: (
     "on-error-cntr": $on-error-container,
     "on-surface": $on-surface,
     "on-surface-variant": $on-surface-variant,
-    "on-surface-inverse": $on-surface-inverse
+    "on-surface-inverse": $on-surface-inverse,
 );
 
 $role-colors-dark: (
@@ -49,7 +49,7 @@ $role-colors-dark: (
     "surface-cntr-high": $surface-container-high-dark,
     "surface-cntr": $surface-container-dark,
     "surface-cntr-low": $surface-container-low-dark,
-    "surface-cntr-lowest": $surface-container-lowest-dark
+    "surface-cntr-lowest": $surface-container-lowest-dark,
 );
 
 $role-colors-on-dark: (
@@ -63,50 +63,41 @@ $role-colors-on-dark: (
     "on-error-cntr": $on-error-container-dark,
     "on-surface": $on-surface-dark,
     "on-surface-variant": $on-surface-variant-dark,
-    "on-surface-inverse": $on-surface-inverse-dark
+    "on-surface-inverse": $on-surface-inverse-dark,
 );
 
-$grays: (
-);
+$grays: ();
 
-$colors: (
-);
+$colors: ();
 
 $theme-colors: (
     "primary": $primary,
     "secondary": $secondary,
     "tertiary": $tertiary,
-    "error": $error
+    "error": $error,
 );
 
 $theme-colors-text: (
     "primary": $on-primary,
     "secondary": $on-secondary,
     "tertiary": $on-tertiary,
-    "error": $on-error
+    "error": $on-error,
 );
 
 $theme-colors-text-dark: (
     "primary": $on-primary-dark,
     "secondary": $on-secondary-dark,
     "tertiary": $on-tertiary-dark,
-    "error": $on-error-dark
+    "error": $on-error-dark,
 );
 
-$theme-colors-bg-subtle: (
-);
-$theme-colors-border-subtle: (
-);
-$theme-colors-bg-subtle-dark: (
-);
-$theme-colors-border-subtle-dark: (
-);
-$utilities-text-emphasis-colors: (
-);
-$utilities-bg-subtle: (
-);
-$utilities-border-subtle: (
-);
+$theme-colors-bg-subtle: ();
+$theme-colors-border-subtle: ();
+$theme-colors-bg-subtle-dark: ();
+$theme-colors-border-subtle-dark: ();
+$utilities-text-emphasis-colors: ();
+$utilities-bg-subtle: ();
+$utilities-border-subtle: ();
 
 $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
 $role-colors-rgb: map-loop($role-colors, to-rgb, "$value");
@@ -120,13 +111,15 @@ $utilities-border: map-merge($utilities-colors, ());
 $utilities-text: map-merge($utilities-colors, ());
 $utilities-bg: map-merge($utilities-colors, $role-colors-rgb);
 
-$utilities-text-bg: (
-);
+$utilities-text-bg: ();
 
 @each $key in map-keys($utilities-bg) {
-    $utilities-text-bg: map-merge($utilities-text-bg,
-            ($key: if(map-has-key($role-colors-on, "on-#{$key}"), "on-#{$key}", "on-surface")));
+    $utilities-text-bg: map-merge(
+        $utilities-text-bg,
+        (
+            $key: if(map-has-key($role-colors-on, "on-#{$key}"), "on-#{$key}", "on-surface"),
+        )
+    );
 }
 
-$display-font-sizes: (
-);
+$display-font-sizes: ();

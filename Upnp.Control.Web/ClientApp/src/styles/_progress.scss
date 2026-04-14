@@ -3,15 +3,15 @@
         transform-origin: left top;
         translate: 0;
         scale: 0 1 1;
-        opacity: .25;
+        opacity: 0.25;
     }
 
-    25%{
+    25% {
         scale: 1;
         opacity: 1;
     }
 
-    75%{
+    75% {
         scale: 1;
         opacity: 1;
     }
@@ -20,14 +20,14 @@
         transform-origin: right top;
         translate: calc((1 / var(--#{$prefix}progress-value) - 1) * 100%) 0 0;
         scale: 0 1 1;
-        opacity: .25
+        opacity: 0.25;
     }
 }
 
-@property --#{$prefix}progress-value{
-    syntax: '<number>';
+@property --#{$prefix}progress-value {
+    syntax: "<number>";
     inherits: true;
-    initial-value: .0;
+    initial-value: 0;
 }
 
 .progress {
@@ -37,7 +37,7 @@
     --#{$prefix}progress-track-color: #{$secondary-container-color};
     --#{$prefix}progress-indicator-color: #{$primary-color};
     --#{$prefix}progress-animation: var(--#{$prefix}progress-animation-name, run-infinite) var(--#{$prefix}progress-animation-duration, var(--#{$animation-prefix}duration-3)) ease-in-out infinite;
-    --#{$prefix}progress-value: .25;
+    --#{$prefix}progress-value: 0.25;
     display: flex;
     overflow: hidden;
     gap: clamp(0px, calc(var(--#{$prefix}progress-value) * 9999px), 4px);
@@ -47,7 +47,7 @@
     background-color: var(--#{$prefix}progress-infinite, var(--#{$prefix}progress-track-color));
 
     &::before {
-        content: '';
+        content: "";
         height: 100%;
         flex: 0 0 auto;
         width: clamp(0%, calc(var(--#{$prefix}progress-value) * 100%), 100%);
@@ -57,7 +57,7 @@
     }
 
     &::after {
-        content: '';
+        content: "";
         height: 100%;
         flex: 1 1 0;
         display: var(--#{$prefix}progress-infinite, none);

@@ -19,7 +19,7 @@
 }
 
 @mixin responsive-class($class, $breakpoint, $conditions: min-width) {
-    @if($breakpoint) {
+    @if ($breakpoint) {
         $value: map-get($grid-breakpoints, $breakpoint);
 
         .#{$class}-#{$breakpoint} {
@@ -27,9 +27,7 @@
                 @content();
             }
         }
-    }
-
-    @else {
+    } @else {
         .#{$class} {
             @content();
         }

@@ -34,7 +34,7 @@
         background-color: var(--#{$prefix}slider-track-color);
 
         &::before {
-            content: '';
+            content: "";
             height: 100%;
             display: block;
             background-color: currentColor;
@@ -61,7 +61,7 @@
         animation-fill-mode: forwards;
 
         &::before {
-            content: '';
+            content: "";
             display: block;
             width: 100%;
             height: 100%;
@@ -72,12 +72,12 @@
         }
 
         &:hover::before {
-            opacity: .1;
+            opacity: 0.1;
         }
 
         &:active::before {
             box-shadow: 0 0 0 12px currentColor;
-            opacity: .12;
+            opacity: 0.12;
         }
     }
 
@@ -87,7 +87,7 @@
 
         & > .slider-thumb::before {
             box-shadow: 0 0 0 12px currentColor;
-            opacity: .12;
+            opacity: 0.12;
         }
     }
 }

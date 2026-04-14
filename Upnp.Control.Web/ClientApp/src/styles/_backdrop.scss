@@ -10,11 +10,10 @@ $backdrops-colors: (null primary error) !default;
         @extend %backdrop;
         $color: map-get($theme-colors, $name);
 
-        @if($color !=null) {
+        @if ($color != null) {
             background-color: rgba(var(--#{$prefix}#{$name}-rgb), $backdrop-opacity);
             color: var(--#{$prefix}on-#{$name});
-        }
-        @else {
+        } @else {
             background-color: rgba(var(--#{$prefix}on-surface-rgb), $backdrop-opacity);
             color: var(--#{$prefix}surface);
         }

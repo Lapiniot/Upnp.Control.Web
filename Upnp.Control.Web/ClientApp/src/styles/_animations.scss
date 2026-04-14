@@ -61,7 +61,6 @@
 }
 
 @keyframes pulse {
-
     0%,
     100% {
         opacity: var(--#{$animation-prefix}pulse-opacity-1);

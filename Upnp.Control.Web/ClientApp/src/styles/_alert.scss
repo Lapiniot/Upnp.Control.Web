@@ -13,7 +13,7 @@
 @mixin alert($value: null) {
     @extend %alert;
 
-    @if($value != null) {
+    @if ($value != null) {
         --#{$prefix}alert-bg: #{shift-color($value, $alert-bg-scale)};
         --#{$prefix}alert-color: #{shift-color($value, $alert-color-scale)};
     }

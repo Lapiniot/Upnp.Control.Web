@@ -1,8 +1,8 @@
 $input-color: $on-surface-color;
 $input-bg: transparent;
 $input-disabled-bg: transparent;
-$input-disabled-color: rgb(var(--#{$prefix}on-surface-rgb), .38);
-$input-disabled-border-color: rgb(var(--#{$prefix}on-surface-rgb), .12);
+$input-disabled-color: rgb(var(--#{$prefix}on-surface-rgb), 0.38);
+$input-disabled-border-color: rgb(var(--#{$prefix}on-surface-rgb), 0.12);
 $input-border-color: $outline-color;
 $input-border-radius: $corner-xs;
 $input-plaintext-color: $on-surface-color;
@@ -55,8 +55,9 @@ input {
     font-weight: $input-font-weight;
     line-height: $input-line-height;
     color: $input-color;
-    background: var(--#{$prefix}input-icon-image, none),
-    var(--#{$prefix}input-state-image, none) $input-bg;
+    background:
+        var(--#{$prefix}input-icon-image, none),
+        var(--#{$prefix}input-state-image, none) $input-bg;
     border: $input-border-width solid $input-border-color;
     border-radius: $input-border-radius;
 
@@ -137,7 +138,7 @@ input {
 
         &:disabled {
             --#{$prefix}indicator-color: #{$input-disabled-color};
-            background-color: rgb(var(--#{$prefix}on-surface-rgb), .04);
+            background-color: rgb(var(--#{$prefix}on-surface-rgb), 0.04);
         }
     }
 
@@ -190,7 +191,7 @@ input[type="checkbox"] {
         color: var(--#{$prefix}form-check-color);
 
         &::after {
-            content: '';
+            content: "";
             display: none;
             width: 40px;
             height: 40px;
@@ -226,7 +227,7 @@ input[type="checkbox"] {
             }
 
             & ~ .form-check-label {
-                opacity: .38;
+                opacity: 0.38;
             }
         }
 
@@ -262,7 +263,7 @@ input[type="checkbox"] {
     background-color: var(--#{$prefix}form-check-bg);
 
     &::before {
-        content: '';
+        content: "";
         display: block;
         inline-size: var(--#{$prefix}form-switch-handle-size);
         block-size: var(--#{$prefix}form-switch-handle-size);
@@ -306,7 +307,7 @@ input[type="checkbox"] {
     }
 
     &:disabled {
-        --#{$prefix}form-check-bg: rgb(var(--#{$prefix}surface-cntr-rgb), .12);
+        --#{$prefix}form-check-bg: rgb(var(--#{$prefix}surface-cntr-rgb), 0.12);
         --#{$prefix}form-check-border-color: #{$input-disabled-border-color};
         --#{$prefix}form-switch-handle-color: #{$input-disabled-color};
 
@@ -339,7 +340,7 @@ input[type="checkbox"] {
         &:where(:focus, :not(:placeholder-shown)) {
             & ~ label {
                 place-self: start stretch;
-                margin: -.5lh calc($input-padding-x - 4px) 0 calc($input-padding-x - 4px);
+                margin: -0.5lh calc($input-padding-x - 4px) 0 calc($input-padding-x - 4px);
                 padding-inline: 4px;
                 font-size: smaller;
                 background-color: $surface-color;
@@ -417,7 +418,7 @@ input[type="checkbox"] {
             caret-color: $error-color;
 
             &:focus {
-                --#{$prefix}focus-ring-color:#{$error-color};
+                --#{$prefix}focus-ring-color: #{$error-color};
                 border-color: #{$error-color};
             }
 

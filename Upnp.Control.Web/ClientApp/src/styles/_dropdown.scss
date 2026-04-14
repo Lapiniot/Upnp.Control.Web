@@ -76,7 +76,6 @@ $dropdown-max-width: 30ch;
     overscroll-behavior: contain;
 
     @if $dropdown-padding-y ==0 {
-
         > .dropdown-item:first-child,
         > li:first-child .dropdown-item {
             @include border-top-radius(var(--#{$prefix}dropdown-inner-border-radius));
@@ -256,9 +255,7 @@ $placement-syntax: "";
 
     &.slide {
         --#{$prefix}dropdown-slide-translate: 0 100% 0;
-        --#{$prefix}dropdown-transition: translate var(--#{$animation-prefix}ease-out-circ),
-        display allow-discrete,
-        overlay allow-discrete;
+        --#{$prefix}dropdown-transition: translate var(--#{$animation-prefix}ease-out-circ), display allow-discrete, overlay allow-discrete;
         translate: var(--#{$prefix}dropdown-slide-translate);
 
         &[popover]:popover-open {
@@ -271,10 +268,7 @@ $placement-syntax: "";
     }
 
     &.slide.fade {
-        --#{$prefix}dropdown-transition: translate var(--#{$animation-prefix}ease-out-circ),
-        opacity linear,
-        display allow-discrete,
-        overlay allow-discrete;
+        --#{$prefix}dropdown-transition: translate var(--#{$animation-prefix}ease-out-circ), opacity linear, display allow-discrete, overlay allow-discrete;
     }
 
     &[popover] {
@@ -304,9 +298,7 @@ $action-sheet-breakpoints: sm;
         .action-sheet {
             @include action-sheet;
         }
-    }
-
-    @else {
+    } @else {
         $width: map-get($grid-breakpoints, $breakpoint);
 
         @media (width < #{$width}) {

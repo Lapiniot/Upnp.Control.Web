@@ -38,7 +38,7 @@ $list-group-active-border-color: $list-group-border-color;
         background-image: var(--#{$prefix}focus-layer-cc);
     }
 
-    // Hide bottom divider for currently interracting item and prev. sibling to 
+    // Hide bottom divider for currently interracting item and prev. sibling to
     // avoid uggly visual effect when overlay layer toches sibling item bottom edge
     &:is(:hover, :focus, :active, .active),
     &:has(+ :is(:hover, :focus, :active, .active)) {
@@ -47,7 +47,7 @@ $list-group-active-border-color: $list-group-border-color;
 }
 
 .list-group-item {
-    // reset position: relative from bootstrap's style rule as it makes 
+    // reset position: relative from bootstrap's style rule as it makes
     // no sense for our application and can even slightly hurt performance in some cases
     position: initial;
 }

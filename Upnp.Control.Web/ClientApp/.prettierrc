@@ -1,0 +1,10 @@
+{
+    "overrides": [
+        {
+            "files": "*.scss",
+            "options": {
+                "printWidth": 300
+            }
+        }
+    ]
+}
