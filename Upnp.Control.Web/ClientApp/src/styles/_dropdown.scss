@@ -249,6 +249,11 @@ $dropdown-max-width: 30ch;
             opacity: 0;
         }
     }
+
+    // Disable fade transition for Safari, because it is buggy
+    @supports (hanging-punctuation: first) and (-webkit-appearance: none) {
+        --#{$prefix}dropdown-transition: none;
+    }
 }
 
 $main-placements: left right top bottom;
@@ -263,11 +268,11 @@ $placements: [];
     }
 }
 
-$placements: join($placements, [auto fixed]);
+$all-placements: join([auto fixed], $placements);
 $placement-syntax: "";
 
-@for $i from 1 to length($placements) + 1 {
-    $placement-syntax: $placement-syntax + if($i !=1, " | ", "") + nth($placements, $i);
+@for $i from 1 to length($all-placements) + 1 {
+    $placement-syntax: $placement-syntax + if($i !=1, " | ", "") + nth($all-placements, $i);
 }
 
 @property --#{$prefix}placement {
@@ -276,9 +281,279 @@ $placement-syntax: "";
     initial-value: auto;
 }
 
-@each $placement in [left left-center bottom top-center] {
+@each $placement in $all-placements {
     .drop-#{$placement} {
         --#{$prefix}placement: #{$placement};
+    }
+}
+
+$margin: map-get($spacers, 3);
+$offset: map-get($spacers, 1);
+
+@supports (anchor-name: --anchor) {
+    .dropdown-menu {
+        --safe-option: ;
+        // Currently only Chrome supports 'stretch' size value
+        // Let's use this fact to enable more complex 'start-end shift' logic
+        // for .drop-top, .drop-bottom, .drop-left and .drop-right positions
+        // in Chrome browser where everything works as expected unlike Safari and Firefox
+        // where we must resort to the same primitive logic as in the .drop-{main}-center positions
+        @supports (height: stretch) {
+            --safe-option: unsafe;
+        }
+
+        position-area: block-end;
+        // Force vertical overflow to immidiatelly start probing position-try-fallbacks
+        // in order to pick optimal position with the best visual coverage
+        block-size: 150%;
+        max-block-size: unset;
+        margin: $margin;
+
+        position-try:
+            most-block-size --drop-auto-block,
+            --drop-auto-inline,
+            --drop-auto-block flip-inline,
+            --drop-auto-inline flip-block,
+            --drop-auto-block flip-block,
+            --drop-auto-inline flip-inline,
+            --drop-auto-block flip-block flip-inline,
+            --drop-auto-inline flip-inline flip-block;
+    }
+
+    %reset {
+        block-size: auto;
+    }
+
+    @each $placement in $placements {
+        .drop-#{$placement} {
+            @extend %reset;
+        }
+    }
+
+    .drop-bottom,
+    .drop-bottom-start,
+    .drop-bottom-end,
+    .drop-bottom-center {
+        max-block-size: calc(100% - $margin - $offset);
+        margin-block-start: $offset;
+        position-try:
+            flip-inline,
+            flip-block,
+            flip-inline flip-block;
+    }
+
+    .drop-bottom {
+        position-area: block-end;
+        justify-self: var(--safe-option) anchor-center;
+        position-try:
+            flip-block,
+            --drop-bottom-start,
+            --drop-bottom-end,
+            --drop-bottom-start flip-block,
+            --drop-bottom-end flip-block;
+    }
+
+    .drop-bottom-start {
+        //inset: anchor(end) auto auto anchor(start);
+        position-area: block-end span-inline-end;
+        margin-inline-start: unset;
+    }
+
+    .drop-bottom-end {
+        //inset: anchor(end) anchor(end) auto auto;
+        position-area: block-end span-inline-start;
+        margin-inline-end: unset;
+    }
+
+    .drop-bottom-center {
+        position-area: block-end;
+    }
+
+    .drop-top,
+    .drop-top-start,
+    .drop-top-end,
+    .drop-top-center {
+        max-block-size: calc(100% - $margin - $offset);
+        margin-block-end: $offset;
+        position-try:
+            flip-inline,
+            flip-block,
+            flip-inline flip-block;
+    }
+
+    .drop-top {
+        position-area: block-start;
+        justify-self: var(--safe-option) anchor-center;
+        position-try:
+            flip-block,
+            --drop-top-start,
+            --drop-top-end,
+            --drop-top-start flip-block,
+            --drop-top-end flip-block;
+    }
+
+    .drop-top-start {
+        //inset: auto auto anchor(start) anchor(start);
+        position-area: block-start span-inline-end;
+        margin-inline-start: unset;
+    }
+
+    .drop-top-end {
+        //inset: auto anchor(end) anchor(start) auto;
+        position-area: block-start span-inline-start;
+        margin-inline-end: unset;
+    }
+
+    .drop-top-center {
+        position-area: block-start;
+    }
+
+    .drop-left,
+    .drop-left-start,
+    .drop-left-end,
+    .drop-left-center {
+        max-block-size: calc(100% - $margin);
+        margin-inline-end: $offset;
+        position-try:
+            flip-block,
+            flip-inline,
+            flip-block flip-inline;
+    }
+
+    .drop-left {
+        max-block-size: calc(100% - 2 * $margin);
+        position-area: inline-start;
+        align-self: var(--safe-option) anchor-center;
+        position-try:
+            most-block-size flip-inline,
+            --drop-left-start,
+            --drop-left-end,
+            --drop-left-start flip-inline,
+            --drop-left-end flip-inline;
+    }
+
+    .drop-left-start {
+        //inset: anchor(start) anchor(start) auto auto;
+        position-area: inline-start span-block-end;
+        margin-block-start: unset;
+    }
+
+    .drop-left-end {
+        //inset: auto anchor(start) anchor(end) auto;
+        position-area: inline-start span-block-start;
+        margin-block-end: unset;
+    }
+
+    .drop-left-center {
+        max-block-size: calc(100% - 2 * $margin);
+        position-area: inline-start;
+    }
+
+    .drop-right,
+    .drop-right-start,
+    .drop-right-end,
+    .drop-right-center {
+        max-block-size: calc(100% - $margin);
+        margin-inline-start: $offset;
+        position-try:
+            flip-block,
+            flip-inline,
+            flip-block flip-inline;
+    }
+
+    .drop-right {
+        max-block-size: calc(100% - 2 * $margin);
+        position-area: inline-end;
+        align-self: var(--safe-option) anchor-center;
+        position-try:
+            most-block-size flip-inline,
+            --drop-right-start,
+            --drop-right-end,
+            --drop-right-start flip-inline,
+            --drop-right-end flip-inline;
+    }
+
+    .drop-right-start {
+        //inset: anchor(start) auto auto anchor(end);
+        position-area: inline-end span-block-end;
+        margin-block-start: unset;
+    }
+
+    .drop-right-end {
+        //inset: auto auto anchor(end) anchor(end);
+        position-area: inline-end span-block-start;
+        margin-block-end: unset;
+    }
+
+    .drop-right-center {
+        max-block-size: calc(100% - 2 * $margin);
+        position-area: inline-end;
+    }
+
+    @position-try --drop-auto-block {
+        position-area: block-end span-inline-end;
+        block-size: auto;
+        max-block-size: calc(100% - $margin - $offset);
+        margin: $offset $margin $margin auto;
+    }
+
+    @position-try --drop-auto-inline {
+        position-area: span-block-end inline-start;
+        block-size: auto;
+        max-block-size: calc(100% - $margin);
+        margin: auto $offset $margin $margin;
+    }
+
+    @position-try --drop-right-start {
+        max-block-size: calc(100% - $margin);
+        position-area: inline-end span-block-end;
+        align-self: unset;
+        margin-block-start: unset;
+    }
+
+    @position-try --drop-right-end {
+        max-block-size: calc(100% - $margin);
+        position-area: inline-end span-block-start;
+        align-self: unset;
+        margin-block-end: unset;
+    }
+
+    @position-try --drop-left-start {
+        max-block-size: calc(100% - $margin);
+        position-area: inline-start span-block-end;
+        align-self: unset;
+        margin-block-start: unset;
+    }
+
+    @position-try --drop-left-end {
+        max-block-size: calc(100% - $margin);
+        position-area: inline-start span-block-start;
+        align-self: unset;
+        margin-block-end: unset;
+    }
+
+    @position-try --drop-top-start {
+        position-area: block-start span-inline-end;
+        justify-self: unset;
+        margin-inline-start: unset;
+    }
+
+    @position-try --drop-top-end {
+        position-area: block-start span-inline-start;
+        justify-self: unset;
+        margin-inline-end: unset;
+    }
+
+    @position-try --drop-bottom-start {
+        position-area: block-end span-inline-end;
+        justify-self: unset;
+        margin-inline-start: unset;
+    }
+
+    @position-try --drop-bottom-end {
+        position-area: block-end span-inline-start;
+        justify-self: unset;
+        margin-inline-end: unset;
     }
 }
 
@@ -294,13 +569,16 @@ $placement-syntax: "";
 
     position: fixed;
     inset: auto 0 0 0;
-    width: auto;
-    height: auto;
-    max-height: 50dvh;
-    padding-top: 0;
-    margin-inline: auto;
+    inline-size: auto;
+    block-size: auto;
+    max-block-size: 50dvh;
+    position-area: unset;
+    position-try: unset;
+    place-self: unset;
+    padding-block-start: 0;
+    margin: auto;
     border-radius: $corner-xl $corner-xl 0 0;
-    border-top: 48px solid transparent;
+    border-block-start: 48px solid transparent;
     background: border-box var(--#{$prefix}dropdown-bg) center top 16px no-repeat var(--#{$prefix}drag-handle-icon);
 
     &.slide {

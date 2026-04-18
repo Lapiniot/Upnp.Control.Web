@@ -1,3 +1,4 @@
+import { CssAnchorPositioningStrategy } from "@services/CssAnchorPositioningStrategy";
 import { EmulateAnchorPositioningStrategy } from "@services/EmulateAnchorPositioningStrategy";
 import { SlideGestureRecognizer, type SlideParams } from "@services/gestures/SlideGestureRecognizer";
 import { SwipeGestureRecognizer, type SwipeGestures } from "@services/gestures/SwipeGestureRecognizer";
@@ -7,6 +8,7 @@ import { type ButtonHTMLAttributes, type HTMLAttributes, PureComponent, type Rea
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
 const TOGGLE_ITEM_SELECTOR = "[data-toggle='dropdown']";
+const anchorPositioningSupported = window.CSS && window.CSS.supports("anchor-name", "--anchor");
 
 export type MenuProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> & {
     activation?: "explicit",
@@ -48,7 +50,9 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
 
     constructor(props: MenuProps) {
         super(props);
-        this.strategy = new EmulateAnchorPositioningStrategy("auto");
+        this.strategy = anchorPositioningSupported
+            ? new CssAnchorPositioningStrategy()
+            : new EmulateAnchorPositioningStrategy("auto");
         this.resizeObserver = new ResizeObserver(this.resizeCallback);
         this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler, 50);
         this.slideRecognizer = new SlideGestureRecognizer(this.slideHandler);
@@ -87,7 +91,7 @@ export class Menu extends PureComponent<MenuProps, MenuState> {
             anchor?.classList.toggle("active", true);
             await this.strategy.toggle(true);
 
-            popover.showPopover();
+            popover.showPopover({ source: anchor });
 
             this.subscribe();
             if (getComputedStyle(popover).getPropertyValue("--bs-action-sheet") === "1") {
