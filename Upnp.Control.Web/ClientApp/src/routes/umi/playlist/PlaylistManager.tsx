@@ -1,10 +1,11 @@
+import $api from "@api";
 import { BottomBar } from "@components/BottomBar";
 import Breadcrumb from "@components/Breadcrumb";
 import Dialog from "@components/Dialog";
 import PromptDialog from "@components/Dialog.Prompt";
 import { DialogHost, type IDialogHost } from "@components/DialogHost";
 import { DropTarget } from "@components/DropTarget";
-import { Menu, MenuItem } from "@components/Menu";
+import Menu from "@components/Menu";
 import Progress from "@components/Progress";
 import RowStateContext, { RowState } from "@components/RowStateContext";
 import type { DataFetchProps } from "@hooks/DataFetch";
@@ -15,7 +16,6 @@ import { isMusicTrack } from "@routes/common/DIDLTools";
 import ItemInfoDialog from "@routes/common/ItemInfoDialog";
 import { PlaybackStateContext } from "@routes/common/PlaybackStateContext";
 import { PlaybackStateProvider } from "@routes/common/PlaybackStateProvider";
-import $s from "@settings";
 import MainCell from "@routes/umi/playlist/CellTemplate";
 import AddItemsDialog from "@routes/umi/playlist/dialogs/AddItemsDialog";
 import AddUrlDialog from "@routes/umi/playlist/dialogs/AddUrlDialog";
@@ -29,7 +29,7 @@ import { PlaylistRowStateProvider } from "@routes/umi/playlist/PlaylistRowStateP
 import { PressHoldGestureRecognizer } from "@services/gestures/PressHoldGestureRecognizer";
 import { HotKey, HotKeys } from "@services/HotKey";
 import { MediaQueries } from "@services/MediaQueries";
-import $api from "@api";
+import $s from "@settings";
 import {
     type ComponentProps, type ComponentPropsWithRef, type ComponentType, createRef, type HTMLAttributes,
     PureComponent, type ReactElement, type UIEventHandler, useCallback, useContext, useMemo
@@ -267,9 +267,9 @@ export class PlaylistManagerCore extends PureComponent<PlaylistManagerProps, Pla
 
     renderActionMenu = () => {
         return <>
-            <MenuItem action="add-items" icon="symbols.svg#add" onClick={this.service.addItems}>From media server</MenuItem>
-            <MenuItem action="add-url" icon="symbols.svg#podcasts" onClick={this.service.addFeedUrl}>Internet stream url</MenuItem>
-            <MenuItem action="add-files" icon="symbols.svg#feed" onClick={this.service.addPlaylistFiles}>Upload playlist file</MenuItem>
+            <Menu.Item action="add-items" icon="symbols.svg#add" onClick={this.service.addItems}>From media server</Menu.Item>
+            <Menu.Item action="add-url" icon="symbols.svg#podcasts" onClick={this.service.addFeedUrl}>Internet stream url</Menu.Item>
+            <Menu.Item action="add-files" icon="symbols.svg#feed" onClick={this.service.addPlaylistFiles}>Upload playlist file</Menu.Item>
         </>;
     }
 

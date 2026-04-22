@@ -1,4 +1,4 @@
-import { Menu } from "@components/Menu";
+import Menu from "@components/Menu";
 import Slider from "@components/Slider";
 import AlbumArt from "@routes/common/AlbumArt";
 import { PlaybackStateContext, usePlaybackEventHandlers } from "@routes/common/PlaybackStateContext";

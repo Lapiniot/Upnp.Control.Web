@@ -13,29 +13,15 @@ const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
 const TOGGLE_ITEM_SELECTOR = "[data-toggle='dropdown']";
 
-export type MenuProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> & {
+type MenuProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> & {
     activation?: "explicit",
     onSelected?: (item: HTMLElement, anchor?: HTMLElement) => void,
     render?: (anchor?: HTMLElement | null) => ReactNode
 }
 
-export function MenuItem({ className, action, icon, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action?: string, icon?: string }) {
-    return <li role="menuitem">
-        <button type="button" data-action={action} className={`dropdown-item${className ? ` ${className}` : ""}`} {...other}>
-            {icon && <svg><use href={icon} /></svg>}{children}
-        </button>
-    </li>
-}
-
-export function MenuItemSeparator({ className, ...other }: HTMLAttributes<HTMLHRElement>) {
-    return <li role="menuitem">
-        <hr className={`dropdown-divider${className ? ` ${className}` : ""}`} {...other} />
-    </li>
-}
-
 const activationEvents: (keyof GlobalEventHandlersEventMap)[] = ["click", "pointerdown", "pointerup"]
 
-export function Menu(props: MenuProps) {
+function MenuComponent(props: MenuProps) {
     const { className, children, render, onSelected, activation, ...other } = props;
     const popoverRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
@@ -254,3 +240,20 @@ function focusPrev(popover: HTMLDivElement) {
 
     items[items.length - 1].focus();
 }
+
+const Menu = Object.assign(MenuComponent, {
+    Item: function ({ className, action, icon, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action?: string; icon?: string; }) {
+        return <li role="menuitem">
+            <button type="button" data-action={action} className={`dropdown-item${className ? ` ${className}` : ""}`} {...other}>
+                {icon && <svg><use href={icon} /></svg>}{children}
+            </button>
+        </li>;
+    },
+    Separator: function ({ className, ...other }: HTMLAttributes<HTMLHRElement>) {
+        return <li role="menuitem">
+            <hr className={`dropdown-divider${className ? ` ${className}` : ""}`} {...other} />
+        </li>;
+    }
+})
+
+export default Menu

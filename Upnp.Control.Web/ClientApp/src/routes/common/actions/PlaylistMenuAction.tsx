@@ -1,7 +1,7 @@
-import { useDataFetch } from "@hooks/DataFetch";
-import { Menu, MenuItem } from "@components/Menu";
-import { MicroLoader } from "@components/LoadIndicator";
 import WebApi from "@api";
+import { MicroLoader } from "@components/LoadIndicator";
+import Menu from "@components/Menu";
+import { useDataFetch } from "@hooks/DataFetch";
 import AlbumArt from "@routes/common/AlbumArt";
 import { type DeviceActionProps } from "@routes/common/actions/Actions";
 import { useId } from "react";
@@ -26,10 +26,10 @@ export function PlaylistMenuAction({ className, device, category, ...other }: De
                 </button>
                 {device && <Menu id={id} activation="explicit" className="action-sheet-sm" data-device={device.udn}>
                     {items?.map(({ title, class: cls, albumArts, res }, index) =>
-                        <MenuItem key={index} data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
+                        <Menu.Item key={index} data-play-url={res?.url + "#play"} onClick={playUrlHandler}>
                             <AlbumArt itemClass={cls} albumArts={albumArts} className="rounded-1" hint="player" />
                             <span>{title}</span>
-                        </MenuItem>)}
+                        </Menu.Item>)}
                 </Menu>}
             </>
             : <MicroLoader />}
