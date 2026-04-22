@@ -119,7 +119,7 @@ function isStrictPlacement(placement: Placement): placement is StrictPlacement {
 //#endregion
 
 export class EmulateAnchorPositioningStrategy extends PopoverPlacementStrategy {
-    popup: HTMLElement | undefined;
+    popover: HTMLElement | undefined;
     anchor: HTMLElement | undefined;
     resizeObserver: ResizeObserver;
     options: typeof defaults;
@@ -133,20 +133,20 @@ export class EmulateAnchorPositioningStrategy extends PopoverPlacementStrategy {
     }
 
     public get placement(): Placement {
-        return getComputedStyle(this.popup!).getPropertyValue("--bs-placement") as Placement ?? this.defaultPlacement;
+        return getComputedStyle(this.popover!).getPropertyValue("--bs-placement") as Placement ?? this.defaultPlacement;
     }
 
-    public override update(popup: HTMLElement, anchor?: HTMLElement): void | Promise<void> {
-        if (this.popup && this.popup !== popup) {
+    public override update(popover: HTMLElement, anchor?: HTMLElement): void | Promise<void> {
+        if (this.popover && this.popover !== popover) {
             this.unsubscribe();
         }
 
         this.anchor = anchor;
-        this.popup = popup;
+        this.popover = popover;
     }
 
     public override toggle(visibility: boolean): void | Promise<void> {
-        if (this.popup && this.anchor) {
+        if (this.popover && this.anchor) {
             if (visibility) {
                 this.subscribe();
             }
@@ -162,20 +162,20 @@ export class EmulateAnchorPositioningStrategy extends PopoverPlacementStrategy {
     }
 
     private subscribe() {
-        this.resizeObserver.observe(this.popup!);
+        this.resizeObserver.observe(this.popover!);
         this.resizeObserver.observe(document.documentElement);
     }
 
     private unsubscribe() {
-        this.resizeObserver.unobserve(this.popup!);
+        this.resizeObserver.unobserve(this.popover!);
         this.resizeObserver.unobserve(document.documentElement);
     }
 
     private resizeCallback = ([entry]: ResizeObserverEntry[], observer: ResizeObserver) => {
         const { borderBoxSize: [{ inlineSize, blockSize }], target } = entry;
         // Reposition target only when it is visible
-        if (target === this.popup && blockSize > 0 && inlineSize > 0 && this.anchor) {
-            observer.unobserve(this.popup!);
+        if (target === this.popover && blockSize > 0 && inlineSize > 0 && this.anchor) {
+            observer.unobserve(this.popover!);
             this.intrinsicWidth = inlineSize;
             this.intrinsicHeight = blockSize;
             this.reflow();
@@ -195,8 +195,8 @@ export class EmulateAnchorPositioningStrategy extends PopoverPlacementStrategy {
     private reset() {
         this.intrinsicWidth = 0;
         this.intrinsicHeight = 0;
-        this.popup!.style.maxHeight = "";
-        this.popup!.style.maxWidth = "";
+        this.popover!.style.maxHeight = "";
+        this.popover!.style.maxWidth = "";
     }
 
     private tetherToAnchor(inlineSize: number, blockSize: number, anchor: Rect, root: Rect) {
@@ -240,7 +240,7 @@ export class EmulateAnchorPositioningStrategy extends PopoverPlacementStrategy {
             }
         }
 
-        const popup = this.popup!;
+        const popup = this.popover!;
         const resize = this.options.resize;
         let top = point.y, left = point.x, maxw = 0, maxh = 0;
 

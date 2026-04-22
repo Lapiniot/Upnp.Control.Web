@@ -1,24 +1,22 @@
-import { CssAnchorPositioningStrategy } from "@services/CssAnchorPositioningStrategy";
+import { useResizeObserver } from "@hooks/ResizeObserver";
+import { CssAnchorPositioningStrategy, supported as anchorPositioningSupported } from "@services/CssAnchorPositioningStrategy";
 import { EmulateAnchorPositioningStrategy } from "@services/EmulateAnchorPositioningStrategy";
 import { SlideGestureRecognizer, type SlideParams } from "@services/gestures/SlideGestureRecognizer";
 import { SwipeGestureRecognizer, type SwipeGestures } from "@services/gestures/SwipeGestureRecognizer";
-import type { PopoverPlacementStrategy } from "@services/PopoverPlacementStrategy";
-import { type ButtonHTMLAttributes, type HTMLAttributes, PureComponent, type ReactNode, createRef } from "react";
+import {
+    type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode,
+    useCallback, useEffect, useMemo, useRef
+} from "react";
+import { usePopoverToggleState } from "../hooks/PopoverToggleState";
 
 const ENABLED_ITEM_SELECTOR = ".dropdown-item:not(:disabled):not(.disabled)";
 const FOCUSED_SELECTOR = ":focus";
 const TOGGLE_ITEM_SELECTOR = "[data-toggle='dropdown']";
-const anchorPositioningSupported = window.CSS && window.CSS.supports("anchor-name", "--anchor");
 
 export type MenuProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> & {
     activation?: "explicit",
     onSelected?: (item: HTMLElement, anchor?: HTMLElement) => void,
     render?: (anchor?: HTMLElement | null) => ReactNode
-}
-
-type MenuState = {
-    anchor?: HTMLElement,
-    show: boolean
 }
 
 export function MenuItem({ className, action, icon, children, ...other }: ButtonHTMLAttributes<HTMLButtonElement> & { action?: string, icon?: string }) {
@@ -37,275 +35,222 @@ export function MenuItemSeparator({ className, ...other }: HTMLAttributes<HTMLHR
 
 const activationEvents: (keyof GlobalEventHandlersEventMap)[] = ["click", "pointerdown", "pointerup"]
 
-export class Menu extends PureComponent<MenuProps, MenuState> {
-    private readonly popoverRef = createRef<HTMLDivElement>();
-    private readonly swipeRecognizer: SwipeGestureRecognizer;
-    private readonly slideRecognizer: SlideGestureRecognizer;
-    private readonly resizeObserver: ResizeObserver;
-    private readonly strategy: PopoverPlacementStrategy;
-    override state: MenuState = { show: false, anchor: undefined };
-    captureY = 0;
-    captureHeight = 0;
-    intrinsicHeight = 0;
+export function Menu(props: MenuProps) {
+    const { className, children, render, onSelected, activation, ...other } = props;
+    const popoverRef = useRef<HTMLDivElement>(null);
+    const listRef = useRef<HTMLUListElement>(null);
+    const localsRef = useRef({ captureY: 0, captureHeight: 0, intrinsicHeight: 0 });
+    const { open, source: anchor } = usePopoverToggleState(popoverRef);
+    const strategy = useMemo(() => anchorPositioningSupported
+        ? new CssAnchorPositioningStrategy()
+        : new EmulateAnchorPositioningStrategy("auto"), []);
 
-    constructor(props: MenuProps) {
-        super(props);
-        this.strategy = anchorPositioningSupported
-            ? new CssAnchorPositioningStrategy()
-            : new EmulateAnchorPositioningStrategy("auto");
-        this.resizeObserver = new ResizeObserver(this.resizeCallback);
-        this.swipeRecognizer = new SwipeGestureRecognizer(this.swipeGestureHandler, 50);
-        this.slideRecognizer = new SlideGestureRecognizer(this.slideHandler);
-    }
-
-    override componentDidMount() {
-        const popover = this.popoverRef.current;
-        if (popover) {
-            if (this.props.activation === undefined) {
-                popover.parentElement?.addEventListener("click", this.containerClickListener);
-            }
-            this.resizeObserver.observe(popover.firstChild as HTMLElement);
-            this.popoverRef.current!.addEventListener("toggle", this.popoverToggleListener);
+    const resizeCallback = useCallback(([{ borderBoxSize: [{ blockSize }] }]: ResizeObserverEntry[]) => {
+        const locals = localsRef.current;
+        if (blockSize === 0) {
+            locals.intrinsicHeight = 0;
+        } else if (locals.intrinsicHeight === 0) {
+            locals.intrinsicHeight = blockSize;
         }
-    }
+    }, []);
 
-    override async componentDidUpdate(prevProps: MenuProps, prevState: MenuState): Promise<void> {
-        const { anchor, show } = this.state;
-        const { anchor: prevAnchor } = prevState;
-        const popover = this.popoverRef.current!;
-
-        if (this.props.activation !== prevProps.activation) {
-            if (this.props.activation === undefined) {
-                popover.parentElement?.addEventListener("click", this.containerClickListener);
-            } else {
-                popover.parentElement?.removeEventListener("click", this.containerClickListener);
-            }
-        }
-
-        if (anchor !== prevAnchor) {
-            prevAnchor?.classList.toggle("active", false);
-            await this.strategy.update(popover, anchor);
-        }
-
-        if (show) {
-            anchor?.classList.toggle("active", true);
-            await this.strategy.toggle(true);
-
-            popover.showPopover({ source: anchor });
-
-            this.subscribe();
-            if (getComputedStyle(popover).getPropertyValue("--bs-action-sheet") === "1") {
-                this.slideRecognizer.bind(popover);
-                this.swipeRecognizer.bind(popover);
-            }
-        } else {
-            this.swipeRecognizer.unbind();
-            this.slideRecognizer.unbind();
-            this.unsubscribe();
-
-            popover.hidePopover();
-
-            await Promise.allSettled(this.popoverRef.current!.getAnimations().map(animation => animation.finished));
-            await this.strategy.toggle(false);
-            popover.style.maxBlockSize = "";
-            anchor?.classList.toggle("active", false);
-        }
-    }
-
-    override componentWillUnmount() {
-        this.popoverRef.current!.removeEventListener("toggle", this.popoverToggleListener);
-        this.popoverRef.current!.parentElement!.removeEventListener("click", this.containerClickListener);
-        this.unsubscribe();
-        this.strategy.destroy();
-        this.swipeRecognizer.unbind();
-        this.slideRecognizer.unbind();
-        this.resizeObserver.disconnect();
-    }
-
-    public show(anchor: HTMLElement) {
-        this.setState({ show: true, anchor });
-    }
-
-    public hide() {
-        this.setState({ show: false });
-    }
-
-    private queryAll(selector: string) {
-        return this.popoverRef.current!.querySelectorAll<HTMLElement>(selector);
-    }
-
-    private subscribe() {
-        document.addEventListener("keydown", this.documentKeydownListener, { capture: true });
-        activationEvents.forEach(name => document.addEventListener(name, this.preventActivationListener, true));
-        this.popoverRef.current!.addEventListener("pointerdown", this.pointerDownListener);
-    }
-
-    private unsubscribe() {
-        document.removeEventListener("keydown", this.documentKeydownListener, { capture: true });
-        activationEvents.forEach(name => document.removeEventListener(name, this.preventActivationListener, true));
-        this.popoverRef.current!.removeEventListener("pointerdown", this.pointerDownListener);
-    }
-
-    //#region Focus helpers
-
-    private focusNext() {
-        const items = this.queryAll(ENABLED_ITEM_SELECTOR);
-
-        if (!items?.length) return false;
-
-        for (let index = 0; index < items.length; index++) {
-            const element = items[index];
-            if (element.matches(FOCUSED_SELECTOR)) {
-                if (index < items.length - 1) {
-                    items[index + 1].focus();
-                }
-                return;
-            }
-        }
-
-        items[0].focus();
-    }
-
-    private focusPrev() {
-        const items = this.queryAll(ENABLED_ITEM_SELECTOR);
-
-        if (!items?.length) return false;
-
-        for (let index = 0; index < items.length; index++) {
-            const element = items[index];
-            if (element.matches(FOCUSED_SELECTOR)) {
-                if (index > 0) {
-                    items[index - 1].focus();
-                }
-                return;
-            }
-        }
-
-        items[items.length - 1].focus();
-    }
-
-    //#endregion
-
-    private containerClickListener = (event: MouseEvent) => {
-        if (event.defaultPrevented) return;
-        const item = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR);
-        if (item && !this.state.show) {
-            this.show(item);
-            event.stopImmediatePropagation();
-        }
-    }
-
-    private popoverToggleListener = (e: Event) => {
-        const { oldState, newState } = e as ToggleEvent;
-        if (oldState === "open" && newState === "closed") {
-            this.hide();
-        } else if (oldState === "closed" && newState === "open") {
-            // Explicit activation via PopoverInvokerElement
-            if (this.state.show === false && this.props.id) {
-                const anchor = (document.activeElement as unknown as PopoverTargetAttributes).popoverTargetElement === this.popoverRef.current
-                    // Chrome: popover invoker stays focused active element at this moment, no need to scan entire document and we know for sure who invoked our popover!
-                    ? document.activeElement as HTMLInputElement
-                    // Safari: drops focus at <BODY> element, we need to proactively look for invoker by selector :(
-                    : document.body.querySelector<HTMLInputElement>(`:where(input, button)[popovertarget='${this.props.id}']`)
-                if (anchor)
-                    this.show(anchor);
-            }
-        }
-    }
-
-    private documentKeydownListener = (event: KeyboardEvent) => {
-        switch (event.code) {
-            case "ArrowUp":
-                this.focusPrev();
-                break;
-            case "ArrowDown":
-                this.focusNext();
-                break;
-            case "Tab":
-                // Capture focus on the first (last with Shift key) selectable menu item and prevent default handling
-                if (!this.popoverRef.current?.contains(document.activeElement)) {
-                    if (event.shiftKey)
-                        this.focusPrev();
-                    else
-                        this.focusNext();
-                    event.preventDefault();
-                }
-                break;
-            default: return;
-        }
-
-        event.stopImmediatePropagation();
-    }
-
-    private preventActivationListener = (event: Event) => {
-        // Prevent default browser behavior and stop propagation if event originited outside of our popover
-        if (!this.popoverRef.current!.contains((event.target as Node))) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-        }
-    }
-
-    private pointerDownListener = (event: PointerEvent) => {
-        event.stopPropagation();
-    }
-
-    private popoverClickHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+    const popoverClickHandler = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
         const item = (event.target as HTMLElement).closest<HTMLElement>(ENABLED_ITEM_SELECTOR);
         if (item) {
-            this.hide();
-            this.props.onSelected?.(item, this.state.anchor);
+            popoverRef.current?.hidePopover();
+            onSelected?.(item, anchor);
+        }
+    }, [anchor, onSelected]);
+
+    const focusOutHandler = useCallback((event: React.FocusEvent<HTMLElement>) => {
+        const popover = popoverRef.current;
+        if (popover && !popover.contains(event.relatedTarget as Node)) {
+            popover.hidePopover();
+            anchor?.focus();
+        }
+    }, [anchor]);
+
+    useResizeObserver(listRef, resizeCallback);
+
+    useEffect(() => {
+        const popover = popoverRef.current;
+        if (popover) {
+            const parent = popover.parentElement!;
+            if (activation === undefined) {
+                const clickHandler = (event: PointerEvent) => {
+                    if (event.defaultPrevented) {
+                        return;
+                    }
+
+                    if (!open) {
+                        const source = (event.target as HTMLElement).closest<HTMLElement>(TOGGLE_ITEM_SELECTOR) ?? undefined;
+                        if (source) {
+                            popover.showPopover({ source });
+                            event.stopImmediatePropagation();
+                        }
+                    }
+                }
+
+                parent.addEventListener("click", clickHandler);
+                return () => {
+                    parent.removeEventListener("click", clickHandler);
+                }
+            }
+        }
+    }, [activation, open]);
+
+    useEffect(() => {
+        const popover = popoverRef.current;
+        if (popover) {
+            strategy.update(popover, anchor);
+
+            if (open) {
+                const documentKeydownListener = (event: KeyboardEvent) => {
+                    switch (event.code) {
+                        case "ArrowUp":
+                            focusPrev(popover);
+                            event.preventDefault();
+                            break;
+                        case "ArrowDown":
+                            focusNext(popover);
+                            event.preventDefault();
+                            break;
+                        case "Tab":
+                            // Capture focus on the first (last with Shift key) selectable menu item and prevent default handling
+                            if (!popover.contains(document.activeElement)) {
+                                if (event.shiftKey)
+                                    focusPrev(popover);
+                                else
+                                    focusNext(popover);
+                                event.preventDefault();
+                            }
+                            break;
+                        default: return;
+                    }
+
+                    event.stopImmediatePropagation();
+                }
+
+                const preventActivationListener = (event: Event) => {
+                    // Prevent default browser behavior and stop propagation 
+                    // if event originited outside of our popover
+                    if (!popover.contains(event.target as Node)) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
+                    }
+                }
+
+                const pointerDownListener = (event: PointerEvent) => {
+                    event.stopPropagation();
+                }
+
+                document.addEventListener("keydown", documentKeydownListener, { capture: true });
+                activationEvents.forEach(name => document.addEventListener(name, preventActivationListener, true));
+                popover.addEventListener("pointerdown", pointerDownListener);
+
+                anchor?.classList.toggle("active", true);
+                strategy.toggle(true);
+
+                let slideRecognizer: SlideGestureRecognizer | undefined;
+                let swipeRecognizer: SwipeGestureRecognizer | undefined;
+
+                if (getComputedStyle(popover).getPropertyValue("--bs-action-sheet") === "1") {
+                    slideRecognizer = new SlideGestureRecognizer((target: HTMLElement, _: "slide", { phase, y }: SlideParams) => {
+                        const locals = localsRef.current;
+                        switch (phase) {
+                            case "start":
+                                if (target !== popover)
+                                    return false;
+                                locals.captureY = y;
+                                locals.captureHeight = target.offsetHeight;
+                                break;
+                            case "move":
+                                target.style.maxBlockSize = `min(${Math.round(locals.captureHeight - (y - locals.captureY))}px, 100%)`;
+                                break;
+                            default:
+                                if (y - locals.captureY > locals.intrinsicHeight / 2)
+                                    popover.hidePopover();
+                        }
+                    });
+
+                    swipeRecognizer = new SwipeGestureRecognizer((_: unknown, gesture: SwipeGestures) => {
+                        if (gesture === "swipe-down") {
+                            popover.hidePopover();
+                        } else if (gesture === "swipe-up") {
+                            popover.style.maxBlockSize = "100%";
+                        }
+                    }, 50);
+
+                    slideRecognizer.bind(popover);
+                    swipeRecognizer.bind(popover);
+                }
+
+                return () => {
+                    swipeRecognizer?.unbind();
+                    slideRecognizer?.unbind();
+
+                    document.removeEventListener("keydown", documentKeydownListener, { capture: true });
+                    activationEvents.forEach(name => document.removeEventListener(name, preventActivationListener, true));
+                    popover.removeEventListener("pointerdown", pointerDownListener);
+
+                    Promise.allSettled(popover.getAnimations().map(animation => animation.finished))
+                        .then(() => {
+                            strategy.toggle(false);
+                            popover.style.maxBlockSize = "";
+                            anchor?.classList.toggle("active", false)
+                        });
+                }
+            }
+        }
+    }, [open, anchor, strategy]);
+
+    return <div popover="" ref={popoverRef} inert={!open}
+        className={`dropdown-menu user-select-none fade touch-none${className ? ` ${className}` : ""}`} {...other}
+        onClick={popoverClickHandler} onBlur={focusOutHandler}>
+        <ul ref={listRef} role="menu" className="touch-auto">
+            {render ? render(anchor) : children}
+        </ul>
+    </div>
+}
+
+function getMenuItems(popover: HTMLDivElement) {
+    return popover.querySelectorAll<HTMLElement>(ENABLED_ITEM_SELECTOR);
+}
+
+function focusNext(popover: HTMLDivElement) {
+    const items = getMenuItems(popover);
+    if (!items?.length)
+        return false;
+
+    for (let index = 0; index < items.length; index++) {
+        const element = items[index];
+        if (element.matches(FOCUSED_SELECTOR)) {
+            if (index < items.length - 1) {
+                items[index + 1].focus();
+            }
+
+            return;
         }
     }
 
-    private focusOutHandler = (event: React.FocusEvent<HTMLElement>) => {
-        if (!this.popoverRef.current?.contains(event.relatedTarget as Node)) {
-            this.hide();
-            this.state.anchor?.focus();
+    items[0].focus();
+}
+
+function focusPrev(popover: HTMLDivElement) {
+    const items = getMenuItems(popover);
+    if (!items?.length)
+        return false;
+
+    for (let index = 0; index < items.length; index++) {
+        const element = items[index];
+        if (element.matches(FOCUSED_SELECTOR)) {
+            if (index > 0) {
+                items[index - 1].focus();
+            }
+
+            return;
         }
     }
 
-    private resizeCallback = ([{ borderBoxSize: [{ blockSize }] }]: ResizeObserverEntry[]) => {
-        if (blockSize === 0) {
-            this.intrinsicHeight = 0;
-        } else if (this.intrinsicHeight === 0) {
-            this.intrinsicHeight = blockSize;
-        }
-    }
-
-    private swipeGestureHandler = (_: unknown, gesture: SwipeGestures) => {
-        if (gesture === "swipe-down") {
-            this.hide();
-        } else if (gesture === "swipe-up") {
-            this.popoverRef.current!.style.maxBlockSize = "100%";
-        }
-    }
-
-    private slideHandler = (target: HTMLElement, _: "slide", { phase, y }: SlideParams) => {
-        switch (phase) {
-            case "start":
-                if (target !== this.popoverRef.current)
-                    return false;
-                this.captureY = y;
-                this.captureHeight = target.offsetHeight;
-                break;
-            case "move":
-                target.style.maxBlockSize = `min(${Math.round(this.captureHeight - (y - this.captureY))}px, 100%)`;
-                break;
-            default:
-                if (y - this.captureY > this.intrinsicHeight / 2)
-                    this.hide();
-        }
-    }
-
-    override render() {
-        const { className, children, render, onSelected, ...other } = this.props;
-        const { show, anchor } = this.state;
-        return <div popover="" ref={this.popoverRef} inert={!show}
-            className={`dropdown-menu user-select-none fade touch-none${className ? ` ${className}` : ""}`} {...other}
-            onClick={this.popoverClickHandler} onBlur={this.focusOutHandler}>
-            <ul role="menu" className="touch-auto">
-                {render ? render(anchor) : children}
-            </ul>
-        </div>
-    }
+    items[items.length - 1].focus();
 }

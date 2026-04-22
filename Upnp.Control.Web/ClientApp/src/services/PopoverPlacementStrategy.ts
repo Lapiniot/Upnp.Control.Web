@@ -1,6 +1,6 @@
 export abstract class PopoverPlacementStrategy {
-    public abstract update(popover: HTMLElement, anchor?: HTMLElement): Promise<void> | void;
-    public abstract toggle(visibility: boolean): Promise<void> | void;
+    public abstract update(popover: HTMLElement, anchor?: HTMLElement): void;
+    public abstract toggle(visibility: boolean): void;
     public abstract destroy(): void;
     public [Symbol.dispose] = () => this.destroy();
 }

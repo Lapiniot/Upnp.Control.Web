@@ -1,5 +1,7 @@
 import { PopoverPlacementStrategy } from "@services/PopoverPlacementStrategy";
 
+export const supported = window.CSS && window.CSS.supports("anchor-name", "--anchor");
+
 export class CssAnchorPositioningStrategy extends PopoverPlacementStrategy {
     popover: HTMLElement | undefined;
     anchor: HTMLElement | undefined;

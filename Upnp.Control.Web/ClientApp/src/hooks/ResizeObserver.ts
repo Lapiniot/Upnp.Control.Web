@@ -1,14 +1,15 @@
-import { type RefObject, useLayoutEffect, useRef } from "react";
+import { type RefObject, useLayoutEffect } from "react";
 
-export function useResizeObserver(ref: RefObject<Element>, callback: ResizeObserverCallback) {
-    const observerRef = useRef<ResizeObserver>(null);
-
+export function useResizeObserver(targetRef: RefObject<HTMLElement | null>, callback: ResizeObserverCallback) {
     useLayoutEffect(() => {
-        observerRef.current?.disconnect();
-        observerRef.current = new ResizeObserver(callback);
-        observerRef.current.observe(ref.current!);
-        return () => {
-            observerRef.current?.disconnect();
-        };
-    }, [ref, callback]);
+        const element = targetRef.current;
+        if (element) {
+            const observer = new ResizeObserver(callback);
+            observer.observe(element);
+            return () => {
+                observer.unobserve(element);
+                observer.disconnect();
+            }
+        }
+    }, [targetRef, callback]);
 }
