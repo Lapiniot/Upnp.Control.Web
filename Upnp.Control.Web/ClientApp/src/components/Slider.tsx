@@ -27,17 +27,27 @@ export default function Slider(props: SliderProps) {
     const [value, setValue] = useState(initial);
     const [updatePending, setUpdatePending] = useState(false);
     const crRef = useRef<DOMRect>(null);
-    const valueRef = useRef(value);
+    const initialValueRef = useRef(initial);
+    const pendingValueRef = useRef(value);
     const onChangeDebounced = useDebounce(onChange, 200);
+
+    // eslint-disable-next-line react-hooks/refs
+    if (initialValueRef.current !== initial) {
+        // eslint-disable-next-line react-hooks/refs
+        initialValueRef.current = initial;
+        setValue(initial);
+    }
 
     useEffect(() => {
         if (updatePending && onChange) {
-            return () => { onChange(valueRef.current); }
+            return () => {
+                onChange(pendingValueRef.current);
+            }
         }
     }, [updatePending, onChange]);
 
     useEffect(() => {
-        valueRef.current = value;
+        pendingValueRef.current = value;
         if (reportMode === "immediate" && onChangeDebounced) {
             onChangeDebounced(value);
         }
@@ -48,27 +58,28 @@ export default function Slider(props: SliderProps) {
             case "ArrowLeft": {
                 e.preventDefault();
                 if (e.type === "keydown") {
-                    setValue(current => clamp(0.0, current - step, 1.0));
                     setUpdatePending(true);
+                    setValue(current => clamp(0.0, current - step, 1.0));
                 } else {
                     setUpdatePending(false)
                 }
+
                 break;
             }
             case "ArrowRight": {
                 e.preventDefault();
                 if (e.type === "keydown") {
-                    setValue(current => clamp(0.0, current + step, 1.0))
                     setUpdatePending(true);
+                    setValue(current => clamp(0.0, current + step, 1.0))
                 } else {
                     setUpdatePending(false);
                 }
+
                 break;
             }
         }
     }, [step]);
 
-    //useSlideGesture(elementRef, slideGestureCallback);
     const refCallback = useCallback((element: HTMLDivElement) => {
         const recognizer = new SlideGestureRecognizer((_, __, { phase, x }: SlideParams) => {
             if (readOnly) return;
