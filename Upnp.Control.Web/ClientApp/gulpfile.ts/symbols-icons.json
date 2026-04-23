@@ -55,6 +55,7 @@
     "volume_mute",
     "volume_down",
     "volume_up",
+    "no_sound",
     "queue_music",
     "featured_play_list",
     "video_library",
@@ -66,7 +67,7 @@
     "contrast",
     "star_rate",
     [
-        "star_rate_filll",
+        "star_rate_fill",
         "star_rate/materialsymbolsoutlined/star_rate_fill1_24px.svg"
     ],
     "podcasts",
