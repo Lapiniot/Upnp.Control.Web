@@ -1,10 +1,10 @@
 using IoT.Protocol.Upnp;
-using UpnpDevice = Upnp.Control.Models.UpnpDevice;
 using static System.Globalization.CultureInfo;
+using UpnpDevice = Upnp.Control.Models.UpnpDevice;
 
 namespace Upnp.Control.Infrastructure.Upnp;
 
-public class UpnpServiceFactory(IHttpClientFactory clientFactory, IQueryHandler<GetDeviceQuery, UpnpDevice> queryHandler) : IUpnpServiceFactory
+public class UpnpServiceFactory(IHttpClientFactory clientFactory, IQueryHandler<GetDeviceQuery, UpnpDevice?> queryHandler) : IUpnpServiceFactory
 {
     private static readonly Dictionary<string, string> UmiMappings = new()
     {
@@ -19,6 +19,12 @@ public class UpnpServiceFactory(IHttpClientFactory clientFactory, IQueryHandler<
         where TService : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService>
     {
         var device = await queryHandler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
+
+        if (device is null)
+        {
+            DeviceNotFoundException.Throw(deviceId);
+        }
+
         return GetService<TService>(controlUrl: GetControlUrl<TService>(device));
     }
 
@@ -27,6 +33,12 @@ public class UpnpServiceFactory(IHttpClientFactory clientFactory, IQueryHandler<
         where TService2 : SoapActionInvoker, IUpnpService, IUpnpServiceFactory<TService2>
     {
         var device = await queryHandler.ExecuteAsync(new(deviceId), cancellationToken).ConfigureAwait(false);
+
+        if (device is null)
+        {
+            DeviceNotFoundException.Throw(deviceId);
+        }
+
         return (GetService<TService1>(GetControlUrl<TService1>(device)), GetService<TService2>(GetControlUrl<TService2>(device)));
     }
 

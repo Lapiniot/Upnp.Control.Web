@@ -13,8 +13,8 @@ public static class ConfigureServicesExtensions
         public IServiceCollection AddUpnpDeviceSqliteDatabase(string connectionString) => services
             .AddSqliteDatabase<UpnpDbContext>(connectionString,
                 builder => builder.UseModel(CompiledModels.UpnpDbContextModel.Instance))
-            .AddTransient<IQueryHandler<GetDeviceQuery, UpnpDevice>, GetDeviceQueryHandler>()
-            .AddTransient<IQueryHandler<GetDeviceDescriptionQuery, DeviceDescription>, GetDeviceQueryHandler>()
+            .AddTransient<IQueryHandler<GetDeviceQuery, UpnpDevice?>, GetDeviceQueryHandler>()
+            .AddTransient<IQueryHandler<GetDeviceDescriptionQuery, DeviceDescription?>, GetDeviceQueryHandler>()
             .AddTransient<IEnumerableQueryHandler<GetDevicesQuery, UpnpDevice>, GetDeviceQueryHandler>()
             .AddTransient<ICommandHandler<AddDeviceCommand>, AddDeviceCommandHandler>()
             .AddTransient<ICommandHandler<RemoveDeviceCommand>, RemoveDeviceCommandHandler>()
@@ -23,13 +23,13 @@ public static class ConfigureServicesExtensions
         public IServiceCollection AddPushSubscriptionSqliteDatabase(string connectionString) => services
             .AddSqliteDatabase<PushSubscriptionDbContext>(connectionString,
                 builder => builder.UseModel(CompiledModels.PushSubscriptionDbContextModel.Instance))
-            .AddTransient<IQueryHandler<PSGetQuery, PushNotificationSubscription>, PSGetQueryHandler>()
+            .AddTransient<IQueryHandler<PSGetQuery, PushNotificationSubscription?>, PSGetQueryHandler>()
             .AddTransient<IEnumerableQueryHandler<PSEnumerateQuery, PushNotificationSubscription>, PSEnumerateQueryHandler>()
             .AddTransient<ICommandHandler<PSAddCommand>, PSAddCommandHandler>()
             .AddTransient<ICommandHandler<PSRemoveCommand>, PSRemoveCommandHandler>();
 
         public IServiceCollection AddSqliteDatabase<[DynamicallyAccessedMembers(PublicConstructors | NonPublicConstructors | PublicProperties)] TContext>(
-            string connectionString, Action<DbContextOptionsBuilder> optionsAction = null)
+            string connectionString, Action<DbContextOptionsBuilder>? optionsAction = null)
             where TContext : DbContext => services
             .AddDbContext<TContext>(builder =>
             {

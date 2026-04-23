@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using Upnp.Control.Abstractions.Exceptions;
 using static System.DateTime;
 using static IoT.Protocol.Upnp.UpnpServices;
 
@@ -8,16 +7,16 @@ namespace Upnp.Control.DataAccess.Queries;
 
 internal sealed class GetDeviceQueryHandler(UpnpDbContext context) :
     IEnumerableQueryHandler<GetDevicesQuery, UpnpDevice>,
-    IQueryHandler<GetDeviceQuery, UpnpDevice>,
-    IQueryHandler<GetDeviceDescriptionQuery, DeviceDescription>
+    IQueryHandler<GetDeviceQuery, UpnpDevice?>,
+    IQueryHandler<GetDeviceDescriptionQuery, DeviceDescription?>
 {
     private const string UmiPlaylistSchema = "urn:xiaomi-com:service:Playlist:1";
 
-    private static readonly Func<UpnpDbContext, string, CancellationToken, Task<UpnpDevice>> GetDeviceByUdnQuery =
+    private static readonly Func<UpnpDbContext, string, CancellationToken, Task<UpnpDevice?>> GetDeviceByUdnQuery =
         EF.CompileAsyncQuery((UpnpDbContext ctx, string udn, CancellationToken ct) =>
             ctx.UpnpDevices.AsNoTracking().FirstOrDefault(d => d.Udn == udn));
 
-    private static readonly Func<UpnpDbContext, string, CancellationToken, Task<DeviceDescription>> GetDeviceDescriptionByUdnQuery =
+    private static readonly Func<UpnpDbContext, string, CancellationToken, Task<DeviceDescription?>> GetDeviceDescriptionByUdnQuery =
         EF.CompileAsyncQuery((UpnpDbContext ctx, string udn, CancellationToken ct) =>
             ctx.UpnpDevices.AsNoTracking()
                 .Where(d => d.Udn == udn)
@@ -51,29 +50,19 @@ internal sealed class GetDeviceQueryHandler(UpnpDbContext context) :
         }
     }
 
-    public async Task<UpnpDevice> ExecuteAsync(GetDeviceQuery query, CancellationToken cancellationToken)
+    public async Task<UpnpDevice?> ExecuteAsync(GetDeviceQuery query, CancellationToken cancellationToken)
     {
-        var upnpDevice = await GetDeviceByUdnQuery(context, query.DeviceId, cancellationToken).ConfigureAwait(false);
-        if (upnpDevice is null)
-        {
-            DeviceNotFoundException.Throw(query.DeviceId);
-        }
-
-        return upnpDevice;
+        return await GetDeviceByUdnQuery(context, query.DeviceId, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<DeviceDescription> ExecuteAsync(GetDeviceDescriptionQuery query, CancellationToken cancellationToken)
+    public async Task<DeviceDescription?> ExecuteAsync(GetDeviceDescriptionQuery query, CancellationToken cancellationToken)
     {
-        var deviceDescription = await GetDeviceDescriptionByUdnQuery(context, query.DeviceId, cancellationToken).ConfigureAwait(false);
-        if (deviceDescription is null)
-        {
-            DeviceNotFoundException.Throw(query.DeviceId);
-        }
-
-        return deviceDescription;
+        return await GetDeviceDescriptionByUdnQuery(context, query.DeviceId, cancellationToken).ConfigureAwait(false);
     }
 
     [DoesNotReturn]
-    private static void ThrowInvalidCategory(string category) =>
+    private static void ThrowInvalidCategory(string category)
+    {
         throw new InvalidOperationException($"Unknown device category filter '{category}'");
+    }
 }

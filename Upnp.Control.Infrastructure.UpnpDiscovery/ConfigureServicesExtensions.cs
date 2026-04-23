@@ -41,18 +41,24 @@ public static partial class ConfigureServicesExtensions
             userAgent: null,
             configureSocket: (socket, groupEndPoint) =>
             {
-                var mcintAddress = (options.MulticastInterface switch
+                var networkInterface = options.MulticastInterface switch
                 {
                     "auto" => FindBestMulticastInterface(),
                     "any" => null,
                     var name => FindInterface(name)
-                })?.GetPrimaryAddress(socket.AddressFamily);
+                };
+
+                var mcintAddress = networkInterface is { }
+                    ? networkInterface.GetPrimaryAddress(socket.AddressFamily)
+                    : (socket.AddressFamily is AddressFamily.InterNetworkV6
+                        ? IPAddress.IPv6Any
+                        : IPAddress.Any);
 
                 socket.ConfigureMulticastOptions(mcintAddress, options.MulticastTTL).JoinMulticastGroup(groupEndPoint, mcintAddress);
 
                 // Query MulticastInterface option from the configured socket directly to get effectively applied value
                 var isIPv4 = socket.AddressFamily is AddressFamily.InterNetwork;
-                var mcint = (uint)(int)socket.GetSocketOption(isIPv4 ? SocketOptionLevel.IP : SocketOptionLevel.IPv6, SocketOptionName.MulticastInterface);
+                var mcint = (uint)(int)socket.GetSocketOption(isIPv4 ? SocketOptionLevel.IP : SocketOptionLevel.IPv6, SocketOptionName.MulticastInterface)!;
                 mcintAddress = isIPv4
                     ? new IPAddress(mcint)
                     : NetworkInterface.GetAllNetworkInterfaces()

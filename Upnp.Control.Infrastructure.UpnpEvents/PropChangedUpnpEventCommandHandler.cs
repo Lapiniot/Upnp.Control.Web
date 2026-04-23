@@ -7,9 +7,6 @@ internal abstract partial class PropChangedUpnpEventCommandHandler<TCommand, TEv
     where TCommand : NotifyPropChangedCommand
     where TEvent : PropChangedEvent, new()
 {
-#pragma warning disable CA1823 // Avoid unused private fields
-    private readonly ILogger logger = logger;
-#pragma warning restore CA1823 // Avoid unused private fields
     private readonly XmlReaderSettings settings = new() { Async = true, IgnoreComments = true, IgnoreWhitespace = true };
 
     public async Task ExecuteAsync(TCommand command, CancellationToken cancellationToken)

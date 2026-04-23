@@ -16,7 +16,7 @@ public static class PushNotificationSubscriptionServices
     /// <response code="404">No subscription exists for the specified endpoint.</response>
     /// <response code="500">If any other unspecified error occured.</response>
     public static async Task<Results<Ok<PushSubscriptionState>, NotFound, ProblemHttpResult>> GetStateAsync(
-        IQueryHandler<PSGetQuery, PushNotificationSubscription> handler,
+        IQueryHandler<PSGetQuery, PushNotificationSubscription?> handler,
         Uri endpoint, CancellationToken cancellationToken)
     {
         try

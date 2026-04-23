@@ -1,5 +1,5 @@
-using static IoT.Device.Upnp.Services.BrowseMode;
 using static System.Globalization.CultureInfo;
+using static IoT.Device.Upnp.Services.BrowseMode;
 
 namespace Upnp.Control.Services.Queries;
 
@@ -9,10 +9,6 @@ internal sealed partial class GetContentQueryHandler(IUpnpServiceFactory factory
     IQueryHandler<CDGetContentQuery, CDContent>,
     IQueryHandler<CDSearchContentQuery, CDContent>
 {
-#pragma warning disable CA1823 // Avoid unused private fields
-    private readonly ILogger<GetContentQueryHandler> logger = logger;
-#pragma warning restore CA1823 // Avoid unused private fields
-
     public async Task<CDContent> ExecuteAsync(CDGetContentQuery query, CancellationToken cancellationToken)
     {
         var (deviceId, path, options) = query;

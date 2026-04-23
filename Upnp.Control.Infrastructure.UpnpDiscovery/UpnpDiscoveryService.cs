@@ -35,7 +35,7 @@ internal sealed partial class UpnpDiscoveryService(
                         var udn = ExtractUdn(reply.UniqueServiceName);
 
                         using var scope = serviceProvider.CreateScope();
-                        var getQueryHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDeviceQuery, UpnpDevice>>();
+                        var getQueryHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetDeviceQuery, UpnpDevice?>>();
 
                         if (reply.StartLine.StartsWith("NOTIFY", InvariantCulture) && reply.TryGetValue("NT", out var nt))
                         {
