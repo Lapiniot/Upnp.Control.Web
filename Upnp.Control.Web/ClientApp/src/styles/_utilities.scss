@@ -273,7 +273,7 @@ $utilities: map-merge(
     (
         "cursor": (
             property: "cursor",
-            values: default,
+            values: (default, pointer)
         ),
         "max-width-container": (
             property: "max-width",

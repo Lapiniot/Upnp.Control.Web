@@ -1,12 +1,14 @@
 import Menu from "@components/Menu";
 import Slider from "@components/Slider";
+import { useNavigator } from "@hooks/Navigator";
 import AlbumArt from "@routes/common/AlbumArt";
 import { PlaybackStateContext, usePlaybackEventHandlers } from "@routes/common/PlaybackStateContext";
 import { PlaybackStateProvider } from "@routes/common/PlaybackStateProvider";
 import SeekBar from "@routes/common/SeekBar";
 import { parseMilliseconds } from "@services/Extensions";
 import { SwipeGestureRecognizer, type SwipeGestures } from "@services/gestures/SwipeGestureRecognizer";
-import { type ButtonHTMLAttributes, useCallback, useContext, useId, useMemo } from "react";
+import $api from "@services/WebApi";
+import { useCallback, useContext, useId, type ButtonHTMLAttributes, type MouseEvent } from "react";
 
 function formatAlbumTitle(creator: string | undefined, album: string | undefined) {
     if (creator && album)
@@ -23,17 +25,29 @@ function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { icon?: string
 }
 
 function PlayerCore({ udn }: { udn: string | undefined }) {
-    const { dispatch, state: { state, current, relTime, duration, actions = [], next, playMode } } = useContext(PlaybackStateContext);
+    const { dispatch, state: { state, current, relTime, duration, actions = [], next, playMode, vendor } } = useContext(PlaybackStateContext);
     const { play, pause, stop, prev: playPrev, next: playNext, seek, toggleMode } = usePlaybackEventHandlers(dispatch);
 
-    const sgr = useMemo(() => new SwipeGestureRecognizer((_: unknown, gesture: SwipeGestures) => {
-        switch (gesture) {
-            case "swipe-left": dispatch({ type: "NEXT" }); break;
-            case "swipe-right": dispatch({ type: "PREV" }); break;
+    const { navigate } = useNavigator();
+    const navigateToPlaylist = useCallback((event: MouseEvent<HTMLDivElement>) => {
+        const id = event.currentTarget.dataset["playlistId"];
+        if (id) {
+            navigate(`/umi/${udn}/playlists/PL:${id}`);
         }
-    }), [dispatch]);
+    }, [udn, navigate]);
 
-    const refCallback = useCallback((e: HTMLDivElement) => { if (e) { sgr.bind(e) } else { sgr.unbind() } }, []); // eslint-disable-line
+    const refCallback = useCallback((e: HTMLDivElement) => {
+        const recognizer = new SwipeGestureRecognizer((_: unknown, gesture: SwipeGestures) => {
+            switch (gesture) {
+                case "swipe-left": dispatch({ type: "NEXT" }); break;
+                case "swipe-right": dispatch({ type: "PREV" }); break;
+            }
+        });
+        recognizer.bind(e);
+        return () => {
+            recognizer.unbind();
+        }
+    }, [dispatch]);
 
     const loading = state === "UNKNOWN" || state === undefined;
     const { title, album, creator } = current || {};
@@ -49,12 +63,19 @@ function PlayerCore({ udn }: { udn: string | undefined }) {
 
     const nextTitle = next ? `Next: ${next.artists && next.artists.length > 0 ? next.artists[0] : "Unknown artist"} \u2022 ${next.title}` : "Next";
     const shuffleMode = playMode === "REPEAT_SHUFFLE";
+    const playlist = vendor?.["playlist_transport_uri"] ?? vendor?.["mi:playlist_transport_uri"];
+    const playlistId = playlist && getPlaylistId(playlist);
+
+    const titleText = title ?? "[No media]";
+    const albumTitleText = formatAlbumTitle(creator, album);
 
     return <div className="player-skeleton" ref={refCallback}>
-        <AlbumArt className={`art${loading ? " placeholder" : ""}`} itemClass={current?.class ?? "object.item.audioItem.musicTrack"} albumArts={current?.albumArts} hint="player" />
-        <div className="pl-title">
-            <h5 className={`text-truncate${loading ? " placeholder w-100" : ""}`}>{title ?? "[No media]"}</h5>
-            <small className={`text-truncate${loading ? " placeholder w-75" : ""}`}>{formatAlbumTitle(creator, album)}</small>
+        <AlbumArt className={`art cursor-pointer${loading ? " placeholder" : ""}`} tabIndex={0}
+            data-playlist-id={playlistId} onClick={navigateToPlaylist}
+            itemClass={current?.class ?? "object.item.audioItem.musicTrack"} albumArts={current?.albumArts} hint="player" />
+        <div className="pl-title cursor-pointer" data-playlist-id={playlistId} onClick={navigateToPlaylist}>
+            <h5 className={`text-truncate${loading ? " placeholder w-100" : ""}`}>{titleText}</h5>
+            <small className={`text-truncate${loading ? " placeholder w-75" : ""}`}>{albumTitleText}</small>
         </div>
         <SeekBar className="pl-progress" time={currentTime} duration={totalTime} running={state === "PLAYING"} onChange={seek} />
         <Button title="Prev" className="pl-prev-btn" icon="symbols.svg#skip_previous" onClick={playPrev} disabled={!actions.includes("Previous")} />
@@ -65,6 +86,15 @@ function PlayerCore({ udn }: { udn: string | undefined }) {
             <VolumeControl disabled={loading} />
         </PlaybackStateProvider>
     </div>
+}
+
+const regex = /^x-mi:\/\/.*\?id=([\d]+)$/;
+
+function getPlaylistId(playlist: string) {
+    const matches = regex.exec(playlist);
+    return matches && matches.length === 2
+        ? matches[1]
+        : undefined;
 }
 
 function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -88,8 +118,12 @@ function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonE
     </>
 }
 
+function fetchPlaylistStateAsync(deviceId: string) {
+    return $api.playlist(deviceId).state().json();
+}
+
 export default function PlayerWidget({ udn }: { udn: string | undefined }) {
-    return <PlaybackStateProvider device={udn} trackPosition>
+    return <PlaybackStateProvider device={udn} trackPosition trackState fetchVendorState={fetchPlaylistStateAsync}>
         <PlayerCore udn={udn} />
     </PlaybackStateProvider>
 }
