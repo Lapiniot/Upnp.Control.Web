@@ -1,7 +1,8 @@
-import { type CSSProperties, type HTMLProps, type KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useDebounce } from "@hooks/Debounce";
+import { useValueTracking } from "@hooks/ValueTracking";
 import { clamp } from "@services/Extensions";
 import { SlideGestureRecognizer, type SlideParams } from "@services/gestures/SlideGestureRecognizer";
+import { type CSSProperties, type HTMLProps, type KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 
 type SliderChangeHandler = (position: number) => boolean | void;
 
@@ -23,19 +24,16 @@ interface SliderProps extends Omit<HTMLProps<HTMLDivElement>, "value" | "onChang
 }
 
 export default function Slider(props: SliderProps) {
-    const { className, value: initial = 0, reportMode, style = {}, onChange, readOnly, step = 0.05, ...other } = props;
-    const [value, setValue] = useState(initial);
+    const { className, value: initialValue = 0, reportMode, style = {}, onChange, readOnly, step = 0.05, ...other } = props;
+    const [value, setValue] = useState(initialValue);
     const [updatePending, setUpdatePending] = useState(false);
     const crRef = useRef<DOMRect>(null);
-    const initialValueRef = useRef(initial);
+    const initialValueChanged = useValueTracking(initialValue);
     const pendingValueRef = useRef(value);
     const onChangeDebounced = useDebounce(onChange, 200);
 
-    // eslint-disable-next-line react-hooks/refs
-    if (initialValueRef.current !== initial) {
-        // eslint-disable-next-line react-hooks/refs
-        initialValueRef.current = initial;
-        setValue(initial);
+    if (initialValueChanged) {
+        setValue(initialValue);
     }
 
     useEffect(() => {

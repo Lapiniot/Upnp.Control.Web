@@ -1,9 +1,10 @@
+import { type NavigateFunction, NavigationContext, type Path } from "@hooks/Navigator";
+import { useValueTracking } from "@hooks/ValueTracking";
 import {
     Children, type ContextType, createContext, type PropsWithChildren,
     type ReactElement, type ReactNode, useCallback, useContext, useRef, useState
 } from "react";
 import { matchRoutes, resolvePath, type RouteMatch, type RouteObject } from "react-router";
-import { type NavigateFunction, NavigationContext, type Path } from "@hooks/Navigator";
 
 interface VirtualRouterProps {
     initialPath: string
@@ -107,10 +108,14 @@ function resolvePathMatches(to: string | Partial<Path>, fromRoutePathnames: stri
 function useNavigate() {
     const { location, setLocation } = useContext(RouterLocationContext);
     const { matches } = useContext(RouterMatchContext);
+
     const ctx = { location, setLocation, matches };
-    const ref = useRef(ctx);
+    const ctxRef = useRef(ctx);
+    // eslint-disable-next-line react-hooks/refs
+    ctxRef.current = ctx;
+
     const navigate = useCallback<NavigateFunction>((to) => {
-        const { matches, location: { pathname, origin }, setLocation } = ref.current!;
+        const { matches, location: { pathname, origin }, setLocation } = ctxRef.current!;
         const pathnames = getEffectivePathnames(matches ?? []);
         const path = resolvePathMatches(to, pathnames, pathname);
         const url = new URL(path.pathname, origin);
@@ -150,6 +155,11 @@ const hooks: ContextType<typeof NavigationContext> = {
 
 export function VirtualRouter({ children, initialPath }: PropsWithChildren<VirtualRouterProps>) {
     const [location, setLocation] = useState(() => new URL(initialPath, window.location.origin));
+    const initialPathChanged = useValueTracking(initialPath);
+
+    if (initialPathChanged) {
+        setLocation(new URL(initialPath, window.location.origin));
+    }
 
     return <NavigationContext value={hooks}>
         <RouterLocationContext value={{ location, setLocation }}>

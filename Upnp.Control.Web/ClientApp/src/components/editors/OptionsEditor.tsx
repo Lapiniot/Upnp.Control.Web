@@ -1,3 +1,4 @@
+import { useValueTracking } from "@hooks/ValueTracking";
 import { type ChangeEventHandler, type SelectHTMLAttributes, useCallback, useState } from "react";
 
 type OptionsEditor = SelectHTMLAttributes<HTMLSelectElement> & {
@@ -7,6 +8,11 @@ type OptionsEditor = SelectHTMLAttributes<HTMLSelectElement> & {
 
 export function OptionsEditor({ className, options, value: initialState, callback, ...other }: OptionsEditor) {
     const [value, setValue] = useState(initialState);
+    const initialStateChanged = useValueTracking(initialState);
+
+    if (initialStateChanged) {
+        setValue(initialState);
+    }
 
     const changedHandler = useCallback<ChangeEventHandler<HTMLSelectElement>>(({ target: { value } }) => {
         if (callback(value) !== false)

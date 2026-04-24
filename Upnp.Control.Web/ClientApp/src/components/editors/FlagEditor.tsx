@@ -1,3 +1,4 @@
+import { useValueTracking } from "@hooks/ValueTracking";
 import { type ChangeEventHandler, type InputHTMLAttributes, useCallback, useId, useState } from "react";
 
 export type FlagEditorProps<TContext> = InputHTMLAttributes<HTMLInputElement> & {
@@ -8,7 +9,12 @@ export type FlagEditorProps<TContext> = InputHTMLAttributes<HTMLInputElement> & 
 
 export function FlagEditor<TContext>({ className, callback, context, caption, checked: initialState, ...other }: FlagEditorProps<TContext>) {
     const [checked, setChecked] = useState(initialState);
+    const initialStateChanged = useValueTracking(initialState);
     const id = useId();
+
+    if (initialStateChanged) {
+        setChecked(initialState);
+    }
 
     const changedHandler = useCallback<ChangeEventHandler<HTMLInputElement>>(({ target: { checked } }) => {
         if (callback(checked, context) !== false)
