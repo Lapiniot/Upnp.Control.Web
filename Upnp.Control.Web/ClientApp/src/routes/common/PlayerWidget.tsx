@@ -65,15 +65,16 @@ function PlayerCore({ udn }: { udn: string | undefined }) {
     const shuffleMode = playMode === "REPEAT_SHUFFLE";
     const playlist = vendor?.["playlist_transport_uri"] ?? vendor?.["mi:playlist_transport_uri"];
     const playlistId = playlist && getPlaylistId(playlist);
+    const clickHandler = playlistId ? navigateToPlaylist : undefined;
 
     const titleText = title ?? "[No media]";
     const albumTitleText = formatAlbumTitle(creator, album);
 
     return <div className="player-skeleton" ref={refCallback}>
-        <AlbumArt className={`art cursor-pointer${loading ? " placeholder" : ""}`} tabIndex={0}
-            data-playlist-id={playlistId} onClick={navigateToPlaylist}
+        <AlbumArt className={`art${playlistId ? " cursor-pointer" : ""}${loading ? " placeholder" : ""}`} tabIndex={0}
+            data-playlist-id={playlistId} onClick={clickHandler}
             itemClass={current?.class ?? "object.item.audioItem.musicTrack"} albumArts={current?.albumArts} hint="player" />
-        <div className="pl-title cursor-pointer" data-playlist-id={playlistId} onClick={navigateToPlaylist}>
+        <div className={`pl-title${playlistId ? " cursor-pointer" : ""}`} data-playlist-id={playlistId} onClick={clickHandler}>
             <h5 className={`text-truncate${loading ? " placeholder w-100" : ""}`}>{titleText}</h5>
             <small className={`text-truncate${loading ? " placeholder w-75" : ""}`}>{albumTitleText}</small>
         </div>
