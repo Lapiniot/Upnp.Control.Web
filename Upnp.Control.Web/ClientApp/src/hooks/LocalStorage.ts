@@ -5,7 +5,6 @@ export function useLocalStorage(key: string): [string | null, (value: string | n
     const setter = useCallback((value: string | null) => {
         if (value)
             localStorage.setItem(key, value);
-
         else
             localStorage.removeItem(key);
     }, [key]);

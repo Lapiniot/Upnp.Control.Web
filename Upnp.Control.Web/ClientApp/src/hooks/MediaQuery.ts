@@ -1,24 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import { MediaQueries } from "@services/MediaQueries";
+import { useMemo, useSyncExternalStore } from "react";
 
-function useMediaQuery(query: MediaQueryList, enabled: boolean = true) {
-    const [matches, setMatches] = useState(query.matches);
-    const ref = useRef(query);
-    const listener = useCallback((event: MediaQueryListEvent) => setMatches(event.matches), []);
-    useEffect(() => {
-        ref.current.removeEventListener("change", listener);
-        ref.current = query;
+function useMediaQuery(query: MediaQueryList) {
+    const store = useMemo(() => ({
+        subscribe(onStoreChange: () => void) {
+            query.addEventListener("change", onStoreChange);
+            return () => {
+                query.removeEventListener("change", onStoreChange);
+            }
+        },
+        getSnapshot() { return query.matches; }
+    }), [query]);
 
-        if (enabled) {
-            query.addEventListener("change", listener);
-        }
-
-        return () => {
-            query.removeEventListener("change", listener);
-        }
-    }, [query, enabled]); // eslint-disable-line
-
-    return matches;
+    return useSyncExternalStore(store.subscribe, store.getSnapshot);
 }
 
 export { MediaQueries, useMediaQuery }

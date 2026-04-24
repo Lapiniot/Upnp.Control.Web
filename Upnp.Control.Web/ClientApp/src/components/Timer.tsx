@@ -11,6 +11,7 @@ export default function Timer({ current, running, interval, ...other }: TimerPro
             ref.current.textContent = formatTime(ellapsed / 1000 + current);
         }
     }, [current]);
+
     useIntervalUpdate(callback, running, interval);
 
     return <time role="timer" {...other} ref={ref}>{formatTime(current)}</time>;

@@ -1,5 +1,5 @@
 // more efficient Timer implementation - inspired by https://www.youtube.com/watch?v=MCi6AZMkxcU
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 function scheduleNext(start: number, current: number, interval: number, callback: FrameRequestCallback) {
     const ellapsed = current - start;
@@ -10,24 +10,23 @@ function scheduleNext(start: number, current: number, interval: number, callback
 type UpdateCallback = (ellapsed: number) => void;
 
 export function useIntervalUpdate(callback: UpdateCallback, active = true, interval = 1000) {
-    const props = useRef({ start: 0, interval, controller: null as (AbortController | null), callback });
-
-    const update = useCallback<FrameRequestCallback>(time => {
-        const { start, interval, controller, callback } = props.current;
-        if (controller?.signal.aborted) return;
-        callback(time - start);
-        scheduleNext(start, time, interval, update); // eslint-disable-line
-    }, []);
-
     useEffect(() => {
-        props.current.controller?.abort();
-
         if (active) {
+            const controller = new AbortController();
             const start = (document.timeline.currentTime ?? 0) as number;
-            props.current = { start, interval, controller: new AbortController(), callback };
-            scheduleNext(start, start, interval, update);
-        }
 
-        return () => props.current.controller?.abort();
-    }, [active, interval, callback]); // eslint-disable-line
+            function update(time: number) {
+                if (controller.signal.aborted)
+                    return;
+                callback(time - start);
+                scheduleNext(start, time, interval, update);
+            }
+
+            scheduleNext(start, start, interval, update);
+
+            return () => {
+                controller.abort();
+            }
+        }
+    }, [active, interval, callback]);
 }
