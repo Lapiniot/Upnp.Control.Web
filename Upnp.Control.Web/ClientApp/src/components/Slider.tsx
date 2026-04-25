@@ -2,7 +2,7 @@ import { useDebounce } from "@hooks/Debounce";
 import { useValueTracking } from "@hooks/ValueTracking";
 import { clamp } from "@services/Extensions";
 import { SlideGestureRecognizer, type SlideParams } from "@services/gestures/SlideGestureRecognizer";
-import { type CSSProperties, type HTMLProps, type KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type HTMLProps, type KeyboardEvent, type Ref, useCallback, useEffect, useRef, useState } from "react";
 
 type SliderChangeHandler = (position: number) => boolean | void;
 
@@ -24,10 +24,10 @@ interface SliderProps extends Omit<HTMLProps<HTMLDivElement>, "value" | "onChang
 }
 
 export default function Slider(props: SliderProps) {
-    const { className, value: initialValue = 0, reportMode, style = {}, onChange, readOnly, step = 0.05, ...other } = props;
+    const { className, value: initialValue = 0, reportMode, style = {}, onChange,
+        readOnly, step = 0.05, ref: externalRef, ...other } = props;
     const [value, setValue] = useState(initialValue);
     const [updatePending, setUpdatePending] = useState(false);
-    const crRef = useRef<DOMRect>(null);
     const initialValueChanged = useValueTracking(initialValue);
     const pendingValueRef = useRef(value);
     const onChangeDebounced = useDebounce(onChange, 200);
@@ -79,16 +79,20 @@ export default function Slider(props: SliderProps) {
     }, [step]);
 
     const refCallback = useCallback((element: HTMLDivElement) => {
-        const recognizer = new SlideGestureRecognizer((_, __, { phase, x }: SlideParams) => {
-            if (readOnly) return;
+        const cleanup = setExternalRef(externalRef, element);
 
+        if (readOnly) {
+            return cleanup;
+        }
+
+        let rect: DOMRect;
+        const recognizer = new SlideGestureRecognizer((_, __, { phase, x }: SlideParams) => {
             if (phase === "start") {
-                crRef.current = element.getBoundingClientRect();
+                rect = element.getBoundingClientRect();
                 setUpdatePending(true);
             }
 
-            const cr = crRef.current!;
-            const value = clamp(0.0, ((x - cr.x) / cr.width), 1.0);
+            const value = clamp(0.0, ((x - rect.x) / rect.width), 1.0);
             setValue(value);
 
             if (phase === "end") {
@@ -98,9 +102,10 @@ export default function Slider(props: SliderProps) {
 
         recognizer.bind(element);
         return () => {
+            cleanup?.();
             recognizer.unbind();
         };
-    }, [readOnly]);
+    }, [readOnly, externalRef]);
 
     return <div tabIndex={0} {...other} role="slider" ref={refCallback} data-value={value}
         onKeyDown={keyboardHandler} onKeyUp={keyboardHandler}
@@ -113,4 +118,17 @@ export default function Slider(props: SliderProps) {
         <div className="slider-track" />
         <div className="slider-thumb" />
     </div>
+}
+
+function setExternalRef<T>(ref: Ref<T> | undefined, element: T) {
+    if (ref) {
+        if (typeof ref === "function") {
+            return ref(element);
+        } else {
+            ref.current = element;
+            return () => {
+                ref.current = null;
+            }
+        }
+    }
 }

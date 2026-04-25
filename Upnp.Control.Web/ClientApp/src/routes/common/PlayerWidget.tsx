@@ -1,5 +1,6 @@
 import Menu from "@components/Menu";
 import Slider from "@components/Slider";
+import { useAutoFocus } from "@hooks/AutoFocus";
 import { useNavigator } from "@hooks/Navigator";
 import AlbumArt from "@routes/common/AlbumArt";
 import { PlaybackStateContext, usePlaybackEventHandlers } from "@routes/common/PlaybackStateContext";
@@ -100,8 +101,9 @@ function getPlaylistId(playlist: string) {
 
 function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonElement>) {
     const { dispatch, state: { muted = false, volume = 0 } } = useContext(PlaybackStateContext);
-    const id = useId();
     const { toggleMute, setVolume } = usePlaybackEventHandlers(dispatch);
+    const autoFocusRef = useAutoFocus<HTMLDivElement>();
+    const id = useId();
     const volumeStr = muted ? "Muted" : `${volume}%`;
     const volumeIcon = muted ? "no_sound" : volume > 50 ? "volume_up" : volume > 20 ? "volume_down" : "volume_mute";
     return <>
@@ -112,7 +114,7 @@ function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonE
                 <button type="button" className="btn btn-icon ms-1" onClick={toggleMute}>
                     <svg><use href={"symbols.svg#" + (muted ? "volume_up" : "volume_off")} /></svg>
                 </button>
-                <Slider {...{ autofocus: "true" }} className="flex-fill mx-2 w-10r"
+                <Slider ref={autoFocusRef} className="flex-fill mx-2 w-10r"
                     value={volume / 100} onChange={setVolume} />
             </li>
         </Menu>
