@@ -1,14 +1,11 @@
-import { useRef } from "react";
+import { useState } from "react";
 
-export function useValueTracking<T>(value: T): boolean {
-    const valueRef = useRef(value);
+export function useValueTracking<T>(value: T): T {
+    const [prevValue, setValue] = useState(value);
 
-    // eslint-disable-next-line react-hooks/refs
-    if (valueRef.current !== value) {
-        // eslint-disable-next-line react-hooks/refs
-        valueRef.current = value;
-        return true;
+    if (prevValue !== value) {
+        setValue(value);
     }
 
-    return false;
+    return prevValue;
 }

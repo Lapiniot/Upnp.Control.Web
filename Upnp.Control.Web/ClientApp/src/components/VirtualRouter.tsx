@@ -155,9 +155,9 @@ const hooks: ContextType<typeof NavigationContext> = {
 
 export function VirtualRouter({ children, initialPath }: PropsWithChildren<VirtualRouterProps>) {
     const [location, setLocation] = useState(() => new URL(initialPath, window.location.origin));
-    const initialPathChanged = useValueTracking(initialPath);
+    const prevInitialPath = useValueTracking(initialPath);
 
-    if (initialPathChanged) {
+    if (prevInitialPath !== initialPath) {
         setLocation(new URL(initialPath, window.location.origin));
     }
 

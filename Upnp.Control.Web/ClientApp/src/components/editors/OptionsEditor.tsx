@@ -8,9 +8,9 @@ type OptionsEditor = SelectHTMLAttributes<HTMLSelectElement> & {
 
 export function OptionsEditor({ className, options, value: initialState, callback, ...other }: OptionsEditor) {
     const [value, setValue] = useState(initialState);
-    const initialStateChanged = useValueTracking(initialState);
+    const prevInitialState = useValueTracking(initialState);
 
-    if (initialStateChanged) {
+    if (prevInitialState !== initialState) {
         setValue(initialState);
     }
 

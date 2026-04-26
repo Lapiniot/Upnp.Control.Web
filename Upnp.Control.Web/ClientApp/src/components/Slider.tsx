@@ -28,11 +28,11 @@ export default function Slider(props: SliderProps) {
         readOnly, step = 0.05, ref: externalRef, ...other } = props;
     const [value, setValue] = useState(initialValue);
     const [updatePending, setUpdatePending] = useState(false);
-    const initialValueChanged = useValueTracking(initialValue);
+    const prevInitialValue = useValueTracking(initialValue);
     const pendingValueRef = useRef(value);
     const onChangeDebounced = useDebounce(onChange, 200);
 
-    if (initialValueChanged) {
+    if (prevInitialValue !== initialValue) {
         setValue(initialValue);
     }
 

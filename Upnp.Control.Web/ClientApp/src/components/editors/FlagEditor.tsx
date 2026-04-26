@@ -9,10 +9,10 @@ export type FlagEditorProps<TContext> = InputHTMLAttributes<HTMLInputElement> & 
 
 export function FlagEditor<TContext>({ className, callback, context, caption, checked: initialState, ...other }: FlagEditorProps<TContext>) {
     const [checked, setChecked] = useState(initialState);
-    const initialStateChanged = useValueTracking(initialState);
+    const prevInitialState = useValueTracking(initialState);
     const id = useId();
 
-    if (initialStateChanged) {
+    if (prevInitialState !== initialState) {
         setChecked(initialState);
     }
 
