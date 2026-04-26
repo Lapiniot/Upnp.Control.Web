@@ -114,7 +114,7 @@ function VolumeControl({ className, ...other }: ButtonHTMLAttributes<HTMLButtonE
                 <button type="button" className="btn btn-icon ms-1" onClick={toggleMute}>
                     <svg><use href={"symbols.svg#" + (muted ? "volume_up" : "volume_off")} /></svg>
                 </button>
-                <Slider ref={autoFocusRef} className="flex-fill mx-2 w-10r"
+                <Slider ref={autoFocusRef} className="flex-fill ms-2 me-4 w-10r"
                     value={volume / 100} onChange={setVolume} />
             </li>
         </Menu>
